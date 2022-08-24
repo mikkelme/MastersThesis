@@ -26,12 +26,32 @@ atoms = graphene_nanoribbon(xlen, ylen, type='armchair', saturated=False, C_C=Cd
 atoms.pbc = [False, False, False] # Set x,y,z to non periodic (not sure if this is relevant)
 
 
-# atoms.rotate(-90, 'x', center=(0,0,0), rotate_cell=True)
-# # --- Change to new coordinate system ---#
-# # Switch y and z axis
+
+new_positions = atoms.get_positions().copy()
+new_cell = atoms.get_cell().copy()
+
+
+##### Working here #####
+print(new_cell)
+exit()
+#Swap y and z axis
+for i, atom in enumerate(atoms):
+    new_positions[i] = [atom.position[0], atom.position[2], atom.position[1]]
+
+atoms.set_positions(new_position)
+# exit()
+# for i, vec in enumerate(atoms.cell):
+#     atoms.cell[i] = [vec[0], vec[2], vec[1]]
+
+# print(atoms[0].position)
+
+
+
+# --- Change to new coordinate system ---#
+# Switch y and z axis
 # atoms.rotate(-90, 'x', center=(0,0,0), rotate_cell=True)
 
-# # Reorder atoms 
+# Reorder atoms 
 # num_complete_ylines = xlen//1
 # y_line_len = 4*ylen #change to ylen
 
