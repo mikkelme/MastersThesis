@@ -56,27 +56,34 @@ def build_graphene_sheet(mat, view_lattice = False):
         start += loc   
 
 
-    for i in range(mat.shape[0]):
-        for j in range(mat.shape[1]):
+    for i in reversed(range(mat.shape[0])):
+        for j in reversed(range(mat.shape[1])):
             if mat[i,j] == 0:
                 print(atoms[i*yline_len+j].index)
-                # del atoms[i+j]
-
+                del atoms[i*yline_len+j]
 
     if view_lattice: 
         view(atoms)
+
+    # if write
     lammpsdata.write_lammps_data('./lammps_sheet', atoms)
 
 
     return
 
+#network X
+
+
+
+
 
 if __name__ == "__main__":
-#    mat = np.random.randint(0,2,(4,4))
-   mat = np.ones((3,8))
-   mat[1,:] = 0
-   print(mat)
-   build_graphene_sheet(mat, view_lattice = True)
+    mat = np.random.randint(0,2,(4,4))
+    mat = np.ones((16,32))
+    build_graphene_sheet(mat, view_lattice = True)
+#    mat[0,:4] = 0
+#    mat[1,4:] = 0
+#    mat[2,:4] = 0
 
 
 
