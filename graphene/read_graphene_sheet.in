@@ -8,7 +8,7 @@ read_data ./lammps_sheet # read lattice from file
 
 
 # # --- Dynamics --- ##
-variable temp equal 5.0
+variable temp equal 5.0 # Kelvin
 
 mass * 12.0107 # "*": all types, [grams/mole]
 velocity all create ${temp} 5432373 dist gaussian
