@@ -79,7 +79,8 @@ def build_graphene_sheet(mat, view_lattice = False):
 
 if __name__ == "__main__":
     mat = np.random.randint(0,2,(4,4))
-    mat = np.ones((16,32))
+    mat = np.ones((2,20))
+    print(mat)
     build_graphene_sheet(mat, view_lattice = True)
 #    mat[0,:4] = 0
 #    mat[1,4:] = 0
