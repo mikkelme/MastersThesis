@@ -95,7 +95,6 @@ def center_elem_trans_to_atoms(transistions, full = False):
 
 
 
-
             # ######
             # up = trans[0,0]%2 == 0
             # sign = 1-2*up
@@ -112,11 +111,12 @@ def center_elem_trans_to_atoms(transistions, full = False):
             # [delete.append(pair) for pair in global_pair]
 
     else:
-        for trans in transistions:
+        for i in range(num_trans + 1):
+            current_elem = transistions[i]
             global_atoms = center_neigh(trans[0]).astype("int")
             [delete.append(atom) for atom in global_atoms[0]]
             [delete.append(atom) for atom in global_atoms[1]]
-
+          
 
 
     return np.array(delete, dtype = int)
