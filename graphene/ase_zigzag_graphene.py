@@ -163,19 +163,18 @@ def pop_up_pattern():
             line1.append([ref - [i+1, (i+1)//2 ], ref + [i + 1, i//2 + 1]])
 
         for i in range(size2):
-
-            line2.append()
-            print([i+2, -(i + i//2 + 3)])
+            line2.append(ref + [i+2, -(i + i//2 + 3)])
+            # print([i+2, -(i + i//2 + 3)])
             # line2.append([ref + []])
         # line1 = [ref - [2,1] , ref - [1,0], ref, ref + [1,1], ref + [2,1]]
-        line2 = [ref + [2,-3], ref + [3,-4], ref + [4, -6]]
+        # line2 = [ref + [2,-3], ref + [3,-4], ref + [4, -6]]
     else:
         line1 = [ref - [2,1], ref - [1,1], ref, ref + [1,0], ref + [2,1]]
         line2 = [ref + [2,-3], ref + [3,-5], ref + [4, -6]]
 
 
-    print(line1)
-    exit()
+    # print(line1)
+    # exit()
     del_unit1 = np.array(line1 + line2)
     del_unit2 = np.array(line1 + line2) + np.array([8,-2]) + sp1*np.array([2,1]) 
 
