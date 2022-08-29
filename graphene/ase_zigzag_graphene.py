@@ -98,8 +98,7 @@ def center_elem_trans_to_atoms(trans, full = False):
     else:
         for i in range(num_trans + 1):
             current_elem = trans[i]
-            neigh = center_neigh(current_elem).astype("int")
-            global_atoms = neigh[np.all(neigh >= 0, axis = 2), :]
+            global_atoms = center_neigh(current_elem).astype("int").reshape(6,2)
             [delete.append(atom) for atom in global_atoms]
           
 
@@ -125,12 +124,25 @@ def center_neigh(center_elem):
     return neigh
 
 
+def delete_atoms(mat, delete_map):
+    """ Remove valid atoms from atom matrix """ 
+    m, n = np.shape(mat)   
+    condition = np.logical_and(delete_map < (m,n), delete_map >= (0,0))
+    delete_map = delete_map[np.all(condition, axis = 1), :]
+
+    if len(delete_map > 0):
+        mat[delete_map[:, 0], delete_map[:, 1]] = 0
+    return mat
+
+
+
 
 # def pop_up_pattern():
 #     mat = np.ones((20, 40))
 #     build_graphene_sheet(mat, view_lattice = True)
 
-#     ref_center = 
+#     ref_center = (10, 10)
+
 
 
 
@@ -139,14 +151,14 @@ if __name__ == "__main__":
     # pop_up_pattern()
 
 
-    exit()
-    mat = np.ones((5, 12)) # Why does (5, 12) not work?
+    # exit()  
+    mat = np.ones((5, 10)) # Why does (5, 12) not work?
     trans = np.array([[2,0], [3,1], [3,2], [3,3], [3,4], [4,3], [5,4]])
-
-
-    delete = center_elem_trans_to_atoms(trans, full = True)   
-    if len(delete > 0):
-        mat[delete[:, 0], delete[:, 1]] = 0
+    # trans = np.array([[20,0]])
+    # exit()
+    delete_map = center_elem_trans_to_atoms(trans, full = True)   
+    mat = delete_atoms(mat, delete_map)
+   
 
    
     build_graphene_sheet(mat, view_lattice = True)
