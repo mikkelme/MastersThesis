@@ -66,9 +66,9 @@ def center_elem_trans_to_atoms(trans, full = False):
     mapping[0,1] = [0,2], [1,2]       # up
     mapping[1,1] = [1,2], [1,1]       # right-up
     mapping[1,-1] = [1,1], [1,0]      # right-down
-    mapping[0,-1] = [1,0], [-1,0]     # down
-    mapping[-1,-1] = [-1,0], [-1,1]   # left-down
-    mapping[-1,1] = [-1,1], [-1,2]    # up-eft
+    mapping[0,-1] = [1,0], [0,0]     # down
+    mapping[-1,-1] = [0,0], [0,1]   # left-down
+    mapping[-1,1] = [0,1], [0,2]    # up-left
 
 
     delete = []
@@ -90,9 +90,8 @@ def center_elem_trans_to_atoms(trans, full = False):
             neigh = center_neigh(current_elem)
             global_pair = neigh[local_pair[:, 0], local_pair[:, 1]] # global atoms coordinates 
 
-            print(current_elem, neigh)
+     
             [delete.append(pair) for pair in global_pair]
-
 
 
 
@@ -141,9 +140,9 @@ if __name__ == "__main__":
 
     mat = np.ones((5, 12)) # Why does (5, 12) not work?
 
-    # trans = np.array([[2,0], [3,1], [3,2], [3,3], [3,4], [4,3], [5,4]])
-    trans = np.array([[2, 0], [2, -1]])
+    trans = np.array([[2,0], [3,1], [3,2], [3,3], [3,4], [4,3], [5,4]])
 
+   
     delete = center_elem_trans_to_atoms(trans, full = False)   
     if len(delete > 0):
         mat[delete[:, 0], delete[:, 1]] = 0
