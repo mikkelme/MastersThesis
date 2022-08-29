@@ -118,9 +118,7 @@ def center_neigh(center_elem):
         for j in range(3):
             neigh[i, j] = [n-1 + i, m_start + j]
     
-    
-    # Set illegal coordinates to [nan, nan] 
-    # neigh[np.any(neigh < 0, axis = 2), :] = np.nan 
+
     return neigh
 
 
@@ -137,21 +135,114 @@ def delete_atoms(mat, delete_map):
 
 
 
-# def pop_up_pattern():
-#     mat = np.ones((20, 40))
-#     build_graphene_sheet(mat, view_lattice = True)
+def pop_up_pattern():
+    mat = np.ones((40, 80))
+    m, n = np.shape(mat)
 
-#     ref_center = (10, 10)
+    ref = np.array([0, 0])
+    sp1 = 0 # spacing on axis 1
+    sp2 = 0# spacing on axis 2
 
+    # only odd allowed
+    size1 = 5
+    size2 = 3
+
+
+
+    axis1 = np.array([10, 5]) # up right
+    axis2 = np.array([-6,9]) # up left
+ 
+ 
+    up = ref[0]%2 == 0
+    if up:
+        line1 = [ref]
+        line2 = [ref]
+        for i in range((size1-1)//2):
+            # minus = [i+1, (i+1)//2 ]
+            # plus = [i + 1, i//2 + 1]
+            line1.append([ref - [i+1, (i+1)//2 ], ref + [i + 1, i//2 + 1]])
+
+        for i in range(size2):
+
+            line2.append()
+            print([i+2, -(i + i//2 + 3)])
+            # line2.append([ref + []])
+        # line1 = [ref - [2,1] , ref - [1,0], ref, ref + [1,1], ref + [2,1]]
+        line2 = [ref + [2,-3], ref + [3,-4], ref + [4, -6]]
+    else:
+        line1 = [ref - [2,1], ref - [1,1], ref, ref + [1,0], ref + [2,1]]
+        line2 = [ref + [2,-3], ref + [3,-5], ref + [4, -6]]
+
+
+    print(line1)
+    exit()
+    del_unit1 = np.array(line1 + line2)
+    del_unit2 = np.array(line1 + line2) + np.array([8,-2]) + sp1*np.array([2,1]) 
+
+
+    # delete_map = center_elem_trans_to_atoms(del_unit2, full = True)
+    # mat = delete_atoms(mat, delete_map)
+
+    axis1 += 2*sp1*np.array([2,1])
+    axis2 += 2*sp2*np.array([-1,2])
+
+
+    range1 = int(np.ceil(np.dot(np.array([m,n]), axis1)/np.dot(axis1, axis1)))      # project top-right corner on axis 1 vector
+    range2 = int(np.ceil(np.dot(np.array([0,n]), axis2)/np.dot(axis2, axis2)/2))    # project top-left corner on axis 2 vector
+
+    for i in range(range1):
+        for j in range(-range2, range2+1):
+            vec = i*axis1 + j*axis2 
+            del_map1 = del_unit1 + vec
+            del_map2 = del_unit2 + vec
+
+            mat = delete_atoms(mat, center_elem_trans_to_atoms(del_map1, full = True))
+            mat = delete_atoms(mat, center_elem_trans_to_atoms(del_map2, full = True))
+
+
+
+    # del_unit  += [2,7]
+    # delete_map = center_elem_trans_to_atoms(del_unit, full = True)
+    # mat = delete_atoms(mat, delete_map)
+
+
+
+    # del_unit  += [8,-2]
+    # delete_map = center_elem_trans_to_atoms(del_unit, full = True)
+    # mat = delete_atoms(mat, delete_map)
+
+    # del_unit += [-6,9]
+    # delete_map = center_elem_trans_to_atoms(del_unit, full = True)
+    # mat = delete_atoms(mat, delete_map)      
+
+
+    # unit_del += [-6,9]
+    # delete_map = center_elem_trans_to_atoms(unit_del, full = True)
+    # mat = delete_atoms(mat, delete_map)        
+
+
+    # del_unit  += [-2,-7]
+    # delete_map = center_elem_trans_to_atoms(del_unit, full = True)
+    # mat = delete_atoms(mat, delete_map)
+        
+
+    # del_unit  += [10,5]
+    # delete_map = center_elem_trans_to_atoms(del_unit, full = True)
+    # mat = delete_atoms(mat, delete_map)
+        
+
+
+
+    build_graphene_sheet(mat, view_lattice = True)
 
 
 
 if __name__ == "__main__":
 
-    # pop_up_pattern()
+    pop_up_pattern()
 
 
-    # exit()  
+    exit()  
     mat = np.ones((5, 10)) # Why does (5, 12) not work?
     trans = np.array([[2,0], [3,1], [3,2], [3,3], [3,4], [4,3], [5,4]])
     # trans = np.array([[20,0]])
