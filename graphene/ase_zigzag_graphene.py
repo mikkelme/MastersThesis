@@ -59,7 +59,7 @@ def build_graphene_sheet(mat, view_lattice = False):
     return
 
 
-def center_elem_trans_to_atoms(transistions, full = False):
+def center_elem_trans_to_atoms(trans, full = False):
     """ Gather atom pairs for deletion when crossing to a new center element """
     """ full = Delete all neighbours """
     mapping = np.zeros((3,3, 2, 2), dtype = int)
@@ -72,11 +72,11 @@ def center_elem_trans_to_atoms(transistions, full = False):
 
 
     delete = []
-    num_trans = len(transistions) - 1
+    num_trans = len(trans) - 1
     if not full:
         for i in range(num_trans):
-            current_elem = transistions[i]
-            next_elem = transistions[i+1]
+            current_elem = trans[i]
+            next_elem = trans[i+1]
 
             up = current_elem[0]%2 == 0
             sign = 1-2*up
@@ -112,8 +112,8 @@ def center_elem_trans_to_atoms(transistions, full = False):
 
     else:
         for i in range(num_trans + 1):
-            current_elem = transistions[i]
-            global_atoms = center_neigh(trans[0]).astype("int")
+            current_elem = trans[i]
+            global_atoms = center_neigh(current_elem).astype("int")
             [delete.append(atom) for atom in global_atoms[0]]
             [delete.append(atom) for atom in global_atoms[1]]
           
@@ -154,17 +154,12 @@ if __name__ == "__main__":
 
     mat = np.ones((5, 12)) # Why does (5, 12) not work?
 
-    transistions = np.array([   [[2,0], [3,1]],
-                                [[3,1], [3,2]], 
-                                [[3,2], [3,3]],
-                                [[3,3], [4,3]],
-                                [[4,3], [5,4]] ])
+    # trans = np.array([[2,0], [3,1], [3,2], [3,3], [3,4], [4,3], [5,4]])
+    trans = np.array([[2, 0], [2, -1]])
 
-
-    transistions = np.array([[2,0], [3,1], [3,2], [3,3], [3,4], [4,3], [5,4]])
-
-    delete = center_elem_trans_to_atoms(transistions, full = False)   
-    mat[delete[:, 0], delete[:, 1]] = 0
+    delete = center_elem_trans_to_atoms(trans, full = False)   
+    if len(delete > 0):
+        mat[delete[:, 0], delete[:, 1]] = 0
 
    
     build_graphene_sheet(mat, view_lattice = True)
