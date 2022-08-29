@@ -90,26 +90,13 @@ def center_elem_trans_to_atoms(trans, full = False):
             neigh = center_neigh(current_elem)
             global_pair = neigh[local_pair[:, 0], local_pair[:, 1]] # global atoms coordinates 
 
+            print(current_elem, neigh)
             [delete.append(pair) for pair in global_pair]
 
 
 
 
-            # ######
-            # up = trans[0,0]%2 == 0
-            # sign = 1-2*up
-            # diff = trans[1] - trans[0]
-            # absdiff = abs(diff)
-
-            # correction = absdiff[0] - (absdiff[0]==absdiff[1])
-            # direction = [diff[0], diff[1] + sign * correction]
-            # local_pair = mapping[direction[0], direction[1]] # local cordinates to center elem
-
-            # neigh = center_neigh(trans[0])
-            # global_pair = neigh[local_pair[:, 0], local_pair[:, 1]] # global atoms coordinates 
-
-            # [delete.append(pair) for pair in global_pair]
-
+      
     else:
         for i in range(num_trans + 1):
             current_elem = trans[i]
