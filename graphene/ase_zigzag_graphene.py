@@ -95,13 +95,12 @@ def center_elem_trans_to_atoms(trans, full = False):
 
 
 
-      
     else:
         for i in range(num_trans + 1):
             current_elem = trans[i]
-            global_atoms = center_neigh(current_elem).astype("int")
-            [delete.append(atom) for atom in global_atoms[0]]
-            [delete.append(atom) for atom in global_atoms[1]]
+            neigh = center_neigh(current_elem).astype("int")
+            global_atoms = neigh[np.all(neigh >= 0, axis = 2), :]
+            [delete.append(atom) for atom in global_atoms]
           
 
 
@@ -119,9 +118,10 @@ def center_neigh(center_elem):
     for i in range(2):
         for j in range(3):
             neigh[i, j] = [n-1 + i, m_start + j]
-  
+    
+    
     # Set illegal coordinates to [nan, nan] 
-    neigh[np.any(neigh < 0, axis = 2), :] = np.nan 
+    # neigh[np.any(neigh < 0, axis = 2), :] = np.nan 
     return neigh
 
 
@@ -138,12 +138,13 @@ if __name__ == "__main__":
 
     # pop_up_pattern()
 
-    mat = np.ones((5, 12)) # Why does (5, 12) not work?
 
+    exit()
+    mat = np.ones((5, 12)) # Why does (5, 12) not work?
     trans = np.array([[2,0], [3,1], [3,2], [3,3], [3,4], [4,3], [5,4]])
 
-   
-    delete = center_elem_trans_to_atoms(trans, full = False)   
+
+    delete = center_elem_trans_to_atoms(trans, full = True)   
     if len(delete > 0):
         mat[delete[:, 0], delete[:, 1]] = 0
 
