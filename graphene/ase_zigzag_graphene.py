@@ -59,57 +59,74 @@ def build_graphene_sheet(mat, view_lattice = False):
     return
 
 
-def center_elem_trans_to_atom(transistions):
-    """ Remove atom paor when crossing to a new center element """
-
-    # [down, left-down, left-up, up, right-up, right-down]
-
-    # mapping = np.zeros((3,3))
-    # mapping[0,1] = 1
-    # mapping[1,1] = 2
-    # mapping[1,-1] = 3
-    # mapping[0,-1] = 4
-    # mapping[-1,-1] = 5
-    # mapping[-1,1] = 6
-
-    mapping = np.zeros((3,3, 2, 2))
-    mapping[0,1] = [[0,2], [1,2]]
-    mapping[1,1] = [[1,2], [1,1]]
-    mapping[1,-1] = [[1,1], [1,0]]
-    mapping[0,-1] = [[1,0], [-1,0]]
-    mapping[-1,-1] = [[-1,0], [-1,1]]
-    mapping[-1,1] = [[-1,1], [-1,2]]
+def center_elem_trans_to_atoms(transistions, full = False):
+    """ Gather atom pairs for deletion when crossing to a new center element """
+    """ full = Delete all neighbours """
+    mapping = np.zeros((3,3, 2, 2), dtype = int)
+    mapping[0,1] = [0,2], [1,2]       # up
+    mapping[1,1] = [1,2], [1,1]       # right-up
+    mapping[1,-1] = [1,1], [1,0]      # right-down
+    mapping[0,-1] = [1,0], [-1,0]     # down
+    mapping[-1,-1] = [-1,0], [-1,1]   # left-down
+    mapping[-1,1] = [-1,1], [-1,2]    # up-eft
 
 
+    delete = []
+    num_trans = len(transistions) - 1
+    if not full:
+        for i in range(num_trans):
+            current_elem = transistions[i]
+            next_elem = transistions[i+1]
 
-    
+            up = current_elem[0]%2 == 0
+            sign = 1-2*up
+            diff = next_elem - current_elem            
+            absdiff = abs(diff)
+
+            correction = absdiff[0] - (absdiff[0]==absdiff[1])
+            direction = [diff[0], diff[1] + sign * correction]
+            local_pair = mapping[direction[0], direction[1]] # local cordinates to center elem
+
+            neigh = center_neigh(current_elem)
+            global_pair = neigh[local_pair[:, 0], local_pair[:, 1]] # global atoms coordinates 
+
+            [delete.append(pair) for pair in global_pair]
 
 
 
 
-    for trans in transistions:
-        up = trans[0,0]%2 == 0
-        sign = 1-2*up
-        diff = trans[1] - trans[0]
-        absdiff = abs(diff)
 
-        correction = absdiff[0] - (absdiff[0]==absdiff[1])
-        direction = [diff[0], diff[1] + sign * correction]
+            # ######
+            # up = trans[0,0]%2 == 0
+            # sign = 1-2*up
+            # diff = trans[1] - trans[0]
+            # absdiff = abs(diff)
+
+            # correction = absdiff[0] - (absdiff[0]==absdiff[1])
+            # direction = [diff[0], diff[1] + sign * correction]
+            # local_pair = mapping[direction[0], direction[1]] # local cordinates to center elem
+
+            # neigh = center_neigh(trans[0])
+            # global_pair = neigh[local_pair[:, 0], local_pair[:, 1]] # global atoms coordinates 
+
+            # [delete.append(pair) for pair in global_pair]
+
+    else:
+        for trans in transistions:
+            global_atoms = center_neigh(trans[0]).astype("int")
+            [delete.append(atom) for atom in global_atoms[0]]
+            [delete.append(atom) for atom in global_atoms[1]]
 
 
-        print(mapping[direction[0], direction[1]])
 
-     
-
+    return np.array(delete, dtype = int)
 
 
 
 def center_neigh(center_elem):
+    """ Return all neighbour atoms to a center element """
     neigh = np.zeros((2,3,2))
     n, m = center_elem
-
-    # m_start = max(2*m -n%2,0)
-    # m_end = 2*m -n%2 + 2 
 
     m_start = 2*m -n%2
     m_end = m_start + 2 
@@ -123,41 +140,37 @@ def center_neigh(center_elem):
 
 
 
+# def pop_up_pattern():
+#     mat = np.ones((20, 40))
+#     build_graphene_sheet(mat, view_lattice = True)
+
+#     ref_center = 
+
 
 
 if __name__ == "__main__":
-    mat = np.ones((5, 10)) # Why does (5, 12) not work?
-    # mat[(0, 0, 1, 1, 2, 2, 3, 3, 4, 4), (3, 4, 4, 5, 5, 6, 6, 7, 7, 8)] = 0
-    # build_graphene_sheet(mat, view_lattice = True)
 
-    # center_elem = [0,0]
-    # coords = center_neigh(center_elem)
+    # pop_up_pattern()
 
+    mat = np.ones((5, 12)) # Why does (5, 12) not work?
 
-    # transistions = np.array([[[2,0], [2,1]], [[2,0], [3,1]], [[2,0], [3,0]], [[2,0], [2,-1]], [[2,0], [1,0]], [[2,0], [1,1]]])
-    # transistions = np.array([[[3,1], [3,2]], [[3,1], [4,1]], [[3,1], [4,0]], [[3,1], [3,0] ], [[3,1], [2,0]], [[3,1], [2,1]], [[3,1], [3,2]] ])
-
-    transistions = np.array([[[2,0], [3,1]]])
-
-    center_elem_trans_to_atom(transistions)    
+    transistions = np.array([   [[2,0], [3,1]],
+                                [[3,1], [3,2]], 
+                                [[3,2], [3,3]],
+                                [[3,3], [4,3]],
+                                [[4,3], [5,4]] ])
 
 
+    transistions = np.array([[2,0], [3,1], [3,2], [3,3], [3,4], [4,3], [5,4]])
 
+    delete = center_elem_trans_to_atoms(transistions, full = False)   
+    mat[delete[:, 0], delete[:, 1]] = 0
 
+   
+    build_graphene_sheet(mat, view_lattice = True)
 
+   
 
-
-# del_idx = np.arange(20, 38+1)
-
-
-
-# for atom in atoms:
-#     print(atom)
-
-# for atom in atoms[del_idx]:
-#     print(atom)
-
-# del atoms[del_idx]
 
 
 
