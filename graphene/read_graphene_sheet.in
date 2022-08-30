@@ -7,7 +7,7 @@ atom_style atomic # coarse-grain liquids, solids, metals
 read_data ./lammps_sheet # read lattice from file
 
 
-# # --- Dynamics --- ##
+## --- Dynamics --- ##
 variable temp equal 5.0 # Kelvin
 
 mass * 12.0107 # "*": all types, [grams/mole]
@@ -24,7 +24,10 @@ timestep            0.0005
 
 thermo              1
 
-dump 1 all custom 1 sheet.data id type x y z vx vy vz
+
+
+
+dump 1 all custom 1 test_sheet.data id type x y z vx vy vz
 run 100
 
 

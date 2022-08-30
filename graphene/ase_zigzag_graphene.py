@@ -8,7 +8,7 @@ import numpy as np
 
 
 
-def build_graphene_sheet(mat, view_lattice = False):
+def build_graphene_sheet(mat, view_lattice = False, write = False):
     Cdis = 1.42 # carbon-carbon distance [Å]
 
     
@@ -28,7 +28,14 @@ def build_graphene_sheet(mat, view_lattice = False):
 
     # Swap axes: y <-> z
     new_posistions = atoms.get_positions()[:,(0,2,1)]
-    new_cell = atoms.get_cell()[(0,2,1),(0,2,1)]
+    new_cell = (atoms.get_cell()[(0,2,1), :])[:, (0,2,1)]
+
+    # Readjust cell to fit highest y value (within tolerence )
+    ymax = np.max(new_posistions[:,1])
+    new_cell[1,1] = ymax + 0.01
+
+
+
     atoms.set_positions(new_posistions)
     atoms.set_cell(new_cell)
 
@@ -45,14 +52,15 @@ def build_graphene_sheet(mat, view_lattice = False):
     for i in reversed(range(mat.shape[0])):
         for j in reversed(range(mat.shape[1])):
             if mat[i,j] == 0:
-                # print(atoms[i*yline_len+j].index)
                 del atoms[i*yline_len+j]
 
+   
     
     if view_lattice: 
         view(atoms)
 
-    lammpsdata.write_lammps_data('./lammps_sheet', atoms)
+    if write:
+        lammpsdata.write_lammps_data('./lammps_sheet', atoms)
 
 
 
@@ -135,10 +143,10 @@ def delete_atoms(mat, delete_map):
 
 
 
-def pop_up_pattern():
+def pop_up_pattern(view_lattice = False):
 
     # --- Settings --- #
-    mat = np.ones((40, 80)) # lattice matrix
+    mat = np.ones((60, 122)) # lattice matrix
     ref = np.array([0, 0]) # reference center element
 
     size = (5,3) # Size of pop_up pattern
@@ -196,26 +204,40 @@ def pop_up_pattern():
 
 
     # Build sheet from final matrix
-    build_graphene_sheet(mat, view_lattice = True)
+    build_graphene_sheet(mat, view_lattice=view_lattice)
+    return mat
+
+
+
+def build_pull_blocks(mat):
+    """ Add blocks on the x-z plane on the +-y sides  """
+    m, n = np.shape(mat)
+    block_thickness = 6
+
+    new_mat = np.ones((m,n + 2*block_thickness))
+    new_mat[:,block_thickness:n+block_thickness] = mat
+    build_graphene_sheet(new_mat, view_lattice = True, write=True)
 
 
 
 if __name__ == "__main__":
 
-    pop_up_pattern()
+    # mat = pop_up_pattern()
+    # build_pull_blocks(mat)
 
 
-    exit()  
-    mat = np.ones((5, 10)) # Why does (5, 12) not work?
+    # exit()
+    mat = np.ones((5, 12)) # Why does (5, 12) not work?
     trans = np.array([[2,0], [3,1], [3,2], [3,3], [3,4], [4,3], [5,4]])
+    # mat[:,0] = 0
     # trans = np.array([[20,0]])
     # exit()
-    delete_map = center_elem_trans_to_atoms(trans, full = True)   
-    mat = delete_atoms(mat, delete_map)
+    # delete_map = center_elem_trans_to_atoms(trans, full = True)   
+    # mat = delete_atoms(mat, delete_map)
    
 
    
-    build_graphene_sheet(mat, view_lattice = True)
+    build_graphene_sheet(mat, view_lattice = True, write = True)
 
    
 
