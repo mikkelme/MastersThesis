@@ -139,15 +139,15 @@ def pop_up_pattern():
     mat = np.ones((40, 80))
     m, n = np.shape(mat)
 
-    ref = np.array([0, 0])
-    # ref = np.array([10, 10])
+    ref = np.array([1, 0])
+    # ref = np.array([11, 20])
     sp1 = 0 # spacing on axis 1
     sp2 = 0# spacing on axis 2
 
     # only odd allowed. Must be difference of 2, 6, 10... between
     # Not allowed: (1,1), (3, 3), (5,1), (5,5)
     # Allowed: (3,1), (3,1), (7,1), (5,3)
-    size = (11,1)
+    size = (11,5)
 
     #unit 2 axis 
     # (3,1) => [6, -1]
@@ -182,43 +182,43 @@ def pop_up_pattern():
     #     # Working here -> check this tomorrow!
     #     print(axis2)
 
-    print(axis1)
-    print(axis2)
-    print(unit2_axis)
+    # print(axis1)
+    # print(axis2)
+    # print(unit2_axis)
 
-    exit()
+    # exit()
 
     # exit()
     # axis2 = np.array([-6,9]) # up left
  
     up = ref[0]%2 == 0
+    line1 = [ref]
+    line2 = []
     if up:
-        line1 = [ref]
-        line2 = []
         for i in range((size[0]-1)//2):
-            # minus = [i+1, (i+1)//2 ]
-            # plus = [i + 1, i//2 + 1]
             line1.append(ref - [i+1, (i+1)//2 ])
             line1.append(ref + [i + 1, i//2 + 1])
 
         for i in range(size[1]):
             line2.append(ref + [i+2, -(i + i//2 + 3)])
-            # print([i+2, -(i + i//2 + 3)])
-            # line2.append([ref + []])
+       
 
         # line1 = [ref - [2,1] , ref - [1,0], ref, ref + [1,1], ref + [2,1]]
         # line2 = [ref + [2,-3], ref + [3,-4], ref + [4, -6]]
     else:
-        line1 = [ref - [2,1], ref - [1,1], ref, ref + [1,0], ref + [2,1]]
-        line2 = [ref + [2,-3], ref + [3,-5], ref + [4, -6]]
+        for i in range((size[0]-1)//2):
+            line1.append(ref + [i+1, (i+1)//2 ])
+            line1.append(ref - [i + 1, i//2 + 1])
 
+
+        for i in range(size[1] ):
+            line2.append(ref + [i+2, -(i + (i+1)//2 + 3)])
+       
+        # line1 = [ref - [2,1], ref - [1,1], ref, ref + [1,0], ref + [2,1]]
+        # line2 = [ref + [2,-3], ref + [3,-5], ref + [4, -6]]
     # line1 = np.array(line1)
     # line2 = np.array(line2)
 
-    # printline2)
-    # exit()
-    # print(line1)
-    # exit()
     del_unit1 = np.array(line1 + line2)
     del_unit2 = np.array(line1 + line2) + unit2_axis
 
@@ -228,9 +228,6 @@ def pop_up_pattern():
 
     # delete_map = center_elem_trans_to_atoms(del_unit2, full = True)
     # mat = delete_atoms(mat, delete_map)
-
-    # axis1 += 2*sp1*np.array([2,1])
-    # axis2 += 2*sp2*np.array([-1,2])
 
 
     range1 = int(np.ceil(np.dot(np.array([m,n]), axis1)/np.dot(axis1, axis1)))      # project top-right corner on axis 1 vector
