@@ -136,60 +136,25 @@ def delete_atoms(mat, delete_map):
 
 
 def pop_up_pattern():
-    mat = np.ones((40, 80))
-    m, n = np.shape(mat)
 
-    ref = np.array([1, 0])
-    # ref = np.array([11, 20])
-    sp1 = 0 # spacing on axis 1
-    sp2 = 0# spacing on axis 2
+    # Settings
+    mat = np.ones((40, 80)) # lattice matrix
+    ref = np.array([0, 0]) # reference center element
 
-    # only odd allowed. Must be difference of 2, 6, 10... between
-    # Not allowed: (1,1), (3, 3), (5,1), (5,5)
-    # Allowed: (3,1), (3,1), (7,1), (5,3)
-    size = (11,5)
+    size = (5,3) # Size of pop_up pattern
+    # Note: Only odd values allowed and |size[1]-size[0]| = 2, 6, 10...
+    # Not allowed: (1,1), (3, 3), (5,1), (5,5)...
+    # Allowed: (1,3), (5,3), (3,1), (7,1)...
 
-    #unit 2 axis 
-    # (3,1) => [6, -1]
-    # (7,1) => [8,0]
-    # (11,1) => (10,1)
-    # (1,3) => [6, -3]
-    # (5,3) => (8,-2) 
-    # (3, 5) => (8, -4)
-    # (1, 7) => (8, -6)
-    # (5, 7) => (10, -5)
-    # (5, 11) => [12, -8]
-    # axis1 = np.array([10, 5]) # up right
-    # axis2 = np.array([-6,9]) # up left
- 
+
+    # 
+    # m, n = np.shape(mat)
+
     axis1 = np.array([6 + 2*(size[0]//2), 3 + size[0]//2]) # up right
     axis2 = np.array([-4 - 2*(size[1]//2), 6 + 3*(size[1]//2)]) # up left
     unit2_axis =  np.array([5 + size[0]//2 + size[1]//2, -2 + size[0]//3 - size[1]//2 - size[1]//5])
 
 
-    # sizes       = [(3,1),   (7,1), (11,1), (1,3) , (5,3) , (3,5) , (7,5),    (1,7) , (5,7),  (5, 11)]
-    # expected    = [(6, -1), (8,0), (10,1), (6,-3), (8,-2), (8,-4), (10, -3), (8,-6), (10,-5), (12, -8) ]
-
-    # for i, size in enumerate(sizes):
-    #     unit2_axis =  np.array([5 + size[0]//2 + size[1]//2, -2 + size[0]//3 - size[1]//2 - size[1]//5])
-    #     # attempt = -2 - size[1]//2 - size[1]//5
-    #     # print(f"sizes[1] = {size[1]} => {expected[i][1] - size[0]//3} : {attempt}, {expected[i][1] - size[0]//3 == attempt}")
-    #     print(f"{size} => {unit2_axis}, ?= {expected[i]}, ({unit2_axis==expected[i]})")
-
-    # exit()
-    # for i in [1, 3, 5]:
-    #     axis2 = np.array([-4 - 2*(i//2), 6 + 3*(i//2)])
-    #     # Working here -> check this tomorrow!
-    #     print(axis2)
-
-    # print(axis1)
-    # print(axis2)
-    # print(unit2_axis)
-
-    # exit()
-
-    # exit()
-    # axis2 = np.array([-6,9]) # up left
  
     up = ref[0]%2 == 0
     line1 = [ref]
@@ -202,9 +167,6 @@ def pop_up_pattern():
         for i in range(size[1]):
             line2.append(ref + [i+2, -(i + i//2 + 3)])
        
-
-        # line1 = [ref - [2,1] , ref - [1,0], ref, ref + [1,1], ref + [2,1]]
-        # line2 = [ref + [2,-3], ref + [3,-4], ref + [4, -6]]
     else:
         for i in range((size[0]-1)//2):
             line1.append(ref + [i+1, (i+1)//2 ])
@@ -214,20 +176,10 @@ def pop_up_pattern():
         for i in range(size[1] ):
             line2.append(ref + [i+2, -(i + (i+1)//2 + 3)])
        
-        # line1 = [ref - [2,1], ref - [1,1], ref, ref + [1,0], ref + [2,1]]
-        # line2 = [ref + [2,-3], ref + [3,-5], ref + [4, -6]]
-    # line1 = np.array(line1)
-    # line2 = np.array(line2)
+   
 
     del_unit1 = np.array(line1 + line2)
     del_unit2 = np.array(line1 + line2) + unit2_axis
-
-
-    # delete_map = center_elem_trans_to_atoms(del_unit1, full = True)
-    # mat = delete_atoms(mat, delete_map)
-
-    # delete_map = center_elem_trans_to_atoms(del_unit2, full = True)
-    # mat = delete_atoms(mat, delete_map)
 
 
     range1 = int(np.ceil(np.dot(np.array([m,n]), axis1)/np.dot(axis1, axis1)))      # project top-right corner on axis 1 vector
@@ -241,8 +193,6 @@ def pop_up_pattern():
 
             mat = delete_atoms(mat, center_elem_trans_to_atoms(del_map1, full = True))
             mat = delete_atoms(mat, center_elem_trans_to_atoms(del_map2, full = True))
-
-
 
 
 
