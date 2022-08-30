@@ -137,7 +137,7 @@ def delete_atoms(mat, delete_map):
 
 def pop_up_pattern():
 
-    # Settings
+    # --- Settings --- #
     mat = np.ones((40, 80)) # lattice matrix
     ref = np.array([0, 0]) # reference center element
 
@@ -146,16 +146,14 @@ def pop_up_pattern():
     # Not allowed: (1,1), (3, 3), (5,1), (5,5)...
     # Allowed: (1,3), (5,3), (3,1), (7,1)...
 
-
-    # 
-    # m, n = np.shape(mat)
-
+    # --- Set up cut out pattern --- #
+    # Define axis for pattern cut out
+    m, n = np.shape(mat)
     axis1 = np.array([6 + 2*(size[0]//2), 3 + size[0]//2]) # up right
     axis2 = np.array([-4 - 2*(size[1]//2), 6 + 3*(size[1]//2)]) # up left
-    unit2_axis =  np.array([5 + size[0]//2 + size[1]//2, -2 + size[0]//3 - size[1]//2 - size[1]//5])
+    unit2_axis =  np.array([5 + size[0]//2 + size[1]//2, -2 + size[0]//3 - size[1]//2 - size[1]//5]) # 2nd unit relative to ref
 
-
- 
+    # Create unit1 and unit2
     up = ref[0]%2 == 0
     line1 = [ref]
     line2 = []
@@ -176,15 +174,16 @@ def pop_up_pattern():
         for i in range(size[1] ):
             line2.append(ref + [i+2, -(i + (i+1)//2 + 3)])
        
-   
-
     del_unit1 = np.array(line1 + line2)
     del_unit2 = np.array(line1 + line2) + unit2_axis
 
 
+    # --- Translate cut out units across lattice --- # 
+    # Estimate how far to translate
     range1 = int(np.ceil(np.dot(np.array([m,n]), axis1)/np.dot(axis1, axis1)))      # project top-right corner on axis 1 vector
     range2 = int(np.ceil(np.dot(np.array([0,n]), axis2)/np.dot(axis2, axis2)/2))    # project top-left corner on axis 2 vector
 
+    # Translate and cut out
     for i in range(range1):
         for j in range(-range2, range2+1):
             vec = i*axis1 + j*axis2 
@@ -196,8 +195,7 @@ def pop_up_pattern():
 
 
 
-
-
+    # Build sheet from final matrix
     build_graphene_sheet(mat, view_lattice = True)
 
 
