@@ -140,25 +140,55 @@ def pop_up_pattern():
     m, n = np.shape(mat)
 
     ref = np.array([0, 0])
+    # ref = np.array([10, 10])
     sp1 = 0 # spacing on axis 1
     sp2 = 0# spacing on axis 2
 
-    # only odd allowed
-    size = (3, 1)
+    # only odd allowed. Must be difference of 2, 6, 10... between
+    # Not allowed: (1,1), (3, 3), (5,1), (5,5)
+    # Allowed: (3,1), (3,1), (7,1), (5,3)
+    size = (11,1)
 
+    #unit 2 axis 
+    # (3,1) => [6, -1]
+    # (7,1) => [8,0]
+    # (11,1) => (10,1)
+    # (1,3) => [6, -3]
+    # (5,3) => (8,-2) 
+    # (3, 5) => (8, -4)
+    # (1, 7) => (8, -6)
+    # (5, 7) => (10, -5)
+    # (5, 11) => [12, -8]
     # axis1 = np.array([10, 5]) # up right
     # axis2 = np.array([-6,9]) # up left
  
     axis1 = np.array([6 + 2*(size[0]//2), 3 + size[0]//2]) # up right
-    axis2 = np.array([-4, 6])
+    axis2 = np.array([-4 - 2*(size[1]//2), 6 + 3*(size[1]//2)]) # up left
+    unit2_axis =  np.array([5 + size[0]//2 + size[1]//2, -2 + size[0]//3 - size[1]//2 - size[1]//5])
 
-    for i in [1, 3, 5]:
-        axis2 = np.array([-4 - 2*(i//2), 6 + 3*(i//2)])
-        # Working here -> check this tomorrow!
-        print(axis2)
 
+    # sizes       = [(3,1),   (7,1), (11,1), (1,3) , (5,3) , (3,5) , (7,5),    (1,7) , (5,7),  (5, 11)]
+    # expected    = [(6, -1), (8,0), (10,1), (6,-3), (8,-2), (8,-4), (10, -3), (8,-6), (10,-5), (12, -8) ]
+
+    # for i, size in enumerate(sizes):
+    #     unit2_axis =  np.array([5 + size[0]//2 + size[1]//2, -2 + size[0]//3 - size[1]//2 - size[1]//5])
+    #     # attempt = -2 - size[1]//2 - size[1]//5
+    #     # print(f"sizes[1] = {size[1]} => {expected[i][1] - size[0]//3} : {attempt}, {expected[i][1] - size[0]//3 == attempt}")
+    #     print(f"{size} => {unit2_axis}, ?= {expected[i]}, ({unit2_axis==expected[i]})")
+
+    # exit()
+    # for i in [1, 3, 5]:
+    #     axis2 = np.array([-4 - 2*(i//2), 6 + 3*(i//2)])
+    #     # Working here -> check this tomorrow!
+    #     print(axis2)
+
+    print(axis1)
+    print(axis2)
+    print(unit2_axis)
 
     exit()
+
+    # exit()
     # axis2 = np.array([-6,9]) # up left
  
     up = ref[0]%2 == 0
@@ -190,14 +220,17 @@ def pop_up_pattern():
     # print(line1)
     # exit()
     del_unit1 = np.array(line1 + line2)
-    del_unit2 = np.array(line1 + line2) + np.array([8,-2]) #+ sp1*np.array([2,1]) 
+    del_unit2 = np.array(line1 + line2) + unit2_axis
 
+
+    # delete_map = center_elem_trans_to_atoms(del_unit1, full = True)
+    # mat = delete_atoms(mat, delete_map)
 
     # delete_map = center_elem_trans_to_atoms(del_unit2, full = True)
     # mat = delete_atoms(mat, delete_map)
 
-    axis1 += 2*sp1*np.array([2,1])
-    axis2 += 2*sp2*np.array([-1,2])
+    # axis1 += 2*sp1*np.array([2,1])
+    # axis2 += 2*sp2*np.array([-1,2])
 
 
     range1 = int(np.ceil(np.dot(np.array([m,n]), axis1)/np.dot(axis1, axis1)))      # project top-right corner on axis 1 vector
@@ -214,35 +247,7 @@ def pop_up_pattern():
 
 
 
-    # del_unit  += [2,7]
-    # delete_map = center_elem_trans_to_atoms(del_unit, full = True)
-    # mat = delete_atoms(mat, delete_map)
 
-
-
-    # del_unit  += [8,-2]
-    # delete_map = center_elem_trans_to_atoms(del_unit, full = True)
-    # mat = delete_atoms(mat, delete_map)
-
-    # del_unit += [-6,9]
-    # delete_map = center_elem_trans_to_atoms(del_unit, full = True)
-    # mat = delete_atoms(mat, delete_map)      
-
-
-    # unit_del += [-6,9]
-    # delete_map = center_elem_trans_to_atoms(unit_del, full = True)
-    # mat = delete_atoms(mat, delete_map)        
-
-
-    # del_unit  += [-2,-7]
-    # delete_map = center_elem_trans_to_atoms(del_unit, full = True)
-    # mat = delete_atoms(mat, delete_map)
-        
-
-    # del_unit  += [10,5]
-    # delete_map = center_elem_trans_to_atoms(del_unit, full = True)
-    # mat = delete_atoms(mat, delete_map)
-        
 
 
 
