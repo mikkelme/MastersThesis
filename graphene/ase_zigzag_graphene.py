@@ -161,24 +161,23 @@ def pop_up_pattern(multiples, unitcell = (5,7), view_lattice = False):
     m, n = np.shape(mat)
     axis1 = np.array([6 + 2*(size[0]//2), 3 + size[0]//2]) # up right
     axis2 = np.array([-4 - 2*(size[1]//2), 6 + 3*(size[1]//2)]) # up left
-    unit2_axis =  np.array([5 + size[0]//2 + size[1]//2, -2 + (size[0]+1)//4 - size[1]//2 - size[1]//5]) # 2nd unit relative to ref
+    unit2_axis =  np.array([5 + size[0]//2 + size[1]//2,  size[0]//4 + size[1]//4 - size[1]]) # 2nd unit relative to ref
 
-    # unit2_axis[1] = -7
-
-    # inputs = [(3,1), (7,1), (11,1), (1,3), (5,3), (3, 5), (1, 7), (5, 7), (1, 11), (5, 11), (9,11)]
-    # expected  = [[6, -1], [8,0], [10,1], [6, -3], [8,-2], [8, -4], [8, -6], [10, -5], [10, -9], [12, -8], [14, -7]]
+    # # Testing indexes
+    # inputs = [(3,1), (7,1), (11,1), (1,3), (5,3), (3, 5), (1, 7), (5, 7), (1, 11), (5, 11), (9,11), (1,13), (3,13), (5,13), (7,13), (9,13), (11,13)]
+    # expected  = [[6, -1], [8,0], [10,1], [6, -3], [8,-2], [8, -4], [8, -6], [10, -5], [10, -9], [12, -8], [14, -7],[11,-10], [12,-10], [13,-9], [14,-9], [15,-8], [16,-8]]
 
     # for i, size in enumerate(inputs):
-    #     unit2_axis =  np.array([5 + size[0]//2 + size[1]//2, -2 + (size[0]+1)//4 - size[1]//2 - size[1]//5]) # 2nd unit relative to ref
+    #     unit2_axis =  np.array([5 + size[0]//2 + size[1]//2,  size[0]//4 - size[1] + size[1]//4]) # 2nd unit relative to ref
     #     check = "X"
         
     #     if np.all(unit2_axis == expected[i]):
     #         check = "√"
     #     print(f"size = {size} => {unit2_axis}, must be {expected[i]} ({check})" )
  
-    # print(-2 + size[0]//3 - size[1]//2 - size[1]//3)
-    # print(unit2_axis)
-
+    # exit()
+ 
+ 
     # Create unit1 and unit2
     up = ref[0]%2 == 0
     line1 = [ref]
@@ -241,16 +240,16 @@ def build_pull_blocks(mat, sidebox = 0):
         new_mat = np.ones((m,n + 2*block_thickness))
         new_mat[:,block_thickness:-block_thickness] = mat
 
-    build_graphene_sheet(new_mat, view_lattice = True, write=True)
+    build_graphene_sheet(new_mat, view_lattice = False, write=True)
 
 
 
 if __name__ == "__main__":
 
     multiples = (6, 12)
-    unitsize = (9,11)
-    mat = pop_up_pattern(multiples, unitsize,  view_lattice = False)
-    build_pull_blocks(mat, sidebox = 0)
+    unitsize = (11,13)
+    mat = pop_up_pattern(multiples, unitsize,  view_lattice = True)
+    # build_pull_blocks(mat, sidebox = 0)
     exit()
 
 
