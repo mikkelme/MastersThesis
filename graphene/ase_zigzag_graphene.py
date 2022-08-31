@@ -57,6 +57,8 @@ def build_graphene_sheet(mat, view_lattice = False, write = False):
                 del atoms[i*yline_len+j]
 
    
+
+
     
     if view_lattice: 
         view(atoms)
@@ -163,6 +165,7 @@ def pop_up_pattern(multiples, unitcell = (5,7), view_lattice = False):
     axis2 = np.array([-4 - 2*(size[1]//2), 6 + 3*(size[1]//2)]) # up left
     unit2_axis =  np.array([5 + size[0]//2 + size[1]//2,  size[0]//4 + size[1]//4 - size[1]]) # 2nd unit relative to ref
 
+
     # # Testing indexes
     # inputs = [(3,1), (7,1), (11,1), (1,3), (5,3), (3, 5), (1, 7), (5, 7), (1, 11), (5, 11), (9,11), (1,13), (3,13), (5,13), (7,13), (9,13), (11,13)]
     # expected  = [[6, -1], [8,0], [10,1], [6, -3], [8,-2], [8, -4], [8, -6], [10, -5], [10, -9], [12, -8], [14, -7],[11,-10], [12,-10], [13,-9], [14,-9], [15,-8], [16,-8]]
@@ -246,11 +249,11 @@ def build_pull_blocks(mat, sidebox = 0):
 
 if __name__ == "__main__":
 
-    multiples = (6, 12)
-    unitsize = (11,13)
-    mat = pop_up_pattern(multiples, unitsize,  view_lattice = True)
+    # multiples = (6, 12)
+    # unitsize = (9,11)
+    # mat = pop_up_pattern(multiples, unitsize,  view_lattice = True)
     # build_pull_blocks(mat, sidebox = 0)
-    exit()
+    # exit()
 
 
     mat = np.ones((10, 10)) # Why does (5, 12) not work?

@@ -11,7 +11,7 @@ Reading data file ...
   1 by 1 by 1 MPI processor grid
   reading atoms ...
   5994 atoms
-  read_data CPU = 0.015 seconds
+  read_data CPU = 0.012 seconds
 
 
 #--- Dynamics ---#
@@ -100,20 +100,20 @@ Per MPI rank memory allocation (min/avg/max) = 14.31 | 14.31 | 14.31 Mbytes
        800   113.50784     -40739.726      0             -40651.796     -1205.2633      84032.656    
        900   115.67417     -40741.392      0             -40651.784     -7002.7795      84032.656    
       1000   123.21141     -40747.252      0             -40651.806     -2681.0228      84032.656    
-Loop time of 53.9435 on 1 procs for 1000 steps with 5994 atoms
+Loop time of 52.1945 on 1 procs for 1000 steps with 5994 atoms
 
-Performance: 0.801 ns/day, 29.969 hours/ns, 18.538 timesteps/s
-97.2% CPU use with 1 MPI tasks x no OpenMP threads
+Performance: 0.828 ns/day, 28.997 hours/ns, 19.159 timesteps/s
+97.9% CPU use with 1 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 45.733     | 45.733     | 45.733     |   0.0 | 84.78
-Neigh   | 0.73751    | 0.73751    | 0.73751    |   0.0 |  1.37
-Comm    | 0.0022948  | 0.0022948  | 0.0022948  |   0.0 |  0.00
-Output  | 7.3862     | 7.3862     | 7.3862     |   0.0 | 13.69
-Modify  | 0.06329    | 0.06329    | 0.06329    |   0.0 |  0.12
-Other   |            | 0.02086    |            |       |  0.04
+Pair    | 44.279     | 44.279     | 44.279     |   0.0 | 84.83
+Neigh   | 0.70777    | 0.70777    | 0.70777    |   0.0 |  1.36
+Comm    | 0.002236   | 0.002236   | 0.002236   |   0.0 |  0.00
+Output  | 7.1285     | 7.1285     | 7.1285     |   0.0 | 13.66
+Modify  | 0.056719   | 0.056719   | 0.056719   |   0.0 |  0.11
+Other   |            | 0.02076    |            |       |  0.04
 
 Nlocal:           5994 ave        5994 max        5994 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
@@ -233,20 +233,20 @@ Per MPI rank memory allocation (min/avg/max) = 15.06 | 15.06 | 15.06 Mbytes
       8800   132.81913     -40744.446      0             -40641.557     -1441.4007      316691.33    
       8900   131.47917     -40743.338      0             -40641.486     -1660.05        319533.94    
       9000   132.54194     -40744.018      0             -40641.343     -1452.3075      324015.61    
-Loop time of 423.825 on 1 procs for 8000 steps with 5994 atoms
+Loop time of 429.614 on 1 procs for 8000 steps with 5994 atoms
 
-Performance: 0.815 ns/day, 29.432 hours/ns, 18.876 timesteps/s
-98.1% CPU use with 1 MPI tasks x no OpenMP threads
+Performance: 0.804 ns/day, 29.834 hours/ns, 18.621 timesteps/s
+97.5% CPU use with 1 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 361.34     | 361.34     | 361.34     |   0.0 | 85.26
-Neigh   | 4.0357     | 4.0357     | 4.0357     |   0.0 |  0.95
-Comm    | 0.016852   | 0.016852   | 0.016852   |   0.0 |  0.00
-Output  | 57.709     | 57.709     | 57.709     |   0.0 | 13.62
-Modify  | 0.5683     | 0.5683     | 0.5683     |   0.0 |  0.13
-Other   |            | 0.1534     |            |       |  0.04
+Pair    | 366.29     | 366.29     | 366.29     |   0.0 | 85.26
+Neigh   | 4.0831     | 4.0831     | 4.0831     |   0.0 |  0.95
+Comm    | 0.017703   | 0.017703   | 0.017703   |   0.0 |  0.00
+Output  | 58.491     | 58.491     | 58.491     |   0.0 | 13.61
+Modify  | 0.57721    | 0.57721    | 0.57721    |   0.0 |  0.13
+Other   |            | 0.1603     |            |       |  0.04
 
 Nlocal:           5994 ave        5994 max        5994 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
@@ -281,4 +281,4 @@ Dangerous builds = 0
 
 
 # run as: lmp_serial < graphene_sheet.in
-Total wall time: 0:07:58
+Total wall time: 0:08:02
