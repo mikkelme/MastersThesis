@@ -1,6 +1,6 @@
 # Master's thesis
 
-## Logbook (work progress and solved problems)
+## Logbook (work progress and problems occurring)
 ### 2022
 ### Week 34 (22/08 - 28/08)
 - Started project 
