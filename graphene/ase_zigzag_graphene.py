@@ -145,13 +145,13 @@ def delete_atoms(mat, delete_map):
 
 
 
-def pop_up_pattern(multiples, view_lattice = False):
+def pop_up_pattern(multiples, unitcell = (5,7), view_lattice = False):
 
     # --- Settings --- #
     mat = np.ones((multiples[0]*10, multiples[1]*10)) # lattice matrix
     ref = np.array([0, 0]) # reference center element
 
-    size = (5,7) # Size of pop_up pattern
+    size = unitsize # Size of pop_up pattern
     # Note: Only odd values allowed and |size[1]-size[0]| = 2, 6, 10...
     # Not allowed: (1,1), (3, 3), (5,1), (5,5)...
     # Allowed: (1,3), (5,3), (3,1), (7,1)...
@@ -161,7 +161,23 @@ def pop_up_pattern(multiples, view_lattice = False):
     m, n = np.shape(mat)
     axis1 = np.array([6 + 2*(size[0]//2), 3 + size[0]//2]) # up right
     axis2 = np.array([-4 - 2*(size[1]//2), 6 + 3*(size[1]//2)]) # up left
-    unit2_axis =  np.array([5 + size[0]//2 + size[1]//2, -2 + size[0]//3 - size[1]//2 - size[1]//5]) # 2nd unit relative to ref
+    unit2_axis =  np.array([5 + size[0]//2 + size[1]//2, -2 + (size[0]+1)//4 - size[1]//2 - size[1]//5]) # 2nd unit relative to ref
+
+    # unit2_axis[1] = -7
+
+    inputs = [(3,1), (7,1), (11,1), (1,3), (5,3), (3, 5), (1, 7), (5, 7), (1, 11), (5, 11), (9,11)]
+    expected  = [[6, -1], [8,0], [10,1], [6, -3], [8,-2], [8, -4], [8, -6], [10, -5], [10, -9], [12, -8], [14, -7]]
+
+    for i, size in enumerate(inputs):
+        unit2_axis =  np.array([5 + size[0]//2 + size[1]//2, -2 + (size[0]+1)//4 - size[1]//2 - size[1]//5]) # 2nd unit relative to ref
+        check = "X"
+        
+        if np.all(unit2_axis == expected[i]):
+            check = "√"
+        print(f"size = {size} => {unit2_axis}, must be {expected[i]} ({check})" )
+ 
+    print(-2 + size[0]//3 - size[1]//2 - size[1]//3)
+    print(unit2_axis)
 
     # Create unit1 and unit2
     up = ref[0]%2 == 0
@@ -190,8 +206,9 @@ def pop_up_pattern(multiples, view_lattice = False):
 
     # --- Translate cut-out-units across lattice --- # 
     # Estimate how far to translate
-    range1 = int(np.ceil(np.dot(np.array([m,n]), axis1)/np.dot(axis1, axis1)))      # project top-right corner on axis 1 vector
-    range2 = int(np.ceil(np.dot(np.array([0,n]), axis2)/np.dot(axis2, axis2)/2))    # project top-left corner on axis 2 vector
+    range1 = int(np.ceil(np.dot(np.array([m,n]), axis1)/np.dot(axis1, axis1))) + 1      # project top-right corner on axis 1 vector
+    range2 = int(np.ceil(np.dot(np.array([0,n]), axis2)/np.dot(axis2, axis2)/2))  + 1   # project top-left corner on axis 2 vector
+
 
     # Translate and cut out
     for i in range(range1):
@@ -231,13 +248,14 @@ def build_pull_blocks(mat, sidebox = 0):
 if __name__ == "__main__":
 
     multiples = (6, 12)
-    mat = pop_up_pattern(multiples, view_lattice = False)
-    build_pull_blocks(mat, sidebox = 1)
-
-
+    unitsize = (9,11)
+    mat = pop_up_pattern(multiples, unitsize,  view_lattice = False)
+    build_pull_blocks(mat, sidebox = 0)
     exit()
-    mat = np.ones((5, 12)) # Why does (5, 12) not work?
-    trans = np.array([[2,0], [3,1], [3,2], [3,3], [3,4], [4,3], [5,4]])
+
+
+    mat = np.ones((10, 10)) # Why does (5, 12) not work?
+    # trans = np.array([[2,0], [3,1], [3,2], [3,3], [3,4], [4,3], [5,4]])
     # mat[:,0] = 0
     # trans = np.array([[20,0]])
     # exit()
