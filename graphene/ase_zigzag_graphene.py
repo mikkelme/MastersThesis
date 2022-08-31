@@ -165,19 +165,19 @@ def pop_up_pattern(multiples, unitcell = (5,7), view_lattice = False):
 
     # unit2_axis[1] = -7
 
-    inputs = [(3,1), (7,1), (11,1), (1,3), (5,3), (3, 5), (1, 7), (5, 7), (1, 11), (5, 11), (9,11)]
-    expected  = [[6, -1], [8,0], [10,1], [6, -3], [8,-2], [8, -4], [8, -6], [10, -5], [10, -9], [12, -8], [14, -7]]
+    # inputs = [(3,1), (7,1), (11,1), (1,3), (5,3), (3, 5), (1, 7), (5, 7), (1, 11), (5, 11), (9,11)]
+    # expected  = [[6, -1], [8,0], [10,1], [6, -3], [8,-2], [8, -4], [8, -6], [10, -5], [10, -9], [12, -8], [14, -7]]
 
-    for i, size in enumerate(inputs):
-        unit2_axis =  np.array([5 + size[0]//2 + size[1]//2, -2 + (size[0]+1)//4 - size[1]//2 - size[1]//5]) # 2nd unit relative to ref
-        check = "X"
+    # for i, size in enumerate(inputs):
+    #     unit2_axis =  np.array([5 + size[0]//2 + size[1]//2, -2 + (size[0]+1)//4 - size[1]//2 - size[1]//5]) # 2nd unit relative to ref
+    #     check = "X"
         
-        if np.all(unit2_axis == expected[i]):
-            check = "√"
-        print(f"size = {size} => {unit2_axis}, must be {expected[i]} ({check})" )
+    #     if np.all(unit2_axis == expected[i]):
+    #         check = "√"
+    #     print(f"size = {size} => {unit2_axis}, must be {expected[i]} ({check})" )
  
-    print(-2 + size[0]//3 - size[1]//2 - size[1]//3)
-    print(unit2_axis)
+    # print(-2 + size[0]//3 - size[1]//2 - size[1]//3)
+    # print(unit2_axis)
 
     # Create unit1 and unit2
     up = ref[0]%2 == 0
