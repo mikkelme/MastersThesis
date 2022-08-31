@@ -29,11 +29,13 @@ def build_graphene_sheet(mat, view_lattice = False, write = False):
     # Swap axes: y <-> z
     new_posistions = atoms.get_positions()[:,(0,2,1)]
     new_cell = (atoms.get_cell()[(0,2,1), :])[:, (0,2,1)]
+    eps = 1e-12
 
-    # Readjust cell to fit highest y value (within tolerence )
-    ymax = np.max(new_posistions[:,1])
-    new_cell[1,1] = ymax + 0.01
 
+    # Readjust cell to fit atoms 
+    new_posistions[:,1] += eps  # Move atoms in y-direction by eps (avoid cell boundart) 
+    ymax = np.max(new_posistions[:,1]) # Find new ymax
+    new_cell[1,1] = ymax + eps # Put cell ymax just over the last atom 
 
 
     atoms.set_positions(new_posistions)
@@ -143,13 +145,13 @@ def delete_atoms(mat, delete_map):
 
 
 
-def pop_up_pattern(view_lattice = False):
+def pop_up_pattern(multiples, view_lattice = False):
 
     # --- Settings --- #
-    mat = np.ones((60, 122)) # lattice matrix
+    mat = np.ones((multiples[0]*10, multiples[1]*10)) # lattice matrix
     ref = np.array([0, 0]) # reference center element
 
-    size = (5,3) # Size of pop_up pattern
+    size = (5,7) # Size of pop_up pattern
     # Note: Only odd values allowed and |size[1]-size[0]| = 2, 6, 10...
     # Not allowed: (1,1), (3, 3), (5,1), (5,5)...
     # Allowed: (1,3), (5,3), (3,1), (7,1)...
@@ -186,7 +188,7 @@ def pop_up_pattern(view_lattice = False):
     del_unit2 = np.array(line1 + line2) + unit2_axis
 
 
-    # --- Translate cut out units across lattice --- # 
+    # --- Translate cut-out-units across lattice --- # 
     # Estimate how far to translate
     range1 = int(np.ceil(np.dot(np.array([m,n]), axis1)/np.dot(axis1, axis1)))      # project top-right corner on axis 1 vector
     range2 = int(np.ceil(np.dot(np.array([0,n]), axis2)/np.dot(axis2, axis2)/2))    # project top-left corner on axis 2 vector
@@ -209,24 +211,31 @@ def pop_up_pattern(view_lattice = False):
 
 
 
-def build_pull_blocks(mat):
+def build_pull_blocks(mat, sidebox = 0):
     """ Add blocks on the x-z plane on the +-y sides  """
     m, n = np.shape(mat)
     block_thickness = 6
 
-    new_mat = np.ones((m,n + 2*block_thickness))
-    new_mat[:,block_thickness:n+block_thickness] = mat
+    # Try adding sideblocks
+    if sidebox > 0:
+        new_mat = np.ones((m+2*sidebox,n + 2*block_thickness))
+        new_mat[sidebox:-sidebox,block_thickness:-block_thickness] = mat
+    else:
+        new_mat = np.ones((m,n + 2*block_thickness))
+        new_mat[:,block_thickness:-block_thickness] = mat
+
     build_graphene_sheet(new_mat, view_lattice = True, write=True)
 
 
 
 if __name__ == "__main__":
 
-    # mat = pop_up_pattern()
-    # build_pull_blocks(mat)
+    multiples = (6, 12)
+    mat = pop_up_pattern(multiples, view_lattice = False)
+    build_pull_blocks(mat, sidebox = 1)
 
 
-    # exit()
+    exit()
     mat = np.ones((5, 12)) # Why does (5, 12) not work?
     trans = np.array([[2,0], [3,1], [3,2], [3,3], [3,4], [4,3], [5,4]])
     # mat[:,0] = 0

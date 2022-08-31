@@ -34,10 +34,10 @@ dump 1 all custom 1 sheet.data id type x y z vx vy vz
 variable block_elem equal 2 # block thicknes in terms of matrix columns
 variable yscale equal 1.230 # length per column
 variable block_thickness equal ${block_elem}*${yscale} # physical length of end blocks
-variable tol equal 1e-3 # small number for avoiding spill of the freeze region
+variable eps equal 1e-3 # small number for avoiding spill of the freeze region
 
-variable ylow_top equal ${block_thickness}-${tol} # max y-val of lower block
-variable yhigh_bottom equal yhi-${block_thickness}+${tol} # min y val of upper block
+variable ylow_top equal ${block_thickness}-${eps} # max y-val of lower block
+variable yhigh_bottom equal yhi-${block_thickness}+${eps} # min y val of upper block
 
 
 region ylow_region block INF INF INF ${ylow_top} INF INF
@@ -54,7 +54,7 @@ fix freeze2 yhigh_group setforce 0.0 0.0 0.0
 
 # Relax inner part (pattern) of sheet 
 # run 200
-run  $(floor(1/dt)) # [t] = picoseconds
+run  $(floor(0.5/dt)) # [t] = picoseconds
 
 
 variable strain_speed equal "125*0.01" # define strain/stretch speed
@@ -72,7 +72,7 @@ fix yhigh_move yhigh_group move linear 0 $(v_strain_speed/2) 0 units box
 
 # run 1000
 # run $(floor(3*125/dt/v_strain_speed)) # 60000
-run  $(floor(10/dt)) # [t] = picoseconds
+run  $(floor(4/dt)) # [t] = picoseconds
 
 
 
