@@ -66,6 +66,7 @@ def build_graphene_sheet(mat, view_lattice = False, write = False):
     if write:
         lammpsdata.write_lammps_data('./lammps_sheet', atoms)
 
+    return atoms
 
 
     return
@@ -147,7 +148,7 @@ def delete_atoms(mat, delete_map):
 
 
 
-def pop_up_pattern(multiples, unitcell = (5,7), view_lattice = False):
+def pop_up_pattern(multiples, unitsize = (5,7), view_lattice = False):
 
     # --- Settings --- #
     mat = np.ones((multiples[0]*10, multiples[1]*10)) # lattice matrix
@@ -230,20 +231,20 @@ def pop_up_pattern(multiples, unitcell = (5,7), view_lattice = False):
 
 
 
-def build_pull_blocks(mat, sidebox = 0):
+def build_pull_blocks(mat, pullblock = 6, sideblock = 0):
     """ Add blocks on the x-z plane on the +-y sides  """
     m, n = np.shape(mat)
-    block_thickness = 6
 
     # Try adding sideblocks
-    if sidebox > 0:
-        new_mat = np.ones((m+2*sidebox,n + 2*block_thickness))
-        new_mat[sidebox:-sidebox,block_thickness:-block_thickness] = mat
+    if sideblock > 0:
+        new_mat = np.ones((m+2*sideblock,n + 2*pullblock))
+        new_mat[sideblock:-sideblock,pullblock:-pullblock] = mat
     else:
-        new_mat = np.ones((m,n + 2*block_thickness))
-        new_mat[:,block_thickness:-block_thickness] = mat
+        new_mat = np.ones((m,n + 2*pullblock))
+        new_mat[:,pullblock:-pullblock] = mat
+    
+    return new_mat, pullblock
 
-    build_graphene_sheet(new_mat, view_lattice = False, write=True)
 
 
 
@@ -252,10 +253,11 @@ if __name__ == "__main__":
     # multiples = (6, 12)
     # unitsize = (9,11)
     # mat = pop_up_pattern(multiples, unitsize,  view_lattice = True)
-    # build_pull_blocks(mat, sidebox = 0)
+    # build_pull_blocks(mat, sideblock = 0)
+    # build_graphene_sheet(mat, view_lattice = False, write=True)
     # exit()
 
-
+    exit()
     mat = np.ones((10, 10)) # Why does (5, 12) not work?
     # trans = np.array([[2,0], [3,1], [3,2], [3,3], [3,4], [4,3], [5,4]])
     # mat[:,0] = 0
