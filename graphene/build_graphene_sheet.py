@@ -18,8 +18,6 @@ def build_graphene_sheet(mat, view_lattice = False, write = False):
 
     xlen = mat.shape[0]
     ylen = mat.shape[1]//2
-    # xlen = 2
-    # ylen = 2
   
     # --- Create graphene lattice --- #
     atoms = graphene_nanoribbon(xlen, ylen, type='zigzag', saturated=False, C_C=Cdis, vacuum=2.0)

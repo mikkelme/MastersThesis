@@ -4,7 +4,9 @@ newton on #newtons 3rd law for pairs
 boundary m m m  
 
 atom_style atomic # coarse-grain liquids, solids, metals
-read_data ./lammps_sheet # read lattice from file
+# read_data ./lammps_sheet_and_block # read file
+read_data ./outfile_lammps_test
+
 
 
 ## --- Dynamics --- ##
@@ -13,8 +15,8 @@ variable temp equal 5.0 # Kelvin
 mass * 12.0107 # "*": all types, [grams/mole]
 velocity all create ${temp} 5432373 dist gaussian
 
-neighbor            0.5 bin
-neigh_modify        delay 0 every 1
+# neighbor            0.5 bin
+# neigh_modify        delay 0 every 1
 
 pair_style          airebo 6.4 1 1  # cutoff LJ_flag TORSION_flag cutoff_min
 pair_coeff          * * CH.airebo C # add H ofr hydrogren as2nd particle
@@ -27,13 +29,18 @@ thermo              1
 
 
 
-dump 1 all custom 1 test_sheet.data id type x y z vx vy vz
-run 100
+dump 1 all custom 1 sheet.data id type x y z vx vy vz
+run 10
 
 
-
+# write_data outfile_lammps_test
 
 # run 10
 
 
 # run as: lmp_serial < graphene_sheet.in
+
+
+
+# do not like this:
+# 3283 1 19.228749999999998 19.68435981656524 2 0 0 0

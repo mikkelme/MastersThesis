@@ -3,12 +3,12 @@ from build_graphene_sheet import *
 
 
 def build_block_and_sheet(mat, view_lattice = False, write = False):
-    object_dis = 10.0 # [Å]
+    object_dis = 15.0 # [Å]
 
     sheet = build_graphene_sheet(mat, view_lattice = False, write=False)
     minmax_sheet = np.array([np.min(sheet.get_positions(), axis = 0), np.max(sheet.get_positions(), axis = 0)]) # Find min and max positions
 
-    block = build_diamond_block(mat, z_shift = object_dis + minmax_sheet[1,2])
+    block = build_diamond_block(mat, diamond_thickness = 2, padding = 2, z_shift = object_dis + minmax_sheet[1,2])
     minmax_block = np.array([np.min(block.get_positions(), axis = 0), np.max(block.get_positions(), axis = 0)])  # Find min and max positions
 
     # --- Translate sheet to align with block center --- #
@@ -25,7 +25,7 @@ def build_block_and_sheet(mat, view_lattice = False, write = False):
 
     # Merge sheet and block into same object (uses cell and bc from first object )
     atoms = block + sheet
-    atoms = block # <------------------------ ONLY BLOCK!
+    # atoms = block # <------------------------ ONLY BLOCK!
 
     # Write pullblock position to file 
     minmax_sheet += translation_vec
@@ -38,8 +38,6 @@ def build_block_and_sheet(mat, view_lattice = False, write = False):
     zhi = (minmax_sheet[1,2] + minmax_block[0,2])/2
     lim = [yhi, ylo, zhi]
     varname = ['yhi', 'ylo', 'zhi']
-
-
 
 
 
@@ -75,10 +73,11 @@ def build_block_and_sheet(mat, view_lattice = False, write = False):
 if __name__ == "__main__":
     # Generate sheet matrix
     multiples = (3, 6)
+    multiples = (2, 2)
+
     unitsize = (5,7)
     mat = pop_up_pattern(multiples, unitsize, view_lattice = False)
     mat, pullblock = build_pull_blocks(mat, pullblock = 6, sideblock = 0)
-    mat[:] = 1
 
     # Build block and sheet 
     atoms = build_block_and_sheet(mat, view_lattice = True, write = True)

@@ -20,12 +20,12 @@ neighbor            0.5 bin
 neigh_modify        delay 0 every 1
 
 pair_style          airebo 6.4 1 1  # cutoff LJ_flag TORSION_flag cutoff_min
-pair_coeff          * * CH.airebo C # add H ofr hydrogren as2nd particle
+pair_coeff          * * CH.airebo C # add H for hydrogren as 2nd particle
 
 fix                 nve all nve # (microcanonical)
 timestep            0.0005
 
-thermo              10
+thermo              100
 
 
 # fix 2 all balance 1000 1.05 shift xy 10 1.05 # balance number of particles computed on each processor 
@@ -38,9 +38,6 @@ dump 1 all custom 1 sheet.data id type x y z vx vy vz
 # Include file with pullblock lim
 include ./pullblock_lim.in
 
-
-
-print ${pullblock_ylo}
 
 # Define block regions for pulling
 variable block_elem equal 2 # block thicknes in terms of matrix columns
@@ -65,25 +62,31 @@ fix freeze2 yhigh_group setforce 0.0 0.0 0.0
 
 
 # Relax inner part (pattern) of sheet 
-run 10000
-# run  $(floor(0.5/dt)) # [t] = picoseconds
+# run 1000
+run  $(floor(0.5/dt)) # [t] = picoseconds
 
 
 # variable strain_speed equal "125*0.01" # define strain/stretch speed
+variable strain_speed_pct equal 0.2 # [% of pattern ylen per picoseconds]
+variable strain_speed equal v_strain_speed_pct*(v_pullblock_ylo-v_pullblock_yhi)
+
+print strain_speed
+print ${strain_speed}
+print $(v_pullblock_ylo-v_pullblock_yhi)
 
 
-# # Release freezes
-# # unfix freeze1
-# # unfix freeze2
+# Release freezes
+unfix freeze1
+unfix freeze2
 
-# # Move block in opposite direction
-# fix ylow_move ylow_group move linear 0 $(-v_strain_speed/2) 0 units box
-# fix yhigh_move yhigh_group move linear 0 $(v_strain_speed/2) 0 units box
+# Move block in opposite direction
+fix ylow_move ylow_group move linear 0 $(-v_strain_speed/2) 0 units box
+fix yhigh_move yhigh_group move linear 0 $(v_strain_speed/2) 0 units box
 
 
-# run 1000
+# run 2000
 # # run $(floor(3*125/dt/v_strain_speed)) # 60000
-# # run  $(floor(4/dt)) # [t] = picoseconds
+run  $(floor(5/dt)) # [t] = picoseconds
 
 
 

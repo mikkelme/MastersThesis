@@ -19,3 +19,5 @@
 - Fixed some bugs in the pop_pattern generic formulation of unit2_axis.
 - Made framework for simulating the sheet next to (on top) of a diamond block for contact area measurements.  
 - Encounted problem of initial configuration was not really stable. It expands immediately and oscillates back and forth a bit (looking into configuration changes).
+- Unstable diamond problems seem to be fixed by having at least 2 unit cells of thickness
+- Dealing with: ERROR on proc 0: Neighbor list overflow, boost neigh_modify one (src/npair_full_bin_ghost.cpp:151). 
