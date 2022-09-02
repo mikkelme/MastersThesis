@@ -21,3 +21,4 @@
 - Encounted problem of initial configuration was not really stable. It expands immediately and oscillates back and forth a bit (looking into configuration changes).
 - Unstable diamond problems seem to be fixed by having at least 2 unit cells of thickness
 - Dealing with: ERROR on proc 0: Neighbor list overflow, boost neigh_modify one (src/npair_full_bin_ghost.cpp:151). 
+- Seems like neigh_modify one 10000 solved the issue. Still have to understand what these commands are doing....

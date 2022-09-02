@@ -5,14 +5,14 @@ newton on #newtons 3rd law for pairs
 boundary m m m
 
 atom_style atomic # coarse-grain liquids, solids, metals
-# read_data ./lammps_sheet_and_block # read file
-read_data ./outfile_lammps_test
+read_data ./lammps_sheet_and_block # read file
 Reading data file ...
-  orthogonal box = (-0.005355 -0.004641 0) to (53.55 46.41 24.14)
+  orthogonal box = (0 0 0) to (53.55 46.41 19.14)
   1 by 1 by 1 MPI processor grid
   reading atoms ...
-  3283 atoms
-  read_data CPU = 0.008 seconds
+  3632 atoms
+  read_data CPU = 0.007 seconds
+# read_data ./outfile_lammps_test
 
 
 
@@ -23,8 +23,9 @@ mass * 12.0107 # "*": all types, [grams/mole]
 velocity all create ${temp} 5432373 dist gaussian
 velocity all create 5 5432373 dist gaussian
 
-# neighbor            0.5 bin
-# neigh_modify        delay 0 every 1
+neighbor            0.5 bin
+neigh_modify        delay 0 every 1 one 10000
+# neigh_modify one 10000
 
 pair_style          airebo 6.4 1 1  # cutoff LJ_flag TORSION_flag cutoff_min
 pair_coeff          * * CH.airebo C # add H ofr hydrogren as2nd particle
@@ -41,16 +42,69 @@ thermo              1
 dump 1 all custom 1 sheet.data id type x y z vx vy vz
 run 10
 Neighbor list info ...
-  update every 1 steps, delay 10 steps, check yes
-  max neighbors/atom: 2000, page size: 100000
-  master list distance cutoff = 23.76
-  ghost atom cutoff = 23.76
-  binsize = 11.88, bins = 5 4 3
+  update every 1 steps, delay 0 steps, check yes
+  max neighbors/atom: 10000, page size: 100000
+  master list distance cutoff = 22.26
+  ghost atom cutoff = 22.26
+  binsize = 11.13, bins = 5 5 2
   1 neighbor lists, perpetual/occasional/extra = 1 0 0
   (1) pair airebo, perpetual
       attributes: full, newton on, ghost
       pair build: full/bin/ghost
       stencil: full/ghost/bin/3d
       bin: standard
-ERROR on proc 0: Neighbor list overflow, boost neigh_modify one (src/npair_full_bin_ghost.cpp:151)
-Last command: run 10
+Per MPI rank memory allocation (min/avg/max) = 26.72 | 26.72 | 26.72 Mbytes
+   Step          Temp          E_pair         E_mol          TotEng         Press          Volume    
+         0   5             -22434.976      0             -22432.63       14771.447      47577.304    
+         1   8.099077      -22436.433      0             -22432.632      14835.492      47577.304    
+         2   16.99184      -22440.615      0             -22432.64       15032.971      47577.304    
+         3   31.428457     -22447.402      0             -22432.652      15370.391      47577.304    
+         4   50.998371     -22456.604      0             -22432.668      15858.499      47577.304    
+         5   75.132978     -22467.953      0             -22432.69       16512.293      47577.304    
+         6   103.10494     -22481.109      0             -22432.717      17351.101      47577.304    
+         7   134.02016     -22495.651      0             -22432.75       18398.751      47577.304    
+         8   166.7978      -22511.076      0             -22432.79       19683.825      47577.304    
+         9   200.13431     -22526.772      0             -22432.84       21239.945      47577.304    
+        10   232.44956     -22542.002      0             -22432.903      23105.899      47577.304    
+Loop time of 1.17834 on 1 procs for 10 steps with 3632 atoms
+
+Performance: 0.367 ns/day, 65.463 hours/ns, 8.486 timesteps/s
+98.4% CPU use with 1 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 1.1316     | 1.1316     | 1.1316     |   0.0 | 96.03
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 1.368e-05  | 1.368e-05  | 1.368e-05  |   0.0 |  0.00
+Output  | 0.04619    | 0.04619    | 0.04619    |   0.0 |  3.92
+Modify  | 0.00041282 | 0.00041282 | 0.00041282 |   0.0 |  0.04
+Other   |            | 0.0001511  |            |       |  0.01
+
+Nlocal:           3632 ave        3632 max        3632 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:              0 ave           0 max           0 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:              0 ave           0 max           0 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+FullNghs:  5.08625e+06 ave 5.08625e+06 max 5.08625e+06 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 5086252
+Ave neighs/atom = 1400.3998
+Neighbor list builds = 0
+Dangerous builds = 0
+
+
+# write_data outfile_lammps_test
+
+# run 10
+
+
+# run as: lmp_serial < graphene_sheet.in
+
+
+
+# do not like this:
+# 3283 1 19.228749999999998 19.68435981656524 2 0 0 0
+Total wall time: 0:00:01

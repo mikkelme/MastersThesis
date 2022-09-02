@@ -3,7 +3,7 @@ from build_graphene_sheet import *
 
 
 def build_block_and_sheet(mat, view_lattice = False, write = False):
-    object_dis = 15.0 # [Å]
+    object_dis = 10.0 # [Å]
 
     sheet = build_graphene_sheet(mat, view_lattice = False, write=False)
     minmax_sheet = np.array([np.min(sheet.get_positions(), axis = 0), np.max(sheet.get_positions(), axis = 0)]) # Find min and max positions
@@ -25,7 +25,7 @@ def build_block_and_sheet(mat, view_lattice = False, write = False):
 
     # Merge sheet and block into same object (uses cell and bc from first object )
     atoms = block + sheet
-    # atoms = block # <------------------------ ONLY BLOCK!
+    # atoms = sheet # <------------------------ ONLY BLOCK!
 
     # Write pullblock position to file 
     minmax_sheet += translation_vec
@@ -38,7 +38,6 @@ def build_block_and_sheet(mat, view_lattice = False, write = False):
     zhi = (minmax_sheet[1,2] + minmax_block[0,2])/2
     lim = [yhi, ylo, zhi]
     varname = ['yhi', 'ylo', 'zhi']
-
 
 
     if view_lattice: 
