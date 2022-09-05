@@ -29,7 +29,7 @@ thermo              100
 
 
 # fix 2 all balance 1000 1.05 shift xy 10 1.05 # balance number of particles computed on each processor 
-dump 1 all custom 1 sheet.data id type x y z vx vy vz
+dump 1 all custom 1 sheet_and_block.data id type x y z vx vy vz
 
 #---- Stretch ---#
 
@@ -69,6 +69,16 @@ fix freeze2 yhigh_group setforce 0.0 0.0 0.0
 fix freeze3 zhigh_group setforce 0.0 0.0 0.0
 
 
+# Region and groups for measuring contact
+region sheet_region block INF INF ${pullblock_yhi} ${pullblock_ylo} INF ${pullblock_zhi}
+region lower_block_region block INF INF INF INF ${pullblock_zhi} ${diamond_zhi}
+
+group sheet_group region sheet_region
+group lower_block_group region lower_block_region
+
+dump 2 sheet_group custom 1 sheet.data id type x y z vx vy vz
+dump 3 lower_block_group custom 1 lower_block.data id type x y z vx vy vz
+
 
 
 
@@ -84,21 +94,27 @@ print "strain_speed: ${strain_speed}"
 
 
 # Relax inner part (pattern) of sheet 
-# run 100
-run  $(floor(0.5/dt)) # [t] = picoseconds
+run 10
+# run  $(floor(0.5/dt)) # [t] = picoseconds
 
 # Release freezes
 # unfix freeze1
 # unfix freeze2
 
 # Move block in opposite direction
-fix ylow_move ylow_group move linear 0 $(-v_strain_speed/2) 0 units box
-fix yhigh_move yhigh_group move linear 0 $(v_strain_speed/2) 0 units box
+# fix ylow_move ylow_group move linear 0 $(-v_strain_speed/2) 0 units box
+# fix yhigh_move yhigh_group move linear 0 $(v_strain_speed/2) 0 units box
+
+
+
+
+# Measure area
+# compute ID group-ID group/group group2-ID keyword value ...
 
 
 # run 100
 # # run $(floor(3*125/dt/v_strain_speed)) # 60000
-run  $(floor(5/dt)) # [t] = picoseconds
+# run  $(floor(5/dt)) # [t] = picoseconds
 
 
 
