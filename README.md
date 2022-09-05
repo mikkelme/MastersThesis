@@ -25,4 +25,6 @@
 
 
 #### Week 36 (05/09 - 04/09) - Working from Denmark 
-- Mind this: WARNING: One or more atoms are time integrated more than once (src/modify.cpp:292)
+- Fixed the problem with multiple lammps "fix" giving warning: WARNING: One or more atoms are time integrated more than once (src/modify.cpp:292)
+- Made python code for calculation minimum distance for each sheet atom for quantification of contact area
+- Working on C++ version of above for better performance 
