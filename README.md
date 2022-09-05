@@ -25,4 +25,4 @@
 
 
 #### Week 36 (05/09 - 04/09) - Working from Denmark 
-- 
+- Mind this: WARNING: One or more atoms are time integrated more than once (src/modify.cpp:292)

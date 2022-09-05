@@ -5,18 +5,19 @@ newton on #newtons 3rd law for pairs
 boundary m m m
 
 atom_style atomic # coarse-grain liquids, solids, metals
-read_data ./lammps_sheet_and_block # read file
+read_data ./lammps_sheet_and_block # read sheet and block from file
 Reading data file ...
-  orthogonal box = (0 0 0) to (53.55 46.41 19.14)
+  orthogonal box = (0 0 0) to (53.55 46.41 16.14)
   1 by 1 by 1 MPI processor grid
   reading atoms ...
   3632 atoms
-  read_data CPU = 0.007 seconds
-# read_data ./outfile_lammps_test
+  read_data CPU = 0.010 seconds
+
+# read_data ./lammps_sheet # read lattice from file
+# read_data ./lammps_diamond_block add append # append block
 
 
-
-## --- Dynamics --- ##
+#--- Dynamics ---#
 variable temp equal 5.0 # Kelvin
 
 mass * 12.0107 # "*": all types, [grams/mole]
@@ -25,22 +26,95 @@ velocity all create 5 5432373 dist gaussian
 
 neighbor            0.5 bin
 neigh_modify        delay 0 every 1 one 10000
-# neigh_modify one 10000
 
 pair_style          airebo 6.4 1 1  # cutoff LJ_flag TORSION_flag cutoff_min
-pair_coeff          * * CH.airebo C # add H ofr hydrogren as2nd particle
+pair_coeff          * * CH.airebo C # add H for hydrogren as 2nd particle
 Reading airebo potential file CH.airebo with DATE: 2011-10-25
 
 fix                 nve all nve # (microcanonical)
 timestep            0.0005
 
-thermo              1
+thermo              100
 
 
-
-
+# fix 2 all balance 1000 1.05 shift xy 10 1.05 # balance number of particles computed on each processor
 dump 1 all custom 1 sheet.data id type x y z vx vy vz
-run 10
+
+#---- Stretch ---#
+
+# Define block regions for pulling
+
+# Include file with pullblock lim
+# include ./pullblock_lim.in
+include ./simulation_lim.in
+variable pullblock_yhi equal 10.846488039190312
+variable pullblock_ylo equal 34.671011960809686
+variable pullblock_zhi equal 5.5
+variable diamond_zlo equal 12.177499999999998
+
+
+
+# Define block regions for pulling
+variable block_elem equal 2 # block thicknes in terms of matrix columns
+variable yscale equal 1.230 # length per column
+variable block_thickness equal ${block_elem}*${yscale} # physical length of end blocks
+variable block_thickness equal 2*${yscale} 
+variable block_thickness equal 2*1.23 
+variable eps equal 1e-3 # small number for avoiding spill of the freeze region
+
+variable ylow_top equal ${block_thickness}-${eps} # max y-val of lower block
+variable ylow_top equal 2.46-${eps} 
+variable ylow_top equal 2.46-0.001 
+variable yhigh_bottom equal yhi-${block_thickness}+${eps} # min y val of upper block
+variable yhigh_bottom equal yhi-2.46+${eps} 
+variable yhigh_bottom equal yhi-2.46+0.001 
+
+
+region ylow_region block INF INF INF ${pullblock_yhi} INF ${pullblock_zhi}
+region ylow_region block INF INF INF 10.8464880391903 INF ${pullblock_zhi}
+region ylow_region block INF INF INF 10.8464880391903 INF 5.5
+region yhigh_region block INF INF ${pullblock_ylo} INF INF ${pullblock_zhi}
+region yhigh_region block INF INF 34.6710119608097 INF INF ${pullblock_zhi}
+region yhigh_region block INF INF 34.6710119608097 INF INF 5.5
+region zhigh_region block INF INF INF INF ${diamond_zlo} INF
+region zhigh_region block INF INF INF INF 12.1775 INF
+group  ylow_group region ylow_region
+120 atoms in group ylow_group
+group  yhigh_group region yhigh_region
+120 atoms in group yhigh_group
+group zhigh_group region zhigh_region
+1560 atoms in group zhigh_group
+
+
+# Freeze: set velocity and force to zero
+velocity ylow_group set 0 0 0
+velocity yhigh_group set 0 0 0
+velocity zhigh_group set 0 0 0
+
+fix freeze1 ylow_group setforce 0.0 0.0 0.0
+fix freeze2 yhigh_group setforce 0.0 0.0 0.0
+fix freeze3 zhigh_group setforce 0.0 0.0 0.0
+
+
+
+
+
+# variable strain_speed equal "125*0.01" # define strain/stretch speed
+variable strain_speed_pct equal 0.02 # [% of pattern ylen per picoseconds]
+variable strain_speed equal v_strain_speed_pct*(v_pullblock_ylo-v_pullblock_yhi) # Henrik used 1,25
+
+print "strain_speed: ${strain_speed}"
+strain_speed: 0.476490478432388
+# print $(v_pullblock_ylo-v_pullblock_yhi)
+
+
+
+
+
+# Relax inner part (pattern) of sheet
+# run 100
+run  $(floor(0.5/dt)) # [t] = picoseconds
+run  1000 
 Neighbor list info ...
   update every 1 steps, delay 0 steps, check yes
   max neighbors/atom: 10000, page size: 100000
@@ -53,33 +127,33 @@ Neighbor list info ...
       pair build: full/bin/ghost
       stencil: full/ghost/bin/3d
       bin: standard
-Per MPI rank memory allocation (min/avg/max) = 26.72 | 26.72 | 26.72 Mbytes
+Per MPI rank memory allocation (min/avg/max) = 27.1 | 27.1 | 27.1 Mbytes
    Step          Temp          E_pair         E_mol          TotEng         Press          Volume    
-         0   5             -22434.976      0             -22432.63       14771.447      47577.304    
-         1   8.099077      -22436.433      0             -22432.632      14835.492      47577.304    
-         2   16.99184      -22440.615      0             -22432.64       15032.971      47577.304    
-         3   31.428457     -22447.402      0             -22432.652      15370.391      47577.304    
-         4   50.998371     -22456.604      0             -22432.668      15858.499      47577.304    
-         5   75.132978     -22467.953      0             -22432.69       16512.293      47577.304    
-         6   103.10494     -22481.109      0             -22432.717      17351.101      47577.304    
-         7   134.02016     -22495.651      0             -22432.75       18398.751      47577.304    
-         8   166.7978      -22511.076      0             -22432.79       19683.825      47577.304    
-         9   200.13431     -22526.772      0             -22432.84       21239.945      47577.304    
-        10   232.44956     -22542.002      0             -22432.903      23105.899      47577.304    
-Loop time of 1.17834 on 1 procs for 10 steps with 3632 atoms
+         0   2.4803167     -22435.717      0             -22434.553      17379.811      40120.047    
+       100   120.74508     -22491.439      0             -22434.768      32473.95       40513.835    
+       200   110.94517     -22486.82       0             -22434.749      31986.71       40467.699    
+       300   79.92763      -22472.134      0             -22434.62       31589.498      40563.165    
+       400   116.01499     -22489.144      0             -22434.694      30098.538      40267.505    
+       500   90.061256     -22476.903      0             -22434.633      33332.162      40483.847    
+       600   119.61967     -22490.876      0             -22434.733      28912.13       40596.346    
+       700   83.266873     -22473.715      0             -22434.634      32293.556      40284.675    
+       800   122.42772     -22492.188      0             -22434.727      30097.149      40482.595    
+       900   89.480896     -22476.604      0             -22434.606      36960.318      40357.465    
+      1000   111.57079     -22487.053      0             -22434.688      29763.247      40544.022    
+Loop time of 101.286 on 1 procs for 1000 steps with 3632 atoms
 
-Performance: 0.367 ns/day, 65.463 hours/ns, 8.486 timesteps/s
-98.4% CPU use with 1 MPI tasks x no OpenMP threads
+Performance: 0.427 ns/day, 56.270 hours/ns, 9.873 timesteps/s
+97.7% CPU use with 1 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 1.1316     | 1.1316     | 1.1316     |   0.0 | 96.03
-Neigh   | 0          | 0          | 0          |   0.0 |  0.00
-Comm    | 1.368e-05  | 1.368e-05  | 1.368e-05  |   0.0 |  0.00
-Output  | 0.04619    | 0.04619    | 0.04619    |   0.0 |  3.92
-Modify  | 0.00041282 | 0.00041282 | 0.00041282 |   0.0 |  0.04
-Other   |            | 0.0001511  |            |       |  0.01
+Pair    | 95.741     | 95.741     | 95.741     |   0.0 | 94.53
+Neigh   | 1.4375     | 1.4375     | 1.4375     |   0.0 |  1.42
+Comm    | 0.0019807  | 0.0019807  | 0.0019807  |   0.0 |  0.00
+Output  | 4.0454     | 4.0454     | 4.0454     |   0.0 |  3.99
+Modify  | 0.047409   | 0.047409   | 0.047409   |   0.0 |  0.05
+Other   |            | 0.0125     |            |       |  0.01
 
 Nlocal:           3632 ave        3632 max        3632 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
@@ -87,24 +161,62 @@ Nghost:              0 ave           0 max           0 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
 Neighs:              0 ave           0 max           0 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-FullNghs:  5.08625e+06 ave 5.08625e+06 max 5.08625e+06 min
+FullNghs:  5.26086e+06 ave 5.26086e+06 max 5.26086e+06 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
 
-Total # of neighbors = 5086252
-Ave neighs/atom = 1400.3998
-Neighbor list builds = 0
+Total # of neighbors = 5260858
+Ave neighs/atom = 1448.4741
+Neighbor list builds = 40
 Dangerous builds = 0
 
+# Release freezes
+# unfix freeze1
+# unfix freeze2
 
-# write_data outfile_lammps_test
-
-# run 10
-
-
-# run as: lmp_serial < graphene_sheet.in
-
+# Move block in opposite direction
+fix ylow_move ylow_group move linear 0 $(-v_strain_speed/2) 0 units box
+fix ylow_move ylow_group move linear 0 -0.23824523921619400468 0 units box
+fix yhigh_move yhigh_group move linear 0 $(v_strain_speed/2) 0 units box
+fix yhigh_move yhigh_group move linear 0 0.23824523921619400468 0 units box
 
 
-# do not like this:
-# 3283 1 19.228749999999998 19.68435981656524 2 0 0 0
-Total wall time: 0:00:01
+# run 100
+# # run $(floor(3*125/dt/v_strain_speed)) # 60000
+run  $(floor(5/dt)) # [t] = picoseconds
+run  10000 
+WARNING: One or more atoms are time integrated more than once (src/modify.cpp:292)
+Per MPI rank memory allocation (min/avg/max) = 27.85 | 27.85 | 27.85 Mbytes
+   Step          Temp          E_pair         E_mol          TotEng         Press          Volume    
+      1000   111.57079     -22487.053      0             -22434.688      29766.851      40539.113    
+      1100   89.428475     -22476.597      0             -22434.624      31686.854      40382.626    
+      1200   118.3958      -22490.229      0             -22434.66       29342.287      40406.487    
+      1300   94.431377     -22478.914      0             -22434.593      34536.918      40548.589    
+      1400   118.20908     -22490.112      0             -22434.631      33406.076      40557.242    
+      1500   90.094043     -22476.816      0             -22434.531      27814.239      40351.384    
+      1600   114.04246     -22488.108      0             -22434.583      34098.981      40439.681    
+      1700   100.07754     -22481.472      0             -22434.501      31560.299      40577.763    
+      1800   110.78355     -22486.492      0             -22434.496      35437.512      40417.063    
+      1900   104.72617     -22483.618      0             -22434.465      27075.677      40381.796    
+      2000   99.682121     -22481.2        0             -22434.415      33400.038      40597.483    
+      2100   110.87432     -22486.453      0             -22434.414      29582.174      40459.971    
+      2200   97.937783     -22480.31       0             -22434.343      35506.423      40447.402    
+      2300   111.7186      -22486.748      0             -22434.314      29667.014      40412.297    
+      2400   104.09209     -22483.059      0             -22434.204      31078.286      40690.103    
+      2500   96.575855     -22479.478      0             -22434.151      28634.002      40531.791    
+      2600   113.95539     -22487.605      0             -22434.121      31604.606      40824.859    
+      2700   107.44747     -22484.505      0             -22434.075      32512.967      40978.023    
+      2800   109.80361     -22485.514      0             -22433.978      33462.674      41090.127    
+      2900   110.92565     -22485.998      0             -22433.936      28359.558      41090.458    
+      3000   103.26862     -22482.293      0             -22433.825      30669.937      40974.579    
+      3100   105.47116     -22483.238      0             -22433.736      29925.043      40610.062    
+      3200   121.89165     -22490.94       0             -22433.731      30808.256      40533.882    
+      3300   112.5556      -22486.438      0             -22433.611      33334.35       40597.467    
+      3400   122.11016     -22490.815      0             -22433.504      30535.744      40360.953    
+      3500   130.4084      -22494.579      0             -22433.372      33066.818      40333.689    
+      3600   121.0906      -22490.184      0             -22433.351      27268.783      40483.57     
+      3700   122.7647      -22490.846      0             -22433.227      32330.31       40472.847    
+      3800   121.95929     -22490.374      0             -22433.133      28817.767      40595.738    
+      3900   121.86717     -22490.27       0             -22433.072      33282.502      40370.058    
+      4000   122.34399     -22490.414      0             -22432.993      29611.155      40504.057    
+      4100   121.76863     -22489.997      0             -22432.846      31405.152      40514.155    
+      4200   126.97542     -22492.32       0             -22432.725      2

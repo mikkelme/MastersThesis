@@ -7,3 +7,24 @@
 
 # Folders
 /__pycache__
+
+
+#Latex
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.gz
+*.out
+*.toc
+*.bib
+*.mp
+*.thm
+*.blg
+*.bbl
+*.1
+*.2
+*.3
+*.t1
+*.t2
+*.t3

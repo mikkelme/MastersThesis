@@ -7,6 +7,7 @@ atom_style atomic # coarse-grain liquids, solids, metals
 read_data ./lammps_sheet # read lattice from file
 
 
+
 #--- Dynamics ---#
 variable temp equal 5.0 # Kelvin
 

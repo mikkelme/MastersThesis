@@ -26,6 +26,8 @@ def build_diamond_block(mat, diamond_thickness = 2, padding = 2, z_shift = 3*3.5
     xlen = int((xmax//diamond_spacing + 1)) + padding
     ylen = int((ymax//diamond_spacing + 1)) + padding 
 
+
+    # xlen, ylen, zlen = (1,2,1) # <---------------------- REMOVE
     diamond = crystal('C', [(0,0,0)], spacegroup=227, cellpar=[3.57, 3.57, 3.57, 90, 90, 90], size=(xlen, ylen, diamond_thickness), pbc = False)
     diamond.translate([0,0,z_shift])
 
@@ -45,6 +47,7 @@ def build_diamond_block(mat, diamond_thickness = 2, padding = 2, z_shift = 3*3.5
 if __name__ == "__main__":
     mat = np.ones((10,10)) # for sheet
     diamond = build_diamond_block(mat)
-    lammpsdata.write_lammps_data('./lammps_diamond_block', diamond)
+    view(diamond)
+    # lammpsdata.write_lammps_data('./lammps_diamond_block', diamond)
 
 

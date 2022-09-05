@@ -17,7 +17,7 @@ mass * 12.0107 # "*": all types, [grams/mole]
 velocity all create ${temp} 5432373 dist gaussian
 
 neighbor            0.5 bin
-neigh_modify        delay 0 every 1
+neigh_modify        delay 0 every 1 one 10000
 
 pair_style          airebo 6.4 1 1  # cutoff LJ_flag TORSION_flag cutoff_min
 pair_coeff          * * CH.airebo C # add H for hydrogren as 2nd particle
@@ -36,7 +36,9 @@ dump 1 all custom 1 sheet.data id type x y z vx vy vz
 # Define block regions for pulling
 
 # Include file with pullblock lim
-include ./pullblock_lim.in
+# include ./pullblock_lim.in
+include ./simulation_lim.in
+
 
 
 # Define block regions for pulling
@@ -51,40 +53,50 @@ variable yhigh_bottom equal yhi-${block_thickness}+${eps} # min y val of upper b
 
 region ylow_region block INF INF INF ${pullblock_yhi} INF ${pullblock_zhi}
 region yhigh_region block INF INF ${pullblock_ylo} INF INF ${pullblock_zhi}
+region zhigh_region block INF INF INF INF ${diamond_zlo} INF
 group  ylow_group region ylow_region
 group  yhigh_group region yhigh_region
+group zhigh_group region zhigh_region
+
 
 # Freeze: set velocity and force to zero
 velocity ylow_group set 0 0 0
 velocity yhigh_group set 0 0 0
+velocity zhigh_group set 0 0 0
+
 fix freeze1 ylow_group setforce 0.0 0.0 0.0
 fix freeze2 yhigh_group setforce 0.0 0.0 0.0
+fix freeze3 zhigh_group setforce 0.0 0.0 0.0
 
 
-# Relax inner part (pattern) of sheet 
-# run 1000
-run  $(floor(0.5/dt)) # [t] = picoseconds
+
 
 
 # variable strain_speed equal "125*0.01" # define strain/stretch speed
-variable strain_speed_pct equal 0.2 # [% of pattern ylen per picoseconds]
-variable strain_speed equal v_strain_speed_pct*(v_pullblock_ylo-v_pullblock_yhi)
+variable strain_speed_pct equal 0.02 # [% of pattern ylen per picoseconds]
+variable strain_speed equal v_strain_speed_pct*(v_pullblock_ylo-v_pullblock_yhi) # Henrik used 1,25
 
-print strain_speed
-print ${strain_speed}
-print $(v_pullblock_ylo-v_pullblock_yhi)
+print "strain_speed: ${strain_speed}"
+# print $(v_pullblock_ylo-v_pullblock_yhi)
 
+
+
+
+
+# Relax inner part (pattern) of sheet 
+# run 100
+run  $(floor(0.5/dt)) # [t] = picoseconds
 
 # Release freezes
-unfix freeze1
-unfix freeze2
+# unfix freeze1
+# unfix freeze2
 
 # Move block in opposite direction
 fix ylow_move ylow_group move linear 0 $(-v_strain_speed/2) 0 units box
 fix yhigh_move yhigh_group move linear 0 $(v_strain_speed/2) 0 units box
 
 
-# run 2000
+# run 100
 # # run $(floor(3*125/dt/v_strain_speed)) # 60000
 run  $(floor(5/dt)) # [t] = picoseconds
 
