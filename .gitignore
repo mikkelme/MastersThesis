@@ -3,3 +3,7 @@
 
 # Data files 
 *.data
+
+
+# Folders
+/__pycache__

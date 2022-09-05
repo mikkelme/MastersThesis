@@ -8,7 +8,7 @@
 - Working on indexing system for graphene sheet 
 - Working on Lammps simulation pipeline
 
-### Week 35 (29/08 - 04/09)
+### Week 35 (29/08 - 04/09) - Working from Oslo
 - Finsihed indexing system for each atom
 - Created indexing system for positions between atoms (center elements)
 - Created framework for deleting atoms when jumping between center elements 
@@ -22,3 +22,7 @@
 - Unstable diamond problems seem to be fixed by having at least 2 unit cells of thickness
 - Dealing with: ERROR on proc 0: Neighbor list overflow, boost neigh_modify one (src/npair_full_bin_ghost.cpp:151). 
 - Seems like neigh_modify one 10000 solved the issue. Still have to understand what these commands are doing....
+
+
+#### Week 36 (05/09 - 04/09) - Working from Denmark 
+- 
