@@ -1,14 +1,6 @@
-// #include <cstdlib>    // atof function
-#include <iostream>   // input and output
-#include <fstream>    // ofstream
-// #include <time.h>     // Timing
-// #include <cmath>      // math functions
-// #include <vector>     // container
-
 #include "distance_class.hpp"
 
 
-using namespace std;
 
 
 
@@ -18,10 +10,14 @@ using namespace std;
 int main(int argc, char* argv[]){
 
 
-    cout << "lets go" << endl;
-
     // Initialize instance of distance_calculator     
-    DistanceCalculator my_calc;
+
+    string sheet_dump = "../sheet.data"; 
+    string lb_dump = "../sheet.data";  // lover block
+
+
+    DistanceCalculator my_calc(sheet_dump, lb_dump);
+
 
 
 
@@ -32,6 +28,6 @@ int main(int argc, char* argv[]){
 
 
 } // end of main 
-// g++ distance_calculator.cpp distance_class.cpp -Iibnclude -o dis_calc.out
 
-// g++ main.cpp src/Particle.cpp src/PenningTrap.cpp -Iinclude -larmadillo -llapack -lblas -o main.exe  
+
+// Compile as: g++ distance_calculator.cpp distance_class.cpp -o dis_calc.out
