@@ -8,6 +8,8 @@
 # Folders
 /__pycache__
 
+# C++
+*.o
 
 #Latex
 *.aux

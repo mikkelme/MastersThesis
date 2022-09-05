@@ -1,55 +1,27 @@
+# --- Basics --- # 
 units metal
 newton on #newtons 3rd law for pairs
 
 boundary m m m  
 
 atom_style atomic # coarse-grain liquids, solids, metals
-read_data ./lammps_sheet_and_block # read sheet and block from file
-
-# read_data ./lammps_sheet # read lattice from file
-# read_data ./lammps_diamond_block add append # append block
 
 
-#--- Dynamics ---#
-variable temp equal 5.0 # Kelvin
-
-mass * 12.0107 # "*": all types, [grams/mole]
-velocity all create ${temp} 5432373 dist gaussian
-
-neighbor            0.5 bin
-neigh_modify        delay 0 every 1 one 10000
-
-pair_style          airebo 6.4 1 1  # cutoff LJ_flag TORSION_flag cutoff_min
-pair_coeff          * * CH.airebo C # add H for hydrogren as 2nd particle
-
-fix                 nve all nve # (microcanonical)
-timestep            0.0005
-
-thermo              100
+# --- Read files --- #
+read_data ./lammps_sheet_and_block  # read sheet and block from file
+include ./simulation_lim.in         # region limits
 
 
-# fix 2 all balance 1000 1.05 shift xy 10 1.05 # balance number of particles computed on each processor 
-dump 1 all custom 1 sheet_and_block.data id type x y z vx vy vz
+# --- Regions and groups --- #
 
-#---- Stretch ---#
+# Pulling blocks
+variable block_elem equal 2                             # block thicknes in terms of matrix columns
+variable yscale equal 1.230                             # length per column
+variable block_thickness equal ${block_elem}*${yscale}  # physical length of end blocks
+variable eps equal 1e-3                                 # small number for avoiding spill of the freeze region
 
-# Define block regions for pulling
-
-# Include file with pullblock lim
-# include ./pullblock_lim.in
-include ./simulation_lim.in
-
-
-
-# Define block regions for pulling
-variable block_elem equal 2 # block thicknes in terms of matrix columns
-variable yscale equal 1.230 # length per column
-variable block_thickness equal ${block_elem}*${yscale} # physical length of end blocks
-variable eps equal 1e-3 # small number for avoiding spill of the freeze region
-
-variable ylow_top equal ${block_thickness}-${eps} # max y-val of lower block
-variable yhigh_bottom equal yhi-${block_thickness}+${eps} # min y val of upper block
-
+variable ylow_top equal ${block_thickness}-${eps}           # max y-val of lower block
+variable yhigh_bottom equal yhi-${block_thickness}+${eps}   # min y val of upper block
 
 region ylow_region block INF INF INF ${pullblock_yhi} INF ${pullblock_zhi}
 region yhigh_region block INF INF ${pullblock_ylo} INF INF ${pullblock_zhi}
@@ -59,62 +31,72 @@ group  yhigh_group region yhigh_region
 group zhigh_group region zhigh_region
 
 
-# Freeze: set velocity and force to zero
-velocity ylow_group set 0 0 0
-velocity yhigh_group set 0 0 0
-velocity zhigh_group set 0 0 0
 
-fix freeze1 ylow_group setforce 0.0 0.0 0.0
-fix freeze2 yhigh_group setforce 0.0 0.0 0.0
-fix freeze3 zhigh_group setforce 0.0 0.0 0.0
+# velocity ylow_group set 0 0 0
+# velocity yhigh_group set 0 0 0
+# velocity zhigh_group set 0 0 0
+
+# fix freeze1 ylow_group setforce 0.0 0.0 0.0
+# fix freeze2 yhigh_group setforce 0.0 0.0 0.0
+# fix freeze3 zhigh_group setforce 0.0 0.0 0.0
 
 
-# Region and groups for measuring contact
+# Contact area
 region sheet_region block INF INF ${pullblock_yhi} ${pullblock_ylo} INF ${pullblock_zhi}
 region lower_block_region block INF INF INF INF ${pullblock_zhi} ${diamond_zhi}
 
 group sheet_group region sheet_region
 group lower_block_group region lower_block_region
 
-dump 2 sheet_group custom 1 sheet.data id type x y z vx vy vz
-dump 3 lower_block_group custom 1 lower_block.data id type x y z vx vy vz
-
-
-
-
-# variable strain_speed equal "125*0.01" # define strain/stretch speed
-variable strain_speed_pct equal 0.02 # [% of pattern ylen per picoseconds]
-variable strain_speed equal v_strain_speed_pct*(v_pullblock_ylo-v_pullblock_yhi) # Henrik used 1,25
-
-print "strain_speed: ${strain_speed}"
-# print $(v_pullblock_ylo-v_pullblock_yhi)
+group moving_atoms subtract all ylow_group yhigh_group zhigh_group
 
 
 
 
 
-# Relax inner part (pattern) of sheet 
-run 10
-# run  $(floor(0.5/dt)) # [t] = picoseconds
 
-# Release freezes
+#--- Dynamics ---#
+variable temp equal 5.0 # Kelvin
+
+mass * 12.0107 # "*": all types, [grams/mole]
+velocity moving_atoms create ${temp} 5432373 dist gaussian
+
+neighbor            0.5 bin
+neigh_modify        delay 0 every 1 one 10000
+
+pair_style          airebo 6.4 1 1  # cutoff LJ_flag TORSION_flag cutoff_min
+pair_coeff          * * CH.airebo C # add H for hydrogren as 2nd particle
+
+timestep            0.0005
+
+thermo              100
+fix                 nve moving_atoms nve # (microcanonical)  #<--------- only apply on not froozen 
+
+
+# fix 2 all balance 1000 1.05 shift xy 10 1.05 # balance number of particles computed on each processor 
+dump 1 all custom 10 sheet_and_block.data id type x y z vx vy vz
+dump 2 sheet_group custom 100 sheet.data id type x y z vx vy vz
+dump 3 lower_block_group custom 100 lower_block.data id type x y z vx vy vz
+
+
+
+# ---  Relax inner part (pattern) of sheet --- #
+run  $(floor(4/dt)) # [t] = picoseconds
+
+# Release freezes 
 # unfix freeze1
 # unfix freeze2
 
-# Move block in opposite direction
-# fix ylow_move ylow_group move linear 0 $(-v_strain_speed/2) 0 units box
-# fix yhigh_move yhigh_group move linear 0 $(v_strain_speed/2) 0 units box
+# --- Stretch --- #
+variable strain_speed_pct equal 0.02 # [% of pattern ylen per picoseconds]
+variable strain_speed equal v_strain_speed_pct*(v_pullblock_ylo-v_pullblock_yhi) # Henrik used 1,25
+print "strain_speed: ${strain_speed}"
 
+# Move pulling block in opposite direction
+fix ylow_move ylow_group move linear 0 $(-v_strain_speed/2) 0 units box
+fix yhigh_move yhigh_group move linear 0 $(v_strain_speed/2) 0 units box
 
-
-
-# Measure area
-# compute ID group-ID group/group group2-ID keyword value ...
-
-
-# run 100
-# # run $(floor(3*125/dt/v_strain_speed)) # 60000
-# run  $(floor(5/dt)) # [t] = picoseconds
+run  $(floor(4/dt)) # [t] = picoseconds
 
 
 
