@@ -8,21 +8,57 @@ atom_style atomic # coarse-grain liquids, solids, metals
 variable eps equal 1e-6
 
 # ---- Create atoms --- #
+# Parameters
 variable a equal 5.43  # lattice spacing [Å]
-variable xlen equal 5.0  # [a]
-variable ylen equal 10.0  # [a]
-variable zlen equal 1.0  # [a]
+variable xmax equal 40.0  # [Å]
+variable ymax equal 40.0  # [Å]
+variable zmax equal 15.0  # [Å]
+
+# Number of unit cells to get closest to x-y-z-max
+variable xlen equal $(round((v_xmax + 1/4*v_a)/v_a))  # [a]
+variable ylen equal $(round((v_ymax + 1/4*v_a)/v_a))  # [a]
+variable zlen equal $(round((v_zmax)/v_a))  # [a]
+print "Max pos:  $(v_xlen*v_a - 1/4*v_a), $(v_ylen*v_a - 1/4*v_a), $(-v_zlen*v_a)"
 
 
-
+# Create lattice and simulation box
 lattice diamond ${a}
-region myreg block -${eps} ${xlen} -${eps} ${ylen} -${eps} ${zlen} units lattice
+region myreg block -${eps} ${xlen} -${eps} ${ylen} -${zlen} ${eps}  units lattice
 create_box 1 myreg
-
 create_atoms 1 box
-mass 1 28.0855 # Si atomic mass [u]
 
-# Next --> Implement Stillinger Weber potential 
+
+# Regions and groups
+# variable freeze_zhi equal $(-(v_zlen-1)*v_a + 0.5)
+# region freeze_region block INF INF INF INF INF ${freeze_zhi} units box
+region freeze_region block INF INF INF INF INF $(-v_zlen+1) units lattice
+group freeze_group region freeze_region
+group moving_atoms subtract all freeze_group
+
+# --- Dynamics --- #
+# parameters
+variable starttemp equal 1780 # [Kelvin]
+
+mass 1 28.0855 # Si atomic mass [u]
+velocity moving_atoms create ${starttemp} 5432373 dist gaussian
+
+neighbor            0.5 bin
+neigh_modify        delay 0 every 1 one 10000
+
+# Stillinger-Weber (SW)
+pair_style sw
+pair_coeff * * si.sw Si
+
+
+# pair_style          airebo 6.4 1 1  # cutoff LJ_flag TORSION_flag cutoff_min
+# pair_coeff          * * CH.airebo C # add H ofr hydrogren as2nd particle
+
+fix                 nve moving_atoms nve # (microcanonical)
+timestep            0.0005
+
+thermo              100
+
+
 
 dump 1 all atom 1 dump.data
-run 1
+run $(floor(0.5/dt))
