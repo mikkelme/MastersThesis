@@ -5,8 +5,9 @@
 
 // Constructor 
 // string sheet_dump_file, string lb_dump_file
-DistanceCalculator::DistanceCalculator(string sheet_dump, string lb_dump){
+DistanceCalculator::DistanceCalculator(string sheet_dump, string lb_dump, string outname_input){
     string line;
+    outname = outname_input;
 
     // --- Get info --- //
     // Sheet 
@@ -120,7 +121,12 @@ void DistanceCalculator::calculate_minimum_distance(){
 }
 
 
+void DistanceCalculator::write_distances(){
+    // Write to file 
 
+
+
+}
 
 
 void DistanceCalculator::readlines(ifstream &infile, string &line, int N){

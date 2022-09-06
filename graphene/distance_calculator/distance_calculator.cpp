@@ -12,10 +12,11 @@ int main(int argc, char* argv[]){
     // Filenames 
     string sheet_dump = "../sheet.data"; 
     string lb_dump = "../lower_block.data";  // lower block
+    string outname = "distances.txt";
 
 
     // Initialize instance of distance calculator class     
-    DistanceCalculator dis_calc(sheet_dump, lb_dump);
+    DistanceCalculator dis_calc(sheet_dump, lb_dump, outname);
 
 
 
