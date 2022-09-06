@@ -73,13 +73,16 @@ def main(sheet_dump, lower_block_dump):
         contact_pct = np.count_nonzero(min_distances < t, axis = 1)/lb_num_atoms
         plt.plot(timestep, contact_pct, "-o", markersize = 3, label = f"threshold = {t} Å")
 
+    plt.vlines(8000, 0, 0.2, linestyle = "--", color = "k", label = "Stretch begin")
     plt.legend()
+    plt.xlabel("timestep")
+    plt.ylabel("contact count (%)")
     plt.show()
 
     # print(distances)
 
 if __name__ == "__main__":
-    sheet_dump = "sheet.data"
-    lower_block_dump = "lower_block.data"
+    sheet_dump = "data/stretch_mul3x3_dis5_sheet.data"
+    lower_block_dump = "data/stretch_mul3x3_dis5_lower_block.data"
 
     main(sheet_dump, lower_block_dump)

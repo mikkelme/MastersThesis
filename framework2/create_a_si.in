@@ -1,0 +1,28 @@
+units metal
+newton on  # newtons 3rd law for pairs
+
+boundary m m m  
+atom_style atomic # coarse-grain liquids, solids, metals
+
+
+variable eps equal 1e-6
+
+# ---- Create atoms --- #
+variable a equal 5.43  # lattice spacing [Å]
+variable xlen equal 5.0  # [a]
+variable ylen equal 10.0  # [a]
+variable zlen equal 1.0  # [a]
+
+
+
+lattice diamond ${a}
+region myreg block -${eps} ${xlen} -${eps} ${ylen} -${eps} ${zlen} units lattice
+create_box 1 myreg
+
+create_atoms 1 box
+mass 1 28.0855 # Si atomic mass [u]
+
+# Next --> Implement Stillinger Weber potential 
+
+dump 1 all atom 1 dump.data
+run 1

@@ -28,3 +28,23 @@
 - Fixed the problem with multiple lammps "fix" giving warning: WARNING: One or more atoms are time integrated more than once (src/modify.cpp:292)
 - Made python code for calculation minimum distance for each sheet atom for quantification of contact area
 - Working on C++ version of above for better performance 
+- Problem with sheet getting sucked into the diamond block before even stretching the sheet. A 8% stretch did not change the number of contact particles visible. Trying with Silicium instead (following: https://www.nature.com/articles/nature20135) and stretching harder. 
+- In order to use Silicium I need to look into different potentials. 
+- For the contact number distance threshold I might need to look into potential equlibrium lengths. 
+
+
+
+
+
+
+
+
+
+
+## Things to remember 
+### From https://www.nature.com/articles/nature20135. 
+- Use this as reference for material choice and friction "experiment" set up. 
+ - It has been shown experimentally that monolayer graphene exhibits higher friction than multilayer graphene and graphite, and that this friction increases with continued sliding, but the mechanism behind this remains subject to debate.
+ -  It has long been conjectured that the true contact area between two rough bodies controls interfacial friction1. The true contact area, defined for example by the number of atoms within the range of interatomic forces, is difficult to visualize directly but characterizes the quantity of contact.
+ - The tip–graphene contact area is taken
+to be ms, where m is the number of graphene atoms that are in intimate contact with the tip atoms and s (2.77 Å2 per atom) is the atomic area of graphene (see Methods for details).
