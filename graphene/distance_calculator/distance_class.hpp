@@ -16,11 +16,17 @@ class DistanceCalculator
 {
 public:
   DistanceCalculator(string sheet_dump, string lb_dump); //Constructor
+  int read_timestep();
   void readlines(ifstream &infile, string &line, int N);
+  void calculate_minimum_distance();
+
   void alloc2D(double ***A, int m, int n);
   int timestep, sheet_num_atoms, lb_num_atoms; 
-  double **sheet_atom_pos;
-  double **lb_atom_pos;
+  // string sheet_dump, lb_dump;
+  ifstream sheet_infile, lb_infile;
+
+  double *distances;
+  double **sheet_atom_pos, **lb_atom_pos;
 
 
 

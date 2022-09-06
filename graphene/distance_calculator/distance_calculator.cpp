@@ -9,17 +9,30 @@
 
 int main(int argc, char* argv[]){
 
-
-    // Initialize instance of distance_calculator     
-
+    // Filenames 
     string sheet_dump = "../sheet.data"; 
-    string lb_dump = "../sheet.data";  // lover block
+    string lb_dump = "../lower_block.data";  // lower block
 
 
-    DistanceCalculator my_calc(sheet_dump, lb_dump);
+    // Initialize instance of distance calculator class     
+    DistanceCalculator dis_calc(sheet_dump, lb_dump);
 
 
 
+    while (dis_calc.read_timestep()){
+        cout << dis_calc.timestep << endl;
+        dis_calc.calculate_minimum_distance();
+        // dis_cal.write_distances();
+        // exit(0);
+
+    }
+
+
+
+
+
+    dis_calc.sheet_infile.close();
+    dis_calc.lb_infile.close();
 
 
 

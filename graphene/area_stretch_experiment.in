@@ -75,13 +75,14 @@ fix                 nve moving_atoms nve # (microcanonical)  #<--------- only ap
 
 # fix 2 all balance 1000 1.05 shift xy 10 1.05 # balance number of particles computed on each processor 
 dump 1 all custom 10 sheet_and_block.data id type x y z vx vy vz
-dump 2 sheet_group custom 100 sheet.data id type x y z vx vy vz
-dump 3 lower_block_group custom 100 lower_block.data id type x y z vx vy vz
+dump 2 sheet_group custom 100 sheet.data id x y z
+dump 3 lower_block_group custom 100 lower_block.data id x y z
 
 
 
 # ---  Relax inner part (pattern) of sheet --- #
-run  $(floor(4/dt)) # [t] = picoseconds
+run 300
+# run  $(floor(4/dt)) # [t] = picoseconds
 
 # Release freezes 
 # unfix freeze1
@@ -96,7 +97,7 @@ print "strain_speed: ${strain_speed}"
 fix ylow_move ylow_group move linear 0 $(-v_strain_speed/2) 0 units box
 fix yhigh_move yhigh_group move linear 0 $(v_strain_speed/2) 0 units box
 
-run  $(floor(4/dt)) # [t] = picoseconds
+# run  $(floor(4/dt)) # [t] = picoseconds
 
 
 
