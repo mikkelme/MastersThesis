@@ -27,7 +27,7 @@ print "Max pos:  $(v_xlen*v_a - 1/4*v_a), $(v_ylen*v_a - 1/4*v_a), $(-v_zlen*v_a
 lattice diamond ${a} 
 region myreg block -${eps} ${xlen} -${eps} ${ylen} -${zlen} ${eps}  units lattice 
 create_box 1 myreg 
-create_atoms 1 box 
+create_atoms 1 box
 
 # Regions and groups
 region freeze_region block INF INF INF INF INF $(-v_zlen+1) units lattice
@@ -63,7 +63,7 @@ dump 1 all atom 100 dump.data
 
 
 
-run $(floor(10/dt)) # relax  
+run $(floor(5/dt)) # relax  
 write_data crystal_Si_substrate.txt
 
 
