@@ -3,7 +3,9 @@
 
 # Data files 
 *.data
-
+*.bin
+*.txt
+*.lammps
 
 # Folders
 /__pycache__

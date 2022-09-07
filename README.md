@@ -48,3 +48,5 @@
  -  It has long been conjectured that the true contact area between two rough bodies controls interfacial friction1. The true contact area, defined for example by the number of atoms within the range of interatomic forces, is difficult to visualize directly but characterizes the quantity of contact.
  - The tip–graphene contact area is taken
 to be ms, where m is the number of graphene atoms that are in intimate contact with the tip atoms and s (2.77 Å2 per atom) is the atomic area of graphene (see Methods for details).
+- Talked to Henrik and we decided to change the diamond to Silicon. I am now following the set up shown in the article: https://www.nature.com/articles/nature20135#Sec8.
+- Thus I am working on the first part quenching liquid silicon to form the substrate (both for area vs stretch) but also as the layer under the graphene when press a tip into the sheet.
