@@ -42,6 +42,10 @@
 
 
 ## Things to remember 
+
+### Potentials
+
+
 ### From https://www.nature.com/articles/nature20135. 
 - Use this as reference for material choice and friction "experiment" set up. 
  - It has been shown experimentally that monolayer graphene exhibits higher friction than multilayer graphene and graphite, and that this friction increases with continued sliding, but the mechanism behind this remains subject to debate.
@@ -50,3 +54,4 @@
 to be ms, where m is the number of graphene atoms that are in intimate contact with the tip atoms and s (2.77 Å2 per atom) is the atomic area of graphene (see Methods for details).
 - Talked to Henrik and we decided to change the diamond to Silicon. I am now following the set up shown in the article: https://www.nature.com/articles/nature20135#Sec8.
 - Thus I am working on the first part quenching liquid silicon to form the substrate (both for area vs stretch) but also as the layer under the graphene when press a tip into the sheet.
+- Tune LJ potential to meet real adhesion energy and adhesion force. 

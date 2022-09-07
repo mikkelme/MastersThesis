@@ -6,6 +6,8 @@ def main(sheet_mat, substrate_file, pullblock = None, view_atoms = False, write 
     # Parameters
     sheet_substrate_distance = 6 # [Å]
     bottom_substrate_freeze = 5.5 # [Å]
+    contact_depth = 5 # [Å]
+    substrate_atomic_num = 14 # Si [atomic number]
     eps = 1e-6
 
     # --- Load atomic structures --- #
@@ -15,17 +17,11 @@ def main(sheet_mat, substrate_file, pullblock = None, view_atoms = False, write 
 
     sheet = build_graphene_sheet(sheet_mat, view_lattice = False, write=False)
     substrate = lammpsdata.read_lammps_data(substrate_file, Z_of_type=None, style='atomic', sort_by_id=True, units='metal')
-    ##### How to know which ones are frozen!?
-
-
-
-    substrate_atomic_num = 14
     substrate.set_atomic_numbers(np.ones(substrate.get_global_number_of_atoms())*substrate_atomic_num) # For visualization
+    ##### Deal with problem about which atoms was frozen during creation
     
 
-
-
-    # --- Translate relatively --- #
+    # --- Translate sheet relatively to substrate --- #
     # Find min and max positions
     minmax_sheet = np.array([np.min(sheet.get_positions(), axis = 0), np.max(sheet.get_positions(), axis = 0)]) 
     minmax_substrate = np.array([np.min(substrate.get_positions(), axis = 0), np.max(substrate.get_positions(), axis = 0)]) 
@@ -42,28 +38,28 @@ def main(sheet_mat, substrate_file, pullblock = None, view_atoms = False, write 
     # --- Merge into same object --- #
     merge = sheet + substrate
 
-    # --- Fix cell / simulation box --- #
+    # --- Fix cell/simulation box --- #
     # Align with origo
     minmax_merge = np.array([np.min(merge.get_positions(), axis = 0), np.max(merge.get_positions(), axis = 0)]) 
     trans_vec2 = -minmax_merge[0, :] + np.ones(3)*eps
     merge.translate(trans_vec2)
     merge.set_cell(minmax_merge[1,:] + trans_vec2 + np.ones(3)*eps)
 
-
     # --- Write information-- #
     # Update sheet and substrate limits
     minmax_sheet += trans_vec1 + trans_vec2 
-    minmax_substrate += trans_vec1 + trans_vec2 
+    minmax_substrate += trans_vec2 
 
     # Pullblock (PB) positions
     PB_len = pullblock/sheet_mat.shape[1] * (minmax_sheet[1,1] - minmax_sheet[0,1])
-    yhi = minmax_sheet[0,1] + PB_len + eps 
-    ylo = minmax_sheet[1,1] - PB_len - eps
-    zhi = (minmax_sheet[1,2] + minmax_substrate[0,2])/2
-    PB_lim = [yhi, ylo, zhi]
-    PB_varname = ['yhi', 'ylo', 'zhi']
+    PB_yhi = minmax_sheet[0,1] + PB_len + eps 
+    PB_ylo = minmax_sheet[1,1] - PB_len - eps
+    PB_zlo = (minmax_sheet[0,2] + minmax_substrate[1,2])/2
+    PB_lim = [PB_yhi, PB_ylo, PB_zlo]
+    PB_varname = ['yhi', 'ylo', 'zlo']
 
-    substrate_freeze_zhi = minmax_substrate[0,2] + bottom_substrate_freeze 
+    substrate_freeze_zhi = minmax_substrate[0,2] + bottom_substrate_freeze
+    substrate_contact_zlo = minmax_substrate[1,2] - contact_depth 
 
 
 
@@ -81,6 +77,8 @@ def main(sheet_mat, substrate_file, pullblock = None, view_atoms = False, write 
 
         # Substrate
         outfile.write(f'variable substrate_freeze_zhi equal {substrate_freeze_zhi}\n') 
+        outfile.write(f'variable substrate_contact_zlo equal {substrate_contact_zlo}\n') 
+
 
     
 

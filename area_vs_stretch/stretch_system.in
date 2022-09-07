@@ -12,41 +12,23 @@ read_data ../config_builder/config.txt  # read sheet and substrate
 include ../config_builder/config_info.in  # import variables
 
 # --- Regions and groups --- #
+# Sheet 
+region sheet_region block INF INF ${pullblock_yhi} ${pullblock_ylo} ${pullblock_zlo} INF
+
 # Pullblocks
-variable block_elem equal 2                             # block thicknes in terms of matrix columns
-variable yscale equal 1.230                             # length per column
-variable block_thickness equal ${block_elem}*${yscale}  # physical length of end blocks
-variable eps equal 1e-3                                 # small number for avoiding spill of the freeze region
+region PB_ylow_region  block INF INF INF ${pullblock_yhi} ${pullblock_zlo} INF
+region PB_yhigh_region block INF INF ${pullblock_ylo} INF ${pullblock_zlo} INF
+group PB_ylow region PB_ylow_region
+group PB_yhigh region PB_yhigh_region
 
-variable ylow_top equal ${block_thickness}-${eps}           # max y-val of lower block
-variable yhigh_bottom equal yhi-${block_thickness}+${eps}   # min y val of upper block
+# Substrate
+region substrate_freeze_region block INF INF INF INF INF ${substrate_freeze_zhi}
+region substrate_contact_region block INF INF INF INF ${substrate_contact_zlo} ${pullblock_zlo}
+group  substrate_freeze region substrate_freeze_region
+group  substrate_contact region substrate_contact_region
 
-region ylow_region block INF INF INF ${pullblock_yhi} INF ${pullblock_zhi}
-region yhigh_region block INF INF ${pullblock_ylo} INF INF ${pullblock_zhi}
-region zhigh_region block INF INF INF INF ${diamond_zlo} INF
-group  ylow_group region ylow_region
-group  yhigh_group region yhigh_region
-group zhigh_group region zhigh_region
-
-
-
-# velocity ylow_group set 0 0 0
-# velocity yhigh_group set 0 0 0
-# velocity zhigh_group set 0 0 0
-
-# fix freeze1 ylow_group setforce 0.0 0.0 0.0
-# fix freeze2 yhigh_group setforce 0.0 0.0 0.0
-# fix freeze3 zhigh_group setforce 0.0 0.0 0.0
-
-
-# Contact area
-region sheet_region block INF INF ${pullblock_yhi} ${pullblock_ylo} INF ${pullblock_zhi}
-region lower_block_region block INF INF INF INF ${pullblock_zhi} ${diamond_zhi}
-
-group sheet_group region sheet_region
-group lower_block_group region lower_block_region
-
-group moving_atoms subtract all ylow_group yhigh_group zhigh_group
+# Moving atoms
+group moving_atoms subtract all PB_ylow PB_yhigh substrate_freeze 
 
 
 
@@ -56,25 +38,40 @@ group moving_atoms subtract all ylow_group yhigh_group zhigh_group
 #--- Dynamics ---#
 variable temp equal 5.0 # Kelvin
 
-mass * 12.0107 # "*": all types, [grams/mole]
+mass 1 12.0107 # C
+mass 2 28.0855 # Si
+
 velocity moving_atoms create ${temp} 5432373 dist gaussian
 
 neighbor            0.5 bin
 neigh_modify        delay 0 every 1 one 10000
 
-pair_style          airebo 6.4 1 1  # cutoff LJ_flag TORSION_flag cutoff_min
-pair_coeff          * * CH.airebo C # add H for hydrogren as 2nd particle
+
+pair_style hybrid/overlay sw lj/cut 2.5 #tersoff 
+pair_coeff 2 2 sw ../potentials/si.sw Si Si # Substrate Si-Si
+pair_coeff 1 2 lj/cut 0.0096 3.0 #Interaction C-Si (Double check parameters)
+#### ^^ Working here ^^ #####
+quit
+pair_coeff 1 1 tersoff ../potential/C.tersoff C  # Sheet C-C
+
+
+# pair_style sw
+# pair_coeff * * ../potentials/si.sw Si
+
+
+# pair_style          airebo 6.4 1 1  # cutoff LJ_flag TORSION_flag cutoff_min
+# pair_coeff          * * CH.airebo C # add H for hydrogren as 2nd particle
 
 timestep            0.0005
 
 thermo              100
 fix                 nve moving_atoms nve # (microcanonical)  #<--------- only apply on not froozen 
 
-
 # fix 2 all balance 1000 1.05 shift xy 10 1.05 # balance number of particles computed on each processor 
-dump 1 all custom 10 sheet_and_block.data id type x y z vx vy vz
+
+dump 1 all custom 100 system.data id type x y z vx vy vz
 dump 2 sheet_group custom 100 sheet.data id x y z
-dump 3 lower_block_group custom 100 lower_block.data id x y z
+dump 3 lower_block_group custom 100 substrate_contact.data id x y z
 
 
 

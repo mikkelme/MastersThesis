@@ -46,19 +46,18 @@ neigh_modify        delay 0 every 1 one 10000
 
 # Stillinger-Weber (SW)
 pair_style sw
-pair_coeff * * si.sw Si
+pair_coeff * * ../potentials/si.sw Si
 
 timestep            0.0005
 # timestep            0.001
-fix                 nve moving_atoms nve # (microcanonical)
-# fix                 nvt moving_atoms nvt temp ${Tstart} ${Tstart} 0.1
+
+# fix                 nve moving_atoms nve # (microcanonical)
+fix                 nvt moving_atoms nvt temp ${temp} ${temp} 1.0
 
 
 thermo              100
 thermo_style custom step time temp 
 dump 1 all atom 100 dump.data
-
-
 
 
 
