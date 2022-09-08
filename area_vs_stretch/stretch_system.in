@@ -11,9 +11,13 @@ atom_style atomic # coarse-grain liquids, solids, metals
 read_data ../config_builder/config.txt  # read sheet and substrate
 include ../config_builder/config_info.in  # import variables
 
+# read_data ../substrate/crystal_Si_substrate.txt # For testing
+
+
 # --- Regions and groups --- #
 # Sheet 
 region sheet_region block INF INF ${pullblock_yhi} ${pullblock_ylo} ${pullblock_zlo} INF
+group sheet region sheet_region
 
 # Pullblocks
 region PB_ylow_region  block INF INF INF ${pullblock_yhi} ${pullblock_zlo} INF
@@ -34,29 +38,35 @@ group moving_atoms subtract all PB_ylow PB_yhigh substrate_freeze
 
 
 
-
 #--- Dynamics ---#
 variable temp equal 5.0 # Kelvin
 
 mass 1 12.0107 # C
 mass 2 28.0855 # Si
 
+# velocity sheet create ${te7mp} 5432373 dist gaussian
 velocity moving_atoms create ${temp} 5432373 dist gaussian
+
 
 neighbor            0.5 bin
 neigh_modify        delay 0 every 1 one 10000
 
 
-pair_style hybrid/overlay sw lj/cut 2.5 #tersoff 
-pair_coeff 2 2 sw ../potentials/si.sw Si Si # Substrate Si-Si
-pair_coeff 1 2 lj/cut 0.0096 3.0 #Interaction C-Si (Double check parameters)
-#### ^^ Working here ^^ #####
-quit
-pair_coeff 1 1 tersoff ../potential/C.tersoff C  # Sheet C-C
+
+# pair_style hybrid lj/cut 2.5 #sw
+# pair_coeff 1 1 lj/cut 1.1 3.0         
+# pair_coeff 1 2 lj/cut 1.1 3.0     
+# pair_coeff 2 2 lj/cut 1.1 3.0         
+
+# Is this right?
+pair_style hybrid sw lj/cut 2.5 tersoff
+pair_coeff * * tersoff ../potentials/SiC_1989.tersoff C NULL
+pair_coeff 1 2 lj/cut 0.0096 3.0         # Interaction C-Si (Double check parameters)
+pair_coeff * * sw ../potentials/si.sw NULL Si   # Substrate Si-Si
 
 
 # pair_style sw
-# pair_coeff * * ../potentials/si.sw Si
+# pair_coeff * * ../potentials/si.sw Si 
 
 
 # pair_style          airebo 6.4 1 1  # cutoff LJ_flag TORSION_flag cutoff_min
@@ -65,35 +75,37 @@ pair_coeff 1 1 tersoff ../potential/C.tersoff C  # Sheet C-C
 timestep            0.0005
 
 thermo              100
+thermo_style custom step time temp 
 fix                 nve moving_atoms nve # (microcanonical)  #<--------- only apply on not froozen 
 
 # fix 2 all balance 1000 1.05 shift xy 10 1.05 # balance number of particles computed on each processor 
 
-dump 1 all custom 100 system.data id type x y z vx vy vz
-dump 2 sheet_group custom 100 sheet.data id x y z
-dump 3 lower_block_group custom 100 substrate_contact.data id x y z
+dump 1 all custom 1 system.data id type x y z vx vy vz
+# dump 2 sheet custom 100 sheet.data id x y z
+# dump 3 substrate custom 100 substrate_contact.data id x y z
 
 
 
 # ---  Relax inner part (pattern) of sheet --- #
-run 300
-# run  $(floor(4/dt)) # [t] = picoseconds
+run  $(floor(2/dt)) # [t] = picoseconds
 
-# Release freezes 
-# unfix freeze1
-# unfix freeze2
 
 # --- Stretch --- #
-variable strain_speed_pct equal 0.02 # [% of pattern ylen per picoseconds]
+# Parameters
+# variable strain_speed_pct equal 0.02 # [% of pattern ylen per picoseconds]
+variable strain_speed_pct equal 0.03 # [% of pattern ylen per picoseconds]
+
 variable strain_speed equal v_strain_speed_pct*(v_pullblock_ylo-v_pullblock_yhi) # Henrik used 1,25
 print "strain_speed: ${strain_speed}"
 
 # Move pulling block in opposite direction
-fix ylow_move ylow_group move linear 0 $(-v_strain_speed/2) 0 units box
-fix yhigh_move yhigh_group move linear 0 $(v_strain_speed/2) 0 units box
+fix ylow_move  PB_ylow move linear 0 $(-v_strain_speed/2) 0 units box
+fix yhigh_move PB_yhigh move linear 0 $(v_strain_speed/2) 0 units box
 
 # run  $(floor(4/dt)) # [t] = picoseconds
-
+group PB_ylow region PB_ylow_region
+group PB_yhigh region PB_yhigh_region
+run  $(floor(4/dt)) # [t] = picoseconds
 
 
 

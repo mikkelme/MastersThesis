@@ -247,6 +247,10 @@ def build_pull_blocks(mat, pullblock = 6, sideblock = 0):
 
 
 if __name__ == "__main__":
+    multiples = (2, 4)
+    unitsize = (3,5)
+    mat = pop_up_pattern(multiples, unitsize, view_lattice = True)
+
 
     # multiples = (6, 12)
     # unitsize = (9,11)
@@ -255,8 +259,8 @@ if __name__ == "__main__":
     # build_graphene_sheet(mat, view_lattice = False, write=True)
     # exit()
 
-    exit()
-    mat = np.ones((10, 10)) # Why does (5, 12) not work?
+    # exit()
+    # mat = np.ones((10, 10)) # Why does (5, 12) not work?
     # trans = np.array([[2,0], [3,1], [3,2], [3,3], [3,4], [4,3], [5,4]])
     # mat[:,0] = 0
     # trans = np.array([[20,0]])
@@ -266,7 +270,7 @@ if __name__ == "__main__":
    
 
    
-    build_graphene_sheet(mat, view_lattice = True, write = True)
+    build_graphene_sheet(mat, view_lattice = True, write = False)
 
    
 

@@ -4,7 +4,7 @@ from graphene_sheet.build_graphene_sheet import *
 
 def main(sheet_mat, substrate_file, pullblock = None, view_atoms = False, write = False):
     # Parameters
-    sheet_substrate_distance = 6 # [Å]
+    sheet_substrate_distance = 5 # [Å]
     bottom_substrate_freeze = 5.5 # [Å]
     contact_depth = 5 # [Å]
     substrate_atomic_num = 14 # Si [atomic number]
@@ -20,7 +20,9 @@ def main(sheet_mat, substrate_file, pullblock = None, view_atoms = False, write 
     substrate.set_atomic_numbers(np.ones(substrate.get_global_number_of_atoms())*substrate_atomic_num) # For visualization
     ##### Deal with problem about which atoms was frozen during creation
     
-
+    # print(substrate.get_velocities())
+    # lammpsdata.write_lammps_data('./test.txt', substrate, velocities = True)
+    # exit()
     # --- Translate sheet relatively to substrate --- #
     # Find min and max positions
     minmax_sheet = np.array([np.min(sheet.get_positions(), axis = 0), np.max(sheet.get_positions(), axis = 0)]) 
@@ -68,7 +70,7 @@ def main(sheet_mat, substrate_file, pullblock = None, view_atoms = False, write 
         view(merge)
 
     if write:
-        lammpsdata.write_lammps_data('./config.txt', merge)
+        lammpsdata.write_lammps_data('./config.txt', merge, velocities = True)
         outfile = open('config_info.in', 'w')
 
         # Pullblock
@@ -96,8 +98,8 @@ def main(sheet_mat, substrate_file, pullblock = None, view_atoms = False, write 
 if __name__ == "__main__":
     multiples = (2, 4)
     unitsize = (5,7)
-    mat = pop_up_pattern(multiples, unitsize, view_lattice = False)
+    mat = pop_up_pattern(multiples, unitsize, view_lattice = True)
 
-
+    exit()
     substrate_file = "../substrate/crystal_Si_substrate.txt"
     main(mat, substrate_file, pullblock = 6, view_atoms = False, write = True)

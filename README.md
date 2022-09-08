@@ -29,9 +29,11 @@
 - Made python code for calculation minimum distance for each sheet atom for quantification of contact area
 - Working on C++ version of above for better performance 
 - Problem with sheet getting sucked into the diamond block before even stretching the sheet. A 8% stretch did not change the number of contact particles visible. Trying with Silicium instead (following: https://www.nature.com/articles/nature20135) and stretching harder. 
-- In order to use Silicium I need to look into different potentials. 
+- In order to use Silicium I need to look into different potentials: using sw for Si-Si, tersoff for C-C and LJ for Si-C.
 - For the contact number distance threshold I might need to look into potential equlibrium lengths. 
-
+- Worked on anamorphous Silicon. Parked the problem for now and went with crystal-Si as substrate first, but got the original code from the authors of the previous mentioned articles in the mean time. Remember to go back to this, and remember to acknowledge them. 
+- Working on more streamlined framework.
+- Work on adding more space between cuts in pop-up pattern to make it stronger. 
 
 
 
@@ -43,7 +45,8 @@
 
 ## Things to remember 
 
-### Potentials
+### General stuff
+- Active learning for generating datasets entries while training
 
 
 ### From https://www.nature.com/articles/nature20135. 
