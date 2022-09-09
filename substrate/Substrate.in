@@ -1,0 +1,45 @@
+log		a-Si.lammps
+shell		rm log.lammps
+
+units           metal
+boundary       	p s p 
+atom_style      atomic
+lattice         diamond 5.430953 
+
+region		box block 0 80  -6 6  0 80
+create_box      1 box
+create_atoms    1 box 
+
+pair_style      sw
+pair_coeff      * * Si.sw Si
+mass            * 28.086
+
+thermo          1000
+thermo_style    custom step temp pxx pyy pzz pe lx ly lz vol
+compute		1 all pe/atom
+
+shell		mkdir Keeping
+dump            1 all cfg 10000 Keeping/cfg.si.* id type xs ys zs type c_1
+dump_modify     1 element Si
+dump		2 all custom 10000 Keeping/dump.si.* id type x y z c_1
+velocity        all create 1000.0 4928459 rot yes dist gaussian
+fix             1 all nvt temp 1000 1000 0.1
+run		50000
+
+unfix		1
+fix             1 all nvt temp 1000 2000 0.1
+run             100000
+
+unfix		1
+fix             1 all nvt temp 2000 2000 0.1
+run             50000
+
+unfix		1
+undump		1
+undump		2
+fix		1 all nvt temp 2000 0.1 0.1
+shell		mkdir Cooling
+dump            1 all cfg 10000 Cooling/cfg.* id type xs ys zs type c_1
+dump_modify     1 element Si
+dump            2 all custom 10000 Cooling/dump.* id type x y z c_1
+run		200000

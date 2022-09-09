@@ -1,0 +1,63 @@
+units metal
+newton on  # newtons 3rd law for pairs
+
+boundary p p m  
+atom_style atomic
+
+
+# ---- Create atoms --- #
+# Parameters
+variable a equal 5.43  # lattice spacing [Å]
+variable xmax equal 100 # [Å]
+variable ymax equal 100 # [Å]
+variable zmax equal 15 # [Å]
+
+# Number of unit cells to get closest to x-y-z-max
+variable xlen equal $(round((v_xmax + 1/4*v_a)/v_a))  # [a]
+variable ylen equal $(round((v_ymax + 1/4*v_a)/v_a))  # [a]
+variable zlen equal $(round((v_zmax)/v_a))  # [a]
+print "xlen, ylen, zlen:  ($(v_xlen), $(v_ylen), $(v_zlen))"
+print "Max pos:  $(v_xlen*v_a - 1/4*v_a), $(v_ylen*v_a - 1/4*v_a), $(-v_zlen*v_a)"
+# quit # Check dimenstions before running
+
+
+
+variable a equal 5.430953   # lattice spacing [Å]
+lattice diamond ${a} 
+region	simreg block 0 ${xlen}  0 ${ylen} -${zlen} 0 units lattice
+
+create_box 1 simreg 
+create_atoms 1 box
+
+# --- Dynamics --- #
+# parameters
+variable temp equal 300.0 # [Kelvin]
+
+# Stillinger-Weber (SW)
+pair_style sw
+pair_coeff * * ../potentials/si.sw Si
+mass 1 28.0855 # Si atomic mass [u]
+
+velocity all create ${temp} 5432371 dist gaussian
+
+
+neighbor            0.5 bin
+neigh_modify        delay 0 every 1 one 10000
+
+timestep            0.0005
+
+fix                 nvt all nvt temp ${temp} ${temp} 0.1
+
+thermo              100
+thermo_style custom step time temp 
+dump 1 all atom 100 dump.data
+
+
+
+
+run $(floor(5/dt)) # relax  
+write_data crystal_Si_substrate.txt
+
+
+
+
