@@ -166,7 +166,7 @@ def pop_up_pattern(multiples, unitsize = (5,7), view_lattice = False):
     unit2_axis =  np.array([5 + size[0]//2 + size[1]//2,  size[0]//4 + size[1]//4 - size[1]]) # 2nd unit relative to ref
 
 
-    sp = 0
+    sp = 2
     unit2_axis =  np.array([3 + size[0]//2 + size[1]//2, 1 + size[0]//4 + size[1]//4 - size[1]]) + (2*sp, -sp)
 
     # # Testing indexes
@@ -210,17 +210,15 @@ def pop_up_pattern(multiples, unitsize = (5,7), view_lattice = False):
     #     for i in range(sp, size[1] + sp):
     #         line2.append(ref + [i+2, -(i + (i+1)//2 + 3)])
 
-       
 
-
-      if up:
+    if up:
         for i in range((size[0]-1)//2):
             line1.append(ref - [i+1, (i+1)//2 ])
             line1.append(ref + [i + 1, i//2 + 1])
 
-        for i in range(size[1]):
-            # line2.append(ref + [i+2, -(i + i//2 + 3)])
-            line2.append(ref + [i+sp+1, -(i + i//2 + sp+1)])
+        for i in range(sp, size[1] + sp):
+            line2.append(ref + [i+1, -(i + (i+1)//2 + 1)])
+
             print("up")
 
        
@@ -231,8 +229,7 @@ def pop_up_pattern(multiples, unitsize = (5,7), view_lattice = False):
 
 
         for i in range(sp, size[1] + sp):
-            # line2.append(ref + [i+2, -(i + (i+1)//2 + 3)])
-            line2.append(ref + [i+2, -(i + (i+1)//2 + 3)])
+              line2.append(ref + [i+2, -(i + i//2 + 3)]) # Change to be correct with sp = 0 <------
             print("down")
 
     print(line2)
