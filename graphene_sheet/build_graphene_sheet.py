@@ -151,6 +151,7 @@ def pop_up_pattern(multiples, unitsize = (5,7), view_lattice = False):
     # --- Settings --- #
     mat = np.ones((multiples[0]*10, multiples[1]*10)) # lattice matrix
     ref = np.array([0, 0]) # reference center element
+    ref = np.array([2,15])
 
     size = unitsize # Size of pop_up pattern
     # Note: Only odd values allowed and |size[1]-size[0]| = 2, 6, 10...
@@ -165,6 +166,9 @@ def pop_up_pattern(multiples, unitsize = (5,7), view_lattice = False):
     unit2_axis =  np.array([5 + size[0]//2 + size[1]//2,  size[0]//4 + size[1]//4 - size[1]]) # 2nd unit relative to ref
 
 
+    sp = 0
+    unit2_axis =  np.array([3 + size[0]//2 + size[1]//2, 1 + size[0]//4 + size[1]//4 - size[1]]) + (2*sp, -sp)
+
     # # Testing indexes
     # inputs = [(3,1), (7,1), (11,1), (1,3), (5,3), (3, 5), (1, 7), (5, 7), (1, 11), (5, 11), (9,11), (1,13), (3,13), (5,13), (7,13), (9,13), (11,13)]
     # expected  = [[6, -1], [8,0], [10,1], [6, -3], [8,-2], [8, -4], [8, -6], [10, -5], [10, -9], [12, -8], [14, -7],[11,-10], [12,-10], [13,-9], [14,-9], [15,-8], [16,-8]]
@@ -178,19 +182,47 @@ def pop_up_pattern(multiples, unitsize = (5,7), view_lattice = False):
     #     print(f"size = {size} => {unit2_axis}, must be {expected[i]} ({check})" )
  
     # exit()
+    # print("axis1", axis1)
+    # print("axis2", axis2)
+  
+
  
  
     # Create unit1 and unit2
     up = ref[0]%2 == 0
     line1 = [ref]
     line2 = []
-    if up:
+    # if up:
+    #     for i in range((size[0]-1)//2):
+    #         line1.append(ref - [i+1, (i+1)//2 ])
+    #         line1.append(ref + [i + 1, i//2 + 1])
+
+    #     for i in range(size[1]):
+    #         line2.append(ref + [i+2, -(i + i//2 + 3)])
+
+       
+    # else:
+    #     for i in range((size[0]-1)//2):
+    #         line1.append(ref + [i+1, (i+1)//2 ])
+    #         line1.append(ref - [i + 1, i//2 + 1])
+
+
+    #     for i in range(sp, size[1] + sp):
+    #         line2.append(ref + [i+2, -(i + (i+1)//2 + 3)])
+
+       
+
+
+      if up:
         for i in range((size[0]-1)//2):
             line1.append(ref - [i+1, (i+1)//2 ])
             line1.append(ref + [i + 1, i//2 + 1])
 
         for i in range(size[1]):
-            line2.append(ref + [i+2, -(i + i//2 + 3)])
+            # line2.append(ref + [i+2, -(i + i//2 + 3)])
+            line2.append(ref + [i+sp+1, -(i + i//2 + sp+1)])
+            print("up")
+
        
     else:
         for i in range((size[0]-1)//2):
@@ -198,9 +230,13 @@ def pop_up_pattern(multiples, unitsize = (5,7), view_lattice = False):
             line1.append(ref - [i + 1, i//2 + 1])
 
 
-        for i in range(size[1] ):
+        for i in range(sp, size[1] + sp):
+            # line2.append(ref + [i+2, -(i + (i+1)//2 + 3)])
             line2.append(ref + [i+2, -(i + (i+1)//2 + 3)])
-       
+            print("down")
+
+    print(line2)
+    exit()
     del_unit1 = np.array(line1 + line2)
     del_unit2 = np.array(line1 + line2) + unit2_axis
 
@@ -210,16 +246,20 @@ def pop_up_pattern(multiples, unitsize = (5,7), view_lattice = False):
     range1 = int(np.ceil(np.dot(np.array([m,n]), axis1)/np.dot(axis1, axis1))) + 1      # project top-right corner on axis 1 vector
     range2 = int(np.ceil(np.dot(np.array([0,n]), axis2)/np.dot(axis2, axis2)/2))  + 1   # project top-left corner on axis 2 vector
 
+    mat = delete_atoms(mat, center_elem_trans_to_atoms(del_unit1, full = True))
+    mat = delete_atoms(mat, center_elem_trans_to_atoms(del_unit2, full = True))
 
-    # Translate and cut out
-    for i in range(range1):
-        for j in range(-range2, range2+1):
-            vec = i*axis1 + j*axis2 
-            del_map1 = del_unit1 + vec
-            del_map2 = del_unit2 + vec
 
-            mat = delete_atoms(mat, center_elem_trans_to_atoms(del_map1, full = True))
-            mat = delete_atoms(mat, center_elem_trans_to_atoms(del_map2, full = True))
+
+    # # Translate and cut out
+    # for i in range(range1):
+    #     for j in range(-range2, range2+1):
+    #         vec = i*axis1 + j*axis2 
+    #         del_map1 = del_unit1 + vec
+    #         del_map2 = del_unit2 + vec
+
+    #         mat = delete_atoms(mat, center_elem_trans_to_atoms(del_map1, full = True))
+    #         mat = delete_atoms(mat, center_elem_trans_to_atoms(del_map2, full = True))
 
 
 
@@ -270,7 +310,7 @@ if __name__ == "__main__":
    
 
    
-    build_graphene_sheet(mat, view_lattice = True, write = False)
+    # build_graphene_sheet(mat, view_lattice = True, write = False)
 
    
 
