@@ -33,8 +33,8 @@
 - For the contact number distance threshold I might need to look into potential equlibrium lengths. 
 - Worked on anamorphous Silicon. Parked the problem for now and went with crystal-Si as substrate first, but got the original code from the authors of the previous mentioned articles in the mean time. Remember to go back to this, and remember to acknowledge them. 
 - Working on more streamlined framework.
-- Work on adding more space between cuts in pop-up pattern to make it stronger. 
-
+- Added option to have more space in the pop-up pattern
+- Made C++ code for calculating contact distance and writing to file which is read and processed in a python script.
 
 
 
