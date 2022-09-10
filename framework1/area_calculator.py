@@ -70,7 +70,7 @@ def main(sheet_dump, lower_block_dump):
 
     threshold = [4, 3, 2, 1.5, 1.25]
     for t in threshold:
-        contact_pct = np.count_nonzero(min_distances < t, axis = 1)/lb_num_atoms
+        contact_pct = np.count_nonzero(min_distances < t, axis = 1)/sheet_num_atoms
         plt.plot(timestep, contact_pct, "-o", markersize = 3, label = f"threshold = {t} Å")
 
     plt.vlines(8000, 0, 0.2, linestyle = "--", color = "k", label = "Stretch begin")
