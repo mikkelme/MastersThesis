@@ -18,11 +18,8 @@ def main(sheet_mat, substrate_file, pullblock = None, view_atoms = False, write 
     sheet = build_graphene_sheet(sheet_mat, view_lattice = False, write=False)
     substrate = lammpsdata.read_lammps_data(substrate_file, Z_of_type=None, style='atomic', sort_by_id=True, units='metal')
     substrate.set_atomic_numbers(np.ones(substrate.get_global_number_of_atoms())*substrate_atomic_num) # For visualization
-    ##### Deal with problem about which atoms was frozen during creation
     
-    # print(substrate.get_velocities())
-    # lammpsdata.write_lammps_data('./test.txt', substrate, velocities = True)
-    # exit()
+    
     # --- Translate sheet relatively to substrate --- #
     # Find min and max positions
     minmax_sheet = np.array([np.min(sheet.get_positions(), axis = 0), np.max(sheet.get_positions(), axis = 0)]) 
@@ -96,9 +93,9 @@ def main(sheet_mat, substrate_file, pullblock = None, view_atoms = False, write 
 
 
 if __name__ == "__main__":
-    multiples = (2, 4)
+    multiples = (4, 5)
     unitsize = (5,7)
-    mat = pop_up_pattern(multiples, unitsize, view_lattice = False)
+    mat = pop_up_pattern(multiples, unitsize, sp = 2, view_lattice = False)
     # mat[:, :] = 1
     substrate_file = "../substrate/crystal_Si_substrate.txt"
     main(mat, substrate_file, pullblock = 6, view_atoms = True, write = True)
