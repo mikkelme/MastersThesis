@@ -52,29 +52,22 @@ neighbor            0.5 bin
 neigh_modify        delay 0 every 1 one 10000
 
 
-
 # pair_style hybrid lj/cut 2.5 #sw
 # pair_coeff 1 1 lj/cut 1.1 3.0         
 # pair_coeff 1 2 lj/cut 1.1 3.0     
 # pair_coeff 2 2 lj/cut 1.1 3.0         
 
 # Is this right?
-pair_style hybrid sw lj/cut 2.5 tersoff
-pair_coeff * * tersoff ../potentials/SiC_1989.tersoff C NULL
-pair_coeff 1 2 lj/cut 0.0096 3.0         # Interaction C-Si (Double check parameters)
-pair_coeff * * sw ../potentials/si.sw NULL Si   # Substrate Si-Si
-
-# Airebo version
-# pair_style hybrid sw lj/cut 2.5  airebo 6.4 1 1
-# pair_coeff * * airebo ../potentials/CH.airebo C NULL
+# pair_style hybrid sw lj/cut 2.5 tersoff
+# pair_coeff * * tersoff ../potentials/SiC_1989.tersoff C NULL
 # pair_coeff 1 2 lj/cut 0.0096 3.0         # Interaction C-Si (Double check parameters)
 # pair_coeff * * sw ../potentials/si.sw NULL Si   # Substrate Si-Si
 
-
-
-# pair_style sw
-# pair_coeff * * ../potentials/si.sw Si 
-
+# Airebo version
+pair_style hybrid sw lj/cut 2.5 airebo 6.4 1 1
+pair_coeff * * airebo ../potentials/CH.airebo C NULL
+pair_coeff 1 2 lj/cut 0.008909 3.26      # Interaction C-Si (Double check parameters)
+pair_coeff * * sw ../potentials/si.sw NULL Si   # Substrate Si-Si
 
 
 
@@ -95,23 +88,37 @@ dump 3 substrate_contact custom 100 substrate_contact.data id x y z
 # ---  Relax inner part (pattern) of sheet --- #
 run  $(floor(8/dt)) # [t] = picoseconds
 
-
 # --- Stretch --- #
 # Parameters
 # variable strain_speed_pct equal 0.02 # [% of pattern ylen per picoseconds]
+# variable strain_speed_pct equal 0.03 # [% of pattern ylen per picoseconds]
 variable strain_speed_pct equal 0.03 # [% of pattern ylen per picoseconds]
-
+variable strain_max_pct equal 0.25 
 variable strain_speed equal v_strain_speed_pct*(v_pullblock_ylo-v_pullblock_yhi) # Henrik used 1,25
+variable stretch_time equal $(floor(v_strain_max_pct/v_strain_speed_pct/dt))
 print "strain_speed: ${strain_speed}"
+
+
+# variable stretch_pct equal $(time)
+# print ${stretch_pct}
+# variable s equal stride(0,10000,10)
+# fix extra all print v_s "strecth_pct = $(time*v_strain_speed_pct)"
 
 # Move pulling block in opposite direction
 fix ylow_move  PB_ylow move linear 0 $(-v_strain_speed/2) 0 units box
 fix yhigh_move PB_yhigh move linear 0 $(v_strain_speed/2) 0 units box
 
 # run  $(floor(4/dt)) # [t] = picoseconds
-group PB_ylow region PB_ylow_region
-group PB_yhigh region PB_yhigh_region
-run  $(floor(12/dt)) # [t] = picoseconds
+print "Stretching, timesteps: ${stretch_time}"
+run ${stretch_time}
+
+unfix ylow_move
+unfix yhigh_move
+fix ylow_move  PB_ylow move linear 0 $(v_strain_speed/2) 0 units box
+fix yhigh_move PB_yhigh move linear 0 $(-v_strain_speed/2) 0 units box
+
+print "Reverse stretch, timesteps: ${stretch_time}"
+run ${stretch_time}
 
 
 

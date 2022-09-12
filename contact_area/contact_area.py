@@ -35,21 +35,18 @@ def read_distance_file(filename):
 
 
 
-def plot_contact_area(timestep, min_distances, sheet_num_atoms):
-    # plt.plot(timestep, np.min(min_distances - np.mean(min_distances[0]), axis = -1))
-    plt.plot(min_distances[0])
-    return 
-
-
+def plot_contact_area(timestep, min_distances, sheet_num_atoms, stretching_timestep = None):
     threshold = [4.5, 4, 3.5, 3, 2.5]
-    plt.figure(num=1, dpi=80, facecolor='w', edgecolor='k')
+    plt.figure(num=2, dpi=80, facecolor='w', edgecolor='k')
     for t in threshold:
         contact_pct = np.count_nonzero(min_distances < t, axis = 1)/sheet_num_atoms
         plt.plot(timestep, contact_pct, "-o", markersize = 3, label = f"threshold = {t} Å")
-
-    plt.vlines(16000, 0, 0.2, linestyle = "--", color = "k", label = "Stretch begin")
-    plt.legend()
-    plt.xlabel("timestep", fontsize = 14)
+    ax = plt.gca()
+    ylim = ax.get_ylim()
+    if stretching_timestep != None:
+        plt.autoscale(False)
+        plt.vlines(stretching_timestep, 0, ylim[1], linestyle = "--", color = "k", label = "Stretch begin")
+    plt.xlabel("Timestep", fontsize = 14)
     plt.ylabel("contact count (%)", fontsize = 14)
     plt.legend(fontsize = 13)
 
@@ -59,11 +56,11 @@ def plot_contact_area(timestep, min_distances, sheet_num_atoms):
 
 
 if __name__ == "__main__":
-    sheet_dump = "../area_vs_stretch/airebo_long_sheet.data";
-    sub_dump = "../area_vs_stretch/airebo_long_substrate_contact.data";
+    sheet_dump = "../area_vs_stretch/sheet.data";
+    sub_dump = "../area_vs_stretch/substrate_contact.data";
     filename = "./distances.txt"
 
-    run_calculation(sheet_dump, sub_dump, filename); exit();
+    run_calculation(sheet_dump, sub_dump, filename);
     timestep, min_distances, sheet_num_atoms = read_distance_file(filename)
-    plot_contact_area(timestep, min_distances, sheet_num_atoms)
+    plot_contact_area(timestep, min_distances, sheet_num_atoms, stretching_timestep = 10000)
     plt.show()

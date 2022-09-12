@@ -24,7 +24,7 @@
 - Seems like neigh_modify one 10000 solved the issue. Still have to understand what these commands are doing....
 
 
-#### Week 36 (05/09 - 04/09) - Working from Denmark 
+#### Week 36 (05/09 - 11/09) - Working from Denmark 
 - Fixed the problem with multiple lammps "fix" giving warning: WARNING: One or more atoms are time integrated more than once (src/modify.cpp:292)
 - Made python code for calculation minimum distance for each sheet atom for quantification of contact area
 - Working on C++ version of above for better performance 
@@ -37,6 +37,11 @@
 - Made C++ code for calculating contact distance and writing to file which is read and processed in a python script.
 
 
+
+#### Week 37 (12/09 - 18/09) - Working from Denmark 
+- Added code for measuring normal position relative to sheet: normal buckling.
+- Playing around with different potentials. Having SW for Si-Si bonds in substrate, LJ for intemolecular forces in C-Si bonds and Tersoff or Airebo for C-C bonds.
+- Measureing contact forces and normal buckling when strething the sheet. Playing around with different starting heights and having the pulling blocks integrated or fixed during relaxation. 
 
 
 

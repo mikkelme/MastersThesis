@@ -79,13 +79,6 @@ int DistanceCalculator::read_timestep(){
     for (size_t i=0; i<sheet_num_atoms; i++){
         // id x y z
         sheet_infile >> sheet_id[i] >> sheet_atom_pos[i][0] >> sheet_atom_pos[i][1] >> sheet_atom_pos[i][2]; //  >> vx >> vy >> vz;
-       
-        // cout << "id: " << id 
-        // << ", pos: [" << sheet_atom_pos[i][0] 
-        // << ", " << sheet_atom_pos[i][1] 
-        // << ", " << sheet_atom_pos[i][2] 
-        // << "]" << endl;
-        
     }
 
 
@@ -93,13 +86,6 @@ int DistanceCalculator::read_timestep(){
     for (size_t i=0; i<sub_num_atoms; i++){
         // id x y z
         sub_infile >> sub_id[i] >> sub_atom_pos[i][0] >> sub_atom_pos[i][1] >> sub_atom_pos[i][2]; //  >> vx >> vy >> vz;
-        
-        // cout << "id: " << id 
-        // << ", pos: [" << sub_atom_pos[i][0] 
-        // << ", " << sub_atom_pos[i][1] 
-        // << ", " << sub_atom_pos[i][2] 
-        // << "]" << endl;
-        
     }
 
     // Add linebreaks
@@ -115,8 +101,8 @@ int DistanceCalculator::read_timestep(){
 void DistanceCalculator::calculate_minimum_distance(){
     double min_sqrdis, sqrdis;
     int min_sheet_id, min_sub_id;
-    double SH[3];
-    double SU[3];
+    // double SH[3];
+    // double SU[3];
     for (size_t i=0; i<sheet_num_atoms; i++){
         min_sqrdis = 1e5;
         for (size_t j=0; j< sub_num_atoms; j++){
@@ -125,30 +111,26 @@ void DistanceCalculator::calculate_minimum_distance(){
                      (sheet_atom_pos[i][2] - sub_atom_pos[j][2])*(sheet_atom_pos[i][2] - sub_atom_pos[j][2]);
 
             if (sqrdis <  min_sqrdis){
-                min_sheet_id = sheet_id[i];
-                min_sub_id = sub_id[j];
-                SH[0] = sheet_atom_pos[i][0];
-                SH[1] = sheet_atom_pos[i][1];
-                SH[2] = sheet_atom_pos[i][2];
-                SU[0] = sub_atom_pos[j][0];
-                SU[1] = sub_atom_pos[j][1];
-                SU[2] = sub_atom_pos[j][2];
-
+                // min_sheet_id = sheet_id[i];
+                // min_sub_id = sub_id[j];
+                // SH[0] = sheet_atom_pos[i][0];
+                // SH[1] = sheet_atom_pos[i][1];
+                // SH[2] = sheet_atom_pos[i][2];
+                // SU[0] = sub_atom_pos[j][0];
+                // SU[1] = sub_atom_pos[j][1];
+                // SU[2] = sub_atom_pos[j][2];
 
                 min_sqrdis = sqrdis;
             }
         }
     
         distances[i] = sqrt(min_sqrdis);
-        if (timestep == 0){
-            cout << min_sheet_id << "-->" << min_sub_id;
-            cout << ": " << SH[0] << ", " << SH[1]  << ", " << SH[2];
-            cout << " --> " << SU[0] << ", " << SU[1]  << ", " << SU[2];
-            cout << " => " << distances[i] << endl;
-            exit(0);
-
-
-        }
+        // if (timestep == 0){
+        //     cout << min_sheet_id << "-->" << min_sub_id;
+        //     cout << ": " << SH[0] << ", " << SH[1]  << ", " << SH[2];
+        //     cout << " --> " << SU[0] << ", " << SU[1]  << ", " << SU[2];
+        //     cout << " => " << distances[i] << endl;
+        // }
 
     }
     
