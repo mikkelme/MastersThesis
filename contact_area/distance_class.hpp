@@ -30,6 +30,7 @@ public:
 
 
   double *distances;
+  int *sheet_id, *sub_id;
   double **sheet_atom_pos, **sub_atom_pos;
 
 

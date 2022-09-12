@@ -3,6 +3,7 @@ sys.path.append('../') # parent folder: MastersThesis
 from plot_set import *
 import numpy as np
 import matplotlib.pyplot as plt
+from contact_area import plot_contact_area
 
 def main(sheet_dump, stretching_timestep = None):
     sheet_infile = open(sheet_dump, "r")
@@ -30,29 +31,42 @@ def main(sheet_dump, stretching_timestep = None):
     print()
     timestep = np.array(timestep)
     zpos = np.array(zpos)
-
-    # plt.figure(num=0, dpi=80, facecolor='w', edgecolor='k')
-    # zmean = np.mean(zpos, axis = -1) - np.mean(zpos[0])
-    # plt.plot(timestep, zmean)
-
-    # if stretching_timestep != None:
-    #     plt.vlines(stretching_timestep, np.min(zmean), np.max(zmean), linestyle = "--", color = "k", label = "Stretch begin")
-    # plt.xlabel("timestep")
-    # plt.ylabel(" ...")
-    # plt.legend()
+    plt.plot(timestep, np.min(zpos - np.mean(zpos[0]), axis = -1))
+    return 
 
 
-    plt.figure(num=1, dpi=80, facecolor='w', edgecolor='k')
-    quartiles = [0.75, 0.5, 0.25]
+    plt.figure(num=0, dpi=80, facecolor='w', edgecolor='k')
+    quartiles = [0.01, 0.05, 0.1, 0.25, 0.5]
+
     z0 = np.mean(zpos[0])
-    plt.plot(timestep, np.max(zpos, axis=-1) - z0, label = "Max")
+    zpos -= z0
+
+    plt.plot(timestep, np.max(zpos, axis=-1), color =  color_cycle(1), label = "Max")
     for i, quartile in enumerate(quartiles):
-        plt.plot(timestep, np.quantile(zpos, quartile, axis = -1) - z0, label = f"Quartile = {quartile}")
-    plt.plot(timestep, np.min(zpos, axis=-1) - z0, label = "Min")
+        color = color_cycle(i+2)
+        if quartile == 0.5:
+            plt.plot(timestep, np.quantile(zpos, quartile, axis = -1), color = color, label = "Median")
+        else:
+            plt.plot(timestep, np.quantile(zpos, 1-quartile, axis = -1), color = color, label = f"Quartile = {quartile}, {1-quartile}")
+            plt.plot(timestep, np.quantile(zpos, quartile, axis = -1), color = color)
+
+
+
+    plt.plot(timestep, np.min(zpos, axis=-1), color = color_cycle(0), label = "Min")
     if stretching_timestep != None:
-        plt.vlines(stretching_timestep, np.min(zmean), np.max(zmean), linestyle = "--", color = "k", label = "Stretch begin")
-    plt.legend()
-    plt.show()
+        plt.vlines(stretching_timestep, np.min(zpos), np.max(zpos), linestyle = "--", color = "k", label = "Stretch begin")
+    plt.xlabel("Timestep", fontsize=14)
+    plt.ylabel("Relative sheet z-position, ($z - z_0$)", fontsize=14)
+    plt.legend(fontsize = 13)
+
+
+    min_distance = zpos + 5.05
+    plot_contact_area(timestep, min_distance, sheet_num_atoms)
+    print(sheet_num_atoms)
+
+
+
+
 
 
   
@@ -62,5 +76,8 @@ def main(sheet_dump, stretching_timestep = None):
 
 if __name__ == "__main__":
     stretching_timestep = 16000
-    sheet_dump = "../area_vs_stretch/sheet.data";
+    sheet_dump = "../area_vs_stretch/airebo_long_sheet.data";
+    # sheet_dump = "../area_vs_stretch/tersoff_long_sheet.data";
+
     main(sheet_dump, stretching_timestep = stretching_timestep)
+    plt.show()
