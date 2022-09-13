@@ -62,5 +62,5 @@ if __name__ == "__main__":
 
     run_calculation(sheet_dump, sub_dump, filename);
     timestep, min_distances, sheet_num_atoms = read_distance_file(filename)
-    plot_contact_area(timestep, min_distances, sheet_num_atoms, stretching_timestep = 10000)
+    plot_contact_area(timestep, min_distances, sheet_num_atoms, stretching_timestep = 16000)
     plt.show()
