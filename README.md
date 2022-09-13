@@ -46,6 +46,7 @@
 - Meeting with Henrik. Make longer simulations of area vs stretch and hysteresis to avoid noise from oscillations. Agreed to try out a force when stretching instead of fix move. Thus we can lower the sheet down in equlibrium distance and then stretch such that the sheet have the change to lift it self up if possible. 
 - Next goal is to try difference stretch levels and then drag the whole sheet across the substrate measuring dynamic friction coefficient. If the stretching effefct can lower the coefficient we might be able to make a nanomachine which translates normal force into stretch force and thus perhaps achieve negative friction coefficients (exiting stuff, lets see).
 - Proposed pipeline for above study. Make a simulation where the sheet relaxes and falls into contact with the substrate (in vacuum). Then we stretch and export restart files during the process. The restart files can then be used for different stretching starting points for friction measurements. 
+- Made updated procedure for stretching and contracting sheet with ouput of stretch pct and forces acting on the pull blocks. Implemented on sheet in vaccum for now for hysteresis plots.
 
 
 
