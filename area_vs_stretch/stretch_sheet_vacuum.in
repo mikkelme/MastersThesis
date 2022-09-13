@@ -20,7 +20,7 @@ region PB_yhigh_region block INF INF ${pullblock_ylo} INF INF INF
 group PB_ylow region PB_ylow_region
 group PB_yhigh region PB_yhigh_region
 
-# Moving atoms
+# # Moving atoms
 group moving_atoms subtract all PB_ylow PB_yhigh
 
 
@@ -37,26 +37,6 @@ neigh_modify        delay 0 every 1 one 10000
 # Airebo 
 pair_style airebo 6.4 1 1
 pair_coeff * * ../potentials/CH.airebo C # C-C
-quit
-
-# Play around to understand syntax
-# pair_style hybrid lj/cut 2.5 #sw
-# pair_coeff 1 1 lj/cut 1.1 3.0         
-# pair_coeff 1 2 lj/cut 1.1 3.0     
-# pair_coeff 2 2 lj/cut 1.1 3.0         
-
-# Tersoff
-# pair_style hybrid sw lj/cut 2.5 tersoff
-# pair_coeff * * tersoff ../potentials/SiC_1989.tersoff C NULL
-# pair_coeff 1 2 lj/cut 0.0096 3.0         # Interaction C-Si (Double check parameters)
-# pair_coeff * * sw ../potentials/si.sw NULL Si   # Substrate Si-Si
-
-# Airebo 
-pair_style hybrid sw lj/cut 2.5 airebo 6.4 1 1
-pair_coeff * * airebo ../potentials/CH.airebo C NULL # C-C
-pair_coeff 1 2 lj/cut 0.008909 3.26      # Interaction C-Si (Double check parameters)
-pair_coeff * * sw ../potentials/si.sw NULL Si   # Substrate Si-Si
-
 
 timestep            0.0005
 thermo              100
@@ -66,49 +46,78 @@ fix                 nve moving_atoms nve # (microcanonical)
 
 
 # --- Dump --- #
-dump 1 all custom 1 system.data id type x y z vx vy vz
-dump 2 sheet custom 100 sheet.data id x y z
-dump 3 substrate_contact custom 100 substrate_contact.data id x y z
+dump 1 all custom 100 sheet_vacuum.data id type x y z vx vy vz
 
-
-# ---  Relax inner part (pattern) of sheet --- #
-# run  $(floor(10/dt)) # [t] = picoseconds
+# ---  Relax --- #
+# run  $(floor(2/dt)) # [t] = picoseconds
 
 # --- Stretch --- #
 # Parameters
-variable strain_speed_pct equal 0.03 # [% of pattern ylen per picoseconds]
-variable strain_max_pct equal 0.20 
-variable strain_speed equal v_strain_speed_pct*(v_pullblock_ylo-v_pullblock_yhi) # Henrik used 1,25
-variable stretch_time equal $(floor(v_strain_max_pct/v_strain_speed_pct/dt))
-print "strain_speed: ${strain_speed}"
+variable stretch_speed_pct equal 0.05 # [% of pattern ylen per picoseconds]
+variable stretch_max_pct equal 0.20 
+variable stretch_speed equal v_stretch_speed_pct*(v_pullblock_ylo-v_pullblock_yhi) # Henrik used 1,25
+variable stretch_time equal $(floor(v_stretch_max_pct/v_stretch_speed_pct/dt))
+print "Stretch speed time: $(v_stretch_time) timesteps, $(v_stretch_time*dt) ps"
+
 
 # Output: timestep, stretch_pct
-print "# timestep, stretch_pct" file stretch_pct.txt
-fix stretch_pct all print 100 "$(step), $(time*v_strain_speed_pct)" screen no append stretch_pct.txt
+# print "# timestep, stretch_pct" file stretch_pct.txt
+# fix stretch_pct all print 100 "$(step), $(time*v_stretch_speed_pct)" screen no append stretch_pct.txt
 ## ^^^Fix this to start at right time and reverse
 
 
-quit
 
 # Stretch sheet
-fix ylow_move  PB_ylow move linear 0 $(-v_strain_speed/2) 0 units box
-fix yhigh_move PB_yhigh move linear 0 $(v_strain_speed/2) 0 units box
+# fix ylow_freeze PB_ylow aveforce NULL NULL 0
+# fix yhigh_freeze PB_yhigh aveforce NULL NULL 0
+fix ylow_move  PB_ylow move linear 0 $(-v_stretch_speed/2) NULL units box
+fix yhigh_move PB_yhigh move linear 0 $(v_stretch_speed/2) NULL units box
 
 print "Stretching, timesteps: ${stretch_time}"
 run ${stretch_time}
  
+quit
 # Pause 
 unfix ylow_move
 unfix yhigh_move
 run  $(floor(1/dt)) # [t] = picoseconds
 
 # Conpress sheet
-fix ylow_move  PB_ylow move linear 0 $(v_strain_speed/2) 0 units box
-fix yhigh_move PB_yhigh move linear 0 $(-v_strain_speed/2) 0 units box
+fix ylow_move  PB_ylow move linear 0 $(v_stretch_speed/2) 0 units box
+fix yhigh_move PB_yhigh move linear 0 $(-v_stretch_speed/2) 0 units box
 
 print "Reverse stretch, timesteps: ${stretch_time}"
 run ${stretch_time}
 
+
+
+
+# variable maxforce equal 0.05 # [eV/Å]
+# variable force_speed equal 0.5# [ev/(Å*ps)]
+# variable force_start_step equal $(step)
+# variable pullforce equal v_force_speed*(step-v_force_start_step)*dt
+# variable pull_time equal $(floor(v_maxforce/v_force_speed/dt))
+# print "Pull time: $(v_pull_time) timesteps, $(v_pull_time*dt) ps"
+
+# Write pull force to file
+# print "# timestep, pull force [eV/Å]" file pullforce.txt
+# fix pullforce all print 100 "$(step), $(v_pullforce)" screen no append pullforce.txt
+
+
+# fix ylow_force PB_ylow addforce 0 -$(v_maxforce) 0
+# fix yhigh_force PB_yhigh addforce 0 $(v_maxforce) 0
+
+
+# fix ylow_freeze PB_ylow aveforce 0 NULL 0
+# fix yhigh_freeze PB_yhigh aveforce 0 NULL 0
+# fix ylow_force PB_ylow aveforce NULL -$(v_maxforce) NULL
+# fix yhigh_force PB_yhigh aveforce NULL $(v_maxforce) NULL
+
+# run  $(floor(5/dt)) # [t] = picoseconds
+# run  ${pull_time} # [t] = picoseconds
+
+
+# quit
 
 
 

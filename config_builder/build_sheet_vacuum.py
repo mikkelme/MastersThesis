@@ -1,4 +1,4 @@
-from build_sheet_substrate import *
+from build_config import *
 
 
 def build_sheet_vaccum(sheet_mat, pullblock = None):

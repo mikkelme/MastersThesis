@@ -69,14 +69,14 @@ def build_config(sheet_mat, substrate_file, pullblock = None, mode = "all", view
         if view_atoms: view(merge)
         if write:
             lammpsdata.write_lammps_data('./sheet_substrate.txt', merge, velocities = True)
-            outfile = open('sheet_substate_info.in', 'w')
+            outfile = open('sheet_substrate_info.in', 'w')
     elif mode == "sheet":
         sheet.translate(trans_vec2)
         sheet.set_cell(minmax_merge[1,:] + trans_vec2 + np.ones(3)*eps)
 
         if view_atoms: view(sheet)
         if write:
-            lammpsdata.write_lammps_data('./sheet_substrate.txt', sheet, velocities = False)
+            lammpsdata.write_lammps_data('./sheet.txt', sheet, velocities = False)
             outfile = open('sheet_info.in', 'w')
 
     elif mode == "substrate":
@@ -90,7 +90,6 @@ def build_config(sheet_mat, substrate_file, pullblock = None, mode = "all", view
         return
 
 
-    exit()
     # Pullblock
     for i in range(len(PB_lim)):
         outfile.write(f'variable pullblock_{PB_varname[i]} equal {PB_lim[i]}\n') 
@@ -111,4 +110,4 @@ if __name__ == "__main__":
     mat = pop_up_pattern(multiples, unitsize, sp = 2, view_lattice = False)
     # mat[:, :] = 1
     substrate_file = "../substrate/crystal_Si_substrate.txt"
-    build_config(mat, substrate_file, pullblock = 6, mode = "sheet", view_atoms = True, write = True)
+    build_config(mat, substrate_file, pullblock = 6, mode = "all", view_atoms = True, write = True)

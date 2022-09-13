@@ -6,8 +6,8 @@ atom_style atomic # coarse-grain liquids, solids, metals
 
 
 # --- Read files --- #
-read_data ../config_builder/config.txt      # sheet and substrate
-include ../config_builder/config_info.in    # import variables
+read_data ../config_builder/sheet_substrate.txt      # sheet and substrate
+include ../config_builder/sheet_substrate_info.in    # import variables
 
 # --- Regions and groups --- #
 # Sheet 
@@ -73,32 +73,32 @@ dump 1 all custom 1 system.data id type x y z vx vy vz
 dump 2 sheet custom 100 sheet.data id x y z
 dump 3 substrate_contact custom 100 substrate_contact.data id x y z
 
-
+quit
 # ---  Relax inner part (pattern) of sheet --- #
-# run  $(floor(10/dt)) # [t] = picoseconds
+run  $(floor(10/dt)) # [t] = picoseconds
 
 # --- Stretch --- #
 # Parameters
-variable strain_speed_pct equal 0.03 # [% of pattern ylen per picoseconds]
-variable strain_max_pct equal 0.20 
-variable strain_speed equal v_strain_speed_pct*(v_pullblock_ylo-v_pullblock_yhi) # Henrik used 1,25
-variable stretch_time equal $(floor(v_strain_max_pct/v_strain_speed_pct/dt))
-print "strain_speed: ${strain_speed}"
+variable stretch_speed_pct equal 0.05 # [% of pattern ylen per picoseconds]
+variable stretch_max_pct equal 0.20 
+variable stretch_speed equal v_stretch_speed_pct*(v_pullblock_ylo-v_pullblock_yhi) # Henrik used 1,25
+variable stretch_time equal $(floor(v_stretch_max_pct/v_stretch_speed_pct/dt))
+print "Stretch speed time: $(v_stretch_time) timesteps, $(v_stretch_time*dt) ps"
 
 # Output: timestep, stretch_pct
-print "# timestep, stretch_pct" file stretch_pct.txt
-fix stretch_pct all print 100 "$(step), $(time*v_strain_speed_pct)" screen no append stretch_pct.txt
+# print "# timestep, stretch_pct" file stretch_pct.txt
+# fix stretch_pct all print 100 "$(step), $(time*v_strain_speed_pct)" screen no append stretch_pct.txt
 ## ^^^Fix this to start at right time and reverse
 
 
-quit
 
 # Stretch sheet
-fix ylow_move  PB_ylow move linear 0 $(-v_strain_speed/2) 0 units box
-fix yhigh_move PB_yhigh move linear 0 $(v_strain_speed/2) 0 units box
+fix ylow_move  PB_ylow move linear 0 $(-v_strain_speed/2) NULL units box
+fix yhigh_move PB_yhigh move linear 0 $(v_strain_speed/2) NULL units box
 
 print "Stretching, timesteps: ${stretch_time}"
 run ${stretch_time}
+quit
  
 # Pause 
 unfix ylow_move
