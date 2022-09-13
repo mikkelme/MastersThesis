@@ -145,7 +145,7 @@ variable actual_stretch_max equal $(v_stretch_pct)
 variable stretch_pct equal v_actual_stretch_max
 print "Reverse stretch, timesteps: $(v_pause_after)"
 run  $(floor(v_pause_after/dt)) # [t] = picoseconds
-
+## ^^Did NOT see the strech_pct = 0 in the file!!!! CHECK that
 
 
 
