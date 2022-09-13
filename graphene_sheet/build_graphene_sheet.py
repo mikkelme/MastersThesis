@@ -61,8 +61,8 @@ def build_graphene_sheet(mat, view_lattice = False, write = False):
     if view_lattice: 
         view(atoms)
 
-    if write:
-        lammpsdata.write_lammps_data('./lammps_sheet', atoms)
+    if write != False:
+        lammpsdata.write_lammps_data(write, atoms)
 
     return atoms
 
@@ -250,15 +250,16 @@ def build_pull_blocks(mat, pullblock = 6, sideblock = 0):
 
 
 if __name__ == "__main__":
-    multiples = (4, 8)
-    unitsize = (3, 5)
-    mat = pop_up_pattern(multiples, unitsize, sp = 2, view_lattice = True)
+    multiples = (4, 5)
+    unitsize = (5,7)
+    mat = pop_up_pattern(multiples, unitsize, sp = 2, view_lattice = False)
+    mat, pullblock = build_pull_blocks(mat, pullblock = 6, sideblock = 0)
+    build_graphene_sheet(mat, view_lattice = True, write = './sheet_vacuum.txt')
 
 
     # multiples = (6, 12)
     # unitsize = (9,11)
     # mat = pop_up_pattern(multiples, unitsize,  view_lattice = True)
-    # build_pull_blocks(mat, sideblock = 0)
     # build_graphene_sheet(mat, view_lattice = False, write=True)
     # exit()
 
@@ -273,7 +274,6 @@ if __name__ == "__main__":
    
 
    
-    # build_graphene_sheet(mat, view_lattice = True, write = False)
 
    
 

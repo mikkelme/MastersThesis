@@ -42,6 +42,10 @@
 - Added code for measuring normal position relative to sheet: normal buckling.
 - Playing around with different potentials. Having SW for Si-Si bonds in substrate, LJ for intemolecular forces in C-Si bonds and Tersoff or Airebo for C-C bonds.
 - Measureing contact forces and normal buckling when strething the sheet. Playing around with different starting heights and having the pulling blocks integrated or fixed during relaxation. 
+- Stretching the sheet after letting it freely contact with the substrate gives less clear data for the contact area vs stretch. 
+- Meeting with Henrik. Make longer simulations of area vs stretch and hysteresis to avoid noise from oscillations. Agreed to try out a force when stretching instead of fix move. Thus we can lower the sheet down in equlibrium distance and then stretch such that the sheet have the change to lift it self up if possible. 
+- Next goal is to try difference stretch levels and then drag the whole sheet across the substrate measuring dynamic friction coefficient. If the stretching effefct can lower the coefficient we might be able to make a nanomachine which translates normal force into stretch force and thus perhaps achieve negative friction coefficients (exiting stuff, lets see).
+- Proposed pipeline for above study. Make a simulation where the sheet relaxes and falls into contact with the substrate (in vacuum). Then we stretch and export restart files during the process. The restart files can then be used for different stretching starting points for friction measurements. 
 
 
 

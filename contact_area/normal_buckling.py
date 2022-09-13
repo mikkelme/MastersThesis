@@ -8,7 +8,6 @@ from contact_area import plot_contact_area
 def main(sheet_dump, stretching_timestep = None):
     sheet_infile = open(sheet_dump, "r")
 
-
     timestep = []
     zpos = []
     while True: # Timestep loop

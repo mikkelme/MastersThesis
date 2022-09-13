@@ -6,41 +6,38 @@ atom_style atomic # coarse-grain liquids, solids, metals
 
 
 # --- Read files --- #
-read_data ../config_builder/config.txt      # sheet and substrate
-include ../config_builder/config_info.in    # import variables
+read_data ../config_builder/sheet_vacuum.txt      # sheet 
+include ../config_builder/info_sheet_vacuum.in    # import variables
 
 # --- Regions and groups --- #
 # Sheet 
-region sheet_region block INF INF ${pullblock_yhi} ${pullblock_ylo} ${pullblock_zlo} INF
+region sheet_region block INF INF ${pullblock_yhi} ${pullblock_ylo} INF INF
 group sheet region sheet_region
 
 # Pullblocks
-region PB_ylow_region  block INF INF INF ${pullblock_yhi} ${pullblock_zlo} INF
-region PB_yhigh_region block INF INF ${pullblock_ylo} INF ${pullblock_zlo} INF
+region PB_ylow_region  block INF INF INF ${pullblock_yhi} INF INF
+region PB_yhigh_region block INF INF ${pullblock_ylo} INF INF INF
 group PB_ylow region PB_ylow_region
 group PB_yhigh region PB_yhigh_region
 
-# Substrate
-region substrate_freeze_region block INF INF INF INF INF ${substrate_freeze_zhi}
-region substrate_contact_region block INF INF INF INF ${substrate_contact_zlo} ${pullblock_zlo}
-group  substrate_freeze region substrate_freeze_region
-group  substrate_contact region substrate_contact_region
-
 # Moving atoms
-group moving_atoms subtract all PB_ylow PB_yhigh substrate_freeze 
+group moving_atoms subtract all PB_ylow PB_yhigh
 
 
 #--- Dynamics ---#
 variable temp equal 5.0 # Kelvin
 
 mass 1 12.0107 # C
-mass 2 28.0855 # Si
 
 velocity moving_atoms create ${temp} 5432373 dist gaussian
 
 neighbor            0.5 bin
 neigh_modify        delay 0 every 1 one 10000
 
+# Airebo 
+pair_style airebo 6.4 1 1
+pair_coeff * * ../potentials/CH.airebo C # C-C
+quit
 
 # Play around to understand syntax
 # pair_style hybrid lj/cut 2.5 #sw
