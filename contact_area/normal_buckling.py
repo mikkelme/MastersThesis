@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from contact_area import plot_contact_area
 from hysteresis import *
+from utilities import *
 
 
 def get_normal_buckling(sheet_dump, quartiles = [0.01, 0.05, 0.1, 0.25, 0.50]):
@@ -87,76 +88,62 @@ def get_normal_buckling(sheet_dump, quartiles = [0.01, 0.05, 0.1, 0.25, 0.50]):
         
     return timestep, Q_var, Q    
     
-def get_stretch_timestamps(stretch_file):
-    timestep, stretch_pct, ylow_force, yhigh_force = read_stretch_file(stretch_file)
-    delta_stretch = stretch_pct[1:] - stretch_pct[:-1] 
-    diff = np.zeros((2, len(timestep)-2))
-    diff[0] = stretch_pct[1:-1] - stretch_pct[:-2]    # backwards
-    diff[1] = stretch_pct[2:] - stretch_pct[1:-1] # forward
 
-
-    stretch_timestaps = np.argwhere(np.logical_and(np.min(diff, axis = 0) == 0, np.max(diff, axis = 0) != 0))[0] + 1
-    # A = np.linspace(0,10, 11)**2
-    # back = A[1:-1] - A[:-2]
-    # forward = A[2:] - A[1:-1]
-
-    
-    # exit()
-    # diff = np.array([stretch_pct[1:-1] - stretch_pct[:-2], stretch_pct[1:] - stretch_pct[:-1]]) # (backwards, forward)
-    
-    # test = np.argwhere(np.logical_and(diff.min() == 0, diff.max()!= 0))
-    # for i in range(len(timestep)-2):
-    #     print(diff[0,i], diff[1,i])
-
-
-    for i in range(1, len(timestep)-2):
-        diff_forward = stretch_pct[i+1] - stretch_pct[i]
-        diff_backwards = stretch_pct[i] - stretch_pct[i-1]
-
-        # print(diff[0,i-1], diff[1,i-1], diff_backwards, diff_forward)
-
-        diff = np.array((diff_forward, diff_backwards))
-        if diff.min() == 0 and diff.max() != 0:
-            print(i)
-
-
-        
-    # constant_domains = np.argwhere(delta_stretch == 0)
-    # jumps = constant_domains[1:] - constant_domains[:-1] 
-    # print(constant_domains)
-    exit()
 
 
 def normal_buckling(sheet_dump, stretch_file = None):
     # --- Get data --- #
     timestep, Q_var, Q = get_normal_buckling(sheet_dump)
-    if stretch_file != None:
-        get_stretch_timestamps(stretch_file)
-
-
+    if stretch_file != None: timestamps = get_stretch_timestamps(stretch_file)
 
     # --- Plotting --- #
     # Relative to starting point
-    plt.figure(num=0, dpi=80, facecolor='w', edgecolor='k')
-    for i in range(Q.shape[0]):
-        color = color_cycle(np.min((i, Q.shape[0]-i-1)))
-        plt.plot(timestep, Q[i], color = color, label = Q_var[i])
 
-    plt.xlabel("Timestep", fontsize=14)
-    plt.ylabel("Relative sheet z-position to starting position, ($z - z_0$)", fontsize=14)
-    plt.legend(fontsize = 13)
+    ylabel = "Relative sheet z-position to starting position, ($z - z_0$)"
+    for i in range(2):
+        if i > 0:
+            if len(Q)%2: # Relative to median
+                med_idx = len(Q)//2
+                Q -= Q[med_idx]
+                ylabel = "Relative sheet z-position to smedian, ($z - z_{med}$)"
+            else:
+                continue
 
-    # Relative to median
-    if len(Q)%2: 
-        med_idx = len(Q)//2
-        plt.figure(num=1, dpi=80, facecolor='w', edgecolor='k')
+        plt.figure(num=i, dpi=80, facecolor='w', edgecolor='k')
         for i in range(Q.shape[0]):
             color = color_cycle(np.min((i, Q.shape[0]-i-1)))
-            plt.plot(timestep, Q[i] - Q[med_idx], color = color, label = Q_var[i])
-
+            plt.plot(timestep, Q[i], color = color, label = Q_var[i])
+        if stretch_file != None:
+            ax = plt.gca()
+            ylim = ax.get_ylim()
+            plt.autoscale(False)
+            for timestamp in timestamps:
+                vline = plt.vlines(timestamp, ylim[0], ylim[1], linestyle = "--", color = "k")
+            vline.set_label("Timestamps")
         plt.xlabel("Timestep", fontsize=14)
-        plt.ylabel("Relative sheet z-position to smedian, ($z - z_{med}$)", fontsize=14)
-        plt.legend(fontsize = 13)
+        plt.ylabel(ylabel, fontsize=14)
+        plt.legend(loc ='center left', bbox_to_anchor =(1, 0.5), fontsize = 13)
+        plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+
+
+    # # Relative to median
+    # if len(Q)%2: 
+    #     med_idx = len(Q)//2
+    #     plt.figure(num=1, dpi=80, facecolor='w', edgecolor='k')
+    #     for i in range(Q.shape[0]):
+    #         color = color_cycle(np.min((i, Q.shape[0]-i-1)))
+    #         plt.plot(timestep, Q[i] - Q[med_idx], color = color, label = Q_var[i])
+    #     if stretch_file != None:
+    #         ax = plt.gca()
+    #         ylim = ax.get_ylim()
+    #         plt.autoscale(False)
+    #         for timestamp in timestamps:
+    #             vline = plt.vlines(timestamp, ylim[0], ylim[1], linestyle = "--", color = "k")
+    #         vline.set_label("Timestamps")
+    #     plt.xlabel("Timestep", fontsize=14)
+    #     plt.ylabel("Relative sheet z-position to smedian, ($z - z_{med}$)", fontsize=14)
+    #     plt.legend(fontsize = 13)
+
 
 
 

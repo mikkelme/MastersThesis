@@ -46,9 +46,9 @@ thermo              100
 fix                 nve all nve # (microcanonical) 
 # fix 2 all balance 1000 1.05 shift xy 10 1.05 # balance number of particles computed on each processor 
 
-quit
+
 # --- Dump --- #
-dump 1 all custom 100 sheet_vacuum_test.data id type x y z vx vy vz
+dump 1 all custom 100 sheet_vacuum.data id type x y z vx vy vz
 
 
 # --- Stretching procedure --- #

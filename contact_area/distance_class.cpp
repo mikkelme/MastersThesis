@@ -55,7 +55,7 @@ DistanceCalculator::DistanceCalculator(string sheet_dump, string sub_dump, strin
 
 int DistanceCalculator::read_timestep(){
     string line;
-    // int sub_id;
+    int type;
 
     // Check for EOF
     if (!getline(sheet_infile, line)){
@@ -78,14 +78,14 @@ int DistanceCalculator::read_timestep(){
     // Sheet 
     for (size_t i=0; i<sheet_num_atoms; i++){
         // id x y z
-        sheet_infile >> sheet_id[i] >> sheet_atom_pos[i][0] >> sheet_atom_pos[i][1] >> sheet_atom_pos[i][2]; //  >> vx >> vy >> vz;
+        sheet_infile >> sheet_id[i] >> type >> sheet_atom_pos[i][0] >> sheet_atom_pos[i][1] >> sheet_atom_pos[i][2]; //  >> vx >> vy >> vz;
     }
 
 
     // Substrate
     for (size_t i=0; i<sub_num_atoms; i++){
         // id x y z
-        sub_infile >> sub_id[i] >> sub_atom_pos[i][0] >> sub_atom_pos[i][1] >> sub_atom_pos[i][2]; //  >> vx >> vy >> vz;
+        sub_infile >> sub_id[i] >> type >> sub_atom_pos[i][0] >> sub_atom_pos[i][1] >> sub_atom_pos[i][2]; //  >> vx >> vy >> vz;
     }
 
     // Add linebreaks

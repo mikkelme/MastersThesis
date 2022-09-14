@@ -47,7 +47,9 @@
 - Next goal is to try difference stretch levels and then drag the whole sheet across the substrate measuring dynamic friction coefficient. If the stretching effefct can lower the coefficient we might be able to make a nanomachine which translates normal force into stretch force and thus perhaps achieve negative friction coefficients (exiting stuff, lets see).
 - Proposed pipeline for above study. Make a simulation where the sheet relaxes and falls into contact with the substrate (in vacuum). Then we stretch and export restart files during the process. The restart files can then be used for different stretching starting points for friction measurements. 
 - Made updated procedure for stretching and contracting sheet with ouput of stretch pct and forces acting on the pull blocks. Implemented on sheet in vaccum for now for hysteresis plots.
--
+- Looked a hysteresis for sheet in vacuum. Some signs of hysteresis but not conclusive. But definetely seeing buckling effect when stretched. Now trying with sheet and substrate.
+- Working on connection to UiO clusters. Made ssh-key. Tried slurm and sbatch for submitting job on bigfacet cluster
+- Looked at hysteresis for sheet and substrate: seemingly hysteresis going on for the bottom expansion. In the final part of the contraction the lower quartiles drops compared to starting point. This might be biased by median moving after stretching start also.
 
 
 

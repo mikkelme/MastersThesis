@@ -66,7 +66,7 @@ dump 3 substrate_contact custom 100 substrate_contact.data id type x y z
 
 # --- Stretching procedure --- #
 # Parameters
-variable relax_time equal 20             # [ps]
+variable relax_time equal 40             # [ps]
 variable pause_between equal 5          # pause between stretch and contracting [ps]
 variable pause_after equal 5            # pause after contracting [ps]
 variable stretch_speed_pct equal 0.01    # [% of pattern ylen per picoseconds]

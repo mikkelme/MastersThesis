@@ -5,6 +5,8 @@ from plot_set import *
 import numpy as np
 import matplotlib.pyplot as plt
 import subprocess as sub
+from utilities import *
+
 
 def run_calculation(sheet_dump, sub_dump, filename, script = "./dis_calc.out"):
     # sub.run(script, shell=True)
@@ -35,17 +37,22 @@ def read_distance_file(filename):
 
 
 
-def plot_contact_area(timestep, min_distances, sheet_num_atoms, stretching_timestep = None):
+def plot_contact_area(timestep, min_distances, sheet_num_atoms, tretch_file = None):
+    if stretch_file != None: timestamps = get_stretch_timestamps(stretch_file)
+
     threshold = [4.5, 4, 3.5, 3, 2.5]
     plt.figure(num=2, dpi=80, facecolor='w', edgecolor='k')
     for t in threshold:
         contact_pct = np.count_nonzero(min_distances < t, axis = 1)/sheet_num_atoms
         plt.plot(timestep, contact_pct, "-o", markersize = 3, label = f"threshold = {t} Å")
-    ax = plt.gca()
-    ylim = ax.get_ylim()
-    if stretching_timestep != None:
+    if stretch_file != None:
+        ax = plt.gca()
+        ylim = ax.get_ylim()
         plt.autoscale(False)
-        plt.vlines(stretching_timestep, 0, ylim[1], linestyle = "--", color = "k", label = "Stretch begin")
+        for timestamp in timestamps:
+            vline = plt.vlines(timestamp, ylim[0], ylim[1], linestyle = "--", color = "k")
+        vline.set_label("Timestamps")
+
     plt.xlabel("Timestep", fontsize = 14)
     plt.ylabel("contact count (%)", fontsize = 14)
     plt.legend(fontsize = 13)
@@ -59,8 +66,10 @@ if __name__ == "__main__":
     sheet_dump = "../area_vs_stretch/sheet.data";
     sub_dump = "../area_vs_stretch/substrate_contact.data";
     filename = "./distances.txt"
+    stretch_file = "../area_vs_stretch/stretch.txt";
 
-    run_calculation(sheet_dump, sub_dump, filename);
+
+    # run_calculation(sheet_dump, sub_dump, filename);
     timestep, min_distances, sheet_num_atoms = read_distance_file(filename)
-    plot_contact_area(timestep, min_distances, sheet_num_atoms, stretching_timestep = 16000)
+    plot_contact_area(timestep, min_distances, sheet_num_atoms, tretch_file = stretch_file)
     plt.show()
