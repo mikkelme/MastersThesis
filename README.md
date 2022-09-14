@@ -48,9 +48,6 @@
 - Proposed pipeline for above study. Make a simulation where the sheet relaxes and falls into contact with the substrate (in vacuum). Then we stretch and export restart files during the process. The restart files can then be used for different stretching starting points for friction measurements. 
 - Made updated procedure for stretching and contracting sheet with ouput of stretch pct and forces acting on the pull blocks. Implemented on sheet in vaccum for now for hysteresis plots.
 -
-- For more tomorrow ERROR in pull block length, but MIGHT be a good way to have a smooth transistion from semifrozen to free atoms!
--
-
 
 
 

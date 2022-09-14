@@ -5,7 +5,6 @@ def build_sheet_vaccum(sheet_mat, pullblock = None):
     # Parameters
     eps = 1e-6
 
-    sheet_mat, pullblock = build_pull_blocks(sheet_mat, pullblock = 6, sideblock = 0)
     if pullblock != None:
         sheet_mat, pullblock = build_pull_blocks(sheet_mat, pullblock = pullblock)
 
@@ -36,4 +35,4 @@ if __name__ == "__main__":
     multiples = (4, 5)
     unitsize = (5,7)
     mat = pop_up_pattern(multiples, unitsize, sp = 2, view_lattice = False)
-    build_sheet_vaccum(mat, pullblock = 4)
+    build_sheet_vaccum(mat, pullblock = 6)
