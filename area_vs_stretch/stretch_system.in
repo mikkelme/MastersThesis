@@ -32,7 +32,6 @@ group free_atoms subtract all PB_tot substrate_freeze
 group semifree_atoms subtract all substrate_freeze 
 
 
-
 #--- Dynamics ---#
 variable temp equal 5.0 # Kelvin
 
@@ -51,7 +50,6 @@ pair_coeff * * airebo ../potentials/CH.airebo C NULL    # Sheet C-C
 pair_coeff 1 2 lj/cut 0.008909 3.26                     # Interaction C-Si 
 pair_coeff * * sw ../potentials/si.sw NULL Si           # Substrate Si-Si
 
-
 timestep            0.0005
 thermo              100
 thermo_style custom step time temp 
@@ -62,49 +60,64 @@ fix                 nve semifree_atoms nve # (microcanonical)
 
 # --- Dump --- #
 dump 1 all custom 100 system.data id type x y z vx vy vz
-# dump 2 sheet custom 100 sheet.data id x y z
-# dump 3 substrate_contact custom 100 substrate_contact.data id x y z
+dump 2 sheet custom 100 sheet.data id type x y z
+dump 3 substrate_contact custom 100 substrate_contact.data id type x y z
 
-# ---  Relax inner part (pattern) of sheet --- #
-fix PB_xy_freeze PB_tot setforce 0 0 NULL # Zero out force in x-y-plane
-fix PB_z_ave PB_tot aveforce NULL NULL 0 # Average force in z-direction (every atom feels same z-force)
-run  $(floor(4/dt)) # [t] = picoseconds
 
-quit
-# --- Stretch --- #
+# --- Stretching procedure --- #
 # Parameters
-variable stretch_speed_pct equal 0.05 # [% of pattern ylen per picoseconds]
+variable relax_time equal 20             # [ps]
+variable pause_between equal 5          # pause between stretch and contracting [ps]
+variable pause_after equal 5            # pause after contracting [ps]
+variable stretch_speed_pct equal 0.01    # [% of pattern ylen per picoseconds]
 variable stretch_max_pct equal 0.20 
-variable stretch_speed equal v_stretch_speed_pct*(v_pullblock_ylo-v_pullblock_yhi) # Henrik used 1,25
-variable stretch_time equal $(floor(v_stretch_max_pct/v_stretch_speed_pct/dt))
-print "Stretch speed time: $(v_stretch_time) timesteps, $(v_stretch_time*dt) ps"
-
-# Output: timestep, stretch_pct
-# print "# timestep, stretch_pct" file stretch_pct.txt
-# fix stretch_pct all print 100 "$(step), $(time*v_strain_speed_pct)" screen no append stretch_pct.txt
-## ^^^Fix this to start at right time and reverse
+include ./stretch_procedure.in
 
 
 
-# Stretch sheet
-fix ylow_move  PB_ylow move linear 0 $(-v_strain_speed/2) NULL units box
-fix yhigh_move PB_yhigh move linear 0 $(v_strain_speed/2) NULL units box
 
-print "Stretching, timesteps: ${stretch_time}"
-run ${stretch_time}
-quit
+
+
+# # ---  Relax inner part (pattern) of sheet --- #
+# fix PB_xy_freeze PB_tot setforce 0 0 NULL # Zero out force in x-y-plane
+# fix PB_z_ave PB_tot aveforce NULL NULL 0 # Average force in z-direction (every atom feels same z-force)
+# run  $(floor(4/dt)) # [t] = picoseconds
+
+# quit
+# # --- Stretch --- #
+# # Parameters
+# variable stretch_speed_pct equal 0.05 # [% of pattern ylen per picoseconds]
+# variable stretch_max_pct equal 0.20 
+# variable stretch_speed equal v_stretch_speed_pct*(v_pullblock_ylo-v_pullblock_yhi) # Henrik used 1,25
+# variable stretch_time equal $(floor(v_stretch_max_pct/v_stretch_speed_pct/dt))
+# print "Stretch speed time: $(v_stretch_time) timesteps, $(v_stretch_time*dt) ps"
+
+# # Output: timestep, stretch_pct
+# # print "# timestep, stretch_pct" file stretch_pct.txt
+# # fix stretch_pct all print 100 "$(step), $(time*v_strain_speed_pct)" screen no append stretch_pct.txt
+# ## ^^^Fix this to start at right time and reverse
+
+
+
+# # Stretch sheet
+# fix ylow_move  PB_ylow move linear 0 $(-v_strain_speed/2) NULL units box
+# fix yhigh_move PB_yhigh move linear 0 $(v_strain_speed/2) NULL units box
+
+# print "Stretching, timesteps: ${stretch_time}"
+# run ${stretch_time}
+# quit
  
-# Pause 
-unfix ylow_move
-unfix yhigh_move
-run  $(floor(1/dt)) # [t] = picoseconds
+# # Pause 
+# unfix ylow_move
+# unfix yhigh_move
+# run  $(floor(1/dt)) # [t] = picoseconds
 
-# Conpress sheet
-fix ylow_move  PB_ylow move linear 0 $(v_strain_speed/2) 0 units box
-fix yhigh_move PB_yhigh move linear 0 $(-v_strain_speed/2) 0 units box
+# # Conpress sheet
+# fix ylow_move  PB_ylow move linear 0 $(v_strain_speed/2) 0 units box
+# fix yhigh_move PB_yhigh move linear 0 $(-v_strain_speed/2) 0 units box
 
-print "Reverse stretch, timesteps: ${stretch_time}"
-run ${stretch_time}
+# print "Reverse stretch, timesteps: ${stretch_time}"
+# run ${stretch_time}
 
 
 

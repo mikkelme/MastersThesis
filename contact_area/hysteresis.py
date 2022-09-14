@@ -100,13 +100,14 @@ def plot_hysteresis(x, y, time, title = "", num = 0):
     ysp = (y.max() - y.min()) * 0.1 
     ax.set_xlim(x.min() - xsp, x.max() + xsp)
     ax.set_ylim(y.min() - ysp, y.max() + ysp)
+    # ax.set_ylim(-8, 8)
 
 
 
 def buckling_hysteresis(stretch_filename):
 
     timestep_stretch, stretch_pct, ylow_force, yhigh_force  = read_stretch_file(stretch_filename)
-    timestep_buckling, Q_var, Q = get_normal_buckling(sheet_dump, quartiles = [0.1, 0.25, 0.5])
+    timestep_buckling, Q_var, Q = get_normal_buckling(sheet_dump, quartiles = [0.01, 0.1, 0.25, 0.5])
 
     # Sync by timestep
     timestep, stretch_idx, buckling_idx = sync(timestep_stretch, timestep_buckling)
@@ -114,12 +115,11 @@ def buckling_hysteresis(stretch_filename):
     Q = Q[:, buckling_idx] 
 
 
-    for i in range(len(Q)):
-        plot_hysteresis(stretch_pct, Q[i]-Q[len(Q)//2], timestep, title = Q_var[i], num = 0)
+    # for i in range(len(Q)):
+    #     plot_hysteresis(stretch_pct, Q[i]-Q[len(Q)//2], timestep, title = Q_var[i], num = 0)
 
-    ax.set_ylim(-8, 8)
-    # for i in range(len(Q)//2):
-    #     plot_hysteresis(stretch_pct, np.abs(Q[i]-Q[-i-1]), timestep, title = i, num = i)
+    for i in range(len(Q)//2):
+        plot_hysteresis(stretch_pct, np.abs(Q[i]-Q[-i-1]), timestep, title = Q_var[i], num = i)
 
         
 

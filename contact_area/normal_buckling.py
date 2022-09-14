@@ -4,6 +4,7 @@ from plot_set import *
 import numpy as np
 import matplotlib.pyplot as plt
 from contact_area import plot_contact_area
+from hysteresis import *
 
 
 def get_normal_buckling(sheet_dump, quartiles = [0.01, 0.05, 0.1, 0.25, 0.50]):
@@ -28,6 +29,7 @@ def get_normal_buckling(sheet_dump, quartiles = [0.01, 0.05, 0.1, 0.25, 0.50]):
         if info[0] == '': break
         sheet_timestep = int(info[1].strip("\n"))
         # if sheet_timestep == 50000:  break
+ 
 
         sheet_num_atoms = int(info[3].strip("\n"))
         sheet_atom_pos = np.zeros((sheet_num_atoms, 3))
@@ -85,11 +87,53 @@ def get_normal_buckling(sheet_dump, quartiles = [0.01, 0.05, 0.1, 0.25, 0.50]):
         
     return timestep, Q_var, Q    
     
+def get_stretch_timestamps(stretch_file):
+    timestep, stretch_pct, ylow_force, yhigh_force = read_stretch_file(stretch_file)
+    delta_stretch = stretch_pct[1:] - stretch_pct[:-1] 
+    diff = np.zeros((2, len(timestep)-2))
+    diff[0] = stretch_pct[1:-1] - stretch_pct[:-2]    # backwards
+    diff[1] = stretch_pct[2:] - stretch_pct[1:-1] # forward
 
 
-def normal_buckling(sheet_dump, stretching_timestep = None):
+    stretch_timestaps = np.argwhere(np.logical_and(np.min(diff, axis = 0) == 0, np.max(diff, axis = 0) != 0))[0] + 1
+    # A = np.linspace(0,10, 11)**2
+    # back = A[1:-1] - A[:-2]
+    # forward = A[2:] - A[1:-1]
+
+    
+    # exit()
+    # diff = np.array([stretch_pct[1:-1] - stretch_pct[:-2], stretch_pct[1:] - stretch_pct[:-1]]) # (backwards, forward)
+    
+    # test = np.argwhere(np.logical_and(diff.min() == 0, diff.max()!= 0))
+    # for i in range(len(timestep)-2):
+    #     print(diff[0,i], diff[1,i])
+
+
+    for i in range(1, len(timestep)-2):
+        diff_forward = stretch_pct[i+1] - stretch_pct[i]
+        diff_backwards = stretch_pct[i] - stretch_pct[i-1]
+
+        # print(diff[0,i-1], diff[1,i-1], diff_backwards, diff_forward)
+
+        diff = np.array((diff_forward, diff_backwards))
+        if diff.min() == 0 and diff.max() != 0:
+            print(i)
+
+
+        
+    # constant_domains = np.argwhere(delta_stretch == 0)
+    # jumps = constant_domains[1:] - constant_domains[:-1] 
+    # print(constant_domains)
+    exit()
+
+
+def normal_buckling(sheet_dump, stretch_file = None):
     # --- Get data --- #
     timestep, Q_var, Q = get_normal_buckling(sheet_dump)
+    if stretch_file != None:
+        get_stretch_timestamps(stretch_file)
+
+
 
     # --- Plotting --- #
     # Relative to starting point
@@ -118,10 +162,11 @@ def normal_buckling(sheet_dump, stretching_timestep = None):
 
 
 if __name__ == "__main__":
-    stretching_timestep = 40000
-    # sheet_dump = "../area_vs_stretch/airebo_long_sheet.data";
-    # sheet_dump = "../area_vs_stretch/tersoff_long_sheet.data";
-    sheet_dump = "../area_vs_stretch/sheet_vacuum.data";
+    # stretching_timestep = 40000
+    # sheet_dump = "../area_vs_stretch/sheet_vacuum.data";
+    sheet_dump = "../area_vs_stretch/sheet.data";
+    stretch_file = "../area_vs_stretch/stretch.txt";
 
-    normal_buckling(sheet_dump, stretching_timestep = stretching_timestep)
+
+    normal_buckling(sheet_dump, stretch_file = stretch_file)
     plt.show()
