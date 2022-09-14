@@ -21,14 +21,17 @@ def get_normal_buckling(sheet_dump, quartiles = [0.01, 0.05, 0.1, 0.25, 0.50]):
     sheet_infile = open(sheet_dump, "r")
     timestep = []
     zpos = []
+    print("# --- Processing normal buckling --- # ")
     while True: # Timestep loop
         # --- Sheet positions --- #
         info = [sheet_infile.readline() for i in range(9)]
         if info[0] == '': break
         sheet_timestep = int(info[1].strip("\n"))
+        # if sheet_timestep == 50000:  break
+
         sheet_num_atoms = int(info[3].strip("\n"))
         sheet_atom_pos = np.zeros((sheet_num_atoms, 3))
-        print(f"\rtimestep = {sheet_timestep}", end = "")
+        print(f"\rTimestep = {sheet_timestep}", end = "")
 
         for i in range(sheet_num_atoms): # sheet atom loop
             line = sheet_infile.readline() # id type x y z [...]
@@ -120,6 +123,5 @@ if __name__ == "__main__":
     # sheet_dump = "../area_vs_stretch/tersoff_long_sheet.data";
     sheet_dump = "../area_vs_stretch/sheet_vacuum.data";
 
-    # get_normal_buckling(sheet_dump)
     normal_buckling(sheet_dump, stretching_timestep = stretching_timestep)
     plt.show()
