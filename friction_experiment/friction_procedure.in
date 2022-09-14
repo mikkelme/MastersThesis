@@ -1,0 +1,23 @@
+
+##### WORKING HERE ######
+
+# ---  Relax inner part (pattern) of sheet --- #
+# Set PB conditions
+fix PB_xy_freeze PB_tot move linear 0 0 NULL # Zero out force in x-y-plane
+fix PB_z_ave PB_tot aveforce NULL NULL 0 # Average force in z-direction (every atom feels same z-force)
+
+print "Stretching, timesteps: $(v_relax_time)"
+run  $(floor(v_relax_time/dt)) # [t] = picoseconds
+
+# ---- Stretch sheet ---- #
+# Update PB conditions
+unfix PB_xy_freeze
+fix ylow_move  PB_ylow move linear 0 $(-v_stretch_speed/2) NULL units box
+fix yhigh_move PB_yhigh move linear 0 $(v_stretch_speed/2) NULL units box
+
+# Update stretch pct
+variable stretch_start equal $(step)
+variable stretch_pct equal v_stretch_speed_pct*(step-v_stretch_start)*dt
+
+print "Stretching, timesteps: $(v_stretch_time)"
+run ${stretch_time}

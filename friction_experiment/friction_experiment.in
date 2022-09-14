@@ -1,0 +1,78 @@
+# --- Basics --- # 
+units metal
+newton on #newtons 3rd law for pairs
+boundary m m m  
+atom_style atomic # coarse-grain liquids, solids, metals
+
+
+# --- Read files --- #
+read_data ../config_builder/sheet_substrate.txt      # sheet and substrate
+include ../config_builder/sheet_substrate_info.in    # import variables
+
+# --- Regions and groups --- #
+# Sheet 
+region sheet_region block INF INF ${pullblock_yhi} ${pullblock_ylo} ${pullblock_zlo} INF
+group sheet region sheet_region
+
+# Pullblocks
+region PB_ylow_region  block INF INF INF ${pullblock_yhi} ${pullblock_zlo} INF
+region PB_yhigh_region block INF INF ${pullblock_ylo} INF ${pullblock_zlo} INF
+group PB_ylow region PB_ylow_region
+group PB_yhigh region PB_yhigh_region
+group PB_tot union PB_ylow PB_yhigh
+
+# Substrate
+region substrate_freeze_region block INF INF INF INF INF ${substrate_freeze_zhi}
+region substrate_contact_region block INF INF INF INF ${substrate_contact_zlo} ${pullblock_zlo}
+group  substrate_freeze region substrate_freeze_region
+group  substrate_contact region substrate_contact_region
+
+# Moving atoms
+group free_atoms subtract all PB_tot substrate_freeze 
+group semifree_atoms subtract all substrate_freeze 
+
+
+#--- Dynamics ---#
+variable temp equal 5.0 # Kelvin
+
+mass 1 12.0107 # C
+mass 2 28.0855 # Si
+
+velocity free_atoms create ${temp} 5432373 dist gaussian
+
+neighbor            0.5 bin
+neigh_modify        delay 0 every 1 one 10000
+
+
+# Potentials: C-C: Airebo, C-Si: LJ, Si-Si: SW
+pair_style hybrid sw lj/cut 2.5 airebo 6.4 1 1 # lj 
+pair_coeff * * airebo ../potentials/CH.airebo C NULL    # Sheet C-C
+pair_coeff 1 2 lj/cut 0.008909 3.26                     # Interaction C-Si 
+pair_coeff * * sw ../potentials/si.sw NULL Si           # Substrate Si-Si
+
+timestep            0.0005
+thermo              100
+thermo_style custom step time temp 
+fix                 nve semifree_atoms nve # (microcanonical) 
+
+# fix 2 all balance 1000 1.05 shift xy 10 1.05 # balance number of particles computed on each processor 
+
+
+# --- Dump --- #
+dump 1 all custom 100 system.data id type x y z vx vy vz
+dump 2 sheet custom 100 sheet.data id type x y z
+dump 3 substrate_contact custom 100 substrate_contact.data id type x y z
+
+
+# --- Friction procedure --- #
+# Parameters
+variable relax_time equal 0.1             # [ps]
+variable stretch_speed_pct equal 0.01    # [% of pattern ylen per picoseconds]
+variable stretch_max_pct equal 0.20 
+
+
+
+
+
+
+# invlude friction_procedure.in

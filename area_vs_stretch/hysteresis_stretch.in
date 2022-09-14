@@ -71,7 +71,7 @@ variable pause_between equal 5          # pause between stretch and contracting 
 variable pause_after equal 5            # pause after contracting [ps]
 variable stretch_speed_pct equal 0.01    # [% of pattern ylen per picoseconds]
 variable stretch_max_pct equal 0.20 
-include ./stretch_procedure.in
+include ./hysteresis_procedure.in
 
 
 
