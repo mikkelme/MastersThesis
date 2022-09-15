@@ -1,8 +1,11 @@
 import numpy as np
 
 def read_stretch_file(filename):
-      timestep, stretch_pct, ylow_force, yhigh_force = np.loadtxt(filename, delimiter = " ", unpack = True)
-      return timestep, stretch_pct, ylow_force, yhigh_force 
+    print("# --- Reading stretch file --- # ")
+    print(f"Filename = \"{filename}\"")
+    timestep, stretch_pct, ylow_force, yhigh_force = np.loadtxt(filename, delimiter = " ", unpack = True)
+    print()
+    return timestep, stretch_pct, ylow_force, yhigh_force 
 
 
 

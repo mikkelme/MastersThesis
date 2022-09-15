@@ -10,6 +10,7 @@ from utilities import *
 from matplotlib.collections import LineCollection
 from matplotlib.colors import ListedColormap, BoundaryNorm
 
+from scipy.signal import savgol_filter
 
 
 def contact_hysteresis(stretch_pct_filename, distance_filename):
@@ -92,25 +93,33 @@ def plot_hysteresis(x, y, time, title = "", num = 0):
     line = ax.add_collection(lc)
     fig.colorbar(line, ax=ax)
 
-    xsp = (x.max() - x.min()) * 0.1
-    ysp = (y.max() - y.min()) * 0.1 
-    ax.set_xlim(x.min() - xsp, x.max() + xsp)
-    ax.set_ylim(y.min() - ysp, y.max() + ysp)
+    xsp = np.abs(x.max() - x.min()) * 0.1
+    ysp = np.abs(y.max() - y.min()) * 0.1 
+    if xsp != 0: ax.set_xlim(x.min() - xsp, x.max() + xsp)
+    if ysp != 0: ax.set_ylim(y.min() - ysp, y.max() + ysp)
     # ax.set_ylim(-8, 8)
 
 
 
-def buckling_hysteresis(stretch_filename):
+def buckling_hysteresis(stretch_filename, smooth = False):
 
     timestep_stretch, stretch_pct, ylow_force, yhigh_force  = read_stretch_file(stretch_filename)
-    timestep_buckling, Q_var, Q = get_normal_buckling(sheet_dump) #, quartiles = [0.01, 0.1, 0.25, 0.5])
+    timestep_buckling, Q_var, Q = get_normal_buckling(sheet_dump) #, quartiles = [0.01, 0.1, 0.25, 0.5])    
 
     # Sync by timestep
     timestep, stretch_idx, buckling_idx = sync(timestep_stretch, timestep_buckling)
     stretch_pct = stretch_pct[stretch_idx]
     Q = Q[:, buckling_idx] 
 
+    # Smooth
+    if smooth != False:
+        # Standard values
+        window_length = 101; polyorder = 3
+        if hasattr(smooth, "__len__"):
+            window_length, polyorder = smooth
+        Q = savgol_filter(Q, window_length, polyorder, axis = 1)
 
+    # --- Plotting --- #
     for i in range(len(Q)): # Difference to median
         plot_hysteresis(stretch_pct, Q[i]-Q[len(Q)//2], timestep, title = Q_var[i], num = i)
 
@@ -123,12 +132,17 @@ def buckling_hysteresis(stretch_filename):
 
 
 if __name__ == "__main__":
-    stretch_filename = "../area_vs_stretch/stretch.txt"
-    sheet_dump = "../area_vs_stretch/sheet.data";
+    # stretch_file = "../area_vs_stretch/stretch.txt"
+    # sheet_dump = "../area_vs_stretch/sheet.data";
     # sub_dump = "../area_vs_stretch/substrate_contact_copy.data";
     # distance_filename = "./distances_copy.txt"
 
     # run_calculation(sheet_dump, sub_dump, distance_filename);
     # contact_hysteresis(stretch_pct_filename, distance_filename)
-    buckling_hysteresis(stretch_filename)
+
+
+
+    sheet_dump = "../Data/sheet_vaccum_bigfacet1/sheet_vacuum.data";
+    stretch_file = "../Data/sheet_vaccum_bigfacet1/stretch.txt";
+    buckling_hysteresis(stretch_file, smooth = [201, 3])
     plt.show()

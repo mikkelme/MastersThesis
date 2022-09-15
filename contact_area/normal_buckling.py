@@ -24,23 +24,32 @@ def get_normal_buckling(sheet_dump, quartiles = [0.01, 0.05, 0.1, 0.25, 0.50]):
     timestep = []
     zpos = []
     print("# --- Processing normal buckling --- # ")
+    print(f"Dump file = \"{sheet_dump}\"")
+
+
+
+
     while True: # Timestep loop
-        # --- Sheet positions --- #
-        info = [sheet_infile.readline() for i in range(9)]
-        if info[0] == '': break
-        sheet_timestep = int(info[1].strip("\n"))
-        # if sheet_timestep == 50000:  break
- 
+        try: 
+            # --- Sheet positions --- #
+            info = [sheet_infile.readline() for i in range(9)]
+            if info[0] == '': break
+            sheet_timestep = int(info[1].strip("\n"))
+            # if sheet_timestep == 100000:  break
+    
 
-        sheet_num_atoms = int(info[3].strip("\n"))
-        sheet_atom_pos = np.zeros((sheet_num_atoms, 3))
-        print(f"\rTimestep = {sheet_timestep}", end = "")
+            sheet_num_atoms = int(info[3].strip("\n"))
+            sheet_atom_pos = np.zeros((sheet_num_atoms, 3))
+            print(f"\rTimestep = {sheet_timestep}", end = "")
 
-        for i in range(sheet_num_atoms): # sheet atom loop
-            line = sheet_infile.readline() # id type x y z [...]
-            words = np.array(line.split(), dtype = float)
-            sheet_atom_pos[i] = words[2:5] # <--- Be aware of different dumpt formats!
-        
+            for i in range(sheet_num_atoms): # sheet atom loop
+                line = sheet_infile.readline() # id type x y z [...]
+                words = np.array(line.split(), dtype = float)
+                sheet_atom_pos[i] = words[2:5] # <--- Be aware of different dumpt formats!
+           
+        except KeyboardInterrupt: break
+
+
         timestep.append(sheet_timestep)
         zpos.append(sheet_atom_pos[:,2])
     sheet_infile.close() # Done reading
@@ -85,7 +94,7 @@ def get_normal_buckling(sheet_dump, quartiles = [0.01, 0.05, 0.1, 0.25, 0.50]):
     # Min
     Q[-1] = np.min(zpos, axis=-1)
     Q_var.append("Min")
-        
+    print()
     return timestep, Q_var, Q    
     
 
@@ -126,34 +135,17 @@ def normal_buckling(sheet_dump, stretch_file = None):
         plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
 
 
-    # # Relative to median
-    # if len(Q)%2: 
-    #     med_idx = len(Q)//2
-    #     plt.figure(num=1, dpi=80, facecolor='w', edgecolor='k')
-    #     for i in range(Q.shape[0]):
-    #         color = color_cycle(np.min((i, Q.shape[0]-i-1)))
-    #         plt.plot(timestep, Q[i] - Q[med_idx], color = color, label = Q_var[i])
-    #     if stretch_file != None:
-    #         ax = plt.gca()
-    #         ylim = ax.get_ylim()
-    #         plt.autoscale(False)
-    #         for timestamp in timestamps:
-    #             vline = plt.vlines(timestamp, ylim[0], ylim[1], linestyle = "--", color = "k")
-    #         vline.set_label("Timestamps")
-    #     plt.xlabel("Timestep", fontsize=14)
-    #     plt.ylabel("Relative sheet z-position to smedian, ($z - z_{med}$)", fontsize=14)
-    #     plt.legend(fontsize = 13)
 
 
 
 
 
 if __name__ == "__main__":
-    # stretching_timestep = 40000
-    # sheet_dump = "../area_vs_stretch/sheet_vacuum.data";
-    sheet_dump = "../area_vs_stretch/sheet.data";
-    stretch_file = "../area_vs_stretch/stretch.txt";
-
+    # sheet_dump = "../area_vs_stretch/sheet.data";
+    # stretch_file = "../area_vs_stretch/stretch.txt";
+    sheet_dump = "../Data/sheet_vacuum_bigfacet1/sheet_vacuum.data";
+    stretch_file = "../Data/sheet_vacuum_bigfacet1/stretch.txt";
+    
 
     normal_buckling(sheet_dump, stretch_file = stretch_file)
     plt.show()
