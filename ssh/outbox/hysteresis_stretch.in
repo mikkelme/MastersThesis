@@ -64,16 +64,19 @@ dump 2 sheet custom 100 sheet.data id type x y z
 dump 3 substrate_contact custom 100 substrate_contact.data id type x y z
 
 
-# --- Friction procedure --- #
+# --- Stretching procedure --- #
 # Parameters
-variable relax_time equal 1             # [ps]
-variable stretch_speed_pct equal 0.5    # [% of pattern ylen per picoseconds]
+variable relax_time equal 40             # [ps]
+variable pause_between equal 5          # pause between stretch and contracting [ps]
+variable pause_after equal 5            # pause after contracting [ps]
+variable stretch_speed_pct equal 0.01    # [% of pattern ylen per picoseconds]
 variable stretch_max_pct equal 0.20 
-variable pause equal 1
-include ./friction_procedure.in
+include ./hysteresis_procedure.in
 
 
 
 
 
-# invlude friction_procedure.in
+
+
+

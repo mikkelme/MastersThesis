@@ -1,13 +1,28 @@
+# --- Compute and variables--- #
+# Stretch pct
+variable stretch_speed equal v_stretch_speed_pct*(v_pullblock_ylo-v_pullblock_yhi) # Henrik used 1,25
+variable stretch_time equal $(floor(v_stretch_max_pct/v_stretch_speed_pct/dt))
+print "Stretch speed time: $(v_stretch_time) timesteps, $(v_stretch_time*dt) ps"
 
-##### WORKING HERE ######
+# Set stretch pct
+variable stretch_pct equal 0.0
+
+# Stretch force
+compute ylow_force PB_ylow reduce sum fy
+compute yhigh_force PB_yhigh reduce sum fy
+
+# --- Output --- #
+fix stretch_output all ave/time 1 100 100 v_stretch_pct c_ylow_force c_yhigh_force file stretch.txt
+thermo_style custom step time temp v_stretch_pct c_ylow_force c_yhigh_force
+
 
 # ---  Relax inner part (pattern) of sheet --- #
 # Set PB conditions
 fix PB_xy_freeze PB_tot move linear 0 0 NULL # Zero out force in x-y-plane
 fix PB_z_ave PB_tot aveforce NULL NULL 0 # Average force in z-direction (every atom feels same z-force)
 
-print "Stretching, timesteps: $(v_relax_time)"
-run  $(floor(v_relax_time/dt)) # [t] = picoseconds
+print "Relaxing: $(v_relax_time/dt) timesteps, $(v_relax_time) ps"
+run  $(floor(v_relax_time/dt)) 
 
 # ---- Stretch sheet ---- #
 # Update PB conditions
@@ -19,5 +34,20 @@ fix yhigh_move PB_yhigh move linear 0 $(v_stretch_speed/2) NULL units box
 variable stretch_start equal $(step)
 variable stretch_pct equal v_stretch_speed_pct*(step-v_stretch_start)*dt
 
-print "Stretching, timesteps: $(v_stretch_time)"
+print "Stretching: $(v_stretch_time) timesteps, $(v_stretch_time*dt) ps"
 run ${stretch_time}
+
+
+# --- Pause ---- #
+# Update PB conditions
+unfix ylow_move
+unfix yhigh_move
+velocity PB_tot set 0 0 0
+fix PB_xy_freeze PB_tot move linear 0 0 NULL # Zero out force in x-y-plane
+
+# Update stretch pct
+variable actual_stretch_max equal $(v_stretch_pct)
+variable stretch_pct equal v_actual_stretch_max
+
+print "Pausing, $(v_pause/dt) timesteps, $(v_pause) ps"
+run  $(floor(v_pause/dt)) 
