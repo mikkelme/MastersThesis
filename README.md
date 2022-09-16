@@ -50,6 +50,8 @@
 - Looked a hysteresis for sheet in vacuum. Some signs of hysteresis but not conclusive. But definetely seeing buckling effect when stretched. Now trying with sheet and substrate.
 - Working on connection to UiO clusters. Made ssh-key. Tried slurm and sbatch for submitting job on bigfacet cluster
 - Looked at hysteresis for sheet and substrate: seemingly hysteresis going on for the bottom expansion. In the final part of the contraction the lower quartiles drops compared to starting point. This might be biased by median moving after stretching start also.
+- Made longer run on bigfacet for 
+
 
 
 

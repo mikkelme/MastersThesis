@@ -9,6 +9,12 @@ atom_style atomic # coarse-grain liquids, solids, metals
 read_data ../config_builder/sheet_substrate.txt      # sheet and substrate
 include ../config_builder/sheet_substrate_info.in    # import variables
 
+# --- virtuel atom --- #
+# create_box 1 simreg 
+# create_atoms 1 box
+#------> Modify number of atom types <-------#
+create_atoms 3 single 0 0 18
+quit
 # --- Regions and groups --- #
 # Sheet 
 region sheet_region block INF INF ${pullblock_yhi} ${pullblock_ylo} ${pullblock_zlo} INF
@@ -35,8 +41,9 @@ group semifree_atoms subtract all substrate_freeze
 #--- Dynamics ---#
 variable temp equal 5.0 # Kelvin
 
-mass 1 12.0107 # C
-mass 2 28.0855 # Si
+mass 1 12.0107  # C
+mass 2 28.0855  # Si
+# mass 3 0.0      # Virtuel atom
 
 velocity free_atoms create ${temp} 5432373 dist gaussian
 
@@ -49,6 +56,7 @@ pair_style hybrid sw lj/cut 2.5 airebo 6.4 1 1 # lj
 pair_coeff * * airebo ../potentials/CH.airebo C NULL    # Sheet C-C
 pair_coeff 1 2 lj/cut 0.008909 3.26                     # Interaction C-Si 
 pair_coeff * * sw ../potentials/si.sw NULL Si           # Substrate Si-Si
+
 
 timestep            0.0005
 thermo              100
@@ -70,10 +78,11 @@ variable relax_time equal 1             # [ps]
 variable stretch_speed_pct equal 0.5    # [% of pattern ylen per picoseconds]
 variable stretch_max_pct equal 0.20 
 variable pause equal 1
-include ./friction_procedure.in
+# include ./friction_procedure.in
 
 
+# --- Drag sheet by springforce --- #
 
 
-
-# invlude friction_procedure.in
+run 1
+# fix pull sheet spring couple virtuel_atom  x y NULL R0

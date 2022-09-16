@@ -35,6 +35,69 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \mainmatter{}
+\section*{Structure}   
+\subsection*{Introduction}
+\begin{itemize}
+  \item Nanotribology
+  \item Quantitative Structure-Property Relationship
+  \item Forward simulation using ML
+  \item Inverse designs
+\end{itemize}
+\subsection*{Theory}
+\subsubsection*{Friction}
+\subsubsection*{Graphene}
+\subsubsection*{MD simulations}
+\subsubsection*{Machine Learning (ML)}
+\begin{itemize}
+  \item Feed forward fully connected
+  \item CNN
+  \item GAN (encoder + decoder)
+\end{itemize}
+
+
+\subsection*{Method}
+\subsubsection*{Setting up the system}
+\begin{itemize}
+  \item Substrate material (crystalline or amorphous)
+  \item Intra- and intermolecular potentials
+  \item Ensembles: NVE, NVT
+  \item Measuring properties
+  \subitem Buckling into 3rd dimension 
+  \subitem Contact area
+  \subitem Friction (static, dynamic)
+\end{itemize}
+
+\subsubsection*{Making cuts in graphene}
+\begin{itemize}
+  \item Indexing the sheet
+  \item Pop-up pattern as a starting point
+  \item Cut rules and problems with dangling fringes 
+\end{itemize}
+
+\subsubsection*{Experimental procedures}
+\begin{itemize}
+  \item Relaxing
+  \item Stretching 
+  \item Friction 
+\end{itemize}
+
+\subsubsection*{Sampling data}
+\begin{itemize}
+  \item Different versions of pop-up pattern 
+  \item Random walks 
+\end{itemize}
+
+\subsubsection*{Machine learning}
+\begin{itemize}
+  \item Input: atom position matrix
+  \item Target properties: friction coefficient (low/high), maybe load curve for nonlinear relations
+  \item Output: Cut pattern, stretch amount (\%)
+  \item Architecture and network types
+  \item Loss function and evaluation
+\end{itemize}
+
+
+
 \input{Sections/Introduction/Introduction}
 \input{Sections/Method/Method}
 

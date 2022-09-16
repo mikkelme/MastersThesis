@@ -38,7 +38,7 @@ print "Stretching: $(v_stretch_time) timesteps, $(v_stretch_time*dt) ps"
 run ${stretch_time}
 
 
-# --- Pause ---- #
+# --- Pause --- #
 # Update PB conditions
 unfix ylow_move
 unfix yhigh_move
@@ -51,3 +51,6 @@ variable stretch_pct equal v_actual_stretch_max
 
 print "Pausing, $(v_pause/dt) timesteps, $(v_pause) ps"
 run  $(floor(v_pause/dt)) 
+
+
+
