@@ -6,15 +6,9 @@ atom_style atomic # coarse-grain liquids, solids, metals
 
 
 # --- Read files --- #
-read_data ../config_builder/sheet_substrate.txt      # sheet and substrate
+read_data ../config_builder/sheet_substrate.txt extra/atom/types 1  # sheet and substrate (1 extra type for virtuel atom)
 include ../config_builder/sheet_substrate_info.in    # import variables
 
-# --- virtuel atom --- #
-# create_box 1 simreg 
-# create_atoms 1 box
-#------> Modify number of atom types <-------#
-create_atoms 3 single 0 0 18
-quit
 # --- Regions and groups --- #
 # Sheet 
 region sheet_region block INF INF ${pullblock_yhi} ${pullblock_ylo} ${pullblock_zlo} INF
@@ -37,13 +31,12 @@ group  substrate_contact region substrate_contact_region
 group free_atoms subtract all PB_tot substrate_freeze 
 group semifree_atoms subtract all substrate_freeze 
 
-
 #--- Dynamics ---#
 variable temp equal 5.0 # Kelvin
 
 mass 1 12.0107  # C
 mass 2 28.0855  # Si
-# mass 3 0.0      # Virtuel atom
+mass 3 1.0      # Virtuel atom
 
 velocity free_atoms create ${temp} 5432373 dist gaussian
 
@@ -53,21 +46,23 @@ neigh_modify        delay 0 every 1 one 10000
 
 # Potentials: C-C: Airebo, C-Si: LJ, Si-Si: SW
 pair_style hybrid sw lj/cut 2.5 airebo 6.4 1 1 # lj 
-pair_coeff * * airebo ../potentials/CH.airebo C NULL    # Sheet C-C
+pair_coeff * * airebo ../potentials/CH.airebo C NULL NULL    # Sheet C-C
 pair_coeff 1 2 lj/cut 0.008909 3.26                     # Interaction C-Si 
-pair_coeff * * sw ../potentials/si.sw NULL Si           # Substrate Si-Si
+pair_coeff * * sw ../potentials/si.sw NULL Si NULL         # Substrate Si-Si
+pair_coeff * 3  lj/cut 0.0 0.0 
 
 
 timestep            0.0005
 thermo              100
 thermo_style custom step time temp 
 fix                 nve semifree_atoms nve # (microcanonical) 
-
 # fix 2 all balance 1000 1.05 shift xy 10 1.05 # balance number of particles computed on each processor 
 
 
+
+
 # --- Dump --- #
-dump 1 all custom 100 system.data id type x y z vx vy vz
+dump 1 all custom 1 system.data id type x y z vx vy vz
 dump 2 sheet custom 100 sheet.data id type x y z
 dump 3 substrate_contact custom 100 substrate_contact.data id type x y z
 
@@ -81,8 +76,34 @@ variable pause equal 1
 # include ./friction_procedure.in
 
 
+
+
+
 # --- Drag sheet by springforce --- #
+variable R0 equal 1.0
+variable K equal 100.0
+
+# unit vector for direction in x,y-plane
+variable dir_x equal 1.0
+variable dir_y equal 0.0
+
+# Create virtuel atom 
+compute sheet_com sheet com # compute center of mass for sheet
+thermo_style custom c_sheet_com[1] c_sheet_com[2] c_sheet_com[3]
+run 0 # Activate the compute by using it
+# create_atoms 3 single $(c_sheet_com[1] + v_dir_x*v_R0) $(c_sheet_com[2] + v_dir_y*v_R0) $(c_sheet_com[3])
+# create_atoms 3 single $(c_sheet_com[1]) $(c_sheet_com[2]) $(c_sheet_com[3])
+create_atoms 3 single $(c_sheet_com[1]) $(c_sheet_com[2]) $(c_sheet_com[3])
+
+group virtuel_atom id 3
+### Working here
+compute va_com virtuel_atom com # compute center of mass for sheet
+thermo_style custom step time temp c_va_com[1] c_va_com[2] c_va_com[3] # Reset thermo style
+
+# Add spring force
+# fix pull sheet spring couple virtuel_atom $(v_K) 0.0 0.0 0.0 0.0
+fix pull sheet spring tether $(v_K)  $(c_sheet_com[1]) $(c_sheet_com[2]) $(c_sheet_com[3]) 10.0
 
 
-run 1
-# fix pull sheet spring couple virtuel_atom  x y NULL R0
+
+run 1000
