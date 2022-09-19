@@ -1,8 +1,6 @@
 # --- Compute and variables--- #
-# Stretch pct
+# Stretch speed
 variable stretch_speed equal v_stretch_speed_pct*(v_pullblock_ylo-v_pullblock_yhi) # Henrik used 1,25
-variable stretch_time equal $(floor(v_stretch_max_pct/v_stretch_speed_pct/dt))
-print "Stretch speed time: $(v_stretch_time) timesteps, $(v_stretch_time*dt) ps"
 
 # Set stretch pct
 variable stretch_pct equal 0.0
@@ -11,18 +9,58 @@ variable stretch_pct equal 0.0
 compute ylow_force PB_ylow reduce sum fy
 compute yhigh_force PB_yhigh reduce sum fy
 
+
+# Timesteps to run
+variable relax_steps equal $(floor(v_relax_time/dt))
+variable stretch_steps equal $(floor(v_stretch_max_pct/v_stretch_speed_pct/dt))
+variable pause1_steps equal $(floor(v_pause_time1/dt))
+variable pause2_steps equal $(floor(v_pause_time2/dt))
+variable drag_steps equal $(floor(v_drag_length/v_drag_speed/dt))
+
 # --- Output --- #
 fix stretch_output all ave/time 1 100 100 v_stretch_pct c_ylow_force c_yhigh_force file stretch.txt
 thermo_style custom step time temp v_stretch_pct c_ylow_force c_yhigh_force
 
 
-# ---  Relax inner part (pattern) of sheet --- #
-# Set PB conditions
-fix PB_xy_freeze PB_tot move linear 0 0 NULL # Zero out force in x-y-plane
-fix PB_z_ave PB_tot aveforce NULL NULL 0 # Average force in z-direction (every atom feels same z-force)
 
-print "Relaxing: $(v_relax_time/dt) timesteps, $(v_relax_time) ps"
-run  $(floor(v_relax_time/dt)) 
+# --- Print procedure schedule --- #
+# Maybe add running timestep, ps count in schedule presentation
+print "--------------------"
+print "------SCHEDULE------"
+print ""
+print "--> Relax"
+print "Time: $(v_relax_steps) steps = $(v_relax_steps*dt) ps"
+print ""
+print "--> Stretch sheet"
+print "Amount: $(v_stretch_max_pct) % = $(v_stretch_max_pct*(v_pullblock_ylo-v_pullblock_yhi)) ang "
+print "Speed: $(v_stretch_speed_pct) %/ps = $(v_stretch_speed) ang/ps"
+print "Time:  $(v_stretch_steps) steps = $(v_stretch_steps*dt) ps"
+print ""
+print "--> Pause 1"
+print "Time: $(v_pause1_steps) steps = $(v_pause1_steps*dt) ps"
+print ""
+print "--> Apply normal force"
+print "Amount: $(v_F_N/v_N_to_eV_over_ang*10e9) nN/m = $(v_F_N) eV/ang"
+print ""
+print "--> Pause 2"
+print "Time: $(v_pause2_steps) steps = $(v_pause2_steps*dt) ps"
+print ""
+print "--> Drag sheet"
+print "Length: $(v_drag_length) ang"
+print "Speed: $(v_drag_speed*v_s_to_ps/v_m_to_ang) m/s = $(v_drag_speed) ang/ps "
+print "Spring contant: $(v_K*v_m_to_ang/v_N_to_eV_over_ang) N/m = $(v_K) eV/ang^2"
+print "Time: $(v_drag_steps)  = $(v_drag_steps*dt) ps"
+print ""
+print "--------------------"
+print "--------------------"
+
+# ---  Relax sheet --- #
+# Set PB conditions
+# fix PB_xy_freeze PB_tot move linear 0 0 NULL # Zero out force in x-y-plane
+fix PB_xy_freeze PB_tot setforce 0.0 0.0 NULL # Zero out force in x-y-plane
+fix PB_z_ave PB_tot aveforce NULL NULL 0 # Average force in z-direction (every atom feels same z-force)
+print "--> Relax: $(v_relax_steps) timesteps, $(v_relax_steps*dt) ps"
+run  $(v_relax_steps) 
 
 # ---- Stretch sheet ---- #
 # Update PB conditions
@@ -34,29 +72,49 @@ fix yhigh_move PB_yhigh move linear 0 $(v_stretch_speed/2) NULL units box
 variable stretch_start equal $(step)
 variable stretch_pct equal v_stretch_speed_pct*(step-v_stretch_start)*dt
 
-print "Stretching: $(v_stretch_time) timesteps, $(v_stretch_time*dt) ps"
-run ${stretch_time}
+print "--> Stretch: $(v_stretch_steps) timesteps, $(v_stretch_steps*dt) ps"
+run $(v_stretch_steps)
 
 
-# --- Pause --- #
+# --- Pause 1 --- #
 # Update PB conditions
 unfix ylow_move
 unfix yhigh_move
 velocity PB_tot set 0 0 0
-fix PB_xy_freeze PB_tot move linear 0 0 NULL # Zero out force in x-y-plane
+# fix PB_xy_freeze PB_tot setforce 0.0 0.0 NULL # Zero out force in x-y-plane
+
+# Keep strain with intern spring force
+compute PB_ylow_com PB_ylow com 
+compute PB_yhigh_com PB_yhigh com 
+thermo_style custom c_PB_ylow_com[1] c_PB_yhigh_com[1] # use compute 
+run 0 # Activate the compute by using it
+thermo_style custom step time temp # Reset thermo style
+variable seperation_dis equal $(c_PB_yhigh_com[2] - c_PB_ylow_com[2])
+
+fix PB_xyz_ave PB_tot aveforce 0 0 0 # Average forces in all directions
+fix PB_spring PB_ylow spring couple PB_yhigh 1000 0.0 $(v_seperation_dis) 0.0 0.0 
 
 # Update stretch pct
 variable actual_stretch_max equal $(v_stretch_pct)
 variable stretch_pct equal v_actual_stretch_max
 
-print "Pausing, $(v_pause/dt) timesteps, $(v_pause) ps"
-run  $(floor(v_pause/dt)) 
 
 
-#----> Add normal force and relax  <----#
+print "--> Pause 1: $(v_pause1_steps) timesteps, $(v_pause1_steps*dt) ps"
+run  $(v_pause1_steps) 
+
+quit
+# --- Apply normal force --- #
+unfix PB_xy_freeze 
+fix PB_xy_freeze PB_tot setforce 0.0 0.0 NULL # Zero out force in x-y-plane
+fix normal_force full_sheet addforce 0.0 0.0 $(-v_F_N)
+
+
+# --- Pause 2 --- #
+print "--> Pause 2: $(v_pause2_steps) timesteps, $(v_pause2_steps*dt) ps"
+run  $(v_pause2_steps) 
 
 # --- Drag sheet by springforce --- #
-
 # Get position for virtual atom (va)
 compute sheet_com sheet com # compute COM for sheet
 thermo_style custom c_sheet_com[1] # use compute 
@@ -70,11 +128,23 @@ group virtuel_atom type 3
 # Add spring between sheet and virtuel atom
 fix pull full_sheet spring couple virtuel_atom $(v_K) 0.0 0.0 0.0 0.0
 
+# Compute force between sheet and substrate
+compute fric_inter_sub sheet group/group substrate_contact 
+# compute fric_inter_va sheet group/group virtuel_atom
+compute fric_inter_va1 sheet group/group virtuel_atom
+compute fric_inter_va2 virtuel_atom group/group sheet
+
+### Add spring force to keep the sheet stretched even when draggin in y-direction...
+
+thermo_style custom step time temp c_fric_inter_sub[1] c_fric_inter_va1[1] c_fric_inter_va2[1]   # Reset thermo style
+
 # Move virtuel atom
 unfix PB_xy_freeze 
+unfix PB_z_ave
+fix PB_y_freeze PB_tot setforce NULL 0.0 NULL # Zero out force in x-y-plane
+fix PB_xz_ave PB_tot aveforce 0 NULL 0 # Average force in z-direction (every atom feels same z-force)
+
 fix move_va virtuel_atom move linear $(v_drag_speed) 0 0 units box # <---- remember to make direction variable
-variable drag_time equal $(v_drag_length/v_drag_speed)
-print "Drag time, $(v_drag_time/dt) timesteps, $(v_drag_time) ps"
-run  $(floor(v_drag_time/dt)) 
 
-
+print "--> Drag : $(v_drag_steps) timesteps, $(v_drag_steps*dt) ps"
+run  $(v_drag_steps) 
