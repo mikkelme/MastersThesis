@@ -53,6 +53,8 @@
 - Made longer run on bigfacet for 
 
 
+#### Week 38 (19/09 - 25/09) - Working from Oslo
+- Made a friction procedure (relax, stretch, pause, add normal force, pause, drag sheet along substrate). Now working on friciton force measurement.
 
 
 ## Things to remember 
