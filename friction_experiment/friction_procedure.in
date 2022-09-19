@@ -56,9 +56,8 @@ print "--------------------"
 
 # ---  Relax sheet --- #
 # Set PB conditions
-# fix PB_xy_freeze PB_tot move linear 0 0 NULL # Zero out force in x-y-plane
-fix PB_xy_freeze PB_tot setforce 0.0 0.0 NULL # Zero out force in x-y-plane
-fix PB_z_ave PB_tot aveforce NULL NULL 0 # Average force in z-direction (every atom feels same z-force)
+# fix PB_xy_freeze PB_tot setforce 0.0 0.0 NULL # Zero out force in x-y-plane
+fix PB_z_ave PB_tot aveforce 0 0 0 # Average force in z-direction (every atom feels same z-force)
 print "--> Relax: $(v_relax_steps) timesteps, $(v_relax_steps*dt) ps"
 run  $(v_relax_steps) 
 
