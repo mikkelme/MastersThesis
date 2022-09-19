@@ -30,6 +30,7 @@ group  substrate_contact region substrate_contact_region
 # Moving atoms
 group free_atoms subtract all PB_tot substrate_freeze 
 group semifree_atoms subtract all substrate_freeze 
+group full_sheet union sheet PB_tot
 
 #--- Dynamics ---#
 variable temp equal 5.0 # Kelvin
@@ -67,43 +68,23 @@ dump 2 sheet custom 100 sheet.data id type x y z
 dump 3 substrate_contact custom 100 substrate_contact.data id type x y z
 
 
+# --- Convertion --- #
+variable m_over_s_to_ang_over_ps equal 1e2 
+variable N_over_m_to_eV_over_ang_sqr equal 1/6.24150907e-2
+
+
 # --- Friction procedure --- #
 # Parameters
-variable relax_time equal 1             # [ps]
+variable relax_time equal 0.5             # [ps]
 variable stretch_speed_pct equal 0.5    # [% of pattern ylen per picoseconds]
 variable stretch_max_pct equal 0.20 
-variable pause equal 1
-# include ./friction_procedure.in
+variable pause equal 0.5
+variable drag_speed equal $(2*v_m_over_s_to_ang_over_ps)  #  [Å/ps]
+variable drag_length equal 100                             # [Å]
+variable K equal $(30.0*v_N_over_m_to_eV_over_ang_sqr)    # spring constant [eV/Å^2]
+
+include ./friction_procedure.in
 
 
 
 
-
-# --- Drag sheet by springforce --- #
-variable R0 equal 1.0
-variable K equal 100.0
-
-# unit vector for direction in x,y-plane
-variable dir_x equal 1.0
-variable dir_y equal 0.0
-
-# Create virtuel atom 
-compute sheet_com sheet com # compute center of mass for sheet
-thermo_style custom c_sheet_com[1] c_sheet_com[2] c_sheet_com[3]
-run 0 # Activate the compute by using it
-# create_atoms 3 single $(c_sheet_com[1] + v_dir_x*v_R0) $(c_sheet_com[2] + v_dir_y*v_R0) $(c_sheet_com[3])
-# create_atoms 3 single $(c_sheet_com[1]) $(c_sheet_com[2]) $(c_sheet_com[3])
-create_atoms 3 single $(c_sheet_com[1]) $(c_sheet_com[2]) $(c_sheet_com[3])
-
-group virtuel_atom id 3
-### Working here
-compute va_com virtuel_atom com # compute center of mass for sheet
-thermo_style custom step time temp c_va_com[1] c_va_com[2] c_va_com[3] # Reset thermo style
-
-# Add spring force
-# fix pull sheet spring couple virtuel_atom $(v_K) 0.0 0.0 0.0 0.0
-fix pull sheet spring tether $(v_K)  $(c_sheet_com[1]) $(c_sheet_com[2]) $(c_sheet_com[3]) 10.0
-
-
-
-run 1000

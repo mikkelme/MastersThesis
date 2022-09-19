@@ -53,4 +53,28 @@ print "Pausing, $(v_pause/dt) timesteps, $(v_pause) ps"
 run  $(floor(v_pause/dt)) 
 
 
+#----> Add normal force and relax  <----#
+
+# --- Drag sheet by springforce --- #
+
+# Get position for virtual atom (va)
+compute sheet_com sheet com # compute COM for sheet
+thermo_style custom c_sheet_com[1] # use compute 
+run 0 # Activate the compute by using it
+thermo_style custom step time temp # Reset thermo style
+
+# Create virtuel atom
+create_atoms 3 single $(c_sheet_com[1]) $(c_sheet_com[2]) $(c_sheet_com[3])
+group virtuel_atom type 3
+
+# Add spring between sheet and virtuel atom
+fix pull full_sheet spring couple virtuel_atom $(v_K) 0.0 0.0 0.0 0.0
+
+# Move virtuel atom
+unfix PB_xy_freeze 
+fix move_va virtuel_atom move linear $(v_drag_speed) 0 0 units box # <---- remember to make direction variable
+variable drag_time equal $(v_drag_length/v_drag_speed)
+print "Drag time, $(v_drag_time/dt) timesteps, $(v_drag_time) ps"
+run  $(floor(v_drag_time/dt)) 
+
 
