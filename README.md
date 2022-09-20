@@ -55,7 +55,8 @@
 
 #### Week 38 (19/09 - 25/09) - Working from Oslo
 - Made a friction procedure (relax, stretch, pause, add normal force, pause, drag sheet along substrate). Now working on friciton force measurement.
-
+- Added more precise way to keep track of stretch pct by measuring min and max of PB
+- Added write to file of friction forces 
 
 ## Things to remember 
 
