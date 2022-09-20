@@ -78,7 +78,7 @@ variable s_to_ps equal 1e12                     # time: s -> ps
 
 # --- Friction procedure --- #
 # Relax sheet
-variable relax_time equal 1.0             # [ps]
+variable relax_time equal 0.5             # [ps]
 
 # Stretch sheet
 variable stretch_speed_pct equal 0.2    # [% of pattern ylen per picoseconds]
@@ -92,16 +92,15 @@ variable pause_time1 equal 0.5
 variable F_N equal $(0.08e-9*v_N_to_eV_over_ang)  # [eV/Å] <------- Why is 0.8 nN to much when used in article?
 
 # Wait before dragging sheet
-variable pause_time2 equal 0.5
+variable pause_time2 equal 1.0
 
 # Drag sheet
 variable drag_dir_x equal 1
-variable drag_dir_y equal 1
+variable drag_dir_y equal 0
 variable drag_speed equal $(2000.0*v_m_to_ang/v_s_to_ps)         # drag speed: (m/s) -> [Å/ps]
 # variable drag_speed equal $(2.0*v_m_to_ang/v_s_to_ps)         # drag speed: (m/s) -> [Å/ps]
 
 variable drag_length equal 50                            # drag length: [Å]
 variable K equal $(30.0*v_N_to_eV_over_ang/v_m_to_ang)    # spring constant: (N/m) -> [eV/Å^2]
-
 include ./friction_procedure.in
 
