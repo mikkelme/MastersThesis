@@ -28,7 +28,8 @@ compute yhigh_force PB_yhigh reduce sum fy
 
 
 # ---------- Output ---------- #
-fix data_output all ave/time 1 100 100 v_stretch_pct v_S_len v_S0 file stretch.txt # format "%.8g"
+# fix data_output all ave/time 1 100 100 v_stretch_pct v_S_len v_S0 file stretch.txt # format "%.8g"
+fix data_output all ave/time 1 1 1 v_stretch_pct v_S_len v_S0 file stretch.txt # format "%.8g"
 thermo_style custom step time temp v_stretch_pct v_S_len v_S0 c_PB_ylow_ymax c_PB_yhigh_ymin
 
 
@@ -73,7 +74,7 @@ print "--------------------"
 print "--------------------"
 print ""
 
-
+# quit 
 # fix PB_xy_freeze PB_tot setforce 0.0 0.0 NULL # Zero force in x-y-plane
 # fix PB_z_ave PB_tot aveforce NULL NULL 0      # Average force in z-direction (every atom feels same z-force)
 

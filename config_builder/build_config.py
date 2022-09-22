@@ -34,6 +34,11 @@ def build_config(sheet_mat, substrate_file, pullblock = None, mode = "all", view
     trans_vec1[2] = sheet_substrate_distance - (minmax_sheet[0, 2] - minmax_substrate[1,2])
     sheet.translate(trans_vec1)
 
+
+    # tmp translation <---------- !!
+    sheet.translate((-15, 0, 0))
+
+
     # --- Merge into same object --- #
     merge = sheet + substrate
 
@@ -45,6 +50,7 @@ def build_config(sheet_mat, substrate_file, pullblock = None, mode = "all", view
     merge.set_cell(minmax_merge[1,:] + trans_vec2 + np.ones(3)*eps)
 
     
+
 
     # --- Write information-- #
     # Update sheet and substrate limits
@@ -89,14 +95,14 @@ def build_config(sheet_mat, substrate_file, pullblock = None, mode = "all", view
     else:
         return
 
+    if write:
+        # Pullblock
+        for i in range(len(PB_lim)):
+            outfile.write(f'variable pullblock_{PB_varname[i]} equal {PB_lim[i]}\n') 
 
-    # Pullblock
-    for i in range(len(PB_lim)):
-        outfile.write(f'variable pullblock_{PB_varname[i]} equal {PB_lim[i]}\n') 
-
-    # Substrate
-    outfile.write(f'variable substrate_freeze_zhi equal {substrate_freeze_zhi}\n') 
-    outfile.write(f'variable substrate_contact_zlo equal {substrate_contact_zlo}\n') 
+        # Substrate
+        outfile.write(f'variable substrate_freeze_zhi equal {substrate_freeze_zhi}\n') 
+        outfile.write(f'variable substrate_contact_zlo equal {substrate_contact_zlo}\n') 
 
 
 
@@ -105,7 +111,7 @@ def build_config(sheet_mat, substrate_file, pullblock = None, mode = "all", view
 
 
 if __name__ == "__main__":
-    multiples = (4, 5)
+    multiples = (3, 5)  
     unitsize = (5,7)
     mat = pop_up_pattern(multiples, unitsize, sp = 2, view_lattice = False)
     # mat[:, :] = 1

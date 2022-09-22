@@ -65,7 +65,7 @@ fix nve semifree_atoms nve # (microcanonical)
 
 
 # --- Dump --- #
-dump 1 all custom 1 system.data id type x y z vx vy vz
+dump 1 all custom 100 system.data id type x y z vx vy vz
 dump 2 sheet custom 100 sheet.data id type x y z
 dump 3 substrate_contact custom 100 substrate_contact.data id type x y z
 
@@ -98,7 +98,7 @@ variable pause_time2 equal 0.5
 # Drag sheet
 variable drag_dir_x equal 1
 variable drag_dir_y equal 0
-variable drag_speed equal $(1000.0*v_m_to_ang/v_s_to_ps)         # drag speed: (m/s) -> [Å/ps]
+variable drag_speed equal $(50.0*v_m_to_ang/v_s_to_ps)         # drag speed: (m/s) -> [Å/ps]
 # variable drag_speed equal $(2.0*v_m_to_ang/v_s_to_ps)         # drag speed: (m/s) -> [Å/ps]
 
 variable drag_length equal 50                            # drag length: [Å]
