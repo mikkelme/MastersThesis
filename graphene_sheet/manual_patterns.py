@@ -65,39 +65,59 @@ def pop_up_pattern(multiples, unitsize = (5,7), sp = 1):
     return mat
 
 
+def stitch_cuts(commands):
+    obj = []
+    for i, com in enumerate(commands):
+        print(i, com)
+    exit()
+
 def half_octans():
     mat = np.ones((20, 40))
     full = False
     sp = 2 # > 0
-    ver = 6
-    diag = 3 # = odd
+
+    ver = 4
+    diag = 5 # = odd
     hor = 5 # odd
 
+
+
     ref = np.array([2,9])
+    # if up:
 
+    # + ref
+    zero = np.array([0,0])
+    up = [zero + [0, i] for i in range(ver)]
+    up_right = [zero + [i, (i+1)//2] for i in range(diag)]
+    right = [zero + [i, 0] for i in range(hor)]
+    down_right = [zero + [i, -(i//2) ] for i in range(diag)]
+    down = [zero - [0, i] for i in range(ver)]
 
-    # if up?
+    commands = [up, up_right, right, down_right, down]
+    stitch_cuts(commands)
 
-    ver_list = [ref + [0, i] for i in range(ver)]
-    diag_list = [ver_list[-1] + [i, (i+1)//2] for i in range(diag)]
-    hor_list = [diag_list[-1] + [i, 0] for i in range(hor)]
-    # downdiag_list = [hor_list[-1] + [i, 0] for i in range(diag)]
-    top = np.array(ver_list + diag_list + hor_list)
-    
-    print(ver_list)
-    print(diag_list)
-    print(hor_list)
+    top = np.concatenate((up, up_right + up[-1], )) + ref
+    # top = np.array(up + up_right + right + down_right + down) + ref
+
+    # down = np.array(ver_list) + ref + [sp*2, 0]
+
+    # down[:,0] += sp*2
+
+    print(top)
+    print()
+    # print(down)
     # exit()
-
-    ver1 = np.array([ref + [0, i] for i in range(ver)])
-    diag1 = np.array([ref + [i, ver + (i+1)//2] for i in range(diag)])
     
-    ver2 = ver1 + [sp * 2, 0]
-    ver3 = ver2 + [sp * 2, 0]
-    ver4 = ver3 + [sp * 2, 0]
+    # print(ver_list)
+    # print(diag_list)
+    # print(hor_list)
+    # print(downdiag_list)
+    # print(downver_list)
+    # exit()
 
     # mat = delete_atoms(mat, center_elem_trans_to_atoms(ver1, full = full))    
     mat = delete_atoms(mat, center_elem_trans_to_atoms(top, full = full))    
+    mat = delete_atoms(mat, center_elem_trans_to_atoms(down, full = full))    
     # mat = delete_atoms(mat, center_elem_trans_to_atoms(ver2, full = full))    
     # mat = delete_atoms(mat, center_elem_trans_to_atoms(ver3, full = full))    
     # mat = delete_atoms(mat, center_elem_trans_to_atoms(ver4, full = full))    
