@@ -58,7 +58,16 @@
 - Added more precise way to keep track of stretch pct by measuring min and max of PB
 - Added write to file of friction forces 
 
+
+#### Week 39 (26/09 - 01/09) - Working from Pisa
+- Working on details for friciton procedure (virtual spring might not be perfect)
+
+
+
 ## Things to remember 
+
+### Words
+- Out-of-plane buckling
 
 ### General stuff
 - Active learning for generating datasets entries while training

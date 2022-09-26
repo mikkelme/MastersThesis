@@ -98,10 +98,10 @@ variable pause_time2 equal 0.5
 # Drag sheet
 variable drag_dir_x equal 1
 variable drag_dir_y equal 0
-variable drag_speed equal $(50.0*v_m_to_ang/v_s_to_ps)         # drag speed: (m/s) -> [Å/ps]
-# variable drag_speed equal $(2.0*v_m_to_ang/v_s_to_ps)         # drag speed: (m/s) -> [Å/ps]
+# variable drag_speed equal $(5.0*v_m_to_ang/v_s_to_ps)         # drag speed: (m/s) -> [Å/ps]
+variable drag_speed equal $(2.0*v_m_to_ang/v_s_to_ps)         # drag speed: (m/s) -> [Å/ps]
 
-variable drag_length equal 50                            # drag length: [Å]
+variable drag_length equal 5                            # drag length: [Å]
 variable K equal $(30.0*v_N_to_eV_over_ang/v_m_to_ang)    # spring constant: (N/m) -> [eV/Å^2]
 include ./friction_procedure.in
 

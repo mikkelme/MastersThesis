@@ -13,6 +13,9 @@
 # C++
 *.o
 
+# Python
+*.pyc
+
 #Latex
 *.aux
 *.fdb_latexmk
