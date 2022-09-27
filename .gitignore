@@ -9,6 +9,7 @@
 
 # Folders
 /__pycache__
+/Questions
 
 # C++
 *.o

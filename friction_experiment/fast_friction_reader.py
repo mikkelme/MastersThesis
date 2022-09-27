@@ -9,13 +9,13 @@ def read_friction_file(filename):
 
 if __name__ == "__main__":
 
-    filenames = ["friction_force.txt", "Ff_5ms_5ang.txt"]#, "Ff_50ms_long.txt"]
+    filenames = ["Ff_2ms.txt", "Ff_5ms_5ang.txt"]#, "Ff_50ms_long.txt"]
     speed = [2, 5]
     for i, filename in enumerate(filenames):
-        plt.figure(num = 0)
+        plt.figure(num = i)
         timestep, F_N, F_f = read_friction_file(filename)
-        # plt.plot(timestep, F_f, label = filename)
-        plt.plot(timestep*speed[i], F_f, label = filename)
+        plt.plot(timestep, F_f, label = filename)
+        # plt.plot(timestep*speed[i], F_f, label = filename)
         plt.legend()
     plt.show()
     
