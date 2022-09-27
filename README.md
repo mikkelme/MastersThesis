@@ -61,6 +61,7 @@
 
 #### Week 39 (26/09 - 01/09) - Working from Pisa
 - Working on details for friciton procedure (virtual spring might not be perfect)
+- Reconsidered friction procedure and is going to remake it for mathcing real world system of a nano machine. 
 
 
 

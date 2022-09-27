@@ -1,0 +1,154 @@
+# ---------- Compute and variables---------- #
+# Minmax vals of PB
+compute PB_ylow_ymax PB_ylow reduce max y
+compute PB_yhigh_ymin PB_yhigh reduce min y
+thermo_style custom c_PB_ylow_ymax c_PB_yhigh_ymin
+run 0 # activate compute
+
+# Inner sheet length
+variable S0 equal c_PB_yhigh_ymin-c_PB_ylow_ymax    # start len of inner sheet
+variable S_len equal c_PB_yhigh_ymin-c_PB_ylow_ymax # Updated len of inner sheet
+
+# Stretch pct
+variable stretch_pct equal (v_S_len-v_S0)/v_S0  # Updated stretch pct
+
+# Stretch speed
+variable stretch_speed equal v_stretch_speed_pct*v_S0 
+
+# Stretch force / PB force
+compute ylow_force PB_ylow reduce sum fy
+compute yhigh_force PB_yhigh reduce sum fy
+
+# OR
+# compute ylow_test PB_yhigh group/group sheet 
+# compute yhigh_force2 sheet group/group PB_yhigh 
+# Cannot do that since the potential do not support if for some reason...
+# thermo_style custom step time c_ylow_test[2] c_ylow_force c_yhigh_force# c_yhigh_force2[2]
+# run 1000
+
+
+# ---------- Output ---------- #
+# fix data_output all ave/time 1 100 100 v_stretch_pct v_S_len v_S0 file stretch.txt # format "%.8g"
+fix data_output all ave/time 1 100 100 v_stretch_pct v_S_len v_S0 file stretch.txt # format "%.8g"
+thermo_style custom step time temp v_stretch_pct v_S_len v_S0 c_PB_ylow_ymax c_PB_yhigh_ymin
+
+
+
+# ---------- Print procedure schedule ---------- #
+# Timestamps
+variable relax_steps equal $(floor(v_relax_time/dt))
+variable stretch_steps equal $(floor(v_stretch_max_pct/v_stretch_speed_pct/dt))
+variable pause1_steps equal $(floor(v_pause_time1/dt))
+variable pause2_steps equal $(floor(v_pause_time2/dt))
+variable drag_steps equal $(floor(v_drag_length/v_drag_speed/dt))
+
+# Print
+print "--------------------"
+print "------SCHEDULE------"
+print ""
+print "--> Relax (step 0, 0 ps)"
+print "Time: $(v_relax_steps) steps = $(v_relax_steps*dt) ps"
+print ""
+print "--> Stretch sheet (step $(v_relax_steps), $(v_relax_steps*dt) ps)"
+print "Amount: $(v_stretch_max_pct) % = $(v_stretch_max_pct*(v_pullblock_ylo-v_pullblock_yhi)) ang "
+print "Speed: $(v_stretch_speed_pct) %/ps = $(v_stretch_speed) ang/ps"
+print "Time:  $(v_stretch_steps) steps = $(v_stretch_steps*dt) ps"
+print ""
+print "--> Pause 1 (step $(v_relax_steps+v_stretch_steps), $((v_relax_steps+v_stretch_steps)*dt) ps)"
+print "Time: $(v_pause1_steps) steps = $(v_pause1_steps*dt) ps"
+print ""
+print "--> Apply normal force (step $(v_relax_steps+v_stretch_steps+v_pause1_steps), $((v_relax_steps+v_stretch_steps+v_pause1_steps)*dt) ps)"
+print "Amount: $(v_F_N/v_N_to_eV_over_ang*1e9) nN/m = $(v_F_N) eV/ang"
+print ""
+print "--> Pause 2 (step $(v_relax_steps+v_stretch_steps+v_pause1_steps), $((v_relax_steps+v_stretch_steps+v_pause1_steps)*dt) ps)"
+print "Time: $(v_pause2_steps) steps = $(v_pause2_steps*dt) ps"
+print ""
+print "--> Drag sheet (step $(v_relax_steps+v_stretch_steps+v_pause1_steps+v_pause2_steps), $((v_relax_steps+v_stretch_steps+v_pause1_steps+v_pause2_steps)*dt) ps)"
+print "Length: $(v_drag_length) ang"
+print "Speed: $(v_drag_speed*v_s_to_ps/v_m_to_ang) m/s = $(v_drag_speed) ang/ps "
+print "Spring constant: $(v_K*v_m_to_ang/v_N_to_eV_over_ang) N/m = $(v_K) eV/ang^2"
+print "Time: $(v_drag_steps)  = $(v_drag_steps*dt) ps"
+print ""
+print "--> END (step $(v_relax_steps+v_stretch_steps+v_pause1_steps+v_pause2_steps+v_drag_steps), $((v_relax_steps+v_stretch_steps+v_pause1_steps+v_pause2_steps+v_drag_steps)*dt) ps)"
+print "--------------------"
+print "--------------------"
+print ""
+
+
+# ----------  Relax sheet ---------- #
+# Set PB conditions
+fix PB_xyz_ave PB_tot aveforce 0 0 0 # Average force (every atom feels same force vector)
+print "--> Relax: $(v_relax_steps) timesteps, $(v_relax_steps*dt) ps"
+run  $(v_relax_steps) 
+
+# ---------- Stretch sheet ---------- #
+# Update fixes
+unfix nve
+fix nve free_atoms nve
+fix ylow_move  PB_ylow move linear 0 $(-v_stretch_speed/2) NULL units box
+fix yhigh_move PB_yhigh move linear 0 $(v_stretch_speed/2) NULL units box
+
+print "--> Stretch: $(v_stretch_steps) timesteps, $(v_stretch_steps*dt) ps"
+variable S0 equal $(c_PB_yhigh_ymin-c_PB_ylow_ymax) # Lock S0 after relaxing
+run $(v_stretch_steps)
+
+# ---------- Pause 1 ---------- #
+# Update fixes
+unfix nve
+fix nve semifree_atoms nve
+unfix ylow_move
+unfix yhigh_move
+velocity PB_tot set 0 0 0
+
+# Create PB spring (hold PB in place)
+compute PB_ylow_com PB_ylow com  # Center of mass PB_ylow
+compute PB_yhigh_com PB_yhigh com  # Center of mass PB_yhigh
+thermo_style custom c_PB_ylow_com[1] c_PB_yhigh_com[1] # use compute 
+run 0 # Activate the compute by using it
+variable seperation_dis equal $(c_PB_yhigh_com[2] - c_PB_ylow_com[2])
+
+fix PB_spring PB_ylow spring couple PB_yhigh 1e5 0.0 $(v_seperation_dis) 0.0 0.0 
+
+
+print "--> Pause 1: $(v_pause1_steps) timesteps, $(v_pause1_steps*dt) ps"
+thermo_style custom step time temp v_stretch_pct v_S_len v_S0 c_PB_ylow_ymax c_PB_yhigh_ymin 
+run  $(v_pause1_steps) 
+
+# ---------- Apply normal force ---------- #
+fix normal_force full_sheet addforce 0.0 0.0 $(-v_F_N)
+
+
+# ---------- Pause 2 ---------- #
+print "--> Pause 2: $(v_pause2_steps) timesteps, $(v_pause2_steps*dt) ps"
+run  $(v_pause2_steps) 
+
+# ---------- Drag sheet by springforce ---------- #
+# Get position for virtual atom (va)
+compute sheet_com sheet com # compute COM for sheet
+thermo_style custom c_sheet_com[1] # use compute 
+run 0 # Activate the compute by using it
+
+# Create virtuel atom (place in sheet COM)
+create_atoms 3 single $(c_sheet_com[1]) $(c_sheet_com[2]) $(c_sheet_com[3])
+group virtuel_atom type 3
+
+# Add spring between sheet and virtuel atom
+fix spring_force full_sheet spring couple virtuel_atom $(v_K) 0.0 0.0 NULL 0.0
+# output: spring energy, Fx, Fy, Fz, +- |vec(F)|
+# Force acting on first group (= full_sheet)
+
+
+
+variable dir_norm equal $(sqrt(v_drag_dir_x^2+v_drag_dir_y^2))
+fix move_va virtuel_atom move linear $(v_drag_speed*v_drag_dir_x/v_dir_norm) $(v_drag_speed*v_drag_dir_y/v_dir_norm) 0 units box 
+
+
+
+# Write drag force to file
+fix friction_force_output all ave/time 1 100 100 v_F_N f_spring_force[4] file friction_force.txt # format "%.8g"
+
+thermo_style custom step time temp v_stretch_pct v_S_len v_S0 c_PB_ylow_ymax c_PB_yhigh_ymin f_spring_force[4] # Reset thermo style
+print "--> Drag : $(v_drag_steps) timesteps, $(v_drag_steps*dt) ps"
+run  $(v_drag_steps) 
+
+
