@@ -13,20 +13,20 @@ include ../config_builder/sheet_substrate_info.in    # import variables
 # Sheet 
 region sheet_region block INF INF ${pullblock_yhi} ${pullblock_ylo} ${pullblock_zlo} INF
 region full_sheet_region block INF INF INF INF ${pullblock_zlo} INF
-group sheet region sheet_region
-group full_sheet region full_sheet_region 
+group  sheet region sheet_region
+group  full_sheet region full_sheet_region 
 
 # Pullblocks
 region PB_ylow_region  block INF INF INF ${pullblock_yhi} ${pullblock_zlo} INF
 region PB_yhigh_region block INF INF ${pullblock_ylo} INF ${pullblock_zlo} INF
-group PB_ylow region PB_ylow_region
-group PB_yhigh region PB_yhigh_region
-group PB_tot union PB_ylow PB_yhigh
+group  PB_ylow region PB_ylow_region
+group  PB_yhigh region PB_yhigh_region
+group  PB_tot union PB_ylow PB_yhigh
 
 # Substrate
 region substrate_freeze_region block INF INF INF INF INF ${substrate_freeze_zhi}
 region substrate_contact_region block INF INF INF INF ${substrate_contact_zlo} ${pullblock_zlo}
-group substrate type 2
+group  substrate type 2
 group  substrate_freeze region substrate_freeze_region
 group  substrate_contact region substrate_contact_region
 
@@ -56,9 +56,10 @@ pair_coeff * * sw ../potentials/si.sw NULL Si NULL         # Substrate Si-Si
 pair_coeff * 3  lj/cut 0.0 0.0 
 
 
-timestep            0.0005
-thermo              100
-thermo_style custom step time temp 
+# timestep            0.0005
+timestep 0.001 # 1 fs
+# thermo              100
+# thermo_style custom step time temp 
 fix nve semifree_atoms nve # (microcanonical) 
 # fix 2 all balance 1000 1.05 shift xy 10 1.05 # balance number of particles computed on each processor 
 
@@ -71,38 +72,55 @@ dump 2 sheet custom 100 sheet.data id type x y z
 dump 3 substrate_contact custom 100 substrate_contact.data id type x y z
 
 
-# --- Convertion: SI to metal --- #
-variable N_to_eV_over_ang equal 6.24150907e8    # force: N -> eV/Å
-variable m_to_ang equal 1e10                    # distance: m -> Å
-variable s_to_ps equal 1e12                     # time: s -> ps
+# # --- Convertion: SI to metal --- #
+# variable N_to_eV_over_ang equal 6.24150907e8    # force: N -> eV/Å
+# variable m_to_ang equal 1e10                    # distance: m -> Å
+# variable s_to_ps equal 1e12                     # time: s -> ps
 
 
-# --- Friction procedure --- #
-# Relax sheet
-variable relax_time equal 0#0.5             # [ps]
+# # --- Friction procedure --- #
+# # Relax sheet
+# variable relax_time equal 0.5             # [ps]
 
-# Stretch sheet
-variable stretch_speed_pct equal 0.2    # [% of pattern ylen per picoseconds]
-variable stretch_max_pct equal 0#0.1 # 0.20 
+# # Stretch sheet
+# variable stretch_speed_pct equal 0.2    # [% of pattern ylen per picoseconds]
+# variable stretch_max_pct equal 0#0.1 # 0.20 
 
-# Wait before applying normal force
-variable pause_time1 equal 0#0.5
+# # Wait before applying normal force
+# variable pause_time1 equal 0#0.5
 
-# Apply normal force 
-# variable F_N equal $(0.8e-9*v_N_to_eV_over_ang)  # [eV/Å]
-variable F_N equal $(0.08e-9*v_N_to_eV_over_ang)  # [eV/Å] <------- Why is 0.8 nN to much when used in article?
+# # Apply normal force 
+# # variable F_N equal $(0.8e-9*v_N_to_eV_over_ang)  # [eV/Å]
+# variable F_N equal $(0.08e-9*v_N_to_eV_over_ang)  # [eV/Å] <------- Why is 0.8 nN to much when used in article?
 
 
-# Wait before dragging sheet
-variable pause_time2 equal 1
+# # Wait before dragging sheet
+# variable pause_time2 equal 1
 
-# Drag sheet
-variable drag_dir_x equal 1
-variable drag_dir_y equal 0
+# # Drag sheet
+# variable drag_dir_x equal 1
+# variable drag_dir_y equal 0
 # variable drag_speed equal $(5.0*v_m_to_ang/v_s_to_ps)         # drag speed: (m/s) -> [Å/ps]
-variable drag_speed equal $(50.0*v_m_to_ang/v_s_to_ps)         # drag speed: (m/s) -> [Å/ps]
+# # variable drag_speed equal $(50.0*v_m_to_ang/v_s_to_ps)         # drag speed: (m/s) -> [Å/ps]
 
-variable drag_length equal 5                            # drag length: [Å]
-variable K equal $(30.0*v_N_to_eV_over_ang/v_m_to_ang)    # spring constant: (N/m) -> [eV/Å^2]
-include ./friction_procedure_spring.in
+# variable drag_length equal 10                            # drag length: [Å]
+# variable K equal $(30.0*v_N_to_eV_over_ang/v_m_to_ang)    # spring constant: (N/m) -> [eV/Å^2]
+
+
+# variable sim_num equal 1
+# variable test equal v_sim_num
+
+
+
+
+# variable filename_stretch string stretch.txt
+# variable filename_drag string drag_v_test.txt 
+
+# print $(v_test)
+# variable sim_num equal 2
+
+# print ${filename_drag}
+# print $(v_test)
+
+# include ./friction_procedure_spring.in
 

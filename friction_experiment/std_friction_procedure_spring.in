@@ -30,7 +30,7 @@ compute yhigh_force PB_yhigh reduce sum fy
 # ---------- Output ---------- #
 # fix data_output all ave/time 1 100 100 v_stretch_pct v_S_len v_S0 file stretch.txt # format "%.8g"
 fix data_output all ave/time 1 100 100 v_stretch_pct v_S_len v_S0 file stretch.txt # format "%.8g"
-thermo_style custom step time temp v_stretch_pct v_S_len v_S0 c_PB_ylow_ymax c_PB_yhigh_ymin
+thermo_style custom step time cpu cpuremain temp v_stretch_pct v_S_len v_S0 c_PB_ylow_ymax c_PB_yhigh_ymin
 
 
 
@@ -140,15 +140,15 @@ fix spring_force PB_tot spring couple virtuel_atom $(v_K) 0.0 0.0 NULL 0.0
 
 variable dir_norm equal $(sqrt(v_drag_dir_x^2+v_drag_dir_y^2))
 fix move_va virtuel_atom move linear $(v_drag_speed*v_drag_dir_x/v_dir_norm) $(v_drag_speed*v_drag_dir_y/v_dir_norm) 0 units box 
+print $(v_drag_speed*v_drag_dir_x/v_dir_norm) 
+print $(v_drag_speed*v_drag_dir_y/v_dir_norm)
 
-
-# Write drag force to file
-compute Ff sheet group/group substrate 
-
+# Write friction force to file
+compute Ff substrate group/group full_sheet
 fix friction_force_spring all ave/time 1 100 100 v_F_N f_spring_force[1] f_spring_force[2] f_spring_force[3] f_spring_force[4] c_Ff[1] c_Ff[2] c_Ff[3] file friction_force.txt # format "%.8g"
 
 
-thermo_style custom step time temp v_stretch_pct v_S_len v_S0 c_PB_ylow_ymax c_PB_yhigh_ymin f_spring_force[4] # Reset thermo style
+thermo_style custom step time cpu cpuremain temp v_stretch_pct f_spring_force[4] # Reset thermo style
 print "--> Drag : $(v_drag_steps) timesteps, $(v_drag_steps*dt) ps"
 run  $(v_drag_steps) 
 
