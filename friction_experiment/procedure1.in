@@ -1,1 +1,12 @@
 include ./friction_simulation.in
+variable relax_time equal 0.5                            
+variable stretch_speed_pct equal 0.2                            
+variable stretch_max_pct equal 0.1                            
+variable pause_time1 equal 0.5                            
+variable F_N equal 0.04993207256                            
+variable pause_time2 equal 1                            
+variable drag_dir_x equal 1                            
+variable drag_dir_y equal 0                            
+variable drag_speed equal 0.05                            
+variable drag_length equal 10                            
+variable K equal 1.8724527210000002                            
