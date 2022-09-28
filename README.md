@@ -62,6 +62,8 @@
 #### Week 39 (26/09 - 01/09) - Working from Pisa
 - Working on details for friciton procedure (virtual spring might not be perfect)
 - Reconsidered friction procedure and is going to remake it for mathcing real world system of a nano machine. 
+- Made structured pipeline consisting of lammps files: commands with variables for giving procedure, setup of system, the procedure to do (friction simulation for instance).
+- Submitted friction simulation with different drag speed of 1, 2, 5, 10, and 50 m/s.
 
 
 
