@@ -19,19 +19,17 @@ variable stretch_speed equal v_stretch_speed_pct*v_S0
 compute ylow_force PB_ylow reduce sum fy
 compute yhigh_force PB_yhigh reduce sum fy
 
-# OR
-# compute ylow_test PB_yhigh group/group sheet 
-# compute yhigh_force2 sheet group/group PB_yhigh 
-# Cannot do that since the potential do not support if for some reason...
-# thermo_style custom step time c_ylow_test[2] c_ylow_force c_yhigh_force# c_yhigh_force2[2]
-# run 1000
-
 
 # ---------- Output ---------- #
-# fix data_output all ave/time 1 100 100 v_stretch_pct v_S_len v_S0 file stretch.txt # format "%.8g"
-fix data_output all ave/time 1 100 100 v_stretch_pct v_S_len v_S0 file stretch.txt # format "%.8g"
-thermo_style custom step time temp v_stretch_pct v_S_len v_S0 c_PB_ylow_ymax c_PB_yhigh_ymin
+# fix data_output all ave/time 1 100 100 v_stretch_pct v_S_len v_S0 file ${root}${out_path}/stretch${out_ext}.txt # format "%.8g"
+thermo_style custom step time cpu cpuremain temp v_stretch_pct
+thermo 100
 
+
+# Dump
+dump 1 all custom 100 ${root}${out_path}/system${out_ext}.data id type x y z vx vy vz
+dump 2 sheet custom 100 ${root}${out_path}/sheet${out_ext}.data id type x y z
+dump 3 substrate_contact custom 100 ${root}${out_path}/substrate_contact${out_ext}.data id type x y z
 
 
 # ---------- Print procedure schedule ---------- #
@@ -47,7 +45,7 @@ print "--------------------"
 print "------SCHEDULE------"
 print ""
 print "--> Relax (step 0, 0 ps)"
-print "Time: $(v_relax_steps) steps = $(v_relax_steps*dt) ps"
+print "Time: $(v_relax_steps) steps = $(v_relax_steps*dt) ps" 
 print ""
 print "--> Stretch sheet (step $(v_relax_steps), $(v_relax_steps*dt) ps)"
 print "Amount: $(v_stretch_max_pct) % = $(v_stretch_max_pct*(v_pullblock_ylo-v_pullblock_yhi)) ang "
@@ -111,7 +109,7 @@ fix PB_spring PB_ylow spring couple PB_yhigh 1e5 0.0 $(v_seperation_dis) 0.0 0.0
 
 
 print "--> Pause 1: $(v_pause1_steps) timesteps, $(v_pause1_steps*dt) ps"
-thermo_style custom step time temp v_stretch_pct v_S_len v_S0 c_PB_ylow_ymax c_PB_yhigh_ymin 
+thermo_style custom step time cpu cpuremain temp v_stretch_pct 
 run  $(v_pause1_steps) 
 
 # ---------- Apply normal force ---------- #
@@ -124,30 +122,33 @@ run  $(v_pause2_steps)
 
 # ---------- Drag sheet by springforce ---------- #
 # Get position for virtual atom (va)
-compute sheet_com sheet com # compute COM for sheet
-thermo_style custom c_sheet_com[1] # use compute 
+compute PB_COM PB_tot com # compute COM for sheet
+thermo_style custom c_PB_COM[1] # use compute 
 run 0 # Activate the compute by using it
 
 # Create virtuel atom (place in sheet COM)
-create_atoms 3 single $(c_sheet_com[1]) $(c_sheet_com[2]) $(c_sheet_com[3])
+create_atoms 3 single $(c_PB_COM[1]) $(c_PB_COM[2]) $(c_PB_COM[3])
 group virtuel_atom type 3
 
-# Add spring between sheet and virtuel atom
-fix spring_force full_sheet spring couple virtuel_atom $(v_K) 0.0 0.0 NULL 0.0
+# Add spring between PB and virtuel atom
+fix spring_force PB_tot spring couple virtuel_atom $(v_K) 0.0 0.0 NULL 0.0
 # output: spring energy, Fx, Fy, Fz, +- |vec(F)|
 # Force acting on first group (= full_sheet)
 
 
-
 variable dir_norm equal $(sqrt(v_drag_dir_x^2+v_drag_dir_y^2))
 fix move_va virtuel_atom move linear $(v_drag_speed*v_drag_dir_x/v_dir_norm) $(v_drag_speed*v_drag_dir_y/v_dir_norm) 0 units box 
+print $(v_drag_speed*v_drag_dir_x/v_dir_norm) 
+print $(v_drag_speed*v_drag_dir_y/v_dir_norm)
+
+# Write data to file
+compute Ff substrate group/group full_sheet
+compute sheet_COM full_sheet com # compute COM for sheet
+
+fix friction_force_spring all ave/time 1 100 100 v_F_N f_spring_force[1] f_spring_force[2] f_spring_force[3] f_spring_force[4] c_Ff[1] c_Ff[2] c_Ff[3] c_sheet_COM[1] c_sheet_COM[2] c_sheet_COM[3] file ${root}${out_path}/friction_force${out_ext}.txt # format "%.8g"
 
 
-
-# Write drag force to file
-fix friction_force_output all ave/time 1 100 100 v_F_N f_spring_force[4] file friction_force.txt # format "%.8g"
-
-thermo_style custom step time temp v_stretch_pct v_S_len v_S0 c_PB_ylow_ymax c_PB_yhigh_ymin f_spring_force[4] # Reset thermo style
+thermo_style custom step time cpu cpuremain temp v_stretch_pct c_sheet_COM[1] c_sheet_COM[2] f_spring_force[4] # Reset thermo style
 print "--> Drag : $(v_drag_steps) timesteps, $(v_drag_steps*dt) ps"
 run  $(v_drag_steps) 
 
