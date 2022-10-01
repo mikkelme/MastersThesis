@@ -1,3 +1,7 @@
+import sys
+sys.path.append('../') # parent folder: MastersThesis
+
+
 from ase.build import graphene_nanoribbon
 from ase.build import graphene
 
@@ -5,8 +9,7 @@ from ase.io import  lammpsdata
 from ase.visualize import view
 import numpy as np
 
-from build_utils import *
-from manual_patterns import *
+from graphene_sheet.manual_patterns import *
 
 
 def build_graphene_sheet(mat, view_lattice = False, write = False):

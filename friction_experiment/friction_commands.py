@@ -111,10 +111,7 @@ class Friction_procedure:
         assert changes, "No variables changes made"
         self.outfile.write(f"include {self.path}{self.simulation_action}\n")
 
-
-
-
-                        
+                  
 
 def different_drag_speeds():
     # Path 
@@ -164,10 +161,55 @@ def different_drag_speeds():
 
 
 
+def custom():
+   # Path 
+    root = "/Users/mikkelme/Documents/Github/MastersThesis"
+    script_path = "/friction_experiment"
+    config_path = "/config_builder"
+    out_path = "${script_path}/output_data"
+
+
+
+    # Settings
+    proc = Friction_procedure(  root, script_path, config_path, out_path,
+                                output_file = "stretch_no_stretch.in", 
+                                setup_file = "friction_simulation.in", 
+                                simulation_action = "std_friction_procedure_spring.in"
+                                )
+
+
+    proc.relax_time = 0.5           # [ps] 
+    proc.stretch_speed_pct = 0.2    # [% of pattern ylen per picoseconds]
+    proc.stretch_max_pct = 0.1
+    proc.pause_time1 = 0.5
+    proc.F_N = 0.08e-9              # [eV/Å]
+    proc.pause_time2 = 1            # [ps]
+    proc.drag_dir_x = 0
+    proc.drag_dir_y = 1
+    proc.drag_length = 10           # [Å]
+    proc.drag_speed = 2.0           # [m/s]
+    proc.K = 30.0                   # [N/m]
+    proc.convert_units(["F_N", "K", "drag_speed"])
+
+    proc.out_ext = "_stretch"
+    proc.stretch_max_pct = 0
+    proc.add_run()
+
+    
+    proc.out_ext = "_nostretch"
+    proc.add_run()
+
+
+
+    proc.outfile.close()
+
+
+
 
 # std_friction_procedure_spring.in
 
 
 
 if __name__ == "__main__":
-    different_drag_speeds()
+    # different_drag_speeds()
+    custom()

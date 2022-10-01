@@ -1,4 +1,7 @@
-from build_utils import *
+import sys
+sys.path.append('../') # parent folder: MastersThesis
+
+from graphene_sheet.build_utils import *
 
 
 

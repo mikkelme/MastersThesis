@@ -1,0 +1,25 @@
+variable root string /Users/mikkelme/Documents/Github/MastersThesis
+variable script_path string /friction_experiment
+variable config_path string /config_builder
+variable out_path string ${script_path}/output_data
+
+clear
+include ${root}${script_path}/friction_simulation.in
+variable relax_time equal 0.5
+variable stretch_speed_pct equal 0.2
+variable stretch_max_pct equal 0
+variable pause_time1 equal 0.5
+variable F_N equal 0.04993207256
+variable pause_time2 equal 1
+variable drag_dir_x equal 0
+variable drag_dir_y equal 1
+variable drag_speed equal 0.02
+variable drag_length equal 10
+variable K equal 1.8724527210000002
+variable out_ext string _stretch
+include ${root}${script_path}/std_friction_procedure_spring.in
+
+clear
+include ${root}${script_path}/friction_simulation.in
+variable out_ext string _nostretch
+include ${root}${script_path}/std_friction_procedure_spring.in

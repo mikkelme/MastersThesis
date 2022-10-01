@@ -1,5 +1,6 @@
 import sys
 sys.path.append('../') # parent folder: MastersThesis
+
 from graphene_sheet.build_graphene_sheet import *
 
 def build_config(sheet_mat, substrate_file, pullblock = None, mode = "all", view_atoms = False, write = False):
@@ -35,8 +36,8 @@ def build_config(sheet_mat, substrate_file, pullblock = None, mode = "all", view
     sheet.translate(trans_vec1)
 
 
-    # tmp translation <---------- !!
-    sheet.translate((-15, 0, 0))
+    # # tmp translation <---------- !!
+    # sheet.translate((-15, 0, 0))
 
 
     # --- Merge into same object --- #
@@ -113,7 +114,7 @@ def build_config(sheet_mat, substrate_file, pullblock = None, mode = "all", view
 if __name__ == "__main__":
     multiples = (3, 5)  
     unitsize = (5,7)
-    mat = pop_up_pattern(multiples, unitsize, sp = 2, view_lattice = False)
+    mat = pop_up_pattern(multiples, unitsize, sp = 2)
     # mat[:, :] = 1
     substrate_file = "../substrate/crystal_Si_substrate.txt"
     build_config(mat, substrate_file, pullblock = 6, mode = "all", view_atoms = True, write = True)
