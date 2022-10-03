@@ -5,27 +5,34 @@ import matplotlib.pyplot as plt
 def read_friction_file(filename):
     return np.loadtxt(filename, unpack=True)
 
-# def avg_forward(timestep, force, interval):
+def avg_forward(timestep, force, interval):
+    step = []
+    avg = []
+    for i in range(0, len(timestep), interval):
+        avg.append(np.mean(force[i: i+interval]))
+        step.append(np.mean(timestep[i: i+interval]) )
+
+    return step, avg   
+
+# def avg_forward(timestep, *args):
+
+#     output = []
+#     for arg in args:
+#         tmp = []
+#         for i in range(0, len(timestep), interval):
+#             tmp.append(np.mean(arg[i: i+interval]))
+#         output.append(np.array(tmp))
+
 #     step = []
-#     avg = []
 #     for i in range(0, len(timestep), interval):
-#         avg.append(np.mean(force[i: i+interval]))
 #         step.append(np.mean(timestep[i: i+interval]) )
+   
+#     return step, output 
 
-#     return step, avg   
-
-
-
-def avg_forward(*args):
-    product = 1
-    for arg in args:
-        print(arg[0])
-
-    exit()
 
 
 if __name__ == "__main__":
-    interval = 1
+    interval = 10
 
 
     filenames = [
@@ -38,9 +45,12 @@ if __name__ == "__main__":
 
     for i, filename in enumerate(filenames):
         timestep, v_F_N, f_spring_force1, f_spring_force2, f_spring_force3, f_spring_force4, c_Ff1, c_Ff2, c_Ff3, c_sheet_COM1, c_sheet_COM2, c_sheet_COM3  = read_friction_file(filename)
-        timestep, c_Ff1 = avg_forward(timestep, c_Ff1)
+        
+        # print(len(timestep), len(c_Ff1))
+        # timestep, output = avg_forward(timestep, c_Ff1)
+        # print(len(timestep), len(output))
 
-        exit()
+        # exit()
         fig, ax = plt.subplots(2, 2, num = i)
         fig.suptitle(filename)
 
