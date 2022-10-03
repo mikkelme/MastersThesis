@@ -173,30 +173,30 @@ def custom():
     # Settings
     proc = Friction_procedure(  root, script_path, config_path, out_path,
                                 output_file = "stretch_no_stretch.in", 
-                                setup_file = "friction_simulation.in", 
+                                setup_file = "friction_simulation_periodic.in", 
                                 simulation_action = "std_friction_procedure_spring.in"
                                 )
 
 
-    proc.relax_time = 0.5           # [ps] 
-    proc.stretch_speed_pct = 0.2    # [% of pattern ylen per picoseconds]
-    proc.stretch_max_pct = 0.1
-    proc.pause_time1 = 0.5
-    proc.F_N = 0.08e-9              # [eV/Å]
-    proc.pause_time2 = 1            # [ps]
+    proc.relax_time = 5           # [ps] 
+    proc.stretch_speed_pct = 0.05    # [% of pattern ylen per picoseconds]
+    proc.stretch_max_pct = 0.2
+    proc.pause_time1 = 1.0
+    proc.F_N = 2*0.08e-9              # [eV/Å]
+    proc.pause_time2 = 5.0            # [ps]
     proc.drag_dir_x = 0
     proc.drag_dir_y = 1
-    proc.drag_length = 10           # [Å]
-    proc.drag_speed = 2.0           # [m/s]
+    proc.drag_length = 5           # [Å]
+    proc.drag_speed = 5.0           # [m/s]
     proc.K = 30.0                   # [N/m]
     proc.convert_units(["F_N", "K", "drag_speed"])
 
-    proc.out_ext = "_stretch"
-    proc.stretch_max_pct = 0
+    proc.out_ext = "2xFN_stretch"
     proc.add_run()
 
     
-    proc.out_ext = "_nostretch"
+    proc.stretch_max_pct = 0
+    proc.out_ext = "2xFN_nostretch"
     proc.add_run()
 
 
