@@ -70,7 +70,10 @@
 #### Week 40 (03/10 - 09/09) - Working from Pisa
 - Working on determining the problem when running on the cluster (simulation explodes)
 - Isolated the problem to the hybrid style potentials. The issue only occours when the Si-atom substrate and C-atom sheet is closer to each other than the AIREBO (C-C interactions) cutt-off
-- Working on a procedure for pushing the sheet and substrate together with weaker normal force before applying bigger one (to avoid violent impact).
+- Working on a procedure for pushing the sheet and substrate together with weaker normal force before applying bigger one (to avoid violent impact) --> Settled on damping 
+- Changed parameters for LJ (had used a vary small cuttoff distance)
+- Changed how I apply normal force. Before I applied on the whole sheet now I do only apply it on the pullblocks.
+
 
 
 ## Things to remember 
