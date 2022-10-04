@@ -59,12 +59,18 @@
 - Added write to file of friction forces 
 
 
-#### Week 39 (26/09 - 01/09) - Working from Pisa
+#### Week 39 (26/09 - 02/09) - Working from Pisa
 - Working on details for friciton procedure (virtual spring might not be perfect)
 - Reconsidered friction procedure and is going to remake it for mathcing real world system of a nano machine. 
 - Made structured pipeline consisting of lammps files: commands with variables for giving procedure, setup of system, the procedure to do (friction simulation for instance).
-- Submitted friction simulation with different drag speed of 1, 2, 5, 10, and 50 m/s.
+- Submitted friction simulation with different drag speed of 1, 2, 5, 10, and 50 m/s... Did not run due to LAMMPS issue when running on cluster
+- Ran small simulations on local computer and got some results regarding friction forces. Both spring force and group/group contact force between sheet and substrate seems promising. Now I need to run longer simulations and apply a savgol filter to clean up the data and determine static and dynamic friction coefficient if possible.
 
+
+#### Week 40 (03/10 - 09/09) - Working from Pisa
+- Working on determining the problem when running on the cluster (simulation explodes)
+- Isolated the problem to the hybrid style potentials. The issue only occours when the Si-atom substrate and C-atom sheet is closer to each other than the AIREBO (C-C interactions) cutt-off
+- Working on a procedure for pushing the sheet and substrate together with weaker normal force before applying bigger one (to avoid violent impact).
 
 
 ## Things to remember 

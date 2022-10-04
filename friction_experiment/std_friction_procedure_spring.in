@@ -1,8 +1,24 @@
 # ---------- Compute and variables---------- #
-# Minmax vals of PB
-compute PB_ylow_ymax PB_ylow reduce max y
-compute PB_yhigh_ymin PB_yhigh reduce min y
-thermo_style custom c_PB_ylow_ymax c_PB_yhigh_ymin
+
+## - Sheet - ##
+compute sheet_COM full_sheet com            # Center of mass
+compute sheet_fz full_sheet reduce ave fz   # Average z-force
+
+
+## - Pullblocks - ##
+compute PB_ylow_ymax PB_ylow reduce max y   # Lower y-limit for sheet
+compute PB_yhigh_ymin PB_yhigh reduce min y # Upper y-limit for sheet
+
+## Substrate ##
+compute substrate_zhigh substrate reduce max z # Max z-val of substrate
+
+## Interactions ##
+compute Ff full_sheet group/group substrate # friction forces
+variable sub_sheet_seperation equal c_sheet_COM[3]-c_substrate_zhigh  # seperation between substrate max and COM of sheet
+
+
+## - Activate computes - ## 
+thermo_style custom c_PB_ylow_ymax c_PB_yhigh_ymin c_substrate_zhigh
 run 0 # activate compute
 
 # Inner sheet length
@@ -15,14 +31,15 @@ variable stretch_pct equal (v_S_len-v_S0)/v_S0  # Updated stretch pct
 # Stretch speed
 variable stretch_speed equal v_stretch_speed_pct*v_S0 
 
-# Stretch force / PB force
-compute ylow_force PB_ylow reduce sum fy
-compute yhigh_force PB_yhigh reduce sum fy
+# # Stretch force / PB force
+# compute ylow_force PB_ylow reduce sum fy
+# compute yhigh_force PB_yhigh reduce sum fy
+
 
 
 # ---------- Output ---------- #
 # fix data_output all ave/time 1 100 100 v_stretch_pct v_S_len v_S0 file ${root}${out_path}/stretch${out_ext}.txt # format "%.8g"
-thermo_style custom step time cpu cpuremain temp v_stretch_pct
+thermo_style custom step time cpu cpuremain temp v_stretch_pct c_sheet_COM[3] v_sub_sheet_seperation
 thermo 100
 
 
@@ -112,8 +129,79 @@ print "--> Pause 1: $(v_pause1_steps) timesteps, $(v_pause1_steps*dt) ps"
 thermo_style custom step time cpu cpuremain temp v_stretch_pct 
 run  $(v_pause1_steps) 
 
+
 # ---------- Apply normal force ---------- #
+
 fix normal_force full_sheet addforce 0.0 0.0 $(-v_F_N)
+
+variable move_speed_1 equal 1 #[ps]
+variable move_speed_2 equal 1 #[ps]
+variable step_forward equal 10 # steps to move forward
+
+# Move towards force equlibrium
+unfix FNmove
+fix FNmove PB_tot move linear 0.0 0.0 $(-v_move_speed_2) units box
+label loop
+run $(v_step_forward)
+if $(c_sheet_fz)>0 then "jump SELF break"
+jump SELF loop
+label break
+
+
+# # Define new computes 
+# thermo_style custom step time cpu cpuremain temp v_stretch_pct c_sheet_COM[3] c_Ff[3] c_sheet_fz v_sub_sheet_seperation
+# run 0
+
+
+# # Move to approximated non normal force equlibrium
+# variable z_move equal v_sub_sheet_seperation-2^(1/6)*3.26
+# unfix PB_spring
+# fix FNmove PB_tot move linear 0.0 0.0 $(-v_move_speed_1) units box
+# run $(floor((v_z_move*v_move_speed_1)/dt))
+
+# # Move towards force equlibrium
+# unfix FNmove
+# fix FNmove PB_tot move linear 0.0 0.0 $(-v_move_speed_2) units box
+# label loop
+# run $(v_step_forward)
+# if $(c_sheet_fz)>0 then "jump SELF break"
+# jump SELF loop
+# label break
+
+# variable tol equal 0.01 # tolerance for stopping move
+# variable move_direction equal -1.0
+
+
+
+# label loop
+# variable a loop 100
+# run $(v_step_forward)
+# if $(abs(c_sheet_fz))<$(v_tol) then "jump SELF break"
+# elif 
+
+# if "$(c_sheet_fz) > 0" then "jump SELF break"
+# next a
+# jump SELF loop
+# label break
+# print "ALL DONE"
+# velocity full_sheet set 0 0 0
+
+# label loop
+# variable a loop 100
+# run 100
+# if "$(c_Ff[3]) > 0" then "jump SELF break"
+# next a
+# jump SELF loop
+# label break
+# print "ALL DONE"
+
+velocity full_sheet set 0 0 0
+unfix FNmove
+fix PB_spring PB_ylow spring couple PB_yhigh 1e5 0.0 $(v_seperation_dis) 0.0 0.0 
+# thermo_style custom step time cpu cpuremain temp v_stretch_pct c_sheet_COM[3] c_Ff[3] c_sheet_fz v_sub_sheet_seperation
+thermo_style custom step time cpu cpuremain temp v_stretch_pct c_sheet_COM[3] c_Ff[3] f_normal_force[3] c_sheet_fz v_sub_sheet_seperation # Reset thermo style
+
+
 
 
 # ---------- Pause 2 ---------- #
@@ -142,8 +230,6 @@ print $(v_drag_speed*v_drag_dir_x/v_dir_norm)
 print $(v_drag_speed*v_drag_dir_y/v_dir_norm)
 
 # Write data to file
-compute Ff substrate group/group full_sheet
-compute sheet_COM full_sheet com # compute COM for sheet
 
 fix friction_force_spring all ave/time 1 100 100 v_F_N f_spring_force[1] f_spring_force[2] f_spring_force[3] f_spring_force[4] c_Ff[1] c_Ff[2] c_Ff[3] c_sheet_COM[1] c_sheet_COM[2] c_sheet_COM[3] file ${root}${out_path}/friction_force${out_ext}.txt # format "%.8g"
 
