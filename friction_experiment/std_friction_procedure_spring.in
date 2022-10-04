@@ -18,7 +18,7 @@ variable sub_sheet_seperation equal c_sheet_COM[3]-c_substrate_zhigh  # seperati
 
 
 ## - Activate computes - ## 
-thermo_style custom c_PB_ylow_ymax c_PB_yhigh_ymin c_substrate_zhigh
+thermo_style custom c_sheet_fz c_PB_ylow_ymax c_PB_yhigh_ymin c_substrate_zhigh 
 run 0 # activate compute
 
 # Inner sheet length
@@ -39,7 +39,7 @@ variable stretch_speed equal v_stretch_speed_pct*v_S0
 
 # ---------- Output ---------- #
 # fix data_output all ave/time 1 100 100 v_stretch_pct v_S_len v_S0 file ${root}${out_path}/stretch${out_ext}.txt # format "%.8g"
-thermo_style custom step time cpu cpuremain temp v_stretch_pct c_sheet_COM[3] v_sub_sheet_seperation
+
 thermo 100
 
 
@@ -94,6 +94,7 @@ print ""
 # Set PB conditions
 fix PB_xyz_ave PB_tot aveforce 0 0 0 # Average force (every atom feels same force vector)
 print "--> Relax: $(v_relax_steps) timesteps, $(v_relax_steps*dt) ps"
+thermo_style custom step time cpu cpuremain temp v_stretch_pct c_sheet_COM[3] v_sub_sheet_seperation c_sheet_fz
 run  $(v_relax_steps) 
 
 # ---------- Stretch sheet ---------- #
@@ -131,24 +132,26 @@ run  $(v_pause1_steps)
 
 
 # ---------- Apply normal force ---------- #
-
 fix normal_force full_sheet addforce 0.0 0.0 $(-v_F_N)
+thermo_style custom step time cpu cpuremain temp v_stretch_pct c_sheet_COM[3] c_Ff[3] f_normal_force[3] c_sheet_fz v_sub_sheet_seperation # Reset thermo style
+run 0 # activate compute
 
-variable move_speed_1 equal 1 #[ps]
-variable move_speed_2 equal 1 #[ps]
-variable step_forward equal 10 # steps to move forward
+variable step_forward equal 10
 
-# Move towards force equlibrium
-unfix FNmove
-fix FNmove PB_tot move linear 0.0 0.0 $(-v_move_speed_2) units box
+# Check when equlibrium force is reached and freeze velocity
+variable step_counter equal 0
 label loop
+variable step_counter equal $(v_step_counter+v_step_forward)
 run $(v_step_forward)
 if $(c_sheet_fz)>0 then "jump SELF break"
 jump SELF loop
 label break
 
+print $(v_step_counter)
 
-# # Define new computes 
+
+
+# Define new computes 
 # thermo_style custom step time cpu cpuremain temp v_stretch_pct c_sheet_COM[3] c_Ff[3] c_sheet_fz v_sub_sheet_seperation
 # run 0
 
@@ -196,17 +199,17 @@ label break
 # print "ALL DONE"
 
 velocity full_sheet set 0 0 0
-unfix FNmove
 fix PB_spring PB_ylow spring couple PB_yhigh 1e5 0.0 $(v_seperation_dis) 0.0 0.0 
 # thermo_style custom step time cpu cpuremain temp v_stretch_pct c_sheet_COM[3] c_Ff[3] c_sheet_fz v_sub_sheet_seperation
-thermo_style custom step time cpu cpuremain temp v_stretch_pct c_sheet_COM[3] c_Ff[3] f_normal_force[3] c_sheet_fz v_sub_sheet_seperation # Reset thermo style
+# thermo_style custom step time cpu cpuremain temp v_stretch_pct c_sheet_COM[3] c_Ff[3] f_normal_force[3] c_sheet_fz v_sub_sheet_seperation # Reset thermo style
 
 
 
 
 # ---------- Pause 2 ---------- #
 print "--> Pause 2: $(v_pause2_steps) timesteps, $(v_pause2_steps*dt) ps"
-run  $(v_pause2_steps) 
+# run  $(v_pause2_steps) 
+run  $(v_pause2_steps-v_step_counter) 
 
 # ---------- Drag sheet by springforce ---------- #
 # Get position for virtual atom (va)

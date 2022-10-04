@@ -6,8 +6,10 @@ from graphene_sheet.build_graphene_sheet import *
 def build_config(sheet_mat, substrate_file, pullblock = None, mode = "all", view_atoms = False, write = False):
     # Parameters
     # LJ equilbrium distance: 2^(1/6)*sigma ≈ 3.66
-    # Effective equilibrium distance (considering multiple layers in substreate) ≈ 
+    # Effective equilibrium distance (considering multiple layers in substreate) ≈ 2.8
     sheet_substrate_distance = 2.8 # [Å] 
+    # sheet_substrate_distance = 6 # [Å] 
+
     bottom_substrate_freeze = 5.5 # [Å]
     contact_depth = 8 # [Å]
     substrate_atomic_num = 14 # Si [atomic number]
