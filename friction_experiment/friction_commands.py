@@ -39,7 +39,7 @@ class Friction_procedure:
         self.pause_time1 = 0.5
 
         # Apply normal force 
-        self.F_N = 0.08e-9  # [eV/Å]
+        self.F_N = 0.8e-9  # [N]
 
         # Wait before dragging sheet
         self.pause_time2 = 1

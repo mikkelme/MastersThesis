@@ -13,7 +13,7 @@ compute PB_yhigh_ymin PB_yhigh reduce min y # Upper y-limit for sheet
 compute substrate_zhigh substrate reduce max z # Max z-val of substrate
 
 ## Interactions ##
-compute Ff full_sheet group/group substrate # friction forces
+compute Ff substrate group/group full_sheet # friction forces
 variable sub_sheet_seperation equal c_sheet_COM[3]-c_substrate_zhigh  # seperation between substrate max and COM of sheet
 
 
@@ -31,9 +31,6 @@ variable stretch_pct equal (v_S_len-v_S0)/v_S0  # Updated stretch pct
 # Stretch speed
 variable stretch_speed equal v_stretch_speed_pct*v_S0 
 
-# # Stretch force / PB force
-# compute ylow_force PB_ylow reduce sum fy
-# compute yhigh_force PB_yhigh reduce sum fy
 
 
 
@@ -132,7 +129,8 @@ run  $(v_pause1_steps)
 
 
 # ---------- Apply normal force ---------- #
-fix normal_force PB_tot addforce 0.0 0.0 $(-v_F_N)
+fix normal_force PB_tot addforce 0.0 0.0 $(-v_F_N/count(PB_tot))
+# fix normal_force PB_tot addforce 0.0 0.0 $(-v_F_N)
 thermo_style custom step time cpu cpuremain temp v_stretch_pct c_sheet_COM[3] c_Ff[3] f_normal_force[3] c_sheet_fz v_sub_sheet_seperation # Reset thermo style
 run 0 # activate compute
 
@@ -148,7 +146,7 @@ fix PB_spring PB_ylow spring couple PB_yhigh 1e5 0.0 $(v_seperation_dis) 0.0 0.0
 print "--> Apply normal force = $(v_F_N)"
 print "--> Pause 2: $(v_pause2_steps) timesteps, $(v_pause2_steps*dt) ps"
 print "--> damper on (viscosity = $(v_viscosity)) "
-if $(v_step_dampen)>$(v_pause2_steps) then "variable step_dampen equal v_pause"
+if $(v_step_dampen)>$(v_pause2_steps) then "variable step_dampen equal v_pause2_steps"
 run $(v_step_dampen)
 
 unfix PB_damper
@@ -157,27 +155,36 @@ run  $(v_pause2_steps-v_step_dampen)
 
 # ---------- Drag sheet by springforce ---------- #
 # Get position for virtual atom (va)
-compute PB_COM PB_tot com # compute COM for sheet
-thermo_style custom c_PB_COM[1] # use compute 
-run 0 # Activate the compute by using it
 
 # Create virtuel atom (place in sheet COM)
-create_atoms 3 single $(c_PB_COM[1]) $(c_PB_COM[2]) $(c_PB_COM[3])
+create_atoms 3 single $(c_sheet_COM[1]) $(c_sheet_COM[2]) $(c_sheet_COM[3])
 group virtuel_atom type 3
+variable dir_norm equal $(sqrt(v_drag_dir_x^2+v_drag_dir_y^2))
+
+
+if "$(v_K) == 0" then &
+"unfix PB_xyz_ave" &
+"fix move_PB PB_tot move linear $(v_drag_speed*v_drag_dir_x/v_dir_norm) $(v_drag_speed*v_drag_dir_y/v_dir_norm) 0 units box"
+else & 
+"fix spring_force PB_tot spring couple virtuel_atom $(v_K) 0.0 0.0 NULL 0.0"
+
 
 # Add spring between PB and virtuel atom
-fix spring_force PB_tot spring couple virtuel_atom $(v_K) 0.0 0.0 NULL 0.0
+# fix spring_force PB_tot spring couple virtuel_atom $(v_K) 0.0 0.0 NULL 0.0
 # output: spring energy, Fx, Fy, Fz, +- |vec(F)|
 # Force acting on first group (= full_sheet)
 
 
-variable dir_norm equal $(sqrt(v_drag_dir_x^2+v_drag_dir_y^2))
 fix move_va virtuel_atom move linear $(v_drag_speed*v_drag_dir_x/v_dir_norm) $(v_drag_speed*v_drag_dir_y/v_dir_norm) 0 units box 
-print $(v_drag_speed*v_drag_dir_x/v_dir_norm) 
-print $(v_drag_speed*v_drag_dir_y/v_dir_norm)
+
+
+
+# Force distribution (probbaly need group/group/atom compute)
+# compute 2Dchunk full_sheet chunk/atom bin/2d x center 3.0 y center 3.0
+# compute force_interaction full_sheet group/group substrate 
+# fix force_dist full_sheet ave/chunk 1 100 100 2Dchunk c_force_interaction[1] file ${root}${out_path}/sheet_force_dist${out_ext}.txt 
 
 # Write data to file
-
 fix friction_force_spring all ave/time 1 100 100 v_F_N f_spring_force[1] f_spring_force[2] f_spring_force[3] f_spring_force[4] c_Ff[1] c_Ff[2] c_Ff[3] c_sheet_COM[1] c_sheet_COM[2] c_sheet_COM[3] file ${root}${out_path}/friction_force${out_ext}.txt # format "%.8g"
 
 

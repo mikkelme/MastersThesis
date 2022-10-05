@@ -41,12 +41,8 @@ def color_cycle(num_color):
 # plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
 # plt.savefig("../article/figures/figure.pdf", bbox_inches="tight")
 
-
 #--- Import from parrent folder ---#
-# import os, sys
-# currentdir = os.path.dirname(os.path.realpath(__file__))
-# parentdir = os.path.dirname(currentdir)
-# sys.path.append(parentdir)
+# import sys
+# sys.path.append('../') # parent folder: MastersThesis
 # from plot_set import *
 
-#

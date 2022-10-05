@@ -73,6 +73,8 @@
 - Working on a procedure for pushing the sheet and substrate together with weaker normal force before applying bigger one (to avoid violent impact) --> Settled on damping 
 - Changed parameters for LJ (had used a vary small cuttoff distance)
 - Changed how I apply normal force. Before I applied on the whole sheet now I do only apply it on the pullblocks.
+- Changed som details on friction procedure simulation
+- Done longer simulation locally to see how friction forces spikes. Looks likes the stick-slip motion becomes pretty consistent without any difference in first spike and later ones. No real difference between static and dynamic friction other than taking max and mean force. 
 
 
 
