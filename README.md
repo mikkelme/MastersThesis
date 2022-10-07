@@ -75,8 +75,10 @@
 - Changed how I apply normal force. Before I applied on the whole sheet now I do only apply it on the pullblocks.
 - Changed som details on friction procedure simulation
 - Done longer simulation locally to see how friction forces spikes. Looks likes the stick-slip motion becomes pretty consistent without any difference in first spike and later ones. No real difference between static and dynamic friction other than taking max and mean force. 
-
-
+- I have been reading on tribology and gathered some reading material. I have also began to add som quotes and more sections to the article.
+- Found out that the AIREBO potential is not compatible with KOKKOS. So instead I should run on CPU (using egil)
+- Finally sumbitted a script to the cluster (now CPU) 4 friction simulations: no cut no stretch, no cut stretch, cut no stretch and cut stretch.
+- Might need to try out Evens package for running lammps script on the cluster.
 
 ## Things to remember 
 

@@ -28,6 +28,9 @@ class Friction_procedure:
 
 
         # --- Standard values --- #
+        self.dt = 0.001
+        self.config_data = "sheet_substrate"
+        
         # Relax time
         self.relax_time = 0.5 # [ps] 
 
@@ -60,7 +63,7 @@ class Friction_procedure:
         self.convert_units(["F_N", "drag_speed", "K"])
 
         # --- Define variables and initialise value holder 
-        self.varname = ["relax_time", "stretch_speed_pct", "stretch_max_pct", "pause_time1", "F_N", "pause_time2", "drag_dir_x", "drag_dir_y", "drag_speed", "drag_length", "K", "out_ext"]
+        self.varname = ["dt", "config_data", "relax_time", "stretch_speed_pct", "stretch_max_pct", "pause_time1", "F_N", "pause_time2", "drag_dir_x", "drag_dir_y", "drag_speed", "drag_length", "K", "out_ext"]
         self.varval = [np.nan for varname in self.varname]
 
 
@@ -96,7 +99,6 @@ class Friction_procedure:
 
         self.outfile.write("\n")
         self.outfile.write("clear\n")
-        self.outfile.write(f"include {self.path}{self.setup_file}\n")
         for i, varname in enumerate(self.varname):
             varval = eval('self.'+varname, {'self': self})
             update = varval != self.varval[i]
@@ -109,6 +111,7 @@ class Friction_procedure:
                     self.outfile.write(f"variable {varname} equal {varval}\n")
 
         assert changes, "No variables changes made"
+        self.outfile.write(f"include {self.path}{self.setup_file}\n")
         self.outfile.write(f"include {self.path}{self.simulation_action}\n")
 
                   
@@ -161,7 +164,7 @@ def different_drag_speeds():
 
 
 
-def custom():
+def Great4():
    # Path 
     root = "/Users/mikkelme/Documents/Github/MastersThesis"
     script_path = "/friction_experiment"
@@ -169,36 +172,44 @@ def custom():
     out_path = "${script_path}/output_data"
 
 
-
     # Settings
     proc = Friction_procedure(  root, script_path, config_path, out_path,
-                                output_file = "stretch_no_stretch.in", 
+                                output_file = "Great4.in", 
                                 setup_file = "friction_simulation_periodic.in", 
                                 simulation_action = "std_friction_procedure_spring.in"
                                 )
 
 
+    proc.dt = 0.001
     proc.relax_time = 5           # [ps] 
     proc.stretch_speed_pct = 0.05    # [% of pattern ylen per picoseconds]
-    proc.stretch_max_pct = 0.2
-    proc.pause_time1 = 1.0
-    proc.F_N = 2*0.08e-9              # [eV/Å]
+    proc.pause_time1 = 5.0
+    proc.F_N = 0.8e-9              # [N]
     proc.pause_time2 = 5.0            # [ps]
     proc.drag_dir_x = 0
     proc.drag_dir_y = 1
-    proc.drag_length = 5           # [Å]
-    proc.drag_speed = 5.0           # [m/s]
+    proc.drag_length = 30           # [Å]
+    proc.drag_speed = 5           # [m/s]
     proc.K = 30.0                   # [N/m]
     proc.convert_units(["F_N", "K", "drag_speed"])
 
-    proc.out_ext = "2xFN_stretch"
+    proc.stretch_max_pct = 0.0
+    proc.config_data = "sheet_substrate_nocuts"
+    proc.out_ext = "_nocut_nostretch"
     proc.add_run()
-
     
-    proc.stretch_max_pct = 0
-    proc.out_ext = "2xFN_nostretch"
+    proc.stretch_max_pct = 0.2
+    proc.out_ext = "_nocut_20stretch"
     proc.add_run()
-
+    
+    proc.config_data = "sheet_substrate"
+    proc.stretch_max_pct = 0.0
+    proc.out_ext = "_cut_nostretch"
+    proc.add_run()
+    
+    proc.stretch_max_pct = 0.2
+    proc.out_ext = "_cut_20stretch"
+    proc.add_run()
 
 
     proc.outfile.close()
@@ -211,5 +222,5 @@ def custom():
 
 
 if __name__ == "__main__":
-    different_drag_speeds()
-    # custom()
+    Great4()
+    # different_drag_speeds()

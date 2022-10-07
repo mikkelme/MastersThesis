@@ -6,8 +6,8 @@ atom_style atomic # coarse-grain liquids, solids, metals
 
 
 # --- Read files --- #
-read_data ${root}${config_path}/sheet_substrate.txt extra/atom/types 1  # sheet and substrate (1 extra type for virtuel atom)
-include ${root}${config_path}/sheet_substrate_info.in                   # import variables
+read_data ${root}${config_path}/${config_data}.txt extra/atom/types 1  # sheet and substrate (1 extra type for virtuel atom)
+include ${root}${config_path}/${config_data}_info.in                   # import variables
 
 # --- Regions and groups --- #
 # Sheet 
@@ -57,17 +57,10 @@ pair_coeff * 3  lj/cut 0.0 0.0
 
 
 # timestep            0.0005
-timestep 0.001 # 1 fs
-# thermo              100
-# thermo_style custom step time temp 
+timestep $(v_dt) # 1 fs
 fix nve semifree_atoms nve # (microcanonical) 
 # fix 2 all balance 1000 1.05 shift xy 10 1.05 # balance number of particles computed on each processor 
 
-
-# # --- Dump --- #
-# dump 1 all custom 100 system.data id type x y z vx vy vz
-# dump 2 sheet custom 100 sheet.data id type x y z
-# dump 3 substrate_contact custom 100 substrate_contact.data id type x y z
 
 
 # --- Convertion: SI to metal --- #
