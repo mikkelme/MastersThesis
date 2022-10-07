@@ -10,6 +10,7 @@
 # Folders
 /__pycache__
 /Questions
+/Books
 
 # C++
 *.o
