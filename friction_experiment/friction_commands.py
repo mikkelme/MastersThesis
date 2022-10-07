@@ -72,11 +72,11 @@ class Friction_procedure:
         string += "--------------------"
         return string
 
-
     def convert_units(self, varnames):
+        
         convertion_dict = {     "F_N": self.N_to_eV_over_ang, 
                                 "drag_speed": self.m_to_ang/self.s_to_ps, 
-                                "K": self.N_to_eV_over_ang/self.m_to_ang}
+                                "K": self.N_to_eV_over_ang/self.m_to_ang }
 
         for varname in varnames:
             try:
@@ -211,5 +211,5 @@ def custom():
 
 
 if __name__ == "__main__":
-    # different_drag_speeds()
-    custom()
+    different_drag_speeds()
+    # custom()

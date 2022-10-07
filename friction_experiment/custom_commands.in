@@ -5,17 +5,17 @@ variable out_path string ${script_path}/output_data
 
 clear
 include ${root}${script_path}/friction_simulation_periodic.in
-variable relax_time equal 5.0
+variable relax_time equal 0.0 #5.0
 variable stretch_speed_pct equal 0.05
 variable stretch_max_pct equal 0.0
-variable pause_time1 equal 1.0
+variable pause_time1 equal 0.0#1.0
 # variable F_N equal 0.09986414512
 variable F_N equal 50 # ≈80 nN
-variable pause_time2 equal 5.0
+variable pause_time2 equal 0.0#5.0
 variable drag_dir_x equal 0
 variable drag_dir_y equal 1
 variable drag_speed equal 0.05
-variable drag_length equal 30
-variable K equal 1.8724527210000002
+variable drag_length equal 5
+variable K equal 0.0 #1.8724527210000002
 variable out_ext string _SAFETY
 include ${root}${script_path}/std_friction_procedure_spring.in

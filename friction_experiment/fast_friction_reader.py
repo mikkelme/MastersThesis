@@ -60,37 +60,41 @@ def plot_info(filenames):
 
 
     for i, filename in enumerate(filenames):
-            timestep, v_F_N, f_spring_force1, f_spring_force2, f_spring_force3, f_spring_force4, c_Ff1, c_Ff2, c_Ff3, c_sheet_COM1, c_sheet_COM2, c_sheet_COM3  = read_friction_file(filename)
-            
+            timestep, v_F_N, move_force1, move_force2, c_Ff1, c_Ff2, c_Ff3, c_sheet_COM1, c_sheet_COM2, c_sheet_COM3  = read_friction_file(filename)
             # shift sign if not fixed in lammps script 
             # c_Ff1, c_Ff2, c_Ff3 = -c_Ff1, -c_Ff2, -c_Ff3
 
             # center COM
             c_sheet_COM1 -= c_sheet_COM1[0]
             c_sheet_COM2 -= c_sheet_COM2[0]
-            c_Ff1, c_Ff2 = savgol_filter(window_length, polyorder, c_Ff1, c_Ff2)
-            Fxy_abs = np.sqrt(c_Ff1**2 + c_Ff2**2)
             
+            # Smoothen or average
+            c_Ff1, c_Ff2 = savgol_filter(window_length, polyorder, c_Ff1, c_Ff2)
+            move_force1, move_force2 = savgol_filter(window_length, polyorder, move_force1, move_force2)
             avgstep, c_Ff3 = avg_forward(interval, timestep, c_Ff3)
+            
+            Fxy_norm = np.sqrt(c_Ff1**2 + c_Ff2**2)
+            move_force_norm = np.sqrt(move_force1**2 + move_force2**2)
+            
 
 
             fig, ax = plt.subplots(3, 2, num = i)
             fig.suptitle(filename)
 
             # Fx
-            ax[0,0].plot(timestep, f_spring_force1, label = "spring force", color = color_cycle(0))
+            ax[0,0].plot(timestep, move_force1, label = "spring force", color = color_cycle(0))
             ax[0,0].plot(timestep, c_Ff1, label = "group/group force", color = color_cycle(1))
             ax[0,0].set(ylabel='$F_x$')
             ax[0,0].label_outer()
 
             # Fy
-            ax[0,1].plot(timestep, f_spring_force2, color = color_cycle(0))
+            ax[0,1].plot(timestep, move_force2, color = color_cycle(0))
             ax[0,1].plot(timestep, c_Ff2, color = color_cycle(1))
             ax[0,1].set(ylabel='$F_y$')
 
             # |Fxy|
-            ax[1,0].plot(timestep, f_spring_force4, color = color_cycle(0))
-            ax[1,0].plot(timestep, Fxy_abs, color = color_cycle(1))
+            ax[1,0].plot(timestep, move_force_norm, color = color_cycle(0))
+            ax[1,0].plot(timestep, Fxy_norm, color = color_cycle(1))
             ax[1,0].set(xlabel='timestep', ylabel='$||F_{xy}||$')
 
             # Fz
@@ -118,8 +122,8 @@ def plot_info(filenames):
 
             FN = np.mean(c_Ff3)
             # Static friction coefficient 
-            mu_max = Fxy_abs.max()/abs(FN)
-            mu_avg = np.mean(Fxy_abs)/abs(FN)
+            mu_max = Fxy_norm.max()/abs(FN)
+            mu_avg = np.mean(Fxy_norm)/abs(FN)
             print(f"mu_avg = {mu_avg:.2e}, mu_max = {mu_max:.2e}, (file = {filename}")
 
 
@@ -132,8 +136,7 @@ if __name__ == "__main__":
 
 
     filenames = [
-    "output_data/friction_force_6xFN_long.txt",
-    "output_data/friction_force_80nN_nostretch_long.txt"
+    "output_data/friction_force_SAFETY.txt",
     ]
 
     plot_info(filenames)
