@@ -61,6 +61,12 @@ def plot_info(filenames):
 
     for i, filename in enumerate(filenames):
             timestep, v_F_N, move_force1, move_force2, c_Ff1, c_Ff2, c_Ff3, c_sheet_COM1, c_sheet_COM2, c_sheet_COM3  = read_friction_file(filename)
+            
+            # Old format
+            # timestep, v_F_N, move_force1, move_force2, _1, _2, c_Ff1, c_Ff2, c_Ff3, c_sheet_COM1, c_sheet_COM2, c_sheet_COM3  = read_friction_file(filename)
+            
+            
+            
             # shift sign if not fixed in lammps script 
             # c_Ff1, c_Ff2, c_Ff3 = -c_Ff1, -c_Ff2, -c_Ff3
 
@@ -84,23 +90,23 @@ def plot_info(filenames):
             # Fx
             ax[0,0].plot(timestep, move_force1, label = "spring force", color = color_cycle(0))
             ax[0,0].plot(timestep, c_Ff1, label = "group/group force", color = color_cycle(1))
-            ax[0,0].set(ylabel='$F_x$')
+            ax[0,0].set(ylabel='$F_x$ [eV/Å]')
             ax[0,0].label_outer()
 
             # Fy
             ax[0,1].plot(timestep, move_force2, color = color_cycle(0))
             ax[0,1].plot(timestep, c_Ff2, color = color_cycle(1))
-            ax[0,1].set(ylabel='$F_y$')
+            ax[0,1].set(ylabel='$F_y$ [eV/Å]')
 
             # |Fxy|
             ax[1,0].plot(timestep, move_force_norm, color = color_cycle(0))
             ax[1,0].plot(timestep, Fxy_norm, color = color_cycle(1))
-            ax[1,0].set(xlabel='timestep', ylabel='$||F_{xy}||$')
+            ax[1,0].set(xlabel='timestep', ylabel='$||F_{xy}||$ [eV/Å]')
 
             # Fz
             ax[1,1].plot(avgstep, c_Ff3, color = color_cycle(1))
-            ax[1,1].set(xlabel='timestep', ylabel='$F_z$')
-            ax[1,1].set(xlabel='timestep', ylabel='$F_z$')
+            ax[1,1].set(xlabel='timestep', ylabel='$F_z$ [eV/Å]')
+            ax[1,1].set(xlabel='timestep', ylabel='$F_z$ ')
 
             # COM 
             ax[2,0].plot(timestep, c_sheet_COM1, label = "$COM_x$", color = color_cycle(2))
@@ -136,7 +142,9 @@ if __name__ == "__main__":
 
 
     filenames = [
-    "output_data/friction_force_SAFETY.txt",
+    # "output_data/friction_force_80nN_nostretch_long.txt",
+    # "output_data/friction_force_6xFN_long.txt",
+    "output_data/friction_force_nocut_nostretch.txt"
     ]
 
     plot_info(filenames)

@@ -1,0 +1,83 @@
+# --- Basics --- # 
+units metal
+newton on #newtons 3rd law for pairs
+boundary p p m  
+atom_style atomic # coarse-grain liquids, solids, metals
+
+
+variable root string /Users/mikkelme/Documents/Github/MastersThesis
+variable script_path string /lammps_simulator_testing
+variable config_path string /config_builder
+variable out_path string ${script_path}/output_data
+variable config_data string sheet_substrate_nocuts
+variable dt equal 0.001
+
+
+# --- Read files --- #
+read_data ${root}${config_path}/${config_data}.txt extra/atom/types 1  # sheet and substrate (1 extra type for virtuel atom)
+include ${root}${config_path}/${config_data}_info.in                   # import variables
+
+# --- Regions and groups --- #
+# Sheet 
+region sheet_region block INF INF ${pullblock_yhi} ${pullblock_ylo} ${pullblock_zlo} INF
+region full_sheet_region block INF INF INF INF ${pullblock_zlo} INF
+group  sheet region sheet_region
+group  full_sheet region full_sheet_region 
+
+# Pullblocks
+region PB_ylow_region  block INF INF INF ${pullblock_yhi} ${pullblock_zlo} INF
+region PB_yhigh_region block INF INF ${pullblock_ylo} INF ${pullblock_zlo} INF
+group  PB_ylow region PB_ylow_region
+group  PB_yhigh region PB_yhigh_region
+group  PB_tot union PB_ylow PB_yhigh
+
+# Substrate
+region substrate_freeze_region block INF INF INF INF INF ${substrate_freeze_zhi}
+region substrate_contact_region block INF INF INF INF ${substrate_contact_zlo} ${pullblock_zlo}
+group  substrate type 2
+group  substrate_freeze region substrate_freeze_region
+group  substrate_contact region substrate_contact_region
+
+# Moving atoms
+group free_atoms subtract all PB_tot substrate_freeze 
+group semifree_atoms subtract all substrate_freeze 
+# group full_sheet union sheet PB_tot
+
+#--- Dynamics ---#
+variable temp equal 5.0 # Kelvin
+
+mass 1 12.0107  # C
+mass 2 28.0855  # Si
+mass 3 1.0      # Virtuel atom
+
+velocity free_atoms create ${temp} 5432373 dist gaussian
+
+neighbor            0.5 bin
+neigh_modify        delay 0 every 1 one 10000
+
+
+# Potentials: C-C: Airebo, C-Si: LJ, Si-Si: SW
+pair_style hybrid sw lj/cut 8.15 airebo 6.4 1 1 # lj_cutoff = 2.5*sigma 
+pair_coeff * * airebo ${root}/potentials/CH.airebo C NULL NULL    # Sheet C-C
+pair_coeff 1 2 lj/cut 0.008909 3.26                     # Interaction C-Si 
+pair_coeff * * sw ${root}/potentials/si.sw NULL Si NULL         # Substrate Si-Si
+pair_coeff * 3  lj/cut 0.0 0.0 
+
+
+# timestep            0.0005
+timestep $(v_dt) # 1 fs
+fix nve semifree_atoms nve # (microcanonical) 
+# fix 2 all balance 1000 1.05 shift xy 10 1.05 # balance number of particles computed on each processor 
+
+
+
+# --- Convertion: SI to metal --- #
+variable N_to_eV_over_ang equal 6.24150907e8    # force: N -> eV/Å
+variable m_to_ang equal 1e10                    # distance: m -> Å
+variable s_to_ps equal 1e12                     # time: s -> ps
+
+
+
+print $(v_var1)
+# print $(v_var2)
+# print $(v_var_new)
