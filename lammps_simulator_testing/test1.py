@@ -2,6 +2,7 @@
 
 # sim.set_input_script("script.in")
 # sim.run(num_procs=4, lmp_exec="lmp_mpi")
+# from __future__ import print_function,unicode_literals
 
 import sys
 sys.path.append('../../lammps-simulator') # parent folder: MastersThesis
@@ -9,20 +10,18 @@ sys.path.append('../../lammps-simulator') # parent folder: MastersThesis
 from lammps_simulator import *
 import subprocess
 
-command = ['ssh', 'egil', 'mkdir', 'sim_ssh_test']
+# exec_list = ['mpirun', '-n', '4', 'lmp', '-in', 'script.in']
+# exec_string = 'mpirun -n 4 lmp -in script.in'
+# output = subprocess.run(["ssh", 'egil', f"cd sim_ssh_test && {' '.join(exec_list)}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+# print(output.stderr.decode("utf-8"))
+# exit()
 
 # sim = Simulator(directory = "sim_ssh_test", overwrite=True)
 sim = Simulator(directory = "sim_ssh_test", overwrite=True, ssh = 'egil')
 # sim.copy_to_wd("../potentials/si.sw", "../potentials/CH.airebo")
 sim.set_input_script("script.in")
-slurm_args = {'job_name':'cpu', 'partition':'normal', 'ntasks':16, 'nodes':1}
-sim.run(num_procs=4, lmp_exec="lmp", slurm=True, slurm_args=slurm_args)
-# sim.run(num_procs=4, lmp_exec="lmp_mpi")
-
-
-# subprocess.Popen(['ssh', 'egil', 'mkdir', 'sim_ssh_test'])
-# output = subprocess.run("ssh egil mkdir sim_ssh_test", shell=True)
-
+slurm_args = {'job-name':'cpu', 'partition':'normal', 'ntasks':16, 'nodes':1}
+sim.run(num_procs=4, lmp_exec="lmp", slurm=False, slurm_args=slurm_args)
 
 
 
