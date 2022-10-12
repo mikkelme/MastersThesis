@@ -59,7 +59,7 @@
 - Added write to file of friction forces 
 
 
-#### Week 39 (26/09 - 02/09) - Working from Pisa
+#### Week 39 (26/09 - 02/10) - Working from Pisa
 - Working on details for friciton procedure (virtual spring might not be perfect)
 - Reconsidered friction procedure and is going to remake it for mathcing real world system of a nano machine. 
 - Made structured pipeline consisting of lammps files: commands with variables for giving procedure, setup of system, the procedure to do (friction simulation for instance).
@@ -67,7 +67,7 @@
 - Ran small simulations on local computer and got some results regarding friction forces. Both spring force and group/group contact force between sheet and substrate seems promising. Now I need to run longer simulations and apply a savgol filter to clean up the data and determine static and dynamic friction coefficient if possible.
 
 
-#### Week 40 (03/10 - 09/09) - Working from Pisa
+#### Week 40 (03/10 - 09/10) - Working from Pisa
 - Working on determining the problem when running on the cluster (simulation explodes)
 - Isolated the problem to the hybrid style potentials. The issue only occours when the Si-atom substrate and C-atom sheet is closer to each other than the AIREBO (C-C interactions) cutt-off
 - Working on a procedure for pushing the sheet and substrate together with weaker normal force before applying bigger one (to avoid violent impact) --> Settled on damping 
@@ -79,6 +79,16 @@
 - Found out that the AIREBO potential is not compatible with KOKKOS. So instead I should run on CPU (using egil)
 - Finally sumbitted a script to the cluster (now CPU) 4 friction simulations: no cut no stretch, no cut stretch, cut no stretch and cut stretch.
 - Might need to try out Evens package for running lammps script on the cluster.
+
+#### Week 41 (10/10 - 16/10) - Working from Pisa
+- Fixed some issues in lammps script with reulsted in crash on cluster
+- Updated output: compute friction force on both inner sheet and pull blocks 
+- Updated pipeline for starting simulations with the use of lammps-simulator package (from Even)
+- Added SSH compatability to lammps-simulator 
+
+
+
+
 
 ## Things to remember 
 
