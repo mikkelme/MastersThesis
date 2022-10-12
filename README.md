@@ -85,9 +85,23 @@
 - Updated output: compute friction force on both inner sheet and pull blocks 
 - Updated pipeline for starting simulations with the use of lammps-simulator package (from Even)
 - Added SSH compatability to lammps-simulator 
+- Result are in for friction coefficient:
+- (same cut): stretch < no stretch
+- (stretch):  pop-up-pattern > no cuts
+- (no stretch): No conclusion 
 
 
+Filename: ../Data/great4/friction_force_cut_nostretch.txt
+Mu max
+Full_sheet: 0.024291
+sheet: 0.121189
+PB: 0.0193716
 
+Filename: ../Data/great4/friction_force_nocut_nostretch.txt
+Mu max
+Full_sheet: 0.028887
+sheet: 0.0594933
+PB: 0.0255032
 
 
 ## Things to remember 
