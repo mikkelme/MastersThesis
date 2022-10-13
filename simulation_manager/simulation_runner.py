@@ -65,10 +65,10 @@ def move_file_to(file, dest):
     # subprocess.run(['rsync', '-av', file, self.ssh + ':' + self.wd + tail]) 
     
 
-def test_runner():
+def great4_runner():
     
     variables = { 
-    "dt": 0.001,
+    "dt": 0.001, 
     "relax_time": 5,
     "stretch_speed_pct": 0.05,
     "pause_time1": 5,
@@ -86,7 +86,7 @@ def test_runner():
     proc = Friction_procedure(variables)
 
     # header = "great4/" 
-    header = "egil:great4/"
+    header = "egil:great4_XX/"
     common_files = ["../friction_simulation/setup_sim.in", 
                     "../friction_simulation/friction_procedure.in",
                     "../potentials/si.sw",
@@ -101,6 +101,8 @@ def test_runner():
     extentions = ["nocut_nostretch", "nocut_20stretch", "cut_nostretch", "cut_20stretch"]
     config_data = ["sheet_substrate_nocuts", "sheet_substrate_nocuts", "sheet_substrate", "sheet_substrate"]
     stretch_max_pct = [0.0, 0.2, 0.0, 0.2]
+    
+    exit() # safety break
     for i, ext in enumerate(extentions):
         dir = header + ext
         sim = Simulator(directory = dir, overwrite=True)
@@ -119,11 +121,14 @@ def test_runner():
         slurm_args = {'job-name':'great4', 'partition':'normal', 'ntasks':16, 'nodes':1}
         sim.run(num_procs=16, lmp_exec="lmp", slurm=True, slurm_args=slurm_args)
 
+        # mpirun -n 1 lmp_mpi -in run_friction_sim.in -var dt 0.001 -var config_data sheet_substrate -var relax_time 1 -var stretch_speed_pct 0.05 -var stretch_max_pct 0.0 -var pause_time1 1 -var F_N 0.4993207256 -var pause_time2 0 -var drag_dir_x 0 -var drag_dir_y 1 -var drag_speed 0.05 -var drag_length 1 -var K 1.8724527210000002 -var root .. -var out_ext default
 
 
+def reset_file():
     
-# mpirun -n 1 lmp_mpi -in run_friction_sim.in -var dt 0.001 -var config_data sheet_substrate -var relax_time 1 -var stretch_speed_pct 0.05 -var stretch_max_pct 0.0 -var pause_time1 1 -var F_N 0.4993207256 -var pause_time2 0 -var drag_dir_x 0 -var drag_dir_y 1 -var drag_speed 0.05 -var drag_length 1 -var K 1.8724527210000002 -var root .. -var out_ext default
+    
+    pass
 
 
 if __name__ == "__main__":
-    test_runner()
+    great4_runner()
