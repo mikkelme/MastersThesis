@@ -91,18 +91,6 @@
 - (no stretch): No conclusion 
 
 
-Filename: ../Data/great4/friction_force_cut_nostretch.txt
-Mu max
-Full_sheet: 0.024291
-sheet: 0.121189
-PB: 0.0193716
-
-Filename: ../Data/great4/friction_force_nocut_nostretch.txt
-Mu max
-Full_sheet: 0.028887
-sheet: 0.0594933
-PB: 0.0255032
-
 
 ## Things to remember 
 

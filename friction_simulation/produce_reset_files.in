@@ -1,16 +1,17 @@
 # Run setup sim
 # Run stretch and produce reset files
 
-variable num_restart_files equal 3 # stretch pct: 0, middle, max
+variable num_restart_files equal 3 
 
 
-variable config_data string ../config_builder/sheet_substrate
+# variable root string ../potentials # temporary
+variable root string .
+variable config_data string ${root}/sheet_substrate
 variable dt equal 0.001
-variable root string ../potentials # temporary
 include setup_sim.in
 
 
-variable relax_time equal 0.2
+variable relax_time equal 1
 variable stretch_speed_pct equal 0.5
 variable stretch_max_pct equal 0.2
 
@@ -127,8 +128,10 @@ print ""
 
 # write_restart tmp.*.restart
 variable restart_freq equal floor(v_stretch_steps/(v_num_restart_files-1))
-variable       stride equal stride(v_relax_steps,v_relax_steps+v_stretch_steps,v_restart_freq)
+variable       stride equal stride(v_relax_steps,$(v_relax_steps+v_stretch_steps+v_restart_freq),v_restart_freq)
 restart        v_stride stretch.*.restart
+# Might avoid stride if we do not want to save 0 stretch as
+# a restart since this file can go on to compute that one...
 
 # ----------  Relax sheet ---------- #
 # Set PB conditions
@@ -148,3 +151,5 @@ fix yhigh_move PB_yhigh move linear 0 $(v_stretch_speed/2) NULL units box
 print "--> Stretch: $(v_stretch_steps) timesteps, $(v_stretch_steps*dt) ps"
 variable S0 equal $(c_PB_yhigh_ymin-c_PB_ylow_ymax) # Lock S0 after relaxing
 run $(v_stretch_steps)
+restart 0
+

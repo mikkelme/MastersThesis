@@ -2,7 +2,7 @@ import numpy as np
 # from lammps_simulator import Simulator
 
 import sys
-sys.path.append('../../lammps-simulator') # parent folder: MastersThesis
+sys.path.append('../../lammps-simulator_ssh') # parent folder: MastersThesis
 from lammps_simulator import *
 import subprocess
 
@@ -124,11 +124,75 @@ def great4_runner():
         # mpirun -n 1 lmp_mpi -in run_friction_sim.in -var dt 0.001 -var config_data sheet_substrate -var relax_time 1 -var stretch_speed_pct 0.05 -var stretch_max_pct 0.0 -var pause_time1 1 -var F_N 0.4993207256 -var pause_time2 0 -var drag_dir_x 0 -var drag_dir_y 1 -var drag_speed 0.05 -var drag_length 1 -var K 1.8724527210000002 -var root .. -var out_ext default
 
 
-def reset_file():
+def one_config_multi_data():
+    
+    variables = { 
+    "dt": 0.001, 
+    "relax_time": 5,
+    "stretch_speed_pct": 0.05,
+    "pause_time1": 5,
+    "F_N": 160e-9, # [N] XXX
+    "pause_time2": 5, 
+    "drag_dir_x": 0,
+    "drag_dir_y": 1,
+    "drag_speed": 5, # [m/s]
+    "drag_length": 30,
+    "K": 30.0,
+    "root": "..",
+            }
     
     
-    pass
+    # Variables 
+    F_N = [100e-9, 150e-9, 200e-9]
+    num_stretch_files = 3
+    dir = "one_config_multi_data"
+    config_data = "sheet_substrate"
+    sim = Simulator(directory = dir, overwrite=True)
+    sim.copy_to_wd( "../friction_simulation/setup_sim.in",
+                    f"../config_builder/{config_data}.txt",
+                    f"../config_builder/{config_data}_info.in",
+                    "../potentials/si.sw",
+                    "../potentials/CH.airebo",
+                    )
+    
+    sim.set_input_script("../friction_simulation/produce_reset_files.in")#, **proc.variables)
+    slurm_args = {'job-name':'great4', 'partition':'normal', 'ntasks':16, 'nodes':1}
+
+    # sim.run(num_procs=1, lmp_exec="lmp_mpi", generate_jobscript = False)
+    sim.run(num_procs=16, lmp_exec="lmp", run = False, slurm=True, slurm_args=slurm_args)
+    
+    # for i in range(num_stretch_files):
+    #     sim.create_subdir(f"stretch{i}")
+        
+        
+    
+    
+    
+    
+    exit()
+    # for i, ext in enumerate(extentions):
+    # dir = header + ext
+    # sim = Simulator(directory = dir, overwrite=True)
+    # sim.copy_to_wd( "../friction_simulation/run_friction_sim.in",
+    #                 f"../config_builder/{config_data[i]}.txt",
+    #                 f"../config_builder/{config_data[i]}_info.in"
+    #                 )
+    
+    # proc.variables["out_ext"] = '_' + ext
+    # proc.variables["config_data"] = config_data[i]
+    # proc.variables["stretch_max_pct"] = stretch_max_pct[i]
+    # sim.set_input_script("../friction_simulation/run_friction_sim.in", **proc.variables)
+    # sim.create_subdir("output_data")
+    # # sim.run(num_procs=1, lmp_exec="lmp_mpi")
+    
+    # slurm_args = {'job-name':'great4', 'partition':'normal', 'ntasks':16, 'nodes':1}
+    # sim.run(num_procs=16, lmp_exec="lmp", slurm=True, slurm_args=slurm_args)
+
+    # # mpirun -n 1 lmp_mpi -in ru
+    
+    
 
 
 if __name__ == "__main__":
-    great4_runner()
+    # great4_runner()
+    one_config_multi_data()
