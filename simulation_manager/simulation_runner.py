@@ -102,7 +102,7 @@ def great4_runner():
     config_data = ["sheet_substrate_nocuts", "sheet_substrate_nocuts", "sheet_substrate", "sheet_substrate"]
     stretch_max_pct = [0.0, 0.2, 0.0, 0.2]
     
-    exit
+    exit()
     for i, ext in enumerate(extentions):
         dir = header + ext
         sim = Simulator(directory = dir, overwrite=False)
@@ -158,7 +158,29 @@ def one_config_multi_data():
     slurm_args = {'job-name':'great4', 'partition':'normal', 'ntasks':16, 'nodes':1}
 
     # sim.run(num_procs=1, lmp_exec="lmp_mpi", generate_jobscript = False)
-    sim.run(num_procs=16, lmp_exec="lmp", run = False, slurm=True, slurm_args=slurm_args)
+    # sim.run(num_procs=16, lmp_exec="lmp", run = False, slurm=True, slurm_args=slurm_args)
+    # device = self.Device(**kwargs, ssh_dir = self.ssh + ':' + self.wd) 
+    
+    # Consider adding --> sim.set_run_settings(...)
+    sim.gen_jobscript(num_procs=1, lmp_exec="lmp_mpi", slurm_args = slurm_args)
+    
+    sim.add_to_jobscript("\nwait\n\
+    \nfor file in *.restart; do\
+    \n    [ -f \"$file\" ] || break\
+    \n    lmp_serial -in start_from_restart_file.in -var restart_file $file\
+    \ndone"
+    )
+    
+    with open('job.sh', "w") as f:
+        f.write(sim.jobscript)
+    
+    
+    
+    ### Now update rest of sumbit process to match new format
+    
+    # device = sim.Device(num_procs=1, lmp_exec="lmp_mpi", generate_jobscript = False)
+    # exec_list = device.get_exec_list(device.num_procs, device.lmp_exec, device.lmp_args, sim.var)
+    # device.gen_jobscript(exec_list, 'job.sh', slurm_args)
     
     # for i in range(num_stretch_files):
     #     sim.create_subdir(f"stretch{i}")

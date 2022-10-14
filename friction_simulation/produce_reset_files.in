@@ -4,14 +4,16 @@
 variable num_restart_files equal 3 
 
 
-# variable root string ../potentials # temporary
+# variable root string ../potentials # in friction_simulation folder
+# variable config_data string ../config_builder/sheet_substrate # in friction_simulation folder
+
 variable root string .
 variable config_data string ${root}/sheet_substrate
 variable dt equal 0.001
 include setup_sim.in
 
 
-variable relax_time equal 1
+variable relax_time equal 0.2
 variable stretch_speed_pct equal 0.5
 variable stretch_max_pct equal 0.2
 
@@ -130,6 +132,10 @@ print ""
 variable restart_freq equal floor(v_stretch_steps/(v_num_restart_files-1))
 variable       stride equal stride(v_relax_steps,$(v_relax_steps+v_stretch_steps+v_restart_freq),v_restart_freq)
 restart        v_stride stretch.*.restart
+# restart        v_stride restart*/stretch.restart
+# shell mkdir restart200
+# shell mkdir restart400
+# shell mkdir restart600
 # Might avoid stride if we do not want to save 0 stretch as
 # a restart since this file can go on to compute that one...
 
