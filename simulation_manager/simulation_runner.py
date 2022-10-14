@@ -144,26 +144,23 @@ def one_config_multi_data():
     # Variables 
     F_N = [100e-9, 150e-9, 200e-9]
     num_stretch_files = 3
+    
+    # dir = "egil:one_config_multi_data"
     dir = "one_config_multi_data"
+    
     config_data = "sheet_substrate"
     sim = Simulator(directory = dir, overwrite=True)
-    sim.copy_to_wd( "../friction_simulation/setup_sim.in",
-                    f"../config_builder/{config_data}.txt",
-                    f"../config_builder/{config_data}_info.in",
-                    "../potentials/si.sw",
-                    "../potentials/CH.airebo",
-                    )
+    # sim.copy_to_wd( "../friction_simulation/setup_sim.in",
+    #                 f"../config_builder/{config_data}.txt",
+    #                 f"../config_builder/{config_data}_info.in",
+    #                 "../potentials/si.sw",
+    #                 "../potentials/CH.airebo",
+    #                 )
     
     sim.set_input_script("../friction_simulation/produce_reset_files.in")#, **proc.variables)
     slurm_args = {'job-name':'great4', 'partition':'normal', 'ntasks':16, 'nodes':1}
 
-    # sim.run(num_procs=1, lmp_exec="lmp_mpi", generate_jobscript = False)
-    # sim.run(num_procs=16, lmp_exec="lmp", run = False, slurm=True, slurm_args=slurm_args)
-    # device = self.Device(**kwargs, ssh_dir = self.ssh + ':' + self.wd) 
-    
-    # Consider adding --> sim.set_run_settings(...)
-    sim.gen_jobscript(num_procs=1, lmp_exec="lmp_mpi", slurm_args = slurm_args)
-    
+    sim.pre_generate_jobscript(num_procs=1, lmp_exec="lmp_mpi", slurm_args = slurm_args)    
     sim.add_to_jobscript("\nwait\n\
     \nfor file in *.restart; do\
     \n    [ -f \"$file\" ] || break\
@@ -171,21 +168,13 @@ def one_config_multi_data():
     \ndone"
     )
     
-    with open('job.sh', "w") as f:
-        f.write(sim.jobscript)
+  
+    # sim.set_run_settings(slurm_args = slurm_args)
+    sim.run(write_jobscript = True, slurm = False, execute = False, slurm_args = slurm_args)
+    
+   
     
     
-    
-    ### Now update rest of sumbit process to match new format
-    
-    # device = sim.Device(num_procs=1, lmp_exec="lmp_mpi", generate_jobscript = False)
-    # exec_list = device.get_exec_list(device.num_procs, device.lmp_exec, device.lmp_args, sim.var)
-    # device.gen_jobscript(exec_list, 'job.sh', slurm_args)
-    
-    # for i in range(num_stretch_files):
-    #     sim.create_subdir(f"stretch{i}")
-        
-        
     
     
     

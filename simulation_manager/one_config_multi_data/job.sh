@@ -9,10 +9,4 @@
 #SBATCH --nodes=1
 #
 
-# mpirun -n 1 lmp_mpi -in produce_reset_files.in
-# wait
-
-for file in *.restart; do
-    [ -f "$file" ] || break
-    lmp_serial -in start_from_restart_file.in -var restart_file $file
-done
+mpirun -n 1 lmp -in produce_reset_files.in
