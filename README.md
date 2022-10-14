@@ -85,10 +85,9 @@
 - Updated output: compute friction force on both inner sheet and pull blocks 
 - Updated pipeline for starting simulations with the use of lammps-simulator package (from Even)
 - Added SSH compatability to lammps-simulator 
-- Result are in for friction coefficient:
-- (same cut): stretch < no stretch
-- (stretch):  pop-up-pattern > no cuts
-- (no stretch): No conclusion 
+- Result are in for friction coefficient, trends are: (same cut): stretch < no stretch, (stretch):  pop-up-pattern > no cuts
+- Ran with 1 m/s drag speed (compared to 5 m/s) which showed same trend except for (cut, stretch) where the friction coefficient (by max force) increased by a factor 4 due to static friction sticking behaviour. Now trying with 0.25 m/s and longer drag length. 
+- Also ran with dt = 0.5 fs (compared to 1 fs). This made some noticable changes to friction coefficient (up to 36\% relative divation), but trends remained the same. Although the ordering of value was not the same: (X, 0\%), (√, 0\%), (√, 20\%), (X, 0\%) --> (√, 0\%), (√, 20\%), (X, 0\%), (√, 20\%). So it seems to have enforced the effect from having cuts, while the stretched version still comes in with lowest friction coefficient. 
 
 
 

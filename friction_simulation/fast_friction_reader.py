@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt 
 from scipy import signal
 import os
+import pandas
 
 import sys
 sys.path.append('../') # parent folder: MastersThesis
@@ -200,20 +201,44 @@ def plot_info(filenames):
             FN_sheet = np.mean(Ff_sheet[:,2])
             FN_PB = np.mean(Ff_PB[:,2])
             
-            mu_max_full_sheet = Ff_full_sheet.max()/abs(FN_full_sheet)
-            mu_max_sheet = Ff_sheet.max()/abs(FN_sheet)
-            mu_max_PB = Ff_PB.max()/abs(FN_PB)
+            mu = np.array((3, 2))
+        
+            mu_max_full_sheet = Ff_full_sheet[:,0].max()/abs(FN_full_sheet)
+            mu_avg_full_sheet = np.mean(Ff_full_sheet[:,0])/abs(FN_full_sheet)
             
+            mu_max_sheet = Ff_sheet[:,0].max()/abs(FN_sheet)
+            mu_avg_sheet = np.mean(Ff_sheet[:,0])/abs(FN_sheet)
+            
+            mu_max_PB = Ff_PB[:,0].max()/abs(FN_PB)
+            mu_avg_PB = np.mean(Ff_PB[:,0])/abs(FN_PB)
+            
+            mu = np.array([[mu_max_full_sheet, mu_avg_full_sheet],
+                          [mu_max_sheet, mu_avg_sheet],
+                          [mu_max_PB, mu_avg_PB]])
+            
+            # print(mu_max_full_sheet)
+            # print(mu_avg_full_sheet)
+            # print(mu_max_sheet)
+            # print(mu_avg_sheet)
+            # print(mu_max_PB)
+            # print(mu_avg_PB)
+            
+            data = pandas.DataFrame(mu, np.array(['full_sheet', 'sheet', 'PB']), np.array(['max', 'avg']))
             print(f"Filename: {filename}")
-            print("Mu max")
-            print(f"Full_sheet: {mu_max_full_sheet:g}")
-            print(f"sheet: {mu_max_sheet:g}")
-            print(f"PB: {mu_max_PB:g}")
+            print(data)
             print()
+          
 
 
 
-                   
+def get_files_in_folder(path):  
+    filenames = []
+    for file in os.listdir(path):
+        if file[0] != '.': # Ignore hidden files
+            filenames.append(path + file)
+    return filenames
+    
+           
 
 
 if __name__ == "__main__":
@@ -226,10 +251,12 @@ if __name__ == "__main__":
     # # "output_data/friction_force_nocut_nostretch.txt"
     # ]
     
-    path = '../Data/great4/'
-    filenames = os.listdir(path) # all files in path
-    for i in range(len(filenames)): # add path in front of filenames
-        filenames[i] = path + filenames[i]
+    filenames = get_files_in_folder('../Data/great4/')
+    filenames += get_files_in_folder('../Data/great4_1ms/')
+    
+    # filenames = get_files_in_folder('../Data/great4_dt05fs/')
+    # filenames = ['../Data/great4/friction_force_cut_20stretch.txt', '../Data/great4_1ms/friction_force_cut_20stretch.txt', '../Data/great4_dt05fs/friction_force_cut_20stretch.txt']
+    
     plot_info(filenames)
     plt.show()
 

@@ -16,12 +16,12 @@ class Friction_procedure:
             "stretch_speed_pct": 0.05,
             "stretch_max_pct": 0.2,
             "pause_time1": 5,
-            "F_N": 0.8e-9, # [N]
+            "F_N": 160e-9, # [N]
             "pause_time2": 5,
             "drag_dir_x": 0,
             "drag_dir_y": 1,
             "drag_speed": 5, # [m/s]
-            "drag_length": 10 ,
+            "drag_length": 30 ,
             "K": 30.0,
             "root": ".",
             "out_ext": "_default" # put date here
@@ -86,7 +86,7 @@ def great4_runner():
     proc = Friction_procedure(variables)
 
     # header = "great4/" 
-    header = "egil:great4_XX/"
+    header = "egil:XX"
     common_files = ["../friction_simulation/setup_sim.in", 
                     "../friction_simulation/friction_procedure.in",
                     "../potentials/si.sw",
@@ -102,10 +102,10 @@ def great4_runner():
     config_data = ["sheet_substrate_nocuts", "sheet_substrate_nocuts", "sheet_substrate", "sheet_substrate"]
     stretch_max_pct = [0.0, 0.2, 0.0, 0.2]
     
-    exit() # safety break
+    exit
     for i, ext in enumerate(extentions):
         dir = header + ext
-        sim = Simulator(directory = dir, overwrite=True)
+        sim = Simulator(directory = dir, overwrite=False)
         sim.copy_to_wd( "../friction_simulation/run_friction_sim.in",
                         f"../config_builder/{config_data[i]}.txt",
                         f"../config_builder/{config_data[i]}_info.in"
@@ -116,9 +116,8 @@ def great4_runner():
         proc.variables["stretch_max_pct"] = stretch_max_pct[i]
         sim.set_input_script("../friction_simulation/run_friction_sim.in", **proc.variables)
         sim.create_subdir("output_data")
-        # sim.run(num_procs=1, lmp_exec="lmp_mpi")
         
-        slurm_args = {'job-name':'great4', 'partition':'normal', 'ntasks':16, 'nodes':1}
+        slurm_args = {'job-name':'G4_XX', 'partition':'normal', 'ntasks':16, 'nodes':1}
         sim.run(num_procs=16, lmp_exec="lmp", slurm=True, slurm_args=slurm_args)
 
         # mpirun -n 1 lmp_mpi -in run_friction_sim.in -var dt 0.001 -var config_data sheet_substrate -var relax_time 1 -var stretch_speed_pct 0.05 -var stretch_max_pct 0.0 -var pause_time1 1 -var F_N 0.4993207256 -var pause_time2 0 -var drag_dir_x 0 -var drag_dir_y 1 -var drag_speed 0.05 -var drag_length 1 -var K 1.8724527210000002 -var root .. -var out_ext default
