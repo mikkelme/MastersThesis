@@ -234,7 +234,7 @@ def plot_info(filenames):
 def get_files_in_folder(path):  
     filenames = []
     for file in os.listdir(path):
-        if file[0] != '.': # Ignore hidden files
+        if file[-4:] == ".txt":
             filenames.append(path + file)
     return filenames
     
@@ -243,19 +243,16 @@ def get_files_in_folder(path):
 
 if __name__ == "__main__":
 
+    filenames = []
 
 
-    # filenames = [
-    # # "output_data/friction_force_80nN_nostretch_long.txt",
-    # # "output_data/friction_force_6xFN_long.txt",
-    # # "output_data/friction_force_nocut_nostretch.txt"
-    # ]
-    
-    filenames = get_files_in_folder('../Data/great4/')
-    filenames += get_files_in_folder('../Data/great4_1ms/')
+    # filenames += get_files_in_folder('../Data/great4/')
+    # filenames += get_files_in_folder('../Data/great4_1ms/')
+    filenames += get_files_in_folder('../Data/great4_025ms/')
     
     # filenames = get_files_in_folder('../Data/great4_dt05fs/')
     # filenames = ['../Data/great4/friction_force_cut_20stretch.txt', '../Data/great4_1ms/friction_force_cut_20stretch.txt', '../Data/great4_dt05fs/friction_force_cut_20stretch.txt']
+    
     
     plot_info(filenames)
     plt.show()
