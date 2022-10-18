@@ -64,14 +64,19 @@ def build_config(sheet_mat, substrate_file, pullblock = None, mode = "all", view
 
     # Pullblock (PB) positions
     PB_len = pullblock/sheet_mat.shape[1] * (minmax_sheet[1,1] - minmax_sheet[0,1])
-    PB_yhi = minmax_sheet[0,1] + PB_len + eps 
-    PB_ylo = minmax_sheet[1,1] - PB_len - eps
+    
+    sheet_pos = sheet.get_positions()
+    PB_yhi = np.max(sheet_pos[sheet_pos[:,1] <  minmax_sheet[0,1] + PB_len + eps, 1])
+    PB_ylo = np.min(sheet_pos[sheet_pos[:,1] >  minmax_sheet[1,1] - PB_len - eps, 1])
+    # PB_yhi = minmax_sheet[0,1] + PB_len + eps  # OLD
+    # PB_ylo = minmax_sheet[1,1] - PB_len - eps # OLD
     PB_zlo = (minmax_sheet[0,2] + minmax_substrate[1,2])/2
     PB_lim = [PB_yhi, PB_ylo, PB_zlo]
     PB_varname = ['yhi', 'ylo', 'zlo']
 
     substrate_freeze_zhi = minmax_substrate[0,2] + bottom_substrate_freeze
     substrate_contact_zlo = minmax_substrate[1,2] - contact_depth 
+
 
 
 

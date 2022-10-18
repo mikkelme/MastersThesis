@@ -91,6 +91,10 @@
 
 
 
+#### Week 42 (17/10 - 23/10) - Working from Pisa
+- Discovered that the sheets ruptures when dragged slow enough (having enough time). This is most likely due to a too high normal force of 160 nN.  
+
+
 ## Things to remember 
 
 ### Words

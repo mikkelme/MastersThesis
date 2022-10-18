@@ -14,18 +14,22 @@ class Friction_procedure:
             "config_data": "sheet_substrate",
             "relax_time": 5,
             "stretch_speed_pct": 0.05,
-            "stretch_max_pct": 0.2,
+            "stretch_max_pct": 0.05,
             "pause_time1": 5,
-            "F_N": 160e-9, # [N]
+            "F_N": 10e-9, # [N]
             "pause_time2": 5,
             "drag_dir_x": 0,
             "drag_dir_y": 1,
-            "drag_speed": 5, # [m/s]
+            "drag_speed": 1, # [m/s]
             "drag_length": 30 ,
             "K": 30.0,
             "root": ".",
             "out_ext": "_default" # put date here
         }
+        
+        
+   
+    
         
         # --- Convertion factors: SI -> metal --- #
         self.N_to_eV_over_ang = 6.24150907e8    # force: N -> eV/Å
@@ -67,6 +71,23 @@ def move_file_to(file, dest):
 
 def great4_runner():
     
+    # Reference settings for NG4
+    # variables = { 
+    # "dt": 0.001, 
+    # "relax_time": 5,
+    # "stretch_speed_pct": 0.05,
+    # "pause_time1": 5,
+    # "F_N": 10e-9, # [N]
+    # "pause_time2": 5,
+    # "drag_dir_x": 0,
+    # "drag_dir_y": 1,
+    # "drag_speed": 1, # [m/s]
+    # "drag_length": 30,
+    # "K": 30.0,
+    # "root": "..",
+    # }
+    
+    # Changeable
     variables = { 
     "dt": 0.001, 
     "relax_time": 5,
@@ -76,35 +97,20 @@ def great4_runner():
     "pause_time2": 5,
     "drag_dir_x": 0,
     "drag_dir_y": 1,
-    "drag_speed": 1, # [m/s]
+    "drag_speed": 5, # [m/s]
     "drag_length": 30,
     "K": 30.0,
     "root": "..",
-            }
+    }
     
-   
-    # # Quick test 
-    # variables = { 
-    # "dt": 0.001, 
-    # "relax_time": 0.2,
-    # "stretch_speed_pct": 0.2,
-    # "pause_time1": 0.2,
-    # "F_N": 10e-9, # [N]
-    # "pause_time2": 0.2,
-    # "drag_dir_x": 0,
-    # "drag_dir_y": 1,
-    # "drag_speed": 5, # [m/s]
-    # "drag_length": 0.01,
-    # "K": 30.0,
-    # "root": "..",
-    #         }
-    
+
+
     
 
     proc = Friction_procedure(variables)
 
     # header = "NewGreat4/" 
-    header = "egil:NewGreat4/"
+    header = "egil:NewGreat4_5ms/"
     common_files = ["../friction_simulation/setup_sim.in", 
                     "../friction_simulation/friction_procedure.in",
                     "../potentials/si.sw",
@@ -119,6 +125,7 @@ def great4_runner():
     config_data = ["sheet_substrate_nocuts", "sheet_substrate_nocuts", "sheet_substrate", "sheet_substrate"]
     stretch_max_pct = [0.0, 0.2, 0.0, 0.2]
     
+    exit() # Safety break
     for i, ext in enumerate(extentions):
         dir = header + ext
         sim = Simulator(directory = dir, overwrite=True)
@@ -131,9 +138,9 @@ def great4_runner():
         proc.variables["config_data"] = config_data[i]
         proc.variables["stretch_max_pct"] = stretch_max_pct[i]
         sim.set_input_script("../friction_simulation/run_friction_sim.in", **proc.variables)
-        # sim.create_subdir("output_data")
+        sim.create_subdir("output_data")
         
-        slurm_args = {'job-name':'NG4', 'partition':'normal', 'ntasks':16, 'nodes':1}
+        slurm_args = {'job-name':'NG4_5ms', 'partition':'normal', 'ntasks':16, 'nodes':1}
         sim.run(num_procs=16, lmp_exec="lmp", slurm=True, slurm_args=slurm_args)
         # sim.run(num_procs=1, lmp_exec="lmp_mpi")
 
@@ -157,9 +164,10 @@ def one_config_multi_data():
     "root": "..",
             }
     
+    proc = Friction_procedure(variables)
     
     # Variables 
-    F_N = [100e-9, 150e-9, 200e-9]
+    F_N = [10e-9, 200e-9, 30e-9]
     num_stretch_files = 3
     
     # dir = "egil:one_config_multi_data"
@@ -167,14 +175,16 @@ def one_config_multi_data():
     
     config_data = "sheet_substrate"
     sim = Simulator(directory = dir, overwrite=True)
-    # sim.copy_to_wd( "../friction_simulation/setup_sim.in",
-    #                 f"../config_builder/{config_data}.txt",
-    #                 f"../config_builder/{config_data}_info.in",
-    #                 "../potentials/si.sw",
-    #                 "../potentials/CH.airebo",
-    #                 )
+    sim.copy_to_wd( "../friction_simulation/setup_sim.in",
+                    f"../config_builder/{config_data}.txt",
+                    f"../config_builder/{config_data}_info.in",
+                    "../potentials/si.sw",
+                    "../potentials/CH.airebo",
+                    "../friction_simulation/start_from_restart_file.in"
+                    )
     
-    sim.set_input_script("../friction_simulation/produce_reset_files.in")#, **proc.variables)
+    # sim.set_input_script("../friction_simulation/produce_reset_files.in", num_stretch_files = num_stretch_files)#, **proc.variables)
+    sim.set_input_script("../friction_simulation/produce_reset_files.in", **proc.variables)
     slurm_args = {'job-name':'great4', 'partition':'normal', 'ntasks':16, 'nodes':1}
 
     sim.pre_generate_jobscript(num_procs=1, lmp_exec="lmp_mpi", slurm_args = slurm_args)    
@@ -184,6 +194,7 @@ def one_config_multi_data():
     \n    lmp_serial -in start_from_restart_file.in -var restart_file $file\
     \ndone"
     )
+    
     
   
     # sim.set_run_settings(slurm_args = slurm_args)
@@ -196,7 +207,6 @@ def one_config_multi_data():
     
     
     
-    exit()
     # for i, ext in enumerate(extentions):
     # dir = header + ext
     # sim = Simulator(directory = dir, overwrite=True)
@@ -221,5 +231,5 @@ def one_config_multi_data():
 
 
 if __name__ == "__main__":
-    great4_runner()
-    # one_config_multi_data()
+    # great4_runner()
+    one_config_multi_data()

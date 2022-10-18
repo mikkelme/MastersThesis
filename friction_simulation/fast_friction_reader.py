@@ -76,21 +76,14 @@ def decompose_wrt_drag_dir(x, y, drag_direction):
     
     
 def plot_info(filenames):
-    interval = 10
-    window_length = 30
-    polyorder = 3
+    # interval = 10
+    # window_length = 20
+    # polyorder = 5
+    window_length = 50
+    polyorder = 5
 
 
-    for i, filename in enumerate(filenames):
-            # timestep, v_F_N, move_force1, move_force2, c_Ff1, c_Ff2, c_Ff3, c_sheet_COM1, c_sheet_COM2, c_sheet_COM3  = read_friction_file(filename)
-
-            # Old format
-            # timestep, v_F_N, move_force1, move_force2, _1, _2, c_Ff1, c_Ff2, c_Ff3, c_sheet_COM1, c_sheet_COM2, c_sheet_COM3  = read_friction_file(filename)
-            
-            # shift sign if not fixed in lammps script 
-            # c_Ff1, c_Ff2, c_Ff3 = -c_Ff1, -c_Ff2, -c_Ff3
-            
-            
+    for i, filename in enumerate(filenames):            
             # --- Get data --- #
             # Read from file
             timestep, f_move_force1, f_move_force2, c_Ff_sheet1, c_Ff_sheet2, c_Ff_sheet3, c_Ff_PB1, c_Ff_PB2, c_Ff_PB3, c_sheet_COM1, c_sheet_COM2, c_sheet_COM3 = read_friction_file(filename)
@@ -111,7 +104,7 @@ def plot_info(filenames):
             COM_sheet -= COM_sheet[0,:] # origo as reference point
          
             # # Smoothen or average
-            Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2] = savgol_filter(window_length, polyorder, Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2])
+            Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2], move_force[:,0], move_force[:,1] = savgol_filter(window_length, polyorder, Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2], move_force[:,0], move_force[:,1])
             
             # Fxy_norm = np.sqrt(c_Ff1**2 + c_Ff2**2)
             # move_force_norm = np.sqrt(move_force1**2 + move_force2**2)
@@ -248,7 +241,8 @@ if __name__ == "__main__":
 
     # filenames += get_files_in_folder('../Data/great4/')
     # filenames += get_files_in_folder('../Data/great4_1ms/')
-    filenames += get_files_in_folder('../Data/great4_025ms/')
+    # filenames += get_files_in_folder('../Data/great4_025ms/')
+    filenames += get_files_in_folder('../Data/NewGreat4/')
     
     # filenames = get_files_in_folder('../Data/great4_dt05fs/')
     # filenames = ['../Data/great4/friction_force_cut_20stretch.txt', '../Data/great4_1ms/friction_force_cut_20stretch.txt', '../Data/great4_dt05fs/friction_force_cut_20stretch.txt']

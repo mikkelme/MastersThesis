@@ -9,15 +9,16 @@ read_data ${config_data}.txt extra/atom/types 1  # sheet and substrate (1 extra 
 include ${config_data}_info.in                   # import variables
 
 # --- Regions and groups --- #
+variable eps equal 0.1
 # Sheet 
-region sheet_region block INF INF ${pullblock_yhi} ${pullblock_ylo} ${pullblock_zlo} INF
+region sheet_region block INF INF $(v_pullblock_yhi+v_eps) $(v_pullblock_ylo-v_eps) ${pullblock_zlo} INF
 region full_sheet_region block INF INF INF INF ${pullblock_zlo} INF
 group  sheet region sheet_region
 group  full_sheet region full_sheet_region 
 
 # Pullblocks
-region PB_ylow_region  block INF INF INF ${pullblock_yhi} ${pullblock_zlo} INF
-region PB_yhigh_region block INF INF ${pullblock_ylo} INF ${pullblock_zlo} INF
+region PB_ylow_region  block INF INF INF $(v_pullblock_yhi+v_eps) ${pullblock_zlo} INF
+region PB_yhigh_region block INF INF $(v_pullblock_ylo-v_eps) INF ${pullblock_zlo} INF
 group  PB_ylow region PB_ylow_region
 group  PB_yhigh region PB_yhigh_region
 group  PB_tot union PB_ylow PB_yhigh
