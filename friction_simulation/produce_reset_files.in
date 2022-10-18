@@ -7,14 +7,14 @@ variable num_stretch_files equal 3
 # variable root string ../potentials # in friction_simulation folder
 # variable config_data string ../config_builder/sheet_substrate # in friction_simulation folder
 
-variable root string .
-variable config_data string ${root}/sheet_substrate
-variable dt equal 0.001
+# variable root string .
+# variable config_data string ${root}/sheet_substrate
+# variable dt equal 0.001
 include ${root}/setup_sim.in
 
-variable relax_time equal 0.2
-variable stretch_speed_pct equal 0.5
-variable stretch_max_pct equal 0.1
+# variable relax_time equal 0.2
+# variable stretch_speed_pct equal 0.5
+# variable stretch_max_pct equal 0.1
 
 
 # variable pause_time1 equal 1
@@ -25,7 +25,7 @@ variable stretch_max_pct equal 0.1
 # variable drag_speed equal 5 # [m/s]
 # variable drag_length equal 10 
 # variable K equal 30.0
-variable out_ext string _test 
+# variable out_ext string _test 
 
 
 
@@ -79,7 +79,7 @@ variable stretch_speed equal v_stretch_speed_pct*v_S0
 
 
 # ---------- Output ---------- #
-# thermo 100
+thermo 10
 # variable out_path string output_data
 # dump 1 all custom 1 test_PB.data id type x y z vx vy vz
 # dump 1 all custom 100 ${out_path}/system${out_ext}.data id type x y z vx vy vz

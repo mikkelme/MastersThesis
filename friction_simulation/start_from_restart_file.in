@@ -41,6 +41,11 @@ pair_coeff 1 2 lj/cut 0.008909 3.26                     # Interaction C-Si
 pair_coeff * * sw ${root}/si.sw NULL Si NULL         # Substrate Si-Si
 pair_coeff * 3  lj/cut 0.0 0.0 
 
+
+variable temp equal 100.0 # Kelvin
+variable damp equal 1.0 # ps
+fix nve free_atoms nve
+fix nvt free_atoms langevin ${temp} ${temp} ${damp} 48279
 ##################################
 # ---------- Computes ---------- #
 ## - Sheet - ##
@@ -101,74 +106,49 @@ variable dir_norm equal $(sqrt(v_drag_dir_x^2+v_drag_dir_y^2))
 # dump 3 substrate_contact custom $(v_dump_freq) ${out_path}/substrate_contact${out_ext}.data id type x y z
 
 # ---------- Print procedure schedule ---------- #
+# Convertions
+
+# --- Convertion: SI to metal --- #
+variable N_to_eV_over_ang equal 6.24150907e8    # force: N -> eV/Å
+variable m_to_ang equal 1e10                    # distance: m -> Å
+variable s_to_ps equal 1e12                     # time: s -> ps
+
 # Timestamps
-variable relax_steps equal $(floor(v_relax_time/dt))
-variable stretch_steps equal $(floor(v_stretch_max_pct/v_stretch_speed_pct/dt))
+variable start_step equal $(step)
 variable pause1_steps equal $(floor(v_pause_time1/dt))
 variable pause2_steps equal $(floor(v_pause_time2/dt))
 variable drag_steps equal $(floor(v_drag_length/v_drag_speed/dt))
 
-# # Print
-# print "--------------------"
-# print "------SCHEDULE------"
-# print ""
-# print "--> Relax (step 0, 0 ps)"
-# print "Time: $(v_relax_steps) steps = $(v_relax_steps*dt) ps" 
-# print ""
-# print "--> Stretch sheet (step $(v_relax_steps), $(v_relax_steps*dt) ps)"
-# print "Amount: $(v_stretch_max_pct) % = $(v_stretch_max_pct*(v_pullblock_ylo-v_pullblock_yhi)) ang "
-# print "Amount: $(v_stretch_max_pct) % = $(v_stretch_max_pct*v_S_len) ang "
-# print "Speed: $(v_stretch_speed_pct) %/ps = $(v_stretch_speed) ang/ps"
-# print "Time:  $(v_stretch_steps) steps = $(v_stretch_steps*dt) ps"
-# print ""
-# print "--> Pause 1 (step $(v_relax_steps+v_stretch_steps), $((v_relax_steps+v_stretch_steps)*dt) ps)"
-# print "Time: $(v_pause1_steps) steps = $(v_pause1_steps*dt) ps"
-# print ""
-# print "--> Apply normal force (step $(v_relax_steps+v_stretch_steps+v_pause1_steps), $((v_relax_steps+v_stretch_steps+v_pause1_steps)*dt) ps)"
-# print "Amount: $(v_F_N/v_N_to_eV_over_ang*1e9) nN/m = $(v_F_N) eV/ang"
-# print ""
-# print "--> Pause 2 (step $(v_relax_steps+v_stretch_steps+v_pause1_steps), $((v_relax_steps+v_stretch_steps+v_pause1_steps)*dt) ps)"
-# print "Time: $(v_pause2_steps) steps = $(v_pause2_steps*dt) ps"
-# print ""
-# print "--> Drag sheet (step $(v_relax_steps+v_stretch_steps+v_pause1_steps+v_pause2_steps), $((v_relax_steps+v_stretch_steps+v_pause1_steps+v_pause2_steps)*dt) ps)"
-# print "Length: $(v_drag_length) ang"
-# print "Speed: $(v_drag_speed*v_s_to_ps/v_m_to_ang) m/s = $(v_drag_speed) ang/ps "
-# print "Spring constant: $(v_K*v_m_to_ang/v_N_to_eV_over_ang) N/m = $(v_K) eV/ang^2"
-# print "Time: $(v_drag_steps)  = $(v_drag_steps*dt) ps"
-# print ""
-# print "--> END (step $(v_relax_steps+v_stretch_steps+v_pause1_steps+v_pause2_steps+v_drag_steps), $((v_relax_steps+v_stretch_steps+v_pause1_steps+v_pause2_steps+v_drag_steps)*dt) ps)"
-# print "--------------------"
-# print "--------------------"
-# print ""
+# Print
+print "--> Pause 1 (step $(v_start_step), $((v_start_step)*dt) ps)"
+print "Time: $(v_pause1_steps) steps = $(v_pause1_steps*dt) ps"
+print ""
+print "--> Apply normal force (step $(v_start_step+v_pause1_steps), $((v_start_step+v_pause1_steps)*dt) ps)"
+print "Amount: $(v_F_N/v_N_to_eV_over_ang*1e9) nN/m = $(v_F_N) eV/ang"
+print ""
+print "--> Pause 2 (step $(v_start_step+v_pause1_steps), $((v_start_step+v_pause1_steps)*dt) ps)"
+print "Time: $(v_pause2_steps) steps = $(v_pause2_steps*dt) ps"
+print ""
+print "--> Drag sheet (step $(v_start_step+v_pause1_steps+v_pause2_steps), $((v_start_step+v_pause1_steps+v_pause2_steps)*dt) ps)"
+print "Length: $(v_drag_length) ang"
+print "Speed: $(v_drag_speed*v_s_to_ps/v_m_to_ang) m/s = $(v_drag_speed) ang/ps "
+print "Spring constant: $(v_K*v_m_to_ang/v_N_to_eV_over_ang) N/m = $(v_K) eV/ang^2"
+print "Time: $(v_drag_steps)  = $(v_drag_steps*dt) ps"
+print ""
+print "--> END (step $(v_start_step+v_pause1_steps+v_pause2_steps+v_drag_steps), $((v_start_step+v_pause1_steps+v_pause2_steps+v_drag_steps)*dt) ps)"
+print "--------------------"
+print "--------------------"
+print ""
 
 
 print "S0: ${S0}"
 print "Stretch pct: ${stretch_pct}"
-# fix dummy_file all print 1 "Restart_file: ${restart_file}" file coord.txt
-
-
+# shell mkdir output_${stretch_pct}
+# shell cd output_${stretch_pct}
+fix dummy_file all print 1 "Restart_file: ${restart_file}, Stretch_pct: ${stretch_pct}, F_N = ${F_N}" file dummy_file_stretch_${stretch_pct}.txt
+run 0
+# shell mv ../one_config_multi_data ../one_config_multi_data_name_change
 quit
-# ----------  Relax sheet ---------- #
-# Set PB conditions
-fix PB_xyz_ave PB_tot aveforce 0 0 0 # Average force (every atom feels same force vector)
-
-print "--> Relax: $(v_relax_steps) timesteps, $(v_relax_steps*dt) ps"
-thermo_style custom step time cpu cpuremain temp v_stretch_pct c_sheet_COM[3] v_sub_sheet_seperation c_sheet_fz
-run  $(v_relax_steps) 
-
-# ---------- Stretch sheet ---------- #
-# Update fixes
-unfix nve
-unfix nvt
-fix nve free_atoms nve
-fix nvt free_atoms langevin ${temp} ${temp} ${damp} 48279
-fix ylow_move  PB_ylow move linear 0 $(-v_stretch_speed/2) NULL units box
-fix yhigh_move PB_yhigh move linear 0 $(v_stretch_speed/2) NULL units box
-
-print "--> Stretch: $(v_stretch_steps) timesteps, $(v_stretch_steps*dt) ps"
-variable S0 equal $(c_PB_yhigh_ymin-c_PB_ylow_ymax) # Lock S0 after relaxing
-run $(v_stretch_steps)
-
 # ---------- Pause 1 ---------- #
 # Update fixes
 unfix nve

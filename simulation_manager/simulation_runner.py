@@ -3,7 +3,8 @@ import numpy as np
 
 import sys
 sys.path.append('../../lammps-simulator_ssh') # parent folder: MastersThesis
-from lammps_simulator import *
+from lammps_simulator.simulator import Simulator
+from lammps_simulator.device import Device
 import subprocess
 
 class Friction_procedure:
@@ -151,17 +152,17 @@ def one_config_multi_data():
     
     variables = { 
     "dt": 0.001, 
-    "relax_time": 5,
-    "stretch_speed_pct": 0.05,
+    "relax_time": 0,
+    "stretch_speed_pct": 0.5,
     "pause_time1": 5,
-    "F_N": 160e-9, # [N] XXX
+    "F_N": 10e-9, # [N] XXX
     "pause_time2": 5, 
     "drag_dir_x": 0,
     "drag_dir_y": 1,
     "drag_speed": 5, # [m/s]
     "drag_length": 30,
     "K": 30.0,
-    "root": "..",
+    "root": ".",
             }
     
     proc = Friction_procedure(variables)
@@ -170,35 +171,53 @@ def one_config_multi_data():
     F_N = [10e-9, 200e-9, 30e-9]
     num_stretch_files = 3
     
-    # dir = "egil:one_config_multi_data"
-    dir = "one_config_multi_data"
+    dir = "egil:one_config_multi_data"
+    # dir = "one_config_multi_data"
     
     config_data = "sheet_substrate"
     sim = Simulator(directory = dir, overwrite=True)
-    sim.copy_to_wd( "../friction_simulation/setup_sim.in",
-                    f"../config_builder/{config_data}.txt",
-                    f"../config_builder/{config_data}_info.in",
-                    "../potentials/si.sw",
-                    "../potentials/CH.airebo",
-                    "../friction_simulation/start_from_restart_file.in"
-                    )
+    # sim.copy_to_wd( "../friction_simulation/setup_sim.in",
+    #                 f"../config_builder/{config_data}.txt",
+    #                 f"../config_builder/{config_data}_info.in",
+    #                 "../potentials/si.sw",
+    #                 "../potentials/CH.airebo",
+    #                 "../friction_simulation/start_from_restart_file.in"
+    #                 )
     
     # sim.set_input_script("../friction_simulation/produce_reset_files.in", num_stretch_files = num_stretch_files)#, **proc.variables)
     sim.set_input_script("../friction_simulation/produce_reset_files.in", **proc.variables)
-    slurm_args = {'job-name':'great4', 'partition':'normal', 'ntasks':16, 'nodes':1}
+    slurm_args = {'job-name':'MULTI', 'partition':'normal', 'ntasks':16, 'nodes':1}
 
-    sim.pre_generate_jobscript(num_procs=1, lmp_exec="lmp_mpi", slurm_args = slurm_args)    
-    sim.add_to_jobscript("\nwait\n\
+
+
+    sub_exec_list = Device.get_exec_list(num_procs = 16, lmp_exec = "lmp", lmp_args = {'-in': 'start_from_restart_file.in'}, lmp_var = proc.variables | {'stretch_file': "$file"})
+    sub_job_string = Device.gen_jobscript_string(sub_exec_list, slurm_args)
+    
+    sim.pre_generate_jobscript(num_procs=16, lmp_exec="lmp", slurm_args = slurm_args)    
+    sim.add_to_jobscript(f"\nwait\n\
     \nfor file in *.restart; do\
     \n    [ -f \"$file\" ] || break\
-    \n    lmp_serial -in start_from_restart_file.in -var restart_file $file\
-    \ndone"
-    )
+    \n    folder=\"${{file%.*}}\"_folder\
+    \n    mkdir \"$folder\"\
+    \n    mv \"$file\" \"$folder\"/\"$file\"\
+    \n    echo \"{sub_job_string}\" > \"$folder\"/job.sh\
+    \ndone")
     
-    
-  
+
+    #### Status for tomorrows work ####
+    # The code make subfolder for each stretch
+    # Then puts the stretch files in there
+    # Create a single job-script to run start_from_restart_file.in with that 
+    # specific stretch file. 
+    # Next up is to create multiple job.scripts, one for each F_N.
+    # It is not going to be pretty but should just be to paste in the number of string
+    # corresponding to the jobscripts that we want.
+    ####################################################
+
+
     # sim.set_run_settings(slurm_args = slurm_args)
-    sim.run(write_jobscript = True, slurm = False, execute = False, slurm_args = slurm_args)
+    # sim.run(write_jobscript = True, slurm = False, execute = False, slurm_args = slurm_args)
+    sim.run(write_jobscript = True, slurm = True, execute = True, slurm_args = slurm_args)
     
    
     
