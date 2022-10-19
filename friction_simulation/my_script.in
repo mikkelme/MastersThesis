@@ -1,4 +1,9 @@
+variable restart_file string ../stretch.5000.restart
+variable stretch_pct equal -1.58609460277978e-15
+variable F_N equal 6.24150907
+
 print """
-This is the first line
-This is the second line?
-""" file my_file.txt
+Restart_file: ${restart_file}
+Stretch_pct: ${stretch_pct}
+F_N = ${F_N}
+""" file info_file.txt

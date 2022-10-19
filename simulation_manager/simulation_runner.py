@@ -146,7 +146,7 @@ def great4_runner():
         # mpirun -n 1 lmp_mpi -in run_friction_sim.in -var dt 0.001 -var config_data sheet_substrate -var relax_time 1 -var stretch_speed_pct 0.05 -var stretch_max_pct 0.0 -var pause_time1 1 -var F_N 0.4993207256 -var pause_time2 0 -var drag_dir_x 0 -var drag_dir_y 1 -var drag_speed 0.05 -var drag_length 1 -var K 1.8724527210000002 -var root .. -var out_ext default
 
 
-def multi_run(sim, config_data, num_stretch_files, F_N, num_procs = 16, jobname = 'MULTI'):
+def multi_run(sim, proc, config_data, num_stretch_files, F_N, num_procs = 16, jobname = 'MULTI'):
     sim.copy_to_wd( "../friction_simulation/setup_sim.in",
                     f"../config_builder/{config_data}.txt",
                     f"../config_builder/{config_data}_info.in",
@@ -155,7 +155,7 @@ def multi_run(sim, config_data, num_stretch_files, F_N, num_procs = 16, jobname 
                     "../friction_simulation/drag_from_restart_file.in"
                     )
     
-    sim.set_input_script("../friction_simulation/stretch_with_reset_files.in", num_stretch_files = num_stretch_files)    
+    sim.set_input_script("../friction_simulation/stretch_with_reset_files.in", num_stretch_files = num_stretch_files, **proc.variables)    
     slurm_args = {'job-name':jobname, 'partition':'normal', 'ntasks':num_procs, 'nodes':1}
     sim.pre_generate_jobscript(num_procs=num_procs, lmp_exec="lmp", slurm_args = slurm_args)    
 
@@ -226,8 +226,7 @@ def one_config_multi_data():
     dir = "egil:one_config_multi_data"
     
     sim = Simulator(directory = dir, overwrite=True)
-    sim.set_run_settings(**proc.variables)
-    multi_run(sim, config_data, num_stretch_files, F_N, num_procs = 16, jobname = 'MULTI')
+    multi_run(sim, proc, config_data, num_stretch_files, F_N, num_procs = 16, jobname = 'MULTI')
 
     
    
