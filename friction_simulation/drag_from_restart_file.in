@@ -118,10 +118,11 @@ print ""
 # shell cd output_${stretch_pct}
 
 print """
-Restart_file: ${restart_file}
-Stretch_pct: ${stretch_pct}
-F_N = ${F_N}
+# Restart_file: ${restart_file}
+# Stretch_pct, F_N
+${stretch_pct}, ${F_N}
 """ file info_file.txt
+
 
 # ---------- Pause 1 ---------- #
 # Update fixes

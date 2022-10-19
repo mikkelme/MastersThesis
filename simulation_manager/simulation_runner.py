@@ -167,7 +167,7 @@ def multi_run(sim, proc, config_data, num_stretch_files, F_N, num_procs = 16, jo
         sub_exec_list = Device.get_exec_list(num_procs = num_procs, 
                                              lmp_exec = "lmp", 
                                              lmp_args = {'-in': '../../drag_from_restart_file.in'}, 
-                                             lmp_var = proc.variables | {'out_ext':i})
+                                             lmp_var = proc.variables | {'out_ext':'_tmp'})
         job_array += '\n\n\"'
         job_array += Device.gen_jobscript_string(sub_exec_list, slurm_args, linebreak = False)
         job_array += '\"'
@@ -210,7 +210,7 @@ def one_config_multi_data():
     "drag_dir_x": 0,
     "drag_dir_y": 1,
     "drag_speed": 5, # [m/s]
-    "drag_length": 1,
+    "drag_length": 30,
     "K": 30.0,
     "root": ".",
     }
