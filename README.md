@@ -92,7 +92,9 @@
 
 
 #### Week 42 (17/10 - 23/10) - Working from Pisa
-- Discovered that the sheets ruptures when dragged slow enough (having enough time). This is most likely due to a too high normal force of 160 nN.  
+- Discovered that the sheets ruptures when dragged slow enough (having enough time). This is most likely due to a too high normal force of 160 nN.
+- Made new simulation with nvt and lower normal force. Now the arising patterns seems to be (√, 20%) > (√, 0%) > (X, 0%) ~ (X, 20%). The first 'equality' holds for 1 m/s -> 5 m/s, and spring drag (K = 30) -> Fix Move.
+- Finished pipeline for sumbitting multiple simulations (combinations of stretch and normal force) for each cut configuration.    
 
 
 ## Things to remember 
