@@ -208,19 +208,15 @@ def plot_info(filenames):
             mu = np.array([[mu_max_full_sheet, mu_avg_full_sheet],
                           [mu_max_sheet, mu_avg_sheet],
                           [mu_max_PB, mu_avg_PB]])
+     
+            if True: # Terminal table 
+                data = pandas.DataFrame(mu, np.array(['full_sheet', 'sheet', 'PB']), np.array(['max', 'avg']))
+                print(f"Filename: {filename}")
+                print(data)
+                print()
+            else:  # Spreadsheet format
+                print(f"{filename}; {mu_max_full_sheet}; {mu_max_sheet}; {mu_max_PB}; {mu_avg_full_sheet}; {mu_avg_sheet}; {mu_avg_PB}\n")
             
-            # print(mu_max_full_sheet)
-            # print(mu_avg_full_sheet)
-            # print(mu_max_sheet)
-            # print(mu_avg_sheet)
-            # print(mu_max_PB)
-            # print(mu_avg_PB)
-            
-            data = pandas.DataFrame(mu, np.array(['full_sheet', 'sheet', 'PB']), np.array(['max', 'avg']))
-            print(f"Filename: {filename}")
-            print(data)
-            print()
-          
 
 
 
@@ -242,7 +238,7 @@ if __name__ == "__main__":
     # filenames += get_files_in_folder('../Data/great4/')
     # filenames += get_files_in_folder('../Data/great4_1ms/')
     # filenames += get_files_in_folder('../Data/great4_025ms/')
-    filenames += get_files_in_folder('../Data/NewGreat4/')
+    filenames += get_files_in_folder('../Data/NewGreat4_K0/')
     
     # filenames = get_files_in_folder('../Data/great4_dt05fs/')
     # filenames = ['../Data/great4/friction_force_cut_20stretch.txt', '../Data/great4_1ms/friction_force_cut_20stretch.txt', '../Data/great4_dt05fs/friction_force_cut_20stretch.txt']

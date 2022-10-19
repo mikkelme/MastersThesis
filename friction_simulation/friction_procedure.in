@@ -163,10 +163,9 @@ group virtuel_atom type 3
 
 
 if "$(v_K) == 0" then &
-"unfix PB_xyz_ave" &
 "unfix nve" &
 "fix nve free_atoms nve" &
-"fix move_PB PB_tot move linear $(v_drag_speed*v_drag_dir_x/v_dir_norm) $(v_drag_speed*v_drag_dir_y/v_dir_norm) 0 units box" &
+"fix move_PB PB_tot move linear $(v_drag_speed*v_drag_dir_x/v_dir_norm) $(v_drag_speed*v_drag_dir_y/v_dir_norm) NULL units box" &
 "fix friction_force_spring all ave/time 1 100 100 v_move_force_x v_move_force_y c_Ff_sheet[1] c_Ff_sheet[2] c_Ff_sheet[3] c_Ff_PB[1] c_Ff_PB[2] c_Ff_PB[3] c_sheet_COM[1] c_sheet_COM[2] c_sheet_COM[3] file ${out_path}/friction_force${out_ext}.txt" &
 "thermo_style custom step time cpu cpuremain temp v_stretch_pct c_sheet_COM[1] c_sheet_COM[2] c_Ff[1] c_Ff[2] v_move_force_xy_norm" & 
 else & 

@@ -5,30 +5,29 @@
 
 
 # Provide variables from input
-variable root string . 
-variable dt equal 0.001
-variable config_data string ${root}/sheet_substrate
+# variable root string . 
+# variable dt equal 0.001
+# variable config_data string ${root}/sheet_substrate
 
 
-variable relax_time equal 1
-variable stretch_speed_pct equal 0.05
-variable stretch_max_pct equal 0.2
+# variable relax_time equal 1
+# variable stretch_speed_pct equal 0.05
+# variable stretch_max_pct equal 0.2
 
-variable pause_time1 equal 1
-variable F_N equal 0.8e-9 # [N]
-variable pause_time2 equal 5
-variable drag_dir_x equal 0
-variable drag_dir_y equal 1
-variable drag_speed equal 5 # [m/s]
-variable drag_length equal 10 
-variable K equal 30.0
-variable out_ext string _default 
+# variable pause_time1 equal 1
+# variable F_N equal 0.8e-9 # [N]
+# variable pause_time2 equal 5
+# variable drag_dir_x equal 0
+# variable drag_dir_y equal 1
+# variable drag_speed equal 5 # [m/s]
+# variable drag_length equal 10 
+# variable K equal 30.0
+# variable out_ext string _default 
 
 ### Restart file ###
 read_restart ${restart_file}
-include ${config_data}_info.in                  
+include ${root}/${config_data}_info.in                  
 
-# Calculate stretch pct for this run...
 
 ### Resupply fixes and potential ###
 fix 2 all balance 1000 1.05 shift xy 10 1.05 # balance number of particles computed on each processor 

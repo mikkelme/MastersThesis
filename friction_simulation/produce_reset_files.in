@@ -1,7 +1,7 @@
 # Run setup sim
 # Run stretch and produce reset files
 
-variable num_stretch_files equal 3 
+# variable num_stretch_files equal 3 
 
 
 # variable root string ../potentials # in friction_simulation folder

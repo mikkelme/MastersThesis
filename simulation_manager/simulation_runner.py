@@ -98,9 +98,9 @@ def great4_runner():
     "pause_time2": 5,
     "drag_dir_x": 0,
     "drag_dir_y": 1,
-    "drag_speed": 5, # [m/s]
+    "drag_speed": 1, # [m/s]
     "drag_length": 30,
-    "K": 30.0,
+    "K": 0,
     "root": "..",
     }
     
@@ -111,7 +111,7 @@ def great4_runner():
     proc = Friction_procedure(variables)
 
     # header = "NewGreat4/" 
-    header = "egil:NewGreat4_5ms/"
+    header = "egil:NewGreat4_K0/"
     common_files = ["../friction_simulation/setup_sim.in", 
                     "../friction_simulation/friction_procedure.in",
                     "../potentials/si.sw",
@@ -141,7 +141,7 @@ def great4_runner():
         sim.set_input_script("../friction_simulation/run_friction_sim.in", **proc.variables)
         sim.create_subdir("output_data")
         
-        slurm_args = {'job-name':'NG4_5ms', 'partition':'normal', 'ntasks':16, 'nodes':1}
+        slurm_args = {'job-name':'NG4_K0', 'partition':'normal', 'ntasks':16, 'nodes':1}
         sim.run(num_procs=16, lmp_exec="lmp", slurm=True, slurm_args=slurm_args)
         # sim.run(num_procs=1, lmp_exec="lmp_mpi")
 
@@ -152,7 +152,7 @@ def one_config_multi_data():
     
     variables = { 
     "dt": 0.001, 
-    "relax_time": 0,
+    "relax_time": 1,
     "stretch_speed_pct": 0.5,
     "pause_time1": 5,
     "F_N": 10e-9, # [N] XXX
@@ -169,51 +169,61 @@ def one_config_multi_data():
     
     # Variables 
     F_N = [10e-9, 200e-9, 30e-9]
-    num_stretch_files = 3
+    num_stretch_files = 4
     
     dir = "egil:one_config_multi_data"
     # dir = "one_config_multi_data"
     
     config_data = "sheet_substrate"
     sim = Simulator(directory = dir, overwrite=True)
-    # sim.copy_to_wd( "../friction_simulation/setup_sim.in",
-    #                 f"../config_builder/{config_data}.txt",
-    #                 f"../config_builder/{config_data}_info.in",
-    #                 "../potentials/si.sw",
-    #                 "../potentials/CH.airebo",
-    #                 "../friction_simulation/start_from_restart_file.in"
-    #                 )
+    sim.copy_to_wd( "../friction_simulation/setup_sim.in",
+                    f"../config_builder/{config_data}.txt",
+                    f"../config_builder/{config_data}_info.in",
+                    "../potentials/si.sw",
+                    "../potentials/CH.airebo",
+                    "../friction_simulation/start_from_restart_file.in"
+                    )
     
-    # sim.set_input_script("../friction_simulation/produce_reset_files.in", num_stretch_files = num_stretch_files)#, **proc.variables)
-    sim.set_input_script("../friction_simulation/produce_reset_files.in", **proc.variables)
+    sim.set_input_script("../friction_simulation/produce_reset_files.in", num_stretch_files = num_stretch_files, **proc.variables)    
     slurm_args = {'job-name':'MULTI', 'partition':'normal', 'ntasks':16, 'nodes':1}
-
-
-
-    sub_exec_list = Device.get_exec_list(num_procs = 16, lmp_exec = "lmp", lmp_args = {'-in': 'start_from_restart_file.in'}, lmp_var = proc.variables | {'stretch_file': "$file"})
-    sub_job_string = Device.gen_jobscript_string(sub_exec_list, slurm_args)
-    
     sim.pre_generate_jobscript(num_procs=16, lmp_exec="lmp", slurm_args = slurm_args)    
+
+    proc.variables['root'] = '../..'
+    job_array = 'job_array=('
+    for i in range(len(F_N)):
+        proc.variables['F_N'] = F_N[i]
+        proc.convert_units(["F_N"])
+        sub_exec_list = Device.get_exec_list(num_procs = 16, 
+                                             lmp_exec = "lmp", 
+                                             lmp_args = {'-in': '../../start_from_restart_file.in'}, 
+                                            #  lmp_var = proc.variables | {'stretch_file': "$file", 'out_ext':i})
+                                             lmp_var = proc.variables | {'out_ext':i})
+        job_array += '\n\n\"'
+        job_array += Device.gen_jobscript_string(sub_exec_list, slurm_args, linebreak = False)
+        job_array += '\"'
+    job_array += ')'
+    
+    
     sim.add_to_jobscript(f"\nwait\n\
+    \n{job_array}\n\
     \nfor file in *.restart; do\
     \n    [ -f \"$file\" ] || break\
-    \n    folder=\"${{file%.*}}\"_folder\
-    \n    mkdir \"$folder\"\
-    \n    mv \"$file\" \"$folder\"/\"$file\"\
-    \n    echo \"{sub_job_string}\" > \"$folder\"/job.sh\
+    \n    folder1=\"${{file%.*}}\"_folder\
+    \n    mkdir $folder1\
+    \n    cd $folder1\
+    \n    for i in ${{!job_array[@]}}; do\
+    \n      folder2=job\"$i\"\
+    \n      mkdir $folder2\
+    \n      echo \"${{job_array[$i]}} -var restart_file ../$file\" > $folder2/job$i.sh\
+    \n      cd $folder2\
+    \n      sbatch job$i.sh\
+    \n      cd ..\
+    \n    done\
+    \n    cd ..\
+    \n    mv $file $folder1/$file\
     \ndone")
     
-
-    #### Status for tomorrows work ####
-    # The code make subfolder for each stretch
-    # Then puts the stretch files in there
-    # Create a single job-script to run start_from_restart_file.in with that 
-    # specific stretch file. 
-    # Next up is to create multiple job.scripts, one for each F_N.
-    # It is not going to be pretty but should just be to paste in the number of string
-    # corresponding to the jobscripts that we want.
-    ####################################################
-
+  
 
     # sim.set_run_settings(slurm_args = slurm_args)
     # sim.run(write_jobscript = True, slurm = False, execute = False, slurm_args = slurm_args)
@@ -224,28 +234,7 @@ def one_config_multi_data():
     
     
     
-    
-    
-    # for i, ext in enumerate(extentions):
-    # dir = header + ext
-    # sim = Simulator(directory = dir, overwrite=True)
-    # sim.copy_to_wd( "../friction_simulation/run_friction_sim.in",
-    #                 f"../config_builder/{config_data[i]}.txt",
-    #                 f"../config_builder/{config_data[i]}_info.in"
-    #                 )
-    
-    # proc.variables["out_ext"] = '_' + ext
-    # proc.variables["config_data"] = config_data[i]
-    # proc.variables["stretch_max_pct"] = stretch_max_pct[i]
-    # sim.set_input_script("../friction_simulation/run_friction_sim.in", **proc.variables)
-    # sim.create_subdir("output_data")
-    # # sim.run(num_procs=1, lmp_exec="lmp_mpi")
-    
-    # slurm_args = {'job-name':'great4', 'partition':'normal', 'ntasks':16, 'nodes':1}
-    # sim.run(num_procs=16, lmp_exec="lmp", slurm=True, slurm_args=slurm_args)
 
-    # # mpirun -n 1 lmp_mpi -in ru
-    
     
 
 
