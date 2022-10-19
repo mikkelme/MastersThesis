@@ -15,7 +15,7 @@ class Friction_procedure:
             "config_data": "sheet_substrate",
             "relax_time": 5,
             "stretch_speed_pct": 0.05,
-            "stretch_max_pct": 0.05,
+            "stretch_max_pct": 0.2,
             "pause_time1": 5,
             "F_N": 10e-9, # [N]
             "pause_time2": 5,
@@ -29,8 +29,6 @@ class Friction_procedure:
         }
         
         
-   
-    
         
         # --- Convertion factors: SI -> metal --- #
         self.N_to_eV_over_ang = 6.24150907e8    # force: N -> eV/Å
@@ -148,61 +146,32 @@ def great4_runner():
         # mpirun -n 1 lmp_mpi -in run_friction_sim.in -var dt 0.001 -var config_data sheet_substrate -var relax_time 1 -var stretch_speed_pct 0.05 -var stretch_max_pct 0.0 -var pause_time1 1 -var F_N 0.4993207256 -var pause_time2 0 -var drag_dir_x 0 -var drag_dir_y 1 -var drag_speed 0.05 -var drag_length 1 -var K 1.8724527210000002 -var root .. -var out_ext default
 
 
-def one_config_multi_data():
-    
-    variables = { 
-    "dt": 0.001, 
-    "relax_time": 1,
-    "stretch_speed_pct": 0.5,
-    "pause_time1": 5,
-    "F_N": 10e-9, # [N] XXX
-    "pause_time2": 5, 
-    "drag_dir_x": 0,
-    "drag_dir_y": 1,
-    "drag_speed": 5, # [m/s]
-    "drag_length": 30,
-    "K": 30.0,
-    "root": ".",
-            }
-    
-    proc = Friction_procedure(variables)
-    
-    # Variables 
-    F_N = [10e-9, 200e-9, 30e-9]
-    num_stretch_files = 4
-    
-    dir = "egil:one_config_multi_data"
-    # dir = "one_config_multi_data"
-    
-    config_data = "sheet_substrate"
-    sim = Simulator(directory = dir, overwrite=True)
+def multi_run(sim, config_data, num_stretch_files, F_N, num_procs = 16, jobname = 'MULTI'):
     sim.copy_to_wd( "../friction_simulation/setup_sim.in",
                     f"../config_builder/{config_data}.txt",
                     f"../config_builder/{config_data}_info.in",
                     "../potentials/si.sw",
                     "../potentials/CH.airebo",
-                    "../friction_simulation/start_from_restart_file.in"
+                    "../friction_simulation/drag_from_restart_file.in"
                     )
     
-    sim.set_input_script("../friction_simulation/produce_reset_files.in", num_stretch_files = num_stretch_files, **proc.variables)    
-    slurm_args = {'job-name':'MULTI', 'partition':'normal', 'ntasks':16, 'nodes':1}
-    sim.pre_generate_jobscript(num_procs=16, lmp_exec="lmp", slurm_args = slurm_args)    
+    sim.set_input_script("../friction_simulation/stretch_with_reset_files.in", num_stretch_files = num_stretch_files)    
+    slurm_args = {'job-name':jobname, 'partition':'normal', 'ntasks':num_procs, 'nodes':1}
+    sim.pre_generate_jobscript(num_procs=num_procs, lmp_exec="lmp", slurm_args = slurm_args)    
 
     proc.variables['root'] = '../..'
     job_array = 'job_array=('
     for i in range(len(F_N)):
         proc.variables['F_N'] = F_N[i]
         proc.convert_units(["F_N"])
-        sub_exec_list = Device.get_exec_list(num_procs = 16, 
+        sub_exec_list = Device.get_exec_list(num_procs = num_procs, 
                                              lmp_exec = "lmp", 
-                                             lmp_args = {'-in': '../../start_from_restart_file.in'}, 
-                                            #  lmp_var = proc.variables | {'stretch_file': "$file", 'out_ext':i})
+                                             lmp_args = {'-in': '../../drag_from_restart_file.in'}, 
                                              lmp_var = proc.variables | {'out_ext':i})
         job_array += '\n\n\"'
         job_array += Device.gen_jobscript_string(sub_exec_list, slurm_args, linebreak = False)
         job_array += '\"'
     job_array += ')'
-    
     
     sim.add_to_jobscript(f"\nwait\n\
     \n{job_array}\n\
@@ -224,10 +193,42 @@ def one_config_multi_data():
     \ndone")
     
   
+    sim.run(slurm = True)
+    
+    
 
-    # sim.set_run_settings(slurm_args = slurm_args)
-    # sim.run(write_jobscript = True, slurm = False, execute = False, slurm_args = slurm_args)
-    sim.run(write_jobscript = True, slurm = True, execute = True, slurm_args = slurm_args)
+def one_config_multi_data():
+    
+    variables = { 
+    "dt": 0.001, 
+    "relax_time": 5,
+    "stretch_speed_pct": 0.05,
+    "stretch_max_pct": 0.2,
+    "pause_time1": 5,
+    "F_N": 10e-9, # [N]
+    "pause_time2": 5,
+    "drag_dir_x": 0,
+    "drag_dir_y": 1,
+    "drag_speed": 5, # [m/s]
+    "drag_length": 1,
+    "K": 30.0,
+    "root": ".",
+    }
+    
+    
+    proc = Friction_procedure(variables)
+    
+    # Variables 
+    num_stretch_files = 5
+    F_N = [10e-9, 20e-9, 30e-9]
+    config_data = "sheet_substrate" 
+    
+    dir = "egil:one_config_multi_data"
+    
+    sim = Simulator(directory = dir, overwrite=True)
+    sim.set_run_settings(**proc.variables)
+    multi_run(sim, config_data, num_stretch_files, F_N, num_procs = 16, jobname = 'MULTI')
+
     
    
     

@@ -1,37 +1,24 @@
-#### Information from command line ####
-
-
-# variable restart_file string before_stretch.restart
-
-
-# Provide variables from input
-# variable root string . 
-# variable dt equal 0.001
-# variable config_data string ${root}/sheet_substrate
-
-
-# variable relax_time equal 1
-# variable stretch_speed_pct equal 0.05
-# variable stretch_max_pct equal 0.2
-
-# variable pause_time1 equal 1
-# variable F_N equal 0.8e-9 # [N]
-# variable pause_time2 equal 5
-# variable drag_dir_x equal 0
-# variable drag_dir_y equal 1
-# variable drag_speed equal 5 # [m/s]
-# variable drag_length equal 10 
-# variable K equal 30.0
-# variable out_ext string _default 
-
-### Restart file ###
+# ---------- Read restart file ---------- #
 read_restart ${restart_file}
 include ${root}/${config_data}_info.in                  
 
+# --->>> Variables floating around <<<--- # 
+variable temp equal 100.0 # Kelvin
+variable damp equal 1.0 # ps
+# ^^^Might be good idea to put this into a single script: setup_sim_utils
 
-### Resupply fixes and potential ###
+# --- Convertion: SI to metal --- #
+variable N_to_eV_over_ang equal 6.24150907e8    # force: N -> eV/Å
+variable m_to_ang equal 1e10                    # distance: m -> Å
+variable s_to_ps equal 1e12                     # time: s -> ps
+# ^^^This perhaps also
+
+# ---------- Resupply fixes and pair style ---------- #
+# Fixes
 fix 2 all balance 1000 1.05 shift xy 10 1.05 # balance number of particles computed on each processor 
 fix PB_xyz_ave PB_tot aveforce 0 0 0 # Average force (every atom feels same force vector)
+fix nve free_atoms nve
+fix nvt free_atoms langevin ${temp} ${temp} ${damp} 48279
 
 # Potentials: C-C: Airebo, C-Si: LJ, Si-Si: SW
 pair_style hybrid sw lj/cut 8.15 airebo 6.4 1 1 # lj_cutoff = 2.5*sigma 
@@ -40,13 +27,8 @@ pair_coeff 1 2 lj/cut 0.008909 3.26                     # Interaction C-Si
 pair_coeff * * sw ${root}/si.sw NULL Si NULL         # Substrate Si-Si
 pair_coeff * 3  lj/cut 0.0 0.0 
 
-
-variable temp equal 100.0 # Kelvin
-variable damp equal 1.0 # ps
-fix nve free_atoms nve
-fix nvt free_atoms langevin ${temp} ${temp} ${damp} 48279
-##################################
-# ---------- Computes ---------- #
+# ---------- Computes ---------- # 
+# Have this in seperate script also??? <----------???
 ## - Sheet - ##
 # Full sheet
 compute sheet_COM full_sheet com            # Center of mass
@@ -61,7 +43,6 @@ compute PB_ylow_ymax PB_ylow reduce max y   # Lower y-limit for sheet
 compute PB_yhigh_ymin PB_yhigh reduce min y # Upper y-limit for sheet
 compute PB_ylow_com PB_ylow com             # Center of mass PB_ylow
 compute PB_yhigh_com PB_yhigh com           # Center of mass PB_yhigh
-
 
 ## -- Substrate -- ##
 compute substrate_zhigh substrate reduce max z # Max z-val of substrate
@@ -86,7 +67,6 @@ variable move_force_xy_norm equal sqrt(v_move_force_x^2+v_move_force_x^2)
 
 ## -- Stretch -- ##
 variable S0 equal v_pullblock_ylo-v_pullblock_yhi   # start len of inner sheet
-# variable S0 equal c_PB_yhigh_ymin-c_PB_ylow_ymax    # start len of inner sheet
 variable S_len equal c_PB_yhigh_ymin-c_PB_ylow_ymax # Updated len of inner sheet
 variable stretch_pct equal (v_S_len-v_S0)/v_S0  # Updated stretch pct
 variable stretch_speed equal v_stretch_speed_pct*v_S0 
@@ -95,23 +75,15 @@ variable stretch_speed equal v_stretch_speed_pct*v_S0
 variable dir_norm equal $(sqrt(v_drag_dir_x^2+v_drag_dir_y^2))
 
 # ---------- Output ---------- #
-# thermo 1000
-# variable dump_freq equal 1000 
-# variable out_path string output_data
-# # shell mkdir ${out_path} # Does not seem to work with MPI on cluster
+thermo 1000
+variable dump_freq equal 1000 
 
-# dump 1 all custom $(v_dump_freq) ${out_path}/system${out_ext}.data id type x y z vx vy vz
-# dump 2 sheet custom $(v_dump_freq) ${out_path}/sheet${out_ext}.data id type x y z
-# dump 3 substrate_contact custom $(v_dump_freq) ${out_path}/substrate_contact${out_ext}.data id type x y z
+dump 1 all custom $(v_dump_freq) system${out_ext}.data id type x y z vx vy vz
+dump 2 sheet custom $(v_dump_freq) sheet${out_ext}.data id type x y z
+dump 3 substrate_contact custom $(v_dump_freq) substrate_contact${out_ext}.data id type x y z
+
 
 # ---------- Print procedure schedule ---------- #
-# Convertions
-
-# --- Convertion: SI to metal --- #
-variable N_to_eV_over_ang equal 6.24150907e8    # force: N -> eV/Å
-variable m_to_ang equal 1e10                    # distance: m -> Å
-variable s_to_ps equal 1e12                     # time: s -> ps
-
 # Timestamps
 variable start_step equal $(step)
 variable pause1_steps equal $(floor(v_pause_time1/dt))
@@ -140,14 +112,17 @@ print "--------------------"
 print ""
 
 
-print "S0: ${S0}"
-print "Stretch pct: ${stretch_pct}"
+# print "S0: ${S0}"
+# print "Stretch pct: ${stretch_pct}"
 # shell mkdir output_${stretch_pct}
 # shell cd output_${stretch_pct}
-fix dummy_file all print 1 "Restart_file: ${restart_file}, Stretch_pct: ${stretch_pct}, F_N = ${F_N}" file dummy_file_stretch_${stretch_pct}.txt
-run 0
-# shell mv ../one_config_multi_data ../one_config_multi_data_name_change
-quit
+
+print """
+Restart_file: ${restart_file}
+Stretch_pct: ${stretch_pct}
+F_N = ${F_N}
+""" info_file.txt
+
 # ---------- Pause 1 ---------- #
 # Update fixes
 unfix nve
@@ -193,10 +168,9 @@ group virtuel_atom type 3
 
 
 if "$(v_K) == 0" then &
-"unfix PB_xyz_ave" &
 "unfix nve" &
 "fix nve free_atoms nve" &
-"fix move_PB PB_tot move linear $(v_drag_speed*v_drag_dir_x/v_dir_norm) $(v_drag_speed*v_drag_dir_y/v_dir_norm) 0 units box" &
+"fix move_PB PB_tot move linear $(v_drag_speed*v_drag_dir_x/v_dir_norm) $(v_drag_speed*v_drag_dir_y/v_dir_norm) NULL units box" &
 "fix friction_force_spring all ave/time 1 100 100 v_move_force_x v_move_force_y c_Ff_sheet[1] c_Ff_sheet[2] c_Ff_sheet[3] c_Ff_PB[1] c_Ff_PB[2] c_Ff_PB[3] c_sheet_COM[1] c_sheet_COM[2] c_sheet_COM[3] file ${out_path}/friction_force${out_ext}.txt" &
 "thermo_style custom step time cpu cpuremain temp v_stretch_pct c_sheet_COM[1] c_sheet_COM[2] c_Ff[1] c_Ff[2] v_move_force_xy_norm" & 
 else & 
@@ -206,12 +180,6 @@ else &
 
 # Move virtuel atom 
 fix move_va virtuel_atom move linear $(v_drag_speed*v_drag_dir_x/v_dir_norm) $(v_drag_speed*v_drag_dir_y/v_dir_norm) 0 units box 
-
-# Force distribution (need group/group/atom compute)
-# compute 2Dchunk full_sheet chunk/atom bin/2d x center 3.0 y center 3.0
-# compute force_interaction full_sheet group/group substrate 
-# fix force_dist full_sheet ave/chunk 1 100 100 2Dchunk c_force_interaction[1] file ${root}${out_path}/sheet_force_dist${out_ext}.txt 
-
 
 print "--> Drag : $(v_drag_steps) timesteps, $(v_drag_steps*dt) ps"
 run  $(v_drag_steps) 

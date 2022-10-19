@@ -1,0 +1,80 @@
+# Setup system
+include ${root}/setup_sim.in
+
+# ---------- Computes ---------- #
+## - Pullblocks - ##
+compute PB_ylow_ymax PB_ylow reduce max y   # Lower y-limit for sheet
+compute PB_yhigh_ymin PB_yhigh reduce min y # Upper y-limit for sheet
+
+## - Activate computes - ## 
+thermo_style custom c_PB_ylow_ymax c_PB_yhigh_ymin 
+run 0 # activate compute
+
+# ---------- Derived variables ---------- #
+## -- Stretch -- ##
+variable S0 equal c_PB_yhigh_ymin-c_PB_ylow_ymax    # start len of inner sheet
+variable S_len equal c_PB_yhigh_ymin-c_PB_ylow_ymax # Updated len of inner sheet
+variable stretch_pct equal (v_S_len-v_S0)/v_S0  # Updated stretch pct
+variable stretch_speed equal v_stretch_speed_pct*v_S0 
+
+# ---------- Output ---------- #
+thermo 1000
+variable dump_freq equal 1000 
+
+dump 1 all custom $(v_dump_freq) stretch_system${out_ext}.data id type x y z vx vy vz
+dump 2 sheet custom $(v_dump_freq) stretch_sheet${out_ext}.data id type x y z
+dump 3 substrate_contact custom $(v_dump_freq) stretch_substrate_contact${out_ext}.data id type x y z
+
+# ---------- Print procedure schedule ---------- #
+# Timestamps
+variable relax_steps equal $(floor(v_relax_time/dt))
+variable stretch_steps equal $(floor(v_stretch_max_pct/v_stretch_speed_pct/dt))
+
+# Print
+print "--------------------"
+print "------SCHEDULE------"
+print ""
+print "--> Relax (step 0, 0 ps)"
+print "Time: $(v_relax_steps) steps = $(v_relax_steps*dt) ps" 
+print ""
+print "--> Stretch sheet (step $(v_relax_steps), $(v_relax_steps*dt) ps)"
+print "Amount: $(v_stretch_max_pct) % = $(v_stretch_max_pct*v_S0) ang "
+print "Speed: $(v_stretch_speed_pct) %/ps = $(v_stretch_speed) ang/ps"
+print "Time:  $(v_stretch_steps) steps = $(v_stretch_steps*dt) ps"
+print "--------------------"
+print "--------------------"
+print ""
+
+
+
+# ----------  Write restart files ---------- #
+variable restart_freq equal floor(v_stretch_steps/(v_num_stretch_files-1))
+variable       stride equal stride(v_relax_steps,$(v_relax_steps+v_stretch_steps+v_restart_freq),v_restart_freq)
+restart        v_stride stretch.*.restart
+
+
+
+# ----------  Relax sheet ---------- #
+# Set PB conditions
+fix PB_xyz_ave PB_tot aveforce 0 0 0 # Average force (every atom feels same force vector)
+
+print "--> Relax: $(v_relax_steps) timesteps, $(v_relax_steps*dt) ps"
+thermo_style custom step time cpu cpuremain temp v_stretch_pct #c_sheet_COM[3] v_sub_sheet_seperation c_sheet_fz
+run  $(v_relax_steps) 
+
+
+# ---------- Stretch sheet ---------- #
+# Update fixes
+unfix nve
+unfix nvt
+fix nve free_atoms nve
+fix nvt free_atoms langevin ${temp} ${temp} ${damp} 48279
+fix ylow_move  PB_ylow move linear 0 $(-v_stretch_speed/2) NULL units box
+fix yhigh_move PB_yhigh move linear 0 $(v_stretch_speed/2) NULL units box
+
+print "--> Stretch: $(v_stretch_steps) timesteps, $(v_stretch_steps*dt) ps"
+variable S0 equal $(c_PB_yhigh_ymin-c_PB_ylow_ymax) # Lock S0 after relaxing
+run $(v_stretch_steps)
+restart 0
+
+
