@@ -166,7 +166,7 @@ def plot_info(filenames):
                 print(data)
                 print()
             else:  # Spreadsheet format
-                print(f"{filename}; {mu_max_full_sheet}; {mu_max_sheet}; {mu_max_PB}; {mu_avg_full_sheet}; {mu_avg_sheet}; {mu_avg_PB}\n")
+                print(f"{filename}; {mu_max_full_sheet}; {mu_max_sheet}; {mu_max_PB}; {mu_avg_full_sheet}; {mu_avg_sheet}; {mu_avg_PB}")
             
 
 
@@ -178,12 +178,9 @@ if __name__ == "__main__":
     filenames = []
 
 
-    # filenames += get_files_in_folder('../Data/great4/', ext = ".txt")
-    # filenames += get_files_in_folder('../Data/great4_1ms/', ext = ".txt")
-    # filenames += get_files_in_folder('../Data/great4_025ms/', ext = ".txt")
-    filenames += get_files_in_folder('../Data/NewGreat4_K0/', ext = ".txt")
+    # filenames += get_files_in_folder('../Data/NewGreat4_K0/', ext = ".txt")
+    filenames += get_files_in_folder('../Data/NewGreat4_dt05fs/', ext = ".txt")
     
-    # filenames = get_files_in_folder('../Data/great4_dt05fs/', ext = ".txt")
     # filenames = ['../Data/great4/friction_force_cut_20stretch.txt', '../Data/great4_1ms/friction_force_cut_20stretch.txt', '../Data/great4_dt05fs/friction_force_cut_20stretch.txt']
     
     

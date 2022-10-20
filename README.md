@@ -95,7 +95,9 @@
 - Discovered that the sheets ruptures when dragged slow enough (having enough time). This is most likely due to a too high normal force of 160 nN.
 - Made new simulation with nvt and lower normal force. Now the arising patterns seems to be (√, 20%) > (√, 0%) > (X, 0%) ~ (X, 20%). The first 'equality' holds for 1 m/s -> 5 m/s, and spring drag (K = 30) -> Fix Move.
 - Finished pipeline for sumbitting multiple simulations (combinations of stretch and normal force) for each cut configuration.    
-
+- Checked simulations with Fix move and dt = 0.5 fs which seems to follow the order mentioned in this weeks log. 
+- Ran one config multi data simulation and saw some quick curves for (F_N, F_f) at fixed stretch and (stretch, Ff) at fixed FN. With very fex data points we see more or less linear trend for (F_N, F_f). For (stretch, F_f) it starts linear but then flattens/drops at high stretch. I am going to get more data points to further investegate this. 
+- Next: Work on coordination number for detecting fractures. 
 
 ## Things to remember 
 

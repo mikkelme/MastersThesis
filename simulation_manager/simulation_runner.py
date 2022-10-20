@@ -203,13 +203,13 @@ def one_config_multi_data():
     "dt": 0.001, 
     "relax_time": 5,
     "stretch_speed_pct": 0.05,
-    "stretch_max_pct": 0.2,
+    "stretch_max_pct": 0.3,
     "pause_time1": 5,
     "F_N": 10e-9, # [N]
     "pause_time2": 5,
     "drag_dir_x": 0,
     "drag_dir_y": 1,
-    "drag_speed": 5, # [m/s]
+    "drag_speed": 1, # [m/s]
     "drag_length": 30,
     "K": 30.0,
     "root": ".",
@@ -219,10 +219,10 @@ def one_config_multi_data():
     proc = Friction_procedure(variables)
     
     # Variables 
-    num_stretch_files = 5
-    F_N = [10e-9, 20e-9, 30e-9]
-    config_data = "sheet_substrate" 
-    
+    num_stretch_files = 15
+    F_N = np.linspace(1e-9, 100e-9, 10)
+
+    config_data = "sheet_substrate"     
     dir = "egil:one_config_multi_data"
     
     sim = Simulator(directory = dir, overwrite=True)

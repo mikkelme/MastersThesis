@@ -95,10 +95,26 @@ def get_fricton_force(filename):
     FN_full_sheet = np.mean(Ff_full_sheet[:,2])
     FN_sheet = np.mean(Ff_sheet[:,2])
     FN_PB = np.mean(Ff_PB[:,2])
+    FN = np.array((FN_full_sheet, FN_sheet, FN_PB))
     
     
+    max_full_sheet = Ff_full_sheet[:,0].max()
+    avg_full_sheet = np.mean(Ff_full_sheet[:,0])
     
-    return Ff_full_sheet[:,0].max(), abs(FN_full_sheet)       
+    max_sheet = Ff_sheet[:,0].max()
+    avg_sheet = np.mean(Ff_sheet[:,0])
+    
+    max_PB = Ff_PB[:,0].max()
+    avg_PB = np.mean(Ff_PB[:,0])
+    
+    Ff = np.array([[max_full_sheet, avg_full_sheet],
+                    [max_sheet, avg_sheet],
+                    [max_PB, avg_PB]])
+
+
+
+    return Ff, FN
+    # return Ff_full_sheet[:,0].max(), abs(FN_full_sheet)       
     
     
     
@@ -113,16 +129,24 @@ def organize_data(data, num_stretch): # Working title
     # Create arrays
     stretch_pct = np.zeros(num_stretch)
     F_N = np.zeros(num_F_N)
-    Ff = np.zeros((num_stretch, num_F_N))
+    # Ff = np.zeros((num_stretch, num_F_N), dtype = 'object')
+    Ff = np.zeros((num_stretch, num_F_N, data[0,2].shape[0],data[0,2].shape[1]))
+    
+    # Sort by F_N
     for i in range(num_stretch):
         interval = range(i*num_F_N, (i+1)*num_F_N)
+        
         subsort = np.argsort(data[interval, 1])  
         data[interval] = data[interval][subsort]
         
         stretch_pct[i] = np.mean(data[interval,0])
         assert(np.std(data[interval,0]) < 1e-10), "Stretch_pct deviates from each other"
-        F_N += (data[interval,1])
-        Ff[i] = data[interval,2]
+        
+        F_N += (data[interval,1]).astype('float')
+        # test = np.concatenate(data[interval,2][:], axis = 2)
+        # print(test)
+        # exit()
+        Ff[i] = np.stack(data[interval,2])
         
     F_N /= num_stretch
     assert(np.max([np.std(data[range(i, len(data), num_F_N),1]) for i in range(num_F_N)]) < 10e-10), "F_N deviates from each other" 
