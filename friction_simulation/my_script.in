@@ -43,7 +43,10 @@ compute coord sheet coord/atom cutoff 2.0
 # Stress field
 compute peratom sheet stress/atom NULL
 variable stress_atom atom sqrt(c_peratom[1]*c_peratom[1]+c_peratom[2]*c_peratom[2]+c_peratom[3]*c_peratom[3])
-compute max_stress sheet reduce max v_stress_atom
+# variable stress_atom atom sqrt(c_peratom[1]*c_peratom[1]+c_peratom[2]*c_peratom[2])
+# variable stress_x_atom atom c_peratom[1]
+# variable stress_y_atom atom c_peratom[2]
+compute max_stress sheet reduce max v_stress_atom 
 fix max sheet ave/time 1 1 1 c_max_stress file max_stress.txt
 
 
@@ -70,9 +73,9 @@ fix max sheet ave/time 1 1 1 c_max_stress file max_stress.txt
 thermo 100
 variable dump_freq equal 10 
 
-dump 1 all custom $(v_dump_freq) stretch_system${out_ext}.data id type x y z vx vy vz
+dump 1 all custom $(v_dump_freq) stretch_system${out_ext}.data id type x y z vx vy vz v_stress_atom # <------------
 # fix 1 sheet ave/histo 1 100 100 0 5 6 c_coord mode vector beyond extra file coordination.txt
-dump stress_dump sheet custom 100 stress_dump.data id type x y z v_stress_atom
+# dump stress_dump sheet custom $(v_dump_freq) stress_dump.data id type x y z v_stress_atom
 
 
 

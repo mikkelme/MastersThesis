@@ -1,0 +1,44 @@
+
+# variable input_file string stress_dump.data
+variable input_file string ../Data/great4_025ms/sheet_nocut_20stretch.data
+variable dt equal 0.001
+variable root string .
+variable config_data string sheet_substrate
+include ./setup_sim.in
+#########
+
+
+# ---------- Computes ---------- #
+## - Pullblocks - ##
+compute PB_ylow_ymax PB_ylow reduce max y   # Lower y-limit for sheet
+compute PB_yhigh_ymin PB_yhigh reduce min y # Upper y-limit for sheet
+
+## - Activate computes - ## 
+thermo_style custom c_PB_ylow_ymax c_PB_yhigh_ymin 
+run 0 # activate compute
+
+# ---------- Derived variables ---------- #
+## -- Stretch -- ##
+variable S0 equal $(c_PB_yhigh_ymin-c_PB_ylow_ymax) # Lock S0 
+variable S_len equal c_PB_yhigh_ymin-c_PB_ylow_ymax # Updated len of inner sheet
+variable stretch_pct equal (v_S_len-v_S0)/v_S0  # Updated stretch pct
+variable stretch_speed equal v_stretch_speed_pct*v_S0 
+
+# Coordination number
+compute coord sheet coord/atom cutoff 2.0
+
+
+# Stress field
+compute peratom sheet stress/atom NULL
+variable stress_atom atom sqrt(c_peratom[1]*c_peratom[1]+c_peratom[2]*c_peratom[2]+c_peratom[3]*c_peratom[3])
+compute max_stress sheet reduce max v_stress_atom
+fix max sheet ave/time 1 1 1 c_max_stress file max_stress_rerun.txt
+
+# Out
+thermo 100
+thermo_style custom step time cpu cpuremain temp v_stretch_pct c_max_stress 
+
+fix 1 sheet ave/histo 1 1 1 0 5 6 c_coord mode vector beyond extra file coordination_rerun.txt
+
+# dump stress_dump sheet custom 1 stress_dump_rerun.data id type x y z v_stress_atom
+rerun ${input_file} dump x y z
