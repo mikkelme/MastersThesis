@@ -20,15 +20,22 @@ fix PB_xyz_ave PB_tot aveforce 0 0 0 # Average force (every atom feels same forc
 fix nve free_atoms nve
 fix nvt free_atoms langevin ${temp} ${temp} ${damp} 48279
 
-# Potentials: C-C: Airebo, C-Si: LJ, Si-Si: SW
-pair_style hybrid sw lj/cut 8.15 airebo 6.4 1 1 # lj_cutoff = 2.5*sigma 
-pair_coeff * * airebo ${root}/CH.airebo C NULL NULL    # Sheet C-C
-pair_coeff 1 2 lj/cut 0.008909 3.26                     # Interaction C-Si 
-pair_coeff * * sw ${root}/si.sw NULL Si NULL         # Substrate Si-Si
+# # Potentials: C-C: Airebo, C-Si: LJ, Si-Si: SW
+# pair_style hybrid sw lj/cut 8.15 airebo 6.4 1 1 # lj_cutoff = 2.5*sigma 
+# pair_coeff * * airebo ${root}/CH.airebo C NULL NULL    # Sheet C-C
+# pair_coeff 1 2 lj/cut 0.008909 3.26                     # Interaction C-Si 
+# pair_coeff * * sw ${root}/si.sw NULL Si NULL         # Substrate Si-Si
+# pair_coeff * 3  lj/cut 0.0 0.0 
+
+# Potentials: C-C: Tersoff, C-Si: LJ, Si-Si: SW
+pair_style hybrid sw lj/cut 8.15 tersoff
+pair_coeff * * tersoff ${root}/C.tersoff C NULL NULL   # Sheet C-C
+pair_coeff 1 2 lj/cut 0.008909 3.26                    # Interaction C-Si 
+pair_coeff * * sw ${root}/si.sw NULL Si NULL           # Substrate Si-Si
 pair_coeff * 3  lj/cut 0.0 0.0 
 
-# ---------- Computes ---------- # 
-# Have this in seperate script also??? <----------???
+
+# ---------- Computes ---------- #
 ## - Sheet - ##
 # Full sheet
 compute sheet_COM full_sheet com            # Center of mass
@@ -37,6 +44,9 @@ compute sheet_fz full_sheet reduce ave fz   # Average z-force
 # Inner sheet 
 compute sheet_fx sheet reduce sum fx        # Total force x
 compute sheet_fy sheet reduce sum fy        # Total force y
+compute coord sheet coord/atom cutoff 2.7   # Coordination number
+compute peratom sheet stress/atom NULL      # stress field
+variable stress_atom atom sqrt(c_peratom[1]*c_peratom[1]+c_peratom[2]*c_peratom[2]+c_peratom[3]*c_peratom[3]) # Stress norm (xx, yy, zz)
 
 ## - Pullblocks - ##
 compute PB_ylow_ymax PB_ylow reduce max y   # Lower y-limit for sheet
@@ -66,7 +76,7 @@ variable move_force_y equal c_sheet_fy+c_Ff[2]
 variable move_force_xy_norm equal sqrt(v_move_force_x^2+v_move_force_x^2)  
 
 ## -- Stretch -- ##
-variable S0 equal v_pullblock_ylo-v_pullblock_yhi   # start len of inner sheet
+variable S0 equal c_PB_yhigh_ymin-c_PB_ylow_ymax    # start len of inner sheet
 variable S_len equal c_PB_yhigh_ymin-c_PB_ylow_ymax # Updated len of inner sheet
 variable stretch_pct equal (v_S_len-v_S0)/v_S0  # Updated stretch pct
 variable stretch_speed equal v_stretch_speed_pct*v_S0 
@@ -74,13 +84,15 @@ variable stretch_speed equal v_stretch_speed_pct*v_S0
 ## -- Drag -- ##
 variable dir_norm equal $(sqrt(v_drag_dir_x^2+v_drag_dir_y^2))
 
+
 # ---------- Output ---------- #
 thermo 1000
 variable dump_freq equal 1000 
 
-dump 1 all custom $(v_dump_freq) system${out_ext}.data id type x y z vx vy vz
-dump 2 sheet custom $(v_dump_freq) sheet${out_ext}.data id type x y z
-dump 3 substrate_contact custom $(v_dump_freq) substrate_contact${out_ext}.data id type x y z
+dump 1 all custom $(v_dump_freq) system_${out_ext}.data id type x y z vx vy vz v_stress_atom
+dump 2 sheet custom $(v_dump_freq) sheet_${out_ext}.data id type x y z
+dump 3 substrate_contact custom $(v_dump_freq) substrate_contact_${out_ext}.data id type x y z
+fix coord_out sheet ave/histo 1 100 100 -0.5 5.5 6 c_coord mode vector file ${out_ext}_chist.txt
 
 
 # ---------- Print procedure schedule ---------- #
@@ -112,10 +124,7 @@ print "--------------------"
 print ""
 
 
-# print "S0: ${S0}"
-# print "Stretch pct: ${stretch_pct}"
-# shell mkdir output_${stretch_pct}
-# shell cd output_${stretch_pct}
+
 
 print """
 # Restart_file: ${restart_file}
@@ -164,18 +173,17 @@ thermo_style custom c_sheet_COM[3]
 run 0
 create_atoms 3 single $(c_sheet_COM[1]) $(c_sheet_COM[2]) $(c_sheet_COM[3])
 group virtuel_atom type 3
-# variable dir_norm equal $(sqrt(v_drag_dir_x^2+v_drag_dir_y^2))
 
 
 if "$(v_K) == 0" then &
 "unfix nve" &
 "fix nve free_atoms nve" &
 "fix move_PB PB_tot move linear $(v_drag_speed*v_drag_dir_x/v_dir_norm) $(v_drag_speed*v_drag_dir_y/v_dir_norm) NULL units box" &
-"fix friction_force_spring all ave/time 1 100 100 v_move_force_x v_move_force_y c_Ff_sheet[1] c_Ff_sheet[2] c_Ff_sheet[3] c_Ff_PB[1] c_Ff_PB[2] c_Ff_PB[3] c_sheet_COM[1] c_sheet_COM[2] c_sheet_COM[3] file friction_force${out_ext}.txt" &
+"fix friction_force_spring all ave/time 1 100 100 v_move_force_x v_move_force_y c_Ff_sheet[1] c_Ff_sheet[2] c_Ff_sheet[3] c_Ff_PB[1] c_Ff_PB[2] c_Ff_PB[3] c_sheet_COM[1] c_sheet_COM[2] c_sheet_COM[3] file ${out_ext}_Ff.txt" &
 "thermo_style custom step time cpu cpuremain temp v_stretch_pct c_sheet_COM[1] c_sheet_COM[2] c_Ff[1] c_Ff[2] v_move_force_xy_norm" & 
 else & 
 "fix spring_force PB_tot spring couple virtuel_atom $(v_K) 0.0 0.0 NULL 0.0" &
-"fix friction_force_spring all ave/time 1 100 100 f_spring_force[1] f_spring_force[2] c_Ff_sheet[1] c_Ff_sheet[2] c_Ff_sheet[3] c_Ff_PB[1] c_Ff_PB[2] c_Ff_PB[3] c_sheet_COM[1] c_sheet_COM[2] c_sheet_COM[3] file friction_force${out_ext}.txt" &
+"fix friction_force_spring all ave/time 1 100 100 f_spring_force[1] f_spring_force[2] c_Ff_sheet[1] c_Ff_sheet[2] c_Ff_sheet[3] c_Ff_PB[1] c_Ff_PB[2] c_Ff_PB[3] c_sheet_COM[1] c_sheet_COM[2] c_sheet_COM[3] file ${out_ext}_Ff.txt" &
 "thermo_style custom step time cpu cpuremain temp v_stretch_pct c_sheet_COM[1] c_sheet_COM[2] f_spring_force[4]"
 
 # Move virtuel atom 

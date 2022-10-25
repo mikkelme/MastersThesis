@@ -8,8 +8,9 @@ compute sheet_fz full_sheet reduce ave fz   # Average z-force
 compute sheet_fx sheet reduce sum fx        # Total force x
 compute sheet_fy sheet reduce sum fy        # Total force y
 compute coord sheet coord/atom cutoff 2.7   # Coordination number
-variable stress_atom atom sqrt(c_peratom[1]*c_peratom[1]+c_peratom[2]*c_peratom[2]+c_peratom[3]*c_peratom[3]) # Stress norm
-# Put this in dump or not? ^^What about shear stress?
+compute peratom sheet stress/atom NULL      # stress field
+variable stress_atom atom sqrt(c_peratom[1]*c_peratom[1]+c_peratom[2]*c_peratom[2]+c_peratom[3]*c_peratom[3]) # Stress norm (xx, yy, zz)
+# ^^What about shear stress directions?
 
 
 
@@ -55,10 +56,10 @@ thermo 1000
 variable dump_freq equal 1000 
 # variable out_path string output_data
 
-dump 1 all custom $(v_dump_freq) system${out_ext}.data id type x y z vx vy vz
-dump 2 sheet custom $(v_dump_freq) sheet${out_ext}.data id type x y z
-dump 3 substrate_contact custom $(v_dump_freq) substrate_contact${out_ext}.data id type x y z
-fix coord_out sheet ave/histo 1 100 100 0 5 6 c_coord mode vector beyond extra file ${out_ext}_chist.txt
+dump 1 all custom $(v_dump_freq) system_${out_ext}.data id type x y z vx vy vz v_stress_atom
+dump 2 sheet custom $(v_dump_freq) sheet_${out_ext}.data id type x y z
+dump 3 substrate_contact custom $(v_dump_freq) substrate_contact_${out_ext}.data id type x y z
+fix coord_out sheet ave/histo 1 100 100 -0.5 5.5 6 c_coord mode vector file ${out_ext}_chist.txt
 
 
 # ---------- Print procedure schedule ---------- #

@@ -155,7 +155,7 @@ def plot_info(filenames):
                 print(data)
                 print()
             else:  # Spreadsheet format
-                print(f"{filename}; {mu_max_full_sheet}; {mu_max_sheet}; {mu_max_PB}; {mu_avg_full_sheet}; {mu_avg_sheet}; {mu_avg_PB}")
+                print(f"{filename} {mu_max_full_sheet} {mu_max_sheet} {mu_max_PB} {mu_avg_full_sheet} {mu_avg_sheet} {mu_avg_PB}")
             
 
 
@@ -170,9 +170,8 @@ if __name__ == "__main__":
     # filenames += get_files_in_folder('../Data/NewGreat4_K0/', ext = ".txt")
     # filenames += get_files_in_folder('../Data/NewGreat4_dt05fs/', ext = ".txt")
     # filenames += get_files_in_folder('../Data/one_config_multi_data/stretch.10992_folder/job9/', ext = "tmp.txt")
-    filenames += get_files_in_folder('../Data/new_potential_test_CPU/cut_20stretch/', ext = "friction_force_cut_20stretch.txt")
+    filenames += get_files_in_folder('../Data/NG4_newpot/', ext = "Ff.txt")
     
-    # filenames = ['../Data/great4/friction_force_cut_20stretch.txt', '../Data/great4_1ms/friction_force_cut_20stretch.txt', '../Data/great4_dt05fs/friction_force_cut_20stretch.txt']
     
     plot_info(filenames)
     plt.show()

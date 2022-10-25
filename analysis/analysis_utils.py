@@ -16,14 +16,21 @@ def read_friction_file(filename):
     return np.loadtxt(filename, unpack=True)
 
 
-def get_files_in_folder(path, ext = None):  
+def get_files_in_folder(path, ext = None, exclude = None): 
+    """ ext: extension to include
+        exclude: exclude files containing that string
+    """ 
     filenames = []
-    for file in os.listdir(path):
-        if ext is None:
-            filenames.append(path + file)
-        else:
-            if file[-len(ext):] == ext:
-                filenames.append(path + file)
+    for dir in [x[0] for x in os.walk(path)]:
+        for file in os.listdir(dir):
+            if ext is None and exclude is None :
+                filenames.append(os.path.join(dir, file))
+            elif exclude is None:
+                if file[-len(ext):] == ext:
+                    filenames.append(os.path.join(dir, file))
+            else:
+                if file[-len(ext):] == ext and exclude not in file:
+                    filenames.append(os.path.join(dir, file))
     return filenames
 
 def get_dirs_in_path(d):
@@ -190,8 +197,38 @@ def get_color_value(value, minValue, maxValue, cmap='viridis'):
 
 
 def read_histogram(filename):
+    infile = open(filename, 'r')
     
+    pointer = ""
+    while True:
+        line = infile.readline()
+        if line[0] != "#":
+            break
+        pointer += line
+
+    infile.seek(len(pointer), 0) # Go to start of data
+    
+    timestep = []
+    hist = []
+    for line in infile:
+        step, num_bins, tot_count, missing_counts, minval, maxval = [float(word) for word in line.split(' ')]
+        timestep.append(step)
+        data = []
+        for bin in range(int(num_bins)):
+            words = infile.readline().split(' ')
+            data.append([float(word) for word in words[1:]])
+        hist.append(data)
+            
+    timestep = np.array(timestep)
+    hist = np.array(hist)
+            
+
+    return timestep, hist
+
 
 
 if __name__ == "__main__":
+    filename = "../Data/new_potential_rip_test/cut_25stretch/cut_25stretch_chist.txt"
+    # filename = "../Data/new_potential_rip_test/cut_30stretch/cut_30stretch_chist.txt"
+    read_histogram(filename)
     

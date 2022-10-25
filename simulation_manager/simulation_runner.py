@@ -72,22 +72,6 @@ def move_file_to(file, dest):
 def great4_runner():
     
     # Reference settings for NG4
-    variables = { 
-    "dt": 0.001, 
-    "relax_time": 5,
-    "stretch_speed_pct": 0.05,
-    "pause_time1": 5,
-    "F_N": 10e-9, # [N]
-    "pause_time2": 5,
-    "drag_dir_x": 0,
-    "drag_dir_y": 1,
-    "drag_speed": 1, # [m/s]
-    "drag_length": 30,
-    "K": 30.0,
-    "root": "..",
-    }
-    
-    # # Changeable
     # variables = { 
     # "dt": 0.001, 
     # "relax_time": 5,
@@ -99,18 +83,35 @@ def great4_runner():
     # "drag_dir_y": 1,
     # "drag_speed": 1, # [m/s]
     # "drag_length": 30,
-    # "K": 0,
+    # "K": 30.0,
     # "root": "..",
     # }
     
-
-
+    variables = { 
+    "dt": 0.001, 
+    "relax_time": 5,
+    "stretch_speed_pct": 0.05,
+    "pause_time1": 5,
+    "F_N": 10e-9, # [N]
+    "pause_time2": 5,
+    "drag_dir_x": 0,
+    "drag_dir_y": 1,
+    "drag_speed": 1, # [m/s]
+    "drag_length": 100,
+    "K": 30.0,
+    "root": "..",
+    }
     
+    
+  
+    
+    
+
 
     proc = Friction_procedure(variables)
 
     # header = "NewGreat4/" 
-    header = "egil:NG4_newpot/"
+    header = "egil:NG4_newpot_long/"
     common_files = ["../friction_simulation/setup_sim.in", 
                     "../friction_simulation/friction_procedure.in",
                     "../potentials/si.sw",
@@ -126,7 +127,7 @@ def great4_runner():
     config_data = ["sheet_substrate_nocuts", "sheet_substrate_nocuts", "sheet_substrate", "sheet_substrate"]
     stretch_max_pct = [0.0, 0.2, 0.0, 0.2]
     
-    # exit() # Safety break
+    # exit("Safety break is on!") # Safety break
     for i, ext in enumerate(extentions):
         dir = header + ext
         sim = Simulator(directory = dir, overwrite=True)
@@ -141,7 +142,7 @@ def great4_runner():
         sim.set_input_script("../friction_simulation/run_friction_sim.in", **proc.variables)
         # sim.create_subdir("output_data")
         
-        slurm_args = {'job-name':'NG4_np', 'partition':'normal', 'ntasks':16, 'nodes':1}
+        slurm_args = {'job-name':'NG4_long', 'partition':'normal', 'ntasks':16, 'nodes':1}
         sim.run(num_procs=16, lmp_exec="lmp", slurm=True, slurm_args=slurm_args)
         # sim.run(num_procs=1, lmp_exec="lmp_mpi")
 
@@ -153,7 +154,8 @@ def multi_run(sim, proc, config_data, num_stretch_files, F_N, num_procs = 16, jo
                     f"../config_builder/{config_data}.txt",
                     f"../config_builder/{config_data}_info.in",
                     "../potentials/si.sw",
-                    "../potentials/CH.airebo",
+                    "../potentials/C.tersoff",
+                    # "../potentials/CH.airebo",
                     "../friction_simulation/drag_from_restart_file.in"
                     )
     
@@ -196,8 +198,7 @@ def multi_run(sim, proc, config_data, num_stretch_files, F_N, num_procs = 16, jo
     
   
     sim.run(slurm = True)
-    
-    
+      
 
 def one_config_multi_data():
     
@@ -225,13 +226,11 @@ def one_config_multi_data():
     F_N = np.linspace(1e-9, 100e-9, 10)
 
     config_data = "sheet_substrate"     
-    dir = "egil:one_config_multi_data"
+    dir = "egil:OCMD_newpot"
     
     sim = Simulator(directory = dir, overwrite=True)
-    multi_run(sim, proc, config_data, num_stretch_files, F_N, num_procs = 16, jobname = 'MULTI')
+    multi_run(sim, proc, config_data, num_stretch_files, F_N, num_procs = 16, jobname = 'OCMD_NP')
 
-    
-   
     
     
 def custom():
@@ -257,11 +256,11 @@ def custom():
     "relax_time": 5,
     "stretch_speed_pct": 0.05,
     "pause_time1": 5,
-    "F_N": 10e-9, # [N]
+    "F_N": 350e-9, # [N]
     "pause_time2": 5,
     "drag_dir_x": 0,
     "drag_dir_y": 1,
-    "drag_speed": 1, # [m/s]
+    "drag_speed": 50, # [m/s]
     "drag_length": 30,
     "K": 0,
     "root": "..",
@@ -272,7 +271,7 @@ def custom():
     proc = Friction_procedure(variables)
 
     # header = "bigfacet:new_potential_test/"
-    header = "egil:new_potential_test_CPU/"
+    header = "egil:new_potential_rip_test/"
     common_files = ["../friction_simulation/setup_sim.in", 
                     "../friction_simulation/friction_procedure.in",
                     "../potentials/si.sw",
@@ -283,9 +282,9 @@ def custom():
         move_file_to(file, header)
         
 
-    ext = "cut_20stretch"
+    ext = "cut_25stretch"
     config_data =  "sheet_substrate"
-    stretch_max_pct = 0.2
+    stretch_max_pct = 0.25
     
     dir = header + ext
     sim = Simulator(directory = dir, overwrite=True)
@@ -294,7 +293,7 @@ def custom():
                     f"../config_builder/{config_data}_info.in"
                     )
     
-    proc.variables["out_ext"] = '_' + ext
+    proc.variables["out_ext"] = ext
     proc.variables["config_data"] = config_data
     proc.variables["stretch_max_pct"] = stretch_max_pct
     sim.set_input_script("../friction_simulation/run_friction_sim.in", **proc.variables)
@@ -305,7 +304,7 @@ def custom():
    
     # sim.run(num_procs=1, lmp_exec="lmp_mpi")
     
-    slurm_args_CPU = {'job-name':'NEW_POT', 'partition':'normal', 'ntasks':16, 'nodes':1}
+    slurm_args_CPU = {'job-name':'RIP', 'partition':'normal', 'ntasks':16, 'nodes':1}
     sim.run(num_procs=16, lmp_exec="lmp", slurm=True, slurm_args=slurm_args_CPU)
 
 

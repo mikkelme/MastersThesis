@@ -74,7 +74,8 @@ thermo 100
 variable dump_freq equal 10 
 
 dump 1 all custom $(v_dump_freq) stretch_system${out_ext}.data id type x y z vx vy vz v_stress_atom # <------------
-# fix 1 sheet ave/histo 1 100 100 0 5 6 c_coord mode vector beyond extra file coordination.txt
+# fix 1 sheet ave/histo 1 100 100 -0.5 5 5 c_coord mode vector beyond extra file coordination.txt
+fix 1 sheet ave/histo 1 100 100 -0.5 5.5 6 c_coord mode vector  file coordination.txt
 # dump stress_dump sheet custom $(v_dump_freq) stress_dump.data id type x y z v_stress_atom
 
 

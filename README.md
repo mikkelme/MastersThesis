@@ -102,6 +102,10 @@
 #### Week 43 (24/10 - 30/10) - Working from Pisa
 -  Ran 15 stretch x 10 F_N and got some curves there. The Ff vs. F_N looks mostly linear, but the Ff vs. stretch shows signs of non linearity and both positive and negative slopes. 
 - Due to suspicious behaviour when breaking (Henrik's point of view) and the fact that airebo cannot run on GPU I will try the tersoff potential instead. This will hopefully give the opportunity to run more simulations for the machine learning. 
+- Implemented Tersoff, but cannot yet run it on GPU due to some unresolved bug. Until then I run on CPU and investigate the differences from AIREBO:
+- The order in the great4 runs when sorting for full_sheet drag parallel friction force is more or less the same for the referece simulation. the friction force is in general a bit higher and a bit differently distributed between sheet and PB. The sheet seems more stable and less prone to ruptures. When it ruptures it breaks in larger bits and do not hang in thin strings anymore.
+- Implemented a naive procedure to detect ruptures from coordination number. 
+
 
 
 
