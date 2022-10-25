@@ -8,9 +8,6 @@ compute sheet_fz full_sheet reduce ave fz   # Average z-force
 compute sheet_fx sheet reduce sum fx        # Total force x
 compute sheet_fy sheet reduce sum fy        # Total force y
 compute coord sheet coord/atom cutoff 2.7   # Coordination number
-variable stress_atom atom sqrt(c_peratom[1]*c_peratom[1]+c_peratom[2]*c_peratom[2]+c_peratom[3]*c_peratom[3]) # Stress norm
-# Put this in dump or not? ^^What about shear stress?
-
 
 
 ## - Pullblocks - ##
@@ -58,7 +55,7 @@ variable dump_freq equal 1000
 dump 1 all custom $(v_dump_freq) system${out_ext}.data id type x y z vx vy vz
 dump 2 sheet custom $(v_dump_freq) sheet${out_ext}.data id type x y z
 dump 3 substrate_contact custom $(v_dump_freq) substrate_contact${out_ext}.data id type x y z
-fix coord_out sheet ave/histo 1 100 100 0 5 6 c_coord mode vector beyond extra file ${out_ext}_chist.txt
+fix coord_out sheet ave/histo 1 100 100 0 5 6 c_coord mode vector beyond extra file coordination${out_ext}.txt
 
 
 # ---------- Print procedure schedule ---------- #
@@ -164,21 +161,27 @@ thermo_style custom c_sheet_COM[3]
 run 0
 create_atoms 3 single $(c_sheet_COM[1]) $(c_sheet_COM[2]) $(c_sheet_COM[3])
 group virtuel_atom type 3
+# variable dir_norm equal $(sqrt(v_drag_dir_x^2+v_drag_dir_y^2))
 
 
 if "$(v_K) == 0" then &
 "unfix nve" &
 "fix nve free_atoms nve" &
 "fix move_PB PB_tot move linear $(v_drag_speed*v_drag_dir_x/v_dir_norm) $(v_drag_speed*v_drag_dir_y/v_dir_norm) NULL units box" &
-"fix friction_force_spring all ave/time 1 100 100 v_move_force_x v_move_force_y c_Ff_sheet[1] c_Ff_sheet[2] c_Ff_sheet[3] c_Ff_PB[1] c_Ff_PB[2] c_Ff_PB[3] c_sheet_COM[1] c_sheet_COM[2] c_sheet_COM[3] file ${out_ext}_Ff.txt" &
+"fix friction_force_spring all ave/time 1 100 100 v_move_force_x v_move_force_y c_Ff_sheet[1] c_Ff_sheet[2] c_Ff_sheet[3] c_Ff_PB[1] c_Ff_PB[2] c_Ff_PB[3] c_sheet_COM[1] c_sheet_COM[2] c_sheet_COM[3] file friction_force${out_ext}.txt" &
 "thermo_style custom step time cpu cpuremain temp v_stretch_pct c_sheet_COM[1] c_sheet_COM[2] c_Ff[1] c_Ff[2] v_move_force_xy_norm" & 
 else & 
 "fix spring_force PB_tot spring couple virtuel_atom $(v_K) 0.0 0.0 NULL 0.0" &
-"fix friction_force_spring all ave/time 1 100 100 f_spring_force[1] f_spring_force[2] c_Ff_sheet[1] c_Ff_sheet[2] c_Ff_sheet[3] c_Ff_PB[1] c_Ff_PB[2] c_Ff_PB[3] c_sheet_COM[1] c_sheet_COM[2] c_sheet_COM[3] file ${out_ext}_Ff.txt" &
+"fix friction_force_spring all ave/time 1 100 100 f_spring_force[1] f_spring_force[2] c_Ff_sheet[1] c_Ff_sheet[2] c_Ff_sheet[3] c_Ff_PB[1] c_Ff_PB[2] c_Ff_PB[3] c_sheet_COM[1] c_sheet_COM[2] c_sheet_COM[3] file friction_force${out_ext}.txt" &
 "thermo_style custom step time cpu cpuremain temp v_stretch_pct c_sheet_COM[1] c_sheet_COM[2] f_spring_force[4]"
 
 # Move virtuel atom 
 fix move_va virtuel_atom move linear $(v_drag_speed*v_drag_dir_x/v_dir_norm) $(v_drag_speed*v_drag_dir_y/v_dir_norm) 0 units box 
+
+# Force distribution (need group/group/atom compute)
+# compute 2Dchunk full_sheet chunk/atom bin/2d x center 3.0 y center 3.0
+# compute force_interaction full_sheet group/group substrate 
+# fix force_dist full_sheet ave/chunk 1 100 100 2Dchunk c_force_interaction[1] file ${root}sheet_force_dist${out_ext}.txt 
 
 
 print "--> Drag : $(v_drag_steps) timesteps, $(v_drag_steps*dt) ps"

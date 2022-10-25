@@ -22,7 +22,7 @@ def get_files_in_folder(path, ext = None):
         if ext is None:
             filenames.append(path + file)
         else:
-            if file[-4:] == ".txt":
+            if file[-len(ext):] == ext:
                 filenames.append(path + file)
     return filenames
 
@@ -118,13 +118,14 @@ def get_fricton_force(filename):
     
     
     
-def organize_data(data, num_stretch): # Working title
+def organize_data_old(data, num_stretch): # Working title
     num_F_N = len(data)//num_stretch
     assert(len(data)%num_stretch == 0), f"Number of stretch files ({num_stretch}) does not match the total number of data points ({len(data)}))"
 
     # Sort by stretch pct     
     sort = np.argsort(data[:, 0])
     data = data[sort]
+   
 
     # Create arrays
     stretch_pct = np.zeros(num_stretch)
@@ -155,6 +156,42 @@ def organize_data(data, num_stretch): # Working title
     
     
     
+def organize_data(data): # Working title
+    
+    # Is this safe for small round offs?
+    stretch_pct = np.unique(data[:,0]) 
+    F_N = np.unique(data[:,1])
+    Ff = np.zeros((len(stretch_pct), len(F_N), data[0,2].shape[0],data[0,2].shape[1]))
+    
+    for i, s in enumerate(stretch_pct):
+        for j, fn in enumerate(F_N):
+            index = np.argwhere((data[:,0] == s) & (data[:,1] == fn))#[0,0]
+            if len(index) == 0:
+                Ff[i, j] = np.full([data[0,2].shape[0],data[0,2].shape[1]], np.nan)
+            else:
+                Ff[i, j] = data[index[0][0], 2]
+    return stretch_pct, F_N, Ff
+    
+    
+def get_color_value(value, minValue, maxValue, cmap='viridis'):
+    """Get color from colormap. (From Henrik)
+    Parameters
+    -----------------
+    :param value: Value used tpo get color from colormap
+    :param minValue: Minimum value in colormap. Values below this value will saturate on the lower color of the colormap.
+    :param maxValue: Maximum value in colormap. Values above this value will saturate on the upper color of the colormap.
+    :returns: 4-vector containing colormap values. 
+    This is useful if you are plotting data from several simulations, and want to color them based on some parameters changing between the simulations. For example, you may want the color to gradually change along a clormap as the temperature increases. 
+    """
+    diff = maxValue-minValue
+    cmap = matplotlib.cm.get_cmap(cmap)
+    rgba = cmap((value-minValue)/diff)
+    return rgba
 
-# def find_pseudo_unique(array, tol):
-#     for 
+
+def read_histogram(filename):
+    
+
+
+if __name__ == "__main__":
+    

@@ -90,7 +90,6 @@
 - Also ran with dt = 0.5 fs (compared to 1 fs). This made some noticable changes to friction coefficient (up to 36\% relative divation), but trends remained the same. Although the ordering of value was not the same: (X, 0\%), (√, 0\%), (√, 20\%), (X, 0\%) --> (√, 0\%), (√, 20\%), (X, 0\%), (√, 20\%). So it seems to have enforced the effect from having cuts, while the stretched version still comes in with lowest friction coefficient. 
 
 
-
 #### Week 42 (17/10 - 23/10) - Working from Pisa
 - Discovered that the sheets ruptures when dragged slow enough (having enough time). This is most likely due to a too high normal force of 160 nN.
 - Made new simulation with nvt and lower normal force. Now the arising patterns seems to be (√, 20%) > (√, 0%) > (X, 0%) ~ (X, 20%). The first 'equality' holds for 1 m/s -> 5 m/s, and spring drag (K = 30) -> Fix Move.
@@ -98,6 +97,15 @@
 - Checked simulations with Fix move and dt = 0.5 fs which seems to follow the order mentioned in this weeks log. 
 - Ran one config multi data simulation and saw some quick curves for (F_N, F_f) at fixed stretch and (stretch, Ff) at fixed FN. With very fex data points we see more or less linear trend for (F_N, F_f). For (stretch, F_f) it starts linear but then flattens/drops at high stretch. I am going to get more data points to further investegate this. 
 - Next: Work on coordination number for detecting fractures. 
+
+
+#### Week 43 (24/10 - 30/10) - Working from Pisa
+-  Ran 15 stretch x 10 F_N and got some curves there. The Ff vs. F_N looks mostly linear, but the Ff vs. stretch shows signs of non linearity and both positive and negative slopes. 
+- Due to suspicious behaviour when breaking (Henrik's point of view) and the fact that airebo cannot run on GPU I will try the tersoff potential instead. This will hopefully give the opportunity to run more simulations for the machine learning. 
+
+
+
+
 
 ## Things to remember 
 

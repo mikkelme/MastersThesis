@@ -129,17 +129,6 @@ def plot_info(filenames):
             # fig.savefig('image_output.png', bbox_inches='tight')
             
             
-            
-
-     
-            # --- Calculate properties ---  #
-            # 1521 atoms in group full_sheet
-            # 360 atoms in group PB_tot
-
-            # FN = np.mean(c_Ff3)
-            # mu_avg = np.mean(Fxy_norm)/abs(FN)
-            # print(f"mu_avg = {mu_avg:.2e}, mu_max = {mu_max:.2e}, (file = {filename}")
-            
             # Friction coefficient (max)
             FN_full_sheet = np.mean(Ff_full_sheet[:,2])
             FN_sheet = np.mean(Ff_sheet[:,2])
@@ -179,10 +168,11 @@ if __name__ == "__main__":
 
 
     # filenames += get_files_in_folder('../Data/NewGreat4_K0/', ext = ".txt")
-    filenames += get_files_in_folder('../Data/NewGreat4_dt05fs/', ext = ".txt")
+    # filenames += get_files_in_folder('../Data/NewGreat4_dt05fs/', ext = ".txt")
+    # filenames += get_files_in_folder('../Data/one_config_multi_data/stretch.10992_folder/job9/', ext = "tmp.txt")
+    filenames += get_files_in_folder('../Data/new_potential_test_CPU/cut_20stretch/', ext = "friction_force_cut_20stretch.txt")
     
     # filenames = ['../Data/great4/friction_force_cut_20stretch.txt', '../Data/great4_1ms/friction_force_cut_20stretch.txt', '../Data/great4_dt05fs/friction_force_cut_20stretch.txt']
-    
     
     plot_info(filenames)
     plt.show()
