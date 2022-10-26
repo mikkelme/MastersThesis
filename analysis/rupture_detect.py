@@ -1,7 +1,7 @@
 from analysis_utils import *
 
 
-def detect_rupture(filename):
+def detect_rupture(filename, check = False):
     # --- Settings --- #
     # Filter
     target_window_length = 2000 # [Timesteps]
@@ -28,38 +28,33 @@ def detect_rupture(filename):
     
     
     # --- Detection --- #
-    for i in range(2, hist.shape[1]):
-        # minpeak = timestep[cut + np.argmin(deltacnum[cut:-cut, i])], np.min(deltacnum[cut:-cut, i])
-        # maxpeak = timestep[cut + np.argmax(deltacnum[cut:-cut, i])], np.max(deltacnum[cut:-cut, i])
+    # minmmax peaks
+    for i in range(2, hist.shape[1]): # (Nothing implemeted for i = 0, 1)
         minmax_peakidx[i, 0], minpeak = timestep[cut + np.argmin(deltacnum[cut:-cut, i])], np.min(deltacnum[cut:-cut, i])
         minmax_peakidx[i, 1], maxpeak = timestep[cut + np.argmax(deltacnum[cut:-cut, i])], np.max(deltacnum[cut:-cut, i])
-        
-        
+            
         # Check if significant cnum minpeak accurs after maxpeak
-        # flags = (maxpeak[0] < minpeak[0], abs(minpeak[1]) > abs(maxpeak[1]) * thresshold_ratio)
         flags = (minmax_peakidx[i,1] < minmax_peakidx[i,0], abs(minpeak) > abs(maxpeak) * thresshold_ratio)
         rupture_flags[i] = flags[0] & flags[1]
-        # minmax_peakidx[i] = minpeak[0], maxpeak[1]
     
-    
+    # Minpeak idx std check (counteract confusion with no stretch simulations)
     std = minmax_peakidx[~np.isnan(minmax_peakidx)].reshape(-1, 2).std(0)
-    if std[0] > std_tol: # Noise flag
+    if std[0] > std_tol: # Rupture flags <-- 0
         rupture_flags[rupture_flags == 1] = 0
     
+    # Final average score 
     rupture_score = np.mean(rupture_flags[~np.isnan(rupture_flags)])
     
-    if False: # Verify manually
-        print(rupture_flags)
-        # print(np.std(deltacnum[cut:-cut, :], axis = 0))
+    
+    if check: # Show plots and flags
+        print(f'Rupture flags: {rupture_flags}')
         plt.figure(num = 0)
         for i in range(hist.shape[1]):
             plt.title("coordination number")
             plt.plot(timestep[cut:-cut], cnum[cut:-cut, i], label = f'center = {hist[0,i,0]}')
             plt.xlabel("Timestep")
             plt.ylabel("$cnum")
-        # plt.vlines(31000, np.min(cnum[1:-1, :]), np.max(cnum[1:-1, :]), color = 'k', linestyle = "--")
         plt.legend()
-        
         
         plt.figure(num = 1)
         for i in range(hist.shape[1]):
@@ -67,7 +62,6 @@ def detect_rupture(filename):
             plt.plot(timestep[cut:-cut], deltacnum[cut:-cut, i], label = f'center = {hist[0,i,0]}')
             plt.xlabel("Timestep")
             plt.ylabel("$\Delta$ cnum")
-        # plt.vlines(31000, np.min(deltacnum[1:-1, :]), np.max(deltacnum[1:-1, :]), color = 'k', linestyle = "--")
         plt.legend()
         
     return rupture_score

@@ -76,7 +76,7 @@ variable move_force_y equal c_sheet_fy+c_Ff[2]
 variable move_force_xy_norm equal sqrt(v_move_force_x^2+v_move_force_x^2)  
 
 ## -- Stretch -- ##
-variable S0 equal c_PB_yhigh_ymin-c_PB_ylow_ymax    # start len of inner sheet
+variable S0 equal v_pullblock_ylo-v_pullblock_yhi   # start len of inner sheet
 variable S_len equal c_PB_yhigh_ymin-c_PB_ylow_ymax # Updated len of inner sheet
 variable stretch_pct equal (v_S_len-v_S0)/v_S0  # Updated stretch pct
 variable stretch_speed equal v_stretch_speed_pct*v_S0 
