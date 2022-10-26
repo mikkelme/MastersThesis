@@ -167,10 +167,7 @@ if __name__ == "__main__":
     filenames = []
 
 
-    # filenames += get_files_in_folder('../Data/NewGreat4_K0/', ext = ".txt")
-    # filenames += get_files_in_folder('../Data/NewGreat4_dt05fs/', ext = ".txt")
-    # filenames += get_files_in_folder('../Data/one_config_multi_data/stretch.10992_folder/job9/', ext = "tmp.txt")
-    filenames += get_files_in_folder('../Data/NG4_newpot/', ext = "Ff.txt")
+    filenames += get_files_in_folder('../Data/NG4_newpot_5ms/', ext = "Ff.txt")
     
     
     plot_info(filenames)

@@ -107,6 +107,7 @@ def great4_runner():
     
     
 
+    exit("Safety break is on!") # Safety break
 
     proc = Friction_procedure(variables)
 
@@ -127,7 +128,6 @@ def great4_runner():
     config_data = ["sheet_substrate_nocuts", "sheet_substrate_nocuts", "sheet_substrate", "sheet_substrate"]
     stretch_max_pct = [0.0, 0.2, 0.0, 0.2]
     
-    # exit("Safety break is on!") # Safety break
     for i, ext in enumerate(extentions):
         dir = header + ext
         sim = Simulator(directory = dir, overwrite=True)
@@ -136,7 +136,7 @@ def great4_runner():
                         f"../config_builder/{config_data[i]}_info.in"
                         )
         
-        proc.variables["out_ext"] = '_' + ext
+        proc.variables["out_ext"] = ext
         proc.variables["config_data"] = config_data[i]
         proc.variables["stretch_max_pct"] = stretch_max_pct[i]
         sim.set_input_script("../friction_simulation/run_friction_sim.in", **proc.variables)
