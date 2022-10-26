@@ -1,7 +1,7 @@
 
 variable dt equal 0.001 
 variable config_data string sheet_substrate 
-variable relax_time equal 0.2 
+variable relax_time equal 1
 variable stretch_speed_pct equal 0.05 
 variable stretch_max_pct equal 0.4 
 variable pause_time1 equal 0.2 
@@ -36,48 +36,26 @@ variable stretch_speed equal v_stretch_speed_pct*v_S0
 
 
 # Coordination number
-compute coord sheet coord/atom cutoff 2.0
-# fix stress sheet ave/atom 1 1 100 c_my_stress[*]
+compute coord sheet coord/atom cutoff 2.0 # local in sheet
+compute contact_coord full_sheet coord/atom cutoff 4.0 group substrate_contact
+fix contact_hist full_sheet ave/histo 1 100 100 -0.5 1.5 2 c_contact_coord mode vector beyond end file my_data/contact_coordination.txt
+variable contact_pct equal f_contact_hist[2][3]
+
 
 
 # Stress field
 compute peratom sheet stress/atom NULL
 variable stress_atom atom sqrt(c_peratom[1]*c_peratom[1]+c_peratom[2]*c_peratom[2]+c_peratom[3]*c_peratom[3])
-# variable stress_atom atom sqrt(c_peratom[1]*c_peratom[1]+c_peratom[2]*c_peratom[2])
-# variable stress_x_atom atom c_peratom[1]
-# variable stress_y_atom atom c_peratom[2]
+
 compute max_stress sheet reduce max v_stress_atom 
 fix max sheet ave/time 1 1 1 c_max_stress file max_stress.txt
-
-
-# compute 2Dchunk sheet chunk/atom bin/2d x center 10.0 y center 10.0
-# compute stress sheet stress/atom NULL
-# variable press atom -(c_stress[1]+c_stress[2]+c_stress[3])
-# compute binpress sheet reduce/chunk 2Dchunk sum v_press
-# fix avg sheet ave/time 10 10 100 c_binpress mode vector file ave_stress.txt
-# fix stress_dist sheet ave/chunk 1 100 100 2Dchunk c_my_stress[0] file stress.txt
-
-
-# # set number of bins
-# variable nbins index 20
-# variable fraction equal 1.0/v_nbins
-# # define bins as chunks
-# compute cchunk all chunk/atom bin/1d x lower ${fraction} units reduced
-# compute stress all stress/atom NULL
-# # apply conversion to pressure early since we have no variable style for processing chunks
-# variable press atom -(c_stress[1]+c_stress[2]+c_stress[3])/(3.0*vol*${fraction})
-# compute binpress all reduce/chunk cchunk sum v_press
-# fix avg all ave/time 10 40 400 c_binpress mode vector file ave_stress.txt
 
 # ---------- Output ---------- #
 thermo 100
 variable dump_freq equal 10 
 
-dump 1 all custom $(v_dump_freq) stretch_system${out_ext}.data id type x y z vx vy vz v_stress_atom # <------------
-# fix 1 sheet ave/histo 1 100 100 -0.5 5 5 c_coord mode vector beyond extra file coordination.txt
-fix 1 sheet ave/histo 1 100 100 -0.5 5.5 6 c_coord mode vector  file coordination.txt
-# dump stress_dump sheet custom $(v_dump_freq) stress_dump.data id type x y z v_stress_atom
-
+dump 1 all custom $(v_dump_freq) my_data/stretch_system${out_ext}.data id type x y z vx vy vz v_stress_atom c_contact_coord
+fix hist1 sheet ave/histo 1 100 100 -0.5 5.5 6 c_coord mode vector file my_data/coordination.txt
 
 
 # fix output_coord sheet ave/time 1 100 100 c_coord file coordination.txt
@@ -114,7 +92,7 @@ print ""
 fix PB_xyz_ave PB_tot aveforce 0 0 0 # Average force (every atom feels same force vector)
 
 print "--> Relax: $(v_relax_steps) timesteps, $(v_relax_steps*dt) ps"
-thermo_style custom step time cpu cpuremain temp v_stretch_pct #c_sheet_COM[3] v_sub_sheet_seperation c_sheet_fz
+thermo_style custom step time cpu cpuremain temp v_stretch_pct v_contact_pct #c_sheet_COM[3] v_sub_sheet_seperation c_sheet_fz
 run  $(v_relax_steps) 
 
 

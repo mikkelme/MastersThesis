@@ -4,6 +4,10 @@ newton on #newtons 3rd law for pairs
 boundary p p m  
 atom_style atomic # coarse-grain liquids, solids, metals
 
+# atom_style sphere 
+# read_data ${config_data}.txt extra/atom/types 1  # sheet and substrate (1 extra type for virtuel atom)
+# quit
+
 # --- Read files --- #
 read_data ${config_data}.txt extra/atom/types 1  # sheet and substrate (1 extra type for virtuel atom)
 include ${config_data}_info.in                   # import variables

@@ -105,6 +105,8 @@
 - Implemented Tersoff, but cannot yet run it on GPU due to some unresolved bug. Until then I run on CPU and investigate the differences from AIREBO:
 - The order in the great4 runs when sorting for full_sheet drag parallel friction force is more or less the same for the referece simulation. the friction force is in general a bit higher and a bit differently distributed between sheet and PB. The sheet seems more stable and less prone to ruptures. When it ruptures it breaks in larger bits and do not hang in thin strings anymore.
 - Implemented a naive procedure to detect ruptures from coordination number. 
+- Improved rupture detector and looks promising so far
+- Found a way to calculate contact area in lammps (both as \% and per vector value (True/False) by cutoff).
 
 
 
