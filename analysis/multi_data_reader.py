@@ -11,8 +11,8 @@ def read_multi_folder(folders):
     info_file = 'info_file.txt'
     friction_file = '_tmp_Ff.txt'
     chist_file = '_tmp_chist.txt'
-    detect_rupture = False
-    ruptol = 0.5
+    eval_rupture = True
+    ruptol = 0.01 # 0.5
     
     
     for folder in folders:
@@ -22,7 +22,7 @@ def read_multi_folder(folders):
               
                 try:
                     stretch_pct, F_N = read_info_file(os.path.join(job_dir,info_file))
-                    if detect_rupture:
+                    if eval_rupture:
                         rupture_score = detect_rupture(os.path.join(job_dir,chist_file))
                     else: 
                         # rupture_score = random.uniform(0,1)

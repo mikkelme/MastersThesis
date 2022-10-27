@@ -4,9 +4,6 @@ newton on #newtons 3rd law for pairs
 boundary p p m  
 atom_style atomic # coarse-grain liquids, solids, metals
 
-# atom_style sphere 
-# read_data ${config_data}.txt extra/atom/types 1  # sheet and substrate (1 extra type for virtuel atom)
-# quit
 
 # --- Read files --- #
 read_data ${config_data}.txt extra/atom/types 1  # sheet and substrate (1 extra type for virtuel atom)
@@ -39,9 +36,9 @@ group free_atoms subtract all PB_tot substrate_freeze
 group semifree_atoms subtract all substrate_freeze 
 
 
-#--- Dynamics ---#
-variable temp equal 100.0 # Kelvin
-variable damp equal 1.0 # ps
+#--- Dynamics ---#                  ---> Shoud be imported as variables <---
+variable temp equal 100.0 # Kelvin                  ###
+variable damp equal 1.0 # ps                        ###
 
 mass 1 12.0107  # C
 mass 2 28.0855  # Si

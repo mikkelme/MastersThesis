@@ -38,7 +38,8 @@ variable stretch_speed equal v_stretch_speed_pct*v_S0
 # Coordination number
 compute coord sheet coord/atom cutoff 2.0 # local in sheet
 compute contact_coord full_sheet coord/atom cutoff 4.0 group substrate_contact
-fix contact_hist full_sheet ave/histo 1 100 100 -0.5 1.5 2 c_contact_coord mode vector beyond end file my_data/contact_coordination.txt
+fix contact_hist full_sheet ave/histo 1 100 100 -0.5 1.5 2 c_contact_coord mode vector beyond end #file my_data/contact_coordination.txt
+### ^^^^This is number of covalent bonds (not really contact area, just to be precise)
 variable contact_pct equal f_contact_hist[2][3]
 
 

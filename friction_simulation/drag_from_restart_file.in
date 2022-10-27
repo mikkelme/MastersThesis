@@ -20,6 +20,13 @@ fix PB_xyz_ave PB_tot aveforce 0 0 0 # Average force (every atom feels same forc
 fix nve free_atoms nve
 fix nvt free_atoms langevin ${temp} ${temp} ${damp} 48279
 
+# Potentials: C-C: Tersoff, C-Si: LJ, Si-Si: SW
+pair_style hybrid sw lj/cut 8.15 tersoff
+pair_coeff * * tersoff ${root}/C.tersoff C NULL NULL   # Sheet C-C
+pair_coeff 1 2 lj/cut 0.008909 3.26                    # Interaction C-Si 
+pair_coeff * * sw ${root}/si.sw NULL Si NULL           # Substrate Si-Si
+pair_coeff * 3  lj/cut 0.0 0.0 
+
 # # Potentials: C-C: Airebo, C-Si: LJ, Si-Si: SW
 # pair_style hybrid sw lj/cut 8.15 airebo 6.4 1 1 # lj_cutoff = 2.5*sigma 
 # pair_coeff * * airebo ${root}/CH.airebo C NULL NULL    # Sheet C-C
@@ -27,12 +34,6 @@ fix nvt free_atoms langevin ${temp} ${temp} ${damp} 48279
 # pair_coeff * * sw ${root}/si.sw NULL Si NULL         # Substrate Si-Si
 # pair_coeff * 3  lj/cut 0.0 0.0 
 
-# Potentials: C-C: Tersoff, C-Si: LJ, Si-Si: SW
-pair_style hybrid sw lj/cut 8.15 tersoff
-pair_coeff * * tersoff ${root}/C.tersoff C NULL NULL   # Sheet C-C
-pair_coeff 1 2 lj/cut 0.008909 3.26                    # Interaction C-Si 
-pair_coeff * * sw ${root}/si.sw NULL Si NULL           # Substrate Si-Si
-pair_coeff * 3  lj/cut 0.0 0.0 
 
 
 # ---------- Computes ---------- #
