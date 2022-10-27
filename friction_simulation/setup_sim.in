@@ -1,9 +1,21 @@
+variable temp equal 100.0 # Kelvin                  ###
+variable damp equal 1.0 # ps                        ###
+
+# Setup from read_data / read_restart
+variable restart_file index None
+if "${restart_file}==None" then " " &
+else "jump SELF setup_from_restart_file"
+
+####################################
+### --- Setup from read_data --- ###
+####################################
+print "Setting up simulation from read_data: ${config_data}.txt"
+
 # --- Basics --- # 
 units metal
 newton on #newtons 3rd law for pairs
 boundary p p m  
 atom_style atomic # coarse-grain liquids, solids, metals
-
 
 # --- Read files --- #
 read_data ${config_data}.txt extra/atom/types 1  # sheet and substrate (1 extra type for virtuel atom)
@@ -11,6 +23,7 @@ include ${config_data}_info.in                   # import variables
 
 # --- Regions and groups --- #
 variable eps equal 0.1
+
 # Sheet 
 region sheet_region block INF INF $(v_pullblock_yhi+v_eps) $(v_pullblock_ylo-v_eps) ${pullblock_zlo} INF
 region full_sheet_region block INF INF INF INF ${pullblock_zlo} INF
@@ -35,19 +48,35 @@ group  substrate_contact region substrate_contact_region
 group free_atoms subtract all PB_tot substrate_freeze 
 group semifree_atoms subtract all substrate_freeze 
 
-
-#--- Dynamics ---#                  ---> Shoud be imported as variables <---
-variable temp equal 100.0 # Kelvin                  ###
-variable damp equal 1.0 # ps                        ###
-
+# --- Dynamics --- #            
 mass 1 12.0107  # C
 mass 2 28.0855  # Si
 mass 3 1.0      # Virtuel atom
-
 velocity free_atoms create ${temp} 5432373 dist gaussian
 
 neighbor            0.5 bin
 neigh_modify        delay 0 every 1 one 10000
+
+jump SELF common_settings
+
+
+#######################################
+### --- Setup from read_restart --- ###
+#######################################
+
+label setup_from_restart_file
+print "Setting up simulation from read_restart: ${restart_file}"
+
+# --- Read restart file --- #
+read_restart ${restart_file}
+include ${root}/${config_data}_info.in                  
+
+
+###############################
+### --- Common settings --- ###
+###############################
+
+label common_settings
 
 
 # # Potentials: C-C: Airebo, C-Si: LJ, Si-Si: SW
@@ -82,10 +111,13 @@ timestep $(v_dt)
 fix nve semifree_atoms nve # (microcanonical) 
 fix nvt semifree_atoms langevin ${temp} ${temp} ${damp} 48279 # (canonical)
 fix 2 all balance 1000 1.05 shift xy 10 1.05 # balance number of particles computed on each processor 
-
+fix PB_xyz_ave PB_tot aveforce 0 0 0 # Average force (every atom feels same force vector)
 
 
 # --- Convertion: SI to metal --- #
 variable N_to_eV_over_ang equal 6.24150907e8    # force: N -> eV/Å
 variable m_to_ang equal 1e10                    # distance: m -> Å
 variable s_to_ps equal 1e12                     # time: s -> ps
+
+
+

@@ -105,7 +105,7 @@ print ""
 
 # ----------  Relax sheet ---------- #
 # Set PB conditions
-fix PB_xyz_ave PB_tot aveforce 0 0 0 # Average force (every atom feels same force vector)
+# fix PB_xyz_ave PB_tot aveforce 0 0 0 # Average force (every atom feels same force vector)
 
 print "--> Relax: $(v_relax_steps) timesteps, $(v_relax_steps*dt) ps"
 thermo_style custom step time cpu cpuremain temp v_stretch_pct c_sheet_COM[3] v_sub_sheet_seperation c_sheet_fz

@@ -15,6 +15,12 @@ variable K equal 1.8724527210000002
 variable root string .
 variable out_ext string _test
 
+
+variable restart_file index none
+
+print ${restart_file}
+quit
+
 # Setup system
 include ${root}/setup_sim.in
 
