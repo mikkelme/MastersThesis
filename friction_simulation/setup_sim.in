@@ -1,10 +1,10 @@
-variable temp equal 100.0 # Kelvin                  ###
-variable damp equal 1.0 # ps                        ###
+# HARDCODED variables for now
+variable temp equal 100.0 # Kelvin                  
+variable damp equal 1.0 # ps                        
 
-# Setup from read_data / read_restart
+# SWITCH: read_data || read_restart
 variable restart_file index None
 if "${restart_file}!=None" then "jump SELF setup_from_restart_file"
-
 
 ####################################
 ### --- Setup from read_data --- ###
@@ -54,8 +54,6 @@ mass 2 28.0855  # Si
 mass 3 1.0      # Virtuel atom
 velocity free_atoms create ${temp} 5432373 dist gaussian
 
-neighbor            0.5 bin
-neigh_modify        delay 0 every 1 one 10000
 
 jump SELF common_settings
 
@@ -77,6 +75,9 @@ include ${root}/${config_data}_info.in
 ###############################
 
 label common_settings
+
+neighbor            0.5 bin
+neigh_modify        delay 0 every 1 one 10000
 
 
 # # Potentials: C-C: Airebo, C-Si: LJ, Si-Si: SW
@@ -171,5 +172,18 @@ variable stretch_speed equal v_stretch_speed_pct*v_S0
 
 ## -- Drag -- ##
 variable dir_norm equal $(sqrt(v_drag_dir_x^2+v_drag_dir_y^2))
+
+
+# ---------- Output ---------- #
+thermo 1000
+variable dump_freq equal 1000 
+
+
+# Add contact bonds <------------ !!!
+dump 1 all custom $(v_dump_freq) system_${out_ext}.data id type x y z vx vy vz v_stress_atom
+dump 2 full_sheet custom $(v_dump_freq) full_sheet_${out_ext}.data id type x y z
+# dump 3 substrate_contact custom $(v_dump_freq) stretch_substrate_contact_${out_ext}.data id type x y z
+fix coord_out sheet ave/histo 1 100 100 -0.5 5.5 6 c_coord mode vector file sheet_${out_ext}_chist.txt
+
 
 
