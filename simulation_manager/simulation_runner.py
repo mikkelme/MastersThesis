@@ -177,12 +177,11 @@ def multi_run(sim, proc, config_data, num_stretch_files, F_N, num_procs = 16, jo
         job_array += '\"'
     job_array += ')'
     
-    # Verify that line 183 works TODO
     sim.add_to_jobscript(f"\nwait\n\
     \n{job_array}\n\
     \nfor file in *_restart; do\ 
     \n    [ -f \"$file\" ] || break\
-    \n    folder1=\"${{file%.*}}\"_folder\
+    \n    folder1=\"${{file%_*}}\"_folder\
     \n    mkdir $folder1\
     \n    cd $folder1\
     \n    for i in ${{!job_array[@]}}; do\
