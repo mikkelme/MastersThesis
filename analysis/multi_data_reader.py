@@ -10,27 +10,32 @@ def read_info_file(filename):
 
 def read_multi_folder(folders):
     info_file = 'info_file.txt'
-    friction_file = '_tmp_Ff.txt'
-    chist_file = '_tmp_chist.txt'
-    eval_rupture = False
-    ruptol = 0.01 # 0.5
+    friction_ext = 'Ff.txt'
+    chist_ext = 'chist.txt'
+    eval_rupture = True
+    ruptol = 0 # 0.5
     # group = 0 # full_sheet = 0, sheet = 1, PB = 2
     
     
     for folder in folders:
         data = []
+        stretchfile = find_single_file(folder, ext = chist_ext)
+        # stretchfile = None
         for a, stretch_dir in enumerate(get_dirs_in_path(folder)):
             alen = len(get_dirs_in_path(folder))
             for b, job_dir in enumerate(get_dirs_in_path(stretch_dir)):
                 blen = len(get_dirs_in_path(stretch_dir))
                 progress = a * blen + b
                 total = alen * blen
-                print(f"\r ({progress}/{total}) | {job_dir} ", end = " ")
+                # print(f"\r ({progress}/{total}) | {job_dir} ", end = " ")
               
                 try:
                     stretch_pct, F_N = read_info_file(os.path.join(job_dir,info_file))
                     if eval_rupture:
-                        rupture_score = detect_rupture(os.path.join(job_dir,chist_file))
+                        chist_file = find_single_file(job_dir, ext = chist_ext)
+                        rupture_score = detect_rupture(chist_file, stretchfile)
+                        print(chist_file, stretchfile, rupture_score)
+                        # print(rupture_score)
                     else: 
                         # rupture_score = random.uniform(0,1)
                         rupture_score = 0
@@ -41,7 +46,9 @@ def read_multi_folder(folders):
                     stretch_pct = (timestep-5000)/(10999-5000)*0.30
                     ##############################################
                     
-                    Ff, FN = get_fricton_force(os.path.join(job_dir,friction_file))
+                    friction_file = find_single_file(job_dir, ext = friction_ext)
+                     
+                    Ff, FN = get_fricton_force(friction_file)
                     data.append((stretch_pct, F_N, Ff, rupture_score)) 
                 except FileNotFoundError:
                     # print(f" --> Missing files in: {job_dir} ")
@@ -86,8 +93,8 @@ def read_multi_folder(folders):
 
             for i in range(len(stretch_pct)):
                 color = get_color_value(stretch_pct[i], np.min(stretch_pct), np.max(stretch_pct), cmap=cmap)
-                rup_true = np.argwhere(rup[i, :] >= ruptol)
-                rup_false = np.argwhere(rup[i, :] < ruptol)
+                rup_true = np.argwhere(rup[i, :] > ruptol)
+                rup_false = np.argwhere(rup[i, :] <= ruptol)
                 
                 ax1.plot(F_N, Ff[i, :, group, 0], color = color, linewidth = linewidth, label = f'stretch = {stretch_pct[i]:g}')
                 ax1.plot(F_N[rup_true], Ff[i, rup_true, group, 0], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color=color)  
@@ -111,8 +118,8 @@ def read_multi_folder(folders):
             
             for j in range(len(F_N)):                
                 color = get_color_value(F_N[j], np.min(F_N), np.max(F_N))
-                rup_true = np.argwhere(rup[:, j] >= ruptol)
-                rup_false = np.argwhere(rup[:, j] < ruptol)
+                rup_true = np.argwhere(rup[:, j] > ruptol)
+                rup_false = np.argwhere(rup[:, j] <= ruptol)
                 
                 ax3.plot(stretch_pct, Ff[:, j, group, 0], color = color, linewidth = linewidth, markersize = markersize, label = f'F_N = {F_N[j]:g}')
                 ax3.plot(stretch_pct[rup_true], Ff[rup_true, j, group, 0], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color=color)  

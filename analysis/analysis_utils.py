@@ -37,6 +37,11 @@ def get_dirs_in_path(d):
     return [os.path.join(d, o) for o in os.listdir(d) if os.path.isdir(os.path.join(d,o))]
            
 
+def find_single_file(path, ext):
+    file_list = [os.path.join(path, f) for f in os.listdir(path) if f[-len(ext):] == ext]
+    assert(len(file_list) == 1), f"{len(file_list)} candidates for file with extenstion {ext} in {path} found:\n{file_list}."
+    return file_list[0]
+
 def avg_forward(interval, *args):
     output = []
     for i, arg in enumerate(args):
@@ -245,7 +250,7 @@ def read_histogram(filename):
             
     timestep = np.array(timestep)
     hist = np.array(hist)
-            
+    infile.close()        
 
     return timestep, hist
 

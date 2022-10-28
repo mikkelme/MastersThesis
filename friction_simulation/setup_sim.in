@@ -128,8 +128,7 @@ compute sheet_COM full_sheet com            # Center of mass
 compute sheet_fz full_sheet reduce ave fz   # Average z-force
 compute bond_coord full_sheet coord/atom cutoff 4.0 group substrate_contact
 fix full_sheet_bond_hist full_sheet ave/histo 1 100 100 -0.5 1.5 2 c_bond_coord mode vector beyond end
-variable full_sheet_bond_pct equal f_contact_hist[2][3]
-
+variable full_sheet_bond_pct equal full_sheet_bond_hist[2][3]
 
 # Inner sheet 
 compute sheet_fx sheet reduce sum fx        # Total force x
@@ -139,6 +138,10 @@ compute peratom sheet stress/atom NULL      # stress field
 variable stress_atom atom sqrt(c_peratom[1]*c_peratom[1]+c_peratom[2]*c_peratom[2]+c_peratom[3]*c_peratom[3]) # Stress norm (xx, yy, zz)
 # ^^What about shear stress directions?
 # Or friction force on each atom? Is this possible to compute like this?
+
+fix full_sheet_bond_hist sheet ave/histo 1 100 100 -0.5 1.5 2 c_bond_coord mode vector beyond end
+variable sheet_bond_pct equal full_sheet_bond_hist[2][3]
+
 
 
 ## - Pullblocks - ##
@@ -184,10 +187,8 @@ thermo 100#0
 variable dump_freq equal 100#0 
 
 
-# Add contact bonds <------------ !!!
 dump 1 all custom $(v_dump_freq) system_${out_ext}.data id type x y z vx vy vz v_stress_atom c_bond_coord
 dump 2 full_sheet custom $(v_dump_freq) full_sheet_${out_ext}.data id type x y z vx vy vz v_stress_atom c_bond_coord
-# dump 3 substrate_contact custom $(v_dump_freq) stretch_substrate_contact_${out_ext}.data id type x y z
 fix coord_out sheet ave/histo 1 100 100 -0.5 5.5 6 c_coord mode vector file sheet_${out_ext}_chist.txt
 
 
