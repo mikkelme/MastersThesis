@@ -161,7 +161,7 @@ def organize_data_old(data, num_stretch): # Working title
     
     return stretch_pct, F_N, Ff
     
-def organize_data_new(data): # Working title
+def organize_data(data): # Working title
     """ organize by column 0 and 1 """
     stretch_pct = np.unique(data[:,0]) 
     F_N = np.unique(data[:,1])
@@ -182,26 +182,26 @@ def organize_data_new(data): # Working title
                   
     
             
-    return stretch_pct, F_N, *output,
+    return np.array(stretch_pct, dtype = 'float'), np.array(F_N, dtype = 'float'), *output,
     
-def organize_data(data): # Working title
+# def organize_data(data): # Working title
     
 
-    # Is this safe for small round offs?
-    stretch_pct = np.unique(data[:,0]) 
-    F_N = np.unique(data[:,1])
+#     # Is this safe for small round offs?
+#     stretch_pct = np.unique(data[:,0]) 
+#     F_N = np.unique(data[:,1])
     
     
-    Ff = np.zeros((len(stretch_pct), len(F_N), data[0,2].shape[0],data[0,2].shape[1]))
+#     Ff = np.zeros((len(stretch_pct), len(F_N), data[0,2].shape[0],data[0,2].shape[1]))
     
-    for i, s in enumerate(stretch_pct):
-        for j, fn in enumerate(F_N):
-            index = np.argwhere((data[:,0] == s) & (data[:,1] == fn))#[0,0]
-            if len(index) == 0:
-                Ff[i, j] = np.full([data[0,2].shape[0],data[0,2].shape[1]], np.nan)
-            else:
-                Ff[i, j] = data[index[0][0], 2]
-    return stretch_pct, F_N, Ff
+#     for i, s in enumerate(stretch_pct):
+#         for j, fn in enumerate(F_N):
+#             index = np.argwhere((data[:,0] == s) & (data[:,1] == fn))#[0,0]
+#             if len(index) == 0:
+#                 Ff[i, j] = np.full([data[0,2].shape[0],data[0,2].shape[1]], np.nan)
+#             else:
+#                 Ff[i, j] = data[index[0][0], 2]
+#     return stretch_pct, F_N, Ff
     
     
 def get_color_value(value, minValue, maxValue, cmap='viridis'):

@@ -4,15 +4,6 @@ if "${restart_file}==None" then "jump SELF system_is_running"
 include ${root}/setup_sim.in
 
 
-# ---------- Output ---------- #
-# thermo 100
-# variable dump_freq equal 100 
-
-# dump 1 all custom $(v_dump_freq) system_${out_ext}.data id type x y z vx vy vz v_stress_atom
-# dump 2 sheet custom $(v_dump_freq) sheet_${out_ext}.data id type x y z
-# dump 3 substrate_contact custom $(v_dump_freq) substrate_contact_${out_ext}.data id type x y z
-# fix coord_out sheet ave/histo 1 100 100 -0.5 5.5 6 c_coord mode vector file ${out_ext}_chist.txt
-
 # Info file
 print """
 # Restart_file: ${restart_file}
@@ -20,11 +11,7 @@ print """
 ${stretch_pct}, ${F_N}
 """ file info_file.txt
 
-label system_is_running
-
-
-
-# ---------- Print procedure schedule ---------- #
+# ---------- Print drag schedule ---------- #
 # Timestamps
 variable start_step equal $(step)
 variable pause1_steps equal $(floor(v_pause_time1/dt))
@@ -32,8 +19,8 @@ variable pause2_steps equal $(floor(v_pause_time2/dt))
 variable drag_steps equal $(floor(v_drag_length/v_drag_speed/dt))
 
 # Print
-print "--------------------"
-print "------STRETCH SCHEDULE------"
+print "-------------------------"
+print "------DRAG SCHEDULE------"
 print ""
 print "--> Pause 1 (step $(v_start_step), $((v_start_step)*dt) ps)"
 print "Time: $(v_pause1_steps) steps = $(v_pause1_steps*dt) ps"
@@ -51,9 +38,12 @@ print "Spring constant: $(v_K*v_m_to_ang/v_N_to_eV_over_ang) N/m = $(v_K) eV/ang
 print "Time: $(v_drag_steps)  = $(v_drag_steps*dt) ps"
 print ""
 print "--> END (step $(v_start_step+v_pause1_steps+v_pause2_steps+v_drag_steps), $((v_start_step+v_pause1_steps+v_pause2_steps+v_drag_steps)*dt) ps)"
-print "--------------------"
-print "--------------------"
+print "-------------------------"
+print "-------------------------"
 print ""
+
+
+label system_is_running
 
 
 
