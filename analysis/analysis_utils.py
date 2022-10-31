@@ -174,8 +174,10 @@ def organize_data(data): # Working title
     output = []    
     for col in range(2, data.shape[1]):
         obj = data[0,col]
+        # print(obj, type(obj))
         shape = (len(stretch_pct), len(F_N)) + np.shape(obj)
-        output.append(np.full(shape, np.nan))
+        # output.append(np.full(shape, np.nan, dtype = type(obj)))
+        output.append(np.full(shape, np.nan, dtype = 'object'))
 
    
     for i, s in enumerate(stretch_pct):

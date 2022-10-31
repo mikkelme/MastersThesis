@@ -1,6 +1,7 @@
 # Setup system
 variable restart_file index None
-if "${restart_file}==None" then "jump SELF system_is_running"
+variable readable equal is_file(${restart_file})
+if !${readable} then "jump SELF system_is_running"
 include ${root}/setup_sim.in
 
 

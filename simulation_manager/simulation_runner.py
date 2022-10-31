@@ -156,10 +156,11 @@ def multi_run(sim, proc, config_data, num_stretch_files, F_N, num_procs = 16, jo
                     "../potentials/si.sw",
                     "../potentials/C.tersoff",
                     # "../potentials/CH.airebo",
-                    "../friction_simulation/drag_from_restart_file.in"
+                    "../friction_simulation/drag.in"
                     )
     
-    sim.set_input_script("../friction_simulation/stretch_with_reset_files.in", num_stretch_files = num_stretch_files, **proc.variables)    
+    
+    sim.set_input_script("../friction_simulation/stretch.in", num_stretch_files = num_stretch_files, **proc.variables)    
     slurm_args = {'job-name':jobname, 'partition':'normal', 'ntasks':num_procs, 'nodes':1}
     sim.pre_generate_jobscript(num_procs=num_procs, lmp_exec="lmp", slurm_args = slurm_args)    
 
@@ -170,16 +171,18 @@ def multi_run(sim, proc, config_data, num_stretch_files, F_N, num_procs = 16, jo
         proc.convert_units(["F_N"])
         sub_exec_list = Device.get_exec_list(num_procs = num_procs, 
                                              lmp_exec = "lmp", 
-                                             lmp_args = {'-in': '../../drag_from_restart_file.in'}, 
-                                             lmp_var = proc.variables | {'out_ext':'_tmp'})
+                                             lmp_args = {'-in': '../../drag.in'}, 
+                                             lmp_var = proc.variables | {'out_ext':'_ext'})
         job_array += '\n\n\"'
         job_array += Device.gen_jobscript_string(sub_exec_list, slurm_args, linebreak = False)
         job_array += '\"'
     job_array += ')'
     
-    sim.add_to_jobscript(f"\nwait\n\
+    
+    
+    sim.add_to_jobscript(f"\nwait\
     \n{job_array}\n\
-    \nfor file in *_restart; do\ 
+    \nfor file in *_restart; do\
     \n    [ -f \"$file\" ] || break\
     \n    folder1=\"${{file%_*}}\"_folder\
     \n    mkdir $folder1\
@@ -196,17 +199,32 @@ def multi_run(sim, proc, config_data, num_stretch_files, F_N, num_procs = 16, jo
     \n    mv $file $folder1/$file\
     \ndone")
     
-  
     sim.run(slurm = True)
       
 
 def one_config_multi_data():
     
+    # variables = { 
+    # "dt": 0.001, 
+    # "relax_time": 5,
+    # "stretch_speed_pct": 0.05,
+    # "stretch_max_pct": 0.3,
+    # "pause_time1": 5,
+    # "F_N": 10e-9, # [N]
+    # "pause_time2": 5,
+    # "drag_dir_x": 0,
+    # "drag_dir_y": 1,
+    # "drag_speed": 1, # [m/s]
+    # "drag_length": 30,
+    # "K": 30.0,
+    # "root": ".",
+    # }
+    
     variables = { 
     "dt": 0.001, 
     "relax_time": 5,
     "stretch_speed_pct": 0.05,
-    "stretch_max_pct": 0.3,
+    "stretch_max_pct": 0.05,
     "pause_time1": 5,
     "F_N": 10e-9, # [N]
     "pause_time2": 5,
@@ -219,14 +237,19 @@ def one_config_multi_data():
     }
     
     
+    
+    
     proc = Friction_procedure(variables)
     
     # Variables 
-    num_stretch_files = 15
-    F_N = np.linspace(1e-9, 100e-9, 10)
+    # num_stretch_files = 15
+    # F_N = np.linspace(1e-9, 100e-9, 10)
+    
+    num_stretch_files = 2
+    F_N = [100e-9]
 
     config_data = "sheet_substrate"     
-    dir = "egil:OCMD_newpot"
+    dir = "egil:rupture_test"
     
     sim = Simulator(directory = dir, overwrite=True)
     multi_run(sim, proc, config_data, num_stretch_files, F_N, num_procs = 16, jobname = 'OCMD_NP')
@@ -316,6 +339,6 @@ def custom():
 
 
 if __name__ == "__main__":
-    great4_runner()
-    # one_config_multi_data()
+    # great4_runner()
+    one_config_multi_data()
     # custom()

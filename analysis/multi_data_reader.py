@@ -48,20 +48,19 @@ def read_multi_folder(folders):
                     friction_file = find_single_file(job_dir, ext = friction_ext)
                      
                     Ff, FN = get_fricton_force(friction_file)
-                    data.append((stretch_pct, F_N, Ff, rupture_score)) 
+                    data.append((stretch_pct, F_N, Ff, rupture_score, job_dir)) 
                 except FileNotFoundError:
                     # print(f" --> Missing files in: {job_dir} ")
                     print(f"<-- Missing files")
         print()
         data = np.array(data, dtype = 'object')
-        stretch_pct, F_N, Ff, rup = organize_data(data)
-        
+        stretch_pct, F_N, Ff, rup, filenames = organize_data(data)
        
-        detections = [["stretch %", "F_N"]]
+        detections = [["stretch %", "F_N", "Filenames"]]
         for i in range(len(stretch_pct)):
             for j in range(len(F_N)):
                 if rup[i,j] > ruptol:
-                    detections.append([stretch_pct[i], F_N[j]])
+                    detections.append([stretch_pct[i], F_N[j], filenames[i,j]])
         
         if len(detections) > 1:
             print("Rupture detected:")

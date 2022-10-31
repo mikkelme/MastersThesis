@@ -1,94 +1,94 @@
 from analysis_utils import *
 
 
-def detect_rupture_old(filename, stretchfile = None, check = False):
-    # --- Settings --- #
-    # Filter
-    target_window_length = 2000 # [Timesteps]
-    polyorder = 5
+# def detect_rupture_old(filename, stretchfile = None, check = False):
+#     # --- Settings --- #
+#     # Filter
+#     target_window_length = 2000 # [Timesteps]
+#     polyorder = 5
     
-    # Detection 
-    cut = 10 # cut-off from data ends due to savgol filter artifacts [indexes]
-    thresshold_ratio = 0.7 # |minpeak| > ratio * |maxpeak| => RUPTURE
-    std_tol = 1000 # Tolerance for std between minpeak location in timesteps
+#     # Detection 
+#     cut = 10 # cut-off from data ends due to savgol filter artifacts [indexes]
+#     thresshold_ratio = 0.7 # |minpeak| > ratio * |maxpeak| => RUPTURE
+#     std_tol = 1000 # Tolerance for std between minpeak location in timesteps
     
-    # --- Get data --- #
-    timestep, hist = read_histogram(filename)
-    data_freq = timestep[1] - timestep[0]
-    cnum = hist[:, :, 1]
-    rupture_flags = np.full(hist.shape[1], np.nan)
-    stdpeak = np.full(hist.shape[1], np.nan)
-    minmax_peakidx = np.full((hist.shape[1], 2), np.nan)
+#     # --- Get data --- #
+#     timestep, hist = read_histogram(filename)
+#     data_freq = timestep[1] - timestep[0]
+#     cnum = hist[:, :, 1]
+#     rupture_flags = np.full(hist.shape[1], np.nan)
+#     stdpeak = np.full(hist.shape[1], np.nan)
+#     minmax_peakidx = np.full((hist.shape[1], 2), np.nan)
     
-    if stretchfile != None:
-        timestep_merge, hist_merge = read_histogram(stretchfile)
-        data_freq_merge = timestep_merge[1] - timestep_merge[0]
-        cnum_merge = hist_merge[:, :, 1]
+#     if stretchfile != None:
+#         timestep_merge, hist_merge = read_histogram(stretchfile)
+#         data_freq_merge = timestep_merge[1] - timestep_merge[0]
+#         cnum_merge = hist_merge[:, :, 1]
         
-        assert(data_freq == data_freq_merge)
-        assert(cnum_merge.shape[1] == cnum.shape[1])
-        cnum = np.concatenate((cnum_merge, cnum))
-        timestep = np.concatenate((timestep_merge, timestep))
+#         assert(data_freq == data_freq_merge)
+#         assert(cnum_merge.shape[1] == cnum.shape[1])
+#         cnum = np.concatenate((cnum_merge, cnum))
+#         timestep = np.concatenate((timestep_merge, timestep))
     
-    # Filter
-    for i in range(hist.shape[1]):
-        cnum[:,i] = savgol_filter(int(target_window_length/data_freq), polyorder, cnum[:,i])[0]
+#     # Filter
+#     for i in range(hist.shape[1]):
+#         cnum[:,i] = savgol_filter(int(target_window_length/data_freq), polyorder, cnum[:,i])[0]
         
-    deltacnum = np.full(np.shape(cnum), np.nan)
-    deltacnum[1:-1] = cnum[2:] - cnum[:-2]
+#     deltacnum = np.full(np.shape(cnum), np.nan)
+#     deltacnum[1:-1] = cnum[2:] - cnum[:-2]
     
     
-    # --- Detection --- #
-    # minmmax peaks
-    for i in range(2, hist.shape[1]): # (Nothing implemeted for i = 0, 1)
-        minmax_peakidx[i, 0], minpeak = timestep[cut + np.argmin(deltacnum[cut:-cut-1, i])], np.min(deltacnum[cut:-cut-1, i])
-        minmax_peakidx[i, 1], maxpeak = timestep[cut + np.argmax(deltacnum[cut:-cut-1, i])], np.max(deltacnum[cut:-cut-1, i])
+#     # --- Detection --- #
+#     # minmmax peaks
+#     for i in range(2, hist.shape[1]): # (Nothing implemeted for i = 0, 1)
+#         minmax_peakidx[i, 0], minpeak = timestep[cut + np.argmin(deltacnum[cut:-cut-1, i])], np.min(deltacnum[cut:-cut-1, i])
+#         minmax_peakidx[i, 1], maxpeak = timestep[cut + np.argmax(deltacnum[cut:-cut-1, i])], np.max(deltacnum[cut:-cut-1, i])
             
-        # Check if significant cnum minpeak accurs after maxpeak
-        flags = (minmax_peakidx[i,1] < minmax_peakidx[i,0], abs(minpeak) > abs(maxpeak) * thresshold_ratio)
-        rupture_flags[i] = flags[0] & flags[1]
-        stdpeak[i] = np.std(deltacnum[cut:-cut-1, i])
+#         # Check if significant cnum minpeak accurs after maxpeak
+#         flags = (minmax_peakidx[i,1] < minmax_peakidx[i,0], abs(minpeak) > abs(maxpeak) * thresshold_ratio)
+#         rupture_flags[i] = flags[0] & flags[1]
+#         stdpeak[i] = np.std(deltacnum[cut:-cut-1, i])
             
-    A = maxpeak/stdpeak
-    B = minpeak/stdpeak
+#     A = maxpeak/stdpeak
+#     B = minpeak/stdpeak
    
-    A = A[~np.isnan(A)]
-    B = B[~np.isnan(B)]
-    ratio = B/A
-    print(A)
-    print(B)
-    print(ratio)        
+#     A = A[~np.isnan(A)]
+#     B = B[~np.isnan(B)]
+#     ratio = B/A
+#     print(A)
+#     print(B)
+#     print(ratio)        
         
         
     
-    # Minpeak idx std check (counteract confusion with no stretch simulations)
-    std = minmax_peakidx[~np.isnan(minmax_peakidx)].reshape(-1, 2).std(0)
-    if std[0] > std_tol: # Rupture flags <-- 0
-        rupture_flags[rupture_flags == 1] = 0
+#     # Minpeak idx std check (counteract confusion with no stretch simulations)
+#     std = minmax_peakidx[~np.isnan(minmax_peakidx)].reshape(-1, 2).std(0)
+#     if std[0] > std_tol: # Rupture flags <-- 0
+#         rupture_flags[rupture_flags == 1] = 0
     
-    # Final average score 
-    rupture_score = np.mean(rupture_flags[~np.isnan(rupture_flags)])
+#     # Final average score 
+#     rupture_score = np.mean(rupture_flags[~np.isnan(rupture_flags)])
     
     
-    if check: # Show plots and flags
-        print(f'Rupture flags: {rupture_flags}')
-        plt.figure(num = 0)
-        for i in range(hist.shape[1]):
-            plt.title("coordination number")
-            plt.plot(timestep[cut:-cut-1], cnum[cut:-cut-1, i], label = f'center = {hist[0,i,0]}')
-            plt.xlabel("Timestep")
-            plt.ylabel("$cnum")
-        plt.legend()
+#     if check: # Show plots and flags
+#         print(f'Rupture flags: {rupture_flags}')
+#         plt.figure(num = 0)
+#         for i in range(hist.shape[1]):
+#             plt.title("coordination number")
+#             plt.plot(timestep[cut:-cut-1], cnum[cut:-cut-1, i], label = f'center = {hist[0,i,0]}')
+#             plt.xlabel("Timestep")
+#             plt.ylabel("$cnum")
+#         plt.legend()
         
-        plt.figure(num = 1)
-        for i in range(hist.shape[1]):
-            plt.title("$\Delta$ coordination number")
-            plt.plot(timestep[cut:-cut-1], deltacnum[cut:-cut-1, i], label = f'center = {hist[0,i,0]}')
-            plt.xlabel("Timestep")
-            plt.ylabel("$\Delta$ cnum")
-        plt.legend()
+#         plt.figure(num = 1)
+#         for i in range(hist.shape[1]):
+#             plt.title("$\Delta$ coordination number")
+#             plt.plot(timestep[cut:-cut-1], deltacnum[cut:-cut-1, i], label = f'center = {hist[0,i,0]}')
+#             plt.xlabel("Timestep")
+#             plt.ylabel("$\Delta$ cnum")
+#         plt.legend()
         
-    return rupture_score
+#     return rupture_score
 
 def detect_rupture(filename, stretchfile = None, check = False):
     # --- Settings --- #
@@ -109,26 +109,46 @@ def detect_rupture(filename, stretchfile = None, check = False):
     cnum = hist[:, :, 1]
     rupture_flags = np.full(hist.shape[1], np.nan)
     
+    # Artifical backwards shift to cover apperent gap
+    # timestep -= 6*data_freq
+    # print(data_freq)
+    # print(timestep[0])
+    # exit()
+    
+    
     if stretchfile != None:
         timestep_merge, hist_merge = read_histogram(stretchfile)
         data_freq_merge = timestep_merge[1] - timestep_merge[0]
         cnum_merge = hist_merge[:, :, 1]
         
+        
+        
+        
         seam = timestep[0]
         assert(data_freq == data_freq_merge)
         assert(cnum_merge.shape[1] == cnum.shape[1])
+        
+        
+        
+        # plt.figure(num = 99)
+        # plt.plot(timestep_merge, cnum_merge)
+        print(seam)
+        # print(cnum_merge[timestep_merge <= seam][1], cnum[0])
+        # print(timestep_merge[-1])
+        # print(timestep[0])
+        # exit()
         
         cnum = np.concatenate((cnum_merge[timestep_merge < seam], cnum))
         timestep = np.concatenate((timestep_merge[timestep_merge < seam], timestep))
        
         
-    # Filter
-    for i in range(hist.shape[1]):
-        cnum[:,i] = signal.savgol_filter(cnum[:,i], int(target_window_length/data_freq), polyorder)
+    # # Filter
+    # for i in range(hist.shape[1]):
+    #     cnum[:,i] = signal.savgol_filter(cnum[:,i], int(target_window_length/data_freq), polyorder)
         
         
     deltacnum = np.full(np.shape(cnum), np.nan)
-    deltacnum[1:-1] = cnum[2:] - cnum[:-2]
+    deltacnum[1:-1] = (cnum[2:] - cnum[:-2]) / (2*data_freq)
     
     
     # --- Detection --- #
@@ -187,7 +207,10 @@ def detect_rupture(filename, stretchfile = None, check = False):
         plt.figure(num = 0)
         for i in range(hist.shape[1]):
             plt.title("coordination number")
-            plt.plot(timestep[cut:-cut-1], cnum[cut:-cut-1, i], label = f'center = {hist[0,i,0]}')
+            plt.plot(timestep[cut:-cut-1], cnum[cut:-cut-1, i], color = color_cycle(i), label = f'center = {hist[0,i,0]}')
+            # if stretchfile != None:
+            #     plt.plot(timestep_merge, cnum_merge[:, i], color = color_cycle(i))
+            
             plt.xlabel("Timestep")
             plt.ylabel("cnum")
         plt.legend()
@@ -195,7 +218,7 @@ def detect_rupture(filename, stretchfile = None, check = False):
         plt.figure(num = 1)
         for i in range(hist.shape[1]):
             plt.title("$\Delta$ coordination number")
-            plt.plot(timestep[cut:-cut-1], deltacnum[cut:-cut-1, i], label = f'center = {hist[0,i,0]}')
+            plt.plot(timestep[cut:-cut-1], deltacnum[cut:-cut-1, i], color = color_cycle(i), label = f'center = {hist[0,i,0]}')
             plt.xlabel("Timestep")
             plt.ylabel("$\Delta$ cnum")
         plt.legend()
@@ -209,28 +232,39 @@ def detect_rupture(filename, stretchfile = None, check = False):
 
 if __name__ == "__main__":
     
-    filenames = ["../Data/NG4_newpot_long/cut_nostretch/_cut_nostretch_chist.txt"]
-    filenames = ["../Data/NG4_newpot_long/cut_20stretch/_cut_20stretch_chist.txt"]
-    filenames = get_files_in_folder('../Data/NG4_newpot_long/', ext = "chist.txt")
+    # filenames = ["../Data/NG4_newpot_long/cut_nostretch/_cut_nostretch_chist.txt"]
+    # filenames = ["../Data/NG4_newpot_long/cut_20stretch/_cut_20stretch_chist.txt"]
+    # filenames = get_files_in_folder('../Data/NG4_newpot_long/', ext = "chist.txt")
     
     
-    filenames = get_files_in_folder('../Data/OCMD_newpot/stretch.10992_folder', ext = "chist.txt")
-    filenames += get_files_in_folder('../Data/OCMD_newpot/stretch.10564_folder', ext = "chist.txt")
-    filenames += get_files_in_folder('../Data/OCMD_newpot/stretch.5428_folder', ext = "chist.txt")
+    # filenames = get_files_in_folder('../Data/OCMD_newpot/stretch.10992_folder', ext = "chist.txt")
+    # filenames += get_files_in_folder('../Data/OCMD_newpot/stretch.10564_folder', ext = "chist.txt")
+    # filenames += get_files_in_folder('../Data/OCMD_newpot/stretch.5428_folder', ext = "chist.txt")
     
     # filenames = ['../Data/OCMD_newpot/stretch.8424_folder/job4/_tmp_chist.txt']# ../Data/OCMD_newpot/stretch__default_chist.txt
 
-    # filenames = get_files_in_folder('../Data/chist_samples/intact', ext = "chist.txt")
+    filenames = get_files_in_folder('../Data/chist_samples/intact', ext = "chist.txt")
+    
+   
+    
+    # filenames = ['../Data/OCMD_newpot/stretch.6712_folder/job0/_tmp_chist.txt'] # This looked like a rupture, but download the dump file and check <--------
+    # filenames = ['../Data/OCMD_newpot/stretch.5856_folder/job0/_tmp_chist.txt'] # This looked like a rupture, but download the dump file and check <--------
     
     
-    stretchfile = '../Data/OCMD_newpot/stretch__default_chist.txt'
-    # stretchfile = None
+    # stretchfile = '../Data/OCMD_newpot/stretch__default_chist.txt'
+    # filenames = ['../Data/OCMD_newpot/stretch__default_chist.txt'] 
+    stretchfile = None
     for filename in filenames:
-        rupture_score = detect_rupture(filename, stretchfile = stretchfile, check = False)
+        rupture_score = detect_rupture(filename, stretchfile = stretchfile, check = True)
         print(f"filename: {filename}, rupture_score = {rupture_score}")
         print()
         plt.show()
 
-
-### Work on rupture detection still....
-### If stretch files is used it most often predicts rupture....
+# TODO: Make two equal simulations under no rupture conditions: 
+#           - One with friction procedure producing connected chist
+#           - Another from OCMD producing two chist files (stretch + drag)
+#             which should then be combinned in post
+#       The result of these need to match before proceeding. Right now,
+#       I suspect that either or both the seaming and magnitude of the chist do
+#       not match completely. For the latter check if both use the same group sheet
+#       and not full_sheet in one of them.
