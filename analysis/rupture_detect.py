@@ -130,8 +130,8 @@ def detect_rupture(filename, stretchfile = None, check = False):
        
         
     # Filter
-    for i in range(hist.shape[1]):
-        cnum[:,i] = signal.savgol_filter(cnum[:,i], int(target_window_length/data_freq), polyorder)
+    # for i in range(hist.shape[1]):
+    #     cnum[:,i] = signal.savgol_filter(cnum[:,i], int(target_window_length/data_freq), polyorder)
         
     # coordination number change
     deltacnum = np.full(np.shape(cnum), np.nan)
@@ -170,7 +170,7 @@ def detect_rupture(filename, stretchfile = None, check = False):
     
     if maxpeak_alignment:
         # check if minpeak magnitude significant
-        magnitude = abs(minpeak_ratio/maxpeak_ratio) < ratio_tol
+        magnitude = abs(minpeak_ratio/maxpeak_ratio) > ratio_tol
     
     else:
         # This is probably not used so much due to min_align check afterwards
@@ -188,13 +188,15 @@ def detect_rupture(filename, stretchfile = None, check = False):
         print(f'Peakorder: min = {np.mean(minpeak_step[notnan])} > max = {np.mean(maxpeak_step[notnan])} => {peakorder} ')
         print(f'Magnitude = {magnitude}')
         print(f'Rupture flags: {rupture_flags}')
+        print(f'abs(minpeak_ratio/maxpeak_ratio): {abs(minpeak_ratio/maxpeak_ratio)}')
         plt.figure(num = 0)
         for i in range(hist.shape[1]):
             plt.title("coordination number")
             plt.plot(timestep[cut:-cut-1], cnum[cut:-cut-1, i], color = color_cycle(i), label = f'center = {hist[0,i,0]}')
-            # if stretchfile != None:
-            #     plt.plot(timestep_merge, cnum_merge[:, i], color = color_cycle(i))
-            
+            if stretchfile != None:
+                plt.plot(timestep_merge, cnum_merge[:, i], color = color_cycle(i))
+                if i == 0:
+                    plt.vlines(seam, np.min(cnum_merge), np.max(cnum_merge), linestyle = '--', color = 'k')
             plt.xlabel("Timestep")
             plt.ylabel("cnum")
         plt.legend()
@@ -230,19 +232,27 @@ if __name__ == "__main__":
     
    
     
-    # filenames = ['../Data/OCMD_newpot/stretch.6712_folder/job0/_tmp_chist.txt'] 
+    # filenames = get_files_in_folder('../Data/OCMD_', ext = "ext_chist.txt")
+    # filenames = ['../Data/OCMD_newpot/stretch.10992_folder/job0/_tmp_chist.txt'] 
     # filenames = ['../Data/OCMD_newpot/stretch.5856_folder/job0/_tmp_chist.txt'] # This looked like a rupture, but download the dump file and check <--------
     
     
     # stretchfile = '../Data/OCMD_newpot/stretch__default_chist.txt'
     # filenames = ['../Data/OCMD_newpot/stretch__default_chist.txt'] 
     
-    # filenames = get_files_in_folder('../Data/multi_short', ext = "ext_chist.txt")
-    filenames = ['../Data/multi_short/stretch_10564_folder/job0/sheet_ext_chist.txt']
-    stretchfile = '../Data/multi_short/sheet__default_chist.txt'
     
+    filenames = ['../Data/OCMD_newpot/stretch.6712_folder/job0/_tmp_chist.txt'] 
+    stretchfile = '../Data/OCMD_newpot/stretch__default_chist.txt'
+    stretchfile = None
     
     ###########################################
+    
+    # filenames = get_files_in_folder('../Data/multi_short', ext = "ext_chist.txt")
+    # filenames = ['../Data/multi_short/stretch_6712_folder/job0/sheet_ext_chist.txt']
+    # stretchfile = '../Data/multi_short/sheet__default_chist.txt'
+    
+    ###########################################
+    
     
     # filenames = get_files_in_folder('../Data/rupture_test', ext = "ext_chist.txt")
     # filenames = ['../Data/rupture_test/stretch_6998_folder/job0/sheet_ext_chist.txt']
