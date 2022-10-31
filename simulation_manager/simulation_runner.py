@@ -26,7 +26,7 @@ class Friction_procedure:
             "drag_length": 30 ,
             "K": 30.0,
             "root": ".",
-            "out_ext": "_default" # put date here
+            "out_ext": "default" # put date here
         }
         
         
@@ -172,7 +172,7 @@ def multi_run(sim, proc, config_data, num_stretch_files, F_N, num_procs = 16, jo
         sub_exec_list = Device.get_exec_list(num_procs = num_procs, 
                                              lmp_exec = "lmp", 
                                              lmp_args = {'-in': '../../drag.in'}, 
-                                             lmp_var = proc.variables | {'out_ext':'_ext'})
+                                             lmp_var = proc.variables | {'out_ext':'ext'})
         job_array += '\n\n\"'
         job_array += Device.gen_jobscript_string(sub_exec_list, slurm_args, linebreak = False)
         job_array += '\"'
@@ -224,17 +224,34 @@ def one_config_multi_data():
     "dt": 0.001, 
     "relax_time": 5,
     "stretch_speed_pct": 0.05,
-    "stretch_max_pct": 0.05,
+    "stretch_max_pct": 0.3,
     "pause_time1": 5,
     "F_N": 10e-9, # [N]
     "pause_time2": 5,
     "drag_dir_x": 0,
     "drag_dir_y": 1,
     "drag_speed": 1, # [m/s]
-    "drag_length": 30,
+    "drag_length": 0.5,
     "K": 30.0,
     "root": ".",
     }
+    
+    
+    # variables = { 
+    # "dt": 0.001, 
+    # "relax_time": 5,
+    # "stretch_speed_pct": 0.05,
+    # "stretch_max_pct": 0.1,
+    # "pause_time1": 5,
+    # "F_N": 10e-9, # [N]
+    # "pause_time2": 5,
+    # "drag_dir_x": 0,
+    # "drag_dir_y": 1,
+    # "drag_speed": 5, # [m/s]
+    # "drag_length": 0.5,
+    # "K": 30.0,
+    # "root": ".",
+    # }
     
     
     
@@ -242,17 +259,17 @@ def one_config_multi_data():
     proc = Friction_procedure(variables)
     
     # Variables 
-    # num_stretch_files = 15
-    # F_N = np.linspace(1e-9, 100e-9, 10)
+    num_stretch_files = 15
+    F_N = np.linspace(1e-9, 100e-9, 10)
     
-    num_stretch_files = 2
-    F_N = [100e-9]
+    # num_stretch_files = 7
+    # F_N = [100e-9]
 
     config_data = "sheet_substrate"     
-    dir = "egil:rupture_test"
+    dir = "egil:multi_short"
     
     sim = Simulator(directory = dir, overwrite=True)
-    multi_run(sim, proc, config_data, num_stretch_files, F_N, num_procs = 16, jobname = 'OCMD_NP')
+    multi_run(sim, proc, config_data, num_stretch_files, F_N, num_procs = 16, jobname = 'Mshort')
 
     
     

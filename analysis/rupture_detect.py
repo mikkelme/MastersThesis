@@ -115,38 +115,25 @@ def detect_rupture(filename, stretchfile = None, check = False):
     # print(timestep[0])
     # exit()
     
-    
+    # Append stretchfile in front
     if stretchfile != None:
         timestep_merge, hist_merge = read_histogram(stretchfile)
         data_freq_merge = timestep_merge[1] - timestep_merge[0]
         cnum_merge = hist_merge[:, :, 1]
-        
-        
-        
-        
+         
         seam = timestep[0]
         assert(data_freq == data_freq_merge)
         assert(cnum_merge.shape[1] == cnum.shape[1])
-        
-        
-        
-        # plt.figure(num = 99)
-        # plt.plot(timestep_merge, cnum_merge)
-        print(seam)
-        # print(cnum_merge[timestep_merge <= seam][1], cnum[0])
-        # print(timestep_merge[-1])
-        # print(timestep[0])
-        # exit()
         
         cnum = np.concatenate((cnum_merge[timestep_merge < seam], cnum))
         timestep = np.concatenate((timestep_merge[timestep_merge < seam], timestep))
        
         
-    # # Filter
-    # for i in range(hist.shape[1]):
-    #     cnum[:,i] = signal.savgol_filter(cnum[:,i], int(target_window_length/data_freq), polyorder)
+    # Filter
+    for i in range(hist.shape[1]):
+        cnum[:,i] = signal.savgol_filter(cnum[:,i], int(target_window_length/data_freq), polyorder)
         
-        
+    # coordination number change
     deltacnum = np.full(np.shape(cnum), np.nan)
     deltacnum[1:-1] = (cnum[2:] - cnum[:-2]) / (2*data_freq)
     
@@ -160,41 +147,37 @@ def detect_rupture(filename, stretchfile = None, check = False):
     
     
     for i in range(2, hist.shape[1]): # (Nothing implemeted for i = 0, 1)    
-        
         target = ~np.isnan(deltacnum[cut:-cut-1, i])
         array = deltacnum[cut:-cut-1, i][~np.isnan(deltacnum[cut:-cut-1, i])]
-        
         
         minpeak_step[i], minpeak[i] = timestep[cut + np.argmin(array)], np.min(array)
         maxpeak_step[i], maxpeak[i] = timestep[cut + np.argmax(array)], np.max(array)
         stdpeak[i] = np.std(array)
         
-        # maxpeak_step[i], maxpeak[i] = timestep[cut + np.argmax(deltacnum[cut:-cut-1, i])], np.max(deltacnum[cut:-cut-1, i], initial = 0, where=~np.isnan(deltacnum[cut:-cut-1, i]))
-        # stdpeak[i] = np.std(deltacnum[cut:-cut-1, i], where=~np.isnan(deltacnum[cut:-cut-1, i]))
-        
-        
-        # minpeak_step[i], minpeak[i] = timestep[cut + np.argmin(deltacnum[cut:-cut-1, i]), initial = 0, where=~np.isnan(deltacnum[cut:-cut-1, i])], np.min(deltacnum[cut:-cut-1, i], initial = 0, where=~np.isnan(deltacnum[cut:-cut-1, i]))
-        # maxpeak_step[i], maxpeak[i] = timestep[cut + np.argmax(deltacnum[cut:-cut-1, i])], np.max(deltacnum[cut:-cut-1, i], initial = 0, where=~np.isnan(deltacnum[cut:-cut-1, i]))
-        # stdpeak[i] = np.std(deltacnum[cut:-cut-1, i], where=~np.isnan(deltacnum[cut:-cut-1, i]))
-    
+      
     
     minpeak_ratio = minpeak[stdpeak > 0]/stdpeak[stdpeak > 0]
     maxpeak_ratio = (maxpeak[stdpeak > 0]/stdpeak[stdpeak > 0])
     
-    minpeak_alignment = np.std(minpeak_step[~np.isnan(minpeak_step)]) < min_align_tol # Stretch present
-    maxpeak_alignment = np.std(maxpeak_step[~np.isnan(maxpeak_step)]) < max_align_tol # Possible rip present
+    notnan = ~np.isnan(minpeak_step) & ~np.isnan(maxpeak_step)
+    minpeak_alignment = np.std(minpeak_step[notnan]) < min_align_tol # Stretch present
+    maxpeak_alignment = np.std(maxpeak_step[notnan]) < max_align_tol # Possible rip present
+    peakorder = np.mean(minpeak_step[notnan]) > np.mean(maxpeak_step[notnan]) 
         
+    
+    # print(minpeak_step[notnan], maxpeak_step[notnan])
+    # exit()
     
     if maxpeak_alignment:
         # check if minpeak magnitude significant
-        magnitude = minpeak_ratio/maxpeak_ratio < ratio_tol
+        magnitude = abs(minpeak_ratio/maxpeak_ratio) < ratio_tol
     
     else:
-        # This is probably never applied due to min_align check afterwards
+        # This is probably not used so much due to min_align check afterwards
         magnitude = minpeak_ratio < minpeak_tol
         
         
-    rupture_flags = minpeak_alignment & magnitude
+    rupture_flags = peakorder & minpeak_alignment & magnitude
     rupture_score = np.mean(rupture_flags[~np.isnan(rupture_flags)])
     
     
@@ -202,6 +185,7 @@ def detect_rupture(filename, stretchfile = None, check = False):
     
     if check: # Show plots and flags
         print(f'Alignment (min, max) = ({minpeak_alignment}, {maxpeak_alignment})')
+        print(f'Peakorder: min = {np.mean(minpeak_step[notnan])} > max = {np.mean(maxpeak_step[notnan])} => {peakorder} ')
         print(f'Magnitude = {magnitude}')
         print(f'Rupture flags: {rupture_flags}')
         plt.figure(num = 0)
@@ -236,24 +220,36 @@ if __name__ == "__main__":
     # filenames = ["../Data/NG4_newpot_long/cut_20stretch/_cut_20stretch_chist.txt"]
     # filenames = get_files_in_folder('../Data/NG4_newpot_long/', ext = "chist.txt")
     
-    
+
     # filenames = get_files_in_folder('../Data/OCMD_newpot/stretch.10992_folder', ext = "chist.txt")
     # filenames += get_files_in_folder('../Data/OCMD_newpot/stretch.10564_folder', ext = "chist.txt")
     # filenames += get_files_in_folder('../Data/OCMD_newpot/stretch.5428_folder', ext = "chist.txt")
     
-    # filenames = ['../Data/OCMD_newpot/stretch.8424_folder/job4/_tmp_chist.txt']# ../Data/OCMD_newpot/stretch__default_chist.txt
 
-    filenames = get_files_in_folder('../Data/chist_samples/intact', ext = "chist.txt")
+    # filenames = get_files_in_folder('../Data/chist_samples/intact', ext = "chist.txt")
     
    
     
-    # filenames = ['../Data/OCMD_newpot/stretch.6712_folder/job0/_tmp_chist.txt'] # This looked like a rupture, but download the dump file and check <--------
+    # filenames = ['../Data/OCMD_newpot/stretch.6712_folder/job0/_tmp_chist.txt'] 
     # filenames = ['../Data/OCMD_newpot/stretch.5856_folder/job0/_tmp_chist.txt'] # This looked like a rupture, but download the dump file and check <--------
     
     
     # stretchfile = '../Data/OCMD_newpot/stretch__default_chist.txt'
     # filenames = ['../Data/OCMD_newpot/stretch__default_chist.txt'] 
-    stretchfile = None
+    
+    # filenames = get_files_in_folder('../Data/multi_short', ext = "ext_chist.txt")
+    filenames = ['../Data/multi_short/stretch_10564_folder/job0/sheet_ext_chist.txt']
+    stretchfile = '../Data/multi_short/sheet__default_chist.txt'
+    
+    
+    ###########################################
+    
+    # filenames = get_files_in_folder('../Data/rupture_test', ext = "ext_chist.txt")
+    # filenames = ['../Data/rupture_test/stretch_6998_folder/job0/sheet_ext_chist.txt']
+    # stretchfile = '../Data/rupture_test/sheet__default_chist.txt'
+    
+    # filenames = ['../Data/rupture_test/sheet_local_chist.txt']
+    # stretchfile = None
     for filename in filenames:
         rupture_score = detect_rupture(filename, stretchfile = stretchfile, check = True)
         print(f"filename: {filename}, rupture_score = {rupture_score}")
