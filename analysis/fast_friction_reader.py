@@ -39,6 +39,11 @@ def plot_info(filenames):
             # Read from file
             timestep, f_move_force1, f_move_force2, c_Ff_sheet1, c_Ff_sheet2, c_Ff_sheet3, c_Ff_PB1, c_Ff_PB2, c_Ff_PB3, c_sheet_COM1, c_sheet_COM2, c_sheet_COM3 = read_friction_file(filename)
             
+            data_dict = read_friction_file_dict(filename)
+            
+            exit()
+            
+            ### TODO: Make a dictionary instead for more flexibility <---------- ###
             
             # Find a way to get pulling direction and dt
             drag_direction = np.array((0, 1))
@@ -167,9 +172,11 @@ if __name__ == "__main__":
     filenames = []
 
 
-    filenames += get_files_in_folder('../Data/NG4_newpot_5ms/', ext = "Ff.txt")
+    filenames += get_files_in_folder('../Data/NG4_newpot_long/', ext = "Ff.txt")
     
     
+    # read_friction_file_dict('../friction_simulation/system_test_Ff.txt')
+    # exit()
     plot_info(filenames)
     plt.show()
 

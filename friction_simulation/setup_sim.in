@@ -86,26 +86,20 @@ neigh_modify        delay 0 every 1 one 10000
 # pair_coeff * * sw ${root}/si.sw NULL Si NULL           # Substrate Si-Si
 # pair_coeff * 3  lj/cut 0.0 0.0 
 
-# Potentials: C-C: Tersoff, C-Si: LJ, Si-Si: SW
-pair_style hybrid sw lj/cut 8.15 tersoff
-pair_coeff * * tersoff ${root}/C.tersoff C NULL NULL   # Sheet C-C
-pair_coeff 1 2 lj/cut 0.008909 3.26                    # Interaction C-Si 
-pair_coeff * * sw ${root}/si.sw NULL Si NULL           # Substrate Si-Si
-pair_coeff * 3  lj/cut 0.0 0.0 
-
 # # Potentials: C-C: Tersoff, C-Si: LJ, Si-Si: SW
-# pair_style hybrid sw/kk tersoff/kk lj/cut/kk 8.15 
-# pair_coeff * * sw/kk ${root}/si.sw Si Si Si           # Substrate Si-Si
-# pair_coeff * * tersoff/kk ${root}/C.tersoff C C C           # Sheet C-C
-# pair_coeff 1 2 lj/cut/kk 0.008909 3.26                    # Interaction C-Si 
-# pair_coeff * 3  lj/cut/kk 0.0 0.0 
-
-# # Potentials: C-C: Tersoff, C-Si: LJ, Si-Si: SW
-# pair_style hybrid sw tersoff lj/cut 8.15 
-# pair_coeff * * sw ${root}/si.sw Si Si Si           # Substrate Si-Si
-# pair_coeff * * tersoff ${root}/C.tersoff C C C           # Sheet C-C
+# pair_style hybrid sw lj/cut 8.15 tersoff
+# pair_coeff * * tersoff ${root}/C.tersoff C NULL NULL   # Sheet C-C
 # pair_coeff 1 2 lj/cut 0.008909 3.26                    # Interaction C-Si 
-# pair_coeff * 3 lj/cut 0.0 0.0 
+# pair_coeff * * sw ${root}/si.sw NULL Si NULL           # Substrate Si-Si
+# pair_coeff * 3  lj/cut 0.0 0.0 
+
+# Potentials: C-C: Tersoff, C-Si: LJ, Si-Si: SW
+pair_style hybrid/kk sw/kk tersoff/kk lj/cut/kk 8.15 
+pair_coeff * * sw/kk ${root}/si.sw Si Si Si           # Substrate Si-Si
+pair_coeff * * tersoff/kk ${root}/C.tersoff C C C           # Sheet C-C
+pair_coeff 1 2 lj/cut/kk 0.008909 3.26                    # Interaction C-Si 
+pair_coeff * 3  lj/cut/kk 0.0 0.0 
+
 
 timestep $(v_dt)
 fix nve semifree_atoms nve # (microcanonical) 
@@ -124,13 +118,17 @@ variable s_to_ps equal 1e12                     # time: s -> ps
 
 # Set Nevery Nrepeat Nfreq for all? <-----------------------------
 
+variable Nevery equal 1     # use input values every this many time steps
+variable Nrepeat equal 100  # number of times to use input values for calculating averages
+variable Nfreq equal 100    # calculate averages every this many time steps
+
 ## - Sheet - ##
 # Full sheet
 compute sheet_COM full_sheet com            # Center of mass
 compute sheet_fz full_sheet reduce ave fz   # Average z-force
 compute bond_coord full_sheet coord/atom cutoff 4.0 group substrate_contact
-fix full_sheet_bond_hist full_sheet ave/histo 1 100 100 -0.5 1.5 2 c_bond_coord mode vector beyond end
-variable full_sheet_bond_pct equal full_sheet_bond_hist[2][3]
+fix full_sheet_bond_hist full_sheet ave/histo 1 1 1 -0.5 1.5 2 c_bond_coord mode vector beyond end
+variable full_sheet_bond_pct equal f_full_sheet_bond_hist[2][3]
 
 # Inner sheet 
 compute sheet_fx sheet reduce sum fx        # Total force x
@@ -141,8 +139,8 @@ variable stress_atom atom sqrt(c_peratom[1]*c_peratom[1]+c_peratom[2]*c_peratom[
 # ^^What about shear stress directions?
 # Or friction force on each atom? Is this possible to compute like this?
 
-fix full_sheet_bond_hist sheet ave/histo 1 100 100 -0.5 1.5 2 c_bond_coord mode vector beyond end
-variable sheet_bond_pct equal full_sheet_bond_hist[2][3]
+fix sheet_bond_hist sheet ave/histo 1 1 1 -0.5 1.5 2 c_bond_coord mode vector beyond end
+variable sheet_bond_pct equal f_sheet_bond_hist[2][3]
 
 
 
@@ -161,7 +159,7 @@ compute Ff_sheet substrate group/group sheet # friction forces
 compute Ff_PB substrate group/group PB_tot # friction forces
 
 ## - Activate computes - ## 
-thermo_style custom c_sheet_fz c_PB_ylow_ymax c_PB_yhigh_ymin c_substrate_zhigh c_PB_ylow_com[2] c_PB_yhigh_com[2] c_sheet_COM[3] 
+thermo_style custom c_sheet_fz c_PB_ylow_ymax c_PB_yhigh_ymin c_substrate_zhigh c_PB_ylow_com[2] c_PB_yhigh_com[2] c_sheet_COM[3] #v_sheet_bond_pct f_sheet_bond_hist[2][3] v_full_sheet_bond_pct f_full_sheet_bond_hist[2][3]
 run 0 # activate compute
 
 # ---------- Derived variables ---------- #
@@ -191,7 +189,8 @@ variable dump_freq equal 100#0
 
 dump 1 all custom $(v_dump_freq) system_${out_ext}.data id type x y z vx vy vz v_stress_atom c_bond_coord
 dump 2 full_sheet custom $(v_dump_freq) full_sheet_${out_ext}.data id type x y z vx vy vz v_stress_atom c_bond_coord
-fix coord_out sheet ave/histo 1 100 100 -0.5 5.5 6 c_coord mode vector file sheet_${out_ext}_chist.txt
+fix coord_out sheet ave/histo ${Nevery} ${Nrepeat} ${Nfreq} -0.5 5.5 6 c_coord mode vector file sheet_${out_ext}_chist.txt
+fix contact_bonds full_sheet ave/time ${Nevery} ${Nrepeat} ${Nfreq} v_sheet_bond_pct v_full_sheet_bond_pct file bond_pct.txt
 
 
 # ---------- Print procedure schedule ---------- #

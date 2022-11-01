@@ -16,6 +16,17 @@ def read_friction_file(filename):
     return np.loadtxt(filename, unpack=True)
 
 
+def read_friction_file_dict(filename):
+    infile = open(filename, 'r')
+    infile.readline()
+    header = infile.readline().strip('#\n ').split(' ')
+    infile.close()
+    
+    data = np.loadtxt(filename)
+    return dict(zip(header, data.T))
+
+
+
 def get_files_in_folder(path, ext = None, exclude = None): 
     """ ext: extension to include
         exclude: exclude files containing that string
@@ -129,42 +140,7 @@ def get_fricton_force(filename):
     # return Ff_full_sheet[:,0].max(), abs(FN_full_sheet)       
     
     
-    
-def organize_data_old(data, num_stretch): # Working title
-    num_F_N = len(data)//num_stretch
-    assert(len(data)%num_stretch == 0), f"Number of stretch files ({num_stretch}) does not match the total number of data points ({len(data)}))"
 
-    # Sort by stretch pct     
-    sort = np.argsort(data[:, 0])
-    data = data[sort]
-   
-
-    # Create arrays
-    stretch_pct = np.zeros(num_stretch)
-    F_N = np.zeros(num_F_N)
-    # Ff = np.zeros((num_stretch, num_F_N), dtype = 'object')
-    Ff = np.zeros((num_stretch, num_F_N, data[0,2].shape[0],data[0,2].shape[1]))
-    
-    # Sort by F_N
-    for i in range(num_stretch):
-        interval = range(i*num_F_N, (i+1)*num_F_N)
-        
-        subsort = np.argsort(data[interval, 1])  
-        data[interval] = data[interval][subsort]
-        
-        stretch_pct[i] = np.mean(data[interval,0])
-        assert(np.std(data[interval,0]) < 1e-10), "Stretch_pct deviates from each other"
-        
-        F_N += (data[interval,1]).astype('float')
-        # test = np.concatenate(data[interval,2][:], axis = 2)
-        # print(test)
-        # exit()
-        Ff[i] = np.stack(data[interval,2])
-        
-    F_N /= num_stretch
-    assert(np.max([np.std(data[range(i, len(data), num_F_N),1]) for i in range(num_F_N)]) < 10e-10), "F_N deviates from each other" 
-    
-    return stretch_pct, F_N, Ff
     
 def organize_data(data): # Working title
     """ organize by column 0 and 1 """
@@ -191,24 +167,6 @@ def organize_data(data): # Working title
             
     return np.array(stretch_pct, dtype = 'float'), np.array(F_N, dtype = 'float'), *output,
     
-# def organize_data(data): # Working title
-    
-
-#     # Is this safe for small round offs?
-#     stretch_pct = np.unique(data[:,0]) 
-#     F_N = np.unique(data[:,1])
-    
-    
-#     Ff = np.zeros((len(stretch_pct), len(F_N), data[0,2].shape[0],data[0,2].shape[1]))
-    
-#     for i, s in enumerate(stretch_pct):
-#         for j, fn in enumerate(F_N):
-#             index = np.argwhere((data[:,0] == s) & (data[:,1] == fn))#[0,0]
-#             if len(index) == 0:
-#                 Ff[i, j] = np.full([data[0,2].shape[0],data[0,2].shape[1]], np.nan)
-#             else:
-#                 Ff[i, j] = data[index[0][0], 2]
-#     return stretch_pct, F_N, Ff
     
     
 def get_color_value(value, minValue, maxValue, cmap='viridis'):
@@ -255,6 +213,9 @@ def read_histogram(filename):
     infile.close()        
 
     return timestep, hist
+
+
+
 
 
 

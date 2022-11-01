@@ -72,21 +72,6 @@ def move_file_to(file, dest):
 def great4_runner():
     
     # Reference settings for NG4
-    # variables = { 
-    # "dt": 0.001, 
-    # "relax_time": 5,
-    # "stretch_speed_pct": 0.05,
-    # "pause_time1": 5,
-    # "F_N": 10e-9, # [N]
-    # "pause_time2": 5,
-    # "drag_dir_x": 0,
-    # "drag_dir_y": 1,
-    # "drag_speed": 1, # [m/s]
-    # "drag_length": 30,
-    # "K": 30.0,
-    # "root": "..",
-    # }
-    
     variables = { 
     "dt": 0.001, 
     "relax_time": 5,
@@ -97,24 +82,39 @@ def great4_runner():
     "drag_dir_x": 0,
     "drag_dir_y": 1,
     "drag_speed": 1, # [m/s]
-    "drag_length": 100,
+    "drag_length": 30,
     "K": 30.0,
     "root": "..",
     }
     
+    # variables = { 
+    # "dt": 0.001, 
+    # "relax_time": 5,
+    # "stretch_speed_pct": 0.05,
+    # "pause_time1": 5,
+    # "F_N": 10e-9, # [N]
+    # "pause_time2": 5,
+    # "drag_dir_x": 0,
+    # "drag_dir_y": 1,
+    # "drag_speed": 1, # [m/s]
+    # "drag_length": 100,
+    # "K": 30.0,
+    # "root": "..",
+    # }
+    
     
   
-    
-    
 
-    exit("Safety break is on!") # Safety break
+
+    # exit("Safety break is on!") # Safety break
 
     proc = Friction_procedure(variables)
 
     # header = "NewGreat4/" 
-    header = "egil:NG4_newpot_long/"
+    header = "bigfacet:NG4_GPU/"
     common_files = ["../friction_simulation/setup_sim.in", 
-                    "../friction_simulation/friction_procedure.in",
+                    "../friction_simulation/stretch.in",
+                    "../friction_simulation/drag.in",
                     "../potentials/si.sw",
                     "../potentials/C.tersoff",
                     # "../potentials/CH.airebo",
@@ -131,7 +131,7 @@ def great4_runner():
     for i, ext in enumerate(extentions):
         dir = header + ext
         sim = Simulator(directory = dir, overwrite=True)
-        sim.copy_to_wd( "../friction_simulation/run_friction_sim.in",
+        sim.copy_to_wd( "../friction_simulation/friction_procedure.in",
                         f"../config_builder/{config_data[i]}.txt",
                         f"../config_builder/{config_data[i]}_info.in"
                         )
@@ -139,15 +139,19 @@ def great4_runner():
         proc.variables["out_ext"] = ext
         proc.variables["config_data"] = config_data[i]
         proc.variables["stretch_max_pct"] = stretch_max_pct[i]
-        sim.set_input_script("../friction_simulation/run_friction_sim.in", **proc.variables)
+        sim.set_input_script("../friction_simulation/friction_procedure.in", **proc.variables)
         # sim.create_subdir("output_data")
         
-        slurm_args = {'job-name':'NG4_long', 'partition':'normal', 'ntasks':16, 'nodes':1}
-        sim.run(num_procs=16, lmp_exec="lmp", slurm=True, slurm_args=slurm_args)
+        # slurm_args = {'job-name':'NG4_long', 'partition':'normal', 'ntasks':16, 'nodes':1}
+        # sim.run(num_procs=16, lmp_exec="lmp", slurm=True, slurm_args=slurm_args)
         # sim.run(num_procs=1, lmp_exec="lmp_mpi")
+        
+        
+        slurm_args = {'job-name':'NG4_GPU', 'partition':'normal'}
+        GPU_device = SlurmGPU(dir = dir, slurm = True, slurm_args = slurm_args)
+        sim.run(device = GPU_device)
 
         # mpirun -n 1 lmp_mpi -in run_friction_sim.in -var dt 0.001 -var config_data sheet_substrate -var relax_time 1 -var stretch_speed_pct 0.05 -var stretch_max_pct 0.0 -var pause_time1 1 -var F_N 0.4993207256 -var pause_time2 0 -var drag_dir_x 0 -var drag_dir_y 1 -var drag_speed 0.05 -var drag_length 1 -var K 1.8724527210000002 -var root .. -var out_ext default
-
 
 def multi_run(sim, proc, config_data, num_stretch_files, F_N, num_procs = 16, jobname = 'MULTI'):
     sim.copy_to_wd( "../friction_simulation/setup_sim.in",
@@ -275,45 +279,31 @@ def one_config_multi_data():
     
 def custom():
     # Reference settings for NG4
-    # variables = { 
-    # "dt": 0.001, 
-    # "relax_time": 5,
-    # "stretch_speed_pct": 0.05,
-    # "pause_time1": 5,
-    # "F_N": 10e-9, # [N]
-    # "pause_time2": 5,
-    # "drag_dir_x": 0,
-    # "drag_dir_y": 1,
-    # "drag_speed": 1, # [m/s]
-    # "drag_length": 30,
-    # "K": 30.0,
-    # "root": "..",
-    # }
-    
-    # Changeable
     variables = { 
     "dt": 0.001, 
     "relax_time": 5,
     "stretch_speed_pct": 0.05,
     "pause_time1": 5,
-    "F_N": 350e-9, # [N]
+    "F_N": 10e-9, # [N]
     "pause_time2": 5,
     "drag_dir_x": 0,
     "drag_dir_y": 1,
-    "drag_speed": 50, # [m/s]
+    "drag_speed": 1, # [m/s]
     "drag_length": 30,
-    "K": 0,
+    "K": 30.0,
     "root": "..",
     }
     
+
     
 
     proc = Friction_procedure(variables)
 
     # header = "bigfacet:new_potential_test/"
-    header = "egil:new_potential_rip_test/"
+    header = "bigfacet:NG4_GPU/"
     common_files = ["../friction_simulation/setup_sim.in", 
-                    "../friction_simulation/friction_procedure.in",
+                    "../friction_simulation/stretch.in",
+                    "../friction_simulation/drag.in",
                     "../potentials/si.sw",
                     "../potentials/C.tersoff",
                     ]
@@ -336,16 +326,18 @@ def custom():
     proc.variables["out_ext"] = ext
     proc.variables["config_data"] = config_data
     proc.variables["stretch_max_pct"] = stretch_max_pct
-    sim.set_input_script("../friction_simulation/run_friction_sim.in", **proc.variables)
+    sim.set_input_script("../friction_simulation/friction_procedure.in", **proc.variables)
     
-    # slurm_args = {'job-name':'Tersoff', 'partition':'normal'}
-    # GPU_device = SlurmGPU(dir = dir, slurm = True, slurm_args = slurm_args)
+    slurm_args = {'job-name':'NG4_GPU', 'partition':'normal'}
+    GPU_device = SlurmGPU(dir = dir, slurm = True, slurm_args = slurm_args)
     # sim.run(device = GPU_device)
+    
+    exit()
    
     # sim.run(num_procs=1, lmp_exec="lmp_mpi")
     
-    slurm_args_CPU = {'job-name':'RIP', 'partition':'normal', 'ntasks':16, 'nodes':1}
-    sim.run(num_procs=16, lmp_exec="lmp", slurm=True, slurm_args=slurm_args_CPU)
+    # slurm_args_CPU = {'job-name':'RIP', 'partition':'normal', 'ntasks':16, 'nodes':1}
+    # sim.run(num_procs=16, lmp_exec="lmp", slurm=True, slurm_args=slurm_args_CPU)
 
 
     # mpirun -n 1 lmp_mpi -in run_friction_sim.in -var dt 0.001 -var config_data sheet_substrate -var relax_time 1 -var stretch_speed_pct 0.05 -var stretch_max_pct 0.0 -var pause_time1 1 -var F_N 0.4993207256 -var pause_time2 0 -var drag_dir_x 0 -var drag_dir_y 1 -var drag_speed 0.05 -var drag_length 1 -var K 1.8724527210000002 -var root .. -var out_ext default
@@ -356,6 +348,6 @@ def custom():
 
 
 if __name__ == "__main__":
-    # great4_runner()
-    one_config_multi_data()
+    great4_runner()
+    # one_config_multi_data()
     # custom()

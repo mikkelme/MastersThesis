@@ -110,6 +110,9 @@
 
 
 
+#### Week 43 (31/10 - 06/11) - Working from Denmark
+- Improved rupture detector 
+- Working getting Tersoff on GPU and making sure that Tersoff results is stable and not to different from the AIREBO results (which looks good so)
 
 
 

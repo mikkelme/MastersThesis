@@ -97,28 +97,17 @@ if "$(v_K) != 0" then "jump SELF spring_move"
 unfix nve 
 fix nve free_atoms nve 
 fix move_PB PB_tot move linear $(v_drag_speed*v_drag_dir_x/v_dir_norm) $(v_drag_speed*v_drag_dir_y/v_dir_norm) NULL units box 
-fix friction_force_spring all ave/time 1 100 100 v_move_force_x v_move_force_y c_Ff_sheet[1] c_Ff_sheet[2] c_Ff_sheet[3] c_Ff_PB[1] c_Ff_PB[2] c_Ff_PB[3] c_sheet_COM[1] c_sheet_COM[2] c_sheet_COM[3] file system_${out_ext}_Ff.txt 
+fix friction_force_spring all ave/time ${Nevery} ${Nrepeat} ${Nfreq} v_move_force_x v_move_force_y c_Ff_sheet[1] c_Ff_sheet[2] c_Ff_sheet[3] c_Ff_PB[1] c_Ff_PB[2] c_Ff_PB[3] c_sheet_COM[1] c_sheet_COM[2] c_sheet_COM[3] v_sheet_bond_pct v_full_sheet_bond_pct file system_${out_ext}_Ff.txt 
 thermo_style custom step time cpu cpuremain temp v_stretch_pct c_sheet_COM[1] c_sheet_COM[2] c_Ff[1] c_Ff[2] v_move_force_xy_norm  
 jump SELF after_move_commands
 
 # Spring move
 label spring_move
 fix spring_force PB_tot spring couple virtuel_atom $(v_K) 0.0 0.0 NULL 0.0
-fix friction_force_spring all ave/time 1 100 100 f_spring_force[1] f_spring_force[2] c_Ff_sheet[1] c_Ff_sheet[2] c_Ff_sheet[3] c_Ff_PB[1] c_Ff_PB[2] c_Ff_PB[3] c_sheet_COM[1] c_sheet_COM[2] c_sheet_COM[3] file system_${out_ext}_Ff.txt
+fix friction_force_spring all ave/time ${Nevery} ${Nrepeat} ${Nfreq} f_spring_force[1] f_spring_force[2] c_Ff_sheet[1] c_Ff_sheet[2] c_Ff_sheet[3] c_Ff_PB[1] c_Ff_PB[2] c_Ff_PB[3] c_sheet_COM[1] c_sheet_COM[2] c_sheet_COM[3] v_sheet_bond_pct v_full_sheet_bond_pct file system_${out_ext}_Ff.txt
 thermo_style custom step time cpu cpuremain temp v_stretch_pct c_sheet_COM[1] c_sheet_COM[2] f_spring_force[4]
 
 label after_move_commands
-
-# if "$(v_K) == 0" then &
-# "unfix nve" &
-# "fix nve free_atoms nve" &
-# "fix move_PB PB_tot move linear $(v_drag_speed*v_drag_dir_x/v_dir_norm) $(v_drag_speed*v_drag_dir_y/v_dir_norm) NULL units box" &
-# "fix friction_force_spring all ave/time 1 100 100 v_move_force_x v_move_force_y c_Ff_sheet[1] c_Ff_sheet[2] c_Ff_sheet[3] c_Ff_PB[1] c_Ff_PB[2] c_Ff_PB[3] c_sheet_COM[1] c_sheet_COM[2] c_sheet_COM[3] file system_${out_ext}_Ff.txt" &
-# "thermo_style custom step time cpu cpuremain temp v_stretch_pct c_sheet_COM[1] c_sheet_COM[2] c_Ff[1] c_Ff[2] v_move_force_xy_norm" & 
-# else & 
-# "fix spring_force PB_tot spring couple virtuel_atom $(v_K) 0.0 0.0 NULL 0.0" &
-# "fix friction_force_spring all ave/time 1 100 100 f_spring_force[1] f_spring_force[2] c_Ff_sheet[1] c_Ff_sheet[2] c_Ff_sheet[3] c_Ff_PB[1] c_Ff_PB[2] c_Ff_PB[3] c_sheet_COM[1] c_sheet_COM[2] c_sheet_COM[3] file system_${out_ext}_Ff.txt" &
-# "thermo_style custom step time cpu cpuremain temp v_stretch_pct c_sheet_COM[1] c_sheet_COM[2] f_spring_force[4]"
 
 # Move virtuel atom 
 fix move_va virtuel_atom move linear $(v_drag_speed*v_drag_dir_x/v_dir_norm) $(v_drag_speed*v_drag_dir_y/v_dir_norm) 0 units box 

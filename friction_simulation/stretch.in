@@ -13,9 +13,8 @@ label no_restart
 
 # ----------  Relax sheet ---------- #
 print "--> Relax: $(v_relax_steps) timesteps, $(v_relax_steps*dt) ps"
-thermo_style custom step time cpu cpuremain temp v_stretch_pct 
+thermo_style custom step time cpu cpuremain temp v_stretch_pct v_sheet_bond_pct v_full_sheet_bond_pct
 # variable S0 equal c_PB_yhigh_ymin-c_PB_ylow_ymax # Force S0 to current length
-run  $(v_relax_steps) 
 
 
 # ---------- Stretch sheet ---------- #
