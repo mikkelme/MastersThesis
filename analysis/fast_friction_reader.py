@@ -106,7 +106,6 @@ def plot_info(filenames):
             ax2.set(xlabel='Time $[ps]$', ylabel='$F_\parallel$ $[eV/Å]$')
             
             
-            
             # -- Ff_perp -- #
             # Move force and full sheet
             ax3.plot(data['time'], data['move_force'][:,1], color = color_cycle(0))
@@ -140,10 +139,6 @@ def plot_info(filenames):
                 ax7.plot(data['time'], data['contact'][1], color = color_cycle(2))
                 ax7.hlines(avg_bonds[0], data['time'][0], data['time'][-1], alpha = 0.5, linewidth = 1.5, linestyle = '--', color = color_cycle(1))
                 ax7.hlines(avg_bonds[1], data['time'][0], data['time'][-1], alpha = 0.5, linewidth = 1.5, linestyle = '--', color = color_cycle(2))
-                
-                # ax72 = ax7.twinx()
-                # ax72.yaxis.set_label_position("right")
-                # ax7.set_yticks([avg_bonds[0], avg_bonds[1]])
                 ax7.text(data['time'][-1]*0.95, avg_bonds[0]+0.001 , f"{avg_bonds[0]:0.3f}",)
                 ax7.text(data['time'][-1]*0.95, avg_bonds[1]+0.001 , f"{avg_bonds[1]:0.3f}",)
                 
@@ -163,7 +158,7 @@ def plot_info(filenames):
             
             
             
-            #####
+    
             
             mu = np.array((3, 2))
             

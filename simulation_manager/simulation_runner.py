@@ -227,15 +227,15 @@ def one_config_multi_data():
     variables = { 
     "dt": 0.001, 
     "relax_time": 5,
-    "stretch_speed_pct": 0.05,
+    "stretch_speed_pct": 0.01,
     "stretch_max_pct": 0.3,
     "pause_time1": 5,
     "F_N": 10e-9, # [N]
     "pause_time2": 5,
     "drag_dir_x": 0,
     "drag_dir_y": 1,
-    "drag_speed": 1, # [m/s]
-    "drag_length": 0.5,
+    "drag_speed": 10, # [m/s]
+    "drag_length": 10,
     "K": 30.0,
     "root": ".",
     }
@@ -270,10 +270,10 @@ def one_config_multi_data():
     # F_N = [100e-9]
 
     config_data = "sheet_substrate"     
-    dir = "egil:multi_short"
+    dir = "egil:multi_fast"
     
     sim = Simulator(directory = dir, overwrite=True)
-    multi_run(sim, proc, config_data, num_stretch_files, F_N, num_procs = 16, jobname = 'Mshort')
+    multi_run(sim, proc, config_data, num_stretch_files, F_N, num_procs = 16, jobname = 'Mfast')
 
     
     
@@ -348,6 +348,6 @@ def custom():
 
 
 if __name__ == "__main__":
-    great4_runner()
+    # great4_runner()
     # one_config_multi_data()
     # custom()
