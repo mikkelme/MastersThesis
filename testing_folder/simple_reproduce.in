@@ -43,6 +43,7 @@ pair_coeff 1 2 lj/cut 0.008909 1.26
 pair_coeff * * tersoff C.tersoff C NULL
 pair_coeff * * tersoff C.tersoff NULL C
 # ^^^^^^^^^^<--------- Working here 
+#^^^^^^^^^^^^
 
 # pair_coeff 2 2 tersoff C.tersoff NULL 
 # pair_coeff 1 1 lj/cut 0.008909 3.26                    
