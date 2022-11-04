@@ -110,6 +110,7 @@ def analyse_friction_file(filename):
     data = read_friction_file(filename)    
     time = data['TimeStep'] * dt # [ps]
     
+    
      
     # Organize in columns: parallel to drag, perpendicular to drag, z-axis
     move_force = np.vstack((decompose_wrt_drag_dir(data['v_move_force_x'], data['v_move_force_y'], drag_direction), np.zeros(len(data['v_move_force_x'])))).T
@@ -118,10 +119,9 @@ def analyse_friction_file(filename):
     COM_sheet = np.vstack((decompose_wrt_drag_dir(data['c_sheet_COM[1]'], data['c_sheet_COM[2]'], drag_direction), data['c_sheet_COM[3]'])).T
     COM_sheet -= COM_sheet[0,:] # origo as reference point
     
-    # # Smoothen or average
+    # Smoothen
     Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2], move_force[:,0], move_force[:,1] = savgol_filter(window_length, polyorder, Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2], move_force[:,0], move_force[:,1])
     Ff_full_sheet = Ff_sheet + Ff_PB
-    
     
     FN_full_sheet = np.mean(Ff_full_sheet[:,2])
     FN_sheet = np.mean(Ff_sheet[:,2])
@@ -144,8 +144,16 @@ def analyse_friction_file(filename):
     
 
 
-    # output
     varnames = ['time', 'move_force', 'Ff_full_sheet', 'Ff_sheet', "Ff_PB", "COM_sheet", "FN", "Ff"]
+    try: # Contact area
+        contact = np.vstack((data['v_full_sheet_bond_pct'], data['v_sheet_bond_pct']))
+        contact[0], contact[1] = savgol_filter(window_length, polyorder, contact[0], contact[1])
+        varnames.append("contact")
+    except KeyError:
+        pass
+    
+    
+    # output
     updated_data = {}
     for name in varnames:
         updated_data[name] = eval(name)

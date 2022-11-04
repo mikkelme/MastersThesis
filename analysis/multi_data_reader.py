@@ -47,8 +47,9 @@ def read_multi_folder(folders):
                     
                     friction_file = find_single_file(job_dir, ext = friction_ext)
                      
-                    Ff, FN = get_fricton_force(friction_file)
-                    data.append((stretch_pct, F_N, Ff, rupture_score, job_dir)) 
+                    # Ff, FN = get_fricton_force(friction_file)
+                    fricData = analyse_friction_file(friction_file)
+                    data.append((stretch_pct, F_N, fricData['Ff'], rupture_score, job_dir)) 
                 except FileNotFoundError:
                     # print(f" --> Missing files in: {job_dir} ")
                     print(f"<-- Missing files")

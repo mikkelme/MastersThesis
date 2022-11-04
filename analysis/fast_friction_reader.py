@@ -1,6 +1,6 @@
 from analysis_utils import *
 
-
+from matplotlib.widgets import Button, TextBox, Slider
 
 def plot_xy_time(fig, ax, x,y,time):
     """ Plot 2D x,y-plot with colorbar for time devolopment """
@@ -17,7 +17,8 @@ def plot_xy_time(fig, ax, x,y,time):
     cbar = fig.colorbar(line, ax=ax)
    
     cbar.set_label('Time $[ps]$', rotation=270, labelpad = 20)
-
+   
+ 
     # Set limits
     xsp = np.abs(x.max() - x.min()) * 0.1
     ysp = np.abs(y.max() - y.min()) * 0.1 
@@ -26,65 +27,66 @@ def plot_xy_time(fig, ax, x,y,time):
 
 
     
+class interactive_plotter:
+    """ Gets glitchy with multiple big figures open """
+    def __init__(self, fig):
+        self.cid_pick = fig.canvas.mpl_connect('button_press_event', self.pick_figure)
+        self.fig = fig
+        self.zoom = False
+        self.ax_list = fig.axes
+    
+    def pick_figure(self, event):
+        # print("clicked")
+        if not self.zoom:
+            if event.inaxes is not None:
+                
+                # col = event.inaxes.collections  
+                # if len(col) > 0: 
+                #     col[-1].set(visible = False)
+                #     self.cb = col[-1].colorbar 
+
+                self.old_axes, self.old_pos = event.inaxes, event.inaxes.get_position()
+                pad = 0.1
+                event.inaxes.set_position([pad, pad, 1-2*pad, 1-2*pad]) 
+                self.toggle_axes(self.ax_list)
+                self.toggle_axes([event.inaxes], visible = True)
+                self.zoom = True
+                
+        else:
+            if event.inaxes is None:
+                self.toggle_axes(self.ax_list, visible = True)
+                self.old_axes.set_position(self.old_pos)
+                self.zoom = False
+        self.fig.canvas.draw_idle()
+        
+    
+    def toggle_axes(self, ax_list, visible = False):
+        for ax in ax_list:
+            ax.set_visible(visible)
+            
+           
 def plot_info(filenames):
-    # interval = 10
-    # window_length = 20
-    # polyorder = 5
     window_length = 50
     polyorder = 5
 
-
+    obj_list = []
     for i, filename in enumerate(filenames):            
-            # Find a way to get pulling direction and dt
-            # drag_direction = np.array((0, 1))
-            # dt = 0.001
-            
             data = analyse_friction_file(filename)
             
-            # --- Get data --- #
-            # Read from file
-            # timestep, f_move_force1, f_move_force2, c_Ff_sheet1, c_Ff_sheet2, c_Ff_sheet3, c_Ff_PB1, c_Ff_PB2, c_Ff_PB3, c_sheet_COM1, c_sheet_COM2, c_sheet_COM3 = read_friction_file(filename)
             
-            # data = read_friction_file_dict(filename)
-        
+            # fig = plt.figure(num = i+len(filenames))
+            # plt.plot(data['time'], data['contact'][0], label = "full")
+            # plt.plot(data['time'], data['contact'][1], label = "inner")
+            # plt.ylabel('contact bonds [%]')
+            # plt.xlabel('Time $[ps]$')
+            # plt.legend()
             
-            
-            # time = data['TimeStep'] * dt # [ps]
-            
-            
-            
-            # # Organize in columns: parallel to drag, perpendicular to drag, z-axis
-            # move_force = np.vstack((decompose_wrt_drag_dir(f_move_force1, f_move_force2, drag_direction), np.zeros(len(f_move_force1)))).T
-            # Ff_sheet = np.vstack((decompose_wrt_drag_dir(c_Ff_sheet1, c_Ff_sheet2, drag_direction), c_Ff_sheet3)).T
-            # Ff_PB = np.vstack((decompose_wrt_drag_dir(c_Ff_PB1, c_Ff_PB2, drag_direction), c_Ff_PB3)).T
-            # COM_sheet = np.vstack((decompose_wrt_drag_dir(c_sheet_COM1, c_sheet_COM2, drag_direction), c_sheet_COM3)).T
-            # COM_sheet -= COM_sheet[0,:] # origo as reference point
-         
-            
-            
-            
-            # exit()
-            
-            
-            # # perp, parallel, z
-            
-            # time = timestep * dt # [ps]
-            # # Organize in columns: parallel to drag, perpendicular to drag, z-axis
-            # move_force = np.vstack((decompose_wrt_drag_dir(f_move_force1, f_move_force2, drag_direction), np.zeros(len(f_move_force1)))).T
-            # Ff_sheet = np.vstack((decompose_wrt_drag_dir(c_Ff_sheet1, c_Ff_sheet2, drag_direction), c_Ff_sheet3)).T
-            # Ff_PB = np.vstack((decompose_wrt_drag_dir(c_Ff_PB1, c_Ff_PB2, drag_direction), c_Ff_PB3)).T
-            # COM_sheet = np.vstack((decompose_wrt_drag_dir(c_sheet_COM1, c_sheet_COM2, drag_direction), c_sheet_COM3)).T
-            # COM_sheet -= COM_sheet[0,:] # origo as reference point
-         
-            # # # Smoothen or average
-            # Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2], move_force[:,0], move_force[:,1] = savgol_filter(window_length, polyorder, Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2], move_force[:,0], move_force[:,1])
-            
-            # # Fxy_norm = np.sqrt(c_Ff1**2 + c_Ff2**2)
-            # # move_force_norm = np.sqrt(move_force1**2 + move_force2**2)
-            
-            # Ff_full_sheet = Ff_sheet + Ff_PB
-
-            
+            # fig = plt.figure(num = i+len(filenames)+1)
+            # plt.plot(data['time'], data['Ff_full_sheet'][:,0]/data['contact'][0], label = "full")
+            # plt.plot(data['time'],  data['Ff_sheet'][:,0]/data['contact'][1], label = "inner")
+            # plt.xlabel('Time $[ps]$')
+            # plt.ylabel('$F_\parallel$ / contact bonds $[eV/Å]$')
+            # plt.legend()
             
             # --- Plotting --- #
             fig = plt.figure(num = i)
@@ -97,6 +99,8 @@ def plot_info(filenames):
             ax5 = plt.subplot2grid(grid, (2, 0), colspan=1)
             ax6 = plt.subplot2grid(grid, (2, 1), colspan=1)
             ax7 = plt.subplot2grid(grid, (3, 0), colspan=2)
+            obj_list.append(interactive_plotter(fig))
+            
 
             # -- Ff_para -- #
             # Move force and full sheet
@@ -142,14 +146,15 @@ def plot_info(filenames):
             plot_xy_time(fig, ax7, data['COM_sheet'][:,0], data['COM_sheet'][:,1], data['time'])
             ax7.axis('equal')
             ax7.set(xlabel='$\Delta COM_\parallel$ $[Å]$', ylabel='$\Delta COM_\perp$ $[Å]$')
-            # Put label on colorbar!
             
             fig.legend(loc = 'lower center', ncol=3, fancybox = True, shadow = True)
             # fig.legend(bbox_to_anchor=(0.5, 1.35), loc="upper center", bbox_transform=fig.transFigure, ncol=3, fancybox = True, shadow = True)
-            
             fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
             # fig.savefig('image_output.png', bbox_inches='tight')
             
+            
+            
+            #####
             
             mu = np.array((3, 2))
             
@@ -176,22 +181,23 @@ def plot_info(filenames):
             else:  # Spreadsheet format
                 print(f"{filename} {mu_max_full_sheet} {mu_max_sheet} {mu_max_PB} {mu_avg_full_sheet} {mu_avg_sheet} {mu_avg_PB}")
             
-
-
-
-
+            # plt.show()
+       
 
 if __name__ == "__main__":
 
     filenames = []
 
 
-    filenames += get_files_in_folder('../Data/NG4_newpot_long/', ext = "Ff.txt")
-    # filenames += get_files_in_folder('../Data/NG4_newpot_K0/', ext = "Ff.txt")
+    # filenames += get_files_in_folder('../Data/NG4_newpot_long/', ext = "Ff.txt")
+    filenames += get_files_in_folder('../Data/NG4_newpot_K0/', ext = "Ff.txt")
     
     
     # read_friction_file_dict('../friction_simulation/system_test_Ff.txt')
     # exit()
+    
+    
+    filenames = ['../friction_simulation/system_test_Ff.txt', filenames[0], filenames[1]] 
     plot_info(filenames)
     plt.show()
 
