@@ -1,0 +1,29 @@
+# Setup system
+include ${root}/setup_sim.in
+
+# ----------  Relax sheet ---------- #
+print "--> Relax: $(v_relax_steps) timesteps, $(v_relax_steps*dt) ps"
+thermo_style custom step time cpu cpuremain temp v_stretch_pct v_sheet_bond_pct v_full_sheet_bond_pct
+# variable S0 equal c_PB_yhigh_ymin-c_PB_ylow_ymax # Force S0 to current length
+
+
+# ---------- Stretch sheet ---------- #
+# Update fixes
+unfix nve
+unfix nvt
+fix nve free_atoms nve
+fix nvt free_atoms langevin ${temp} ${temp} ${damp} 48279
+fix ylow_move  PB_ylow move linear 0 $(-v_stretch_speed/2) NULL units box
+fix yhigh_move PB_yhigh move linear 0 $(v_stretch_speed/2) NULL units box
+
+print "--> Stretch: $(v_stretch_steps) timesteps, $(v_stretch_steps*dt) ps"
+# variable S0 equal $(c_PB_yhigh_ymin-c_PB_ylow_ymax) # Lock S0 after relaxing
+run $(v_stretch_steps)
+restart 0
+
+# Unfix moves (relevant if continued directly)
+unfix ylow_move
+unfix yhigh_move
+velocity PB_tot set 0 0 0
+
+

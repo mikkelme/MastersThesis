@@ -13,17 +13,25 @@ from matplotlib.colors import ListedColormap, BoundaryNorm
 
 
 def read_friction_file(filename):
-    return np.loadtxt(filename, unpack=True)
-
-
-def read_friction_file_dict(filename):
     infile = open(filename, 'r')
     infile.readline()
     header = infile.readline().strip('#\n ').split(' ')
     infile.close()
     
     data = np.loadtxt(filename)
-    return dict(zip(header, data.T))
+    outdict = dict(zip(header, data.T))
+    
+    # Change name of keys
+    xyz_to_elem = {'x':'[1]', 'y':'[2]'}
+    elem_to_xyz = ['x', 'y', 'z']
+    if 'f_spring_force[1]' in outdict:
+        old_keys = [key for key in outdict.keys() if 'f_spring_force' in key] 
+        # new_keys = ['v_move_force' + key.strip('f_spring_force') for key in old_keys ]     
+        new_keys = ['v_move_force_' + elem_to_xyz[int(key.strip('f_spring_force[]'))-1] for key in old_keys ]     
+        for old_key, new_key in zip(old_keys, new_keys): outdict[new_key] = outdict.pop(old_key)
+        
+        
+    return outdict
 
 
 
@@ -88,33 +96,33 @@ def decompose_wrt_drag_dir(x, y, drag_direction):
     return proj_para, proj_perp
 
 
-def get_fricton_force(filename):
+def analyse_friction_file(filename):
     window_length = 50
     polyorder = 5
-
-    # Read from file
-    timestep, f_move_force1, f_move_force2, c_Ff_sheet1, c_Ff_sheet2, c_Ff_sheet3, c_Ff_PB1, c_Ff_PB2, c_Ff_PB3, c_sheet_COM1, c_sheet_COM2, c_sheet_COM3 = read_friction_file(filename)
-    
     
     # Find a way to get pulling direction and dt
     drag_direction = np.array((0, 1))
     dt = 0.001
+    # ^^^^^XXX TODO XXX^^^^^^ #
     
     
-    time = timestep * dt # [ps]
     
+    data = read_friction_file(filename)    
+    time = data['TimeStep'] * dt # [ps]
+    
+     
     # Organize in columns: parallel to drag, perpendicular to drag, z-axis
-    move_force = np.vstack((decompose_wrt_drag_dir(f_move_force1, f_move_force2, drag_direction), np.zeros(len(f_move_force1)))).T
-    Ff_sheet = np.vstack((decompose_wrt_drag_dir(c_Ff_sheet1, c_Ff_sheet2, drag_direction), c_Ff_sheet3)).T
-    Ff_PB = np.vstack((decompose_wrt_drag_dir(c_Ff_PB1, c_Ff_PB2, drag_direction), c_Ff_PB3)).T
-    COM_sheet = np.vstack((decompose_wrt_drag_dir(c_sheet_COM1, c_sheet_COM2, drag_direction), c_sheet_COM3)).T
+    move_force = np.vstack((decompose_wrt_drag_dir(data['v_move_force_x'], data['v_move_force_y'], drag_direction), np.zeros(len(data['v_move_force_x'])))).T
+    Ff_sheet = np.vstack((decompose_wrt_drag_dir(data['c_Ff_sheet[1]'], data['c_Ff_sheet[2]'], drag_direction), data['c_Ff_sheet[3]'])).T
+    Ff_PB = np.vstack((decompose_wrt_drag_dir(data['c_Ff_PB[1]'], data['c_Ff_PB[2]'], drag_direction), data['c_Ff_PB[3]'])).T
+    COM_sheet = np.vstack((decompose_wrt_drag_dir(data['c_sheet_COM[1]'], data['c_sheet_COM[2]'], drag_direction), data['c_sheet_COM[3]'])).T
     COM_sheet -= COM_sheet[0,:] # origo as reference point
     
     # # Smoothen or average
     Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2], move_force[:,0], move_force[:,1] = savgol_filter(window_length, polyorder, Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2], move_force[:,0], move_force[:,1])
     Ff_full_sheet = Ff_sheet + Ff_PB
-
-
+    
+    
     FN_full_sheet = np.mean(Ff_full_sheet[:,2])
     FN_sheet = np.mean(Ff_sheet[:,2])
     FN_PB = np.mean(Ff_PB[:,2])
@@ -133,10 +141,16 @@ def get_fricton_force(filename):
     Ff = np.array([[max_full_sheet, avg_full_sheet],
                     [max_sheet, avg_sheet],
                     [max_PB, avg_PB]])
+    
 
 
-
-    return Ff, FN
+    # output
+    varnames = ['time', 'move_force', 'Ff_full_sheet', 'Ff_sheet', "Ff_PB", "COM_sheet", "FN", "Ff"]
+    updated_data = {}
+    for name in varnames:
+        updated_data[name] = eval(name)
+      
+    return updated_data
     # return Ff_full_sheet[:,0].max(), abs(FN_full_sheet)       
     
     

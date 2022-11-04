@@ -35,37 +35,54 @@ def plot_info(filenames):
 
 
     for i, filename in enumerate(filenames):            
+            # Find a way to get pulling direction and dt
+            # drag_direction = np.array((0, 1))
+            # dt = 0.001
+            
+            data = analyse_friction_file(filename)
+            
             # --- Get data --- #
             # Read from file
-            timestep, f_move_force1, f_move_force2, c_Ff_sheet1, c_Ff_sheet2, c_Ff_sheet3, c_Ff_PB1, c_Ff_PB2, c_Ff_PB3, c_sheet_COM1, c_sheet_COM2, c_sheet_COM3 = read_friction_file(filename)
+            # timestep, f_move_force1, f_move_force2, c_Ff_sheet1, c_Ff_sheet2, c_Ff_sheet3, c_Ff_PB1, c_Ff_PB2, c_Ff_PB3, c_sheet_COM1, c_sheet_COM2, c_sheet_COM3 = read_friction_file(filename)
             
-            data_dict = read_friction_file_dict(filename)
+            # data = read_friction_file_dict(filename)
+        
             
-            exit()
             
-            ### TODO: Make a dictionary instead for more flexibility <---------- ###
+            # time = data['TimeStep'] * dt # [ps]
             
-            # Find a way to get pulling direction and dt
-            drag_direction = np.array((0, 1))
-            dt = 0.001
             
-            # perp, parallel, z
             
-            time = timestep * dt # [ps]
-            # Organize in columns: parallel to drag, perpendicular to drag, z-axis
-            move_force = np.vstack((decompose_wrt_drag_dir(f_move_force1, f_move_force2, drag_direction), np.zeros(len(f_move_force1)))).T
-            Ff_sheet = np.vstack((decompose_wrt_drag_dir(c_Ff_sheet1, c_Ff_sheet2, drag_direction), c_Ff_sheet3)).T
-            Ff_PB = np.vstack((decompose_wrt_drag_dir(c_Ff_PB1, c_Ff_PB2, drag_direction), c_Ff_PB3)).T
-            COM_sheet = np.vstack((decompose_wrt_drag_dir(c_sheet_COM1, c_sheet_COM2, drag_direction), c_sheet_COM3)).T
-            COM_sheet -= COM_sheet[0,:] # origo as reference point
+            # # Organize in columns: parallel to drag, perpendicular to drag, z-axis
+            # move_force = np.vstack((decompose_wrt_drag_dir(f_move_force1, f_move_force2, drag_direction), np.zeros(len(f_move_force1)))).T
+            # Ff_sheet = np.vstack((decompose_wrt_drag_dir(c_Ff_sheet1, c_Ff_sheet2, drag_direction), c_Ff_sheet3)).T
+            # Ff_PB = np.vstack((decompose_wrt_drag_dir(c_Ff_PB1, c_Ff_PB2, drag_direction), c_Ff_PB3)).T
+            # COM_sheet = np.vstack((decompose_wrt_drag_dir(c_sheet_COM1, c_sheet_COM2, drag_direction), c_sheet_COM3)).T
+            # COM_sheet -= COM_sheet[0,:] # origo as reference point
          
-            # # Smoothen or average
-            Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2], move_force[:,0], move_force[:,1] = savgol_filter(window_length, polyorder, Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2], move_force[:,0], move_force[:,1])
             
-            # Fxy_norm = np.sqrt(c_Ff1**2 + c_Ff2**2)
-            # move_force_norm = np.sqrt(move_force1**2 + move_force2**2)
             
-            Ff_full_sheet = Ff_sheet + Ff_PB
+            
+            # exit()
+            
+            
+            # # perp, parallel, z
+            
+            # time = timestep * dt # [ps]
+            # # Organize in columns: parallel to drag, perpendicular to drag, z-axis
+            # move_force = np.vstack((decompose_wrt_drag_dir(f_move_force1, f_move_force2, drag_direction), np.zeros(len(f_move_force1)))).T
+            # Ff_sheet = np.vstack((decompose_wrt_drag_dir(c_Ff_sheet1, c_Ff_sheet2, drag_direction), c_Ff_sheet3)).T
+            # Ff_PB = np.vstack((decompose_wrt_drag_dir(c_Ff_PB1, c_Ff_PB2, drag_direction), c_Ff_PB3)).T
+            # COM_sheet = np.vstack((decompose_wrt_drag_dir(c_sheet_COM1, c_sheet_COM2, drag_direction), c_sheet_COM3)).T
+            # COM_sheet -= COM_sheet[0,:] # origo as reference point
+         
+            # # # Smoothen or average
+            # Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2], move_force[:,0], move_force[:,1] = savgol_filter(window_length, polyorder, Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2], move_force[:,0], move_force[:,1])
+            
+            # # Fxy_norm = np.sqrt(c_Ff1**2 + c_Ff2**2)
+            # # move_force_norm = np.sqrt(move_force1**2 + move_force2**2)
+            
+            # Ff_full_sheet = Ff_sheet + Ff_PB
 
             
             
@@ -83,46 +100,46 @@ def plot_info(filenames):
 
             # -- Ff_para -- #
             # Move force and full sheet
-            ax1.plot(time, move_force[:,0], label = "move", color = color_cycle(0))
-            ax1.plot(time, Ff_full_sheet[:,0], label = "group/group full_sheet", color = color_cycle(1))
+            ax1.plot(data['time'], data['move_force'][:,0], label = "move", color = color_cycle(0))
+            ax1.plot(data['time'], data['Ff_full_sheet'][:,0], label = "group/group full_sheet", color = color_cycle(1))
             ax1.set(xlabel='Time $[ps]$', ylabel='$F_\parallel$ $[eV/Å]$')
 
             # Force decomposition: Full_sheet = sheet + PB
-            ax2.plot(time, Ff_full_sheet[:,0], color = color_cycle(1))
-            ax2.plot(time, Ff_sheet[:,0], label = "group/group sheet", color = color_cycle(2))
-            ax2.plot(time, Ff_PB[:,0], label = "group/group PB", color = color_cycle(3))
+            ax2.plot(data['time'], data['Ff_full_sheet'][:,0], color = color_cycle(1))
+            ax2.plot(data['time'], data['Ff_sheet'][:,0], label = "group/group sheet", color = color_cycle(2))
+            ax2.plot(data['time'], data['Ff_PB'][:,0], label = "group/group PB", color = color_cycle(3))
             ax2.set(xlabel='Time $[ps]$', ylabel='$F_\parallel$ $[eV/Å]$')
             
             
             
             # -- Ff_perp -- #
             # Move force and full sheet
-            ax3.plot(time, move_force[:,1], color = color_cycle(0))
-            ax3.plot(time, Ff_full_sheet[:,1], color = color_cycle(1))
+            ax3.plot(data['time'], data['move_force'][:,1], color = color_cycle(0))
+            ax3.plot(data['time'], data['Ff_full_sheet'][:,1], color = color_cycle(1))
             ax3.set(xlabel='Time $[ps]$', ylabel='$F_\perp$ $[eV/Å]$')
 
             # Force decomposed: Full_sheet = sheet + PB
-            ax4.plot(time, Ff_full_sheet[:,1], color = color_cycle(1))
-            ax4.plot(time, Ff_sheet[:,1], color = color_cycle(2))
-            ax4.plot(time, Ff_PB[:,1], color = color_cycle(3))
+            ax4.plot(data['time'], data['Ff_full_sheet'][:,1], color = color_cycle(1))
+            ax4.plot(data['time'], data['Ff_sheet'][:,1], color = color_cycle(2))
+            ax4.plot(data['time'], data['Ff_PB'][:,1], color = color_cycle(3))
             ax4.set(xlabel='Time $[ps]$', ylabel='$F_\perp$ $[eV/Å]$')
             
             
             # -- Normal force -- #
-            ax5.plot(time, -Ff_full_sheet[:,2], color = color_cycle(1))
-            ax5.plot(time, -Ff_sheet[:,2], color = color_cycle(2))
-            ax5.plot(time, -Ff_PB[:,2], color = color_cycle(3))
+            ax5.plot(data['time'], -data['Ff_full_sheet'][:,2], color = color_cycle(1))
+            ax5.plot(data['time'], -data['Ff_sheet'][:,2], color = color_cycle(2))
+            ax5.plot(data['time'], -data['Ff_PB'][:,2], color = color_cycle(3))
             ax5.set(xlabel='Time $[ps]$', ylabel='$F_N$ $[eV/Å]$')
             
         
             # -- COM -- # 
             # Decomposed: COM = parallel + perpendicular
-            ax6.plot(time, COM_sheet[:,0], label = "$COM_\parallel$", color = color_cycle(4))
-            ax6.plot(time, COM_sheet[:,1], label = "$COM_\perp$", color = color_cycle(5))
+            ax6.plot(data['time'], data['COM_sheet'][:,0], label = "$COM_\parallel$", color = color_cycle(4))
+            ax6.plot(data['time'], data['COM_sheet'][:,1], label = "$COM_\perp$", color = color_cycle(5))
             ax6.set(xlabel='Time $[ps]$', ylabel='$\Delta COM$ $[Å]$')
 
             # Top view 
-            plot_xy_time(fig, ax7, COM_sheet[:,0], COM_sheet[:,1], time)
+            plot_xy_time(fig, ax7, data['COM_sheet'][:,0], data['COM_sheet'][:,1], data['time'])
             ax7.axis('equal')
             ax7.set(xlabel='$\Delta COM_\parallel$ $[Å]$', ylabel='$\Delta COM_\perp$ $[Å]$')
             # Put label on colorbar!
@@ -134,25 +151,22 @@ def plot_info(filenames):
             # fig.savefig('image_output.png', bbox_inches='tight')
             
             
-            # Friction coefficient (max)
-            FN_full_sheet = np.mean(Ff_full_sheet[:,2])
-            FN_sheet = np.mean(Ff_sheet[:,2])
-            FN_PB = np.mean(Ff_PB[:,2])
-            
             mu = np.array((3, 2))
-        
-            mu_max_full_sheet = Ff_full_sheet[:,0].max()/abs(FN_full_sheet)
-            mu_avg_full_sheet = np.mean(Ff_full_sheet[:,0])/abs(FN_full_sheet)
             
-            mu_max_sheet = Ff_sheet[:,0].max()/abs(FN_sheet)
-            mu_avg_sheet = np.mean(Ff_sheet[:,0])/abs(FN_sheet)
+            mu_max_full_sheet = data['Ff'][0,0]/abs(data['FN'][0])
+            mu_avg_full_sheet = data['Ff'][0,1]/abs(data['FN'][0])
             
-            mu_max_PB = Ff_PB[:,0].max()/abs(FN_PB)
-            mu_avg_PB = np.mean(Ff_PB[:,0])/abs(FN_PB)
+            mu_max_sheet = data['Ff'][1,0]/abs(data['FN'][1])
+            mu_avg_sheet = data['Ff'][1,1]/abs(data['FN'][1])
+            
+            mu_max_PB = data['Ff'][2,0]/abs(data['FN'][2])
+            mu_avg_PB = data['Ff'][2,1]/abs(data['FN'][2])
             
             mu = np.array([[mu_max_full_sheet, mu_avg_full_sheet],
                           [mu_max_sheet, mu_avg_sheet],
                           [mu_max_PB, mu_avg_PB]])
+     
+     
      
             if True: # Terminal table 
                 data = pandas.DataFrame(mu, np.array(['full_sheet', 'sheet', 'PB']), np.array(['max', 'avg']))
@@ -173,6 +187,7 @@ if __name__ == "__main__":
 
 
     filenames += get_files_in_folder('../Data/NG4_newpot_long/', ext = "Ff.txt")
+    # filenames += get_files_in_folder('../Data/NG4_newpot_K0/', ext = "Ff.txt")
     
     
     # read_friction_file_dict('../friction_simulation/system_test_Ff.txt')
