@@ -72,22 +72,8 @@ def plot_info(filenames):
     obj_list = []
     for i, filename in enumerate(filenames):            
             data = analyse_friction_file(filename)
-            
-            
-            # fig = plt.figure(num = i+len(filenames))
-            # plt.plot(data['time'], data['contact'][0], label = "full")
-            # plt.plot(data['time'], data['contact'][1], label = "inner")
-            # plt.ylabel('contact bonds [%]')
-            # plt.xlabel('Time $[ps]$')
-            # plt.legend()
-            
-            # fig = plt.figure(num = i+len(filenames)+1)
-            # plt.plot(data['time'], data['Ff_full_sheet'][:,0]/data['contact'][0], label = "full")
-            # plt.plot(data['time'],  data['Ff_sheet'][:,0]/data['contact'][1], label = "inner")
-            # plt.xlabel('Time $[ps]$')
-            # plt.ylabel('$F_\parallel$ / contact bonds $[eV/Å]$')
-            # plt.legend()
-            
+        
+        
             # --- Plotting --- #
             fig = plt.figure(num = i)
             fig.suptitle(filename)
@@ -98,7 +84,12 @@ def plot_info(filenames):
             ax4 = plt.subplot2grid(grid, (1, 1), colspan=1)
             ax5 = plt.subplot2grid(grid, (2, 0), colspan=1)
             ax6 = plt.subplot2grid(grid, (2, 1), colspan=1)
-            ax7 = plt.subplot2grid(grid, (3, 0), colspan=2)
+            if 'contact' in data:
+                ax7 = plt.subplot2grid(grid, (3, 0), colspan=1)
+                ax8 = plt.subplot2grid(grid, (3, 1), colspan=1)
+            else:
+                ax8 = plt.subplot2grid(grid, (3, 0), colspan=2)
+                
             obj_list.append(interactive_plotter(fig))
             
 
@@ -141,11 +132,29 @@ def plot_info(filenames):
             ax6.plot(data['time'], data['COM_sheet'][:,0], label = "$COM_\parallel$", color = color_cycle(4))
             ax6.plot(data['time'], data['COM_sheet'][:,1], label = "$COM_\perp$", color = color_cycle(5))
             ax6.set(xlabel='Time $[ps]$', ylabel='$\Delta COM$ $[Å]$')
-
+            
+            # --- Contact bonds --- #
+            if 'contact' in data:
+                avg_bonds = [np.mean(data['contact'][0]), np.mean(data['contact'][1])]
+                ax7.plot(data['time'], data['contact'][0], color = color_cycle(1))
+                ax7.plot(data['time'], data['contact'][1], color = color_cycle(2))
+                ax7.hlines(avg_bonds[0], data['time'][0], data['time'][-1], alpha = 0.5, linewidth = 1.5, linestyle = '--', color = color_cycle(1))
+                ax7.hlines(avg_bonds[1], data['time'][0], data['time'][-1], alpha = 0.5, linewidth = 1.5, linestyle = '--', color = color_cycle(2))
+                
+                # ax72 = ax7.twinx()
+                # ax72.yaxis.set_label_position("right")
+                # ax7.set_yticks([avg_bonds[0], avg_bonds[1]])
+                ax7.text(data['time'][-1]*0.95, avg_bonds[0]+0.001 , f"{avg_bonds[0]:0.3f}",)
+                ax7.text(data['time'][-1]*0.95, avg_bonds[1]+0.001 , f"{avg_bonds[1]:0.3f}",)
+                
+                ax7.set(xlabel='Time $[ps]$', ylabel='contact bonds [%]')
+                print(avg_bonds)
+                
+            
             # Top view 
-            plot_xy_time(fig, ax7, data['COM_sheet'][:,0], data['COM_sheet'][:,1], data['time'])
-            ax7.axis('equal')
-            ax7.set(xlabel='$\Delta COM_\parallel$ $[Å]$', ylabel='$\Delta COM_\perp$ $[Å]$')
+            plot_xy_time(fig, ax8, data['COM_sheet'][:,0], data['COM_sheet'][:,1], data['time'])
+            ax8.axis('equal')
+            ax8.set(xlabel='$\Delta COM_\parallel$ $[Å]$', ylabel='$\Delta COM_\perp$ $[Å]$')
             
             fig.legend(loc = 'lower center', ncol=3, fancybox = True, shadow = True)
             # fig.legend(bbox_to_anchor=(0.5, 1.35), loc="upper center", bbox_transform=fig.transFigure, ncol=3, fancybox = True, shadow = True)
@@ -190,14 +199,14 @@ if __name__ == "__main__":
 
 
     # filenames += get_files_in_folder('../Data/NG4_newpot_long/', ext = "Ff.txt")
-    filenames += get_files_in_folder('../Data/NG4_newpot_K0/', ext = "Ff.txt")
+    # filenames += get_files_in_folder('../Data/NG4_newpot_K0/', ext = "Ff.txt")
     
     
     # read_friction_file_dict('../friction_simulation/system_test_Ff.txt')
     # exit()
     
     
-    filenames = ['../friction_simulation/system_test_Ff.txt', filenames[0], filenames[1]] 
+    filenames = ['../friction_simulation/system_test_Ff.txt'] 
     plot_info(filenames)
     plt.show()
 
