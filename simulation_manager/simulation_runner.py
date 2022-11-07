@@ -87,31 +87,18 @@ def great4_runner():
     "root": "..",
     }
     
-    # variables = { 
-    # "dt": 0.001, 
-    # "relax_time": 5,
-    # "stretch_speed_pct": 0.05,
-    # "pause_time1": 5,
-    # "F_N": 10e-9, # [N]
-    # "pause_time2": 5,
-    # "drag_dir_x": 0,
-    # "drag_dir_y": 1,
-    # "drag_speed": 1, # [m/s]
-    # "drag_length": 100,
-    # "K": 30.0,
-    # "root": "..",
-    # }
-    
-    
-  
 
-
+      
+    
     # exit("Safety break is on!") # Safety break
+    
+    
 
     proc = Friction_procedure(variables)
 
     # header = "NewGreat4/" 
-    header = "bigfacet:NG4_GPU/"
+    # header = "bigfacet:NG4_GPU/"
+    header = "egil:NG4_CPU/"
     common_files = ["../friction_simulation/setup_sim.in", 
                     "../friction_simulation/stretch.in",
                     "../friction_simulation/drag.in",
@@ -142,16 +129,15 @@ def great4_runner():
         sim.set_input_script("../friction_simulation/friction_procedure.in", **proc.variables)
         # sim.create_subdir("output_data")
         
-        # slurm_args = {'job-name':'NG4_long', 'partition':'normal', 'ntasks':16, 'nodes':1}
-        # sim.run(num_procs=16, lmp_exec="lmp", slurm=True, slurm_args=slurm_args)
-        # sim.run(num_procs=1, lmp_exec="lmp_mpi")
+        slurm_args = {'job-name':'NG4_CPU', 'partition':'normal', 'ntasks':16, 'nodes':1}
+        sim.run(num_procs=16, lmp_exec="lmp", slurm=True, slurm_args=slurm_args)
         
-        
-        slurm_args = {'job-name':'NG4_GPU', 'partition':'normal'}
-        GPU_device = SlurmGPU(dir = dir, slurm = True, slurm_args = slurm_args)
-        sim.run(device = GPU_device)
+                   
+        # slurm_args = {'job-name':'NG4_GPU', 'partition':'normal'}
+        # lmp_args = {'-pk': 'kokkos newton on neigh half'}
+        # GPU_device = SlurmGPU(dir = dir, lmp_exec = 'lmp', lmp_args = lmp_args, slurm = True, slurm_args = slurm_args)
+        # sim.run(device = GPU_device)
 
-        # mpirun -n 1 lmp_mpi -in run_friction_sim.in -var dt 0.001 -var config_data sheet_substrate -var relax_time 1 -var stretch_speed_pct 0.05 -var stretch_max_pct 0.0 -var pause_time1 1 -var F_N 0.4993207256 -var pause_time2 0 -var drag_dir_x 0 -var drag_dir_y 1 -var drag_speed 0.05 -var drag_length 1 -var K 1.8724527210000002 -var root .. -var out_ext default
 
 def multi_run(sim, proc, config_data, num_stretch_files, F_N, num_procs = 16, jobname = 'MULTI'):
     sim.copy_to_wd( "../friction_simulation/setup_sim.in",
@@ -289,7 +275,7 @@ def custom():
     "drag_dir_x": 0,
     "drag_dir_y": 1,
     "drag_speed": 1, # [m/s]
-    "drag_length": 30,
+    "drag_length": 1,
     "K": 30.0,
     "root": "..",
     }
@@ -299,8 +285,8 @@ def custom():
 
     proc = Friction_procedure(variables)
 
-    # header = "bigfacet:new_potential_test/"
-    header = "bigfacet:NG4_GPU/"
+    # header = "bigfacet:GPU_perf/"
+    header = "egil:CPU_perf/"
     common_files = ["../friction_simulation/setup_sim.in", 
                     "../friction_simulation/stretch.in",
                     "../friction_simulation/drag.in",
@@ -312,9 +298,9 @@ def custom():
         move_file_to(file, header)
         
 
-    ext = "cut_25stretch"
+    ext = "cut_20stretch"
     config_data =  "sheet_substrate"
-    stretch_max_pct = 0.25
+    stretch_max_pct = 0.20
     
     dir = header + ext
     sim = Simulator(directory = dir, overwrite=True)
@@ -328,21 +314,15 @@ def custom():
     proc.variables["stretch_max_pct"] = stretch_max_pct
     sim.set_input_script("../friction_simulation/friction_procedure.in", **proc.variables)
     
-    slurm_args = {'job-name':'NG4_GPU', 'partition':'normal'}
-    GPU_device = SlurmGPU(dir = dir, slurm = True, slurm_args = slurm_args)
+
+    slurm_args = {'job-name':'CPU_perf', 'partition':'normal', 'ntasks':16, 'nodes':1}
+    sim.run(num_procs=16, lmp_exec="lmp", slurm=True, slurm_args=slurm_args)
+        
+                   
+    # slurm_args = {'job-name':'GPU_perf', 'partition':'normal'}
+    # lmp_args = {'-pk': 'kokkos newton on neigh half'}
+    # GPU_device = SlurmGPU(dir = dir, lmp_exec = 'lmp', lmp_args = lmp_args, slurm = True, slurm_args = slurm_args)
     # sim.run(device = GPU_device)
-    
-    exit()
-   
-    # sim.run(num_procs=1, lmp_exec="lmp_mpi")
-    
-    # slurm_args_CPU = {'job-name':'RIP', 'partition':'normal', 'ntasks':16, 'nodes':1}
-    # sim.run(num_procs=16, lmp_exec="lmp", slurm=True, slurm_args=slurm_args_CPU)
-
-
-    # mpirun -n 1 lmp_mpi -in run_friction_sim.in -var dt 0.001 -var config_data sheet_substrate -var relax_time 1 -var stretch_speed_pct 0.05 -var stretch_max_pct 0.0 -var pause_time1 1 -var F_N 0.4993207256 -var pause_time2 0 -var drag_dir_x 0 -var drag_dir_y 1 -var drag_speed 0.05 -var drag_length 1 -var K 1.8724527210000002 -var root .. -var out_ext default
-   
-    
 
     
 
@@ -350,4 +330,4 @@ def custom():
 if __name__ == "__main__":
     # great4_runner()
     # one_config_multi_data()
-    # custom()
+    custom()

@@ -6,7 +6,6 @@ variable damp equal 1.0 # ps
 variable restart_file index None
 variable readable equal is_file(${restart_file})
 if ${readable} then "jump SELF setup_from_restart_file"
-# if "${restart_file}!=None" then "jump SELF setup_from_restart_file"
 
 ####################################
 ### --- Setup from read_data --- ###
@@ -87,18 +86,11 @@ neigh_modify        delay 0 every 1 one 10000
 # pair_coeff * 3  lj/cut 0.0 0.0 
 
 # Potentials: C-C: Tersoff, C-Si: LJ, Si-Si: SW
-pair_style hybrid sw lj/cut 8.15 tersoff
+pair_style hybrid tersoff lj/cut 8.15 sw 
 pair_coeff * * tersoff ${root}/C.tersoff C NULL NULL   # Sheet C-C
 pair_coeff 1 2 lj/cut 0.008909 3.26                    # Interaction C-Si 
 pair_coeff * * sw ${root}/si.sw NULL Si NULL           # Substrate Si-Si
 pair_coeff * 3  lj/cut 0.0 0.0 
-
-# # Potentials: C-C: Tersoff, C-Si: LJ, Si-Si: SW
-# pair_style hybrid/kk sw/kk tersoff/kk lj/cut/kk 8.15 
-# pair_coeff * * sw/kk ${root}/si.sw Si Si Si           # Substrate Si-Si
-# pair_coeff * * tersoff/kk ${root}/C.tersoff C C C           # Sheet C-C
-# pair_coeff 1 2 lj/cut/kk 0.008909 3.26                    # Interaction C-Si 
-# pair_coeff * 3  lj/cut/kk 0.0 0.0 
 
 
 timestep $(v_dt)
