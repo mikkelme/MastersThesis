@@ -328,6 +328,6 @@ def custom():
 
 
 if __name__ == "__main__":
-    # great4_runner()
+    great4_runner()
     # one_config_multi_data()
-    custom()
+    # custom()

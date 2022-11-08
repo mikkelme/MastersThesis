@@ -13,4 +13,4 @@
 #SBATCH --output=slurm.out
 #
 
-mpirun -n 1 lmp -pk kokkos newton on neigh full -k on g 1 -sf kk -in friction_procedure.in
+mpirun -n 1 lmp -pk kokkos newton on neigh half -k on g 1 -sf kk -in reproduce.in

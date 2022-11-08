@@ -130,8 +130,8 @@ def detect_rupture(filename, stretchfile = None, check = False):
        
         
     # Filter
-    # for i in range(hist.shape[1]):
-    #     cnum[:,i] = signal.savgol_filter(cnum[:,i], int(target_window_length/data_freq), polyorder)
+    for i in range(hist.shape[1]):
+        cnum[:,i] = signal.savgol_filter(cnum[:,i], int(target_window_length/data_freq), polyorder)
         
     # coordination number change
     deltacnum = np.full(np.shape(cnum), np.nan)
@@ -165,8 +165,7 @@ def detect_rupture(filename, stretchfile = None, check = False):
     peakorder = np.mean(minpeak_step[notnan]) > np.mean(maxpeak_step[notnan]) 
         
     
-    # print(minpeak_step[notnan], maxpeak_step[notnan])
-    # exit()
+    print(minpeak_step)
     
     if maxpeak_alignment:
         # check if minpeak magnitude significant
@@ -181,7 +180,6 @@ def detect_rupture(filename, stretchfile = None, check = False):
     rupture_score = np.mean(rupture_flags[~np.isnan(rupture_flags)])
     
     
-    #### Can also check that min comes after max
     
     if check: # Show plots and flags
         print(f'Alignment (min, max) = ({minpeak_alignment}, {maxpeak_alignment})')
@@ -217,7 +215,7 @@ def detect_rupture(filename, stretchfile = None, check = False):
 
 
 if __name__ == "__main__":
-    
+    filenames = []
     # filenames = ["../Data/NG4_newpot_long/cut_nostretch/_cut_nostretch_chist.txt"]
     # filenames = ["../Data/NG4_newpot_long/cut_20stretch/_cut_20stretch_chist.txt"]
     # filenames = get_files_in_folder('../Data/NG4_newpot_long/', ext = "chist.txt")
@@ -241,8 +239,13 @@ if __name__ == "__main__":
     # filenames = ['../Data/OCMD_newpot/stretch__default_chist.txt'] 
     
     
-    filenames = ['../Data/OCMD_newpot/stretch.6712_folder/job0/_tmp_chist.txt'] 
-    stretchfile = '../Data/OCMD_newpot/stretch__default_chist.txt'
+    # filenames = ['../Data/OCMD_newpot/stretch.6712_folder/job0/_tmp_chist.txt'] 
+    # stretchfile = '../Data/OCMD_newpot/stretch__default_chist.txt'
+    
+    
+    
+    
+    filenames += get_files_in_folder('../Data/NG4_GPU/', ext = "chist.txt")
     stretchfile = None
     
     ###########################################
@@ -260,17 +263,14 @@ if __name__ == "__main__":
     
     # filenames = ['../Data/rupture_test/sheet_local_chist.txt']
     # stretchfile = None
+    
+    
+    
     for filename in filenames:
-        rupture_score = detect_rupture(filename, stretchfile = stretchfile, check = True)
+        rupture_score = detect_rupture(filename, stretchfile = stretchfile, check = False)
         print(f"filename: {filename}, rupture_score = {rupture_score}")
         print()
-        plt.show()
-
-# TODO: Make two equal simulations under no rupture conditions: 
-#           - One with friction procedure producing connected chist
-#           - Another from OCMD producing two chist files (stretch + drag)
-#             which should then be combinned in post
-#       The result of these need to match before proceeding. Right now,
-#       I suspect that either or both the seaming and magnitude of the chist do
-#       not match completely. For the latter check if both use the same group sheet
-#       and not full_sheet in one of them.
+        # plt.show()
+        
+        
+        

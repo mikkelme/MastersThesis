@@ -194,14 +194,15 @@ if __name__ == "__main__":
 
 
     # filenames += get_files_in_folder('../Data/NG4_newpot_long/', ext = "Ff.txt")
-    # filenames += get_files_in_folder('../Data/NG4_newpot_K0/', ext = "Ff.txt")
     
+    filenames += get_files_in_folder('../Data/NG4_GPU/cut_20stretch/', ext = "Ff.txt")
+    filenames += get_files_in_folder('../Data/multi_fast/stretch_19994_folder/job1', ext = "Ff.txt")
     
+
     # read_friction_file_dict('../friction_simulation/system_test_Ff.txt')
     # exit()
     
     
-    filenames = ['../friction_simulation/system_test_Ff.txt'] 
     plot_info(filenames)
     plt.show()
 

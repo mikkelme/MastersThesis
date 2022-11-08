@@ -39,23 +39,28 @@ def read_multi_folder(folders):
                         # rupture_score = random.uniform(0,1)
                         rupture_score = 0
                     
-                    ##############################################
-                    # Quick fix for missing stretch pct
-                    timestep = int(job_dir.split("stretch.")[1].split("_")[0])
-                    stretch_pct = (timestep-5000)/(10999-5000)*0.30
-                    ##############################################
+                    # ##############################################
+                    # # Quick fix for missing stretch pct
+                    # timestep = int(job_dir.split("stretch.")[1].split("_")[0])
+                    # stretch_pct = (timestep-5000)/(10999-5000)*0.30
+                    # ##############################################
                     
                     friction_file = find_single_file(job_dir, ext = friction_ext)
                      
                     # Ff, FN = get_fricton_force(friction_file)
                     fricData = analyse_friction_file(friction_file)
-                    data.append((stretch_pct, F_N, fricData['Ff'], rupture_score, job_dir)) 
+                    # print(np.mean(fricData['contact'][0]))
+                    # print(np.mean(fricData['contact'][1]))
+                    # exit()
+                    data.append((stretch_pct, F_N, fricData['Ff'], rupture_score, job_dir, np.array([np.mean(fricData['contact'][0]), np.mean(fricData['contact'][1])]))) 
                 except FileNotFoundError:
                     # print(f" --> Missing files in: {job_dir} ")
                     print(f"<-- Missing files")
         print()
         data = np.array(data, dtype = 'object')
-        stretch_pct, F_N, Ff, rup, filenames = organize_data(data)
+        stretch_pct, F_N, Ff, rup, filenames, contact = organize_data(data)
+        
+        print(np.shape(contact))
        
         detections = [["stretch %", "F_N", "Filenames"]]
         for i in range(len(stretch_pct)):
@@ -83,11 +88,13 @@ def read_multi_folder(folders):
             # --- Plotting --- #
             fig = plt.figure(num = group)
             fig.suptitle(group_name[group])
-            grid = (2,2)
+            grid = (3,2)
             ax1 = plt.subplot2grid(grid, (0, 0), colspan=1)
             ax2 = plt.subplot2grid(grid, (0, 1), colspan=1)
             ax3 = plt.subplot2grid(grid, (1, 0), colspan=1)
             ax4 = plt.subplot2grid(grid, (1, 1), colspan=1)
+            ax5 = plt.subplot2grid(grid, (2, 0), colspan=1)
+            ax6 = plt.subplot2grid(grid, (2, 1), colspan=1)
             cmap = matplotlib.cm.viridis
 
             for i in range(len(stretch_pct)):
@@ -114,7 +121,7 @@ def read_multi_folder(folders):
             ax1.set(xlabel='$F_N$', ylabel='max $F_\parallel$')
             ax2.set(xlabel='$F_N$', ylabel='mean $F_\parallel$')
             
-            
+        
             for j in range(len(F_N)):                
                 color = get_color_value(F_N[j], np.min(F_N), np.max(F_N))
                 rup_true = np.argwhere(rup[:, j] > ruptol)
@@ -128,6 +135,14 @@ def read_multi_folder(folders):
                 ax4.plot(stretch_pct[rup_true], Ff[rup_true, j, group, 1], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color=color)  
                 ax4.plot(stretch_pct[rup_false], Ff[rup_false, j, group, 1], linestyle = 'None', marker = marker, markersize = markersize, color=color)  
                 
+                ax5.plot(contact[:,j,1], Ff[:, j, group, 0], color = color, linewidth = linewidth, markersize = markersize, label = f'F_N = {F_N[j]:g}')
+                ax5.plot(contact[rup_true,j,1], Ff[rup_true, j, group, 1], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color=color)  
+                ax5.plot(contact[rup_false,j,1], Ff[rup_false, j, group, 1], linestyle = 'None', marker = marker, markersize = markersize, color=color)  
+                
+                # TODO Fix markers 
+                ax6.plot(contact[:,j,1], Ff[:, j, group, 1], color = color, linewidth = linewidth, markersize = markersize, label = f'F_N = {F_N[j]:g}')
+
+
                 
             norm = matplotlib.colors.BoundaryNorm(F_N, cmap.N)
             cax = make_axes_locatable(ax4).append_axes("right", "5%")
@@ -136,9 +151,28 @@ def read_multi_folder(folders):
             
             ax3.set(xlabel='stretch [%]', ylabel='max $F_\parallel$')
             ax4.set(xlabel='stretch [%]', ylabel='mean $F_\parallel$')
+            ax5.set(xlabel='contact [%]', ylabel='max $F_\parallel$')
+            ax6.set(xlabel='contact[%]', ylabel='mean $F_\parallel$')
  
             plt.tight_layout()       
-        # fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)      
+ 
+ 
+ 
+        fig = plt.figure(num = 4)
+        for j in range(len(F_N)):                
+                color = get_color_value(F_N[j], np.min(F_N), np.max(F_N))
+                rup_true = np.argwhere(rup[:, j] > ruptol)
+                rup_false = np.argwhere(rup[:, j] <= ruptol)
+                
+                plt.plot(stretch_pct, contact[:,j,1], color = color, linewidth = linewidth, markersize = markersize, label = f'F_N = {F_N[j]:g}')
+            
+
+        norm = matplotlib.colors.BoundaryNorm(F_N, cmap.N)
+        cax = make_axes_locatable(plt.gca()).append_axes("right", "5%")
+        cax.grid(False)
+        fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax=cax, label='$F_N$')
+        plt.tight_layout()       
+ 
         plt.show()
         
         
@@ -211,5 +245,5 @@ def read_multi_folder(folders):
 
 if __name__ == "__main__":
     # folders = ['../Data/one_config_multi_data']
-    folders = ['../Data/OCMD_newpot']
+    folders = ['../Data/multi_fast']
     read_multi_folder(folders)

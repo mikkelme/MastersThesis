@@ -109,10 +109,21 @@
 - Found a way to calculate contact area in lammps (both as \% and per vector value (True/False) by cutoff).
 
 
-
-#### Week 43 (31/10 - 06/11) - Working from Denmark
+#### Week 44 (31/10 - 06/11) - Working from Denmark
 - Improved rupture detector 
-- Working getting Tersoff on GPU and making sure that Tersoff results is stable and not to different from the AIREBO results (which looks good so)
+- Working getting Tersoff on GPU and making sure that Tersoff results is stable and not to different from the AIREBO results (which looks good so far)
+- Added contact bonds to data file
+- Updated analysis python methods
+- (Mostly spend times on FYS3150 correcting)
+
+
+#### Week 45 (07/11 - 13/11) - Working from Pisa
+- Fixed the GPU tersoff problem (updating lammps on cluster)
+- Working on fixing slow GPU speeds (spend a lot of times on the 'modify' category)
+
+
+
+
 
 
 
