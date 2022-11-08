@@ -1,0 +1,105 @@
+# units metal
+# newton on 
+# boundary p p m  
+# atom_style atomic 
+
+# # Graphene lattice
+# lattice custom 2.419 &
+#         a1    0                 1.0     0     &
+#         a2    $(sqrt(3)/2)      0.5     0     &
+#         a3    $(1/(2*sqrt(3)))  0.5     0.83  &
+#         basis 0                 0       0     &
+#         basis $(1/3)            $(1/3)  0.0
+
+# # Simulation box
+# region simreg1 block 5 15 5 15 0 0.5  
+# region simreg2 block 0 20 0 20 9.5 10.0  
+# region merge union 2 simreg1 simreg2
+
+# create_box 2 merge 
+# create_atoms 1 region simreg1 basis 1 1
+# create_atoms 2 region simreg2 basis 2 2
+
+# group G1 region simreg1
+# group G2 region simreg2
+
+# region PB_region block INF INF 65.0 INF INF 1 units box
+# group PB region PB_region
+# group integrate subtract G1 PB
+
+# fix move_PB G1 move linear 0 2 0 units box 
+
+# delete_atoms group G2
+
+# # Dynamics            
+# variable temp equal 1.0 # Kelvin                  
+# mass 1 12.0107  
+# mass 2 12.0107 
+
+# velocity integrate create ${temp} 5432373 dist gaussian
+
+# pair_style hybrid tersoff lj/cut 2.0 
+# pair_coeff * * tersoff C.tersoff C NULL 
+# pair_coeff 1 2 lj/cut 1 1                 
+# pair_coeff 2 2 lj/cut 1 1                 
+
+# timestep 0.001
+# fix nve integrate nve 
+
+
+# # Output
+# thermo 1000
+# dump 1 all custom 100 dump_reproduce.data id type x y z vx vy vz
+
+# run 25000
+
+# # unfix nve
+# # unfix move_PB
+# # fix nve G1 nve 
+# # run 20000
+
+##################################################
+units metal
+newton on 
+boundary p p m  
+atom_style atomic 
+
+# Graphene lattice
+lattice custom 2.419 &
+        a1    0                 1.0     0     &
+        a2    $(sqrt(3)/2)      0.5     0     &
+        a3    $(1/(2*sqrt(3)))  0.5     0.83  &
+        basis 0                 0       0     &
+        basis $(1/3)            $(1/3)  0.0
+
+# Simulation box & atoms
+region simreg block 5 15 5 15 0 0.5 
+region boxreg block 0 20 0 20 -5 5 
+create_box 1 boxreg
+create_atoms 1 region simreg basis 1 1
+
+# Pull part of the sheet
+region PB_region block INF INF 65.0 INF INF 1 units box # Pull block
+group PB region PB_region 
+group integrate subtract all PB
+fix move_PB PB move linear 0 2 0 units box 
+
+# Dynamics            
+mass 1 12.0107  
+
+velocity integrate create 1.0 5432373 dist gaussian
+pair_style tersoff
+pair_coeff * * C.tersoff C 
+
+timestep 0.001
+fix nve integrate nve 
+
+# Output
+thermo 1000
+dump 1 all custom 100 dump_reproduce.data id type x y z vx vy vz
+run 25000
+
+# unfix nve
+# unfix move_PB
+# fix nve G1 nve 
+# run 20000
