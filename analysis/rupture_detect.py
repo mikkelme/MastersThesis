@@ -1,95 +1,6 @@
 from analysis_utils import *
 
 
-# def detect_rupture_old(filename, stretchfile = None, check = False):
-#     # --- Settings --- #
-#     # Filter
-#     target_window_length = 2000 # [Timesteps]
-#     polyorder = 5
-    
-#     # Detection 
-#     cut = 10 # cut-off from data ends due to savgol filter artifacts [indexes]
-#     thresshold_ratio = 0.7 # |minpeak| > ratio * |maxpeak| => RUPTURE
-#     std_tol = 1000 # Tolerance for std between minpeak location in timesteps
-    
-#     # --- Get data --- #
-#     timestep, hist = read_histogram(filename)
-#     data_freq = timestep[1] - timestep[0]
-#     cnum = hist[:, :, 1]
-#     rupture_flags = np.full(hist.shape[1], np.nan)
-#     stdpeak = np.full(hist.shape[1], np.nan)
-#     minmax_peakidx = np.full((hist.shape[1], 2), np.nan)
-    
-#     if stretchfile != None:
-#         timestep_merge, hist_merge = read_histogram(stretchfile)
-#         data_freq_merge = timestep_merge[1] - timestep_merge[0]
-#         cnum_merge = hist_merge[:, :, 1]
-        
-#         assert(data_freq == data_freq_merge)
-#         assert(cnum_merge.shape[1] == cnum.shape[1])
-#         cnum = np.concatenate((cnum_merge, cnum))
-#         timestep = np.concatenate((timestep_merge, timestep))
-    
-#     # Filter
-#     for i in range(hist.shape[1]):
-#         cnum[:,i] = savgol_filter(int(target_window_length/data_freq), polyorder, cnum[:,i])[0]
-        
-#     deltacnum = np.full(np.shape(cnum), np.nan)
-#     deltacnum[1:-1] = cnum[2:] - cnum[:-2]
-    
-    
-#     # --- Detection --- #
-#     # minmmax peaks
-#     for i in range(2, hist.shape[1]): # (Nothing implemeted for i = 0, 1)
-#         minmax_peakidx[i, 0], minpeak = timestep[cut + np.argmin(deltacnum[cut:-cut-1, i])], np.min(deltacnum[cut:-cut-1, i])
-#         minmax_peakidx[i, 1], maxpeak = timestep[cut + np.argmax(deltacnum[cut:-cut-1, i])], np.max(deltacnum[cut:-cut-1, i])
-            
-#         # Check if significant cnum minpeak accurs after maxpeak
-#         flags = (minmax_peakidx[i,1] < minmax_peakidx[i,0], abs(minpeak) > abs(maxpeak) * thresshold_ratio)
-#         rupture_flags[i] = flags[0] & flags[1]
-#         stdpeak[i] = np.std(deltacnum[cut:-cut-1, i])
-            
-#     A = maxpeak/stdpeak
-#     B = minpeak/stdpeak
-   
-#     A = A[~np.isnan(A)]
-#     B = B[~np.isnan(B)]
-#     ratio = B/A
-#     print(A)
-#     print(B)
-#     print(ratio)        
-        
-        
-    
-#     # Minpeak idx std check (counteract confusion with no stretch simulations)
-#     std = minmax_peakidx[~np.isnan(minmax_peakidx)].reshape(-1, 2).std(0)
-#     if std[0] > std_tol: # Rupture flags <-- 0
-#         rupture_flags[rupture_flags == 1] = 0
-    
-#     # Final average score 
-#     rupture_score = np.mean(rupture_flags[~np.isnan(rupture_flags)])
-    
-    
-#     if check: # Show plots and flags
-#         print(f'Rupture flags: {rupture_flags}')
-#         plt.figure(num = 0)
-#         for i in range(hist.shape[1]):
-#             plt.title("coordination number")
-#             plt.plot(timestep[cut:-cut-1], cnum[cut:-cut-1, i], label = f'center = {hist[0,i,0]}')
-#             plt.xlabel("Timestep")
-#             plt.ylabel("$cnum")
-#         plt.legend()
-        
-#         plt.figure(num = 1)
-#         for i in range(hist.shape[1]):
-#             plt.title("$\Delta$ coordination number")
-#             plt.plot(timestep[cut:-cut-1], deltacnum[cut:-cut-1, i], label = f'center = {hist[0,i,0]}')
-#             plt.xlabel("Timestep")
-#             plt.ylabel("$\Delta$ cnum")
-#         plt.legend()
-        
-#     return rupture_score
-
 def detect_rupture(filename, stretchfile = None, check = False):
     # --- Settings --- #
     # Filter
@@ -108,13 +19,7 @@ def detect_rupture(filename, stretchfile = None, check = False):
     data_freq = timestep[1] - timestep[0]
     cnum = hist[:, :, 1]
     rupture_flags = np.full(hist.shape[1], np.nan)
-    
-    # Artifical backwards shift to cover apperent gap
-    # timestep -= 6*data_freq
-    # print(data_freq)
-    # print(timestep[0])
-    # exit()
-    
+
     # Append stretchfile in front
     if stretchfile != None:
         timestep_merge, hist_merge = read_histogram(stretchfile)
@@ -165,7 +70,6 @@ def detect_rupture(filename, stretchfile = None, check = False):
     peakorder = np.mean(minpeak_step[notnan]) > np.mean(maxpeak_step[notnan]) 
         
     
-    print(minpeak_step)
     
     if maxpeak_alignment:
         # check if minpeak magnitude significant

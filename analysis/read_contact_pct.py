@@ -12,5 +12,6 @@ def read_contact_pct(filename):
 
 
 if __name__ == "__main__":
-    filename = '../friction_simulation/bond_pct.txt'
+    filename = '../friction_simulation/my_simulation_space/bond_pct.txt'
+    # filename = '../Data/multi_fast/stretch_19994_folder/job0/bond_pct.txt'
     read_contact_pct(filename)

@@ -199,7 +199,7 @@ if __name__ == "__main__":
     filenames += get_files_in_folder('../Data/multi_fast/stretch_19994_folder/job1', ext = "Ff.txt")
     
 
-    # read_friction_file_dict('../friction_simulation/system_test_Ff.txt')
+    filenames = ['../Data/multi_fast/stretch_5000_folder/job0/system_ext_Ff.txt']
     # exit()
     
     

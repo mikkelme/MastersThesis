@@ -120,7 +120,7 @@
 #### Week 45 (07/11 - 13/11) - Working from Pisa
 - Fixed the GPU tersoff problem (updating lammps on cluster)
 - Working on fixing slow GPU speeds (spend a lot of times on the 'modify' category)
-
+- Doing benchmarking of computation speeds with tersoff potential. Possible problem on GPU usage.
 
 
 

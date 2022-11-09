@@ -194,72 +194,36 @@ def multi_run(sim, proc, config_data, num_stretch_files, F_N, num_procs = 16, jo
 
 def one_config_multi_data():
     
-    # variables = { 
-    # "dt": 0.001, 
-    # "relax_time": 5,
-    # "stretch_speed_pct": 0.05,
-    # "stretch_max_pct": 0.3,
-    # "pause_time1": 5,
-    # "F_N": 10e-9, # [N]
-    # "pause_time2": 5,
-    # "drag_dir_x": 0,
-    # "drag_dir_y": 1,
-    # "drag_speed": 1, # [m/s]
-    # "drag_length": 30,
-    # "K": 30.0,
-    # "root": ".",
-    # }
-    
     variables = { 
     "dt": 0.001, 
     "relax_time": 5,
     "stretch_speed_pct": 0.01,
-    "stretch_max_pct": 0.3,
+    "stretch_max_pct": 0.26,
     "pause_time1": 5,
     "F_N": 10e-9, # [N]
     "pause_time2": 5,
     "drag_dir_x": 0,
     "drag_dir_y": 1,
-    "drag_speed": 10, # [m/s]
-    "drag_length": 10,
+    "drag_speed": 1, # [m/s]
+    "drag_length": 30,
     "K": 30.0,
     "root": ".",
     }
-    
-    
-    # variables = { 
-    # "dt": 0.001, 
-    # "relax_time": 5,
-    # "stretch_speed_pct": 0.05,
-    # "stretch_max_pct": 0.1,
-    # "pause_time1": 5,
-    # "F_N": 10e-9, # [N]
-    # "pause_time2": 5,
-    # "drag_dir_x": 0,
-    # "drag_dir_y": 1,
-    # "drag_speed": 5, # [m/s]
-    # "drag_length": 0.5,
-    # "K": 30.0,
-    # "root": ".",
-    # }
-    
     
     
     
     proc = Friction_procedure(variables)
     
     # Variables 
-    num_stretch_files = 15
-    F_N = np.linspace(1e-9, 100e-9, 10)
+    num_stretch_files = 40
+    F_N = np.linspace(1e-9, 200e-9, 10)
     
-    # num_stretch_files = 7
-    # F_N = [100e-9]
 
     config_data = "sheet_substrate"     
-    dir = "egil:multi_fast"
+    dir = "egil:BIG_MULTI_Ydrag"
     
     sim = Simulator(directory = dir, overwrite=True)
-    multi_run(sim, proc, config_data, num_stretch_files, F_N, num_procs = 16, jobname = 'Mfast')
+    multi_run(sim, proc, config_data, num_stretch_files, F_N, num_procs = 16, jobname = 'BIG_Ydrag')
 
     
     
@@ -328,6 +292,6 @@ def custom():
 
 
 if __name__ == "__main__":
-    great4_runner()
+    # great4_runner()
     # one_config_multi_data()
     # custom()
