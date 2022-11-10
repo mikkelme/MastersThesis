@@ -27,42 +27,42 @@ def plot_xy_time(fig, ax, x,y,time):
 
 
     
-class interactive_plotter:
-    """ Gets glitchy with multiple big figures open """
-    def __init__(self, fig):
-        self.cid_pick = fig.canvas.mpl_connect('button_press_event', self.pick_figure)
-        self.fig = fig
-        self.zoom = False
-        self.ax_list = fig.axes
+# class interactive_plotter:
+#     """ Gets glitchy with multiple big figures open """
+#     def __init__(self, fig):
+#         self.cid_pick = fig.canvas.mpl_connect('button_press_event', self.pick_figure)
+#         self.fig = fig
+#         self.zoom = False
+#         self.ax_list = fig.axes
     
-    def pick_figure(self, event):
-        # print("clicked")
-        if not self.zoom:
-            if event.inaxes is not None:
+#     def pick_figure(self, event):
+#         # print("clicked")
+#         if not self.zoom:
+#             if event.inaxes is not None:
                 
-                # col = event.inaxes.collections  
-                # if len(col) > 0: 
-                #     col[-1].set(visible = False)
-                #     self.cb = col[-1].colorbar 
+#                 # col = event.inaxes.collections  
+#                 # if len(col) > 0: 
+#                 #     col[-1].set(visible = False)
+#                 #     self.cb = col[-1].colorbar 
 
-                self.old_axes, self.old_pos = event.inaxes, event.inaxes.get_position()
-                pad = 0.1
-                event.inaxes.set_position([pad, pad, 1-2*pad, 1-2*pad]) 
-                self.toggle_axes(self.ax_list)
-                self.toggle_axes([event.inaxes], visible = True)
-                self.zoom = True
+#                 self.old_axes, self.old_pos = event.inaxes, event.inaxes.get_position()
+#                 pad = 0.1
+#                 event.inaxes.set_position([pad, pad, 1-2*pad, 1-2*pad]) 
+#                 self.toggle_axes(self.ax_list)
+#                 self.toggle_axes([event.inaxes], visible = True)
+#                 self.zoom = True
                 
-        else:
-            if event.inaxes is None:
-                self.toggle_axes(self.ax_list, visible = True)
-                self.old_axes.set_position(self.old_pos)
-                self.zoom = False
-        self.fig.canvas.draw_idle()
+#         else:
+#             if event.inaxes is None:
+#                 self.toggle_axes(self.ax_list, visible = True)
+#                 self.old_axes.set_position(self.old_pos)
+#                 self.zoom = False
+#         self.fig.canvas.draw_idle()
         
     
-    def toggle_axes(self, ax_list, visible = False):
-        for ax in ax_list:
-            ax.set_visible(visible)
+#     def toggle_axes(self, ax_list, visible = False):
+#         for ax in ax_list:
+#             ax.set_visible(visible)
             
            
 def plot_info(filenames):
@@ -90,7 +90,6 @@ def plot_info(filenames):
             else:
                 ax8 = plt.subplot2grid(grid, (3, 0), colspan=2)
                 
-            obj_list.append(interactive_plotter(fig))
             
 
             # -- Ff_para -- #
@@ -158,7 +157,8 @@ def plot_info(filenames):
             
             
             
-    
+            obj_list.append(interactive_plotter(fig))
+
             
             mu = np.array((3, 2))
             

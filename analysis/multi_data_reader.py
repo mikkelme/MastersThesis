@@ -47,11 +47,7 @@ def read_multi_folder(folders):
                     
                     friction_file = find_single_file(job_dir, ext = friction_ext)
                      
-                    # Ff, FN = get_fricton_force(friction_file)
                     fricData = analyse_friction_file(friction_file)
-                    # print(np.mean(fricData['contact'][0]))
-                    # print(np.mean(fricData['contact'][1]))
-                    # exit()
                     data.append((stretch_pct, F_N, fricData['Ff'], rupture_score, job_dir, np.array([np.mean(fricData['contact'][0]), np.mean(fricData['contact'][1])]))) 
                 except FileNotFoundError:
                     print(f"<-- Missing file")
@@ -88,18 +84,20 @@ def read_multi_folder(folders):
         rup_marker = 'x'
         rupmarkersize = markersize * 3
         
-        
+        obj_list = []
         for group in reversed(range(3)):
             # --- Plotting --- #
             fig = plt.figure(num = group)
             fig.suptitle(group_name[group])
-            grid = (3,2)
+            grid = (4,2)
             ax1 = plt.subplot2grid(grid, (0, 0), colspan=1)
             ax2 = plt.subplot2grid(grid, (0, 1), colspan=1)
             ax3 = plt.subplot2grid(grid, (1, 0), colspan=1)
             ax4 = plt.subplot2grid(grid, (1, 1), colspan=1)
             ax5 = plt.subplot2grid(grid, (2, 0), colspan=1)
             ax6 = plt.subplot2grid(grid, (2, 1), colspan=1)
+            ax7 = plt.subplot2grid(grid, (3, 0), colspan=1)
+            ax8 = plt.subplot2grid(grid, (3, 1), colspan=1)
             cmap = matplotlib.cm.viridis
 
             for i in range(len(stretch_pct)):
@@ -117,14 +115,32 @@ def read_multi_folder(folders):
                 ax2.plot(F_N[rup_false], Ff[i, rup_false, group, 1], linestyle = 'None', marker = marker, markersize = markersize, color=color)  
                 
                 
+                sortidx = np.argsort(contact[i,:,1])
+                ax5.plot(contact[i, sortidx,1], Ff[i, sortidx, group, 0], color = color, linewidth = linewidth, markersize = markersize, label = f'stretch = {stretch_pct[i]:g}')                
+                ax5.plot(contact[i,sortidx[rup_true],1], Ff[i, sortidx[rup_true], group, 0], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color=color)  
+                ax5.plot(contact[i, sortidx[rup_false],1], Ff[i, sortidx[rup_false], group, 0], linestyle = 'None', marker = marker, markersize = markersize, color=color)  
+              
+                ax6.plot(contact[i, sortidx,1], Ff[i, sortidx, group, 1], color = color, linewidth = linewidth, markersize = markersize, label = f'stretch = {stretch_pct[i]:g}')
+                ax6.plot(contact[i, sortidx[rup_true],1], Ff[i, sortidx[rup_true], group, 1], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color=color)  
+                ax6.plot(contact[i, sortidx[rup_false],1], Ff[i, sortidx[rup_false], group, 1], linestyle = 'None', marker = marker, markersize = markersize, color=color)  
+              
+
+                
+                
             norm = matplotlib.colors.BoundaryNorm(stretch_pct, cmap.N)
             cax = make_axes_locatable(ax2).append_axes("right", "5%")
             cax.grid(False)
-            fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax=cax, label='Stretch')
+            fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax=cax, label='Stretch [%]')
+            
+            cax = make_axes_locatable(ax6).append_axes("right", "5%")
+            cax.grid(False)
+            fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax=cax, label='Stretch [%]')
             
             
-            ax1.set(xlabel='$F_N$', ylabel='max $F_\parallel$')
-            ax2.set(xlabel='$F_N$', ylabel='mean $F_\parallel$')
+            ax1.set(xlabel='$F_N$ [eV/Å]', ylabel='max $F_\parallel$')
+            ax2.set(xlabel='$F_N$ [eV/Å]', ylabel='mean $F_\parallel$')
+            ax5.set(xlabel='contact (sheet) [%]', ylabel='max $F_\parallel$')
+            ax6.set(xlabel='contact (sheet) [%]', ylabel='mean $F_\parallel$')
             
         
             for j in range(len(F_N)):                
@@ -142,38 +158,43 @@ def read_multi_folder(folders):
                 
                 
                 sortidx = np.argsort(contact[:,j,1])
-                ax5.plot(contact[sortidx,j,1], Ff[sortidx, j, group, 0], color = color, linewidth = linewidth, markersize = markersize, label = f'F_N = {F_N[j]:g}')                
-                ax5.plot(contact[sortidx[rup_true],j,1], Ff[sortidx[rup_true], j, group, 0], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color=color)  
-                ax5.plot(contact[sortidx[rup_false],j,1], Ff[sortidx[rup_false], j, group, 0], linestyle = 'None', marker = marker, markersize = markersize, color=color)  
+                ax7.plot(contact[sortidx,j,1], Ff[sortidx, j, group, 0], color = color, linewidth = linewidth, markersize = markersize, label = f'F_N = {F_N[j]:g}')                
+                ax7.plot(contact[sortidx[rup_true],j,1], Ff[sortidx[rup_true], j, group, 0], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color=color)  
+                ax7.plot(contact[sortidx[rup_false],j,1], Ff[sortidx[rup_false], j, group, 0], linestyle = 'None', marker = marker, markersize = markersize, color=color)  
               
-                ax6.plot(contact[sortidx,j,1], Ff[sortidx, j, group, 1], color = color, linewidth = linewidth, markersize = markersize, label = f'F_N = {F_N[j]:g}')
-                ax6.plot(contact[sortidx[rup_true],j,1], Ff[sortidx[rup_true], j, group, 1], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color=color)  
-                ax6.plot(contact[sortidx[rup_false],j,1], Ff[sortidx[rup_false], j, group, 1], linestyle = 'None', marker = marker, markersize = markersize, color=color)  
+                ax8.plot(contact[sortidx,j,1], Ff[sortidx, j, group, 1], color = color, linewidth = linewidth, markersize = markersize, label = f'F_N = {F_N[j]:g}')
+                ax8.plot(contact[sortidx[rup_true],j,1], Ff[sortidx[rup_true], j, group, 1], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color=color)  
+                ax8.plot(contact[sortidx[rup_false],j,1], Ff[sortidx[rup_false], j, group, 1], linestyle = 'None', marker = marker, markersize = markersize, color=color)  
               
 
                 
             norm = matplotlib.colors.BoundaryNorm(F_N, cmap.N)
             cax = make_axes_locatable(ax4).append_axes("right", "5%")
             cax.grid(False)
-            fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax=cax, label='$F_N$')
+            fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax=cax, label='$F_N$ [eV/Å]')
             
-            cax = make_axes_locatable(ax6).append_axes("right", "5%")
+            cax = make_axes_locatable(ax8).append_axes("right", "5%")
             cax.grid(False)
-            fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax=cax, label='$F_N$')
+            fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax=cax, label='$F_N$ [eV/Å]')
             
             ax3.set(xlabel='stretch [%]', ylabel='max $F_\parallel$')
             ax4.set(xlabel='stretch [%]', ylabel='mean $F_\parallel$')
-            ax5.set(xlabel='contact (sheet) [%]', ylabel='max $F_\parallel$')
-            ax6.set(xlabel='contact (sheet) [%]', ylabel='mean $F_\parallel$')
+            ax7.set(xlabel='contact (sheet) [%]', ylabel='max $F_\parallel$')
+            ax8.set(xlabel='contact (sheet) [%]', ylabel='mean $F_\parallel$')
  
-            plt.tight_layout()       
+            plt.tight_layout()     
+            obj_list.append(interactive_plotter(fig))
+              
  
  
         fig = plt.figure(num = 4)
-        grid = (1,2)
+        grid = (2,2)
         ax11 = plt.subplot2grid(grid, (0, 0), colspan=1)
         ax22 = plt.subplot2grid(grid, (0, 1), colspan=1)
-        
+        ax33 = plt.subplot2grid(grid, (1, 0), colspan=1)
+        ax44 = plt.subplot2grid(grid, (1, 1), colspan=1)
+ 
+
         ymin = np.min(contact)
         for j in range(len(F_N)):                
                 color = get_color_value(F_N[j], np.min(F_N), np.max(F_N))
@@ -190,7 +211,6 @@ def read_multi_folder(folders):
                 ax22.plot(stretch_pct[rup_true], contact[rup_true, j, 1], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color=color)  
                 ax22.plot(stretch_pct[rup_false], contact[rup_false, j, 1], linestyle = 'None', marker = marker, markersize = markersize, color=color)  
          
-         
         ylim = (np.min(contact[~np.isnan(contact)]), np.max(contact[~np.isnan(contact)]))
         
         ax11.set(xlabel='stretch [%]', ylabel='contact (full_sheet) [%]')
@@ -202,17 +222,38 @@ def read_multi_folder(folders):
         norm = matplotlib.colors.BoundaryNorm(F_N, cmap.N)
         cax = make_axes_locatable(ax22).append_axes("right", "5%")
         cax.grid(False)
-        fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax=cax, label='$F_N$')
+        fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax=cax, label='$F_N$ [eV/Å]')
+        
                   
+        for i in range(len(stretch_pct)):
+                color = get_color_value(stretch_pct[i], np.min(stretch_pct), np.max(stretch_pct), cmap=cmap)
+                rup_true = np.argwhere(rup[i, :] > ruptol)
+                rup_false = np.argwhere(rup[i, :] <= ruptol)
+                
+                ax33.plot(F_N, contact[i, :, 0], color = color, linewidth = linewidth, label = f'stretch = {stretch_pct[i]:g}')
+                ax33.plot(F_N[rup_true], contact[i, rup_true, 0], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color=color)  
+                ax33.plot(F_N[rup_false], contact[i, rup_false, 0], linestyle = 'None', marker = marker, markersize = markersize, color=color)  
+                
+                ax44.plot(F_N, contact[i, :, 1], color = color, linewidth = linewidth, label = f'stretch = {stretch_pct[i]:g}')
+                ax44.plot(F_N[rup_true], contact[i, rup_true, 1], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color=color)  
+                ax44.plot(F_N[rup_false], contact[i, rup_false, 1], linestyle = 'None', marker = marker, markersize = markersize, color=color)  
+                
+        
+        ylim = (np.min(contact[~np.isnan(contact)]), np.max(contact[~np.isnan(contact)]))
+        
+        ax33.set(xlabel='$F_N$ [eV/Å]', ylabel='contact (full sheet) [%]')
+        ax33.set_ylim(ylim)
+        
+        ax44.set_ylim(ylim)
+        ax44.set(xlabel='$F_N$ [eV/Å]', ylabel='contact (sheet) [%]')       
+        
+        norm = matplotlib.colors.BoundaryNorm(stretch_pct, cmap.N)
+        cax = make_axes_locatable(ax44).append_axes("right", "5%")
+        cax.grid(False)
+        fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax=cax, label='Stretch [%]')
+          
         plt.tight_layout()       
- 
-        plt.show()
-        
-        
-        
-        
-        
-            
+        obj_list.append(interactive_plotter(fig))
         plt.show()
         
         
@@ -220,6 +261,6 @@ def read_multi_folder(folders):
 
 
 if __name__ == "__main__":
-    # folders = ['../Data/one_config_multi_data']
-    folders = ['../Data/multi_fast']
+    # folders = ['../Data/multi_fast']
+    folders = ['../Data/BIG_MULTI_Ydrag']
     read_multi_folder(folders)

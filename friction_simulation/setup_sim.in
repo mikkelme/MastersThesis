@@ -172,8 +172,8 @@ variable dir_norm equal $(sqrt(v_drag_dir_x^2+v_drag_dir_y^2))
 
 
 # ---------- Output ---------- #
-thermo 100
-variable dump_freq equal 100 
+thermo 1000
+variable dump_freq equal 1000 
 
 
 dump 1 all custom $(v_dump_freq) system_${out_ext}.data id type x y z vx vy vz v_stress_atom c_bond_coord

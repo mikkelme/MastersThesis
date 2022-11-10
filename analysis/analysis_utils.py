@@ -237,8 +237,44 @@ def read_histogram(filename):
     return timestep, hist
 
 
+    
+class interactive_plotter:
+    """ Gets glitchy with multiple big figures open """
+    def __init__(self, fig):
+        self.cid_pick = fig.canvas.mpl_connect('button_press_event', self.pick_figure)
+        self.fig = fig
+        self.zoom = False
+        self.ax_list = fig.axes
+    
+    def pick_figure(self, event):
+        # print("clicked")
+        if not self.zoom:
+            if event.inaxes is not None:
+                
+                # col = event.inaxes.collections  
+                # if len(col) > 0: 
+                #     col[-1].set(visible = False)
+                #     self.cb = col[-1].colorbar 
 
-
+                self.old_axes, self.old_pos = event.inaxes, event.inaxes.get_position()
+                pad = 0.1
+                event.inaxes.set_position([pad, pad, 1-2*pad, 1-2*pad]) 
+                self.toggle_axes(self.ax_list)
+                self.toggle_axes([event.inaxes], visible = True)
+                self.zoom = True
+                
+        else:
+            if event.inaxes is None:
+                self.toggle_axes(self.ax_list, visible = True)
+                self.old_axes.set_position(self.old_pos)
+                self.zoom = False
+        self.fig.canvas.draw_idle()
+        
+    
+    def toggle_axes(self, ax_list, visible = False):
+        for ax in ax_list:
+            ax.set_visible(visible)
+            
 
 
 if __name__ == "__main__":
