@@ -126,24 +126,6 @@ def half_octans():
     # mat = delete_atoms(mat, center_elem_trans_to_atoms(ver4, full = full))    
 
 
-    
-
-# # Create unit1 and unit2
-#     up = ref[0]%2 == 0
-#     line1 = [ref]
-#     line2 = []
-    
-#     if up:
-#         for i in range((size[0]-1)//2):
-#             line1.append(ref - [i+1, (i+1)//2 ])
-#             line1.append(ref + [i + 1, i//2 + 1])
-
-    # del_map = np.array([[2,9], [3,10], [4,10], [5,11], [6,11], [7,12], [8,12], [8,13], [8,14], [8,15], [8,16]]) + np.array([0,-5])
-    # mat = delete_atoms(mat, center_elem_trans_to_atoms(del_map, full = full))
-
-    # del_map = np.array([[2, 12], [2,13], [2,14], [2,15], [2,16], [3,17], [4, 17], [5, 18], [6, 18], [7,19], [8,19]]) + np.array([0,-5])
-    # mat = delete_atoms(mat, center_elem_trans_to_atoms(del_map, full = full))
-    # del_map.append((1,12))
     return mat
 
 

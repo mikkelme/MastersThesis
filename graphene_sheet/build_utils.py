@@ -1,10 +1,21 @@
 import numpy as np
 
+
 def delete_atoms(mat, delete_map):
-    """ Remove valid atoms from atom matrix """ 
+    """ Remove valid atoms from atom matrix
+    
+    :param mat: configuration matrix
+    :type mat: numpy.ndarray(), shape (x, y)
+    
+    :param delete_map: list of atoms to delete
+    :type delelta_map: numpy.ndarray(), shape = (atoms, 2)
+    
+    """
+
     m, n = np.shape(mat)   
-    condition = np.logical_and(delete_map < (m,n), delete_map >= (0,0))
-    delete_map = delete_map[np.all(condition, axis = 1), :]
+    condition = np.all(np.logical_and(delete_map < (m,n), delete_map >= (0,0)), axis = 1)
+    delete_map = delete_map[condition, :]
+    
 
     if len(delete_map > 0):
         mat[delete_map[:, 0], delete_map[:, 1]] = 0
@@ -92,7 +103,28 @@ def center_neigh(center_elem):
     return neigh
 
 
-
+def connected_neigh(mat, pos):
+    """ Get three connected neightbours in sheet
+        if they are valid (inside the sheet) """
+    x, y = pos
+    m, n = np.shape(mat)   
+    
+    neigh = np.array([[x, y+1], [x, y-1], [m,n]])
+    if (x + y)%2: # Right
+        neigh[2] = [x+1, y]   
+    else: # Left
+        neigh[2] = [x-1, y]   
+    
+    # Check if atom is on sheet and non deleted
+    on_sheet = np.all(np.logical_and(neigh < (m,n), neigh >= (0,0)), axis = 1)
+    idx = np.argwhere(on_sheet)[:,0]
+    available = on_sheet
+    available[idx] = mat[neigh[on_sheet][:,0], neigh[on_sheet][:,1]] == 1
+    return neigh[available]
+    
+  
+    
+    
 
 def build_pull_blocks(mat, pullblock = 6, sideblock = 0):
     """ Add blocks on the x-z plane on the +-y sides  """
