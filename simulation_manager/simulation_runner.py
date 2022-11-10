@@ -219,11 +219,11 @@ def one_config_multi_data():
     F_N = np.linspace(1e-9, 200e-9, 10)
     
 
-    config_data = "sheet_substrate"     
-    dir = "egil:BIG_MULTI_Ydrag"
+    config_data = "sheet_substrate_nocuts"     
+    dir = "egil:BIG_MULTI_nocut"
     
     sim = Simulator(directory = dir, overwrite=True)
-    multi_run(sim, proc, config_data, num_stretch_files, F_N, num_procs = 16, jobname = 'BIG_Ydrag')
+    multi_run(sim, proc, config_data, num_stretch_files, F_N, num_procs = 16, jobname = 'SORRY')
 
     
     

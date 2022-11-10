@@ -121,6 +121,7 @@
 - Fixed the GPU tersoff problem (updating lammps on cluster)
 - Working on fixing slow GPU speeds (spend a lot of times on the 'modify' category)
 - Doing benchmarking of computation speeds with tersoff potential. Possible problem on GPU usage.
+- Expanded analysis code, and looked at relations between contact area and friction. At the moment the relation does not seem to be linear, but more results are needed to make this conclusion. 
 
 
 
