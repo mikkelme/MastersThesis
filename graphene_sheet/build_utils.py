@@ -103,6 +103,7 @@ def center_neigh(center_elem):
     return neigh
 
 
+# TODO: mat -> valid, for consistensy 
 def connected_neigh(mat, pos):
     """ Get three connected neightbours in sheet
         if they are valid (inside the sheet) """
@@ -119,12 +120,59 @@ def connected_neigh(mat, pos):
     on_sheet = np.all(np.logical_and(neigh < (m,n), neigh >= (0,0)), axis = 1)
     idx = np.argwhere(on_sheet)[:,0]
     available = on_sheet
+    # tuplle instead of [0], [1] XXX
     available[idx] = mat[neigh[on_sheet][:,0], neigh[on_sheet][:,1]] == 1
     return neigh[available]
     
   
+def get_neighbour(pos):  
+    x, y = pos
     
+    neigh = [[x, y+1], [x, y-1]]
+    if (x + y)%2: # Right
+        neigh.append([x+1, y])   
+    else: # Left
+        neigh.append([x-1, y])   
+        
+    return neigh
     
+def walk_dis(input, max_dis, dis = 0, pre = []):
+    """ Recursive function to walk to all sites
+        within a distance of max_dis jumps """
+        
+    # TODO accept dis = 0 as just the input for better flow
+    assert max_dis > 0, "max_dis must be > 0"
+    
+    for i, elem in enumerate(input):
+        if isinstance(elem, (np.ndarray, np.generic)):
+            input[i] = elem.tolist()
+
+
+    neigh = []
+    for pos in input:
+        suggest = get_neighbour(pos)
+        for s in suggest:
+            if s not in pre and s not in neigh:
+                neigh.append(s)
+        
+    dis += 1
+    if dis >= max_dis:
+        return input + neigh
+    else:
+        pre = input
+        return pre + walk_dis(neigh, max_dis, dis, pre)
+    
+
+    
+def add_dis_bound(walk, valid, max_dis):
+    for w in walk:
+        del_map = np.array(walk_dis([w], max_dis))
+        valid = delete_atoms(valid, del_map)
+    return valid
+
+        
+        
+
 
 def build_pull_blocks(mat, pullblock = 6, sideblock = 0):
     """ Add blocks on the x-z plane on the +-y sides  """
