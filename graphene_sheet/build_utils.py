@@ -12,6 +12,9 @@ def delete_atoms(mat, delete_map):
     
     """
 
+    if len(delete_map) == 0:
+        return mat
+
     m, n = np.shape(mat)   
     condition = np.all(np.logical_and(delete_map < (m,n), delete_map >= (0,0)), axis = 1)
     delete_map = delete_map[condition, :]
@@ -104,11 +107,11 @@ def center_neigh(center_elem):
 
 
 # TODO: mat -> valid, for consistensy 
-def connected_neigh(mat, pos):
+def connected_neigh(valid, pos):
     """ Get three connected neightbours in sheet
         if they are valid (inside the sheet) """
     x, y = pos
-    m, n = np.shape(mat)   
+    m, n = np.shape(valid)   
     
     neigh = np.array([[x, y+1], [x, y-1], [m,n]])
     if (x + y)%2: # Right
@@ -121,7 +124,7 @@ def connected_neigh(mat, pos):
     idx = np.argwhere(on_sheet)[:,0]
     available = on_sheet
     # tuplle instead of [0], [1] XXX
-    available[idx] = mat[neigh[on_sheet][:,0], neigh[on_sheet][:,1]] == 1
+    available[idx] = valid[neigh[on_sheet][:,0], neigh[on_sheet][:,1]] == 1
     return neigh[available]
     
   
@@ -140,8 +143,8 @@ def walk_dis(input, max_dis, dis = 0, pre = []):
     """ Recursive function to walk to all sites
         within a distance of max_dis jumps """
         
-    # TODO accept dis = 0 as just the input for better flow
-    assert max_dis > 0, "max_dis must be > 0"
+    if max_dis == 0:
+        return input
     
     for i, elem in enumerate(input):
         if isinstance(elem, (np.ndarray, np.generic)):

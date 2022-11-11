@@ -4,7 +4,7 @@ sys.path.append('../') # parent folder: MastersThesis
 from graphene_sheet.build_utils import *
 import random
 
-def walk(start, valid, max_steps = 10):
+def walk(start, valid, max_steps):
     valid[tuple(start)] = 0
     
     pos = start
@@ -22,23 +22,25 @@ def walk(start, valid, max_steps = 10):
     
     return np.array(del_map), valid
 
-def RN(size = (50, 70), num_walks = 10):
+def RN(size = (50, 70), num_walks = 1, max_steps = 1, max_dis = 10, uniform = True):
     
     
-    size = (20,20)
+    size = (5, 10)
     mat = np.ones(size) # lattice matrix
     valid = mat.copy()  # valid positions
     
-    # start = [[2,5]]
-    # output = walk_dis(start, max_dis = 1)
-    # print(output)
-    # exit()
-    
-    # del_map = np.array(walk_dis([[2,5]], max_dis = 2))
-    # valid = delete_atoms(valid, del_map)
-
-
-    
+    if uniform:
+        # TODO: placwe site starts uniformly 
+        # How can one place N points with greatest distance in a box?
+        # Without going heavy on math theory here...
+        
+        # Single walk case
+        x = int(mat.shape[0]//(num_walks + 1))
+        y = int(mat.shape[1]//(num_walks + 1)) 
+        print(x,y)
+        
+        exit()
+        
     for w in range(num_walks):
         idx = np.argwhere(valid == 1)
         if len(idx) == 0:
@@ -46,23 +48,22 @@ def RN(size = (50, 70), num_walks = 10):
             break
         
         start = random.choice(idx)
-        del_map, valid = walk(start, valid)
+        start = (x,y)
+        del_map, valid = walk(start, valid, max_steps)
         mat = delete_atoms(mat, del_map)
-        valid = add_dis_bound(del_map, valid, max_dis = 0)
-        
+        valid = add_dis_bound(del_map, valid, max_dis)
 
+
+
+    # # invert 
+    # mat[mat == 0] = -1
+    # mat[mat == 1] = 0
+    # mat[mat == -1] = 1
     
-    
-    
-    # invert 
-    mat[mat == 0] = -1
-    mat[mat == 1] = 0
-    mat[mat == -1] = 1
-    
-    valid[valid == 0] = -1
-    valid[valid == 1] = 0
-    valid[valid == -1] = 1
-    # return valid
+    # valid[valid == 0] = -1
+    # valid[valid == 1] = 0
+    # valid[valid == -1] = 1
+    # # return valid
     
     
     return mat
@@ -70,7 +71,6 @@ def RN(size = (50, 70), num_walks = 10):
 
 
 
-
-
 if __name__ == "__main__":
-    RN()
+    pass
+    
