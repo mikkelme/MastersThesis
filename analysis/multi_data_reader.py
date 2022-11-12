@@ -213,7 +213,7 @@ def read_multi_folder(folders):
          
         ylim = (np.min(contact[~np.isnan(contact)]), np.max(contact[~np.isnan(contact)]))
         
-        ax11.set(xlabel='stretch [%]', ylabel='contact (full_sheet) [%]')
+        ax11.set(xlabel='stretch [%]', ylabel='contact (full sheet) [%]')
         ax11.set_ylim(ylim)
         
         ax22.set_ylim(ylim)

@@ -1,5 +1,6 @@
 import numpy as np
 
+import matplotlib.pyplot as plt # TMP XXX
 
 def delete_atoms(mat, delete_map):
     """ Remove valid atoms from atom matrix
@@ -113,11 +114,19 @@ def connected_neigh(valid, pos):
     x, y = pos
     m, n = np.shape(valid)   
     
+    Cdis = 1.42
+    a = 3*Cdis/np.sqrt(3)
+    x_ver = a*np.sqrt(3)/6  # vertical
+    y_ver = a/2             # vertical
+    
     neigh = np.array([[x, y+1], [x, y-1], [m,n]])
     if (x + y)%2: # Right
         neigh[2] = [x+1, y]   
+        direction = np.array([[-x_ver, y_ver], [-x_ver, -y_ver], [Cdis, 0]])
     else: # Left
-        neigh[2] = [x-1, y]   
+        neigh[2] = [x-1, y]  
+        direction = np.array([[x_ver, y_ver], [x_ver, -y_ver], [-Cdis, 0]])
+        
     
     # Check if atom is on sheet and non deleted
     on_sheet = np.all(np.logical_and(neigh < (m,n), neigh >= (0,0)), axis = 1)
@@ -125,7 +134,7 @@ def connected_neigh(valid, pos):
     available = on_sheet
     # tuplle instead of [0], [1] XXX
     available[idx] = valid[neigh[on_sheet][:,0], neigh[on_sheet][:,1]] == 1
-    return neigh[available]
+    return neigh[available], direction[available]
     
   
 def get_neighbour(pos):  
@@ -173,8 +182,66 @@ def add_dis_bound(walk, valid, max_dis):
         valid = delete_atoms(valid, del_map)
     return valid
 
+
+# def half_norm(x, mu, sigma):
+#     """ shift so it integrates to 1 in x interval """
+#     y = 2 * 1/(sigma * np.sqrt(2*np.pi)) * np.exp(-1/2*((x-mu)/sigma)**2)  
+#     corr = np.trapz(2 * 1/(sigma * np.sqrt(2*np.pi)) * np.exp(-1/2*((x-mu)/sigma)**2), x)
+#     return y/corr
+    
+    
+def half_norm(x, mu, sigma):
+    """ shift so it integrates to 1 in x interval """
+    x_interval = np.linspace(0, 2*np.pi, int(1e4))
+    y = 2 * 1/(sigma * np.sqrt(2*np.pi)) * np.exp(-1/2*((x-mu)/sigma)**2)
+    shift = np.trapz(2 * 1/(sigma * np.sqrt(2*np.pi)) * np.exp(-1/2*((x_interval-mu)/sigma)**2), x_interval)
+    return y/shift
+    
         
-        
+def MATCH(input_dir, proj_dir, strength):
+    if strength == 0:
+        return np.ones(len(input_dir))/len(input_dir)
+    
+    
+    norm = np.linalg.norm(input_dir, axis = 1)*np.linalg.norm(proj_dir)
+    angle = np.arccos(np.dot(input_dir, proj_dir)/norm)
+    
+
+    # 0 => 0.1
+    # 0.5 =>
+    s = 1
+    mu = 0
+    sigma = 20*np.exp(-s*4)
+    print(sigma)
+    ## XXX 
+    p = half_norm(angle, mu, sigma) / np.sum(half_norm(angle, mu, sigma))
+    print(angle)
+    print("p = ", p, "sum =", np.sum(p))
+    
+    
+    exit()
+    
+    
+    # ndist = lambda x: np.exp(-1/2*((x-mu)/sigma)**2)/(sigma * np.sqrt(2*np.pi)) # normal distribution
+    
+    print(corr)
+    # xy_vec = np.vstack((x, y)).T
+
+    # # Directions
+    # dir_para = drag_direction.astype('float64')
+    # dir_perp = np.array((dir_para[1], -dir_para[0]))
+
+    # # Unit directions
+    # dir_para /= np.linalg.norm(dir_para)
+    # dir_perp /= np.linalg.norm(dir_perp)
+    
+    # # Projection
+    # proj_para = np.dot(xy_vec, dir_para) 
+    # proj_perp = np.dot(xy_vec, dir_perp)
+    
+    
+  
+    # return proj_para, proj_perp
 
 
 def build_pull_blocks(mat, pullblock = 6, sideblock = 0):
