@@ -30,7 +30,7 @@ def RN(size = (50, 70), num_walks = 1, max_steps = 1, max_dis = 10, uniform = Tr
     valid = mat.copy()  # valid positions
     
     if uniform:
-        # TODO: placwe site starts uniformly 
+        # TODO: place site starts uniformly 
         # How can one place N points with greatest distance in a box?
         # Without going heavy on math theory here...
         

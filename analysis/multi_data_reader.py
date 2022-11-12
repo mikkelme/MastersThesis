@@ -12,7 +12,7 @@ def read_multi_folder(folders):
     info_file = 'info_file.txt'
     friction_ext = 'Ff.txt'
     chist_ext = 'chist.txt'
-    eval_rupture = True
+    eval_rupture = False
     ruptol = 0 # 0.5
     # group = 0 # full_sheet = 0, sheet = 1, PB = 2
     

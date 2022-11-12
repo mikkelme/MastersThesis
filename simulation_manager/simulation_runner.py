@@ -139,7 +139,8 @@ def great4_runner():
         # sim.run(device = GPU_device)
 
 
-def multi_run(sim, proc, config_data, num_stretch_files, F_N, num_procs = 16, jobname = 'MULTI'):
+def multi_run(sim, proc, num_stretch_files, F_N, num_procs = 16, jobname = 'MULTI'):
+    config_data = proc.variables['config_data']
     sim.copy_to_wd( "../friction_simulation/setup_sim.in",
                     f"../config_builder/{config_data}.txt",
                     f"../config_builder/{config_data}_info.in",
@@ -208,6 +209,7 @@ def one_config_multi_data():
     "drag_length": 30,
     "K": 30.0,
     "root": ".",
+    "config_data": "sheet_substrate_nocuts"
     }
     
     
@@ -219,11 +221,9 @@ def one_config_multi_data():
     F_N = np.linspace(1e-9, 200e-9, 10)
     
 
-    config_data = "sheet_substrate_nocuts"     
     dir = "egil:BIG_MULTI_nocut"
-    
     sim = Simulator(directory = dir, overwrite=True)
-    multi_run(sim, proc, config_data, num_stretch_files, F_N, num_procs = 16, jobname = 'SORRY')
+    multi_run(sim, proc, num_stretch_files, F_N, num_procs = 16, jobname = 'SORRY')
 
     
     

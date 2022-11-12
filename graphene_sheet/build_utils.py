@@ -30,10 +30,10 @@ def center_elem_trans_to_atoms(trans, full = False):
     """ Gather atom pairs for deletion when crossing to a new center element """
     """ full = Delete all neighbours """
     mapping = np.zeros((3,3, 2, 2), dtype = int)
-    mapping[0,1] = [0,2], [1,2]       # up
-    mapping[1,1] = [1,2], [1,1]       # right-up
-    mapping[1,-1] = [1,1], [1,0]      # right-down
-    mapping[0,-1] = [1,0], [0,0]     # down
+    mapping[0,1] = [0,2], [1,2]     # up
+    mapping[1,1] = [1,2], [1,1]     # right-up
+    mapping[1,-1] = [1,1], [1,0]    # right-down
+    mapping[0,-1] = [1,0], [0,0]    # down
     mapping[-1,-1] = [0,0], [0,1]   # left-down
     mapping[-1,1] = [0,1], [0,2]    # up-left
 
