@@ -107,7 +107,6 @@ def center_neigh(center_elem):
     return neigh
 
 
-# TODO: mat -> valid, for consistensy 
 def connected_neigh(valid, pos):
     """ Get three connected neightbours in sheet
         if they are valid (inside the sheet) """
@@ -188,60 +187,27 @@ def add_dis_bound(walk, valid, max_dis):
 #     y = 2 * 1/(sigma * np.sqrt(2*np.pi)) * np.exp(-1/2*((x-mu)/sigma)**2)  
 #     corr = np.trapz(2 * 1/(sigma * np.sqrt(2*np.pi)) * np.exp(-1/2*((x-mu)/sigma)**2), x)
 #     return y/corr
-    
-    
-def half_norm(x, mu, sigma):
-    """ shift so it integrates to 1 in x interval """
-    x_interval = np.linspace(0, 2*np.pi, int(1e4))
-    y = 2 * 1/(sigma * np.sqrt(2*np.pi)) * np.exp(-1/2*((x-mu)/sigma)**2)
-    shift = np.trapz(2 * 1/(sigma * np.sqrt(2*np.pi)) * np.exp(-1/2*((x_interval-mu)/sigma)**2), x_interval)
-    return y/shift
-    
+
+
+def norm_dist(x, sigma, mu = 0):
+    return 1/(sigma * np.sqrt(2*np.pi)) * np.exp(-1/2*((x-mu)/sigma)**2)
+
+
         
-def MATCH(input_dir, proj_dir, strength):
+def get_p(input_dir, force_dir, strength):
     if strength == 0:
         return np.ones(len(input_dir))/len(input_dir)
-    
-    
-    norm = np.linalg.norm(input_dir, axis = 1)*np.linalg.norm(proj_dir)
-    angle = np.arccos(np.dot(input_dir, proj_dir)/norm)
-    
 
-    # 0 => 0.1
-    # 0.5 =>
-    s = 1
-    mu = 0
-    sigma = 20*np.exp(-s*4)
-    print(sigma)
-    ## XXX 
-    p = half_norm(angle, mu, sigma) / np.sum(half_norm(angle, mu, sigma))
-    print(angle)
-    print("p = ", p, "sum =", np.sum(p))
-    
-    
-    exit()
-    
-    
-    # ndist = lambda x: np.exp(-1/2*((x-mu)/sigma)**2)/(sigma * np.sqrt(2*np.pi)) # normal distribution
-    
-    print(corr)
-    # xy_vec = np.vstack((x, y)).T
+    assert np.linalg.norm(force_dir) > 0, f"force direction {force_dir} has zero norm"
 
-    # # Directions
-    # dir_para = drag_direction.astype('float64')
-    # dir_perp = np.array((dir_para[1], -dir_para[0]))
-
-    # # Unit directions
-    # dir_para /= np.linalg.norm(dir_para)
-    # dir_perp /= np.linalg.norm(dir_perp)
+    # XXX: If strength == 1 ??
+    norm = np.linalg.norm(input_dir, axis = 1)*np.linalg.norm(force_dir)
+    dot = np.dot(input_dir, force_dir)/norm
+    angle = np.where(np.abs(dot) >= 1, np.arccos(np.sign(dot)), np.arccos(dot))
     
-    # # Projection
-    # proj_para = np.dot(xy_vec, dir_para) 
-    # proj_perp = np.dot(xy_vec, dir_perp)
-    
-    
-  
-    # return proj_para, proj_perp
+    sigma = 10*np.exp(-4.6*strength)
+    p = norm_dist(angle, sigma) / np.sum(norm_dist(angle, sigma))
+    return p
 
 
 def build_pull_blocks(mat, pullblock = 6, sideblock = 0):
