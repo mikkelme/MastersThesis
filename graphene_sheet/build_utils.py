@@ -107,8 +107,9 @@ def center_neigh(center_elem):
     return neigh
 
 
-def connected_neigh(valid, pos):
+def connected_neigh(valid, pos, periodic):
     """ Get three connected neightbours in sheet
+        and direction
         if they are valid (inside the sheet) """
     x, y = pos
     m, n = np.shape(valid)   
@@ -127,13 +128,20 @@ def connected_neigh(valid, pos):
         direction = np.array([[x_ver, y_ver], [x_ver, -y_ver], [-Cdis, 0]])
         
     
-    # Check if atom is on sheet and non deleted
-    on_sheet = np.all(np.logical_and(neigh < (m,n), neigh >= (0,0)), axis = 1)
-    idx = np.argwhere(on_sheet)[:,0]
-    available = on_sheet
-    # tuplle instead of [0], [1] XXX
-    available[idx] = valid[neigh[on_sheet][:,0], neigh[on_sheet][:,1]] == 1
+    if periodic: 
+        neigh = (neigh + (m,n))%(m,n)
+        available = valid[neigh[:,0], neigh[:,1]] == 1
+    else:
+        on_sheet = np.all(np.logical_and(neigh < (m,n), neigh >= (0,0)), axis = 1)
+        idx = np.argwhere(on_sheet)[:,0]
+        available = on_sheet
+        available[idx] = valid[neigh[on_sheet][:,0], neigh[on_sheet][:,1]] == 1
+        
     return neigh[available], direction[available]
+    
+    
+    exit()
+    # tuplle instead of [0], [1] XXX
     
   
 def get_neighbour(pos):  

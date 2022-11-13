@@ -4,80 +4,80 @@ sys.path.append('../') # parent folder: MastersThesis
 from graphene_sheet.build_utils import *
 import random
 
-# TODO: change name: force <-> bias ?
-def walk(start, valid, max_steps, force = [(0, 0), 0], periodic):
-    valid[tuple(start)] = 0
-    # TODO: Consider using the proper random generator
-    #       suggested by numpy.
     
-    
-    pos = start
-    del_map = []
-    for i in range(max_steps):
-        neigh, direction = connected_neigh(valid, pos)
-        if len(neigh) == 0: # No where to go
-            # XXX: Should the walker take the only valid option
-            # or simply stop if it choose an uvalid option
-            # among multiple possibilities?
-            break
+
+class RN_Generator:
+    def __init__(self, size = (50, 70), num_walks = 100, max_steps = 30, max_dis = 20, bias = [(2, 1), 1], periodic = True):
+
+        self.size = np.array(size)
+        self.num_walks = num_walks
+        self.max_steps = max_steps
+        self.max_dis = max_dis
+        self.bias = bias
+        self.periodic = periodic
         
+        self.mat = np.ones(size)    # lattice matrix
+        self.valid = np.ones(size)  # valid positions
     
-        p = get_p(direction, np.array(force[0]), force[1])
-        choice = np.random.choice(len(neigh), p = p)
-       
-        pos = neigh[choice] 
+    
+        if self.periodic:
+            assert np.all(self.size%2 == 0), f"The size of the sheet {self.size} must have even side lengths to enable periodic boundaries."
+    
+        # TODO: Consider using the proper random generator
+        #       suggested by numpy.
+    
+    def generate(self):        
+        for w in range(self.num_walks):
+            idx = np.argwhere(self.valid == 1)
+            if len(idx) == 0:
+                break
+            
+            
+            start = random.choice(idx)
+            del_map, self.valid = self.walk(start)
+            self.mat = delete_atoms(self.mat, del_map)
+            self.valid = add_dis_bound(del_map, self.valid, self.max_dis)
+            
+        return self.mat
         
-        del_map.append(pos)
-        valid[tuple(pos)] = 0.0
+
+
+    def walk(self, start):
+        self.valid[tuple(start)] = 0
         
-    
-    return np.array(del_map), valid
-
-
-
-
-    
-    
-
-def RN(size = (50, 70), num_walks = 50, max_steps = 5, max_dis = 1, force = [(0, 0), 0], periodic = False):
-    
-    
-    # size = (5, 10)
-    mat = np.ones(size) # lattice matrix
-    valid = mat.copy()  # valid positions
-    
-    
-
         
-    for w in range(num_walks):
-        idx = np.argwhere(valid == 1)
-        if len(idx) == 0:
-            print("no more atoms")
-            break
+        pos = start
+        del_map = []
+        for i in range(self.max_steps):
+            neigh, direction = connected_neigh(self.valid, pos, self.periodic)
+            
+            if len(neigh) == 0: # No where to go
+                # XXX: Should the walker take the only valid option
+                # or simply stop if it choose an uvalid option
+                # among multiple possibilities?
+                break
+            
         
-        start = random.choice(idx)
-        del_map, valid = walk(start, valid, max_steps, force, periodic)
-        mat = delete_atoms(mat, del_map)
-        valid = add_dis_bound(del_map, valid, max_dis)
+            p = get_p(direction, np.array(self.bias[0]), self.bias[1])
+            choice = np.random.choice(len(neigh), p = p)
+            pos = neigh[choice] 
+            del_map.append(pos)
+            self.valid[tuple(pos)] = 0.0
+            
+        
+        return np.array(del_map), self.valid
 
 
 
-    # # invert 
-    # mat[mat == 0] = -1
-    # mat[mat == 1] = 0
-    # mat[mat == -1] = 1
-    
-    # valid[valid == 0] = -1
-    # valid[valid == 1] = 0
-    # valid[valid == -1] = 1
-    # # return valid
-    
-    
-    return mat
+
 
 
 
 
 if __name__ == "__main__":
-    pass
+    
+    RN = RN_Generator()
+    mat = RN.generate()
+    
+    
     
