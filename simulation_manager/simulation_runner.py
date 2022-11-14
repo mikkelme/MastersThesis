@@ -203,13 +203,13 @@ def one_config_multi_data():
     "pause_time1": 5,
     "F_N": 10e-9, # [N]
     "pause_time2": 5,
-    "drag_dir_x": 0,
-    "drag_dir_y": 1,
+    "drag_dir_x": 1,
+    "drag_dir_y": 0,
     "drag_speed": 1, # [m/s]
     "drag_length": 30,
     "K": 30.0,
     "root": ".",
-    "config_data": "sheet_substrate_nocuts"
+    "config_data": "sheet_substrate"
     }
     
     
@@ -221,9 +221,9 @@ def one_config_multi_data():
     F_N = np.linspace(1e-9, 200e-9, 10)
     
 
-    dir = "egil:BIG_MULTI_nocut"
+    dir = "egil:BIG_MULTI_Xdrag"
     sim = Simulator(directory = dir, overwrite=True)
-    multi_run(sim, proc, num_stretch_files, F_N, num_procs = 16, jobname = 'SORRY')
+    multi_run(sim, proc, num_stretch_files, F_N, num_procs = 16, jobname = 'Xdrag')
 
     
     

@@ -107,19 +107,19 @@ def center_neigh(center_elem):
     return neigh
 
 
-def connected_neigh(valid, pos, periodic):
+def connected_neigh(pos):
     """ Get three connected neightbours in sheet
         and direction
         if they are valid (inside the sheet) """
     x, y = pos
-    m, n = np.shape(valid)   
+    # m, n = np.shape(valid)   
     
     Cdis = 1.42
     a = 3*Cdis/np.sqrt(3)
     x_ver = a*np.sqrt(3)/6  # vertical
     y_ver = a/2             # vertical
     
-    neigh = np.array([[x, y+1], [x, y-1], [m,n]])
+    neigh = np.array([[x, y+1], [x, y-1], [-2, -2]])
     if (x + y)%2: # Right
         neigh[2] = [x+1, y]   
         direction = np.array([[-x_ver, y_ver], [-x_ver, -y_ver], [Cdis, 0]])
@@ -127,17 +127,9 @@ def connected_neigh(valid, pos, periodic):
         neigh[2] = [x-1, y]  
         direction = np.array([[x_ver, y_ver], [x_ver, -y_ver], [-Cdis, 0]])
         
+    return neigh, direction
     
-    if periodic: 
-        neigh = (neigh + (m,n))%(m,n)
-        available = valid[neigh[:,0], neigh[:,1]] == 1
-    else:
-        on_sheet = np.all(np.logical_and(neigh < (m,n), neigh >= (0,0)), axis = 1)
-        idx = np.argwhere(on_sheet)[:,0]
-        available = on_sheet
-        available[idx] = valid[neigh[on_sheet][:,0], neigh[on_sheet][:,1]] == 1
-        
-    return neigh[available], direction[available]
+  
     
     
     exit()
