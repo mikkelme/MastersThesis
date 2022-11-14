@@ -141,39 +141,6 @@ def get_neighbour(pos):
         
     return neigh
     
-# def walk_dis(input, max_dis, dis = 0, pre = []):
-#     """ Recursive function to walk to all sites
-#         within a distance of max_dis jumps """
-        
-#     if max_dis == 0:
-#         return input
-    
-#     for i, elem in enumerate(input):
-#         if isinstance(elem, (np.ndarray, np.generic)):
-#             input[i] = elem.tolist()
-
-
-#     neigh = []
-#     for pos in input:
-#         suggest = get_neighbour(pos)
-#         for s in suggest:
-#             if s not in pre and s not in neigh:
-#                 neigh.append(s)
-        
-#     dis += 1
-#     if dis >= max_dis:
-#         return input + neigh
-#     else:
-#         pre = input
-#         return pre + walk_dis(neigh, max_dis, dis, pre)
-    
-
-    
-# def add_dis_bound(walk, valid, max_dis):
-#     for w in walk:
-#         del_map = np.array(walk_dis([w], max_dis))
-#         valid = delete_atoms(valid, del_map)
-#     return valid
 
 
 # def half_norm(x, mu, sigma):
@@ -188,20 +155,6 @@ def norm_dist(x, sigma, mu = 0):
 
 
         
-def get_p(input_dir, force_dir, strength):
-    if strength == 0:
-        return np.ones(len(input_dir))/len(input_dir)
-
-    assert np.linalg.norm(force_dir) > 0, f"force direction {force_dir} has zero norm"
-
-    # XXX: If strength == 1 ??
-    norm = np.linalg.norm(input_dir, axis = 1)*np.linalg.norm(force_dir)
-    dot = np.dot(input_dir, force_dir)/norm
-    angle = np.where(np.abs(dot) >= 1, np.arccos(np.sign(dot)), np.arccos(dot))
-    
-    sigma = 10*np.exp(-4.6*strength)
-    p = norm_dist(angle, sigma) / np.sum(norm_dist(angle, sigma))
-    return p
 
 
 def build_pull_blocks(mat, pullblock = 6, sideblock = 0):

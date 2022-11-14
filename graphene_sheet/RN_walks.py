@@ -69,7 +69,7 @@ class RN_Generator:
                 if len(neigh) == 0: # No where to go
                     break
             
-            p = get_p(direction, np.array(self.bias[0]), self.bias[1])
+            p = self.get_p(direction)
             choice = np.random.choice(len(neigh), p = p)
             
             if available[choice] == False: # Hit unvalid site
@@ -117,6 +117,25 @@ class RN_Generator:
                  new_del_map = (new_del_map + (m,n))%(m,n)
             self.valid = delete_atoms(self.valid, new_del_map)
         return self.valid
+    
+    
+    def get_p(self, input_dir):
+        force_dir, strength = self.bias
+    
+        if strength == 0:
+            return np.ones(len(input_dir))/len(input_dir)
+
+        assert np.linalg.norm(force_dir) > 0, f"force direction {force_dir} has zero norm"
+
+        # XXX: If strength == 1 ??
+        norm = np.linalg.norm(input_dir, axis = 1)*np.linalg.norm(force_dir)
+        dot = np.dot(input_dir, force_dir)/norm
+        angle = np.where(np.abs(dot) >= 1, np.arccos(np.sign(dot)), np.arccos(dot))
+        
+        sigma = 10*np.exp(-4.6*strength)
+        p = norm_dist(angle, sigma) / np.sum(norm_dist(angle, sigma))
+        return p
+
 
 
 
