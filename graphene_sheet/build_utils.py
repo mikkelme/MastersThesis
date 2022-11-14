@@ -154,8 +154,6 @@ def norm_dist(x, sigma, mu = 0):
     return 1/(sigma * np.sqrt(2*np.pi)) * np.exp(-1/2*((x-mu)/sigma)**2)
 
 
-        
-
 
 def build_pull_blocks(mat, pullblock = 6, sideblock = 0):
     """ Add blocks on the x-z plane on the +-y sides  """

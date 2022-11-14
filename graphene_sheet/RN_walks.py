@@ -9,7 +9,7 @@ import random
 class RN_Generator:
     def __init__(self, size = (50, 70), num_walks = 10, max_steps = 30, max_dis = 10, bias = [(1, 0), 1], periodic = True, avoid_unvalid = False):
 
-        # size = (4,10)
+        size = (4,10)
         ##############################
         
         self.size = np.array(size)
@@ -27,8 +27,12 @@ class RN_Generator:
         if self.periodic:
             assert np.all(self.size%2 == 0), f"The size of the sheet {self.size} must have even side lengths to enable periodic boundaries."
     
+        # TODO: Implement center elem walks
+        
+        
         # TODO: Consider using the proper random generator
         #       suggested by numpy.
+        
     
     def generate(self):        
         for w in range(self.num_walks):
@@ -43,7 +47,6 @@ class RN_Generator:
             
         return self.mat
         
-
 
     def walk(self, start):
         self.valid[tuple(start)] = 0
@@ -137,12 +140,49 @@ class RN_Generator:
         return p
 
 
-
+    def grid_start(self):
+        self.num_walks = 2
+        L = int(np.ceil(np.sqrt(self.num_walks)))
+        grid_idx = np.arange(L)
+        # TODO make somehting like
+        grid = [[0,0], [0,1], [1, 0], [1,1]] # Here for L = 2
+        exit()
+        
+        x = []
+        y = []
+        for i in range(L):
+            start = (i*self.size[0])//L
+            stop = ((i+1)*self.size[0])//L 
+            midpoint = start + (stop-start)//2
+            x.append(midpoint)
+       
+            start = (i*self.size[1])//L
+            stop = ((i+1)*self.size[1])//L 
+            midpoint = start + (stop-start)//2
+            y.append(midpoint)
+       
+        x, y = np,array(x), np.array(y)
+        
+        
+        # choice = np.random.choice(grid, replace = False)
+        
+        
+        
+        # This is difficult and unessecary use of time...
+        # num_walks = 1 => Put in center     
+        # num_walks = 2 => put in each corner of a 2 x 2
+        # num_walks = 3, 4 => fill up that 2 x 2
+        # num_walks = 5 => make a 3 x 3 and fill cornes and the 5th in the middle (ideally)
+        # print(self.size)
+        
+        
+        
 
 if __name__ == "__main__":
     
     RN = RN_Generator()
-    mat = RN.generate()
+    RN.grid_start()
+    # mat = RN.generate()
     
     
     
