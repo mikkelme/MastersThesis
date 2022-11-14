@@ -78,6 +78,10 @@ if __name__ == "__main__":
     # unitsize = (5,7)
     # mat = pop_up_pattern(multiples, unitsize, sp = 2)
 
+    
+    # valid[valid == 1] = 2
+    # valid[valid == 0] = 1
+    # valid[valid == 2] = 0
     RN = RN_Generator()
     mat = RN.generate()
     build_graphene_sheet(mat, view_lattice = True)

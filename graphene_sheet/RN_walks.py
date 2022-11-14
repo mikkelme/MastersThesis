@@ -7,9 +7,9 @@ import random
     
 
 class RN_Generator:
-    def __init__(self, size = (50, 70), num_walks = 100, max_steps = 30, max_dis = 20, bias = [(2, 1), 1], periodic = False, avoid_unvalid = False):
+    def __init__(self, size = (50, 70), num_walks = 10, max_steps = 30, max_dis = 10, bias = [(1, 0), 1], periodic = True, avoid_unvalid = False):
 
-        size = (4,10)
+        # size = (4,10)
         ##############################
         
         self.size = np.array(size)
@@ -39,7 +39,7 @@ class RN_Generator:
             start = random.choice(idx)
             del_map, self.valid = self.walk(start)
             self.mat = delete_atoms(self.mat, del_map)
-            self.valid = add_dis_bound(del_map, self.valid, self.max_dis)
+            self.valid = self.add_dis_bound(del_map)
             
         return self.mat
         
@@ -72,11 +72,9 @@ class RN_Generator:
             p = get_p(direction, np.array(self.bias[0]), self.bias[1])
             choice = np.random.choice(len(neigh), p = p)
             
-            
             if available[choice] == False: # Hit unvalid site
                 break
             
-    
             pos = neigh[choice] 
             del_map.append(pos)
             self.valid[tuple(pos)] = 0.0
@@ -84,9 +82,41 @@ class RN_Generator:
         return np.array(del_map), self.valid
 
 
+    def walk_dis(self, input, dis = 0, pre = []):
+        """ Recursive function to walk to all sites
+            within a distance of max_dis jumps """
+            
+        if self.max_dis == 0:
+            return input
+        
+        for i, elem in enumerate(input):
+            if isinstance(elem, (np.ndarray, np.generic)):
+                input[i] = elem.tolist()
 
 
+        neigh = []
+        for pos in input:
+            suggest = get_neighbour(pos)
+            for s in suggest:
+                if s not in pre and s not in neigh:
+                    neigh.append(s)
+            
+        dis += 1
+        if dis >= self.max_dis:
+            return input + neigh
+        else:
+            pre = input
+            return pre + self.walk_dis(neigh, dis, pre)
+        
 
+    def add_dis_bound(self, walk):
+        m, n = np.shape(self.valid)
+        for w in walk:
+            new_del_map = np.array(self.walk_dis([w]))
+            if self.periodic:
+                 new_del_map = (new_del_map + (m,n))%(m,n)
+            self.valid = delete_atoms(self.valid, new_del_map)
+        return self.valid
 
 
 

@@ -130,12 +130,6 @@ def connected_neigh(pos):
     return neigh, direction
     
   
-    
-    
-    exit()
-    # tuplle instead of [0], [1] XXX
-    
-  
 def get_neighbour(pos):  
     x, y = pos
     
@@ -147,39 +141,39 @@ def get_neighbour(pos):
         
     return neigh
     
-def walk_dis(input, max_dis, dis = 0, pre = []):
-    """ Recursive function to walk to all sites
-        within a distance of max_dis jumps """
+# def walk_dis(input, max_dis, dis = 0, pre = []):
+#     """ Recursive function to walk to all sites
+#         within a distance of max_dis jumps """
         
-    if max_dis == 0:
-        return input
+#     if max_dis == 0:
+#         return input
     
-    for i, elem in enumerate(input):
-        if isinstance(elem, (np.ndarray, np.generic)):
-            input[i] = elem.tolist()
+#     for i, elem in enumerate(input):
+#         if isinstance(elem, (np.ndarray, np.generic)):
+#             input[i] = elem.tolist()
 
 
-    neigh = []
-    for pos in input:
-        suggest = get_neighbour(pos)
-        for s in suggest:
-            if s not in pre and s not in neigh:
-                neigh.append(s)
+#     neigh = []
+#     for pos in input:
+#         suggest = get_neighbour(pos)
+#         for s in suggest:
+#             if s not in pre and s not in neigh:
+#                 neigh.append(s)
         
-    dis += 1
-    if dis >= max_dis:
-        return input + neigh
-    else:
-        pre = input
-        return pre + walk_dis(neigh, max_dis, dis, pre)
+#     dis += 1
+#     if dis >= max_dis:
+#         return input + neigh
+#     else:
+#         pre = input
+#         return pre + walk_dis(neigh, max_dis, dis, pre)
     
 
     
-def add_dis_bound(walk, valid, max_dis):
-    for w in walk:
-        del_map = np.array(walk_dis([w], max_dis))
-        valid = delete_atoms(valid, del_map)
-    return valid
+# def add_dis_bound(walk, valid, max_dis):
+#     for w in walk:
+#         del_map = np.array(walk_dis([w], max_dis))
+#         valid = delete_atoms(valid, del_map)
+#     return valid
 
 
 # def half_norm(x, mu, sigma):
