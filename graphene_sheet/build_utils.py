@@ -1,6 +1,6 @@
 import numpy as np
 
-import matplotlib.pyplot as plt # TMP XXX
+# import matplotlib.pyplot as plt # TMP XXX
 
 def delete_atoms(mat, delete_map):
     """ Remove valid atoms from atom matrix
@@ -102,7 +102,6 @@ def center_neigh(center_elem):
         for j in range(3):
             neigh[i, j] = [n-1 + i, m_start + j]
     
-
     return neigh
 
 
@@ -111,8 +110,6 @@ def connected_neigh_atom(pos):
     """ Get three connected neightbours in sheet
         and direction for single atom sites. """
     x, y = pos
-    # m, n = np.shape(valid)   
-    
     Cdis = 1.42
     a = 3*Cdis/np.sqrt(3)
     x_ver = a*np.sqrt(3)/6  # vertical
@@ -133,9 +130,6 @@ def connected_neigh_center_elem(pos):
     """ Get three connected neightbours in sheet
         and direction for center elements. """
     x, y = pos
-    # m, n = np.shape(valid)   
-    
-    
     Cdis = 1.42
     a = 3*Cdis/np.sqrt(3)
     a1 = a/2 * np.array([np.sqrt(3), 1])
@@ -152,16 +146,6 @@ def connected_neigh_center_elem(pos):
 
     
     
-
-
-
-# def half_norm(x, mu, sigma):
-#     """ shift so it integrates to 1 in x interval """
-#     y = 2 * 1/(sigma * np.sqrt(2*np.pi)) * np.exp(-1/2*((x-mu)/sigma)**2)  
-#     corr = np.trapz(2 * 1/(sigma * np.sqrt(2*np.pi)) * np.exp(-1/2*((x-mu)/sigma)**2), x)
-#     return y/corr
-
-
 def norm_dist(x, sigma, mu = 0):
     return 1/(sigma * np.sqrt(2*np.pi)) * np.exp(-1/2*((x-mu)/sigma)**2)
 
