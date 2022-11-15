@@ -16,9 +16,9 @@ from graphene_sheet.RN_walks import *
 def build_graphene_sheet(mat, view_lattice = False, write = False):
     Cdis = 1.42 # carbon-carbon distance [Å]
     
-    shape_error = f"SHAPE ERROR: Got matrix of shape {np.shape(mat)}, y-axis must be mut multiple of 2 and both nonzero integer."
+    shape_error = f"SHAPE ERROR: Got matrix of shape {np.shape(mat)}, y-axis must be multiple of 2 and both nonzero integer."
     assert mat.shape[0]%1 == 0 and mat.shape[1]%1 == 0 and mat.shape[1]%2 == 0, shape_error
-    assert mat.shape[0] != 0 and mat.shape[1] != 0, shape_error
+    assert mat.shape[0] > 0 and mat.shape[1] > 0, shape_error
 
     xlen = mat.shape[0]
     ylen = mat.shape[1]//2
@@ -79,11 +79,14 @@ if __name__ == "__main__":
     # mat = pop_up_pattern(multiples, unitsize, sp = 2)
 
     
-    # valid[valid == 1] = 2
-    # valid[valid == 0] = 1
-    # valid[valid == 2] = 0
     RN = RN_Generator()
     mat = RN.generate()
+    
+    
+    
+    mat[mat == 1] = 2
+    mat[mat == 0] = 1
+    mat[mat == 2] = 0
     build_graphene_sheet(mat, view_lattice = True)
 
 

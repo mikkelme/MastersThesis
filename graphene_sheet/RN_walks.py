@@ -7,10 +7,14 @@ import random
     
 
 class RN_Generator:
-    def __init__(self, size = (50, 70), num_walks = 10, max_steps = 30, max_dis = 10, bias = [(1, 0), 1], periodic = True, avoid_unvalid = False):
+    def __init__(self, size = (50, 70), num_walks = 1, max_steps = 0, max_dis = 0, bias = [(1, 1), 0], periodic = False, avoid_unvalid = False, grid_start = False, center_elem = True):
 
         size = (4,10)
         ##############################
+
+        shape_error = f"SHAPE ERROR: Got size {size}, y-axis must be multiple of 2 and both nonzero positive integers."
+        assert size[0]%1 == 0 and size[1]%1 == 0 and size[1]%2 == 0, shape_error
+        assert size[0] > 0 and size[1] > 0, shape_error
         
         self.size = np.array(size)
         self.num_walks = num_walks
@@ -19,29 +23,42 @@ class RN_Generator:
         self.bias = bias
         self.periodic = periodic
         self.avoid_unvalid = avoid_unvalid
+        self.grid_start = grid_start
+        self.center_elem = True
         
         self.mat = np.ones(size)    # lattice matrix
         self.valid = np.ones(size)  # valid positions
     
     
+        if self.center_elem:
+            center_size = (int(size[0] + 1), int(size[1]//2)) # TODO: Double check 
+            print(center_size)
+            exit()
+
+    
         if self.periodic:
             assert np.all(self.size%2 == 0), f"The size of the sheet {self.size} must have even side lengths to enable periodic boundaries."
     
         # TODO: Implement center elem walks
-        
-        
         # TODO: Consider using the proper random generator
         #       suggested by numpy.
         
     
     def generate(self):        
         for w in range(self.num_walks):
-            idx = np.argwhere(self.valid == 1)
+            if self.grid_start:
+                idx = self.get_grid()
+            else:
+                idx = np.argwhere(self.valid == 1)
             if len(idx) == 0:
                 break
             
             start = random.choice(idx)
             del_map, self.valid = self.walk(start)
+            
+            self.mat = delete_atoms(self.mat, center_elem_trans_to_atoms(del_map, full = True)) # TODO Full = True/False
+            
+            
             self.mat = delete_atoms(self.mat, del_map)
             self.valid = self.add_dis_bound(del_map)
             
@@ -50,9 +67,10 @@ class RN_Generator:
 
     def walk(self, start):
         self.valid[tuple(start)] = 0
+        del_map = [start]
+        
         
         pos = start
-        del_map = []
         for i in range(self.max_steps):
             neigh, direction = connected_neigh(pos)
             m, n = np.shape(self.mat)   
@@ -71,6 +89,14 @@ class RN_Generator:
                 available = available[available]
                 if len(neigh) == 0: # No where to go
                     break
+            else:
+                map = []
+                for i in range(len(neigh)):
+                    map.append(~np.any(np.all(neigh[i] == del_map, axis = 1)))
+                neigh = neigh[map]
+                direction = direction[map]
+                available = available[map]
+                
             
             p = self.get_p(direction)
             choice = np.random.choice(len(neigh), p = p)
@@ -140,48 +166,29 @@ class RN_Generator:
         return p
 
 
-    def grid_start(self):
-        self.num_walks = 2
+    def get_grid(self):
         L = int(np.ceil(np.sqrt(self.num_walks)))
-        grid_idx = np.arange(L)
-        # TODO make somehting like
-        grid = [[0,0], [0,1], [1, 0], [1,1]] # Here for L = 2
-        exit()
-        
-        x = []
-        y = []
+     
+        grid = []
         for i in range(L):
-            start = (i*self.size[0])//L
-            stop = ((i+1)*self.size[0])//L 
-            midpoint = start + (stop-start)//2
-            x.append(midpoint)
-       
-            start = (i*self.size[1])//L
-            stop = ((i+1)*self.size[1])//L 
-            midpoint = start + (stop-start)//2
-            y.append(midpoint)
-       
-        x, y = np,array(x), np.array(y)
-        
-        
-        # choice = np.random.choice(grid, replace = False)
-        
-        
-        
-        # This is difficult and unessecary use of time...
-        # num_walks = 1 => Put in center     
-        # num_walks = 2 => put in each corner of a 2 x 2
-        # num_walks = 3, 4 => fill up that 2 x 2
-        # num_walks = 5 => make a 3 x 3 and fill cornes and the 5th in the middle (ideally)
-        # print(self.size)
-        
+            xstart = (i*self.size[0])//L
+            xstop = ((i+1)*self.size[0])//L 
+            xpoint = xstart + (xstop-xstart)//2
+            for j in range(L):
+                ystart = (j*self.size[1])//L
+                ystop = ((j+1)*self.size[1])//L 
+                ypoint = ystart + (ystop-ystart)//2
+                grid.append([xpoint, ypoint])
+                
+        grid = np.array(grid)
+        idx = grid[self.valid[grid[:, 0], grid[:,1]] == 1]
+        return idx
         
         
 
 if __name__ == "__main__":
     
     RN = RN_Generator()
-    RN.grid_start()
     # mat = RN.generate()
     
     
