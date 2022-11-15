@@ -152,20 +152,7 @@ def connected_neigh_center_elem(pos):
 
     
     
-    
 
-# Depricated
-def get_neighbour(pos):  
-    x, y = pos
-    
-    neigh = [[x, y+1], [x, y-1]]
-    if (x + y)%2: # Right
-        neigh.append([x+1, y])   
-    else: # Left
-        neigh.append([x-1, y])   
-        
-    return neigh
-    
 
 
 # def half_norm(x, mu, sigma):

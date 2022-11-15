@@ -7,8 +7,9 @@ import random
     
 
 class RN_Generator:
-    def __init__(self, size = (50, 70), num_walks = 16, max_steps = 15, max_dis = 2, bias = [(1, 1), 0.5], periodic = True, avoid_unvalid = False, grid_start = True, center_elem = True):
+    def __init__(self, size = (50, 70), num_walks = 49, max_steps = 20, max_dis = 2, bias = [(1, 1), 0.5], periodic = True, avoid_unvalid = False, grid_start = True, center_elem = True):
 
+        size = (100, 140)
         # size = (20, 40)
         # size = (4, 10)
         ##############################
@@ -45,7 +46,8 @@ class RN_Generator:
             assert np.all(self.size%2 == 0), f"The size of the sheet {self.size} must have even side lengths to enable periodic boundaries."
     
         # TODO: Work on single walk copied to multiple locations
-
+        
+        # TODO: Distributions on RN walk length?
     
         # TODO: Consider using the proper random generator
         #       suggested by numpy.
@@ -69,7 +71,7 @@ class RN_Generator:
         
         if self.center_elem: # transform from center elements to atoms
             del_map = np.column_stack((np.where(self.mat == 0)))
-            del_map = center_elem_trans_to_atoms(del_map, full = True)
+            del_map = center_elem_trans_to_atoms(del_map, full = True) # TODO: Toggle full on/off and handle problem with periodic boundary conditions
             if self.periodic and len(del_map) > 0:
                 m, n = self.size
                 del_map = (del_map + (m,n))%(m,n)
