@@ -179,7 +179,8 @@ fix tmp all ave/time 100 1 100 c_myRDF[*] file rdf.txt mode vector
 # ---------- Output ---------- #
 thermo 100
 variable dump_freq equal 100 
-
+# ^^^^Be aware about these changes!
+quit
 
 dump 1 all custom $(v_dump_freq) system_${out_ext}.data id type x y z vx vy vz v_stress_atom c_bond_coord
 dump 2 full_sheet custom $(v_dump_freq) full_sheet_${out_ext}.data id type x y z vx vy vz v_stress_atom c_bond_coord
