@@ -30,8 +30,8 @@ def read_friction_file(filename):
         new_keys = ['v_move_force_' + elem_to_xyz[int(key.strip('f_spring_force[]'))-1] for key in old_keys ]     
         for old_key, new_key in zip(old_keys, new_keys): outdict[new_key] = outdict.pop(old_key)
         
-        
     return outdict
+
 
 
 
@@ -237,6 +237,39 @@ def read_histogram(filename):
     return timestep, hist
 
 
+def read_ave_time_vector(filename):
+    infile = open(filename, 'r')
+    pointer = ""
+    while True:
+        line = infile.readline()
+        if line[0] != "#":
+            break
+        pointer += line
+    infile.seek(len(pointer), 0) # Go to start of data
+    
+    timestep = []
+    data = []
+    for line in infile:
+        words = [int(w) for w in line.split()]
+        timestep.append(words[0])
+        Nbins = words[1]
+        for i in range(Nbins):
+            line = infile.readline()
+            words = [float(w) for w in line.split()[1:]]
+            data.append(words)
+    
+    timestep = np.array(timestep)
+    data = np.array(data)
+    
+    test = data.reshape(len(timestep), Nbins, 3)
+    return timestep, test
+    print(np.shape(test))
+    exit()
+    return np.array(timestep), np.array(data)
+    
+    # np.loadtxt(filename, unpack=True)
+
+
     
 class interactive_plotter:
     """ Gets glitchy with multiple big figures open """
@@ -278,7 +311,5 @@ class interactive_plotter:
 
 
 if __name__ == "__main__":
-    filename = "../Data/new_potential_rip_test/cut_25stretch/cut_25stretch_chist.txt"
-    # filename = "../Data/new_potential_rip_test/cut_30stretch/cut_30stretch_chist.txt"
-    read_histogram(filename)
-    
+    filename = "../friction_simulation/my_simulation_space/rdf.txt"
+    read_ave_time_vector(filename)

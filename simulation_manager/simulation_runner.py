@@ -1,5 +1,8 @@
 import numpy as np
 # from lammps_simulator import Simulator
+from datetime import date
+
+
 
 import sys
 sys.path.append('../../lammps-simulator_ssh') # parent folder: MastersThesis
@@ -9,7 +12,7 @@ from lammps_simulator.device import SlurmGPU
 import subprocess
 
 class Friction_procedure:
-    def __init__(self, variables):
+    def __init__(self, variables = {}) :
         # Standard variables
         self.variables = {
             "dt": 0.001,
@@ -26,9 +29,9 @@ class Friction_procedure:
             "drag_length": 30 ,
             "K": 30.0,
             "root": ".",
-            "out_ext": "default" # put date here
+            "out_ext": "default", # put date here
+            "temp": 100.0 # [K]
         }
-        
         
         
         # --- Convertion factors: SI -> metal --- #
@@ -292,6 +295,8 @@ def custom():
 
 
 if __name__ == "__main__":
+    test = Friction_procedure()
+    print(test.variables['out_ext'])
     # great4_runner()
     # one_config_multi_data()
     # custom()
