@@ -7,7 +7,7 @@ import random
     
 
 class RN_Generator:
-    def __init__(self, size = (50, 70), num_walks = 1, max_steps = 0, max_dis = 1, bias = [(1, 0), 0], periodic = True, avoid_unvalid = False, grid_start = False, center_elem = True):
+    def __init__(self, size = (50, 70), num_walks = 2, max_steps = 0, max_dis = 1, bias = [(1, 0), 0], periodic = True, avoid_unvalid = False, grid_start = True, center_elem = True):
 
         size = (20, 40)
         # size = (4, 10)
@@ -44,6 +44,9 @@ class RN_Generator:
         if self.periodic:
             assert np.all(self.size%2 == 0), f"The size of the sheet {self.size} must have even side lengths to enable periodic boundaries."
     
+        # TODO: Work on grid_start
+    
+    
         # TODO: Consider using the proper random generator
         #       suggested by numpy.
         
@@ -57,31 +60,28 @@ class RN_Generator:
             if len(idx) == 0:
                 break
             
-
             start = random.choice(idx)
-            start = [10,10] # XXX XXX XXX
             del_map, self.valid = self.walk(start)
             self.mat = delete_atoms(self.mat, del_map)
-            self.valid = self.add_dis_bound(del_map) # TODO: Test this
-            # print(np.argwhere(self.valid == 0))
+            self.valid = self.add_dis_bound(del_map) 
         
         if self.center_elem: # transform from center elements to atoms
             del_map = np.column_stack((np.where(self.mat == 0)))
             del_map = center_elem_trans_to_atoms(del_map, full = True)
-            if self.periodic:
+            if self.periodic and len(del_map) > 0:
                 m, n = self.size
                 del_map = (del_map + (m,n))%(m,n)
             self.mat = np.ones(self.size)
             self.mat = delete_atoms(self.mat, del_map)
             
-            # XXX For testing XXX
-            del_map = np.column_stack((np.where(self.valid == 0)))
-            del_map = center_elem_trans_to_atoms(del_map, full = True)
-            if self.periodic:
-                m, n = self.size
-                del_map = (del_map + (m,n))%(m,n)
-            self.valid = np.ones(self.size)
-            self.valid = delete_atoms(self.valid, del_map)
+            # # XXX For testing XXX
+            # del_map = np.column_stack((np.where(self.valid == 0)))
+            # del_map = center_elem_trans_to_atoms(del_map, full = True)
+            # if self.periodic:
+            #     m, n = self.size
+            #     del_map = (del_map + (m,n))%(m,n)
+            # self.valid = np.ones(self.size)
+            # self.valid = delete_atoms(self.valid, del_map)
             
     
         return self.mat
@@ -160,7 +160,6 @@ class RN_Generator:
             return  np.concatenate((pre, self.walk_dis(neigh, dis, pre)))
           
     
-
     def add_dis_bound(self, walk):
         m, n = np.shape(self.valid)
         for w in walk:
@@ -191,20 +190,33 @@ class RN_Generator:
 
     def get_grid(self):
         L = int(np.ceil(np.sqrt(self.num_walks)))
+        
+        size = np.shape(self.mat)
      
         grid = []
         for i in range(L):
-            xstart = (i*self.size[0])//L
-            xstop = ((i+1)*self.size[0])//L 
+            xstart = (i*size[0])//L
+            xstop = ((i+1)*size[0])//L 
             xpoint = xstart + (xstop-xstart)//2
             for j in range(L):
-                ystart = (j*self.size[1])//L
-                ystop = ((j+1)*self.size[1])//L 
+                ystart = (j*size[1])//L
+                ystop = ((j+1)*size[1])//L 
                 ypoint = ystart + (ystop-ystart)//2
                 grid.append([xpoint, ypoint])
                 
         grid = np.array(grid)
+        
+        # order for correct fill up
+        sum = np.sum(grid, axis = 1)
+        order = [np.argmin(sum), np.argmax(sum)]
+        test = np.arange(len(grid) not in order)
+        print(test)
+        # print(order)
+        print(grid)
+        
         idx = grid[self.valid[grid[:, 0], grid[:,1]] == 1]
+        
+        exit()
         return idx
         
         

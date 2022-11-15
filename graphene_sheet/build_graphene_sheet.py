@@ -82,11 +82,10 @@ if __name__ == "__main__":
     RN = RN_Generator()
     mat = RN.generate()
     
-    mat = RN.valid
-    
-    mat[mat == 1] = 2
-    mat[mat == 0] = 1
-    mat[mat == 2] = 0
+    # mat = RN.valid
+    # mat[mat == 1] = 2
+    # mat[mat == 0] = 1
+    # mat[mat == 2] = 0
     build_graphene_sheet(mat, view_lattice = True)
 
 
