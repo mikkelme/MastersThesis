@@ -7,9 +7,10 @@ import random
     
 
 class RN_Generator:
-    def __init__(self, size = (50, 70), num_walks = 1, max_steps = 0, max_dis = 0, bias = [(1, 1), 0], periodic = False, avoid_unvalid = False, grid_start = False, center_elem = True):
+    def __init__(self, size = (50, 70), num_walks = 1, max_steps = 0, max_dis = 1, bias = [(1, 0), 0], periodic = True, avoid_unvalid = False, grid_start = False, center_elem = True):
 
-        size = (4,10)
+        size = (20, 40)
+        # size = (4, 10)
         ##############################
 
         shape_error = f"SHAPE ERROR: Got size {size}, y-axis must be multiple of 2 and both nonzero positive integers."
@@ -24,16 +25,20 @@ class RN_Generator:
         self.periodic = periodic
         self.avoid_unvalid = avoid_unvalid
         self.grid_start = grid_start
-        self.center_elem = True
+        self.center_elem = center_elem
         
-        self.mat = np.ones(size)    # lattice matrix
-        self.valid = np.ones(size)  # valid positions
-    
-    
         if self.center_elem:
-            center_size = (int(size[0] + 1), int(size[1]//2)) # TODO: Double check 
-            print(center_size)
-            exit()
+            center_size = np.array((int(size[0] + 1), int(size[1]//2))) # TODO: Double check 
+            self.mat = np.ones(center_size)    # lattice matrix
+            self.valid = np.ones(center_size)  # valid positions
+            self.connected_neigh = connected_neigh_center_elem
+            
+        else:
+            self.mat = np.ones(size)    # lattice matrix
+            self.valid = np.ones(size)  # valid positions
+            self.connected_neigh = connected_neigh_atom
+    
+    
 
     
         if self.periodic:
@@ -53,15 +58,37 @@ class RN_Generator:
             if len(idx) == 0:
                 break
             
+
             start = random.choice(idx)
+            start = [10,10] # XXX XXX XXX
             del_map, self.valid = self.walk(start)
-            
-            self.mat = delete_atoms(self.mat, center_elem_trans_to_atoms(del_map, full = True)) # TODO Full = True/False
-            
-            
             self.mat = delete_atoms(self.mat, del_map)
-            self.valid = self.add_dis_bound(del_map)
+            self.valid = self.add_dis_bound(del_map) # TODO: Test this
+            # print(np.argwhere(self.valid == 0))
+        
+        if self.center_elem: # transform from center elements to atoms
+            del_map = np.column_stack((np.where(self.mat == 0)))
+            del_map = center_elem_trans_to_atoms(del_map, full = True)
+            if self.periodic:
+                m, n = self.size
+                del_map = (del_map + (m,n))%(m,n)
+            self.mat = np.ones(self.size)
+            self.mat = delete_atoms(self.mat, del_map)
             
+            # XXX For testing XXX
+            del_map = np.column_stack((np.where(self.valid == 0)))
+            # print(del_map)
+            # print(len(del_map))
+            del_map = center_elem_trans_to_atoms(del_map, full = True)
+            if self.periodic:
+                m, n = self.size
+                del_map = (del_map + (m,n))%(m,n)
+            self.valid = np.ones(self.size)
+            self.valid = delete_atoms(self.valid, del_map)
+            
+            
+            
+    
         return self.mat
         
 
@@ -69,10 +96,9 @@ class RN_Generator:
         self.valid[tuple(start)] = 0
         del_map = [start]
         
-        
-        pos = start
+        pos = start    
         for i in range(self.max_steps):
-            neigh, direction = connected_neigh(pos)
+            neigh, direction = self.connected_neigh(pos)
             m, n = np.shape(self.mat)   
             
             if self.periodic: 
@@ -114,7 +140,6 @@ class RN_Generator:
     def walk_dis(self, input, dis = 0, pre = []):
         """ Recursive function to walk to all sites
             within a distance of max_dis jumps """
-            
         if self.max_dis == 0:
             return input
         
@@ -125,18 +150,30 @@ class RN_Generator:
 
         neigh = []
         for pos in input:
-            suggest = get_neighbour(pos)
+            # suggest = get_neighbour(pos)
+            suggest, _ = self.connected_neigh(pos)
+            # if dis == 1:
+            #     print("dis == 1", pos, suggest)
             for s in suggest:
-                if s not in pre and s not in neigh:
-                    neigh.append(s)
+                s_in_pre = np.any(np.all(s == pre, axis = -1))
+                s_in_neigh = np.any(np.all(s == neigh, axis = -1))
+                # if dis == 1:
+                #     print(s, pre, neigh, not test, not s_in_neigh)
+                try:
+                    if not s_in_pre and not s_in_neigh:
+                        neigh.append(s)
+                except:
+                    print("and-condition")
+                    exit()
             
         dis += 1
         if dis >= self.max_dis:
             return input + neigh
         else:
-            pre = input
-            return pre + self.walk_dis(neigh, dis, pre)
-        
+            pre = np.array(input)
+            return  np.concatenate((pre, self.walk_dis(neigh, dis, pre)))
+          
+    
 
     def add_dis_bound(self, walk):
         m, n = np.shape(self.valid)

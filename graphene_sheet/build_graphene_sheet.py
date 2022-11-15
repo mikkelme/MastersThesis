@@ -82,7 +82,7 @@ if __name__ == "__main__":
     RN = RN_Generator()
     mat = RN.generate()
     
-    
+    mat = RN.valid
     
     mat[mat == 1] = 2
     mat[mat == 0] = 1

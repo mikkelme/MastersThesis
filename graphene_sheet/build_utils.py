@@ -20,7 +20,6 @@ def delete_atoms(mat, delete_map):
     condition = np.all(np.logical_and(delete_map < (m,n), delete_map >= (0,0)), axis = 1)
     delete_map = delete_map[condition, :]
     
-
     if len(delete_map > 0):
         mat[delete_map[:, 0], delete_map[:, 1]] = 0
     return mat
@@ -107,10 +106,10 @@ def center_neigh(center_elem):
     return neigh
 
 
-def connected_neigh(pos):
+
+def connected_neigh_atom(pos):
     """ Get three connected neightbours in sheet
-        and direction
-        if they are valid (inside the sheet) """
+        and direction for single atom sites. """
     x, y = pos
     # m, n = np.shape(valid)   
     
@@ -129,7 +128,33 @@ def connected_neigh(pos):
         
     return neigh, direction
     
-  
+    
+def connected_neigh_center_elem(pos):
+    """ Get three connected neightbours in sheet
+        and direction for center elements. """
+    x, y = pos
+    # m, n = np.shape(valid)   
+    
+    
+    Cdis = 1.42
+    a = 3*Cdis/np.sqrt(3)
+    a1 = a/2 * np.array([np.sqrt(3), 1])
+    a2 = a/2 * np.array([np.sqrt(3), -1])
+    # neigh = np.array([[x, y+1], [x, y-1], [x+1, y], [x-1, y], [-2, -2], [-2, -2]])
+    neigh = [[x, y+1], [x, y-1]]
+    direction = np.array([[0, 1], [0, -1], a1, a2, -a2, -a1]) # Up, Down, UpRight, DownRight, UpLeft, DownLeft
+    if x%2: # Down
+        neigh += [[x+1, y], [x+1, y-1], [x-1, y], [x-1, y-1]]
+    else: # Up
+        neigh += [[x+1, y+1], [x+1, y], [x-1, y+1], [x-1, y]]
+    
+    return np.array(neigh), direction
+
+    
+    
+    
+
+# Depricated
 def get_neighbour(pos):  
     x, y = pos
     
