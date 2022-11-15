@@ -44,7 +44,6 @@ class RN_Generator:
         if self.periodic:
             assert np.all(self.size%2 == 0), f"The size of the sheet {self.size} must have even side lengths to enable periodic boundaries."
     
-        # TODO: Implement center elem walks
         # TODO: Consider using the proper random generator
         #       suggested by numpy.
         
@@ -77,16 +76,12 @@ class RN_Generator:
             
             # XXX For testing XXX
             del_map = np.column_stack((np.where(self.valid == 0)))
-            # print(del_map)
-            # print(len(del_map))
             del_map = center_elem_trans_to_atoms(del_map, full = True)
             if self.periodic:
                 m, n = self.size
                 del_map = (del_map + (m,n))%(m,n)
             self.valid = np.ones(self.size)
             self.valid = delete_atoms(self.valid, del_map)
-            
-            
             
     
         return self.mat
@@ -150,21 +145,12 @@ class RN_Generator:
 
         neigh = []
         for pos in input:
-            # suggest = get_neighbour(pos)
             suggest, _ = self.connected_neigh(pos)
-            # if dis == 1:
-            #     print("dis == 1", pos, suggest)
             for s in suggest:
                 s_in_pre = np.any(np.all(s == pre, axis = -1))
                 s_in_neigh = np.any(np.all(s == neigh, axis = -1))
-                # if dis == 1:
-                #     print(s, pre, neigh, not test, not s_in_neigh)
-                try:
-                    if not s_in_pre and not s_in_neigh:
+                if not s_in_pre and not s_in_neigh:
                         neigh.append(s)
-                except:
-                    print("and-condition")
-                    exit()
             
         dis += 1
         if dis >= self.max_dis:
