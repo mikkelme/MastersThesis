@@ -209,7 +209,8 @@ class RN_Generator:
         # order for correct fill up
         sum = np.sum(grid, axis = 1)
         order = [np.argmin(sum), np.argmax(sum)]
-        test = np.arange(len(grid) not in order)
+        tail = [i for i in range(len(grid)) if i not in order]
+        test = np.random.choice(tail, size = 2, replace = False)
         print(test)
         # print(order)
         print(grid)
