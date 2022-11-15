@@ -1,7 +1,5 @@
 import numpy as np
 
-# import matplotlib.pyplot as plt # TMP XXX
-
 def delete_atoms(mat, delete_map):
     """ Remove valid atoms from atom matrix
     
