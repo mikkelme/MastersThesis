@@ -7,9 +7,9 @@ import random
     
 
 class RN_Generator:
-    def __init__(self, size = (50, 70), num_walks = 2, max_steps = 0, max_dis = 1, bias = [(1, 0), 0], periodic = True, avoid_unvalid = False, grid_start = True, center_elem = True):
+    def __init__(self, size = (50, 70), num_walks = 16, max_steps = 15, max_dis = 2, bias = [(1, 1), 0.5], periodic = True, avoid_unvalid = False, grid_start = True, center_elem = True):
 
-        size = (20, 40)
+        # size = (20, 40)
         # size = (4, 10)
         ##############################
 
@@ -44,8 +44,8 @@ class RN_Generator:
         if self.periodic:
             assert np.all(self.size%2 == 0), f"The size of the sheet {self.size} must have even side lengths to enable periodic boundaries."
     
-        # TODO: Work on grid_start
-    
+        # TODO: Work on single walk copied to multiple locations
+
     
         # TODO: Consider using the proper random generator
         #       suggested by numpy.
@@ -55,12 +55,14 @@ class RN_Generator:
         for w in range(self.num_walks):
             if self.grid_start:
                 idx = self.get_grid()
+                if len(idx) == 0: break
+                start = idx[0]
             else:
                 idx = np.argwhere(self.valid == 1)
-            if len(idx) == 0:
-                break
-            
-            start = random.choice(idx)
+                if len(idx) == 0: break
+                start = random.choice(idx)
+                
+                
             del_map, self.valid = self.walk(start)
             self.mat = delete_atoms(self.mat, del_map)
             self.valid = self.add_dis_bound(del_map) 
@@ -189,8 +191,8 @@ class RN_Generator:
 
 
     def get_grid(self):
+        # Partition
         L = int(np.ceil(np.sqrt(self.num_walks)))
-        
         size = np.shape(self.mat)
      
         grid = []
@@ -206,18 +208,25 @@ class RN_Generator:
                 
         grid = np.array(grid)
         
-        # order for correct fill up
-        sum = np.sum(grid, axis = 1)
-        order = [np.argmin(sum), np.argmax(sum)]
-        tail = [i for i in range(len(grid)) if i not in order]
-        test = np.random.choice(tail, size = 2, replace = False)
-        print(test)
-        # print(order)
-        print(grid)
+        # Ordering for even distributed points
+        if self.num_walks == len(grid):
+            pass # No need to order
+        elif L > 1:
+            order = []
+            # Start at lower left quarter center
+            start =  np.array([size[0]//4, size[1]//4])
+            start_diff = np.linalg.norm(grid-start, axis = 1)
+            order.append(np.argmin(start_diff))
+            
+            left = np.arange(len(grid))
+            while len(order) < self.num_walks:
+                dis = np.linalg.norm(grid[order, np.newaxis]-grid[left], axis = 2)
+                dis_min = np.min(dis, axis = 0)
+                idx = np.random.choice(np.where(np.isclose(dis_min, dis_min.max()))[0])
+                order.append(idx)
+            grid = grid[order]
         
         idx = grid[self.valid[grid[:, 0], grid[:,1]] == 1]
-        
-        exit()
         return idx
         
         
