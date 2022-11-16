@@ -310,6 +310,25 @@ class interactive_plotter:
             
 
 
+def cum_mean(arr):
+    cum_sum = np.cumsum(arr, axis = 0)
+    divider = np.arange(len(cum_sum)) + 1
+    return cum_sum / divider
+    
+    
+def cum_max(arr):
+    return  np.maximum.accumulate(arr)
+    
+# def cum_mean(arr):
+#     cum_sum = np.cumsum(arr, axis=0)    
+#     for i in range(cum_sum.shape[0]):       
+#         if i == 0:
+#             continue        
+#         print(cum_sum[i] / (i + 1))
+#         cum_sum[i] =  cum_sum[i] / (i + 1)
+#     return cum_sum
+
+
 if __name__ == "__main__":
     filename = "../friction_simulation/my_simulation_space/rdf.txt"
     read_ave_time_vector(filename)

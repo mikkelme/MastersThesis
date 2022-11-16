@@ -137,10 +137,10 @@ def read_multi_folder(folders):
             fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax=cax, label='Stretch [%]')
             
             
-            ax1.set(xlabel='$F_N$ [eV/Å]', ylabel='max $F_\parallel$')
-            ax2.set(xlabel='$F_N$ [eV/Å]', ylabel='mean $F_\parallel$')
-            ax5.set(xlabel='contact (sheet) [%]', ylabel='max $F_\parallel$')
-            ax6.set(xlabel='contact (sheet) [%]', ylabel='mean $F_\parallel$')
+            ax1.set(xlabel='$F_N$ [eV/Å]', ylabel='max $F_\parallel$ [eV/Å]')
+            ax2.set(xlabel='$F_N$ [eV/Å]', ylabel='mean $F_\parallel$ [eV/Å]')
+            ax5.set(xlabel='contact (sheet) [%]', ylabel='max $F_\parallel$ [eV/Å]')
+            ax6.set(xlabel='contact (sheet) [%]', ylabel='mean $F_\parallel$ [eV/Å]')
             
         
             for j in range(len(F_N)):                
@@ -177,10 +177,10 @@ def read_multi_folder(folders):
             cax.grid(False)
             fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax=cax, label='$F_N$ [eV/Å]')
             
-            ax3.set(xlabel='stretch [%]', ylabel='max $F_\parallel$')
-            ax4.set(xlabel='stretch [%]', ylabel='mean $F_\parallel$')
-            ax7.set(xlabel='contact (sheet) [%]', ylabel='max $F_\parallel$')
-            ax8.set(xlabel='contact (sheet) [%]', ylabel='mean $F_\parallel$')
+            ax3.set(xlabel='stretch [%]', ylabel='max $F_\parallel$ [eV/Å]')
+            ax4.set(xlabel='stretch [%]', ylabel='mean $F_\parallel$ [eV/Å]')
+            ax7.set(xlabel='contact (sheet) [%]', ylabel='max $F_\parallel$ [eV/Å]')
+            ax8.set(xlabel='contact (sheet) [%]', ylabel='mean $F_\parallel$ [eV/Å]')
  
             plt.tight_layout()     
             obj_list.append(interactive_plotter(fig))
