@@ -33,6 +33,20 @@ def read_friction_file(filename):
     return outdict
 
 
+def read_info_file(filename):
+    dict = {}
+    infile = open(filename, 'r')
+    for line in infile:
+        key, val = line.split()
+        try:
+            val = float(val)
+        except ValueError:
+            pass
+    
+    return dict
+    
+
+
 
 
 def get_files_in_folder(path, ext = None, exclude = None): 
@@ -330,5 +344,8 @@ def cum_max(arr):
 
 
 if __name__ == "__main__":
-    filename = "../friction_simulation/my_simulation_space/rdf.txt"
-    read_ave_time_vector(filename)
+    # filename = "../friction_simulation/my_simulation_space/rdf.txt"
+    # read_ave_time_vector(filename)
+    
+    filename = "../friction_simulation/my_simulation_space/info_file.txt"
+    read_info_file(filename)

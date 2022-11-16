@@ -3,7 +3,7 @@ from rupture_detect import *
 import random
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-def read_info_file(filename):
+def read_info_file_old(filename):
     stretch_pct, F_N = np.loadtxt(filename, unpack=True, delimiter = ',')
     return stretch_pct, F_N
     
@@ -30,7 +30,7 @@ def read_multi_folder(folders):
                 print(f"\r ({progress}/{total}) | {job_dir} ", end = " ")
               
                 try:
-                    stretch_pct, F_N = read_info_file(os.path.join(job_dir,info_file))
+                    stretch_pct, F_N = read_info_file_old(os.path.join(job_dir,info_file))
                     if eval_rupture:
                         chist_file = find_single_file(job_dir, ext = chist_ext)
                         rupture_score = detect_rupture(chist_file, stretchfile)
@@ -264,4 +264,5 @@ if __name__ == "__main__":
     # folders = ['../Data/multi_fast']
     folders = ['../Data/BIG_MULTI_Ydrag']
     folders = ['../Data/BIG_MULTI_nocut']
+    folders = ['../Data/BIG_MULTI_Xdrag']
     read_multi_folder(folders)

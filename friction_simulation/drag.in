@@ -1,3 +1,4 @@
+
 # Setup system
 variable restart_file index None
 variable readable equal is_file(${restart_file})
@@ -5,12 +6,15 @@ if !${readable} then "jump SELF system_is_running"
 include ${root}/setup_sim.in
 
 
-# Info file
-print """
-# Restart_file: ${restart_file}
-# Stretch_pct, F_N
-${stretch_pct}, ${F_N}
-""" file info_file.txt
+
+# Update stretch_max_pct with current value from restart file
+variable stretch_max_pct equal stretch_pct
+
+# print """
+# # Restart_file: ${restart_file}
+# # Stretch_pct, F_N
+# ${stretch_pct}, ${F_N}
+# """ file info_file.txt
 
 # ---------- Print drag schedule ---------- #
 # Timestamps
@@ -46,7 +50,26 @@ print ""
 
 label system_is_running
 
-
+# Write variables to info_file.txt
+print """&
+dt ${dt}
+temp ${temp}
+relax_time ${relax_time}
+pause_time1 ${pause_time1}
+pause_time2 ${pause_time2}
+stretch_speed_pct ${stretch_speed_pct}
+drag_speed ${drag_speed}
+drag_length ${drag_length}
+K ${K}
+root ${root}
+out_ext ${out_ext}
+config_data ${config_data}
+stretch_max_pct ${stretch_max_pct}
+drag_dir_x ${drag_dir_x}
+drag_dir_y ${drag_dir_y}
+F_N ${F_N}
+restart_file: ${restart_file}&
+""" file info_file.txt
 
 
 # ---------- Pause 1 ---------- #

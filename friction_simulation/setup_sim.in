@@ -160,8 +160,8 @@ variable move_force_y equal c_sheet_fy+c_Ff[2]
 variable move_force_xy_norm equal sqrt(v_move_force_x^2+v_move_force_x^2)  
 
 ## -- Stretch -- ##
-# variable S0 equal c_PB_yhigh_ymin-c_PB_ylow_ymax    # start len of inner sheet
-variable S0 equal v_pullblock_ylo-v_pullblock_yhi   # start len of inner sheet
+variable S0 equal c_PB_yhigh_ymin-c_PB_ylow_ymax    # start len of inner sheet # <---- Probably need to find a way to make this one work!!!
+# variable S0 equal v_pullblock_ylo-v_pullblock_yhi   # start len of inner sheet
 variable S_len equal c_PB_yhigh_ymin-c_PB_ylow_ymax # Updated len of inner sheet
 variable stretch_pct equal (v_S_len-v_S0)/v_S0  # Updated stretch pct
 variable stretch_speed equal v_stretch_speed_pct*v_S0 
@@ -169,18 +169,19 @@ variable stretch_speed equal v_stretch_speed_pct*v_S0
 ## -- Drag -- ##
 variable dir_norm equal $(sqrt(v_drag_dir_x^2+v_drag_dir_y^2))
 
-# RDF
-compute myRDF sheet rdf 1000 1 1 #cutoff 8.65 
-fix tmp all ave/time 100 1 100 c_myRDF[*] file rdf.txt mode vector
+# # RDF
+# compute myRDF sheet rdf 1000 1 1 #cutoff 8.65 
+# fix tmp all ave/time 100 1 100 c_myRDF[*] file rdf.txt mode vector
 
 
 
 
 # ---------- Output ---------- #
-thermo 100
-variable dump_freq equal 100 
+thermo 1000
+variable dump_freq equal 1000
 # ^^^^Be aware about these changes!
-quit
+# print "-----> Watch the thermo and dump_freq"
+# quit
 
 dump 1 all custom $(v_dump_freq) system_${out_ext}.data id type x y z vx vy vz v_stress_atom c_bond_coord
 dump 2 full_sheet custom $(v_dump_freq) full_sheet_${out_ext}.data id type x y z vx vy vz v_stress_atom c_bond_coord

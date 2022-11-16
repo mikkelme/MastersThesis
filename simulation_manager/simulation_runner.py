@@ -23,7 +23,7 @@ class Simulation_runner:
             "drag_speed": 1, # [m/s]
             "drag_length": 30 ,
             "K": 30.0,
-            "root": ".",
+            "root": "..",
             "out_ext": date.today(), 
             "config_data": "sheet_substrate",
             "stretch_max_pct": 0.2,
@@ -67,6 +67,10 @@ class Simulation_runner:
        
     def move_file_to(self, file, dest):
         subprocess.run(['rsync', '-av', '-mkpath', file, dest])
+    
+    def move_files_to_dest(self, files, dest):
+        for file in files:
+            subprocess.run(['rsync', '-av', '-mkpath', file, dest])
         
     # TODO: Modify so this works in new version (class Simulation_runner)
     def multi_run(self, sim, proc, num_stretch_files, F_N, num_procs = 16, jobname = 'MULTI'):
