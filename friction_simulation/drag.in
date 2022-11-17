@@ -1,11 +1,13 @@
-
 # Setup system
 variable restart_file index None
 variable readable equal is_file(${restart_file})
 if !${readable} then "jump SELF system_is_running"
+
 include ${root}/setup_sim.in
 
-
+print "In drag file"
+print $(v_stretch_pct)
+quit
 
 # Update stretch_max_pct with current value from restart file
 variable stretch_max_pct equal stretch_pct
@@ -49,6 +51,7 @@ print ""
 
 
 label system_is_running
+
 
 # Write variables to info_file.txt
 print """&

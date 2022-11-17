@@ -9,6 +9,15 @@ variable restart_freq equal floor(v_stretch_steps/(v_num_stretch_files-1))
 variable       stride equal stride(v_relax_steps,$(v_relax_steps+v_stretch_steps+v_restart_freq),v_restart_freq)
 restart        v_stride stretch_*_restart
 
+
+# Maybe use a loop such that one can print out multil stretch files...
+^^^^^^^
+fix extra all print $(v_stride) "$(step) ${stretch_pct}" file restart_stretch_test.in
+# fix extra all print $(v_stride) "if '$(step) <= '$(step)'' then 'variable stretch_pct equal '$(v_stretch_pct)'' " file restart_stretch_test.in
+# fix extra all print $(v_stride) "if $(step) <= $(step) then 'variable stretch_pct equal '$(v_stretch_pct)'' " file restart_stretch_test.in
+quit
+
+
 label no_restart
 
 # ----------  Relax sheet ---------- #

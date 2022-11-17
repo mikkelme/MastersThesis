@@ -1,5 +1,7 @@
 # variable temp equal 100.0 # Kelvin                  
 
+
+
 # SWITCH: read_data || read_restart
 variable restart_file index None
 variable readable equal is_file(${restart_file})
@@ -17,8 +19,11 @@ boundary p p m
 atom_style atomic # coarse-grain liquids, solids, metals
 
 # --- Read files --- #
-read_data ${config_data}.txt extra/atom/types 1  # sheet and substrate (1 extra type for virtuel atom)
-include ${config_data}_info.in                   # import variables
+# read_data ${config_data}.txt extra/atom/types 1  # sheet and substrate (1 extra type for virtuel atom)
+# include ${config_data}_info.in                   # import variables
+read_data ${root}/${config_data}.txt extra/atom/types 1  # sheet and substrate (1 extra type for virtuel atom)
+include ${root}/${config_data}_info.in                   # import variables
+
 
 # --- Regions and groups --- #
 variable eps equal 0.1 # small number to ensure all atoms is inside interval
@@ -63,10 +68,16 @@ jump SELF common_settings
 label setup_from_restart_file
 print "Setting up simulation from read_restart: ${restart_file}"
 
+
 # --- Read restart file --- #
 read_restart ${restart_file}
-include ${root}/${config_data}_info.in                  
+include ${root}/${config_data}_info.in 
+include restart_stretch_test.in
 
+# print $(step)
+# print $(v_stretch_pct)
+quit                
+### Get restart stretch value <--------
 
 ###############################
 ### --- Common settings --- ###
