@@ -5,18 +5,9 @@ if !${readable} then "jump SELF system_is_running"
 
 include ${root}/setup_sim.in
 
-print "In drag file"
-print $(v_stretch_pct)
-quit
-
 # Update stretch_max_pct with current value from restart file
-variable stretch_max_pct equal stretch_pct
+variable stretch_max_pct index v_stretch_pct
 
-# print """
-# # Restart_file: ${restart_file}
-# # Stretch_pct, F_N
-# ${stretch_pct}, ${F_N}
-# """ file info_file.txt
 
 # ---------- Print drag schedule ---------- #
 # Timestamps

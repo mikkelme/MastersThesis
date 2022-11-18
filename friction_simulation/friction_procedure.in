@@ -17,12 +17,12 @@
 
 include ${root}/stretch.in
 include ${root}/drag.in
-
+ 
 
 # Produce restart files
-# mpirun -n 4 lmp_mpi -in ../stretch.in -var num_stretch_files 3 -var dt 0.001 -var temp 100.0 -var relax_time 1 -var pause_time1 5 -var pause_time2 5 -var stretch_speed_pct 0.05 -var drag_speed 0.01 -var drag_length 1.0 -var K 1.8724527210000002 -var root .. -var out_ext test -var config_data sheet_substrate_nocuts -var stretch_max_pct 0.1 -var drag_dir_x 0 -var drag_dir_y 1 -var F_N 6.24150907
+mpirun -n 4 lmp_mpi -in ../stretch.in -var num_stretch_files 3 -var dt 0.001 -var temp 100.0 -var relax_time 1 -var pause_time1 5 -var pause_time2 5 -var stretch_speed_pct 0.05 -var drag_speed 0.01 -var drag_length 1.0 -var K 1.8724527210000002 -var root .. -var out_ext test -var config_data sheet_substrate_nocuts -var stretch_max_pct 0.1 -var drag_dir_x 0 -var drag_dir_y 1 -var F_N 6.24150907
 
 # Start from restart file
 # mpirun -n 4 lmp_mpi 
-lmp_serial -in ../drag.in -var dt 0.001 -var temp 100.0 -var relax_time 1 -var pause_time1 5 -var pause_time2 5 -var stretch_speed_pct 0.05 -var drag_speed 0.01 -var drag_length 1.0 -var K 1.8724527210000002 -var root .. -var out_ext test -var config_data sheet_substrate_nocuts -var stretch_max_pct 0.1 -var drag_dir_x 0 -var drag_dir_y 1 -var F_N 6.24150907 -var restart_file ./stretch_6000_restart
+lmp_serial -in ../drag.in -var dt 0.001 -var temp 100.0 -var relax_time 1 -var pause_time1 5 -var pause_time2 5 -var stretch_speed_pct 0.05 -var drag_speed 0.01 -var drag_length 1.0 -var K 1.8724527210000002 -var root .. -var out_ext test -var config_data sheet_substrate_nocuts -var stretch_max_pct 0.1 -var drag_dir_x 0 -var drag_dir_y 1 -var F_N 6.24150907 -var restart_file ./stretch_2000_restart
 

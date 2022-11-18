@@ -1,6 +1,7 @@
-# variable temp equal 100.0 # Kelvin                  
-
-
+#####################################
+# Setup simulation from read_data   #
+# config file or from restart file. # 
+#####################################
 
 # SWITCH: read_data || read_restart
 variable restart_file index None
@@ -19,8 +20,6 @@ boundary p p m
 atom_style atomic # coarse-grain liquids, solids, metals
 
 # --- Read files --- #
-# read_data ${config_data}.txt extra/atom/types 1  # sheet and substrate (1 extra type for virtuel atom)
-# include ${config_data}_info.in                   # import variables
 read_data ${root}/${config_data}.txt extra/atom/types 1  # sheet and substrate (1 extra type for virtuel atom)
 include ${root}/${config_data}_info.in                   # import variables
 
@@ -58,26 +57,21 @@ mass 2 28.0855  # Si
 mass 3 1.0      # Virtuel atom
 velocity free_atoms create ${temp} 5432373 dist gaussian
 
-jump SELF common_settings
+# JUMP
+jump SELF common_settings 
 
 
 #######################################
 ### --- Setup from read_restart --- ###
 #######################################
-
 label setup_from_restart_file
 print "Setting up simulation from read_restart: ${restart_file}"
-
 
 # --- Read restart file --- #
 read_restart ${restart_file}
 include ${root}/${config_data}_info.in 
-include restart_stretch_test.in
+compute get_S0 S0_info reduce sum y # Retrieve information about S0 via type 3 tmp atom
 
-# print $(step)
-# print $(v_stretch_pct)
-quit                
-### Get restart stretch value <--------
 
 ###############################
 ### --- Common settings --- ###
@@ -100,7 +94,6 @@ pair_coeff * * tersoff ${root}/C.tersoff C NULL NULL   # Sheet C-C
 pair_coeff 1 2 lj/cut 0.008909 3.26                    # Interaction C-Si 
 pair_coeff * * sw ${root}/si.sw NULL Si NULL           # Substrate Si-Si
 pair_coeff * 3  lj/cut 0.0 0.0 
-
 
 timestep $(v_dt)
 variable damp equal 1.0 # ps                        
@@ -135,8 +128,7 @@ compute sheet_fy sheet reduce sum fy        # Total force y
 compute coord sheet coord/atom cutoff 2.7   # Coordination number
 compute peratom sheet stress/atom NULL      # stress field
 variable stress_atom atom sqrt(c_peratom[1]*c_peratom[1]+c_peratom[2]*c_peratom[2]+c_peratom[3]*c_peratom[3]) # Stress norm (xx, yy, zz)
-# ^^What about shear stress directions?
-# Or friction force on each atom? Is this possible to compute like this?
+# ^^^ This is not so important if it reduces computation time considerably 
 
 fix sheet_bond_hist sheet ave/histo 1 1 1 -0.5 1.5 2 c_bond_coord mode vector beyond end
 variable sheet_bond_pct equal f_sheet_bond_hist[2][3]
@@ -158,7 +150,7 @@ compute Ff_sheet substrate group/group sheet # friction forces
 compute Ff_PB substrate group/group PB_tot # friction forces
 
 ## - Activate computes - ## 
-thermo_style custom c_sheet_fz c_PB_ylow_ymax c_PB_yhigh_ymin c_substrate_zhigh c_PB_ylow_com[2] c_PB_yhigh_com[2] c_sheet_COM[3] #v_sheet_bond_pct f_sheet_bond_hist[2][3] v_full_sheet_bond_pct f_full_sheet_bond_hist[2][3]
+thermo_style custom c_sheet_fz c_PB_ylow_ymax c_PB_yhigh_ymin c_substrate_zhigh c_PB_ylow_com[2] c_PB_yhigh_com[2] c_sheet_COM[3]
 run 0 # activate compute
 
 # ---------- Derived variables ---------- #
@@ -171,8 +163,15 @@ variable move_force_y equal c_sheet_fy+c_Ff[2]
 variable move_force_xy_norm equal sqrt(v_move_force_x^2+v_move_force_x^2)  
 
 ## -- Stretch -- ##
-variable S0 equal c_PB_yhigh_ymin-c_PB_ylow_ymax    # start len of inner sheet # <---- Probably need to find a way to make this one work!!!
-# variable S0 equal v_pullblock_ylo-v_pullblock_yhi   # start len of inner sheet
+# variable S0 equal v_pullblock_ylo-v_pullblock_yhi   # OLD rough version
+variable S0 equal c_PB_yhigh_ymin-c_PB_ylow_ymax    # start len of inner sheet 
+
+if ${readable} then & # Restart file: Get S0 stored in type 3 tmp atom
+"thermo_style custom c_get_S0 c_PB_ylow_ymax c_PB_yhigh_ymin" &
+"run 0" &
+"variable S0 equal $(c_get_S0)" &
+"delete_atoms group S0_info" 
+
 variable S_len equal c_PB_yhigh_ymin-c_PB_ylow_ymax # Updated len of inner sheet
 variable stretch_pct equal (v_S_len-v_S0)/v_S0  # Updated stretch pct
 variable stretch_speed equal v_stretch_speed_pct*v_S0 
@@ -186,13 +185,9 @@ variable dir_norm equal $(sqrt(v_drag_dir_x^2+v_drag_dir_y^2))
 
 
 
-
 # ---------- Output ---------- #
 thermo 1000
 variable dump_freq equal 1000
-# ^^^^Be aware about these changes!
-# print "-----> Watch the thermo and dump_freq"
-# quit
 
 dump 1 all custom $(v_dump_freq) system_${out_ext}.data id type x y z vx vy vz v_stress_atom c_bond_coord
 dump 2 full_sheet custom $(v_dump_freq) full_sheet_${out_ext}.data id type x y z vx vy vz v_stress_atom c_bond_coord
@@ -239,3 +234,5 @@ print "--> END (step $(v_relax_steps+v_stretch_steps+v_pause1_steps+v_pause2_ste
 print "--------------------"
 print "--------------------"
 print ""
+
+

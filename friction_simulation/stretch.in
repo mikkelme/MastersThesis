@@ -11,11 +11,13 @@ restart        v_stride stretch_*_restart
 
 
 # Maybe use a loop such that one can print out multil stretch files...
-^^^^^^^
-fix extra all print $(v_stride) "$(step) ${stretch_pct}" file restart_stretch_test.in
+# quit
+# variable test_pct equal c_get_stretch_pct[1]
+# print $(v_test_pct)
+# fix extra all print $(v_stride) "$(step) ${stretch_pct}" file restart_stretch_test.in
 # fix extra all print $(v_stride) "if '$(step) <= '$(step)'' then 'variable stretch_pct equal '$(v_stretch_pct)'' " file restart_stretch_test.in
 # fix extra all print $(v_stride) "if $(step) <= $(step) then 'variable stretch_pct equal '$(v_stretch_pct)'' " file restart_stretch_test.in
-quit
+# quit
 
 
 label no_restart
@@ -24,7 +26,13 @@ label no_restart
 print "--> Relax: $(v_relax_steps) timesteps, $(v_relax_steps*dt) ps"
 thermo_style custom step time cpu cpuremain temp v_stretch_pct v_sheet_bond_pct v_full_sheet_bond_pct
 variable S0 equal c_PB_yhigh_ymin-c_PB_ylow_ymax # Force S0 to current length
-run $(v_relax_steps)
+run $(v_relax_steps-1)
+
+# Lock S0 after relaxing and export S0 info via y-pos of tmp type 3 atom
+variable S0 equal $(c_PB_yhigh_ymin-c_PB_ylow_ymax) 
+create_atoms 3 single 0 $(v_S0) 0
+group S0_info type 3
+run 1
 
 
 # ---------- Stretch sheet ---------- #
@@ -33,16 +41,19 @@ unfix nve
 unfix nvt
 fix nve free_atoms nve
 fix nvt free_atoms langevin ${temp} ${temp} ${damp} 48279
+
+# Update stretch speed in case of changes S0 (not sure if this is possible)
+variable stretch_speed equal v_stretch_speed_pct*v_S0 
 fix ylow_move  PB_ylow move linear 0 $(-v_stretch_speed/2) NULL units box
 fix yhigh_move PB_yhigh move linear 0 $(v_stretch_speed/2) NULL units box
 
 print "--> Stretch: $(v_stretch_steps) timesteps, $(v_stretch_steps*dt) ps"
-variable S0 equal $(c_PB_yhigh_ymin-c_PB_ylow_ymax) # Lock S0 after relaxing
 
-# # Testing
-# variable stretch_ideal equal v_stretch_max_pct*(step-v_relax_steps)/v_stretch_steps 
-# thermo_style custom step time cpu cpuremain temp v_stretch_pct v_stretch_ideal
-# ######
+# Testing
+variable stretch_ideal equal v_stretch_max_pct*(step-v_relax_steps)/v_stretch_steps 
+thermo_style custom step time cpu cpuremain temp v_stretch_pct v_stretch_ideal
+######
+
 run $(v_stretch_steps)
 restart 0
 
