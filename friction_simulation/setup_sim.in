@@ -166,11 +166,12 @@ variable move_force_xy_norm equal sqrt(v_move_force_x^2+v_move_force_x^2)
 # variable S0 equal v_pullblock_ylo-v_pullblock_yhi   # OLD rough version
 variable S0 equal c_PB_yhigh_ymin-c_PB_ylow_ymax    # start len of inner sheet 
 
-if ${readable} then & # Restart file: Get S0 stored in type 3 tmp atom
-"thermo_style custom c_get_S0 c_PB_ylow_ymax c_PB_yhigh_ymin" &
+
+# Restart file: Get S0 stored in type 3 tmp atom
+if ${readable} then "thermo_style custom c_get_S0 c_PB_ylow_ymax c_PB_yhigh_ymin" &
 "run 0" &
 "variable S0 equal $(c_get_S0)" &
-"delete_atoms group S0_info" 
+"delete_atoms group S0_info"
 
 variable S_len equal c_PB_yhigh_ymin-c_PB_ylow_ymax # Updated len of inner sheet
 variable stretch_pct equal (v_S_len-v_S0)/v_S0  # Updated stretch pct
@@ -189,8 +190,8 @@ variable dir_norm equal $(sqrt(v_drag_dir_x^2+v_drag_dir_y^2))
 thermo 1000
 variable dump_freq equal 1000
 
-dump 1 all custom $(v_dump_freq) system_${out_ext}.data id type x y z vx vy vz v_stress_atom c_bond_coord
-dump 2 full_sheet custom $(v_dump_freq) full_sheet_${out_ext}.data id type x y z vx vy vz v_stress_atom c_bond_coord
+dump 1 all custom $(v_dump_freq) system_${out_ext}.data id type x y z vx vy vz c_bond_coord
+dump 2 full_sheet custom $(v_dump_freq) full_sheet_${out_ext}.data id type x y z vx vy vz c_bond_coord
 fix coord_out sheet ave/histo ${Nevery} ${Nrepeat} ${Nfreq} -0.5 5.5 6 c_coord mode vector file sheet_${out_ext}_chist.txt
 # fix contact_bonds full_sheet ave/time ${Nevery} ${Nrepeat} ${Nfreq} v_sheet_bond_pct v_full_sheet_bond_pct file bond_pct.txt ### <---- This is already in friction_file !?!?
 
