@@ -1,3 +1,9 @@
+#####################################
+# Add normal force and drag system #
+# along given direction.           #
+####################################
+
+
 # Setup system
 variable restart_file index None
 variable to_stretch_max_pct equal $(v_stretch_max_pct)

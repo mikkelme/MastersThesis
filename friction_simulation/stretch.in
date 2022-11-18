@@ -1,3 +1,8 @@
+###########################################
+# Relax and stretch system, and export    #
+# restart files if num_stretch_files > 0. #
+###########################################
+
 # Setup system
 include ${root}/setup_sim.in
 
