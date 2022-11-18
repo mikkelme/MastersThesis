@@ -329,18 +329,31 @@ def cum_mean(arr):
     divider = np.arange(len(cum_sum)) + 1
     return cum_sum / divider
     
+def cum_std(arr, step = 5000):
+    out = np.full(len(arr), np.nan)
+    for i in range(1, len(arr), step):
+        if i%(len(arr)/10) == 0:
+            print(i/len(arr))
+        out[i] = np.std(arr[0:i+1])
+    return out
+
+# def moving_std(arr, window_pct = 0.1):
+#     """ Returns std of running tail window to the left 
+#         corresponding x-position """
+#     window = int(len(arr) * window_pct)
+#     assert(window >= 10), "Window must be >= 10"
+    
+#     out = np.full(len(arr), np.nan)
+#     for i in range(window-1, len(arr)):
+#         if i%(len(arr)/10) == 0:
+#             print(i/len(arr))
+#         out[i] = np.std(arr[i+1-window:i+1])
+#     return out
     
 def cum_max(arr):
     return  np.maximum.accumulate(arr)
     
-# def cum_mean(arr):
-#     cum_sum = np.cumsum(arr, axis=0)    
-#     for i in range(cum_sum.shape[0]):       
-#         if i == 0:
-#             continue        
-#         print(cum_sum[i] / (i + 1))
-#         cum_sum[i] =  cum_sum[i] / (i + 1)
-#     return cum_sum
+
 
 
 if __name__ == "__main__":
