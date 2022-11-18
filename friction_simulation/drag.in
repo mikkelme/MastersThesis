@@ -4,10 +4,7 @@ variable readable equal is_file(${restart_file})
 if !${readable} then "jump SELF system_is_running"
 
 include ${root}/setup_sim.in
-
-# Update stretch_max_pct with current value from restart file
-variable stretch_max_pct index v_stretch_pct
-
+variable stretch_max_pct index v_stretch_pct # update stretch_max_pct with val from restart file
 
 # ---------- Print drag schedule ---------- #
 # Timestamps
@@ -114,7 +111,6 @@ if "$(v_K) != 0" then "jump SELF spring_move"
 unfix nve 
 fix nve free_atoms nve 
 fix move_PB PB_tot move linear $(v_drag_speed*v_drag_dir_x/v_dir_norm) $(v_drag_speed*v_drag_dir_y/v_dir_norm) NULL units box 
-# fix friction_force_spring all ave/time ${Nevery} ${Nrepeat} ${Nfreq} v_move_force_x v_move_force_y c_Ff_sheet[1] c_Ff_sheet[2] c_Ff_sheet[3] c_Ff_PB[1] c_Ff_PB[2] c_Ff_PB[3] c_sheet_COM[1] c_sheet_COM[2] c_sheet_COM[3] v_sheet_bond_pct v_full_sheet_bond_pct file system_${out_ext}_Ff.txt 
 thermo_style custom step time cpu cpuremain temp v_stretch_pct c_sheet_COM[1] c_sheet_COM[2] c_Ff[1] c_Ff[2] v_move_force_xy_norm  
 jump SELF after_move_commands
 
@@ -123,12 +119,11 @@ label spring_move
 fix spring_force PB_tot spring couple virtuel_atom $(v_K) 0.0 0.0 NULL 0.0
 variable v_move_force_x equal f_spring_force[1] 
 variable v_move_force_y equal f_spring_force[2] 
-# fix friction_force_spring all ave/time ${Nevery} ${Nrepeat} ${Nfreq} f_spring_force[1] f_spring_force[2] c_Ff_sheet[1] c_Ff_sheet[2] c_Ff_sheet[3] c_Ff_PB[1] c_Ff_PB[2] c_Ff_PB[3] c_sheet_COM[1] c_sheet_COM[2] c_sheet_COM[3] v_sheet_bond_pct v_full_sheet_bond_pct file system_${out_ext}_Ff.txt
 thermo_style custom step time cpu cpuremain temp v_stretch_pct c_sheet_COM[1] c_sheet_COM[2] f_spring_force[4]
 label after_move_commands
 
 
-# output
+# Output
 fix friction_force_spring all ave/time ${Nevery} ${Nrepeat} ${Nfreq} v_move_force_x v_move_force_y c_Ff_sheet[1] c_Ff_sheet[2] c_Ff_sheet[3] c_Ff_PB[1] c_Ff_PB[2] c_Ff_PB[3] c_sheet_COM[1] c_sheet_COM[2] c_sheet_COM[3] v_full_sheet_bond_pct v_sheet_bond_pct file system_${out_ext}_Ff.txt 
 
 # Move virtuel atom 

@@ -127,7 +127,7 @@ compute sheet_fx sheet reduce sum fx        # Total force x
 compute sheet_fy sheet reduce sum fy        # Total force y
 compute coord sheet coord/atom cutoff 2.7   # Coordination number
 compute peratom sheet stress/atom NULL      # stress field
-variable stress_atom atom sqrt(c_peratom[1]*c_peratom[1]+c_peratom[2]*c_peratom[2]+c_peratom[3]*c_peratom[3]) # Stress norm (xx, yy, zz)
+# variable stress_atom atom sqrt(c_peratom[1]*c_peratom[1]+c_peratom[2]*c_peratom[2]+c_peratom[3]*c_peratom[3]) # Stress norm (xx, yy, zz)
 # ^^^ This is not so important if it reduces computation time considerably 
 
 fix sheet_bond_hist sheet ave/histo 1 1 1 -0.5 1.5 2 c_bond_coord mode vector beyond end
@@ -192,7 +192,7 @@ variable dump_freq equal 1000
 dump 1 all custom $(v_dump_freq) system_${out_ext}.data id type x y z vx vy vz v_stress_atom c_bond_coord
 dump 2 full_sheet custom $(v_dump_freq) full_sheet_${out_ext}.data id type x y z vx vy vz v_stress_atom c_bond_coord
 fix coord_out sheet ave/histo ${Nevery} ${Nrepeat} ${Nfreq} -0.5 5.5 6 c_coord mode vector file sheet_${out_ext}_chist.txt
-fix contact_bonds full_sheet ave/time ${Nevery} ${Nrepeat} ${Nfreq} v_sheet_bond_pct v_full_sheet_bond_pct file bond_pct.txt ### <---- This is already in friction_file !?!?
+# fix contact_bonds full_sheet ave/time ${Nevery} ${Nrepeat} ${Nfreq} v_sheet_bond_pct v_full_sheet_bond_pct file bond_pct.txt ### <---- This is already in friction_file !?!?
 
 
 # ---------- Print procedure schedule ---------- #
