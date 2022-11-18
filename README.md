@@ -124,6 +124,18 @@
 - Expanded analysis code, and looked at relations between contact area and friction. At the moment the relation does not seem to be linear, but more results are needed to make this conclusion. 
 
 
+#### Week 46 (14/11 - 20/11) - Working from Pisa
+- Quick summary
+- Ran big MULTI with and without stretch but the difference is not clear
+- Thus working on good decription on the no stretch case
+- This lead to the discovery that the drag length is nt sufficient for the measurements to stabilize
+- Now working on setting parameters for the friciton simmulation that is stable
+- Working on cummulative top quantile (99\% - 99.9\%) max mean as a more stable way to measure the max friction (static friction).
+
+
+
+
+
 
 
 

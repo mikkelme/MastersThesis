@@ -353,6 +353,77 @@ def cum_std(arr, step = 5000):
 def cum_max(arr):
     return  np.maximum.accumulate(arr)
     
+# def cumTopQuantileMax(arr, quantile):
+    
+
+def cumTopQuantileMax(arr, quantile, slow = True):
+    
+    start = 400 # generic way to choose this number? XXX
+    # list_max = int((1-quantile) * len(arr)) * 20
+    list_max = 10000
+    out = np.full(len(arr), np.nan)
+    
+    if slow:
+        for i in range(start, len(arr)):
+            # if i%10000 == 0:
+            #     print(i/len(arr))
+            topN, out[i] = TopQuantileMax(arr[:i], quantile)
+            
+            if i == start + 100:
+                print(out[i])
+                print(TopQuantileMax(arr[:i], quantile, mean = False)[1])
+                
+        return out
+    
+    else:
+        # faster way?
+        topN, toplist =  TopQuantileMax(arr[:start], quantile, mean = False)
+        toplist = np.sort(toplist).tolist()
+        listlen = len(toplist)
+        out = np.full(len(arr), np.nan)
+        for i in range(start+1, len(arr)):
+            # if i%10000 == 0:
+            #     print(i/len(arr))
+                
+
+            idx = 0
+            try:
+                while arr[i-1] > toplist[idx] and idx < listlen-1:
+                    idx += 1
+            except IndexError:
+                print(idx)
+                print(toplist)
+                exit()
+            
+            topN = int((1-quantile) * len(arr[:i]))
+            toplist.insert(idx, arr[i-1])
+            
+            if listlen >= list_max:
+                toplist.pop(0)
+            else: 
+                listlen += 1
+            out[i] = np.mean(toplist[-topN:])
+            
+            if i == start + 100:
+                print(out[i])
+                print(toplist[-topN:])
+                # print(toplist)
+        
+        return out
+   
+### TODO: Working on cum top quantile function as this might be the solution
+# to poor stability of the max measurement. Run and see that the slow and fast method 
+# does not agree.
+    
+def TopQuantileMax(arr, quantile, mean = True):
+    topN = int((1-quantile) * len(arr))
+    topmax = arr[np.argpartition(arr, -topN)[-topN:]]
+    
+    if mean:
+        return topN, np.mean(topmax)
+    else:
+        return topN, topmax
+    
 
 
 
