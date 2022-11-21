@@ -356,44 +356,41 @@ def cum_max(arr):
 # def cumTopQuantileMax(arr, quantile):
     
 
-def cumTopQuantileMax(arr, quantile, slow = True):
+def cumTopQuantileMax(arr, quantile, slow = False):
     
-    start = 400 # generic way to choose this number? XXX
-    # list_max = int((1-quantile) * len(arr)) * 20
-    list_max = 10000
+    start = int(np.ceil(1/(1-quantile)))
+    topN = int((1-quantile) * len(arr[:start]))
+    list_max = int((1-quantile) * len(arr)) * 2
+    
+    
     out = np.full(len(arr), np.nan)
     
     if slow:
         for i in range(start, len(arr)):
-            # if i%10000 == 0:
-            #     print(i/len(arr))
+            if i%10000 == 0:
+                print(i/len(arr))
             topN, out[i] = TopQuantileMax(arr[:i], quantile)
             
-            if i == start + 100:
-                print(out[i])
-                print(TopQuantileMax(arr[:i], quantile, mean = False)[1])
-                
+        
         return out
     
     else:
-        # faster way?
-        topN, toplist =  TopQuantileMax(arr[:start], quantile, mean = False)
-        toplist = np.sort(toplist).tolist()
+        toplist = np.sort(arr[:start]).tolist()
         listlen = len(toplist)
         out = np.full(len(arr), np.nan)
         for i in range(start+1, len(arr)):
-            # if i%10000 == 0:
-            #     print(i/len(arr))
+            if i%10000 == 0:
+                print(i/len(arr))
                 
 
             idx = 0
+            
             try:
-                while arr[i-1] > toplist[idx] and idx < listlen-1:
-                    idx += 1
+                while arr[i-1] > toplist[idx] and idx < listlen:
+                        idx += 1
             except IndexError:
-                print(idx)
-                print(toplist)
-                exit()
+                pass
+        
             
             topN = int((1-quantile) * len(arr[:i]))
             toplist.insert(idx, arr[i-1])
@@ -404,11 +401,8 @@ def cumTopQuantileMax(arr, quantile, slow = True):
                 listlen += 1
             out[i] = np.mean(toplist[-topN:])
             
-            if i == start + 100:
-                print(out[i])
-                print(toplist[-topN:])
-                # print(toplist)
-        
+            
+        assert np.all(np.sort(toplist) == np.array(toplist)), "toplist is not sorted correctly"
         return out
    
 ### TODO: Working on cum top quantile function as this might be the solution

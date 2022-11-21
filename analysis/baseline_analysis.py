@@ -21,9 +21,9 @@ def drag_length_dependency(filename):
        
         # out = cumTopQuantileMax(Ff, quantile, slow = True) 
         
-        Ff = Ff[:2000]
+        Ff = Ff[:50000]
         out1 = cumTopQuantileMax(Ff, quantile, slow = True) 
-        out2 = cumTopQuantileMax(Ff, quantile, slow = False) 
+        out2 = cumTopQuantileMax(Ff, quantile, slow = False)
         plt.plot(out1, label = "out1")
         plt.plot(out2, label = "out2")
         plt.legend()
