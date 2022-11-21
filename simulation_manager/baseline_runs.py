@@ -4,17 +4,17 @@ from simulation_runner import *
 def drag_length():
     main_folder = 'Baseline'
     test_name   = 'drag_length'
-    sim_name    = 'HFN_K0'
+    sim_name    = 'HFN_T300'
     
     variables = {
         "dt": 0.001,
-        "temp": 100.0, # [K]
+        "temp": 300.0, # [K]
         "relax_time": 5,
         "pause_time1": 5,
         "pause_time2": 5,
         "stretch_speed_pct": 0.001,
         "drag_speed": 1, # [m/s]
-        "drag_length": 200 ,
+        "drag_length": 200,
         "K": 0, #30.0,
         "root": "..",
         "out_ext": date.today(), 
@@ -30,16 +30,16 @@ def drag_length():
     header = f"egil:{main_folder}/{test_name}/"
     dir = f"{header}{sim_name}/"
     
-    # proc.move_files_to_dest(["../friction_simulation/setup_sim.in", 
-    #                     "../friction_simulation/stretch.in",
-    #                     "../friction_simulation/drag.in",
-    #                     "../potentials/si.sw",
-    #                     "../potentials/C.tersoff"], header)
+    proc.move_files_to_dest(["../friction_simulation/setup_sim.in", 
+                        "../friction_simulation/stretch.in",
+                        "../friction_simulation/drag.in",
+                        "../potentials/si.sw",
+                        "../potentials/C.tersoff",
+                        f"../config_builder/{proc.variables['config_data']}.txt",
+                        f"../config_builder/{proc.variables['config_data']}_info.in" ], header)
         
     sim = Simulator(directory = dir, overwrite=True)
-    sim.copy_to_wd( "../friction_simulation/friction_procedure.in",
-                        f"../config_builder/{proc.variables['config_data']}.txt",
-                        f"../config_builder/{proc.variables['config_data']}_info.in" )
+    sim.copy_to_wd( "../friction_simulation/friction_procedure.in")
         
     proc.variables["out_ext"] = sim_name
     sim.set_input_script("../friction_simulation/friction_procedure.in", **proc.variables)

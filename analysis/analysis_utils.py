@@ -134,7 +134,7 @@ def analyse_friction_file(filename):
     COM_sheet -= COM_sheet[0,:] # origo as reference point
     
     # Smoothen
-    # Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2], move_force[:,0], move_force[:,1] = savgol_filter(window_length, polyorder, Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2], move_force[:,0], move_force[:,1])
+    Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2], move_force[:,0], move_force[:,1] = savgol_filter(window_length, polyorder, Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2], move_force[:,0], move_force[:,1])
     Ff_full_sheet = Ff_sheet + Ff_PB
     
     FN_full_sheet = np.mean(Ff_full_sheet[:,2])
@@ -419,6 +419,21 @@ def TopQuantileMax(arr, quantile, mean = True):
         return topN, topmax
     
 
+
+def add_xaxis(ax1, x, xnew, xlabel, decimals = 1):
+    # ax1 = plt.gca()
+    tick_loc = ax1.get_xticks()
+    xlim = ax1.get_xlim()
+    tick_loc = tick_loc[np.logical_and(xlim[0] < tick_loc, tick_loc < xlim[1])]
+    sorter = np.argsort(x)
+    tick_arg = sorter[np.searchsorted(x, tick_loc, sorter=sorter)]
+    
+    ax2 = ax1.twiny()
+    ax2.set_xlim(ax1.get_xlim())
+    ax2.set_xticks(tick_loc)
+    ax2.set_xticklabels(np.round(xnew[tick_arg], decimals))
+    ax2.set(xlabel=xlabel)
+    
 
 
 if __name__ == "__main__":

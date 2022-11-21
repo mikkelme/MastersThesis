@@ -262,7 +262,7 @@ def read_multi_folder(folders):
 
 if __name__ == "__main__":
     # folders = ['../Data/multi_fast']
+    # folders = ['../Data/BIG_MULTI_Xdrag']
     folders = ['../Data/BIG_MULTI_Ydrag']
-    folders = ['../Data/BIG_MULTI_nocut']
-    folders = ['../Data/BIG_MULTI_Xdrag']
+    # folders = ['../Data/BIG_MULTI_nocut']
     read_multi_folder(folders)
