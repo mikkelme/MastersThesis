@@ -2,37 +2,49 @@ from analysis_utils import *
 
 def drag_length_dependency(filename):
     data = analyse_friction_file(filename)    
-    time = data['time']
-    COM = data['COM_sheet']
+    time = data['time'][:100000]
+    COM = data['COM_sheet'][:100000,0]
+    x = time
     
-    quantile = 0.99
+    quantile = 0.999
     
     group_name = {0: 'full_sheet', 1: 'sheet', 2: 'PB'}
-    for g in reversed(range(3)):
+    for g in reversed(range(1)):
         plt.figure(num = g) # mean
-        plt.title(filename)
-        Ff = data[f'Ff_{group_name[g]}'][:,0]
+        plt.title(f'{filename}\n{group_name[g]}')
+        Ff = data[f'Ff_{group_name[g]}'][:100000,0]
         
         
-        # plt.plot(COM[:,0], Ff, label = group_name[g])
-        # plt.plot(COM[:,0], cum_mean(Ff), label = "Cum mean")
-        # plt.plot(COM[:,0], cum_max(Ff), label = "Cum max")
-        # plt.plot(COM[:,0], cum_mean(TopQuantileMax(Ff, quantile, mean = False)[1]), label = f"Top {quantile*100}% max mean")
+        plt.plot(time, Ff, label = group_name[g])
+        plt.plot(time, cum_mean(Ff), label = "Cum mean")
+        plt.plot(time, cum_max(Ff), label = "Cum max")
+        plt.plot(time, cumTopQuantileMax(Ff, quantile, brute_force = False), label = f"Top {quantile*100}% max mean")
        
-        # out = cumTopQuantileMax(Ff, quantile, slow = True) 
-        
-        Ff = Ff[:50000]
-        out1 = cumTopQuantileMax(Ff, quantile, slow = True) 
-        out2 = cumTopQuantileMax(Ff, quantile, slow = False)
-        plt.plot(out1, label = "out1")
-        plt.plot(out2, label = "out2")
-        plt.legend()
-        plt.show()
-        exit()
-        # plt.plot(COM[:,0], cum_mean(np.abs(data[f'Ff_{group_name[g]}'][:,0])), label = "Cum mean abs")
+
+#         ax2.set_xlim(ax1.get_xlim())
+# ax2.set_xticks(new_tick_locations)
+# ax2.set_xticklabels(tick_function(new_tick_locations))
+# ax2.set_xlabel(r"Modified x-axis: $1/(1+X)$")
+# plt.show()
+
+       
         plt.xlabel('COM$\parallel$ [Å]')
+        plt.xlabel('Time [ps]')
         plt.ylabel('$F_\parallel$ [eV/Å]')
         plt.legend()
+        
+        ax1 = plt.gca()
+        tick_loc = ax1.get_xticks()
+        xlim = ax1.get_xlim()
+        tick_loc = tick_loc[np.logical_and(xlim[0] < tick_loc, tick_loc < xlim[1])]
+        sorter = np.argsort(time)
+        tick_arg = sorter[np.searchsorted(time, tick_loc, sorter=sorter)]
+        
+        ax2 = ax1.twiny()
+        ax2.set_xlim(ax1.get_xlim())
+        ax2.set_xticks(tick_loc)
+        ax2.set_xticklabels(COM[tick_arg])
+        
     
     # for g in range(3):
     #     plt.figure(num = g+3) # mean
@@ -68,37 +80,39 @@ def drag_length_compare(filenames):
     xlabel = 'COM$_\parallel$'
     for filename in filenames:
         data = analyse_friction_file(filename)   
-        x = data['COM_sheet']
+        x = data['COM_sheet'][:,0]
+        x = data['time']
         if relative:
             xlabel = 'Rel COM$_\parallel$'
             x /= x[-1] # relative drag
         
         cummean = cum_mean(data[f'Ff_{group_name[g]}'][:,0])
-        cummean_abs = cum_mean(np.abs(data[f'Ff_{group_name[g]}'][:,0]))
+        # cummean_abs = cum_mean(np.abs(data[f'Ff_{group_name[g]}'][:,0]))
+        cummean_topmax = cumTopQuantileMax(np.abs(data[f'Ff_{group_name[g]}'][:,0]), quantile = 0.999)
         cummax = cum_max(data[f'Ff_{group_name[g]}'][:,0])
         
         # Mean
         output = np.flip(cum_std(np.flip(cummean), step = 5000))
         map = ~np.isnan(output)
-        ax1.plot(x[:,0], cummean)
-        ax2.plot(x[~np.isnan(output),0], output[~np.isnan(output)], "-o", markersize = 3, label = filename)
+        ax1.plot(x, cummean)
+        ax2.plot(x[~np.isnan(output)], output[~np.isnan(output)], "-o", markersize = 3, label = filename)
         ax1.set(xlabel=xlabel, ylabel='cum mean $F_\parallel$ [eV/Å]')
         ax2.set(xlabel=xlabel, ylabel='reverse cum std ')
         
        
         # Mean abs
-        output = np.flip(cum_std(np.flip(cummean_abs), step = 5000))
+        output = np.flip(cum_std(np.flip(cummean_topmax), step = 5000))
         map = ~np.isnan(output)
-        ax3.plot(x[:,0], cummean_abs)
-        ax4.plot(x[~np.isnan(output),0], output[~np.isnan(output)], "-o", markersize = 3)
-        ax3.set(xlabel=xlabel, ylabel='cum mean abs $F_\parallel$ [eV/Å]')
+        ax3.plot(x, cummean_topmax)
+        ax4.plot(x[~np.isnan(output)], output[~np.isnan(output)], "-o", markersize = 3)
+        ax3.set(xlabel=xlabel, ylabel='cum mean top max $F_\parallel$ [eV/Å]')
         ax4.set(xlabel=xlabel, ylabel='reverse cum std ')
        
         # Max 
         output = np.flip(cum_std(np.flip(cummax), step = 5000))
         map = ~np.isnan(output)
-        ax5.plot(x[:,0], cummax)
-        ax6.plot(x[~np.isnan(output),0], output[~np.isnan(output)], "-o", markersize = 3)
+        ax5.plot(x, cummax)
+        ax6.plot(x[~np.isnan(output)], output[~np.isnan(output)], "-o", markersize = 3)
         ax5.set(xlabel=xlabel, ylabel='cum max $F_\parallel$ [eV/Å]')
         ax6.set(xlabel=xlabel, ylabel='reverse cum std ')
  
@@ -121,7 +135,7 @@ def dt_dependency(filenames, dt, drag_cap = 0):
     Fftopmax= np.zeros(len(filenames))
     dt = np.array(dt)
     
-    quantile = 0.999
+    quantile = 0.99
     for i, filename in enumerate(filenames):
         data = analyse_friction_file(filename)  
         
@@ -170,12 +184,12 @@ if __name__ == "__main__":
     # filenames += ['../Data/Baseline/drag_length/v4d/system_v4d_Ff.txt']
     # filenames += ['../Data/Baseline/drag_length/v4u/system_v4u_Ff.txt']
     
-    # filenames += ['../Data/Baseline/drag_length/T5/system_T5_Ff.txt']
-    # filenames += ['../Data/Baseline/drag_length/T300/system_T300_Ff.txt']
+    filenames += ['../Data/Baseline/drag_length/T5/system_T5_Ff.txt']
+    filenames += ['../Data/Baseline/drag_length/T300/system_T300_Ff.txt']
     
-    filenames += ['../Data/Baseline/dt/dt_0.002/system_dt_0.002_Ff.txt']
-    filenames += ['../Data/Baseline/dt/dt_0.0005/system_dt_0.0005_Ff.txt']
-    filenames += ['../Data/Baseline/dt/dt_0.00025/system_dt_0.00025_Ff.txt']
+    # filenames += ['../Data/Baseline/dt/dt_0.002/system_dt_0.002_Ff.txt']
+    # filenames += ['../Data/Baseline/dt/dt_0.0005/system_dt_0.0005_Ff.txt']
+    # filenames += ['../Data/Baseline/dt/dt_0.00025/system_dt_0.00025_Ff.txt']
     
     dt_files = ['../Data/Baseline/dt/dt_0.002/system_dt_0.002_Ff.txt', 
                '../Data/Baseline/drag_length/ref/system_ref_Ff.txt',
@@ -184,6 +198,9 @@ if __name__ == "__main__":
     dt_vals = [0.002, 0.001, 0.0005, 0.00025]
     
     
+    
+    # drag_length_dependency('../Data/BIG_MULTI_nocut/stretch_5000_folder/job8/system_ext_Ff.txt') # MULTI DRAG
+    # drag_length_dependency('../Data/BIG_MULTI_Ydrag/stretch_30974_folder/job9/system_ext_Ff.txt') # MULTI DRAG
     
     drag_length_dependency('../Data/Baseline/drag_length/ref/system_ref_Ff.txt')
     # obj = drag_length_compare(filenames)

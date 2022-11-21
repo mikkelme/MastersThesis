@@ -134,7 +134,7 @@ def analyse_friction_file(filename):
     COM_sheet -= COM_sheet[0,:] # origo as reference point
     
     # Smoothen
-    Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2], move_force[:,0], move_force[:,1] = savgol_filter(window_length, polyorder, Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2], move_force[:,0], move_force[:,1])
+    # Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2], move_force[:,0], move_force[:,1] = savgol_filter(window_length, polyorder, Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2], move_force[:,0], move_force[:,1])
     Ff_full_sheet = Ff_sheet + Ff_PB
     
     FN_full_sheet = np.mean(Ff_full_sheet[:,2])
@@ -356,18 +356,18 @@ def cum_max(arr):
 # def cumTopQuantileMax(arr, quantile):
     
 
-def cumTopQuantileMax(arr, quantile, slow = False):
+def cumTopQuantileMax(arr, quantile, brute_force = False):
     
     start = int(np.ceil(1/(1-quantile)))
     topN = int((1-quantile) * len(arr[:start]))
-    list_max = int((1-quantile) * len(arr)) * 2
-    
+    list_max = int((1-quantile) * len(arr)) * 1
+    print(list_max)
     
     out = np.full(len(arr), np.nan)
     
-    if slow:
+    if brute_force:
         for i in range(start, len(arr)):
-            if i%10000 == 0:
+            if i%(len(arr)/10) == 0:
                 print(i/len(arr))
             topN, out[i] = TopQuantileMax(arr[:i], quantile)
             
@@ -379,7 +379,7 @@ def cumTopQuantileMax(arr, quantile, slow = False):
         listlen = len(toplist)
         out = np.full(len(arr), np.nan)
         for i in range(start+1, len(arr)):
-            if i%10000 == 0:
+            if i%(len(arr)/10) == 0:
                 print(i/len(arr))
                 
 

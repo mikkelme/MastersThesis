@@ -4,25 +4,25 @@ from simulation_runner import *
 def drag_length():
     main_folder = 'Baseline'
     test_name   = 'drag_length'
-    sim_name    = 'T300'
+    sim_name    = 'HFN_K0'
     
     variables = {
         "dt": 0.001,
-        "temp": 300.0,#100.0, # [K]
+        "temp": 100.0, # [K]
         "relax_time": 5,
         "pause_time1": 5,
         "pause_time2": 5,
         "stretch_speed_pct": 0.001,
         "drag_speed": 1, # [m/s]
         "drag_length": 200 ,
-        "K": 30.0,
+        "K": 0, #30.0,
         "root": "..",
         "out_ext": date.today(), 
         "config_data": "sheet_substrate_nocuts",
         "stretch_max_pct": 0.0,
         "drag_dir_x": 0,
         "drag_dir_y": 1,
-        "F_N": 10e-9, # [N]
+        "F_N": 100e-9, # [N]
     }
   
     
@@ -30,11 +30,11 @@ def drag_length():
     header = f"egil:{main_folder}/{test_name}/"
     dir = f"{header}{sim_name}/"
     
-    proc.move_files_to_dest(["../friction_simulation/setup_sim.in", 
-                        "../friction_simulation/stretch.in",
-                        "../friction_simulation/drag.in",
-                        "../potentials/si.sw",
-                        "../potentials/C.tersoff"], header)
+    # proc.move_files_to_dest(["../friction_simulation/setup_sim.in", 
+    #                     "../friction_simulation/stretch.in",
+    #                     "../friction_simulation/drag.in",
+    #                     "../potentials/si.sw",
+    #                     "../potentials/C.tersoff"], header)
         
     sim = Simulator(directory = dir, overwrite=True)
     sim.copy_to_wd( "../friction_simulation/friction_procedure.in",
@@ -101,5 +101,5 @@ def dt():
 
 
 if __name__ == "__main__":
-    # drag_length()
+    drag_length()
     # dt()
