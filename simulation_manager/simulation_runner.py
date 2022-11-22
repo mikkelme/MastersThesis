@@ -76,7 +76,6 @@ class Simulation_runner:
             
     
         
-    # TODO: Modify so this works in new version (class Simulation_runner)
     def multi_run(self, header, dir, num_stretch_files, F_N, num_procs = 16, jobname = 'MULTI'):
         sim = Simulator(directory = dir, overwrite=True)
         
@@ -91,6 +90,7 @@ class Simulation_runner:
         
 
         sim.set_input_script("../friction_simulation/stretch.in", num_stretch_files = num_stretch_files, **self.variables)    
+        
         slurm_args = {'job-name':jobname, 'partition':'normal', 'ntasks':num_procs, 'nodes':1}
         sim.pre_generate_jobscript(num_procs=num_procs, lmp_exec="lmp", slurm_args = slurm_args)    
 
@@ -101,8 +101,8 @@ class Simulation_runner:
             self.convert_units(["F_N"])
             sub_exec_list = Device.get_exec_list(num_procs = num_procs, 
                                                 lmp_exec = "lmp", 
-                                                lmp_args = {'-in': '../../drag.in'}, 
-                                                lmp_var = self.variables | {'out_ext':'ext'}) # TODO: change from 'ext
+                                                lmp_args = {'-in': self.variables['root']+'/drag.in'}, 
+                                                lmp_var = self.variables | {'out_ext':'drag'}) 
             job_array += '\n\n\"'
             job_array += Device.gen_jobscript_string(sub_exec_list, slurm_args, linebreak = False)
             job_array += '\"'
@@ -133,5 +133,6 @@ class Simulation_runner:
             
 
 if __name__ == "__main__":
-    test = Simulation_runner()
-    test.move_file_to_dest("./test1.py", "egil:MYTEST/")
+    pass
+    # test = Simulation_runner()
+    # test.move_file_to_dest("./test1.py", "egil:MYTEST/")

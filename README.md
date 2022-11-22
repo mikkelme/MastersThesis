@@ -132,7 +132,10 @@
 - Now working on setting parameters for the friciton simmulation that is stable
 - Working on cummulative top quantile (99\% - 99.9\%) max mean as a more stable way to measure the max friction (static friction).
 
-
+#### Week 47 (21/11 - 27/11) - Working from Pisa
+- Considering only looking at contact area to long computation time for stable result. Solution might be to just ignore max friction since there is no clear sign of static friction. I think contact area and mean friction is more of less equally demanding. 
+- Playing around with paramters to see if I can get something that is stable at a reasonable computation time. 
+- Trying new (small) multi sim with and without cuts to check out results. 
 
 
 

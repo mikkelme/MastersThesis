@@ -134,7 +134,7 @@ def analyse_friction_file(filename):
     COM_sheet -= COM_sheet[0,:] # origo as reference point
     
     # Smoothen
-    Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2], move_force[:,0], move_force[:,1] = savgol_filter(window_length, polyorder, Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2], move_force[:,0], move_force[:,1])
+    # Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2], move_force[:,0], move_force[:,1] = savgol_filter(window_length, polyorder, Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2], move_force[:,0], move_force[:,1])
     Ff_full_sheet = Ff_sheet + Ff_PB
     
     FN_full_sheet = np.mean(Ff_full_sheet[:,2])
@@ -161,7 +161,7 @@ def analyse_friction_file(filename):
     varnames = ['time', 'move_force', 'Ff_full_sheet', 'Ff_sheet', "Ff_PB", "COM_sheet", "FN", "Ff"]
     try: # Contact area
         contact = np.vstack((data['v_full_sheet_bond_pct'], data['v_sheet_bond_pct']))
-        contact[0], contact[1] = savgol_filter(window_length, polyorder, contact[0], contact[1])
+        # contact[0], contact[1] = savgol_filter(window_length, polyorder, contact[0], contact[1])
         varnames.append("contact")
     except KeyError:
         pass
@@ -277,11 +277,8 @@ def read_ave_time_vector(filename):
     
     test = data.reshape(len(timestep), Nbins, 3)
     return timestep, test
-    print(np.shape(test))
-    exit()
-    return np.array(timestep), np.array(data)
-    
-    # np.loadtxt(filename, unpack=True)
+   
+ 
 
 
     
@@ -330,13 +327,30 @@ def cum_mean(arr):
     return cum_sum / divider
     
 def cum_std(arr, step = 5000):
+    start = np.argmin(np.isnan(arr))
     out = np.full(len(arr), np.nan)
-    for i in range(1, len(arr), step):
-        if i%(len(arr)/10) == 0:
-            print(i/len(arr))
-        out[i] = np.std(arr[0:i+1])
+    for i in range(start + 1, len(arr), step):
+        # if i%(len(arr)/10) == 0:
+        #     print(i/len(arr))
+        out[i] = np.std(arr[start:i+1])
     return out
 
+
+def running_mean(arr, window_len = 10):
+    assert window_len <= len(arr), "window length cannot be longer than array length."
+    assert window_len > 0, "window length must be > 0"
+    mean_window = np.ones(window_len)/window_len
+    
+    left_padding = window_len//2
+    right_padding = (window_len-1)//2
+    new_arr = np.full(len(arr) + left_padding + right_padding, np.nan)
+    new_arr[left_padding or None:-right_padding or None] = arr
+    out = np.convolve(new_arr, mean_window, mode='valid')
+    # return np.convolve(arr, mean_window, mode='valid')
+    return out
+  
+  
+  
 # def moving_std(arr, window_pct = 0.1):
 #     """ Returns std of running tail window to the left 
 #         corresponding x-position """
@@ -421,18 +435,27 @@ def TopQuantileMax(arr, quantile, mean = True):
 
 
 def add_xaxis(ax1, x, xnew, xlabel, decimals = 1):
-    # ax1 = plt.gca()
-    tick_loc = ax1.get_xticks()
     xlim = ax1.get_xlim()
+    
+    tick_loc = ax1.get_xticks()
     tick_loc = tick_loc[np.logical_and(xlim[0] < tick_loc, tick_loc < xlim[1])]
+    
     sorter = np.argsort(x)
-    tick_arg = sorter[np.searchsorted(x, tick_loc, sorter=sorter)]
+    arg_idx = np.searchsorted(x, tick_loc, sorter=sorter)
+    
+    map = arg_idx <= sorter[-1]
+    tick_arg = sorter[arg_idx[map]]
+    tick_loc = tick_loc[map]
     
     ax2 = ax1.twiny()
     ax2.set_xlim(ax1.get_xlim())
     ax2.set_xticks(tick_loc)
     ax2.set_xticklabels(np.round(xnew[tick_arg], decimals))
     ax2.set(xlabel=xlabel)
+    
+    # Position new axis behind for interactive to work
+    ax1.set_zorder(ax2.get_zorder()+1)
+    
     
 
 

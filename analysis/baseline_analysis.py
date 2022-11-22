@@ -7,52 +7,39 @@ def drag_length_dependency(filename):
     contact = data['contact'][0]
     
     quantile = 0.999
+    window_len_pct = 0.5
+    
+    
     
     group_name = {0: 'full_sheet', 1: 'sheet', 2: 'PB'}
     for g in reversed(range(1)):
-        plt.figure(num = g) # mean
-        plt.title(filename)
+        fig = plt.figure(num = 100 + g)
+        fig.suptitle(filename)
+        grid = (1,2)
+        ax1 = plt.subplot2grid(grid, (0, 0), colspan=1)
+        ax2 = plt.subplot2grid(grid, (0, 1), colspan=1)
+        
         Ff = data[f'Ff_{group_name[g]}'][:,0]
-        plt.plot(time, Ff, label = group_name[g])
-        plt.plot(time, cum_mean(Ff), label = "Cum mean")
-        plt.plot(time, cum_max(Ff), label = "Cum max")
-        plt.plot(time, cumTopQuantileMax(Ff, quantile, brute_force = False), label = f"Top {quantile*100}% max mean")
+        ax1.plot(time, Ff, label = f'Ydata ({group_name[g]})')
+        ax1.plot(time, cum_mean(Ff), label = "Cum mean")
+        ax1.plot(time, running_mean(Ff, window_len = int(window_len_pct*len(Ff))), label = "running mean")
+        ax1.plot(time, cum_max(Ff), label = "Cum max")
+        ax1.plot(time, cumTopQuantileMax(Ff, quantile, brute_force = False), label = f"Top {quantile*100}% max mean")
+        ax1.set(xlabel="Time", ylabel='$F_\parallel$ [eV/Å]')
+        ax1.legend(loc = 'lower center', fontsize = 10, ncol=2, fancybox = True, shadow = True)
               
-        plt.xlabel('COM$\parallel$ [Å]')
-        plt.xlabel('Time [ps]')
-        plt.ylabel('$F_\parallel$ [eV/Å]')
-        plt.legend()
-        
-        add_xaxis(plt.gca(), time, COM, xlabel='COM$\parallel$ [Å]', decimals = 1)
-        
-    plt.figure(num = 10) # mean
-    Ff = data[f'Ff_{group_name[0]}'][:,0]
-    plt.title(filename)
-    plt.plot(time, contact, label = group_name[g])
-    # plt.plot(time, Ff/30 + np.mean(contact), label = "Ff_full_sheet")
-    plt.plot(time, cum_mean(contact), label = "Cum mean")
+        ax2.plot(time, contact, label = "Ydata (full sheet)")
+        ax2.plot(time, cum_mean(contact), label = "Cum mean")
+        ax2.plot(time, running_mean(contact, window_len = int(window_len_pct*len(contact))), label = "running mean")
+        ax2.legend(loc = 'lower center', fontsize = 10, ncol=2, fancybox = True, shadow = True)
+        ax2.set(xlabel="Time", ylabel='Contact (Full sheet) [%]')
             
-    plt.xlabel('Time [ps]')
-    plt.ylabel('Contact [%]')
-    plt.legend()
-    
-    add_xaxis(plt.gca(), time, COM, xlabel='COM$\parallel$ [Å]', decimals = 1)
-    
         
-        
-        
+    for ax in [ax1, ax2]:
+        add_xaxis(ax, time, COM, xlabel='COM$\parallel$ [Å]', decimals = 1)    
     
-    # for g in range(3):
-    #     plt.figure(num = g+3) # mean
-    #     plt.plot(time, data[f'Ff_{group_name[g]}'][:,0], label = group_name[g])
-    #     plt.plot(time, cum_mean(data[f'Ff_{group_name[g]}'][:,0]), label = "Cum mean")
-    #     plt.plot(time, cum_max(data[f'Ff_{group_name[g]}'][:,0]), label = "Cum max")
-    #     plt.plot(time, cum_mean(np.abs(data[f'Ff_{group_name[g]}'][:,0])), label = "Cum mean abs")
-    #     plt.xlabel('time [ps]')
-    #     plt.ylabel('$F_\parallel$ [eV/Å]')
-    #     plt.legend()
-    
-    # plt.show()
+    fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    return interactive_plotter(fig)
     
     
 def drag_length_compare(filenames):
@@ -60,66 +47,128 @@ def drag_length_compare(filenames):
     
     g = 0
     relative = False
+        
+    quantile = 0.999
+    window_len_pct = 0.5
     
+    fig1 = plt.figure(num = 0)
+    fig1.suptitle("Mean $F_\parallel$ [eV/Å]")
     
-    fig = plt.figure(num = 100 + g)
-    # fig.suptitle(group_name[group])
-    grid = (3,2)
+    grid = (2,2)
     ax1 = plt.subplot2grid(grid, (0, 0), colspan=1)
     ax2 = plt.subplot2grid(grid, (0, 1), colspan=1)
     ax3 = plt.subplot2grid(grid, (1, 0), colspan=1)
     ax4 = plt.subplot2grid(grid, (1, 1), colspan=1)
-    ax5 = plt.subplot2grid(grid, (2, 0), colspan=1)
-    ax6 = plt.subplot2grid(grid, (2, 1), colspan=1)
-    obj = interactive_plotter(fig)
+    
+    
+    fig2 = plt.figure(num = 1)
+    fig2.suptitle("Max $F_\parallel$ [eV/Å]")
+    grid = (2,2)
+    ax5 = plt.subplot2grid(grid, (0, 0), colspan=1)
+    ax6 = plt.subplot2grid(grid, (0, 1), colspan=1)
+    ax7 = plt.subplot2grid(grid, (1, 0), colspan=1)
+    ax8 = plt.subplot2grid(grid, (1, 1), colspan=1)
+    
+    fig3 = plt.figure(num = 2)
+    fig3.suptitle("Mean contact [%]")
+    grid = (2,2)
+    ax9 = plt.subplot2grid(grid, (0, 0), colspan=1)
+    ax10 = plt.subplot2grid(grid, (0, 1), colspan=1)
+    ax11 = plt.subplot2grid(grid, (1, 0), colspan=1)
+    ax12 = plt.subplot2grid(grid, (1, 1), colspan=1)
     
     xlabel = 'Time [ps]'
     for filename in filenames:
         data = analyse_friction_file(filename)   
         COM = data['COM_sheet'][:,0]
-        x = data['time']
+        time = data['time']
+        contact = data['contact'][0]
+        Ff = data[f'Ff_{group_name[g]}'][:,0]
+        
         if relative:
             xlabel = 'Rel COM$_\parallel$'
-            x /= x[-1] # relative drag
+            time /= time[-1] # relative drag
         
-        cummean = cum_mean(data[f'Ff_{group_name[g]}'][:,0])
-        # cummean_abs = cum_mean(np.abs(data[f'Ff_{group_name[g]}'][:,0]))
-        cummean_topmax = cumTopQuantileMax(np.abs(data[f'Ff_{group_name[g]}'][:,0]), quantile = 0.999)
-        cummax = cum_max(data[f'Ff_{group_name[g]}'][:,0])
+        
+        # --- Ff (mean) --- # 
+        cummean = cum_mean(Ff)
+        runmean = running_mean(Ff, window_len = int(window_len_pct*len(Ff)))
+        
         
         # Mean
         output = np.flip(cum_std(np.flip(cummean), step = 5000))
         map = ~np.isnan(output)
-        ax1.plot(x, cummean)
-        ax2.plot(x[~np.isnan(output)], output[~np.isnan(output)], "-o", markersize = 3, label = filename)
+        ax1.plot(time, cummean)
+        ax2.plot(time[~np.isnan(output)], output[~np.isnan(output)], "-o", markersize = 3, label = filename)
         
+         # Running mean 
+        output = np.flip(cum_std(np.flip(runmean), step = 5000))
+        map = ~np.isnan(output)
+        ax3.plot(time, runmean)
+        ax4.plot(time[~np.isnan(output)], output[~np.isnan(output)], "-o", markersize = 3)
+        ax3.set_xlim(ax1.get_xlim())
+        ax4.set_xlim(ax2.get_xlim())
+    
+        
+        # --- Ff (max) --- # 
+        cummean_topmax = cumTopQuantileMax(np.abs(data[f'Ff_{group_name[g]}'][:,0]), quantile)
+        cummax = cum_max(data[f'Ff_{group_name[g]}'][:,0])
        
-        # Mean abs
+        # Mean top quantile max
         output = np.flip(cum_std(np.flip(cummean_topmax), step = 5000))
         map = ~np.isnan(output)
-        ax3.plot(x, cummean_topmax)
-        ax4.plot(x[~np.isnan(output)], output[~np.isnan(output)], "-o", markersize = 3)
+        ax5.plot(time, cummean_topmax)
+        ax6.plot(time[~np.isnan(output)], output[~np.isnan(output)], "-o", markersize = 3, label = filename)
        
         # Max 
         output = np.flip(cum_std(np.flip(cummax), step = 5000))
         map = ~np.isnan(output)
-        ax5.plot(x, cummax)
-        ax6.plot(x[~np.isnan(output)], output[~np.isnan(output)], "-o", markersize = 3)
+        ax7.plot(time, cummax)
+        ax8.plot(time[~np.isnan(output)], output[~np.isnan(output)], "-o", markersize = 3)
     
-    ax1.set(xlabel=xlabel, ylabel='cum mean $F_\parallel$ [eV/Å]')
-    ax2.set(xlabel=xlabel, ylabel='reverse cum std ')
-    ax3.set(xlabel=xlabel, ylabel='cum mean top max $F_\parallel$ [eV/Å]')
-    ax4.set(xlabel=xlabel, ylabel='reverse cum std ')
-    ax5.set(xlabel=xlabel, ylabel='cum max $F_\parallel$ [eV/Å]')
-    ax6.set(xlabel=xlabel, ylabel='reverse cum std ')
-    for ax in [ax1, ax2, ax3, ax4, ax5, ax6]:
-        add_xaxis(ax, x, COM, xlabel='COM$\parallel$ [Å]', decimals = 1)    
- 
-    fig.legend(loc = 'lower center', fontsize = 10, ncol=2, fancybox = True, shadow = True)
-    fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+        # --- Contact --- #
+        cummean = cum_mean(contact)
+        runmean = running_mean(contact, window_len = int(window_len_pct*len(contact)))
+        
+        # Mean 
+        output = np.flip(cum_std(np.flip(cummean), step = 5000))
+        map = ~np.isnan(output)
+        ax9.plot(time, cummean, label = filename)
+        ax10.plot(time[~np.isnan(output)], output[~np.isnan(output)], "-o", markersize = 3)
+        
+        # Running mean 
+        output = np.flip(cum_std(np.flip(runmean), step = 5000))
+        map = ~np.isnan(output)
+        ax11.plot(time, runmean)
+        ax12.plot(time[~np.isnan(output)], output[~np.isnan(output)], "-o", markersize = 3)
+        ax11.set_xlim(ax9.get_xlim())
+        ax12.set_xlim(ax10.get_xlim())
+    
+    ax1.set(xlabel=xlabel, ylabel='cum mean')
+    ax2.set(xlabel=xlabel, ylabel='reverse cum std')
+    ax3.set(xlabel=xlabel, ylabel='running mean')
+    ax4.set(xlabel=xlabel, ylabel='reverse cum std')
+    
+    ax5.set(xlabel=xlabel, ylabel='cum mean top max')
+    ax6.set(xlabel=xlabel, ylabel='reverse cum std')
+    ax7.set(xlabel=xlabel, ylabel='cum max')
+    ax8.set(xlabel=xlabel, ylabel='reverse cum std')
+    
+    ax9.set(xlabel=xlabel, ylabel='cum mean')
+    ax10.set(xlabel=xlabel, ylabel='reverse cum std')
+    ax11.set(xlabel=xlabel, ylabel='running mean')
+    ax12.set(xlabel=xlabel, ylabel='reverse cum std')
+    
+    for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9, ax10, ax11, ax12]:
+        add_xaxis(ax, time, COM, xlabel='COM$\parallel$ [Å]', decimals = 1)    
+    
+    obj = []
+    for fig in [fig1, fig2, fig3]:  
+        fig.legend(loc = 'lower center', fontsize = 10, ncol=1, fancybox = True, shadow = True)
+        fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+        obj.append(interactive_plotter(fig))
 
     return obj
-
 
 
 def dt_dependency(filenames, dt, drag_cap = 0):
@@ -198,13 +247,18 @@ if __name__ == "__main__":
     
     
     
-    compare = ['../Data/Baseline/drag_length/ref_HFN/system_ref_HFN_Ff.txt',
-               '../Data/Baseline/drag_length/HFN_K0/system_HFN_K0_Ff.txt']
+    # compare = ['../Data/Baseline/drag_length/ref_HFN/system_ref_HFN_Ff.txt',
+    #            '../Data/Baseline/drag_length/HFN_K0/system_HFN_K0_Ff.txt', 
+    #            '../Data/Baseline/drag_length/HFN_T300/system_HFN_T300_Ff.txt']
+    
+    compare = ['../Data/Baseline/drag_length/ref/system_ref_Ff.txt',
+               '../Data/Baseline/drag_length/v4d/system_v4d_Ff.txt', 
+               '../Data/Baseline/drag_length/v4u/system_v4u_Ff.txt']
     
     # drag_length_dependency('../Data/BIG_MULTI_nocut/stretch_5000_folder/job8/system_ext_Ff.txt') # MULTI DRAG
     # drag_length_dependency('../Data/BIG_MULTI_Ydrag/stretch_30974_folder/job9/system_ext_Ff.txt') # MULTI DRAG
     
-    # drag_length_dependency('../Data/Baseline/drag_length/ref/system_ref_Ff.txt')
+    # obj = drag_length_dependency('../Data/Baseline/drag_length/HFN_T300/system_HFN_T300_Ff.txt')
     obj = drag_length_compare(compare)
     # dt_dependency(dt_files, dt_vals, drag_cap = 100)
     
