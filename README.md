@@ -136,7 +136,8 @@
 - Considering only looking at contact area to long computation time for stable result. Solution might be to just ignore max friction since there is no clear sign of static friction. I think contact area and mean friction is more of less equally demanding. 
 - Playing around with paramters to see if I can get something that is stable at a reasonable computation time. 
 - Trying new (small) multi sim with and without cuts to check out results. 
-
+- Making amorphic silicon to invistigate the effect on the friction measurements. 
+- In the mean while I aim to broaden my view on the experimental and numerical results related to graphene friction in order to update my expectation regarding frictional behaviour such as static friction and stick-slip motion. 
 
 
 

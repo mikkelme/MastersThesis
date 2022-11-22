@@ -20,6 +20,10 @@ def drag_length_dependency(filename):
         ax2 = plt.subplot2grid(grid, (0, 1), colspan=1)
         
         Ff = data[f'Ff_{group_name[g]}'][:,0]
+        # A = data[f'Ff_{group_name[g]}'][:,0]
+        # B = data[f'Ff_{group_name[g]}'][:,1]
+        # Ff = np.sqrt(A**2 + B**2)
+        
         ax1.plot(time, Ff, label = f'Ydata ({group_name[g]})')
         ax1.plot(time, cum_mean(Ff), label = "Cum mean")
         ax1.plot(time, running_mean(Ff, window_len = int(window_len_pct*len(Ff))), label = "running mean")
@@ -258,8 +262,8 @@ if __name__ == "__main__":
     # drag_length_dependency('../Data/BIG_MULTI_nocut/stretch_5000_folder/job8/system_ext_Ff.txt') # MULTI DRAG
     # drag_length_dependency('../Data/BIG_MULTI_Ydrag/stretch_30974_folder/job9/system_ext_Ff.txt') # MULTI DRAG
     
-    # obj = drag_length_dependency('../Data/Baseline/drag_length/HFN_T300/system_HFN_T300_Ff.txt')
-    obj = drag_length_compare(compare)
+    obj = drag_length_dependency('../Data/Baseline/drag_length/ref_HFN/system_ref_HFN_Ff.txt')
+    # obj = drag_length_compare(compare)
     # dt_dependency(dt_files, dt_vals, drag_cap = 100)
     
     plt.show()

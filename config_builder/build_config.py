@@ -3,7 +3,7 @@ sys.path.append('../') # parent folder: MastersThesis
 
 from graphene_sheet.build_graphene_sheet import *
 
-def build_config(sheet_mat, substrate_file, pullblock = None, mode = "all", view_atoms = False, write = False):
+def build_config(sheet_mat, substrate_file, pullblock = None, mode = "all", view_atoms = False, write = False, ext = 'ext'):
     # Parameters
     # LJ equilbrium distance: 2^(1/6)*sigma ≈ 3.66
     # Effective equilibrium distance (considering multiple layers in substreate) ≈ 2.8
@@ -84,24 +84,24 @@ def build_config(sheet_mat, substrate_file, pullblock = None, mode = "all", view
     if mode == "all":
         if view_atoms: view(merge)
         if write:
-            lammpsdata.write_lammps_data('./sheet_substrate.txt', merge, velocities = True)
-            outfile = open('sheet_substrate_info.in', 'w')
+            lammpsdata.write_lammps_data(f'./sheet_substrate_{ext}.txt', merge, velocities = True)
+            outfile = open('sheet_substrate_{ext}_info.in', 'w')
     elif mode == "sheet":
         sheet.translate(trans_vec2)
         sheet.set_cell(minmax_merge[1,:] + trans_vec2 + np.ones(3)*eps)
 
         if view_atoms: view(sheet)
         if write:
-            lammpsdata.write_lammps_data('./sheet.txt', sheet, velocities = False)
-            outfile = open('sheet_info.in', 'w')
+            lammpsdata.write_lammps_data('./sheet_{ext}.txt', sheet, velocities = False)
+            outfile = open('sheet_{ext}_info.in', 'w')
 
     elif mode == "substrate":
         merge.translate(trans_vec2)
         merge.set_cell(minmax_merge[1,:] + trans_vec2 + np.ones(3)*eps)
         if view_atoms: view(substrate)
         if write:
-            lammpsdata.write_lammps_data('./substrate.txt', substrate, velocities = True)
-            outfile = open('substrate_info.in', 'w')
+            lammpsdata.write_lammps_data('./substrate_{ext}.txt', substrate, velocities = True)
+            outfile = open('substrate_{ext}_info.in', 'w')
     else:
         return
 
@@ -124,6 +124,7 @@ if __name__ == "__main__":
     multiples = (3, 5)  
     unitsize = (5,7)
     mat = pop_up_pattern(multiples, unitsize, sp = 2)
-    # mat[:, :] = 1
-    substrate_file = "../substrate/crystal_Si_substrate.txt"
-    build_config(mat, substrate_file, pullblock = 6, mode = "all", view_atoms = True, write = True)
+    mat[:, :] = 1 # Nocuts
+    # substrate_file = "../substrate/crystal_Si_substrate.txt"
+    substrate_file = "../substrate/amorph_substrate.txt"
+    build_config(mat, substrate_file, pullblock = 6, mode = "all", view_atoms = True, write = True, ext = "amorph_nocuts")

@@ -1,19 +1,15 @@
 units metal
-newton on  # newtons 3rd law for pairs
+newton on 
 
-boundary m m m  
-atom_style atomic # coarse-grain liquids, solids, metals
-
-
-variable eps equal 1e-6
+boundary p s p  
+atom_style atomic
 
 # ---- Create atoms --- #
 # Parameters
-variable a equal 5.43  # lattice spacing [Å]
+variable a equal 5.430953   # lattice spacing [Å]
 variable xmax equal 100 # [Å]
-variable ymax equal 100  # [Å]
-variable zmax equal 15
-  # [Å]
+variable ymax equal 100 # [Å]
+variable zmax equal 15  # [Å]
 
 # Number of unit cells to get closest to x-y-z-max
 variable xlen equal $(round((v_xmax + 1/4*v_a)/v_a))  # [a]
@@ -23,71 +19,123 @@ print "xlen, ylen, zlen:  ($(v_xlen), $(v_ylen), $(v_zlen))"
 print "Max pos:  $(v_xlen*v_a - 1/4*v_a), $(v_ylen*v_a - 1/4*v_a), $(-v_zlen*v_a)"
 # quit # Check dimenstions before running
 
+variable a equal 5.430953   # lattice spacing [Å]
+lattice diamond ${a} 
+region	simreg block 0 ${xlen}  0 ${ylen} -${zlen} 0 units lattice
 
-# Create lattice and simulation box
-variable restart equal true
-if ${restart} then "read_restart ./melted_Si_substrate.bin" else &
-"lattice diamond ${a}" &
-"region myreg block -${eps} ${xlen} -${eps} ${ylen} -${zlen} ${eps}  units lattice" &
-"create_box 1 myreg" &
-"create_atoms 1 box" &
-
-
-# Regions and groups
-# variable freeze_zhi equal $(-(v_zlen-1)*v_a + 0.5)
-# region freeze_region block INF INF INF INF INF ${freeze_zhi} units box
-region freeze_region block INF INF INF INF INF $(-v_zlen+1) units lattice
-group freeze_group region freeze_region
-group moving_atoms subtract all freeze_group
+create_box 1 simreg 
+create_atoms 1 box
 
 # --- Dynamics --- #
-# parameters
-variable Tstart equal 1800.0 # [Kelvin]
-# variable Tstart equal 3000.0 # [Kelvin]
-
-
-# variable Tstop equal 300.0 # [Kelvin]
-# variable Tdamp equal $((v_Tstart - v_Tstop)/10)
-# variable Tdamp equal 0.1
-
-
-
-
-mass 1 28.0855 # Si atomic mass [u]
-velocity moving_atoms create ${Tstart} 5432371 dist gaussian
-
-neighbor            0.5 bin
-neigh_modify        delay 0 every 1 one 10000
-
 # Stillinger-Weber (SW)
 pair_style sw
-pair_coeff * * si.sw Si
+pair_coeff * * ./si.sw Si
+mass * 28.0855 # Si atomic mass [u]
 
-# timestep            0.0005
-timestep            0.001
-
-
-thermo              100
-thermo_style custom step time temp 
-dump 1 all atom 100 dump.data
+thermo          1000
+thermo_style    custom step temp pxx pyy pzz pe lx ly lz vol
+# compute		1 all pe/atom
+dump 1 all atom 1000 dump.data
 
 
-# --- Melting --- #
-# fix                 nve moving_atoms nve # (microcanonical)
-fix                 nvt moving_atoms nvt temp ${Tstart} ${Tstart} 0.1
+# Start: 1000 K
+velocity        all create 1000.0 4928459 rot yes dist gaussian
+fix             1 all nvt temp 1000 1000 0.1
+run		          50000
+
+# Heat: 1000 K -> 2000 K
+unfix		1
+fix             1 all nvt temp 1000 2000 0.1
+run             100000
+
+# Pause: 2000 K
+unfix		1
+fix             1 all nvt temp 2000 2000 0.1
+run             150000
+
+unfix		1
+
+# Cool: 2000 K -> 0.1 K
+fix		1 all nvt temp 2000 0.1 0.1
+run		200000
+
+
+write_data crystal_amorph_substrate.txt
 
 
 
-compute myRDF moving_atoms rdf 100
-fix rdf_output moving_atoms ave/time 500 1 500 c_myRDF[*] file rdf.txt mode vector # Nevery Nrepeat Nfreq 
-
-run $(floor(2/dt))
 
 
-# fix                 1 moving_atoms nvt temp ${Tstart} ${Tstop} ${Tdamp} # (Nosé Hoover thermostat)
-write_restart melted_Si_substrate.bin 
 
-# write_data melted_Si_substrate.txt
+
+
+# quit
+# ################################
+# variable eps equal 1e-6
+# # Create lattice and simulation box
+# variable restart equal false
+# if ${restart} then "read_restart ./melted_Si_substrate.bin" else &
+# "lattice diamond ${a}" &
+# "region myreg block -${eps} ${xlen} -${eps} ${ylen} -${zlen} ${eps}  units lattice" &
+# "create_box 1 myreg" &
+# "create_atoms 1 box" &
+
+
+# # Regions and groups
+# # variable freeze_zhi equal $(-(v_zlen-1)*v_a + 0.5)
+# # region freeze_region block INF INF INF INF INF ${freeze_zhi} units box
+# region freeze_region block INF INF INF INF INF $(-v_zlen+1) units lattice
+# group freeze_group region freeze_region
+# group moving_atoms subtract all freeze_group
+
+# # --- Dynamics --- #
+# # parameters
+# variable Tstart equal 1800.0 # [Kelvin]
+# # variable Tstart equal 3000.0 # [Kelvin]
+
+
+# # variable Tstop equal 300.0 # [Kelvin]
+# # variable Tdamp equal $((v_Tstart - v_Tstop)/10)
+# # variable Tdamp equal 0.1
+
+
+
+
+# mass 1 28.0855 # Si atomic mass [u]
+# velocity moving_atoms create ${Tstart} 5432371 dist gaussian
+
+# neighbor            0.5 bin
+# neigh_modify        delay 0 every 1 one 10000
+
+# # Stillinger-Weber (SW)
+# pair_style sw
+# pair_coeff * * si.sw Si
+
+# # timestep            0.0005
+# timestep            0.001
+
+
+# thermo              100
+# thermo_style custom step time temp 
+# dump 1 all atom 100 dump.data
+
+
+# # --- Melting --- #
+# # fix                 nve moving_atoms nve # (microcanonical)
+# fix                 nvt moving_atoms nvt temp ${Tstart} ${Tstart} 0.1
+
+
+
+# compute myRDF moving_atoms rdf 100
+# fix rdf_output moving_atoms ave/time 500 1 500 c_myRDF[*] file rdf.txt mode vector # Nevery Nrepeat Nfreq 
+
+# run $(floor(2/dt))
+
+
+# # fix                 1 moving_atoms nvt temp ${Tstart} ${Tstop} ${Tdamp} # (Nosé Hoover thermostat)
+# write_restart melted_Si_substrate.bin 
+
+# # write_data melted_Si_substrate.txt
 
 
 

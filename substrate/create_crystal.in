@@ -1,7 +1,7 @@
 units metal
 newton on  # newtons 3rd law for pairs
 
-boundary p p m  
+boundary p p m  # p s p ?
 atom_style atomic
 
 
@@ -18,7 +18,7 @@ variable ylen equal $(round((v_ymax + 1/4*v_a)/v_a))  # [a]
 variable zlen equal $(round((v_zmax)/v_a))  # [a]
 print "xlen, ylen, zlen:  ($(v_xlen), $(v_ylen), $(v_zlen))"
 print "Max pos:  $(v_xlen*v_a - 1/4*v_a), $(v_ylen*v_a - 1/4*v_a), $(-v_zlen*v_a)"
-# quit # Check dimenstions before running
+quit # Check dimenstions before running
 
 
 
@@ -36,7 +36,7 @@ variable temp equal 300.0 # [Kelvin]
 # Stillinger-Weber (SW)
 pair_style sw
 pair_coeff * * ../potentials/si.sw Si
-mass 1 28.0855 # Si atomic mass [u]
+mass * 28.0855 # Si atomic mass [u]
 
 velocity all create ${temp} 5432371 dist gaussian
 
