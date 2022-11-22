@@ -65,31 +65,36 @@ class Simulation_runner:
             
             self.variables[key] *= conv 
        
-    def move_file_to(self, file, dest):
-        subprocess.run(['rsync', '-av', '-mkpath', file, dest])
+    def move_file_to_dest(self, file, dest):
+        ssh, dir = dest.split(':')
+        subprocess.run(f'rsync -av --rsync-path=\"mkdir -p {dir} && rsync\" {file} {ssh}:{dir}', shell = True)
+        
     
     def move_files_to_dest(self, files, dest):
         for file in files:
-            subprocess.run(['rsync', '-av', '-mkpath', file, dest])
+            self.move_file_to_dest(file, dest)
+            
+    
         
     # TODO: Modify so this works in new version (class Simulation_runner)
-    def multi_run(self, dir, num_stretch_files, F_N, num_procs = 16, jobname = 'MULTI'):
+    def multi_run(self, header, dir, num_stretch_files, F_N, num_procs = 16, jobname = 'MULTI'):
         sim = Simulator(directory = dir, overwrite=True)
         
-        config_data = self.variables['config_data']
-        sim.copy_to_wd( "../friction_simulation/setup_sim.in",
-                        f"../config_builder/{config_data}.txt",
-                        f"../config_builder/{config_data}_info.in",
+        self.move_files_to_dest(["../friction_simulation/setup_sim.in", 
+                        "../friction_simulation/stretch.in",
+                        "../friction_simulation/drag.in",
                         "../potentials/si.sw",
                         "../potentials/C.tersoff",
-                        "../friction_simulation/drag.in"
-                        )
+                        f"../config_builder/{self.variables['config_data']}.txt",
+                        f"../config_builder/{self.variables['config_data']}_info.in" ], header)
+    
         
+
         sim.set_input_script("../friction_simulation/stretch.in", num_stretch_files = num_stretch_files, **self.variables)    
         slurm_args = {'job-name':jobname, 'partition':'normal', 'ntasks':num_procs, 'nodes':1}
         sim.pre_generate_jobscript(num_procs=num_procs, lmp_exec="lmp", slurm_args = slurm_args)    
 
-        self.variables['root'] = '../..'
+        self.variables['root'] += '/../..'
         job_array = 'job_array=('
         for i in range(len(F_N)):
             self.variables['F_N'] = F_N[i]
@@ -97,7 +102,7 @@ class Simulation_runner:
             sub_exec_list = Device.get_exec_list(num_procs = num_procs, 
                                                 lmp_exec = "lmp", 
                                                 lmp_args = {'-in': '../../drag.in'}, 
-                                                lmp_var = self.variables | {'out_ext':'ext'})
+                                                lmp_var = self.variables | {'out_ext':'ext'}) # TODO: change from 'ext
             job_array += '\n\n\"'
             job_array += Device.gen_jobscript_string(sub_exec_list, slurm_args, linebreak = False)
             job_array += '\"'
@@ -123,10 +128,10 @@ class Simulation_runner:
         \n    mv $file $folder1/$file\
         \ndone")
         
-        sim.run(slurm = True, execute = False) # Testing
+        sim.run(slurm = True, execute = True)
         
             
 
 if __name__ == "__main__":
     test = Simulation_runner()
-    print(test.variables['out_ext'])
+    test.move_file_to_dest("./test1.py", "egil:MYTEST/")
