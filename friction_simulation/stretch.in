@@ -18,9 +18,17 @@ restart        v_stride stretch_*_restart
 label no_restart
 
 # ----------  Relax sheet ---------- #
+# Add spring to restrict rotation or movement of sheet COM:
+#  - Hold PB COM in initial x-position
+#  - Hold sheet COM in initial position
+fix PB_ylow_x_hold PB_ylow spring tether 1e5 $(c_sheet_COM[1]) NULL NULL 0.0
+fix PB_high_x_hold PB_yhigh spring tether 1e5 $(c_sheet_COM[1]) NULL NULL 0.0
+fix sheet_COM_hold full_sheet spring tether 1e5 $(c_sheet_COM[1]) $(c_sheet_COM[2]) NULL 0.0
+
 print "--> Relax: $(v_relax_steps) timesteps, $(v_relax_steps*dt) ps"
-thermo_style custom step time cpu cpuremain temp v_stretch_pct v_sheet_bond_pct v_full_sheet_bond_pct
-variable S0 equal c_PB_yhigh_ymin-c_PB_ylow_ymax # Force S0 to current length
+
+
+thermo_style custom step time cpu cpuremain c_freeTemp v_stretch_pct v_sheet_bond_pct v_full_sheet_bond_pct
 run $(v_relax_steps-1)
 
 # Lock S0 after relaxing and export S0 info via y-pos of tmp type 3 atom
@@ -29,16 +37,18 @@ if  "${num_stretch_files}>=1" then "create_atoms 3 single 0 $(v_S0) 0" &
 "group S0_info type 3"
 run 1
 
+unfix PB_ylow_x_hold
+unfix PB_high_x_hold
+unfix sheet_COM_hold
+
 
 # ---------- Stretch sheet ---------- #
 # Update fixes
 unfix nve
 unfix nvt
-fix nve free_atoms nve
-fix nvt free_atoms langevin ${temp} ${temp} ${damp} 48279
+fix nve free_atoms nve 
+fix nvt free_atoms langevin ${T} ${T} ${damp} 48279
 
-# Update stretch speed in case of changes S0 (not sure if this is possible)
-variable stretch_speed equal v_stretch_speed_pct*v_S0 
 fix ylow_move  PB_ylow move linear 0 $(-v_stretch_speed/2) NULL units box
 fix yhigh_move PB_yhigh move linear 0 $(v_stretch_speed/2) NULL units box
 
@@ -49,6 +59,5 @@ restart 0
 # Unfix moves (relevant if continued directly)
 unfix ylow_move
 unfix yhigh_move
-velocity PB_tot set 0 0 0
 
 

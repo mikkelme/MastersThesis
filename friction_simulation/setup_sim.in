@@ -52,12 +52,15 @@ group free_atoms subtract all PB_tot substrate_freeze
 group semifree_atoms subtract all substrate_freeze 
 
 # --- Dynamics --- #            
-mass 1 12.0107      # C
-# mass 2 28.0855    # Si
-mass 2 196.966570   # Au
-mass 3 1.0          # Virtuel atom
+mass 1 12.0107          # C
+mass 2 28.0855          # Si
+# mass 2 196.966570     # Au
+mass 3 1.0              # Virtuel atom
 
-velocity free_atoms create ${temp} 5432373 dist gaussian
+# ^^^^^^^^^^^^
+# Make a more safe way to change this back and forth
+
+velocity free_atoms create ${T} 5432373 dist gaussian
 
 # JUMP
 jump SELF common_settings 
@@ -92,23 +95,23 @@ neigh_modify        delay 0 every 1 one 10000
 
 # ------- GOLD SUBSTRATE ------- # 
 # Potentials: C-C: Airebo, C-Si: LJ, Si-Si: SW
-variable LJ_sigma equal 2.74 
-pair_style hybrid eam/fs lj/cut 6.85 airebo 6.4 1 1 
-pair_coeff * * airebo ${root}/CH.airebo C NULL NULL     # Sheet C-C
-pair_coeff 1 2 lj/cut 0.022 ${LJ_sigma}                        # Interaction C-Si 
-pair_coeff * * eam/fs ${root}/FeAu-eam-LJ.fs NULL Au NULL      # Substrate Au-Au
-pair_coeff * 3 lj/cut 0.0 0.0 
+# variable LJ_sigma equal 2.74 
+# pair_style hybrid eam/fs lj/cut $(v_LJ_sigma*2.5) airebo 6.4 1 1 
+# pair_coeff * * airebo ${root}/CH.airebo C NULL NULL     # Sheet C-C
+# pair_coeff 1 2 lj/cut 0.022 ${LJ_sigma}                        # Interaction C-Si 
+# pair_coeff * * eam/fs ${root}/FeAu-eam-LJ.fs NULL Au NULL      # Substrate Au-Au
+# pair_coeff * 3 lj/cut 0.0 0.0 
 
 
 
-# # ------- SI SUBSTRATE ------- # 
+# ------- SI SUBSTRATE TERSOFF ------- # 
+# Potentials: C-C: Tersoff, C-Si: LJ, Si-Si: SW
 variable LJ_sigma equal 3.26 
-# # Potentials: C-C: Tersoff, C-Si: LJ, Si-Si: SW
-# pair_style hybrid tersoff lj/cut 8.15 sw 
-# pair_coeff * * tersoff ${root}/C.tersoff C NULL NULL   # Sheet C-C
-# pair_coeff 1 2 lj/cut 0.008909 ${LJ_sigma}                    # Interaction C-Si 
-# pair_coeff * * sw ${root}/si.sw NULL Si NULL           # Substrate Si-Si
-# pair_coeff * 3  lj/cut 0.0 0.0 
+pair_style hybrid tersoff lj/cut $(v_LJ_sigma*2.5) sw 
+pair_coeff * * tersoff ${root}/C.tersoff C NULL NULL   # Sheet C-C
+pair_coeff 1 2 lj/cut 0.008909 ${LJ_sigma}             # Interaction C-Si 
+pair_coeff * * sw ${root}/si.sw NULL Si NULL           # Substrate Si-Si
+pair_coeff * 3  lj/cut 0.0 0.0 
 
 variable LJ_equil equal $(2^(1/6) * v_LJ_sigma)
 variable contact_cut_off equal $(v_LJ_equil*1.1)
@@ -116,11 +119,12 @@ variable contact_cut_off equal $(v_LJ_equil*1.1)
 timestep $(v_dt)
 variable damp equal 1.0 # ps                        
 fix nve semifree_atoms nve # (microcanonical) 
-fix nvt semifree_atoms langevin ${temp} ${temp} ${damp} 48279 # (canonical)
+fix nvt semifree_atoms langevin ${T} ${T} ${damp} 48279 # (canonical)
 fix 2 all balance 1000 1.05 shift xy 10 1.05 # balance number of particles computed on each processor 
-fix PB_xyz_ave PB_tot aveforce 0 0 0 # Average force (every atom feels same force vector)
-# TODO: Let the pull block move in y-direction during relaxation <----
-# ^^^^^^^^^^^^^^^
+fix PB_ave PB_tot aveforce NULL NULL 0 # Average z-force
+
+
+
 # --- Convertion: SI to metal --- #
 variable N_to_eV_over_ang equal 6.24150907e8    # force: N -> eV/Å
 variable m_to_ang equal 1e10                    # distance: m -> Å
@@ -153,7 +157,6 @@ fix sheet_bond_hist sheet ave/histo 1 1 1 -0.5 1.5 2 c_bond_coord mode vector be
 variable sheet_bond_pct equal f_sheet_bond_hist[2][3]
 
 
-
 ## - Pullblocks - ##
 compute PB_ylow_ymax PB_ylow reduce max y   # Lower y-limit for sheet
 compute PB_yhigh_ymin PB_yhigh reduce min y # Upper y-limit for sheet
@@ -167,6 +170,10 @@ compute substrate_zhigh substrate reduce max z # Max z-val of substrate
 compute Ff substrate group/group full_sheet # friction forces
 compute Ff_sheet substrate group/group sheet # friction forces
 compute Ff_PB substrate group/group PB_tot # friction forces
+
+## Temperature of free atoms ##
+compute freeTemp free_atoms temp
+
 
 ## - Activate computes - ## 
 thermo_style custom c_sheet_fz c_PB_ylow_ymax c_PB_yhigh_ymin c_substrate_zhigh c_PB_ylow_com[2] c_PB_yhigh_com[2] c_sheet_COM[3]
@@ -184,7 +191,6 @@ variable move_force_xy_norm equal sqrt(v_move_force_x^2+v_move_force_x^2)
 ## -- Stretch -- ##
 # variable S0 equal v_pullblock_ylo-v_pullblock_yhi   # OLD rough version
 variable S0 equal c_PB_yhigh_ymin-c_PB_ylow_ymax    # start len of inner sheet 
-
 
 # Restart file: Get S0 stored in type 3 tmp atom
 if ${readable} then "thermo_style custom c_get_S0 c_PB_ylow_ymax c_PB_yhigh_ymin" &

@@ -9,7 +9,7 @@ def one_config_multi_data():
     
     variables = {
         "dt": 0.001,
-        "temp": 300.0, # [K]
+        "T": 300.0, # [K]
         "relax_time": 5,
         "pause_time1": 5,
         "pause_time2": 5,

@@ -15,11 +15,11 @@ class Simulation_runner:
         # Standard variables
         self.variables = {
             "dt": 0.001,
-            "temp": 100.0, # [K]
-            "relax_time": 5,
+            "T": 100.0, # [K]
+            "relax_time": 15,
             "pause_time1": 5,
             "pause_time2": 5,
-            "stretch_speed_pct": 0.05,
+            "stretch_speed_pct": 0.001,
             "drag_speed": 1, # [m/s]
             "drag_length": 30 ,
             "K": 30.0,

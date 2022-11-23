@@ -8,16 +8,17 @@ def drag_length():
     
     variables = {
         "dt": 0.001,
-        "temp": 300.0, # [K]
-        "relax_time": 5,
+        "T": 100.0, # [K]
+        "relax_time": 15,
         "pause_time1": 5,
-        "pause_time2": 5,
+        "pause_time2": 10,
         "stretch_speed_pct": 0.001,
-        "drag_speed": 10, # [m/s]
+        "drag_speed": 1, # [m/s]
         "drag_length": 200,
-        "K": 10, #30.0,
+        "K": 30.0,
         "root": "..",
         "out_ext": date.today(), 
+        # "config_data": "sheet_substrate_nocuts",
         "config_data": "sheet_substrate_gold_nocuts",
         "stretch_max_pct": 0.0,
         "drag_dir_x": 0,
@@ -34,8 +35,8 @@ def drag_length():
                         "../friction_simulation/stretch.in",
                         "../friction_simulation/drag.in",
                         # "../potentials/si.sw",
+                        # "../potentials/C.tersoff",
                         "../potentials/CH.airebo",
-                        "../potentials/C.tersoff",
                         "../potentials/FeAu-eam-LJ.fs",
                         f"../config_builder/{proc.variables['config_data']}.txt",
                         f"../config_builder/{proc.variables['config_data']}_info.in" ], header)
@@ -55,7 +56,7 @@ def dt():
     
     variables = {
         "dt": 0,
-        "temp": 100.0, # [K]
+        "T": 100.0, # [K]
         "relax_time": 5,
         "pause_time1": 5,
         "pause_time2": 5,
@@ -103,5 +104,5 @@ def dt():
 
 
 if __name__ == "__main__":
-    drag_length()
+    # drag_length()
     # dt()

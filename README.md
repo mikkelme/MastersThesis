@@ -138,6 +138,10 @@
 - Trying new (small) multi sim with and without cuts to check out results. 
 - Making amorphic silicon to invistigate the effect on the friction measurements. 
 - In the mean while I aim to broaden my view on the experimental and numerical results related to graphene friction in order to update my expectation regarding frictional behaviour such as static friction and stick-slip motion. 
+- Discovered small problem with the fix ave force on the pull blocks that kept the sheet in an unrelaxed position. FIxed that and had to put int some spring forces in the relax part to keep the sheet in the desired start posistion to avoid any inconsistencies.
+- Redooing Baseline test due to non relaxed sheet at zero stretch.
+- Trying using gold substrate as this is used in [Study of Nanoscale Friction Behaviors of Graphene on Gold Substrates Using Molecular Dynamics](https://nanoscalereslett.springeropen.com/articles/10.1186/s11671-018-2451-3). 
+
 
 
 
