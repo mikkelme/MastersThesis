@@ -20,6 +20,9 @@ def drag_length_dependency(filename):
         ax2 = plt.subplot2grid(grid, (0, 1), colspan=1)
         
         Ff = data[f'Ff_{group_name[g]}'][:,0]
+        # Ff = data['move_force'][:,0]
+        
+        
         # A = data[f'Ff_{group_name[g]}'][:,0]
         # B = data[f'Ff_{group_name[g]}'][:,1]
         # Ff = np.sqrt(A**2 + B**2)
@@ -88,6 +91,7 @@ def drag_length_compare(filenames):
         time = data['time']
         contact = data['contact'][0]
         Ff = data[f'Ff_{group_name[g]}'][:,0]
+        
         
         if relative:
             xlabel = 'Rel COM$_\parallel$'
@@ -262,7 +266,13 @@ if __name__ == "__main__":
     # drag_length_dependency('../Data/BIG_MULTI_nocut/stretch_5000_folder/job8/system_ext_Ff.txt') # MULTI DRAG
     # drag_length_dependency('../Data/BIG_MULTI_Ydrag/stretch_30974_folder/job9/system_ext_Ff.txt') # MULTI DRAG
     
-    obj = drag_length_dependency('../Data/Baseline/drag_length/ref_HFN/system_ref_HFN_Ff.txt')
+    # obj = drag_length_dependency('../Data/Baseline/drag_length/ref_HFN/system_ref_HFN_Ff.txt')
+    # obj = drag_length_dependency('../Data/Multi/cuts/ref1/stretch_5000_folder/job2/system_drag_Ff.txt')
+    
+    obj = drag_length_dependency('../Data/Baseline/drag_length/amorph/system_amorph_Ff.txt')
+    # obj = drag_length_dependency('../Data/Baseline/drag_length/wannabe/system_wannabe_Ff.txt')
+    
+    
     # obj = drag_length_compare(compare)
     # dt_dependency(dt_files, dt_vals, drag_cap = 100)
     

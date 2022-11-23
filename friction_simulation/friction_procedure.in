@@ -1,19 +1,19 @@
-# variable dt equal 0.001 #0.0025
-# variable temp equal 100.0
-# variable relax_time equal 1
-# variable pause_time1 equal 1
-# variable pause_time2 equal 1 
-# variable stretch_speed_pct equal 0.05 
-# variable drag_speed equal 0.05 
-# variable drag_length equal 1 
-# variable K equal 1.8724527210000002 
-# variable root string ..
-# variable out_ext string test
-# variable config_data string sheet_substrate_nocuts
-# variable stretch_max_pct equal 0.3
-# variable drag_dir_x equal 0 
-# variable drag_dir_y equal 1 
-# variable F_N equal 62.41 
+variable dt equal 0.001 #0.0025
+variable temp equal 300.0
+variable relax_time equal 5
+variable pause_time1 equal 5
+variable pause_time2 equal 5 
+variable stretch_speed_pct equal 0.05 
+variable drag_speed equal 0.05 
+variable drag_length equal 1 
+variable K equal 1.8724527210000002 
+variable root string ..
+variable out_ext string test
+variable config_data string sheet_substrate_gold_nocuts
+variable stretch_max_pct equal 0.3
+variable drag_dir_x equal 0 
+variable drag_dir_y equal 1 
+variable F_N equal 62.41 
 
 include ${root}/stretch.in
 include ${root}/drag.in

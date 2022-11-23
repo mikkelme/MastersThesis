@@ -4,7 +4,7 @@ from simulation_runner import *
 def drag_length():
     main_folder = 'Baseline'
     test_name   = 'drag_length'
-    sim_name    = 'HFN_T300'
+    sim_name    = 'gold'
     
     variables = {
         "dt": 0.001,
@@ -13,16 +13,16 @@ def drag_length():
         "pause_time1": 5,
         "pause_time2": 5,
         "stretch_speed_pct": 0.001,
-        "drag_speed": 1, # [m/s]
+        "drag_speed": 10, # [m/s]
         "drag_length": 200,
-        "K": 0, #30.0,
+        "K": 10, #30.0,
         "root": "..",
         "out_ext": date.today(), 
-        "config_data": "sheet_substrate_nocuts",
+        "config_data": "sheet_substrate_gold_nocuts",
         "stretch_max_pct": 0.0,
         "drag_dir_x": 0,
         "drag_dir_y": 1,
-        "F_N": 100e-9, # [N]
+        "F_N": 10e-9, # [N]
     }
   
     
@@ -33,8 +33,10 @@ def drag_length():
     proc.move_files_to_dest(["../friction_simulation/setup_sim.in", 
                         "../friction_simulation/stretch.in",
                         "../friction_simulation/drag.in",
-                        "../potentials/si.sw",
+                        # "../potentials/si.sw",
+                        "../potentials/CH.airebo",
                         "../potentials/C.tersoff",
+                        "../potentials/FeAu-eam-LJ.fs",
                         f"../config_builder/{proc.variables['config_data']}.txt",
                         f"../config_builder/{proc.variables['config_data']}_info.in" ], header)
         

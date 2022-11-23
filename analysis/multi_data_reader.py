@@ -27,10 +27,14 @@ def read_multi_folder(folders):
                 blen = len(get_dirs_in_path(stretch_dir))
                 progress = a * blen + b
                 total = alen * blen
-                print(f"\r ({progress}/{total}) | {job_dir} ", end = " ")
+                print(f"\r ({progress+1}/{total}) | {job_dir} ", end = " ")
               
                 try:
-                    stretch_pct, F_N = read_info_file_old(os.path.join(job_dir,info_file))
+                    # stretch_pct, F_N = read_info_file_old(os.path.join(job_dir,info_file))
+                    info_dict = read_info_file(os.path.join(job_dir,info_file))
+                    stretch_pct = info_dict['stretch_max_pct']
+                    F_N = info_dict['F_N']
+                    
                     if eval_rupture:
                         chist_file = find_single_file(job_dir, ext = chist_ext)
                         rupture_score = detect_rupture(chist_file, stretchfile)
@@ -263,6 +267,8 @@ def read_multi_folder(folders):
 if __name__ == "__main__":
     # folders = ['../Data/multi_fast']
     # folders = ['../Data/BIG_MULTI_Xdrag']
-    folders = ['../Data/BIG_MULTI_Ydrag']
+    # folders = ['../Data/BIG_MULTI_Ydrag']
     # folders = ['../Data/BIG_MULTI_nocut']
+    
+    folders = ['../Data/Multi/cuts/ref1']
     read_multi_folder(folders)

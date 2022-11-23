@@ -52,9 +52,11 @@ group free_atoms subtract all PB_tot substrate_freeze
 group semifree_atoms subtract all substrate_freeze 
 
 # --- Dynamics --- #            
-mass 1 12.0107  # C
-mass 2 28.0855  # Si
-mass 3 1.0      # Virtuel atom
+mass 1 12.0107      # C
+# mass 2 28.0855    # Si
+mass 2 196.966570   # Au
+mass 3 1.0          # Virtuel atom
+
 velocity free_atoms create ${temp} 5432373 dist gaussian
 
 # JUMP
@@ -88,12 +90,28 @@ neigh_modify        delay 0 every 1 one 10000
 # pair_coeff * * sw ${root}/si.sw NULL Si NULL           # Substrate Si-Si
 # pair_coeff * 3  lj/cut 0.0 0.0 
 
-# Potentials: C-C: Tersoff, C-Si: LJ, Si-Si: SW
-pair_style hybrid tersoff lj/cut 8.15 sw 
-pair_coeff * * tersoff ${root}/C.tersoff C NULL NULL   # Sheet C-C
-pair_coeff 1 2 lj/cut 0.008909 3.26                    # Interaction C-Si 
-pair_coeff * * sw ${root}/si.sw NULL Si NULL           # Substrate Si-Si
-pair_coeff * 3  lj/cut 0.0 0.0 
+# ------- GOLD SUBSTRATE ------- # 
+# Potentials: C-C: Airebo, C-Si: LJ, Si-Si: SW
+variable LJ_sigma equal 2.74 
+pair_style hybrid eam/fs lj/cut 6.85 airebo 6.4 1 1 
+pair_coeff * * airebo ${root}/CH.airebo C NULL NULL     # Sheet C-C
+pair_coeff 1 2 lj/cut 0.022 ${LJ_sigma}                        # Interaction C-Si 
+pair_coeff * * eam/fs ${root}/FeAu-eam-LJ.fs NULL Au NULL      # Substrate Au-Au
+pair_coeff * 3 lj/cut 0.0 0.0 
+
+
+
+# # ------- SI SUBSTRATE ------- # 
+variable LJ_sigma equal 3.26 
+# # Potentials: C-C: Tersoff, C-Si: LJ, Si-Si: SW
+# pair_style hybrid tersoff lj/cut 8.15 sw 
+# pair_coeff * * tersoff ${root}/C.tersoff C NULL NULL   # Sheet C-C
+# pair_coeff 1 2 lj/cut 0.008909 ${LJ_sigma}                    # Interaction C-Si 
+# pair_coeff * * sw ${root}/si.sw NULL Si NULL           # Substrate Si-Si
+# pair_coeff * 3  lj/cut 0.0 0.0 
+
+variable LJ_equil equal $(2^(1/6) * v_LJ_sigma)
+variable contact_cut_off equal $(v_LJ_equil*1.1)
 
 timestep $(v_dt)
 variable damp equal 1.0 # ps                        
@@ -101,8 +119,8 @@ fix nve semifree_atoms nve # (microcanonical)
 fix nvt semifree_atoms langevin ${temp} ${temp} ${damp} 48279 # (canonical)
 fix 2 all balance 1000 1.05 shift xy 10 1.05 # balance number of particles computed on each processor 
 fix PB_xyz_ave PB_tot aveforce 0 0 0 # Average force (every atom feels same force vector)
-
-
+# TODO: Let the pull block move in y-direction during relaxation <----
+# ^^^^^^^^^^^^^^^
 # --- Convertion: SI to metal --- #
 variable N_to_eV_over_ang equal 6.24150907e8    # force: N -> eV/Å
 variable m_to_ang equal 1e10                    # distance: m -> Å
@@ -118,7 +136,8 @@ variable Nfreq equal 100    # calculate averages every this many time steps
 # Full sheet
 compute sheet_COM full_sheet com            # Center of mass
 compute sheet_fz full_sheet reduce ave fz   # Average z-force
-compute bond_coord full_sheet coord/atom cutoff 4.0 group substrate_contact
+# compute bond_coord full_sheet coord/atom cutoff 4.0 group substrate_contact
+compute bond_coord full_sheet coord/atom cutoff ${contact_cut_off} group substrate_contact
 fix full_sheet_bond_hist full_sheet ave/histo 1 1 1 -0.5 1.5 2 c_bond_coord mode vector beyond end
 variable full_sheet_bond_pct equal f_full_sheet_bond_hist[2][3]
 
@@ -187,8 +206,9 @@ variable dir_norm equal $(sqrt(v_drag_dir_x^2+v_drag_dir_y^2))
 
 
 # ---------- Output ---------- #
-thermo 1000
-variable dump_freq equal 1000
+variable dump_freq index 1000
+variable thermo index 1000
+thermo $(v_thermo)
 
 dump 1 all custom $(v_dump_freq) system_${out_ext}.data id type x y z vx vy vz c_bond_coord
 dump 2 full_sheet custom $(v_dump_freq) full_sheet_${out_ext}.data id type x y z vx vy vz c_bond_coord

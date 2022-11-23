@@ -42,6 +42,8 @@ def read_info_file(filename):
             val = float(val)
         except ValueError:
             pass
+
+        dict[key] = val
     
     return dict
     
@@ -114,10 +116,10 @@ def analyse_friction_file(filename):
     window_length = 50
     polyorder = 5
     
-    # Find a way to get pulling direction and dt
+    # TODO: Add dt and drag direction reading
     drag_direction = np.array((0, 1))
     dt = 0.001
-    # ^^^^^XXX TODO XXX^^^^^^ #
+    
     
     
     

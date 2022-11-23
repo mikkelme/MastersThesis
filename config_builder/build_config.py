@@ -12,7 +12,8 @@ def build_config(sheet_mat, substrate_file, pullblock = None, mode = "all", view
 
     bottom_substrate_freeze = 5.5 # [Å]
     contact_depth = 8 # [Å]
-    substrate_atomic_num = 14 # Si [atomic number]
+    # substrate_atomic_num = 14 # Si [atomic number]
+    substrate_atomic_num = 79 # Áu [atomic number]
     eps = 1e-6
 
     # --- Load atomic structures --- #
@@ -43,7 +44,8 @@ def build_config(sheet_mat, substrate_file, pullblock = None, mode = "all", view
     # # tmp translation <---------- !!
     # sheet.translate((-15, 0, 0))
 
-
+    specorder = ['C', substrate.get_chemical_symbols()[0]]
+    
     # --- Merge into same object --- #
     merge = sheet + substrate
 
@@ -84,23 +86,23 @@ def build_config(sheet_mat, substrate_file, pullblock = None, mode = "all", view
     if mode == "all":
         if view_atoms: view(merge)
         if write:
-            lammpsdata.write_lammps_data(f'./sheet_substrate_{ext}.txt', merge, velocities = True)
-            outfile = open('sheet_substrate_{ext}_info.in', 'w')
+            lammpsdata.write_lammps_data(f'./sheet_substrate_{ext}.txt', merge, specorder = specorder, velocities = True)
+            outfile = open(f'sheet_substrate_{ext}_info.in', 'w')
     elif mode == "sheet":
         sheet.translate(trans_vec2)
         sheet.set_cell(minmax_merge[1,:] + trans_vec2 + np.ones(3)*eps)
 
         if view_atoms: view(sheet)
         if write:
-            lammpsdata.write_lammps_data('./sheet_{ext}.txt', sheet, velocities = False)
-            outfile = open('sheet_{ext}_info.in', 'w')
+            lammpsdata.write_lammps_data(f'./sheet_{ext}.txt', sheet, specorder = specorder, velocities = False)
+            outfile = open(f'sheet_{ext}_info.in', 'w')
 
     elif mode == "substrate":
         merge.translate(trans_vec2)
         merge.set_cell(minmax_merge[1,:] + trans_vec2 + np.ones(3)*eps)
         if view_atoms: view(substrate)
         if write:
-            lammpsdata.write_lammps_data('./substrate_{ext}.txt', substrate, velocities = True)
+            lammpsdata.write_lammps_data(f'./substrate_{ext}.txt', substrate, specorder = specorder, velocities = True)
             outfile = open('substrate_{ext}_info.in', 'w')
     else:
         return
@@ -126,5 +128,6 @@ if __name__ == "__main__":
     mat = pop_up_pattern(multiples, unitsize, sp = 2)
     mat[:, :] = 1 # Nocuts
     # substrate_file = "../substrate/crystal_Si_substrate.txt"
-    substrate_file = "../substrate/amorph_substrate.txt"
-    build_config(mat, substrate_file, pullblock = 6, mode = "all", view_atoms = True, write = True, ext = "amorph_nocuts")
+    # substrate_file = "../substrate/amorph_substrate.txt"
+    substrate_file = "../substrate/crystal_gold_substrate.txt"
+    build_config(mat, substrate_file, pullblock = 6, mode = "all", view_atoms = True, write = True, ext = "gold_nocuts")
