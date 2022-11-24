@@ -7,7 +7,7 @@ def drag_length_dependency(filename):
     contact = data['contact'][0]
     
     quantile = 0.999
-    window_len_pct = 0.5
+    window_len_pct = 0.25
     
         
     group_name = {0: 'full_sheet', 1: 'sheet', 2: 'PB'}
@@ -273,13 +273,15 @@ if __name__ == "__main__":
     K_compare = [ref, K0]
     substrate_compare = [ref, amorph, gold]
     
-    
+    v10_comp = [f'../Data/Baseline/{PF}/v10/system_v10_Ff.txt' for PF in ['drag_length', 
+                                                                             'drag_length_200nN', 
+                                                                             'drag_length_s200nN']]
     # vel_compare.pop(0)
     
-    # obj = drag_length_dependency(ref)
+    obj = drag_length_dependency('../Data/Baseline/drag_length_s200nN/v10/system_v10_Ff.txt')
     
     
-    obj = drag_length_compare(vel_compare)
+    # obj = drag_length_compare(v10_comp)
     # dt_dependency(dt_files, dt_vals, drag_cap = 100)
     
     plt.show()

@@ -20,7 +20,7 @@ def drag_length():
         "out_ext": date.today(), 
         "config_data": "sheet_substrate_nocuts",
         # "config_data": "sheet_substrate_amorph_nocuts",
-        "stretch_max_pct": 20.0,
+        "stretch_max_pct": 0.2,
         "drag_dir_x": 0,
         "drag_dir_y": 1,
         "F_N": 200e-9, # [N]

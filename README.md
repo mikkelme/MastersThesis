@@ -141,6 +141,9 @@
 - Discovered small problem with the fix ave force on the pull blocks that kept the sheet in an unrelaxed position. FIxed that and had to put int some spring forces in the relax part to keep the sheet in the desired start posistion to avoid any inconsistencies.
 - Redooing Baseline test due to non relaxed sheet at zero stretch.
 - Trying using gold substrate as this is used in [Study of Nanoscale Friction Behaviors of Graphene on Gold Substrates Using Molecular Dynamics](https://nanoscalereslett.springeropen.com/articles/10.1186/s11671-018-2451-3). 
+- Getting more stable results with the fix. Amorph is not the way to go as it is more snesitive and unstable, and even though gold gives more pretty friction profiles it still needs around the same drag distance and is much slower to simulate.
+- For the non stretch sheet with 200 nN I observe that the non-bonded atoms aligns with the substrate such that the non-bonded atoms forms lines that stays in space as the sheet moves over the substrate. This is seen on multiple drag speeds. 
+
 
 
 
