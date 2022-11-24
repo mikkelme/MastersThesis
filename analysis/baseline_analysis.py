@@ -9,11 +9,14 @@ def drag_length_dependency(filename):
     quantile = 0.999
     window_len_pct = 0.5
     
-    
-    
+        
     group_name = {0: 'full_sheet', 1: 'sheet', 2: 'PB'}
     for g in reversed(range(1)):
-        fig = plt.figure(num = 100 + g)
+        fignum = 0
+        if fignum in plt.get_fignums():
+            fignum = plt.get_fignums()[-1] + 1
+            
+        fig = plt.figure(num = fignum)
         fig.suptitle(filename)
         grid = (1,2)
         ax1 = plt.subplot2grid(grid, (0, 0), colspan=1)
@@ -52,8 +55,10 @@ def drag_length_dependency(filename):
 def drag_length_compare(filenames):
     group_name = {0: 'full_sheet', 1: 'sheet', 2: 'PB'}
     
-    g = 0
+    xaxis = "COM" # 'time' || 'COM'
     relative = False
+    
+    g = 0
         
     quantile = 0.999
     window_len_pct = 0.5
@@ -84,7 +89,6 @@ def drag_length_compare(filenames):
     ax11 = plt.subplot2grid(grid, (1, 0), colspan=1)
     ax12 = plt.subplot2grid(grid, (1, 1), colspan=1)
     
-    xlabel = 'Time [ps]'
     for filename in filenames:
         data = analyse_friction_file(filename)   
         COM = data['COM_sheet'][:,0]
@@ -92,10 +96,16 @@ def drag_length_compare(filenames):
         contact = data['contact'][0]
         Ff = data[f'Ff_{group_name[g]}'][:,0]
         
+        if xaxis == 'time':
+            x = time; xlabel = 'Time [ps]'
+        elif xaxis == 'COM':
+            x = COM; xlabel = 'COM$_\parallel$ [Å]'
+        else:
+            print(f'xaxis = {xaxis} is not a known setting.')
         
         if relative:
-            xlabel = 'Rel COM$_\parallel$'
-            time /= time[-1] # relative drag
+            xlabel = 'Rel ' + xlabel
+            x /= x[-1] # relative drag
         
         
         # --- Ff (mean) --- # 
@@ -106,14 +116,14 @@ def drag_length_compare(filenames):
         # Mean
         output = np.flip(cum_std(np.flip(cummean), step = 5000))
         map = ~np.isnan(output)
-        ax1.plot(time, cummean)
-        ax2.plot(time[~np.isnan(output)], output[~np.isnan(output)], "-o", markersize = 3, label = filename)
+        ax1.plot(x, cummean)
+        ax2.plot(x[~np.isnan(output)], output[~np.isnan(output)], "-o", markersize = 3, label = filename)
         
          # Running mean 
         output = np.flip(cum_std(np.flip(runmean), step = 5000))
         map = ~np.isnan(output)
-        ax3.plot(time, runmean)
-        ax4.plot(time[~np.isnan(output)], output[~np.isnan(output)], "-o", markersize = 3)
+        ax3.plot(x, runmean)
+        ax4.plot(x[~np.isnan(output)], output[~np.isnan(output)], "-o", markersize = 3)
         ax3.set_xlim(ax1.get_xlim())
         ax4.set_xlim(ax2.get_xlim())
     
@@ -125,14 +135,14 @@ def drag_length_compare(filenames):
         # Mean top quantile max
         output = np.flip(cum_std(np.flip(cummean_topmax), step = 5000))
         map = ~np.isnan(output)
-        ax5.plot(time, cummean_topmax)
-        ax6.plot(time[~np.isnan(output)], output[~np.isnan(output)], "-o", markersize = 3, label = filename)
+        ax5.plot(x, cummean_topmax)
+        ax6.plot(x[~np.isnan(output)], output[~np.isnan(output)], "-o", markersize = 3, label = filename)
        
         # Max 
         output = np.flip(cum_std(np.flip(cummax), step = 5000))
         map = ~np.isnan(output)
-        ax7.plot(time, cummax)
-        ax8.plot(time[~np.isnan(output)], output[~np.isnan(output)], "-o", markersize = 3)
+        ax7.plot(x, cummax)
+        ax8.plot(x[~np.isnan(output)], output[~np.isnan(output)], "-o", markersize = 3)
     
         # --- Contact --- #
         cummean = cum_mean(contact)
@@ -141,14 +151,14 @@ def drag_length_compare(filenames):
         # Mean 
         output = np.flip(cum_std(np.flip(cummean), step = 5000))
         map = ~np.isnan(output)
-        ax9.plot(time, cummean, label = filename)
-        ax10.plot(time[~np.isnan(output)], output[~np.isnan(output)], "-o", markersize = 3)
+        ax9.plot(x, cummean, label = filename)
+        ax10.plot(x[~np.isnan(output)], output[~np.isnan(output)], "-o", markersize = 3)
         
         # Running mean 
         output = np.flip(cum_std(np.flip(runmean), step = 5000))
         map = ~np.isnan(output)
-        ax11.plot(time, runmean)
-        ax12.plot(time[~np.isnan(output)], output[~np.isnan(output)], "-o", markersize = 3)
+        ax11.plot(x, runmean)
+        ax12.plot(x[~np.isnan(output)], output[~np.isnan(output)], "-o", markersize = 3)
         ax11.set_xlim(ax9.get_xlim())
         ax12.set_xlim(ax10.get_xlim())
     
@@ -167,8 +177,8 @@ def drag_length_compare(filenames):
     ax11.set(xlabel=xlabel, ylabel='running mean')
     ax12.set(xlabel=xlabel, ylabel='reverse cum std')
     
-    for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9, ax10, ax11, ax12]:
-        add_xaxis(ax, time, COM, xlabel='COM$\parallel$ [Å]', decimals = 1)    
+    # for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9, ax10, ax11, ax12]:
+    #     add_xaxis(ax, time, COM, xlabel='COM$\parallel$ [Å]', decimals = 1)    
     
     obj = []
     for fig in [fig1, fig2, fig3]:  
@@ -230,50 +240,47 @@ def dt_dependency(filenames, dt, drag_cap = 0):
 
 
 if __name__ == "__main__":
-    # filename = '../Data/NG4_newpot_long/nocut_nostretch/_nocut_nostretch_Ff.txt'
-    # filename = '../Data/BIG_MULTI_nocut/stretch_30974_folder/job9/system_ext_Ff.txt'
-    # filename = '../Data/BIG_MULTI_Ydrag/stretch_30974_folder/job9/system_ext_Ff.txt'
+    # dt_files = ['../Data/Baseline/dt/dt_0.002/system_dt_0.002_Ff.txt', 
+    #            '../Data/Baseline/drag_length/ref/system_ref_Ff.txt',
+    #            '../Data/Baseline/dt/dt_0.0005/system_dt_0.0005_Ff.txt',
+    #            '../Data/Baseline/dt/dt_0.00025/system_dt_0.00025_Ff.txt']
+    # dt_vals = [0.002, 0.001, 0.0005, 0.00025]
     
-    filenames = []
-    filenames +=  ['../Data/Baseline/drag_length/ref/system_ref_Ff.txt']
+    # Parrent folder
+    PF = "drag_length" 
+    # PF = "drag_length_200nN" 
+    # PF = "drag_length_s200nN" 
     
-    # filenames += ['../Data/Baseline/drag_length/v4d/system_v4d_Ff.txt']
-    # filenames += ['../Data/Baseline/drag_length/v4u/system_v4u_Ff.txt']
+    ref = f'../Data/Baseline/{PF}/ref/system_ref_Ff.txt'
     
-    # filenames += ['../Data/Baseline/drag_length/T5/system_T5_Ff.txt']
-    # filenames += ['../Data/Baseline/drag_length/T300/system_T300_Ff.txt']
+    v05 = f'../Data/Baseline/{PF}/v05/system_v05_Ff.txt'
+    v5 = f'../Data/Baseline/{PF}/v5/system_v5_Ff.txt'
+    v10 = f'../Data/Baseline/{PF}/v10/system_v10_Ff.txt'
+    v20 = f'../Data/Baseline/{PF}/v20/system_v20_Ff.txt'
+    v50 = f'../Data/Baseline/{PF}/v50/system_v50_Ff.txt'
+    v100 = f'../Data/Baseline/{PF}/v100/system_v100_Ff.txt'
     
-    # filenames += ['../Data/Baseline/dt/dt_0.002/system_dt_0.002_Ff.txt']
-    # filenames += ['../Data/Baseline/dt/dt_0.0005/system_dt_0.0005_Ff.txt']
-    # filenames += ['../Data/Baseline/dt/dt_0.00025/system_dt_0.00025_Ff.txt']
+    K0 = f'../Data/Baseline/{PF}/K0/system_K0_Ff.txt'
     
-    dt_files = ['../Data/Baseline/dt/dt_0.002/system_dt_0.002_Ff.txt', 
-               '../Data/Baseline/drag_length/ref/system_ref_Ff.txt',
-               '../Data/Baseline/dt/dt_0.0005/system_dt_0.0005_Ff.txt',
-               '../Data/Baseline/dt/dt_0.00025/system_dt_0.00025_Ff.txt']
-    dt_vals = [0.002, 0.001, 0.0005, 0.00025]
-    
-    
-    
-    # compare = ['../Data/Baseline/drag_length/ref_HFN/system_ref_HFN_Ff.txt',
-    #            '../Data/Baseline/drag_length/HFN_K0/system_HFN_K0_Ff.txt', 
-    #            '../Data/Baseline/drag_length/HFN_T300/system_HFN_T300_Ff.txt']
-    
-    compare = ['../Data/Baseline/drag_length/ref/system_ref_Ff.txt',
-               '../Data/Baseline/drag_length/v4d/system_v4d_Ff.txt', 
-               '../Data/Baseline/drag_length/v4u/system_v4u_Ff.txt']
-    
-    # drag_length_dependency('../Data/BIG_MULTI_nocut/stretch_5000_folder/job8/system_ext_Ff.txt') # MULTI DRAG
-    # drag_length_dependency('../Data/BIG_MULTI_Ydrag/stretch_30974_folder/job9/system_ext_Ff.txt') # MULTI DRAG
-    
-    # obj = drag_length_dependency('../Data/Baseline/drag_length/ref_HFN/system_ref_HFN_Ff.txt')
-    # obj = drag_length_dependency('../Data/Multi/cuts/ref1/stretch_5000_folder/job2/system_drag_Ff.txt')
-    
-    obj = drag_length_dependency('../Data/Baseline/drag_length/amorph/system_amorph_Ff.txt')
-    # obj = drag_length_dependency('../Data/Baseline/drag_length/wannabe/system_wannabe_Ff.txt')
+    T5 = f'../Data/Baseline/{PF}/T5/system_T5_Ff.txt'
+    T300 = f'../Data/Baseline/{PF}/T300/system_T300_Ff.txt'
+   
+    amorph = f'../Data/Baseline/{PF}/amorph/system_amorph_Ff.txt'
+    gold = f'../Data/Baseline/{PF}/gold/system_gold_Ff.txt'
+   
+    vel_compare = [v05, ref, v5, v10, v20, v50, v100]
+    temp_compare = [T5, ref, T300]
+    K_compare = [ref, K0]
+    substrate_compare = [ref, amorph, gold]
     
     
-    # obj = drag_length_compare(compare)
+    # vel_compare.pop(0)
+    
+    # obj = drag_length_dependency(ref)
+    
+    
+    obj = drag_length_compare(vel_compare)
     # dt_dependency(dt_files, dt_vals, drag_cap = 100)
     
     plt.show()
+    

@@ -3,8 +3,8 @@ from simulation_runner import *
 
 def drag_length():
     main_folder = 'Baseline'
-    test_name   = 'drag_length'
-    sim_name    = 'gold'
+    test_name   = 'drag_length_s200nN'
+    sim_name    = 'ref'
     
     variables = {
         "dt": 0.001,
@@ -18,12 +18,12 @@ def drag_length():
         "K": 30.0,
         "root": "..",
         "out_ext": date.today(), 
-        # "config_data": "sheet_substrate_nocuts",
-        "config_data": "sheet_substrate_gold_nocuts",
-        "stretch_max_pct": 0.0,
+        "config_data": "sheet_substrate_nocuts",
+        # "config_data": "sheet_substrate_amorph_nocuts",
+        "stretch_max_pct": 20.0,
         "drag_dir_x": 0,
         "drag_dir_y": 1,
-        "F_N": 10e-9, # [N]
+        "F_N": 200e-9, # [N]
     }
   
     
@@ -34,10 +34,10 @@ def drag_length():
     proc.move_files_to_dest(["../friction_simulation/setup_sim.in", 
                         "../friction_simulation/stretch.in",
                         "../friction_simulation/drag.in",
-                        # "../potentials/si.sw",
-                        # "../potentials/C.tersoff",
-                        "../potentials/CH.airebo",
-                        "../potentials/FeAu-eam-LJ.fs",
+                        "../potentials/si.sw",
+                        "../potentials/C.tersoff",
+                        # "../potentials/CH.airebo",
+                        # "../potentials/FeAu-eam-LJ.fs",
                         f"../config_builder/{proc.variables['config_data']}.txt",
                         f"../config_builder/{proc.variables['config_data']}_info.in" ], header)
         
