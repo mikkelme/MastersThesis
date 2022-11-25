@@ -37,3 +37,8 @@
 *.t1
 *.t2
 *.t3
+
+
+# Videos / Animations
+*.gif
+*.mp4
