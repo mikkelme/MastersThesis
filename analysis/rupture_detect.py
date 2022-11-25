@@ -89,8 +89,10 @@ def detect_rupture(filename, stretchfile = None, check = False):
         print(f'Alignment (min, max) = ({minpeak_alignment}, {maxpeak_alignment})')
         print(f'Peakorder: min = {np.mean(minpeak_step[notnan])} > max = {np.mean(maxpeak_step[notnan])} => {peakorder} ')
         print(f'Magnitude = {magnitude}')
-        print(f'Rupture flags: {rupture_flags}')
         print(f'abs(minpeak_ratio/maxpeak_ratio): {abs(minpeak_ratio/maxpeak_ratio)}')
+        print(f'Rupture flags: {rupture_flags}')
+        print(f'Rupture score: {rupture_score}')
+        
         plt.figure(num = 0)
         for i in range(hist.shape[1]):
             plt.title("coordination number")
@@ -119,7 +121,11 @@ def detect_rupture(filename, stretchfile = None, check = False):
 
 
 if __name__ == "__main__":
-    filenames = []
+    
+    
+    rupture_score = detect_rupture('../Data/Baseline/drag_length_s200nN/v20/sheet_v20_chist.txt', stretchfile = None, check = True)
+    
+    # filenames = []
     # filenames = ["../Data/NG4_newpot_long/cut_nostretch/_cut_nostretch_chist.txt"]
     # filenames = ["../Data/NG4_newpot_long/cut_20stretch/_cut_20stretch_chist.txt"]
     # filenames = get_files_in_folder('../Data/NG4_newpot_long/', ext = "chist.txt")
@@ -149,8 +155,8 @@ if __name__ == "__main__":
     
     
     
-    filenames += get_files_in_folder('../Data/NG4_GPU/', ext = "chist.txt")
-    stretchfile = None
+    # filenames += get_files_in_folder('../Data/NG4_GPU/', ext = "chist.txt")
+    # stretchfile = None
     
     ###########################################
     
@@ -170,11 +176,11 @@ if __name__ == "__main__":
     
     
     
-    for filename in filenames:
-        rupture_score = detect_rupture(filename, stretchfile = stretchfile, check = False)
-        print(f"filename: {filename}, rupture_score = {rupture_score}")
-        print()
-        # plt.show()
+    # for filename in filenames:
+    #     rupture_score = detect_rupture(filename, stretchfile = stretchfile, check = False)
+    #     print(f"filename: {filename}, rupture_score = {rupture_score}")
+    #     print()
+    #     # plt.show()
         
         
         

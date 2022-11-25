@@ -49,6 +49,19 @@ def read_info_file(filename):
     
 
 
+def metal_to_SI(input, key):
+    # --- Convertion factors: SI -> metal --- #
+    eV_over_ang_to_N = 1/6.24150907e8   # force: eV/Å -> N 
+    ang_to_m = 1e-10                     # distance: Å -> m
+    ps_to_s = 1e-12                     # time: ps -> s
+    
+    conv_dict = {"F": eV_over_ang_to_N,
+                 "s": ang_to_m,
+                 "t": ps_to_s}
+    
+    return input * conv_dict[key]
+
+        
 
 
 def get_files_in_folder(path, ext = None, exclude = None): 
@@ -292,19 +305,22 @@ class interactive_plotter:
         self.zoom = False
         self.ax_list = fig.axes
     
+        self.x0 = np.min([ax.get_position().get_points()[0,0] for ax in self.ax_list])
+        self.y0 = np.min([ax.get_position().get_points()[0,1] for ax in self.ax_list])
+        self.x1 = np.max([ax.get_position().get_points()[1,1] for ax in self.ax_list])
+        self.y1 = np.max([ax.get_position().get_points()[1,1] for ax in self.ax_list])
+    
+
+
     def pick_figure(self, event):
         # print("clicked")
         if not self.zoom:
             if event.inaxes is not None:
-                
-                # col = event.inaxes.collections  
-                # if len(col) > 0: 
-                #     col[-1].set(visible = False)
-                #     self.cb = col[-1].colorbar 
-
+            
                 self.old_axes, self.old_pos = event.inaxes, event.inaxes.get_position()
-                pad = 0.1
-                event.inaxes.set_position([pad, pad, 1-2*pad, 1-2*pad]) 
+                # pad = 0.1
+                # event.inaxes.set_position([pad, pad, 1-2*pad, 1-2*pad]) 
+                event.inaxes.set_position([self.x0, self.y0, self.x1-self.x0, self.y1-self.y0])  # [left, bottom, width, height] 
                 self.toggle_axes(self.ax_list)
                 self.toggle_axes([event.inaxes], visible = True)
                 self.zoom = True
@@ -328,15 +344,28 @@ def cum_mean(arr):
     divider = np.arange(len(cum_sum)) + 1
     return cum_sum / divider
     
-def cum_std(arr, step = 5000):
+def cum_std(arr, points = 100):
     start = np.argmin(np.isnan(arr))
+    step = (len(arr) - 1) // points
+    
     out = np.full(len(arr), np.nan)
-    for i in range(start + 1, len(arr), step):
-        # if i%(len(arr)/10) == 0:
-        #     print(i/len(arr))
+    for i in range(start + step, len(arr), step):
         out[i] = np.std(arr[start:i+1])
     return out
 
+
+# def running_mean(arr, window_len = 10):
+#     assert window_len <= len(arr), "window length cannot be longer than array length."
+#     assert window_len > 0, "window length must be > 0"
+#     mean_window = np.ones(window_len)/window_len
+    
+#     left_padding = window_len//2
+#     right_padding = (window_len-1)//2
+#     new_arr = np.full(len(arr) + left_padding + right_padding, np.nan)
+#     new_arr[left_padding or None:-right_padding or None] = arr
+#     out = np.convolve(new_arr, mean_window, mode='valid')
+#     # return np.convolve(arr, mean_window, mode='valid')
+#     return out
 
 def running_mean(arr, window_len = 10):
     assert window_len <= len(arr), "window length cannot be longer than array length."
@@ -347,12 +376,19 @@ def running_mean(arr, window_len = 10):
     right_padding = (window_len-1)//2
     new_arr = np.full(len(arr) + left_padding + right_padding, np.nan)
     new_arr[left_padding or None:-right_padding or None] = arr
-    out = np.convolve(new_arr, mean_window, mode='valid')
+    
+    mean = np.convolve(new_arr, mean_window, mode='valid')
+    mean_sqr = np.convolve(new_arr**2, mean_window, mode='valid')
+    std = mean_sqr - mean**2
+    
+    
     # return np.convolve(arr, mean_window, mode='valid')
-    return out
-  
-  
-  
+    return mean, std
+
+
+
+
+
 # def moving_std(arr, window_pct = 0.1):
 #     """ Returns std of running tail window to the left 
 #         corresponding x-position """
@@ -377,14 +413,13 @@ def cumTopQuantileMax(arr, quantile, brute_force = False):
     start = int(np.ceil(1/(1-quantile)))
     topN = int((1-quantile) * len(arr[:start]))
     list_max = int((1-quantile) * len(arr)) * 1
-    print(list_max)
     
     out = np.full(len(arr), np.nan)
     
     if brute_force:
         for i in range(start, len(arr)):
-            if i%(len(arr)/10) == 0:
-                print(i/len(arr))
+            # if i%(len(arr)/10) == 0:
+            #     print(i/len(arr))
             topN, out[i] = TopQuantileMax(arr[:i], quantile)
             
         
@@ -395,8 +430,8 @@ def cumTopQuantileMax(arr, quantile, brute_force = False):
         listlen = len(toplist)
         out = np.full(len(arr), np.nan)
         for i in range(start+1, len(arr)):
-            if i%(len(arr)/10) == 0:
-                print(i/len(arr))
+            # if i%(len(arr)/10) == 0:
+            #     print(i/len(arr))
                 
 
             idx = 0
@@ -421,9 +456,6 @@ def cumTopQuantileMax(arr, quantile, brute_force = False):
         assert np.all(np.sort(toplist) == np.array(toplist)), "toplist is not sorted correctly"
         return out
    
-### TODO: Working on cum top quantile function as this might be the solution
-# to poor stability of the max measurement. Run and see that the slow and fast method 
-# does not agree.
     
 def TopQuantileMax(arr, quantile, mean = True):
     topN = int((1-quantile) * len(arr))

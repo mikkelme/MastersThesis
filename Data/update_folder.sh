@@ -1,7 +1,7 @@
 #!/bin/bash
 # Bash script for fetching newest data to a folder custer using rsync
 
-ssh=bigfacet
+ssh=egil
 
 if [ $# -eq 0 ] 
 then # No folder provided
