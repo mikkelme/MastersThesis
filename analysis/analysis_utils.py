@@ -148,6 +148,11 @@ def analyse_friction_file(filename, avg_pct = 1):
     COM_sheet = np.vstack((decompose_wrt_drag_dir(data['c_sheet_COM[1]'], data['c_sheet_COM[2]'], drag_direction), data['c_sheet_COM[3]'])).T
     COM_sheet -= COM_sheet[0,:] # origo as reference point
     
+    # Convert units
+    move_force = metal_to_SI(move_force, 'F')*1e9
+    Ff_sheet = metal_to_SI(Ff_sheet, 'F')*1e9
+    Ff_PB = metal_to_SI(Ff_PB, 'F')*1e9
+    
     # Smoothen
     # Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2], move_force[:,0], move_force[:,1] = savgol_filter(window_length, polyorder, Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2], move_force[:,0], move_force[:,1])
     Ff_full_sheet = Ff_sheet + Ff_PB
@@ -169,12 +174,41 @@ def analyse_friction_file(filename, avg_pct = 1):
     max_PB = Ff_PB[:,0].max()
     avg_PB = np.mean(Ff_PB[-avg_len:,0])
     
+    # Ff = np.array([[max_full_sheet, avg_full_sheet],
+    #                 [max_sheet, avg_sheet],
+    #                 [max_PB, avg_PB]])
+    
+    varnames = ['time', 'move_force', 'Ff_full_sheet', 'Ff_sheet', "Ff_PB", "COM_sheet", "FN", "Ff"]
+    
+    
+    #### Running mean and running std
+    std_pct = 0.2
+    mean = np.zeros(3)
+    Ff_std = np.zeros((3, 2))
+    Ff_groups = [Ff_full_sheet, Ff_sheet, Ff_PB]
+    if avg_pct < 0.8: # XXX
+        for g in range(3):
+    
+            test = Ff_groups[g][:, 0]
+            runmean, _ = running_mean(test, window_len = int(avg_pct*len(test)))
+            _, runmean_runstd  = running_mean(runmean, window_len = int(std_pct*len(runmean)))
+            mean[g] = runmean[~np.isnan(runmean)][-1]
+            Ff_std[g, 1] = runmean_runstd[~np.isnan(runmean_runstd)][-1]
+            
+            cummax = cum_max(test)
+            _, cummax_runstd = running_mean(cummax, window_len = int(std_pct*len(cummax)))
+            Ff_std[g, 0] = cummax_runstd[~np.isnan(cummax_runstd)][-1]
+
+    varnames.append('Ff_std')
+    avg_full_sheet, avg_sheet, avg_PB = mean
+    
     Ff = np.array([[max_full_sheet, avg_full_sheet],
                     [max_sheet, avg_sheet],
                     [max_PB, avg_PB]])
+    
+    
+
   
-  
-    varnames = ['time', 'move_force', 'Ff_full_sheet', 'Ff_sheet', "Ff_PB", "COM_sheet", "FN", "Ff"]
     try: # Contact area
         contact = np.vstack((data['v_full_sheet_bond_pct'], data['v_sheet_bond_pct']))
         # contact[0], contact[1] = savgol_filter(window_length, polyorder, contact[0], contact[1])
@@ -492,6 +526,27 @@ def add_xaxis(ax1, x, xnew, xlabel, decimals = 1):
     ax1.set_zorder(ax2.get_zorder()+1)
     
     
+
+def plot_heatmap(heat, param1, param2):
+    # Heatmap
+    heat = heat.astype('float')
+    param1_label, param1_vals = param1
+    param2_label, param2_vals = param2
+    fig, ax = plt.subplots(figsize=(7, 7))
+    sns.set()
+    print(np.shape(heat))
+    sns.heatmap(heat.T, ax=ax,  xticklabels=np.around(param1_vals, 2),
+                                yticklabels=np.around(param2_vals, 2))
+    # sns.heatmap(heat, xticklabels=np.around(param1_vals, 2),
+    #             yticklabels=np.around(param2_vals, 2), annot=True, ax=ax)
+    
+    
+    ax.set_xlabel(param1_label)
+    ax.set_ylabel(param2_label)
+    plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    # plt.subplots_adjust(hspace=0.3)
+   
+
 
 
 if __name__ == "__main__":
