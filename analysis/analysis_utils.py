@@ -125,7 +125,7 @@ def decompose_wrt_drag_dir(x, y, drag_direction):
     return proj_para, proj_perp
 
 
-def analyse_friction_file(filename):
+def analyse_friction_file(filename, avg_pct = 1):
     window_length = 50
     polyorder = 5
     
@@ -158,21 +158,22 @@ def analyse_friction_file(filename):
     FN = np.array((FN_full_sheet, FN_sheet, FN_PB))
     
     
+    avg_len = int(len(Ff_full_sheet) * avg_pct)
+
     max_full_sheet = Ff_full_sheet[:,0].max()
-    avg_full_sheet = np.mean(Ff_full_sheet[:,0])
+    avg_full_sheet = np.mean(Ff_full_sheet[-avg_len:,0])
     
     max_sheet = Ff_sheet[:,0].max()
-    avg_sheet = np.mean(Ff_sheet[:,0])
+    avg_sheet = np.mean(Ff_sheet[-avg_len:,0])
     
     max_PB = Ff_PB[:,0].max()
-    avg_PB = np.mean(Ff_PB[:,0])
+    avg_PB = np.mean(Ff_PB[-avg_len:,0])
     
     Ff = np.array([[max_full_sheet, avg_full_sheet],
                     [max_sheet, avg_sheet],
                     [max_PB, avg_PB]])
-    
-
-
+  
+  
     varnames = ['time', 'move_force', 'Ff_full_sheet', 'Ff_sheet', "Ff_PB", "COM_sheet", "FN", "Ff"]
     try: # Contact area
         contact = np.vstack((data['v_full_sheet_bond_pct'], data['v_sheet_bond_pct']))

@@ -7,7 +7,7 @@ def drag_length_dependency(filename):
     contact = data['contact'][0]
     
     quantile = 0.999
-    window_len_pct = 0.25
+    window_len_pct = 0.5
     
         
     group_name = {0: 'full_sheet', 1: 'sheet', 2: 'PB'}
@@ -308,12 +308,18 @@ if __name__ == "__main__":
                                                                              'drag_length_200nN', 
                                                                              'drag_length_s200nN']]
     
-    # obj = drag_length_dependency(amorph)
+    
+    
+    custom_comp = [ '../Data/Multi/nocuts/ref1/stretch_15000_folder/job0/system_drag_Ff.txt',
+                    '../Data/Multi/nocuts/ref1/stretch_15000_folder/job1/system_drag_Ff.txt',
+                    '../Data/Multi/nocuts/ref1/stretch_15000_folder/job2/system_drag_Ff.txt']
+                #    '../Data/Multi/nocuts/ref1/stretch_315000_folder/job2/system_drag_Ff.txt']
+    obj = drag_length_dependency('../Data/Multi/cuts/ref1/stretch_235000_folder/job0/system_drag_Ff.txt')
     
     
     # vel_compare.pop(4)
     # vel_compare.pop(0)
-    obj = drag_length_compare(K_compare)
+    # obj = drag_length_compare(custom_comp)
     # dt_dependency(dt_files, dt_vals, drag_cap = 100)
 
     plt.show()
