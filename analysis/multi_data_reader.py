@@ -8,9 +8,9 @@ def read_info_file_old(filename):
     return stretch_pct, F_N
     
 
-def plot_multi(folders, eval_rupture = False):
+def plot_multi(folders, eval_rupture = False, stretch_lim = [None, None],  FN_lim = [None, None]):
     for folder in folders:
-        stretch_pct, F_N, Ff, Ff_std, rup, filenames, contact = read_multi_folder(folder, eval_rupture)
+        stretch_pct, F_N, Ff, Ff_std, rup, filenames, contact = read_multi_folder(folder, eval_rupture, stretch_lim, FN_lim)
     
         group_name = {0: 'Full sheet', 1: 'Sheet', 2: 'PB'}
         linewidth = 1.5
@@ -301,6 +301,6 @@ if __name__ == "__main__":
     # folders = ['../Data/BIG_MULTI_Ydrag']
     # folders = ['../Data/BIG_MULTI_nocut']
     
-    folders = ['../Data/Multi/nocuts/ref1']
-    plot_multi(folders, eval_rupture = False)
+    folders = ['../Data/Multi/cuts/ref1']
+    plot_multi(folders, False, [None, 0.23], [None, 220])
     # stability_heatmap(folders)

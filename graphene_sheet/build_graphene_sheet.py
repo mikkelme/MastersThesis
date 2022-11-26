@@ -1,19 +1,19 @@
 import sys
 sys.path.append('../') # parent folder: MastersThesis
 
-
 from ase.build import graphene_nanoribbon
 from ase.build import graphene
 
 from ase.io import  lammpsdata
 from ase.visualize import view
+from ase.io import write
 import numpy as np
 
 from graphene_sheet.manual_patterns import *
 from graphene_sheet.RN_walks import *
 
 
-def build_graphene_sheet(mat, view_lattice = False, write = False):
+def build_graphene_sheet(mat, view_lattice = False, write_file = False):
     Cdis = 1.42 # carbon-carbon distance [Å]
     
     shape_error = f"SHAPE ERROR: Got matrix of shape {np.shape(mat)}, y-axis must be multiple of 2 and both nonzero integer."
@@ -62,36 +62,50 @@ def build_graphene_sheet(mat, view_lattice = False, write = False):
     if view_lattice: 
         view(atoms)
 
-    if write != False:
+    if write_file != False:
         lammpsdata.write_lammps_data(write, atoms)
 
+
+    # write('../Presentation/Images/cutpattern.png', atoms)
     return atoms
 
 
-    return
 
 
 
 
 if __name__ == "__main__":
-    # multiples = (4, 5)
-    # unitsize = (5,7)
-    # mat = pop_up_pattern(multiples, unitsize, sp = 2)
+    multiples = (4, 5)
+    unitsize = (5,7)
+    mat = pop_up_pattern(multiples, unitsize, sp = 2)
 
     
-    RN = RN_Generator()
-    mat = RN.generate()
+    
+    # RN = RN_Generator( size = (50,50), 
+    #                    num_walks = 25,
+    #                    max_steps = 8,
+    #                    max_dis = 0,
+    #                    bias = [(1,1), 1],
+    #                    periodic = True,
+    #                    avoid_unvalid = False,
+    #                    grid_start = True,
+    #                    center_elem = False)
+    
+    # mat = RN.generate()
+    
     
     # mat = RN.valid
     # mat[mat == 1] = 2
     # mat[mat == 0] = 1
     # mat[mat == 2] = 0
+    
+    
+    mat, pullblock = build_pull_blocks(mat, pullblock = 6, sideblock = 0)
     build_graphene_sheet(mat, view_lattice = True)
 
 
 
 
-    # mat, pullblock = build_pull_blocks(mat, pullblock = 6, sideblock = 0)
     # build_graphene_sheet(mat, view_lattice = True, write = './sheet_vacuum.txt')
 
 

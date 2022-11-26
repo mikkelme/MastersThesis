@@ -9,7 +9,7 @@ import random
 class RN_Generator:
     def __init__(self, size = (50, 70), num_walks = 49, max_steps = 20, max_dis = 2, bias = [(1, 1), 0.5], periodic = True, avoid_unvalid = False, grid_start = True, center_elem = True):
 
-        size = (100, 140)
+        # size = (100, 140)
         # size = (20, 40)
         # size = (4, 10)
         ##############################
