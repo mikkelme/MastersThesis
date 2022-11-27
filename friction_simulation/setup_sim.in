@@ -219,7 +219,7 @@ thermo $(v_thermo)
 dump 1 all custom $(v_dump_freq) system_${out_ext}.data id type x y z vx vy vz c_bond_coord
 dump 2 full_sheet custom $(v_dump_freq) full_sheet_${out_ext}.data id type x y z vx vy vz c_bond_coord
 fix coord_out sheet ave/histo ${Nevery} ${Nrepeat} ${Nfreq} -0.5 5.5 6 c_coord mode vector file sheet_${out_ext}_chist.txt
-# fix contact_bonds full_sheet ave/time ${Nevery} ${Nrepeat} ${Nfreq} v_sheet_bond_pct v_full_sheet_bond_pct file bond_pct.txt ### <---- This is already in friction_file !?!?
+fix contact_bonds full_sheet ave/time ${Nevery} ${Nrepeat} ${Nfreq} v_sheet_bond_pct v_full_sheet_bond_pct file bond_pct.txt # For presentation purposes
 
 
 # ---------- Print procedure schedule ---------- #
