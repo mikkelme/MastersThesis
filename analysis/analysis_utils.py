@@ -130,6 +130,7 @@ def analyse_friction_file(filename, avg_pct = 1):
     polyorder = 5
     
     # TODO: Add dt and drag direction reading
+    # info = read_info_file('/'.join(filename.split('/')[:-1]) + '/info_file.txt' )
     drag_direction = np.array((0, 1))
     dt = 0.001
     

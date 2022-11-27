@@ -22,7 +22,7 @@ def drag_length_dependency(filename):
         ax1 = plt.subplot2grid(grid, (0, 0), colspan=1)
         ax2 = plt.subplot2grid(grid, (0, 1), colspan=1)
         
-        Ff = metal_to_SI(data[f'Ff_{group_name[g]}'][:,0], "F") * 1e9
+        Ff = data[f'Ff_{group_name[g]}'][:,0]
         
         # Ff = data['move_force'][:,0]
         # A = data[f'Ff_{group_name[g]}'][:,0]
@@ -95,7 +95,7 @@ def drag_length_compare(filenames):
         COM = data['COM_sheet'][:,0]
         time = data['time']
         contact = data['contact'][0]
-        Ff = metal_to_SI(data[f'Ff_{group_name[g]}'][:,0], "F") * 1e9
+        Ff = data[f'Ff_{group_name[g]}'][:,0]
         
         
         if xaxis == 'time':
@@ -314,7 +314,9 @@ if __name__ == "__main__":
                     '../Data/Multi/nocuts/ref1/stretch_15000_folder/job1/system_drag_Ff.txt',
                     '../Data/Multi/nocuts/ref1/stretch_15000_folder/job2/system_drag_Ff.txt']
                 #    '../Data/Multi/nocuts/ref1/stretch_315000_folder/job2/system_drag_Ff.txt']
-    obj = drag_length_dependency('../Data/Multi/cuts/ref1/stretch_235000_folder/job0/system_drag_Ff.txt')
+    
+    
+    obj = drag_length_dependency('../Data/Multi/nocuts/ref1/stretch_15000_folder/job0/system_drag_Ff.txt')
     
     
     # vel_compare.pop(4)

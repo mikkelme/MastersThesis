@@ -302,5 +302,5 @@ if __name__ == "__main__":
     # folders = ['../Data/BIG_MULTI_nocut']
     
     folders = ['../Data/Multi/cuts/ref1']
-    plot_multi(folders, False, [None, 0.23], [None, 220])
+    plot_multi(folders, False)
     # stability_heatmap(folders)
