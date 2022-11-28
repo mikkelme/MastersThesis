@@ -125,14 +125,14 @@ def decompose_wrt_drag_dir(x, y, drag_direction):
     return proj_para, proj_perp
 
 
-def analyse_friction_file(filename, avg_pct = 1):
-    window_length = 50
-    polyorder = 5
+def analyse_friction_file(filename, avg_pct = 1, std_pct = 0):
+    # window_length = 50
+    # polyorder = 5
     
-    # TODO: Add dt and drag direction reading
-    # info = read_info_file('/'.join(filename.split('/')[:-1]) + '/info_file.txt' )
-    drag_direction = np.array((0, 1))
-    dt = 0.001
+    info = read_info_file('/'.join(filename.split('/')[:-1]) + '/info_file.txt' )
+    drag_direction = np.array((info['drag_dir_x'], info['drag_dir_y']))
+    dt = info['dt']
+    
     
     
     
@@ -163,7 +163,6 @@ def analyse_friction_file(filename, avg_pct = 1):
     FN_PB = np.mean(Ff_PB[:,2])
     FN = np.array((FN_full_sheet, FN_sheet, FN_PB))
     
-    
     avg_len = int(len(Ff_full_sheet) * avg_pct)
 
     max_full_sheet = Ff_full_sheet[:,0].max()
@@ -175,56 +174,63 @@ def analyse_friction_file(filename, avg_pct = 1):
     max_PB = Ff_PB[:,0].max()
     avg_PB = np.mean(Ff_PB[-avg_len:,0])
     
-    # Ff = np.array([[max_full_sheet, avg_full_sheet],
-    #                 [max_sheet, avg_sheet],
-    #                 [max_PB, avg_PB]])
-    
-    varnames = ['time', 'move_force', 'Ff_full_sheet', 'Ff_sheet', "Ff_PB", "COM_sheet", "FN", "Ff"]
-    
-    
-    #### Running mean and running std
-    std_pct = 0.2
-    mean = np.zeros(3)
-    Ff_std = np.zeros((3, 2))
-    Ff_groups = [Ff_full_sheet, Ff_sheet, Ff_PB]
-    if avg_pct < 0.8: # XXX
-        for g in range(3):
-    
-            test = Ff_groups[g][:, 0]
-            runmean, _ = running_mean(test, window_len = int(avg_pct*len(test)))
-            _, runmean_runstd  = running_mean(runmean, window_len = int(std_pct*len(runmean)))
-            mean[g] = runmean[~np.isnan(runmean)][-1]
-            Ff_std[g, 1] = runmean_runstd[~np.isnan(runmean_runstd)][-1]
-            
-            cummax = cum_max(test)
-            _, cummax_runstd = running_mean(cummax, window_len = int(std_pct*len(cummax)))
-            Ff_std[g, 0] = cummax_runstd[~np.isnan(cummax_runstd)][-1]
-
-    varnames.append('Ff_std')
-    avg_full_sheet, avg_sheet, avg_PB = mean
-    
     Ff = np.array([[max_full_sheet, avg_full_sheet],
                     [max_sheet, avg_sheet],
                     [max_PB, avg_PB]])
     
     
-
+    Ff_std = np.full(np.shape(Ff), np.nan)
+    
+    contact = np.vstack((data['v_full_sheet_bond_pct'], data['v_sheet_bond_pct']))
+    contact_mean = np.mean(contact[:, -avg_len:], axis = 1)
+    
+    
   
-    try: # Contact area
-        contact = np.vstack((data['v_full_sheet_bond_pct'], data['v_sheet_bond_pct']))
-        # contact[0], contact[1] = savgol_filter(window_length, polyorder, contact[0], contact[1])
-        varnames.append("contact")
-    except KeyError:
-        pass
+    # try: # Contact area
+    #     contact = np.vstack((data['v_full_sheet_bond_pct'], data['v_sheet_bond_pct']))
+    #     # contact[0], contact[1] = savgol_filter(window_length, polyorder, contact[0], contact[1])
+    #     varnames.append("contact")
+    # except KeyError:
+    #     pass
     
     
+    
+    if std_pct != 0:
+        print("Std calculation not implemented efficient")
+        exit()
+        #### Running mean and running std
+        mean = np.zeros(3)
+        Ff_std = np.zeros((3, 2))
+        Ff_groups = [Ff_full_sheet, Ff_sheet, Ff_PB]
+        if avg_pct < 0.8: # XXX
+            for g in range(3):
+        
+                test = Ff_groups[g][:, 0]
+                runmean, _ = running_mean(test, window_len = int(avg_pct*len(test)))
+                _, runmean_runstd  = running_mean(runmean, window_len = int(std_pct*len(runmean)))
+                mean[g] = runmean[~np.isnan(runmean)][-1]
+                Ff_std[g, 1] = runmean_runstd[~np.isnan(runmean_runstd)][-1]
+                
+                cummax = cum_max(test)
+                _, cummax_runstd = running_mean(cummax, window_len = int(std_pct*len(cummax)))
+                Ff_std[g, 0] = cummax_runstd[~np.isnan(cummax_runstd)][-1]
+
+        varnames.append('Ff_std')
+        avg_full_sheet, avg_sheet, avg_PB = mean
+        
+        Ff = np.array([[max_full_sheet, avg_full_sheet],
+                        [max_sheet, avg_sheet],
+                        [max_PB, avg_PB]])
+    
+    
+    varnames = ['time', 'move_force', 'Ff_full_sheet', 'Ff_sheet', 'Ff_PB', 'COM_sheet', 'FN', 'Ff', 'Ff_std', 'contact', 'contact_mean']
+
     # output
     updated_data = {}
     for name in varnames:
         updated_data[name] = eval(name)
       
     return updated_data
-    # return Ff_full_sheet[:,0].max(), abs(FN_full_sheet)       
     
     
 
@@ -548,89 +554,7 @@ def plot_heatmap(heat, param1, param2):
     # plt.subplots_adjust(hspace=0.3)
    
 
-
-def read_multi_folder(folder, eval_rupture = False, stretch_lim = [None, None],  FN_lim = [None, None]):
-    # Settings
-    info_file = 'info_file.txt'
-    friction_ext = 'Ff.txt'
-    chist_ext = 'chist.txt'
-    ruptol = 0 # 0.5
-    
-    avg_pct = 0.5 # last % to average over
-        
-    data = []
-    stretchfile = find_single_file(folder, ext = chist_ext)
-    # stretchfile = None
-    for a, stretch_dir in enumerate(get_dirs_in_path(folder)):
-        alen = len(get_dirs_in_path(folder))
-        for b, job_dir in enumerate(get_dirs_in_path(stretch_dir)):
-            blen = len(get_dirs_in_path(stretch_dir))
-            progress = a * blen + b
-            total = alen * blen
-            print(f"\r ({progress+1}/{total}) | {job_dir} ", end = " ")
-            
-            try:
-                info_dict = read_info_file(os.path.join(job_dir,info_file))
-                stretch_pct = info_dict['stretch_max_pct']
-                F_N = metal_to_SI(info_dict['F_N'], 'F')*1e9
-                
-                
-                if eval_rupture:
-                    chist_file = find_single_file(job_dir, ext = chist_ext)
-                    rupture_score = detect_rupture(chist_file, stretchfile)
-                else: 
-                    rupture_score = 0
-                
-                
-                friction_file = find_single_file(job_dir, ext = friction_ext)     
-                fricData = analyse_friction_file(friction_file, avg_pct)
-                data.append((stretch_pct, F_N, fricData['Ff'], fricData['Ff_std'], rupture_score, job_dir, np.array([np.mean(fricData['contact'][0]), np.mean(fricData['contact'][1])]))) 
-                
-            except FileNotFoundError:
-                print(f"<-- Missing file")
-    print()
-    
-    
-    data = np.array(data, dtype = 'object')
-    stretch_pct, F_N, Ff, Ff_std, rup, filenames, contact = organize_data(data)
-    
-    # Trim to limits 
-    if stretch_lim[0] == None: stretch_lim[0] = np.min(stretch_pct) - 1
-    if stretch_lim[1] == None: stretch_lim[1] = np.max(stretch_pct) + 1
-    if FN_lim[0] == None: FN_lim[0] = np.min(F_N) - 1
-    if FN_lim[1] == None: FN_lim[1] = np.max(F_N) + 1
-    
-    stretch_args = np.argwhere(np.logical_and(stretch_lim[0] <= stretch_pct, stretch_pct <= stretch_lim[-1])).flatten()
-    FN_args = np.argwhere(np.logical_and(FN_lim[0] <= F_N, F_N <= FN_lim[-1])).flatten()
-    
-    stretch_pct = stretch_pct[stretch_args]
-    F_N = F_N[FN_args]
-    Ff = Ff[stretch_args][:, FN_args]
-    Ff_std = Ff_std[stretch_args][:, FN_args]
-    rup = rup[stretch_args][:, FN_args] > ruptol
-    filenames = filenames[stretch_args][:, FN_args]
-    contact = contact[stretch_args][:, FN_args].astype('float')
-    
-    
-    if eval_rupture:
-        detections = [["stretch %", "F_N", "Filenames"]]
-        for i in range(len(stretch_pct)):
-            for j in range(len(F_N)):
-                if rup[i,j] > ruptol:
-                    detections.append([stretch_pct[i], F_N[j], filenames[i,j]])
-        
-        if len(detections) > 1:
-            print("Rupture detected:")
-            print(np.array(detections))
-        else:
-            print("No rupture detected")
-    else: 
-        print("eval_rupture = False")
-    
-    
-    return stretch_pct, F_N, Ff, Ff_std, rup, filenames, contact
-
-def get_fignum():
+def unique_fignum():
     fignum = 0
     if fignum in plt.get_fignums():
         fignum = plt.get_fignums()[-1] + 1

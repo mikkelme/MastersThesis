@@ -12,11 +12,7 @@ def drag_length_dependency(filename):
         
     group_name = {0: 'full_sheet', 1: 'sheet', 2: 'PB'}
     for g in reversed(range(1)):
-        fignum = 0
-        if fignum in plt.get_fignums():
-            fignum = plt.get_fignums()[-1] + 1
-            
-        fig = plt.figure(num = fignum)
+        fig = plt.figure(num = unique_fignum())
         fig.suptitle(filename)
         grid = (1,2)
         ax1 = plt.subplot2grid(grid, (0, 0), colspan=1)
@@ -316,7 +312,7 @@ if __name__ == "__main__":
                 #    '../Data/Multi/nocuts/ref1/stretch_315000_folder/job2/system_drag_Ff.txt']
     
     
-    obj = drag_length_dependency('../Data/Multi/nocuts/ref1/stretch_15000_folder/job0/system_drag_Ff.txt')
+    obj = drag_length_dependency('../Data/Multi/nocuts/ref2/stretch_230000_folder/job5/system_drag_Ff.txt')
     
     
     # vel_compare.pop(4)

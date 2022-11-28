@@ -144,9 +144,9 @@
 %	PRESENTATION INFORMATION
 %----------------------------------------------------------------------------------------
 
-\title[Short Title]{Tuning friction properties of graphene sheets using kirigami cuts and inverse design} % The short title in the optional parameter appears at the bottom of every slide, the full title in the main parameter is only on the title page
+\title[Short Title]{Tuning friction properties of graphene sheets using kirigami inspired cuts and inverse design} % The short title in the optional parameter appears at the bottom of every slide, the full title in the main parameter is only on the title page
 
-\subtitle{Optional Subtitle} % Presentation subtitle, remove this command if a subtitle isn't required
+% \subtitle{Optional Subtitle} % Presentation subtitle, remove this command if a subtitle isn't required
 
 \author[Mikkel Metzsch Jensen]{Mikkel Metzsch Jensen} % Presenter name(s), the optional parameter can contain a shortened version to appear on the bottom of every slide, while the main parameter will appear on the title slide
 
@@ -172,12 +172,12 @@
 
 % The table of contents outputs the sections and subsections that appear in your presentation, specified with the standard \section and \subsection commands. You may either display all sections and subsections on one slide with \tableofcontents, or display each section at a time on subsequent slides with \tableofcontents[pausesections]. The latter is useful if you want to step through each section and mention what you will discuss.
 
-\begin{frame}
-	\frametitle{Presentation Overview} % Slide title, remove this command for no title
+% \begin{frame}
+% 	\frametitle{Presentation Overview} % Slide title, remove this command for no title
 	
-	\tableofcontents % Output the table of contents (all sections on one slide)
-	%\tableofcontents[pausesections] % Output the table of contents (break sections up across separate slides)
-\end{frame}
+% 	\tableofcontents % Output the table of contents (all sections on one slide)
+% 	%\tableofcontents[pausesections] % Output the table of contents (break sections up across separate slides)
+% \end{frame}
 
 %----------------------------------------------------------------------------------------
 %	PRESENTATION BODY SLIDES
@@ -187,62 +187,148 @@
 \section{Introduction}
 
 \begin{frame}
-	\frametitle{Project description - 3 stages}
+	\frametitle{Project description}
+	\framesubtitle{3 stages}
+
 
 	\begin{enumerate}
-		\item Alter graphene sheet by making selected cuts on an atomic scale. % Buckling in the 3rd dimension
-		\item Calculate the effects on frictional properties using MD simulations.
-		\item Use inverse design on data to predict cut patterns for desirable properties.
+		\setlength\itemsep{2em}
+		\item \underline{Sheet kirigami}: Alter graphene sheet using atomic scale cuts. % Buckling in the 3rd dimension
+		\item \underline{Forward simulation}: Calculate frictional properties of the sheet using MD simulations.
+		\item \underline{Inverse design}: Predict cut patterns based on frictional properties and optimize for desired properties.
 		\begin{itemize}
-			\item E.g. coupling stretch and friction to achieve negative friction coefficients in nanomachines with coupling of normal force and stretch. 
+			\item Low / high friction coefficient.
+			\item Coupling between stretch and friction.
 		\end{itemize} 
+	
+
 	\end{enumerate}
 
-	% Friction is as fundamental material property that has a huge impact on mechanical engineering and energy consumption, but unfortunately our ability to tune friction is rather restricted as of today. But, by 
 	
 \end{frame}
 
 \begin{frame}
-	\frametitle{Stage 1 - Kirigami cuts}
+	\frametitle{Motivation}
+	\framesubtitle{Kirigami inspired cuts}
 
-	\begin{itemize}
-		\item Accelerated Search and Design of Stretchable Graphene Kirigami Using Machine Learning, Paul Z. Hanakata
-		\item Reported tunability of yield stress and yield strain, as a function of cutting pattern
-	\end{itemize}
-
-
-	\begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
-		\begin{column}{0.5\textwidth} % Left column width
-			\begin{figure}
-				\includegraphics[width=0.7\linewidth]{Hanakata1.png}
-				\caption{Schematic diagrams of a graphene sheet and rectangular graphene unit cells. Each of the grid (colored red) consists of 10 × 16 rectangular graphene unit cells (colored green).}
-			\end{figure}
-		\end{column}
-		\begin{column}{0.5\textwidth} % Right column width
-			\begin{figure}
-				\includegraphics[width=0.7\linewidth]{Hanakata2.png}
-				\caption{(a) Stress-strain plot of three representative kirigamis. Inset shows the “typical” kirigami cuts. (b) Yield stress as a function of yield strain for different configurations. Data are colored based on their cut density.}
-			\end{figure}
-		\end{column}
-	\end{columns}
-
-\end{frame}
-
-
-\begin{frame}
-	\frametitle{Stage 1 - Kirigami cuts}
+	Kirigami: Variation of origami with cuts permitted.
 
 	\begin{figure}
-		\includegraphics[width=0.6\linewidth]{figures/cutpattern.png}
-		\caption{Example of cut pattern. The grey color marks the cutable sheet while green marks added blocks for stetching and dragging the sheet.}
+		\includegraphics[width=0.6\linewidth]{figures/kirigami_example.jpeg}
+		\caption{Exaple of transistion from macro- to nano-kirigami using a focused ion-beam (FIB) (Image courtesy of Nano-kirigami with giant optical chirality, ZHIGUANG LIU, 2018).}
 	\end{figure}	
 
 \end{frame}
 
+\begin{frame}
+	\frametitle{Motivation}
+	\framesubtitle{Kirigami inspired cuts}
+
+	
+
+
+	\begin{columns}[t] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
+		\begin{column}{0.35\textwidth} % Left column width
+			\newline
+			\newline
+			\textit{Accelerated Search and Design of Stretchable Graphene Kirigami Using Machine Learning, Paul Z. Hanakata, 2018.} \\
+			% \hrulefill \\
+			\begin{itemize}
+				\item Kirigami inspired cuts is used to tune \textbf{yield stress} and \textbf{yield strain} as a function of cutting pattern.
+				\item A side effect is buckling into the third dimension.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.65\textwidth} % Right column width
+			\vspace*{-0.7cm}
+			\begin{figure}
+				\includegraphics[width=\linewidth]{Hanakata2.png}
+				\caption{(a) Stress-strain plot of three representative kirigamis. Inset shows the “typical” kirigami cuts. (b) Yield stress as a function of yield strain for different configurations.}
+			\end{figure}
+		\end{column}
+	\end{columns}
+
+	% \begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
+	% 	\begin{column}{0.4\textwidth} % Left column width
+	% 		\begin{figure}
+	% 			\includegraphics[width=\linewidth]{Hanakata1.png}
+	% 			\caption{Schematic diagrams of a graphene sheet and rectangular graphene unit cells.}
+	% 		\end{figure}
+	% 	\end{column}
+	% 	\begin{column}{0.6\textwidth} % Right column width
+	% 		\begin{figure}
+	% 			\includegraphics[width=\linewidth]{Hanakata2.png}
+	% 			\caption{(a) Stress-strain plot of three representative kirigamis. Inset shows the “typical” kirigami cuts. (b) Yield stress as a function of yield strain for different configurations.}
+	% 		\end{figure}
+	% 	\end{column}
+	% \end{columns}
+
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Motivation}
+	\framesubtitle{Friction laws}
+
+	\begin{itemize}
+		\item Stretching a sheet with cuts induces buckling into the third dimension. 
+		\item Friction lwas at different scales:
+		\begin{align*}
+			\text{Microscopic (Amontons’ law): } &F_f \propto F_N \quad (\text{ independent of } A), \\
+			\text{Nanoscale: } &F_f \propto A = N_{at} \cdot A_{at},  
+		\end{align*}
+		where $F_f$ is friction force, $F_N$ normal force, $A$ is the contact area and $N_{at}$ is the average number of atoms in contact with an average contact area ${A_{at}}$.
+		
+		
+	\end{itemize}
+	
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Motivation}
+	\framesubtitle{Nanomachine for negative friction coefficient}
+
+	Coupling of friction force $F_f$, contact area $A$ and normal force $F_N$.
+	\begin{align*}
+		\left.\begin{aligned}
+			\text{Contact area} &: A_0 = k \cdot F_N \\
+			\text{Kirigami} &: A = A_0 - s_1 \cdot \text{stretch} \\
+			\text{Nanomachine}&: \text{stretch} = s_2 \cdot F_n
+		  \end{aligned}\right\} \Longrightarrow F_f \propto A = \underbrace{(k - s_1 \cdot s_2)}_{\mu} \cdot F_N
+	\end{align*}
+	
+	\begin{figure}
+		\includegraphics[width=0.6\linewidth]{figures/nanomachine.pdf}
+		\caption{Sketch for nanomachine coupling normal force and stretch.}
+	\end{figure}	
+
+	
+\end{frame}
+
+\begin{frame}
+	\frametitle{Motivation}
+	\framesubtitle{Inverse design}
+	\begin{itemize}
+		\item Inverse Design of Inflatable Soft Membranes Through Machine Learning
+		\item Accelerated Search and Design of Stretchable Graphene Kirigami Using Machine Learning
+		\item Designing complex architectured materials with generative adversarial networks
+	\end{itemize}
+
+	
+\end{frame}
+
+
+
+
+%----------------------------------------------------------------------------------------
+%	Further explanation / Development so far
+%----------------------------------------------------------------------------------------
+
+
 
 \begin{frame}
 	\frametitle{Stage 1 - Kirigami cuts}
-
+	\framesubtitle{Choosing a cut pattern}
 
 	\begin{itemize}
 		\item Kirigami design on macroscale.
@@ -254,6 +340,21 @@
 
 	
 \end{frame}
+
+
+\begin{frame}
+	\frametitle{Stage 1 - Kirigami cuts}
+	\framesubtitle{Choosing a cut pattern}
+
+
+	\begin{figure}
+		\includegraphics[width=0.6\linewidth]{figures/cutpattern.png}
+		\caption{Example of cut pattern. The grey color marks the cutable sheet while green marks added blocks for stetching and dragging the sheet.}
+	\end{figure}	
+
+\end{frame}
+
+
 
 
 \begin{frame}
@@ -271,27 +372,27 @@
 
 \begin{frame}
 	\frametitle{Stage 1 - Kirigami cuts}
-
-
+	\framesubtitle{Investigating 3D buckling}
+	
 	\begin{figure}
 		\centering    
 		\movie[open]{\includegraphics[width=\textheight, keepaspectratio]{figures/contact_stretch.png}}{figures/contact_stretch.mov}
-		\caption{...}
-   \end{figure} 
-
+		\caption{Kirigami stretch in contact with Si-substrate.}
+	\end{figure} 
 	
-
+	
+	
 \end{frame}
 
 
 \begin{frame}
 	\frametitle{Stage 1 - Kirigami cuts}
-
+	\framesubtitle{Investigating 3D buckling}
 
 
 	\begin{figure}
 		\includegraphics[width=0.7\linewidth]{figures/contact_pct.pdf}
-		\caption{Bond threshold is defined as 110\% of equlibrium distance in LJ potential.}
+		\caption{Contact area: number of C-Si bonds within a threshold distance of 110\% the equlibrium distance in LJ the potential.}
 	\end{figure}	
 
 	
@@ -319,7 +420,7 @@
 	
 	\begin{figure}
 		\includegraphics[width=0.7\linewidth]{figures/drag2.pdf}
-		\caption{Friction force parallel to drag direction with normal force $F_N = 200$ nN. Drag distance = 200 Å}
+		\caption{Friction force parallel to drag direction with normal force $F_N = 200$ nN. Drag distance = 200 Å.}
 	\end{figure}	
 	
 \end{frame}
@@ -333,7 +434,7 @@
 	
 	\begin{figure}
 		\includegraphics[width=0.7\linewidth]{figures/contact1.pdf}
-		\caption{Contact bond count with normal force $F_N = 200$ nN. Drag distance = 200 Å}
+		\caption{Contact bond count with normal force $F_N = 200$ nN. Drag distance = 200 Å.}
 	\end{figure}	
 	
 \end{frame}
@@ -345,23 +446,9 @@
 	
 	\begin{figure}
 		\includegraphics[width=0.7\linewidth]{figures/contact2.pdf}
-		\caption{Contact bond count with normal force $F_N = 200$ nN. Drag distance = 400 Å}
+		\caption{Contact bond count with normal force $F_N = 200$ nN. Drag distance = 400 Å.}
 	\end{figure}	
 	
-\end{frame}
-
-
-\begin{frame}
-	\frametitle{Stage 2 - MD measurements}
-	\framesubtitle{....}
-
-
-	\begin{figure}
-		\centering    
-		\movie[open]{\includegraphics[width=\textheight, keepaspectratio]{figures/contact_lines.png}}{figures/contact_lines.mov}
-		\caption{Stretch = 22 \%, $F_N = 200$ nN, Drag length = 200 Å.}
-   \end{figure} 
-
 \end{frame}
 
 
@@ -379,7 +466,7 @@
 			Temperatur 		 		\newline 
 			Drag speed 				&
 			[0, 300] K 				\newline 
-			$< 50 m/s$				\\ \hline
+			$[1, 20]$ m/s				\\ \hline
 
 			Physical (ML input) &
 			Cut configuration 		\newline
@@ -411,78 +498,143 @@
 
 
 
+% \begin{frame}
+% 	\frametitle{Stage 2 - MD measurements}
+% 	\framesubtitle{....}
+% 	\begin{figure}
+% 		\includegraphics[width=\linewidth]{figures/multi_nocuts.pdf}
+% 		\caption{(Left) Max friction force. (Right) mean friction force of the last half (50\%) of the data}
+% 	\end{figure}	
+	
+% \end{frame}
+
+% \begin{frame}
+% 	\frametitle{Stage 2 - MD measurements}
+% 	\framesubtitle{...}
+% 	\begin{figure}
+% 		\includegraphics[width=\linewidth]{figures/multi_cuts.pdf}
+% 		\caption{(Left) Max friction force. (Right) mean friction force of the last half (50\%) of the data.}
+% 	\end{figure}	
+	
+% \end{frame}
+
+
 \begin{frame}
 	\frametitle{Stage 2 - MD measurements}
-	\framesubtitle{....}
+	\framesubtitle{...}
 	\begin{figure}
-		\includegraphics[width=\linewidth]{figures/multi_nocuts.pdf}
-		\caption{(Left) Max friction force. (Right) mean friction force of the last half (50\%) of the data}
+		\includegraphics[width=\linewidth]{figures/multi0.pdf}
+		\caption{caption}
 	\end{figure}	
-	
 \end{frame}
 
 \begin{frame}
 	\frametitle{Stage 2 - MD measurements}
 	\framesubtitle{...}
 	\begin{figure}
-		\includegraphics[width=\linewidth]{figures/multi_cuts.pdf}
-		\caption{(Left) Max friction force. (Right) mean friction force of the last half (50\%) of the data.}
+		\includegraphics[width=\linewidth]{figures/multi1.pdf}
+		\caption{caption}
 	\end{figure}	
-	
 \end{frame}
-
-
-%------------------------------------------------
-%------------------------------------------------
-%------------------------------------------------
-%------------------------------------------------
-%------------------------------------------------
-%------------------------------------------------
-%------------------------------------------------
-%------------------------------------------------
-%------------------------------------------------
 
 \begin{frame}
-	\frametitle{Motivation}
-	
-	\begin{itemize}
-		\item Friction has a huge impact in various engineering applications.
-		\item Most obvious advantages: Energy efficiency
-	\end{itemize}
-
-	% \begin{quote}
-	% 	The economic aspects of tribology are significant. Investigations by a number of countries arrived at figures of savings of 1.0\% to 1.4\% of the GNPs, obtainable by the application of tribological principles.\\
-	% 	--- Professor H. Peter Jost, President, International Tribology Council
-	% \end{quote}
-
-	\begin{exampleblock}{}
-		{``The economic aspects of tribology are significant. Investigations by a number of countries arrived at figures of savings of 1.0\% to 1.4\% of the GNPs, obtainable by the application of tribological principles.''}
-		\vskip5mm
-		\hspace*\fill{\tiny --- Professor H. Peter Jost, President, International Tribology Council}
-	\end{exampleblock}
-
-
-	% Friction is as fundamental material property that has a huge impact on mechanical engineering and energy consumption, but unfortunately our ability to tune friction is rather restricted as of today. But, by 
-	
+	\frametitle{Stage 2 - MD measurements}
+	\framesubtitle{...}
+	\begin{figure}
+		\includegraphics[width=\linewidth]{figures/multi2.pdf}
+		\caption{caption}
+	\end{figure}	
 \end{frame}
 
-% Motivation of frictional properties: To motivation of understanding friction is ultimately to control frictional properties in various applications. The most obvious advantages is to improving energy efficiency. It has been repported that monetary value
+\begin{frame}
+	\frametitle{Stage 2 - MD measurements}
+	\framesubtitle{...}
+	\begin{figure}
+		\includegraphics[width=\linewidth]{figures/multi3.pdf}
+		\caption{caption}
+	\end{figure}	
+\end{frame}
 
-%------------------------------------------------
+\begin{frame}
+	\frametitle{Stage 2 - MD measurements}
+	\framesubtitle{...}
+	\begin{figure}
+		\includegraphics[width=\linewidth]{figures/multi4.pdf}
+		\caption{caption}
+	\end{figure}	
+\end{frame}
+
+\begin{frame}
+	\frametitle{Stage 2 - MD measurements}
+	\framesubtitle{...}
+	\begin{figure}
+		\includegraphics[width=\linewidth]{figures/multi5.pdf}
+		\caption{caption}
+	\end{figure}	
+\end{frame}
+
+\begin{frame}
+	\frametitle{Stage 2 - MD measurements}
+	\framesubtitle{...}
+	\begin{figure}
+		\includegraphics[width=\linewidth]{figures/multi6.pdf}
+		\caption{caption}
+	\end{figure}	
+\end{frame}
+
+
 
 
 \begin{frame}
-	\frametitle{Inspiration}
+	\frametitle{Stage 2 - MD measurements}
+	\framesubtitle{Static non-bonded regions}
 
-	\begin{itemize}
-		\item Inverse Design of Inflatable Soft Membranes Through Machine Learning
-		\item Accelerated Search and Design of Stretchable Graphene Kirigami Using Machine Learning
-		\item Designing complex architectured materials with generative adversarial networks
-	\end{itemize}
 
+	\begin{figure}
+		\centering    
+		\movie[open]{\includegraphics[width=\textheight, keepaspectratio]{figures/contact_lines_black.png}}{figures/contact_lines_black.mov}
+		\caption{Stretch = 22 \%, $F_N = 200$ nN, Drag length = 200 Å.}
+   \end{figure} 
+
+\end{frame}
+
+
+
+%------------------------------------------------
+%------------------------------------------------
+%------------------------------------------------
+%------------------------------------------------
+%------------------------------------------------
+%------------------------------------------------
+%------------------------------------------------
+%------------------------------------------------
+%------------------------------------------------
+
+
+
+
+% \begin{frame}
+% 	\frametitle{Motivation}
+	
+% 	\begin{itemize}
+% 		\item Friction has a huge impact in various engineering applications.
+% 		\item Most obvious advantages: Energy efficiency
+% 	\end{itemize}
+
+
+% 	\begin{exampleblock}{}
+% 		{``The economic aspects of tribology are significant. Investigations by a number of countries arrived at figures of savings of 1.0\% to 1.4\% of the GNPs, obtainable by the application of tribological principles.''}
+% 		\vskip5mm
+% 		\hspace*\fill{\tiny --- Professor H. Peter Jost, President, International Tribology Council}
+% 	\end{exampleblock}
 
 	
-\end{frame}
+% \end{frame}
+
+
+
+
+
 
 %------------------------------------------------
 
