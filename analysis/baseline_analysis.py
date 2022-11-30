@@ -312,7 +312,7 @@ if __name__ == "__main__":
                 #    '../Data/Multi/nocuts/ref1/stretch_315000_folder/job2/system_drag_Ff.txt']
     
     
-    obj = drag_length_dependency('../Data/Multi/nocuts/ref2/stretch_230000_folder/job5/system_drag_Ff.txt')
+    obj = drag_length_dependency('../Data/Multi/cuts/ref3/stretch_230000_folder/job5/system_drag_Ff.txt')
     
     
     # vel_compare.pop(4)

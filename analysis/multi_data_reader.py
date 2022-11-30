@@ -108,7 +108,7 @@ def plot_multi(folders, eval_rupture = False, stretch_lim = [None, None],  FN_li
         obj_list = []
         for group in reversed(range(3)):
             # --- Plotting --- #
-            fig = plt.figure(num = group)
+            fig = plt.figure(num = unique_fignum())
             fig.suptitle(group_name[group])
             grid = (4,2)
             ax1 = plt.subplot2grid(grid, (0, 0), colspan=1)
@@ -208,7 +208,7 @@ def plot_multi(folders, eval_rupture = False, stretch_lim = [None, None],  FN_li
                 
 
 
-        fig = plt.figure(num = 4)
+        fig = plt.figure(num = unique_fignum())
         grid = (2,2)
         ax11 = plt.subplot2grid(grid, (0, 0), colspan=1)
         ax22 = plt.subplot2grid(grid, (0, 1), colspan=1)
@@ -275,8 +275,8 @@ def plot_multi(folders, eval_rupture = False, stretch_lim = [None, None],  FN_li
             
         plt.tight_layout()       
         obj_list.append(interactive_plotter(fig))
+        
     return obj_list
-        # plt.show()
 
 
 
@@ -303,7 +303,7 @@ if __name__ == "__main__":
     # folders = ['../Data/BIG_MULTI_nocut']
     # stability_heatmap(folders)
     
-    folders = ['../Data/Multi/cuts/ref2']
+    folders = ['../Data/Multi/cuts/ref3']
     obj = plot_multi(folders, False, stretch_lim = [None, 0.22])
     plt.show()
     

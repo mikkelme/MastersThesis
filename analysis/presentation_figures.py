@@ -3,7 +3,6 @@ from multi_data_reader import read_multi_folder
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 
-
 def friction_plot(filename):
     data = analyse_friction_file(filename)    
     time = data['time']
@@ -58,7 +57,7 @@ def contact_plot(filename):
     add_xaxis(ax, time, COM, xlabel='COM$\parallel$ [Å]', decimals = 1) 
     
     plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
-    plt.savefig("../Presentation/figures/contact2.pdf", bbox_inches="tight")
+    # plt.savefig("../Presentation/figures/contact2.pdf", bbox_inches="tight")
     
 def multi_plot(folder1, folder2):
     folders = [folder1, folder2]
@@ -153,7 +152,7 @@ def multi_plot(folder1, folder2):
             ax[i, j].set_title(name[j])
             
         fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
-        fig.savefig(f"../Presentation/figures/multi{i}.pdf", bbox_inches="tight")
+        # fig.savefig(f"../Presentation/figures/multi{i}.pdf", bbox_inches="tight")
 
      
      
@@ -165,5 +164,5 @@ if __name__ == "__main__":
     # friction_plot(filename)
     # contact_plot(filename)
     
-    multi_plot('../Data/Multi/nocuts/ref2', '../Data/Multi/cuts/ref2')
+    multi_plot('../Data/Multi/nocuts/ref3', '../Data/Multi/cuts/ref3')
     plt.show()
