@@ -347,11 +347,25 @@
 	\end{itemize}
 	\begin{figure}
 		\includegraphics[width=0.6\linewidth]{figures/kirigami_pattern_inspiration.png}
-		\caption{New pop-up strategy inspired by cuts, not folds - Leah Burrows, Harvard John A. Paulson School of Engineering and Applied Sciences }
+		\caption{New pop-up strategy inspired by cuts, not folds - Leah Burrows, Harvard John A. Paulson School of Engineering and Applied Sciences.}
 	\end{figure}	
 
 	
 \end{frame}
+
+
+
+\begin{frame}
+	\frametitle{Stage 1 - Kirigami cuts}
+	\framesubtitle{Choosing a cut pattern}
+
+	\begin{figure}
+		\includegraphics[width=0.8\linewidth]{figures/cushion_lock.jpg}
+		\caption{Scotch Cushion Lock Protective Wrap.}
+	\end{figure}	
+	
+\end{frame}
+
 
 
 \begin{frame}
@@ -388,7 +402,7 @@
 	
 	\begin{figure}
 		\centering    
-		\movie[open]{\includegraphics[width=\textheight, keepaspectratio]{figures/contact_stretch.png}}{figures/contact_stretch.mov}
+		\movie[open]{\includegraphics[width=0.95\textheight, keepaspectratio]{figures/contact_stretch.png}}{figures/contact_stretch.mov}
 		\caption{Kirigami stretch in contact with Si-substrate.}
 	\end{figure} 
 	
@@ -464,14 +478,39 @@
 \end{frame}
 
 
+\begin{frame}
+	\frametitle{Stage 2 - MD measurements}
+	\framesubtitle{Static non-bonded regions}
+
+
+	\begin{figure}
+		\centering    
+		\movie[open]{\includegraphics[width=0.95\textheight, keepaspectratio]{figures/contact_lines_notcut_nostretch.png}}{figures/contact_lines_notcut_nostretch.mov}
+		\caption{Contact visualization (black atoms is non-boneded). $F_N = 200$ nN, Drag length = 400 Å.}
+   \end{figure} 
+
+\end{frame}
+% \begin{frame}
+% 	\frametitle{Stage 2 - MD measurements}
+% 	\framesubtitle{Static non-bonded regions}
+
+
+% 	\begin{figure}
+% 		\centering    
+% 		\movie[open]{\includegraphics[width=\textheight, keepaspectratio]{figures/contact_lines_black.png}}{figures/contact_lines_black.mov}
+% 		\caption{Stretch = 22 \%, $F_N = 200$ nN, Drag length = 200 Å.}
+%    \end{figure} 
+
+% \end{frame}
+
 
 \begin{frame}
 	\frametitle{Stage 2 - MD measurements}
 	\framesubtitle{Parameters} % Optional subtitle
 	
 	\begin{table}
-		\begin{tabular}{| l | p{35mm} | p{30mm} |}
-			\toprule
+		\begin{tabular}{| l | p{35mm} | p{30mm} |} \hline
+			% \toprule
 			\textbf{Category} & \textbf{Parameter} & \textbf{Range} \\ \hline
 			% \midrule
 			Physical (free) & 
@@ -544,8 +583,8 @@
 	\frametitle{Stage 2 - MD measurements}
 	\framesubtitle{Varying normal force and stretch}
 	\begin{figure}
-		\includegraphics[width=\linewidth]{figures/multi1.pdf}
-		\caption{Max friction force $F_{\parallel}$ parallel to drag direction versus stretch of the sheet with and without cuts.}
+		\includegraphics[width=\linewidth]{figures/multi2.pdf}
+		\caption{Mean friction force $F_{\parallel}$ parallel to drag direction versus stretch of the sheet with and without cuts.}
 	\end{figure}	
 \end{frame}
 
@@ -553,10 +592,11 @@
 	\frametitle{Stage 2 - MD measurements}
 	\framesubtitle{Varying normal force and stretch}
 	\begin{figure}
-		\includegraphics[width=\linewidth]{figures/multi2.pdf}
-		\caption{Mean friction force $F_{\parallel}$ parallel to drag direction versus stretch of the sheet with and without cuts.}
+		\includegraphics[width=\linewidth]{figures/multi1.pdf}
+		\caption{Max friction force $F_{\parallel}$ parallel to drag direction versus stretch of the sheet with and without cuts.}
 	\end{figure}	
 \end{frame}
+
 
 \begin{frame}
 	\frametitle{Stage 2 - MD measurements}
@@ -595,15 +635,161 @@
 \end{frame}
 
 
+
+
+\begin{frame}
+	\frametitle{Stage 2 - MD measurements}
+	\framesubtitle{New data}
+
+	{\Large New data} 
+	\newline
+
+	Invistigate different $F_N$ range:
+	\begin{align*}
+		F_N = [10, 200] \rightarrow [0.1, 1] \text{nN} 
+	\end{align*}
+
+\end{frame}
+
+% Low FN
+
+
+
+\begin{frame}
+	\frametitle{Stage 2 - MD measurements}
+	\framesubtitle{Varying normal force and stretch}
+	\begin{figure}
+		\includegraphics[width=\linewidth]{figures/multi_lowFN0.pdf}
+		\caption{Mean friction force $F_{\parallel}$ parallel to drag direction versus applied normal force $(F_N)$ with and without cuts.}
+	\end{figure}	
+\end{frame}
+
+\begin{frame}
+	\frametitle{Stage 2 - MD measurements}
+	\framesubtitle{Varying normal force and stretch}
+	\begin{figure}
+		\includegraphics[width=\linewidth]{figures/multi_lowFN2.pdf}
+		\caption{Mean friction force $F_{\parallel}$ parallel to drag direction versus stretch of the sheet with and without cuts.}
+	\end{figure}	
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Stage 2 - MD measurements}
+	\framesubtitle{Varying normal force and stretch}
+	\begin{figure}
+		\includegraphics[width=\linewidth]{figures/multi_lowFN1.pdf}
+		\caption{Max friction force $F_{\parallel}$ parallel to drag direction versus stretch of the sheet with and without cuts.}
+	\end{figure}	
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Stage 2 - MD measurements}
+	\framesubtitle{Varying normal force and stretch}
+	\begin{figure}
+		\includegraphics[width=\linewidth]{figures/multi_lowFN3.pdf}
+		\caption{Contact bonds versus stretch of the sheet with and without cuts.}
+	\end{figure}	
+\end{frame}
+
+\begin{frame}
+	\frametitle{Stage 2 - MD measurements}
+	\framesubtitle{Varying normal force and stretch}
+	\begin{figure}
+		\includegraphics[width=\linewidth]{figures/multi_lowFN4.pdf}
+		\caption{Contact bonds versus normal force $F_N$ of the sheet with and without cuts.}
+	\end{figure}	
+\end{frame}
+
+\begin{frame}
+	\frametitle{Stage 2 - MD measurements}
+	\framesubtitle{Varying normal force and stretch}
+	\begin{figure}
+		\includegraphics[width=\linewidth]{figures/multi_lowFN5.pdf}
+		\caption{Mean friction force $F_{\parallel}$ parallel to drag direction versus contact bonds (varied by normal force $F_N$) with and without cuts.}
+	\end{figure}	
+\end{frame}
+
+\begin{frame}
+	\frametitle{Stage 2 - MD measurements}
+	\framesubtitle{Varying normal force and stretch}
+	\begin{figure}
+		\includegraphics[width=\linewidth]{figures/multi_lowFN6.pdf}
+		\caption{Mean friction force $F_{\parallel}$ parallel to drag direction versus contact bonds (varied by normal force stretch) with and without cuts.}
+	\end{figure}	
+\end{frame}
+
+
+
+\begin{frame}
+	\frametitle{Stage 2 - MD measurements}
+	\framesubtitle{More data}
+
+	Three different normal force ranges 
+	\begin{align*}
+		F_N &= [0.1, 1]\ \text{nN} \\
+		F_N &= [1, 10]\ \text{nN} \\
+		F_N &= [10, 86]\ \text{nN}
+	\end{align*}
+
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Stage 2 - MD measurements}
+	\framesubtitle{Different normal force domains}
+	\begin{figure}
+		\includegraphics[width=\linewidth]{figures/max_mean_lowFN.pdf}
+		\caption{Max and mean friction for $F_N = [0.1, 1]$ nN for cutted sheet}
+	\end{figure}	
+\end{frame}
+
+\begin{frame}
+	\frametitle{Stage 2 - MD measurements}
+	\framesubtitle{Different normal force domains}
+	\begin{figure}
+		\includegraphics[width=\linewidth]{figures/max_mean_medFN.pdf}
+		\caption{Max and mean friction for $F_N = [1, 10]$ nN for cutted sheet}
+	\end{figure}	
+\end{frame}
+
+\begin{frame}
+	\frametitle{Stage 2 - MD measurements}
+	\framesubtitle{Different normal force domains}
+	\begin{figure}
+		\includegraphics[width=\linewidth]{figures/max_mean_highFN.pdf}
+		\caption{Max and mean friction for $F_N = [10, 86]$ nN for cutted sheet}
+	\end{figure}	
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Stage 2 - MD measurements}
+	\framesubtitle{More data}
+
+	Contribution from different parts, Full sheet = sheet + Pull blocks
+	\begin{figure}
+		\includegraphics[width=\linewidth]{figures/max_group.pdf}
+		\caption{Max friction for different parts of the cutted sheet, $F_N = [0.1, 1]$.}
+	\end{figure}
+
+\end{frame}
+
+
+
 \begin{frame}
 	\frametitle{Stage 2 - MD measurements}
 	\framesubtitle{Frenkel-Kontorova Model}
 
 	Friction force dependence of stretch might be explained by simple friction models such as the Frenkel-Kontorova (FK) model.
 
+	\begin{align*}
+		H=\sum_{i=1}^N\left[\frac{p_i^2}{2 m}+\frac{1}{2} K\left(x_{i+1}-x_i-a_c\right)^2+\frac{1}{2} U_0 \cos \frac{2 \pi x_i}{a_b}\right]
+	\end{align*}
 	\begin{figure}
-		\includegraphics[width=0.7\linewidth]{figures/FK_model.png}
-		\caption{A sketch of the FK model, showing the two competing lengths: The average interparticle spacing and the lattice periodicity of the substrate. Friction and Nonlinear Dynamics, N. Manini, 2016.}
+		\includegraphics[width=0.65\linewidth]{figures/FK_model.png}
+		\caption{A sketch of the FK model, showing the two competing lengths: The average interparticle spacing and the lattice periodicity of the substrate (Friction and Nonlinear Dynamics, N. Manini, 2016).}
 	\end{figure}
 
 \end{frame}
@@ -611,30 +797,26 @@
 
 
 
-
-\begin{frame}
-	\frametitle{Stage 2 - MD measurements}
-	\framesubtitle{Static non-bonded regions}
-
-
-	\begin{figure}
-		\centering    
-		\movie[open]{\includegraphics[width=\textheight, keepaspectratio]{figures/contact_lines_black.png}}{figures/contact_lines_black.mov}
-		\caption{Stretch = 22 \%, $F_N = 200$ nN, Drag length = 200 Å.}
-   \end{figure} 
-
-\end{frame}
-
-
 \begin{frame}[plain] % The optional argument 'plain' hides the headline and footline
 	\begin{center}
-		{\Huge The End}
-		
-		\bigskip\bigskip % Vertical whitespace
-		
 		{\LARGE Questions? Comments?}
 	\end{center}
 \end{frame}
+
+
+% \begin{frame}[plain] % The optional argument 'plain' hides the headline and footline
+% 	\begin{center}
+% 		{\Huge The End}
+		
+% 		\bigskip\bigskip % Vertical whitespace
+		
+% 		{\LARGE Questions? Comments?}
+% 	\end{center}
+% \end{frame}
+
+
+
+
 
 %------------------------------------------------
 %------------------------------------------------

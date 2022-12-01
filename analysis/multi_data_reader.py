@@ -303,7 +303,7 @@ if __name__ == "__main__":
     # folders = ['../Data/BIG_MULTI_nocut']
     # stability_heatmap(folders)
     
-    folders = ['../Data/Multi/cuts/ref3']
-    obj = plot_multi(folders, False, stretch_lim = [None, 0.22])
+    folders = ['../Data/Multi/cuts/ref4']
+    obj = plot_multi(folders, False, stretch_lim = [None, None])
     plt.show()
     

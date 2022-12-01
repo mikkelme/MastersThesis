@@ -23,6 +23,12 @@ atom_style atomic # coarse-grain liquids, solids, metals
 read_data ${root}/${config_data}.txt extra/atom/types 1  # sheet and substrate (1 extra type for virtuel atom)
 include ${root}/${config_data}_info.in                   # import variables
 
+# --- Masses --- #            
+mass 1 12.0107          # C
+mass 2 28.0855          # Si
+# mass 2 196.966570     # Au
+mass 3 1.0              # Virtuel atom
+
 
 # --- Regions and groups --- #
 variable eps equal 0.1 # small number to ensure all atoms is inside interval
@@ -33,34 +39,61 @@ region full_sheet_region block INF INF INF INF ${pullblock_zlo} INF
 group  sheet region sheet_region
 group  full_sheet region full_sheet_region 
 
+# Extra compute to get sheet min max
+compute full_sheet_ymin full_sheet reduce min y  
+compute full_sheet_ymax full_sheet reduce max y  
+thermo_style custom c_full_sheet_ymin c_full_sheet_ymax
+run 0
+
+
 # Pullblocks
 region PB_ylow_region  block INF INF INF $(v_pullblock_yhi+v_eps) ${pullblock_zlo} INF
 region PB_yhigh_region block INF INF $(v_pullblock_ylo-v_eps) INF ${pullblock_zlo} INF
-group  PB_ylow region PB_ylow_region
-group  PB_yhigh region PB_yhigh_region
-group  PB_tot union PB_ylow PB_yhigh
+
+
+region PB_ylow_rigid_region block INF INF INF $((c_full_sheet_ymin + v_pullblock_yhi)/2) ${pullblock_zlo} INF 
+region PB_yhigh_rigid_region block INF INF $((c_full_sheet_ymax + v_pullblock_ylo)/2) INF ${pullblock_zlo} INF 
+
+
+group PB_ylow region PB_ylow_region
+group PB_ylow_rigid region PB_ylow_rigid_region
+group PB_ylow_NVT subtract PB_ylow PB_ylow_rigid
+
+group PB_yhigh region PB_yhigh_region
+group PB_yhigh_rigid region PB_yhigh_rigid_region
+group PB_yhigh_NVT subtract PB_yhigh PB_yhigh_rigid
+
+group PB_tot union PB_ylow PB_yhigh
+group PB_tot_rigid union PB_ylow_rigid PB_yhigh_rigid
 
 # Substrate
-region substrate_freeze_region block INF INF INF INF INF ${substrate_freeze_zhi}
-region substrate_contact_region block INF INF INF INF ${substrate_contact_zlo} ${pullblock_zlo}
 group  substrate type 2
-group  substrate_freeze region substrate_freeze_region
-group  substrate_contact region substrate_contact_region
+
+# Extra compute to get sub min
+compute substrate_zmin substrate reduce min z  
+thermo_style custom c_substrate_zmin
+run 0
+
+region substrate_freeze_region block INF INF INF INF INF ${substrate_freeze_zhi}
+region substrate_freeze_and_NVT_region block INF INF INF INF INF $(2*v_substrate_freeze_zhi - c_substrate_zmin)
+region substrate_contact_region block INF INF INF INF ${substrate_contact_zlo} ${pullblock_zlo}
+
+group substrate_freeze region substrate_freeze_region
+group substrate_freeze_and_NVT region substrate_freeze_and_NVT_region
+group substrate_contact region substrate_contact_region
+group substrate_NVT subtract substrate_freeze_and_NVT substrate_freeze
 
 # Moving atoms
-group free_atoms subtract all PB_tot substrate_freeze 
-group semifree_atoms subtract all substrate_freeze 
+group NVE_atoms subtract all PB_tot_rigid substrate_freeze 
+group NVT_atoms union PB_ylow_NVT PB_yhigh_NVT substrate_NVT
 
-# --- Dynamics --- #            
-mass 1 12.0107          # C
-mass 2 28.0855          # Si
-# mass 2 196.966570     # Au
-mass 3 1.0              # Virtuel atom
 
-# ^^^^^^^^^^^^
-# Make a more safe way to change this back and forth
+# group free_atoms subtract all PB_tot substrate_freeze 
+# group semifree_atoms subtract all substrate_freeze 
 
-velocity free_atoms create ${T} 5432373 dist gaussian
+
+
+velocity NVE_atoms create ${T} 5432373 dist gaussian
 
 # JUMP
 jump SELF common_settings 
@@ -118,10 +151,15 @@ variable contact_cut_off equal $(v_LJ_equil*1.1)
 
 timestep $(v_dt)
 variable damp equal 1.0 # ps                        
-fix nve semifree_atoms nve # (microcanonical) 
-fix nvt semifree_atoms langevin ${T} ${T} ${damp} 48279 # (canonical)
+fix nve NVE_atoms nve # (microcanonical) 
+fix nvt NVT_atoms langevin ${T} ${T} ${damp} 48279 # (canonical)
+
+# fix nve semifree_atoms nve # (microcanonical) 
+# fix nvt semifree_atoms langevin ${T} ${T} ${damp} 48279 # (canonical)
+
 fix 2 all balance 1000 1.05 shift xy 10 1.05 # balance number of particles computed on each processor 
-fix PB_ave PB_tot aveforce NULL NULL 0 # Average z-force
+# fix PB_ave PB_tot aveforce NULL NULL 0 # Average z-force
+fix PB_ave PB_tot_rigid aveforce NULL NULL 0 # Average z-force
 
 
 
@@ -160,8 +198,10 @@ variable sheet_bond_pct equal f_sheet_bond_hist[2][3]
 ## - Pullblocks - ##
 compute PB_ylow_ymax PB_ylow reduce max y   # Lower y-limit for sheet
 compute PB_yhigh_ymin PB_yhigh reduce min y # Upper y-limit for sheet
-compute PB_ylow_com PB_ylow com             # Center of mass PB_ylow
-compute PB_yhigh_com PB_yhigh com           # Center of mass PB_yhigh
+# compute PB_ylow_com PB_ylow com             # Center of mass PB_ylow
+# compute PB_yhigh_com PB_yhigh com           # Center of mass PB_yhigh
+compute PB_ylow_rigid_com PB_ylow_rigid com             # Center of mass PB_ylow_rigid
+compute PB_yhigh_rigid_com PB_yhigh_rigid com           # Center of mass PB_yhigh_rigid
 
 ## -- Substrate -- ##
 compute substrate_zhigh substrate reduce max z # Max z-val of substrate
@@ -172,11 +212,11 @@ compute Ff_sheet substrate group/group sheet # friction forces
 compute Ff_PB substrate group/group PB_tot # friction forces
 
 ## Temperature of free atoms ##
-compute freeTemp free_atoms temp
+compute freeTemp NVE_atoms temp
 
 
 ## - Activate computes - ## 
-thermo_style custom c_sheet_fz c_PB_ylow_ymax c_PB_yhigh_ymin c_substrate_zhigh c_PB_ylow_com[2] c_PB_yhigh_com[2] c_sheet_COM[3]
+thermo_style custom c_sheet_fz c_PB_ylow_ymax c_PB_yhigh_ymin c_substrate_zhigh c_PB_ylow_rigid_com[2] c_PB_yhigh_rigid_com[2] c_sheet_COM[3]
 run 0 # activate compute
 
 # ---------- Derived variables ---------- #
@@ -208,6 +248,8 @@ variable dir_norm equal $(sqrt(v_drag_dir_x^2+v_drag_dir_y^2))
 # # RDF
 # compute myRDF sheet rdf 1000 1 1 #cutoff 8.65 
 # fix tmp all ave/time 100 1 100 c_myRDF[*] file rdf.txt mode vector
+
+
 
 
 
@@ -263,3 +305,6 @@ print "--------------------"
 print ""
 
 
+
+### Go through this again to verify that the introducing PB rigid and NVT layers is succesfull.
+# Then go through drag and stretch to implement this. 

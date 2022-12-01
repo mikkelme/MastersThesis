@@ -75,23 +75,23 @@ def build_graphene_sheet(mat, view_lattice = False, write_file = False):
 
 
 if __name__ == "__main__":
-    multiples = (4, 5)
-    unitsize = (5,7)
-    mat = pop_up_pattern(multiples, unitsize, sp = 2)
+    # multiples = (4, 5)
+    # unitsize = (5,7)
+    # mat = pop_up_pattern(multiples, unitsize, sp = 2)
 
     
     
-    # RN = RN_Generator( size = (50,50), 
-    #                    num_walks = 25,
-    #                    max_steps = 8,
-    #                    max_dis = 0,
-    #                    bias = [(1,1), 1],
-    #                    periodic = True,
-    #                    avoid_unvalid = False,
-    #                    grid_start = True,
-    #                    center_elem = False)
+    RN = RN_Generator( size = (50,50), 
+                       num_walks = 9,
+                       max_steps = 15,
+                       max_dis = 1,
+                       bias = [(1,1), 0.5],
+                       periodic = True,
+                       avoid_unvalid = False,
+                       grid_start = True,
+                       center_elem = True)
     
-    # mat = RN.generate()
+    mat = RN.generate()
     
     
     # mat = RN.valid

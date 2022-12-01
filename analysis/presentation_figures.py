@@ -9,6 +9,8 @@ def friction_plot(filename):
     COM = data['COM_sheet'][:,0]
     Ff = data['Ff_full_sheet'][:, 0]
     
+    window_len_pct = 0.5
+    
     # TRIM
     map = np.argwhere(time < 1000).ravel()
     time = time[map]
@@ -20,9 +22,11 @@ def friction_plot(filename):
     ax = plt.gca()
     
     
-    plt.plot(time, Ff)
-    plt.plot(time, cum_mean(Ff), label = "cumulative mean")
-    plt.plot(time, cum_max(Ff), label = "cumulative max")
+    plt.plot(time, Ff, color = color_cycle(0))
+    plt.plot(time, cum_mean(Ff), color = color_cycle(1), label = "cumulative mean")
+    plt.plot(time, running_mean(Ff, window_len = int(window_len_pct*len(Ff)))[0], color = color_cycle(2), label = f"running mean ({window_len_pct*100:g}%)")
+    plt.plot(time, cum_max(Ff), label = "cumulative max", color = color_cycle(3))
+    
     plt.legend()
 
     plt.xlabel("Time [ps]")
@@ -38,6 +42,8 @@ def contact_plot(filename):
     COM = data['COM_sheet'][:,0]
     contact = data['contact'][0]
     
+    window_len_pct = 0.5
+    
     # TRIM
     # map = np.argwhere(time < 1000).ravel()
     # time = time[map]
@@ -48,8 +54,10 @@ def contact_plot(filename):
     ax = plt.gca()
     
     
-    plt.plot(time, contact)
-    plt.plot(time, cum_mean(contact), label = "cumulative mean")
+    plt.plot(time, contact, color = color_cycle(0))
+    plt.plot(time, cum_mean(contact), color = color_cycle(1), label = "cumulative mean")
+    plt.plot(time, running_mean(contact, window_len = int(window_len_pct*len(contact)))[0], color = color_cycle(2), label = f"running mean ({window_len_pct*100:g}%)")
+    
     plt.legend()
 
     plt.xlabel("Time [ps]")
@@ -57,9 +65,9 @@ def contact_plot(filename):
     add_xaxis(ax, time, COM, xlabel='COM$\parallel$ [Å]', decimals = 1) 
     
     plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
-    # plt.savefig("../Presentation/figures/contact2.pdf", bbox_inches="tight")
+    plt.savefig("../Presentation/figures/contact2.pdf", bbox_inches="tight")
     
-def multi_plot(folder1, folder2):
+def multi_plot_compare(folder1, folder2):
     folders = [folder1, folder2]
     grid = (1,2)
     
@@ -152,10 +160,83 @@ def multi_plot(folder1, folder2):
             ax[i, j].set_title(name[j])
             
         fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
-        # fig.savefig(f"../Presentation/figures/multi{i}.pdf", bbox_inches="tight")
+        # fig.savefig(f"../Presentation/figures/multi_lowFN{i}.pdf", bbox_inches="tight")
+
+def multi_plot_max_mean(folder):
+    grid = (1,2)
+    
+    fig = plt.figure(figsize = (10,5), num = unique_fignum())
+    fig.suptitle("Cuts")
+    ax1 = plt.subplot2grid(grid, (0, 0), colspan=1)
+    ax2 = plt.subplot2grid(grid, (0, 1), colspan=1)
+       
+    cmap = matplotlib.cm.viridis
+    
+    
+    stretch_pct, F_N, Ff, Ff_std, rup, filenames, contact = read_multi_folder(folder, eval_rupture = False, stretch_lim = [None, 0.22], FN_lim = [None, 100])
+    group = 0
+    
+    for j in range(len(F_N)):
+        color = get_color_value(F_N[j], np.min(F_N), np.max(F_N))
+    
+        ax1.plot(stretch_pct, Ff[:, j, group, 0], marker = 'o', markersize = 3,  color = color, label = f'F_N = {F_N[j]:g}')
+        ax1.set(xlabel='stretch [%]', ylabel='max $F_\parallel$ [nN]')
+        
+        ax2.plot(stretch_pct, Ff[:, j, group, 1], marker = 'o', markersize = 3,  color = color, label = f'F_N = {F_N[j]:g}')
+        ax2.set(xlabel='stretch [%]', ylabel='mean $F_\parallel$ [nN]')
+        
+        
+
+    norm = matplotlib.colors.BoundaryNorm(F_N, cmap.N)
+    cax = make_axes_locatable(ax2).append_axes("right", "5%")
+    cax.grid(False)
+    fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax=cax, label='$F_N$ [nN]')
+
+        
+
+    fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    fig.savefig(f"../Presentation/figures/max_mean_highFN.pdf", bbox_inches="tight")
 
      
-     
+
+def multi_plot_groups(folder):
+    grid = (1,3)
+    
+    fig = plt.figure(figsize = (10,5), num = unique_fignum())
+    fig.suptitle("Cuts")
+    ax1 = plt.subplot2grid(grid, (0, 0), colspan=1)
+    ax2 = plt.subplot2grid(grid, (0, 1), colspan=1)
+    ax3 = plt.subplot2grid(grid, (0, 2), colspan=1)
+       
+    cmap = matplotlib.cm.viridis
+    
+    
+    stretch_pct, F_N, Ff, Ff_std, rup, filenames, contact = read_multi_folder(folder, eval_rupture = False, stretch_lim = [None, 0.22])
+    group = 0
+    group_name = {0: 'Full sheet', 1: 'Sheet', 2: 'Pull blocks'}
+    
+    ax = [ax1, ax2, ax3]
+    
+    for group in range(3):
+        for j in range(len(F_N)):
+            color = get_color_value(F_N[j], np.min(F_N), np.max(F_N))
+        
+            ax[group].set_title(group_name[group])
+            ax[group].plot(stretch_pct, Ff[:, j, group, 0], marker = 'o', markersize = 3,  color = color, label = f'F_N = {F_N[j]:g}')
+            ax[group].set(xlabel='stretch [%]', ylabel='max $F_\parallel$ [nN]')
+            
+            
+            
+    norm = matplotlib.colors.BoundaryNorm(F_N, cmap.N)
+    cax = make_axes_locatable(ax3).append_axes("right", "5%")
+    cax.grid(False)
+    fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax=cax, label='$F_N$ [nN]')
+
+        
+    fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    fig.savefig(f"../Presentation/figures/max_group.pdf", bbox_inches="tight")
+
+          
      
 if __name__ == "__main__":
     
@@ -164,5 +245,7 @@ if __name__ == "__main__":
     # friction_plot(filename)
     # contact_plot(filename)
     
-    multi_plot('../Data/Multi/nocuts/ref3', '../Data/Multi/cuts/ref3')
+    # multi_plot_compare('../Data/Multi/nocuts/ref3', '../Data/Multi/cuts/ref3')
+    multi_plot_max_mean('../Data/Multi/cuts/ref2')
+    # multi_plot_groups('../Data/Multi/cuts/ref3')
     plt.show()
