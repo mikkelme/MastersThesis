@@ -33,7 +33,7 @@ mass 3 1.0              # Virtuel atom
 # --- Regions and groups --- #
 variable eps equal 0.1 # small number to ensure all atoms is inside interval
 
-# Sheet 
+## Sheet 
 region sheet_region block INF INF $(v_pullblock_yhi+v_eps) $(v_pullblock_ylo-v_eps) ${pullblock_zlo} INF
 region full_sheet_region block INF INF INF INF ${pullblock_zlo} INF
 group  sheet region sheet_region
@@ -46,27 +46,27 @@ thermo_style custom c_full_sheet_ymin c_full_sheet_ymax
 run 0
 
 
-# Pullblocks
+## Pullblocks
 region PB_ylow_region  block INF INF INF $(v_pullblock_yhi+v_eps) ${pullblock_zlo} INF
-region PB_yhigh_region block INF INF $(v_pullblock_ylo-v_eps) INF ${pullblock_zlo} INF
-
-
 region PB_ylow_rigid_region block INF INF INF $((c_full_sheet_ymin + v_pullblock_yhi)/2) ${pullblock_zlo} INF 
+region PB_yhigh_region block INF INF $(v_pullblock_ylo-v_eps) INF ${pullblock_zlo} INF
 region PB_yhigh_rigid_region block INF INF $((c_full_sheet_ymax + v_pullblock_ylo)/2) INF ${pullblock_zlo} INF 
 
-
+# PB ylow
 group PB_ylow region PB_ylow_region
 group PB_ylow_rigid region PB_ylow_rigid_region
 group PB_ylow_NVT subtract PB_ylow PB_ylow_rigid
 
+# PB yhigh
 group PB_yhigh region PB_yhigh_region
 group PB_yhigh_rigid region PB_yhigh_rigid_region
 group PB_yhigh_NVT subtract PB_yhigh PB_yhigh_rigid
 
+# PB unions
 group PB_tot union PB_ylow PB_yhigh
 group PB_tot_rigid union PB_ylow_rigid PB_yhigh_rigid
 
-# Substrate
+## Substrate
 group  substrate type 2
 
 # Extra compute to get sub min
@@ -81,19 +81,19 @@ region substrate_contact_region block INF INF INF INF ${substrate_contact_zlo} $
 group substrate_freeze region substrate_freeze_region
 group substrate_freeze_and_NVT region substrate_freeze_and_NVT_region
 group substrate_contact region substrate_contact_region
+group substrate_top subtract substrate substrate_freeze_and_NVT
 group substrate_NVT subtract substrate_freeze_and_NVT substrate_freeze
 
-# Moving atoms
-group NVE_atoms subtract all PB_tot_rigid substrate_freeze 
+## Moving atoms
+group NVE_atoms subtract all substrate_freeze 
 group NVT_atoms union PB_ylow_NVT PB_yhigh_NVT substrate_NVT
+group free_atoms subtract all PB_tot substrate_freeze 
+group non_drag_atoms subtract all PB_tot_rigid substrate_freeze 
 
 
-# group free_atoms subtract all PB_tot substrate_freeze 
-# group semifree_atoms subtract all substrate_freeze 
-
-
-
-velocity NVE_atoms create ${T} 5432373 dist gaussian
+# velocity free_atoms create ${T} 5432373 dist gaussian
+# velocity free_atoms create $(v_T-50) 5432373 dist gaussian
+velocity free_atoms create 0 5432373 dist gaussian
 
 # JUMP
 jump SELF common_settings 
@@ -158,8 +158,8 @@ fix nvt NVT_atoms langevin ${T} ${T} ${damp} 48279 # (canonical)
 # fix nvt semifree_atoms langevin ${T} ${T} ${damp} 48279 # (canonical)
 
 fix 2 all balance 1000 1.05 shift xy 10 1.05 # balance number of particles computed on each processor 
-# fix PB_ave PB_tot aveforce NULL NULL 0 # Average z-force
 fix PB_ave PB_tot_rigid aveforce NULL NULL 0 # Average z-force
+# fix PB_ave PB_tot aveforce NULL NULL 0 # Average z-force
 
 
 
@@ -178,7 +178,6 @@ variable Nfreq equal 100    # calculate averages every this many time steps
 # Full sheet
 compute sheet_COM full_sheet com            # Center of mass
 compute sheet_fz full_sheet reduce ave fz   # Average z-force
-# compute bond_coord full_sheet coord/atom cutoff 4.0 group substrate_contact
 compute bond_coord full_sheet coord/atom cutoff ${contact_cut_off} group substrate_contact
 fix full_sheet_bond_hist full_sheet ave/histo 1 1 1 -0.5 1.5 2 c_bond_coord mode vector beyond end
 variable full_sheet_bond_pct equal f_full_sheet_bond_hist[2][3]
@@ -212,7 +211,9 @@ compute Ff_sheet substrate group/group sheet # friction forces
 compute Ff_PB substrate group/group PB_tot # friction forces
 
 ## Temperature of free atoms ##
-compute freeTemp NVE_atoms temp
+# compute freeTemp free_atoms temp
+compute sheetTemp sheet temp
+compute subtopTemp substrate_top temp
 
 
 ## - Activate computes - ## 
@@ -261,7 +262,7 @@ thermo $(v_thermo)
 dump 1 all custom $(v_dump_freq) system_${out_ext}.data id type x y z vx vy vz c_bond_coord
 dump 2 full_sheet custom $(v_dump_freq) full_sheet_${out_ext}.data id type x y z vx vy vz c_bond_coord
 fix coord_out sheet ave/histo ${Nevery} ${Nrepeat} ${Nfreq} -0.5 5.5 6 c_coord mode vector file sheet_${out_ext}_chist.txt
-fix contact_bonds full_sheet ave/time ${Nevery} ${Nrepeat} ${Nfreq} v_sheet_bond_pct v_full_sheet_bond_pct file bond_pct.txt # For presentation purposes
+# fix contact_bonds full_sheet ave/time ${Nevery} ${Nrepeat} ${Nfreq} v_sheet_bond_pct v_full_sheet_bond_pct file bond_pct.txt # For presentation purposes
 
 
 # ---------- Print procedure schedule ---------- #
@@ -304,7 +305,3 @@ print "--------------------"
 print "--------------------"
 print ""
 
-
-
-### Go through this again to verify that the introducing PB rigid and NVT layers is succesfull.
-# Then go through drag and stretch to implement this. 

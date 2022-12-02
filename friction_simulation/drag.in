@@ -74,12 +74,10 @@ restart_file: ${restart_file}&
 
 # ---------- Pause 1 ---------- #
 # Update fixes
-unfix nve
-fix nve semifree_atoms nve
-velocity PB_tot set 0 0 0
+velocity PB_tot_rigid set 0 0 0
 unfix PB_ave 
-fix PB_ave PB_tot aveforce 0 0 0 # Average force vector completely
-thermo_style custom step time cpu cpuremain c_freeTemp
+fix PB_ave PB_tot_rigid aveforce 0 0 0 # Average force vector completely
+thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp
 
 print "--> Pause 1: $(v_pause1_steps) timesteps, $(v_pause1_steps*dt) ps"
 run  $(v_pause1_steps) 
@@ -87,7 +85,7 @@ run  $(v_pause1_steps)
 # ---------- Apply normal force ---------- #
 print "--> Apply normal force = $(v_F_N)"
 fix normal_force PB_tot addforce 0.0 0.0 $(-v_F_N/count(PB_tot))
-thermo_style custom step time cpu cpuremain c_freeTemp v_stretch_pct c_sheet_COM[3] c_Ff[3] f_normal_force[3] c_sheet_fz v_sub_sheet_seperation
+thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct c_sheet_COM[3] c_Ff[3] f_normal_force[3] c_sheet_fz v_sub_sheet_seperation
 
 # Add damper
 variable viscosity equal 0.05
@@ -120,17 +118,17 @@ group virtuel_atom type 3
 if "$(v_K) != 0" then "jump SELF spring_move"
 # Fix move
 unfix nve 
-fix nve free_atoms nve 
-fix move_PB PB_tot move linear $(v_drag_speed*v_drag_dir_x/v_dir_norm) $(v_drag_speed*v_drag_dir_y/v_dir_norm) NULL units box 
-thermo_style custom step time cpu cpuremain c_freeTemp v_stretch_pct c_sheet_COM[1] c_sheet_COM[2] c_Ff[1] c_Ff[2] v_move_force_xy_norm  
+fix nve non_drag_atoms nve 
+fix move_PB PB_tot_rigid move linear $(v_drag_speed*v_drag_dir_x/v_dir_norm) $(v_drag_speed*v_drag_dir_y/v_dir_norm) NULL units box 
+thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct c_sheet_COM[1] c_sheet_COM[2] c_Ff[1] c_Ff[2] v_move_force_xy_norm  
 jump SELF after_move_commands
 
 # Spring move
 label spring_move
-fix spring_force PB_tot spring couple virtuel_atom $(v_K) 0.0 0.0 NULL 0.0
+fix spring_force PB_tot_rigid spring couple virtuel_atom $(v_K) 0.0 0.0 NULL 0.0
 variable v_move_force_x equal f_spring_force[1] 
 variable v_move_force_y equal f_spring_force[2] 
-thermo_style custom step time cpu cpuremain c_freeTemp v_stretch_pct c_sheet_COM[1] c_sheet_COM[2] f_spring_force[4]
+thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct c_sheet_COM[1] c_sheet_COM[2] f_spring_force[4]
 label after_move_commands
 
 

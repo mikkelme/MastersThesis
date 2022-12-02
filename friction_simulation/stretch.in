@@ -17,18 +17,19 @@ restart        v_stride stretch_*_restart
 
 label no_restart
 
+
 # ----------  Relax sheet ---------- #
 # Add spring to restrict rotation or movement of sheet COM:
 #  - Hold PB COM in initial x-position
 #  - Hold sheet COM in initial position
-fix PB_ylow_x_hold PB_ylow spring tether 1e5 $(c_sheet_COM[1]) NULL NULL 0.0
-fix PB_high_x_hold PB_yhigh spring tether 1e5 $(c_sheet_COM[1]) NULL NULL 0.0
+fix PB_ylow_x_hold PB_ylow_rigid spring tether 1e5 $(c_sheet_COM[1]) NULL NULL 0.0
+fix PB_high_x_hold PB_yhigh_rigid spring tether 1e5 $(c_sheet_COM[1]) NULL NULL 0.0
 fix sheet_COM_hold full_sheet spring tether 1e5 $(c_sheet_COM[1]) $(c_sheet_COM[2]) NULL 0.0
 
 print "--> Relax: $(v_relax_steps) timesteps, $(v_relax_steps*dt) ps"
 
 
-thermo_style custom step time cpu cpuremain c_freeTemp v_stretch_pct v_sheet_bond_pct v_full_sheet_bond_pct
+thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_sheet_bond_pct v_full_sheet_bond_pct
 run $(v_relax_steps-1)
 
 # Lock S0 after relaxing and export S0 info via y-pos of tmp type 3 atom
@@ -44,13 +45,8 @@ unfix sheet_COM_hold
 
 # ---------- Stretch sheet ---------- #
 # Update fixes
-unfix nve
-unfix nvt
-fix nve free_atoms nve 
-fix nvt free_atoms langevin ${T} ${T} ${damp} 48279
-
-fix ylow_move  PB_ylow move linear 0 $(-v_stretch_speed/2) NULL units box
-fix yhigh_move PB_yhigh move linear 0 $(v_stretch_speed/2) NULL units box
+fix ylow_move  PB_ylow_rigid move linear 0 $(-v_stretch_speed/2) NULL units box
+fix yhigh_move PB_yhigh_rigid move linear 0 $(v_stretch_speed/2) NULL units box
 
 print "--> Stretch: $(v_stretch_steps) timesteps, $(v_stretch_steps*dt) ps"
 run $(v_stretch_steps)

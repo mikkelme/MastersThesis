@@ -3,9 +3,9 @@ variable T equal 100.0
 variable relax_time equal 15
 variable pause_time1 equal 5
 variable pause_time2 equal 5 
-variable stretch_speed_pct equal 0.01 
-variable drag_speed equal 1 
-variable drag_length equal 20 
+variable stretch_speed_pct equal 0.05 
+variable drag_speed equal 2 
+variable drag_length equal 50 
 variable K equal 1.8724527210000002 
 variable root string ..
 variable out_ext string test
