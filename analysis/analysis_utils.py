@@ -125,15 +125,12 @@ def decompose_wrt_drag_dir(x, y, drag_direction):
     return proj_para, proj_perp
 
 
-def analyse_friction_file(filename, avg_pct = 1, std_pct = 0):
+def analyse_friction_file(filename, mean_pct = 1, std_pct = 0):
     # window_length = 50
     # polyorder = 5
-    
     info = read_info_file('/'.join(filename.split('/')[:-1]) + '/info_file.txt' )
     drag_direction = np.array((info['drag_dir_x'], info['drag_dir_y']))
     dt = info['dt']
-    
-    
     
     
     
@@ -163,67 +160,51 @@ def analyse_friction_file(filename, avg_pct = 1, std_pct = 0):
     FN_PB = np.mean(Ff_PB[:,2])
     FN = np.array((FN_full_sheet, FN_sheet, FN_PB))
     
-    avg_len = int(len(Ff_full_sheet) * avg_pct)
-
+    
+    mean_window = int(len(time) * mean_pct)
+    
     max_full_sheet = Ff_full_sheet[:,0].max()
-    avg_full_sheet = np.mean(Ff_full_sheet[-avg_len:,0])
-    
     max_sheet = Ff_sheet[:,0].max()
-    avg_sheet = np.mean(Ff_sheet[-avg_len:,0])
-    
     max_PB = Ff_PB[:,0].max()
-    avg_PB = np.mean(Ff_PB[-avg_len:,0])
     
-    Ff = np.array([[max_full_sheet, avg_full_sheet],
-                    [max_sheet, avg_sheet],
-                    [max_PB, avg_PB]])
+    contact = np.vstack((data['v_full_sheet_bond_pct'], data['v_sheet_bond_pct'])).T
     
     
-    Ff_std = np.full(np.shape(Ff), np.nan)
+    if std_pct is None:
+        mean_full_sheet = np.mean(Ff_full_sheet[-mean_window:,0])
+        mean_sheet = np.mean(Ff_sheet[-mean_window:,0])
+        mean_PB = np.mean(Ff_PB[-mean_window:,0])
+        Ff_std = np.full(3, np.nan)
     
-    contact = np.vstack((data['v_full_sheet_bond_pct'], data['v_sheet_bond_pct']))
-    contact_mean = np.mean(contact[:, -avg_len:], axis = 1)
-    
-    
-  
-    # try: # Contact area
-    #     contact = np.vstack((data['v_full_sheet_bond_pct'], data['v_sheet_bond_pct']))
-    #     # contact[0], contact[1] = savgol_filter(window_length, polyorder, contact[0], contact[1])
-    #     varnames.append("contact")
-    # except KeyError:
-    #     pass
-    
-    
-    
-    if std_pct != 0:
-        print("Std calculation not implemented efficient")
-        exit()
-        #### Running mean and running std
-        mean = np.zeros(3)
-        Ff_std = np.zeros((3, 2))
-        Ff_groups = [Ff_full_sheet, Ff_sheet, Ff_PB]
-        if avg_pct < 0.8: # XXX
-            for g in range(3):
+        contact_mean_full_sheet = np.mean(contact[-mean_window:, 0])
+        contact_mean_sheet = np.mean(contact[-mean_window:, 1])
+        contact_std = np.full(2, np.nan)
         
-                test = Ff_groups[g][:, 0]
-                runmean, _ = running_mean(test, window_len = int(avg_pct*len(test)))
-                _, runmean_runstd  = running_mean(runmean, window_len = int(std_pct*len(runmean)))
-                mean[g] = runmean[~np.isnan(runmean)][-1]
-                Ff_std[g, 1] = runmean_runstd[~np.isnan(runmean_runstd)][-1]
-                
-                cummax = cum_max(test)
-                _, cummax_runstd = running_mean(cummax, window_len = int(std_pct*len(cummax)))
-                Ff_std[g, 0] = cummax_runstd[~np.isnan(cummax_runstd)][-1]
-
-        varnames.append('Ff_std')
-        avg_full_sheet, avg_sheet, avg_PB = mean
+    
+    
+    else:
+        std_window = int(len(time) * std_pct)
         
-        Ff = np.array([[max_full_sheet, avg_full_sheet],
-                        [max_sheet, avg_sheet],
-                        [max_PB, avg_PB]])
+        mean_full_sheet, std_full_sheet = mean_cut_and_std(Ff_full_sheet[:, 0], mean_window, std_window)
+        mean_sheet, std_sheet = mean_cut_and_std(Ff_sheet[:, 0], mean_window, std_window)
+        mean_PB, std_PB = mean_cut_and_std(Ff_PB[:, 0], mean_window, std_window)
+        
+        contact_mean_full_sheet, contact_std_full_sheet = mean_cut_and_std(contact[:, 0], mean_window, std_window)
+        contact_mean_sheet, contact_std_sheet = mean_cut_and_std(contact[:, 1], mean_window, std_window)    
+        
+        Ff_std = np.array([std_full_sheet, std_sheet, std_PB])
+        contact_std = np.array([contact_std_full_sheet, contact_std_sheet])
+        
+    
+    Ff = np.array([[max_full_sheet, mean_full_sheet],
+                    [max_sheet, mean_sheet],
+                    [max_PB, mean_PB]])
+    
+        
+    contact_mean = np.array([contact_mean_full_sheet, contact_mean_sheet])
     
     
-    varnames = ['time', 'move_force', 'Ff_full_sheet', 'Ff_sheet', 'Ff_PB', 'COM_sheet', 'FN', 'Ff', 'Ff_std', 'contact', 'contact_mean']
+    varnames = ['time', 'move_force', 'Ff_full_sheet', 'Ff_sheet', 'Ff_PB', 'COM_sheet', 'FN', 'Ff', 'Ff_std', 'contact', 'contact_mean', 'contact_std']
 
     # output
     updated_data = {}
@@ -409,19 +390,26 @@ def cum_std(arr, points = 100):
 #     # return np.convolve(arr, mean_window, mode='valid')
 #     return out
 
-def running_mean(arr, window_len = 10):
+def running_mean(arr, window_len = 1000):
     assert window_len <= len(arr), "window length cannot be longer than array length."
     assert window_len > 0, "window length must be > 0"
     mean_window = np.ones(window_len)/window_len
     
-    left_padding = window_len//2
-    right_padding = (window_len-1)//2
+    
+    # left_padding = window_len//2
+    # right_padding = (window_len-1)//2
+    
+    left_padding = window_len//2 + (window_len-1)//2
+    right_padding = 0
+    
+
+    # print(left_padding, right_padding)
     new_arr = np.full(len(arr) + left_padding + right_padding, np.nan)
     new_arr[left_padding or None:-right_padding or None] = arr
     
     mean = np.convolve(new_arr, mean_window, mode='valid')
     mean_sqr = np.convolve(new_arr**2, mean_window, mode='valid')
-    std = mean_sqr - mean**2
+    std = np.sqrt(mean_sqr - mean**2)
     
     
     # return np.convolve(arr, mean_window, mode='valid')
@@ -534,16 +522,22 @@ def add_xaxis(ax1, x, xnew, xlabel, decimals = 1):
     
     
 
-def plot_heatmap(heat, param1, param2):
+def plot_heatmap(heat, param1, param2, title = None):
     # Heatmap
-    heat = heat.astype('float')
     param1_label, param1_vals = param1
     param2_label, param2_vals = param2
-    fig, ax = plt.subplots(figsize=(7, 7))
+    
+    heat = heat.astype('float')
+    # param2_vals = param2_vals.astype('float')
+    # param2_vals = param2_vals.astype('float')
+    
+    fig, ax = plt.subplots(figsize=(7, 7), num = unique_fignum())
+    if title is not None:
+        fig.suptitle(title)
     sns.set()
-    print(np.shape(heat))
     sns.heatmap(heat.T, ax=ax,  xticklabels=np.around(param1_vals, 2),
-                                yticklabels=np.around(param2_vals, 2))
+                                yticklabels=np.around(param2_vals, 2),
+                                annot = False)
     # sns.heatmap(heat, xticklabels=np.around(param1_vals, 2),
     #             yticklabels=np.around(param2_vals, 2), annot=True, ax=ax)
     
@@ -560,9 +554,45 @@ def unique_fignum():
         fignum = plt.get_fignums()[-1] + 1
     return fignum
 
+
+
+def mean_cut_and_std(arr, mean_window, std_window):
+    """ Calculate mean of last <mean_window> of array (of length: mean_window)
+        and standard deviation of last <std_window> of a running mean
+        with length <mean_window>. """
+        
+    assert mean_window + std_window <= len(arr), "Window error: mean_window + std_window > array length"
+    assert 2 <= mean_window and mean_window <= len(arr), "Mean window must be in the interval [2, array length]"
+    
+        
+    # Running mean of needed part for std
+    end_part = mean_window + std_window 
+    running_mean = np.convolve(arr[::-1][:end_part], np.ones(mean_window)/mean_window, mode='valid')
+    
+    # Output
+    mean = running_mean[0]
+    std = np.std(running_mean[:std_window])
+    return mean, std
+        
+    
+    
+
+
 if __name__ == "__main__":
     # filename = "../friction_simulation/my_simulation_space/rdf.txt"
     # read_ave_time_vector(filename)
     
-    filename = "../friction_simulation/my_simulation_space/info_file.txt"
-    read_info_file(filename)
+    # filename = "../friction_simulation/my_simulation_space/info_file.txt"
+    
+    filename = "../Data/Multi/nocuts/ref2/stretch_15000_folder/job5/system_drag_Ff.txt"
+    data = analyse_friction_file(filename, avg_pct = 1, std_pct = 0)
+    # arr = data['Ff_full_sheet'][:,0]
+    arr = data['contact'][:,0]
+    # print(np.shape(arr))
+    # exit()
+    mw = int(0.5*len(arr))
+    sw = int(0.1*len(arr))
+
+    mean, std =mean_cut_and_std(arr, mw, None)
+    print(mean, std)
+    

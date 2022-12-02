@@ -2,9 +2,9 @@ from simulation_runner import *
 
 def one_config_multi_data():
     main_folder = 'Multi'
-    test_name   = 'cuts'
-    sim_name    = 'ref5'
-    jobname     = 'cuts' 
+    test_name   = 'contact_area_cut130'
+    sim_name    = 'cut130'
+    jobname     = 'cut130' 
     
     
     variables = {
@@ -15,26 +15,26 @@ def one_config_multi_data():
         "pause_time2": 10,
         "stretch_speed_pct": 0.001,
         "drag_speed": 20, # [m/s]
-        "drag_length": 400, # <--- Should be super safe!
+        "drag_length": 200, # <--- Should be super safe!
         "K": 30.0,
         "root": "..",
         "out_ext": date.today(), 
         # "config_data": "sheet_substrate_nocuts",
         "config_data": "sheet_substrate",
-        "stretch_max_pct": 0.22,
+        "stretch_max_pct": 0.20,
         "drag_dir_x": 0,
         "drag_dir_y": 1
     }
   
     # Varying paramters  
-    num_stretch_files = 45
+    num_stretch_files = 5
     # F_N = np.array([10, 100, 200, 300])*1e-9
-    F_N = np.linspace(0.01e-9, 0.1e-9, 6)
+    F_N = np.linspace(0.1e-9, 1e-9, 3)
     
     print(f"Samples: {num_stretch_files} x {len(F_N)} = {num_stretch_files*len(F_N)}")
     print(f"Stretch: {np.around(np.linspace(0,variables['stretch_max_pct'], num_stretch_files), decimals = 3)}")
     print(f"F_N: {F_N*1e9} nN")
-    exit("Safety break")
+    # exit("Safety break")
     
     proc = Simulation_runner(variables)
     header = f"egil:{main_folder}/{test_name}/"
@@ -45,5 +45,5 @@ def one_config_multi_data():
 
 
 if __name__ == "__main__":
-    # Run ref 5 with ultra low FN
-    one_config_multi_data()
+    # Run ref 5 with ultra low FN?
+    # one_config_multi_data()

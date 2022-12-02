@@ -4,19 +4,35 @@ def drag_length_dependency(filename):
     data = analyse_friction_file(filename)    
     time = data['time']
     COM = data['COM_sheet'][:,0]
-    contact = data['contact'][0]
+    contact = data['contact'][:,0]
     
-    quantile = 0.999
-    window_len_pct = 0.5
+    info = read_info_file('/'.join(filename.split('/')[:-1]) + '/info_file.txt' )
+    VA_pos = (time - time[0]) * info['drag_speed']  # virtual atom position
     
-        
+   
+    # mean_window = int(np.argmin(np.abs(VA_pos - 50)))
+    mean_window = int(0.5*len(time))
+    std_window = int(0.2*mean_window)
+    
+    
     group_name = {0: 'full_sheet', 1: 'sheet', 2: 'PB'}
     for g in reversed(range(1)):
-        fig = plt.figure(num = unique_fignum())
-        fig.suptitle(filename)
+        
+        fig2 = plt.figure(num = unique_fignum())
+        fig2.suptitle(filename)
+        grid = (1,2)
+        ax3 = plt.subplot2grid(grid, (0, 0), colspan=1)
+        ax4 = plt.subplot2grid(grid, (0, 1), colspan=1)
+        
+       
+       
+        fig1 = plt.figure(num = unique_fignum())
+        fig1.suptitle(filename)
+        
         grid = (1,2)
         ax1 = plt.subplot2grid(grid, (0, 0), colspan=1)
         ax2 = plt.subplot2grid(grid, (0, 1), colspan=1)
+        
         
         Ff = data[f'Ff_{group_name[g]}'][:,0]
         
@@ -25,26 +41,41 @@ def drag_length_dependency(filename):
         # B = data[f'Ff_{group_name[g]}'][:,1]
         # Ff = np.sqrt(A**2 + B**2)
         
-        ax1.plot(time, Ff, label = f'Ydata ({group_name[g]})')
-        ax1.plot(time, cum_mean(Ff), label = "Cum mean")
-        ax1.plot(time, running_mean(Ff, window_len = int(window_len_pct*len(Ff)))[0], label = "running mean")
-        ax1.plot(time, cum_max(Ff), label = "Cum max")
-        ax1.plot(time, cumTopQuantileMax(Ff, quantile, brute_force = False), label = f"Top {quantile*100}% max mean")
-        ax1.set(xlabel="Time", ylabel='$F_\parallel$ [nN]')
+        runmean = running_mean(Ff, window_len = mean_window)[0]
+        rel_std = running_mean(runmean, window_len = std_window)[1]/runmean[~np.isnan(runmean)][-1]
+        
+        ax1.plot(VA_pos, Ff, label = f'Ydata ({group_name[g]})')
+        ax1.plot(VA_pos, cum_mean(Ff), label = "Cum mean")
+        ax1.plot(VA_pos, runmean, label = "running mean")
+        ax1.plot(VA_pos, cum_max(Ff), label = "Cum max")
+        # ax1.plot(VA_pos, cumTopQuantileMax(Ff, quantile, brute_force = False), label = f"Top {quantile*100}% max mean")
+        ax1.set(xlabel='COM$\parallel$ [Å]', ylabel='$F_\parallel$ [nN]')
         ax1.legend(loc = 'lower center', fontsize = 10, ncol=2, fancybox = True, shadow = True)
               
-        ax2.plot(time, contact, label = "Ydata (full sheet)")
-        ax2.plot(time, cum_mean(contact), label = "Cum mean")
-        ax2.plot(time, running_mean(contact, window_len = int(window_len_pct*len(contact)))[0], label = "running mean")
-        ax2.legend(loc = 'lower center', fontsize = 10, ncol=2, fancybox = True, shadow = True)
-        ax2.set(xlabel="Time", ylabel='Contact (Full sheet) [%]')
-            
+        ax3.plot(VA_pos, rel_std, label = "Ff std")
+        ax3.set(xlabel='COM$\parallel$ [Å]', ylabel='Ff rel. runmean std')
+        runmean = running_mean(contact, window_len = mean_window)[0]
+        rel_std = running_mean(runmean, window_len = std_window)[1]/runmean[~np.isnan(runmean)][-1]
         
-    for ax in [ax1, ax2]:
-        add_xaxis(ax, time, COM, xlabel='COM$\parallel$ [Å]', decimals = 1)    
+        
+        ax2.plot(VA_pos, contact, label = "Ydata (full sheet)")
+        ax2.plot(VA_pos, cum_mean(contact), label = "Cum mean")
+        ax2.plot(VA_pos, runmean, label = "running mean")
+        ax2.legend(loc = 'lower center', fontsize = 10, ncol=2, fancybox = True, shadow = True)
+        ax2.set(xlabel='COM$\parallel$ [Å]', ylabel='Contact (Full sheet) [%]')
+        
+        ref = runmean[~np.isnan(runmean)][-1]
+        ax4.plot(VA_pos, rel_std, label = "Contact std")
+        ax4.set(xlabel='COM$\parallel$ [Å]', ylabel='Contact rel. runmean std')
+
+        
+    # for ax in [ax1, ax2]:
+    #     add_xaxis(ax, time, VA_pos, xlabel='COM$\parallel$ [Å]', decimals = 1)    
     
-    fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
-    return interactive_plotter(fig)
+    for fig in [fig1, fig2]:
+        fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    
+    return [interactive_plotter(fig) for fig in [fig1, fig2]]
     
     
 def drag_length_compare(filenames):
@@ -312,7 +343,7 @@ if __name__ == "__main__":
                 #    '../Data/Multi/nocuts/ref1/stretch_315000_folder/job2/system_drag_Ff.txt']
     
     
-    obj = drag_length_dependency('../Data/Multi/cuts/ref3/stretch_230000_folder/job5/system_drag_Ff.txt')
+    obj = drag_length_dependency('../Data/Multi/cuts/ref3/stretch_15000_folder/job0/system_drag_Ff.txt')
     
     
     # vel_compare.pop(4)

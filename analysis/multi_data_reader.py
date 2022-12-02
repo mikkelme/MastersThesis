@@ -9,15 +9,15 @@ def read_info_file_old(filename):
     
 
 
-def read_multi_folder(folder, eval_rupture = False, stretch_lim = [None, None],  FN_lim = [None, None]):
+def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.01, eval_rupture = False, stretch_lim = [None, None],  FN_lim = [None, None]):
     # Settings
     info_file = 'info_file.txt'
     friction_ext = 'Ff.txt'
     chist_ext = 'chist.txt'
     ruptol = 0 # 0.5
     
-    avg_pct = 0.5 # last % to average over
-    std_pct = 0
+    # avg_pct = 0.5 # last % to average over
+    # std_pct = 0.01
         
     data = []
     stretchfile = find_single_file(folder, ext = chist_ext)
@@ -41,18 +41,18 @@ def read_multi_folder(folder, eval_rupture = False, stretch_lim = [None, None], 
                 else: 
                     rupture_score = 0
                 
-                
+                # Get data
                 friction_file = find_single_file(job_dir, ext = friction_ext)     
-                fricData = analyse_friction_file(friction_file, avg_pct, std_pct)
-                data.append((stretch_pct, F_N, fricData['Ff'], fricData['Ff_std'], rupture_score, job_dir, fricData['contact_mean']))  
-                
+                fricData = analyse_friction_file(friction_file, mean_pct, std_pct)
+                data.append((stretch_pct, F_N, fricData['Ff'], fricData['Ff_std'], rupture_score, job_dir, fricData['contact_mean'], fricData['contact_std']))  
+            
             except FileNotFoundError:
                 print(f"<-- Missing file")
     print()
     
     
     data = np.array(data, dtype = 'object')
-    stretch_pct, F_N, Ff, Ff_std, rup, filenames, contact = organize_data(data)
+    stretch_pct, F_N, Ff, Ff_std, rup, filenames, contact_mean, contact_std = organize_data(data)
     
     # Trim to limits 
     if stretch_lim[0] == None: stretch_lim[0] = np.min(stretch_pct) - 1
@@ -69,7 +69,8 @@ def read_multi_folder(folder, eval_rupture = False, stretch_lim = [None, None], 
     Ff_std = Ff_std[stretch_args][:, FN_args]
     rup = rup[stretch_args][:, FN_args] > ruptol
     filenames = filenames[stretch_args][:, FN_args]
-    contact = contact[stretch_args][:, FN_args].astype('float')
+    contact_mean = contact_mean[stretch_args][:, FN_args].astype('float')
+    contact_std = contact_std[stretch_args][:, FN_args].astype('float')
     
     
     if eval_rupture:
@@ -88,12 +89,12 @@ def read_multi_folder(folder, eval_rupture = False, stretch_lim = [None, None], 
         print("eval_rupture = False")
     
     
-    return stretch_pct, F_N, Ff, Ff_std, rup, filenames, contact
+    return  stretch_pct, F_N, Ff, Ff_std, rup, filenames, contact_mean, contact_std 
 
 
-def plot_multi(folders, eval_rupture = False, stretch_lim = [None, None],  FN_lim = [None, None]):
+def plot_multi(folders, mean_pct = 0.5, std_pct = 0.01, eval_rupture = False, stretch_lim = [None, None],  FN_lim = [None, None]):
     for folder in folders:
-        stretch_pct, F_N, Ff, Ff_std, rup, filenames, contact = read_multi_folder(folder, eval_rupture, stretch_lim, FN_lim)
+        stretch_pct, F_N, Ff, Ff_std, rup, filenames, contact_mean, contact_std = read_multi_folder(folder, mean_pct, std_pct, eval_rupture, stretch_lim, FN_lim)
     
         group_name = {0: 'Full sheet', 1: 'Sheet', 2: 'PB'}
         linewidth = 1.5
@@ -136,14 +137,14 @@ def plot_multi(folders, eval_rupture = False, stretch_lim = [None, None],  FN_li
                 ax2.plot(F_N[rup_false], Ff[i, rup_false, group, 1], linestyle = 'None', marker = marker, markersize = markersize, color=color)  
                 
                 
-                sortidx = np.argsort(contact[i,:,1])
-                ax5.plot(contact[i, sortidx,1], Ff[i, sortidx, group, 0], color = color, linewidth = linewidth, markersize = markersize, label = f'stretch = {stretch_pct[i]:g}')                
-                ax5.plot(contact[i,sortidx[rup_true],1], Ff[i, sortidx[rup_true], group, 0], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color=color)  
-                ax5.plot(contact[i, sortidx[rup_false],1], Ff[i, sortidx[rup_false], group, 0], linestyle = 'None', marker = marker, markersize = markersize, color=color)  
+                sortidx = np.argsort(contact_mean[i,:,1])
+                ax5.plot(contact_mean[i, sortidx,1], Ff[i, sortidx, group, 0], color = color, linewidth = linewidth, markersize = markersize, label = f'stretch = {stretch_pct[i]:g}')                
+                ax5.plot(contact_mean[i,sortidx[rup_true],1], Ff[i, sortidx[rup_true], group, 0], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color=color)  
+                ax5.plot(contact_mean[i, sortidx[rup_false],1], Ff[i, sortidx[rup_false], group, 0], linestyle = 'None', marker = marker, markersize = markersize, color=color)  
                 
-                ax6.plot(contact[i, sortidx,1], Ff[i, sortidx, group, 1], color = color, linewidth = linewidth, markersize = markersize, label = f'stretch = {stretch_pct[i]:g}')
-                ax6.plot(contact[i, sortidx[rup_true],1], Ff[i, sortidx[rup_true], group, 1], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color=color)  
-                ax6.plot(contact[i, sortidx[rup_false],1], Ff[i, sortidx[rup_false], group, 1], linestyle = 'None', marker = marker, markersize = markersize, color=color)  
+                ax6.plot(contact_mean[i, sortidx,1], Ff[i, sortidx, group, 1], color = color, linewidth = linewidth, markersize = markersize, label = f'stretch = {stretch_pct[i]:g}')
+                ax6.plot(contact_mean[i, sortidx[rup_true],1], Ff[i, sortidx[rup_true], group, 1], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color=color)  
+                ax6.plot(contact_mean[i, sortidx[rup_false],1], Ff[i, sortidx[rup_false], group, 1], linestyle = 'None', marker = marker, markersize = markersize, color=color)  
                 
 
                 
@@ -178,14 +179,14 @@ def plot_multi(folders, eval_rupture = False, stretch_lim = [None, None],  FN_li
                 ax4.plot(stretch_pct[rup_false], Ff[rup_false, j, group, 1], linestyle = 'None', marker = marker, markersize = markersize, color=color)  
                 
                 
-                sortidx = np.argsort(contact[:,j,1])
-                ax7.plot(contact[sortidx,j,1], Ff[sortidx, j, group, 0], color = color, linewidth = linewidth, markersize = markersize, label = f'F_N = {F_N[j]:g}')                
-                ax7.plot(contact[sortidx[rup_true],j,1], Ff[sortidx[rup_true], j, group, 0], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color=color)  
-                ax7.plot(contact[sortidx[rup_false],j,1], Ff[sortidx[rup_false], j, group, 0], linestyle = 'None', marker = marker, markersize = markersize, color=color)  
+                sortidx = np.argsort(contact_mean[:,j,1])
+                ax7.plot(contact_mean[sortidx,j,1], Ff[sortidx, j, group, 0], color = color, linewidth = linewidth, markersize = markersize, label = f'F_N = {F_N[j]:g}')                
+                ax7.plot(contact_mean[sortidx[rup_true],j,1], Ff[sortidx[rup_true], j, group, 0], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color=color)  
+                ax7.plot(contact_mean[sortidx[rup_false],j,1], Ff[sortidx[rup_false], j, group, 0], linestyle = 'None', marker = marker, markersize = markersize, color=color)  
                 
-                ax8.plot(contact[sortidx,j,1], Ff[sortidx, j, group, 1], color = color, linewidth = linewidth, markersize = markersize, label = f'F_N = {F_N[j]:g}')
-                ax8.plot(contact[sortidx[rup_true],j,1], Ff[sortidx[rup_true], j, group, 1], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color=color)  
-                ax8.plot(contact[sortidx[rup_false],j,1], Ff[sortidx[rup_false], j, group, 1], linestyle = 'None', marker = marker, markersize = markersize, color=color)  
+                ax8.plot(contact_mean[sortidx,j,1], Ff[sortidx, j, group, 1], color = color, linewidth = linewidth, markersize = markersize, label = f'F_N = {F_N[j]:g}')
+                ax8.plot(contact_mean[sortidx[rup_true],j,1], Ff[sortidx[rup_true], j, group, 1], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color=color)  
+                ax8.plot(contact_mean[sortidx[rup_false],j,1], Ff[sortidx[rup_false], j, group, 1], linestyle = 'None', marker = marker, markersize = markersize, color=color)  
                 
 
                 
@@ -216,7 +217,7 @@ def plot_multi(folders, eval_rupture = False, stretch_lim = [None, None],  FN_li
         ax44 = plt.subplot2grid(grid, (1, 1), colspan=1)
 
 
-        ymin = np.min(contact)
+        ymin = np.min(contact_mean)
         for j in range(len(F_N)):                
                 color = get_color_value(F_N[j], np.min(F_N), np.max(F_N))
                 rup_true = np.argwhere(rup[:, j])
@@ -224,15 +225,15 @@ def plot_multi(folders, eval_rupture = False, stretch_lim = [None, None],  FN_li
                 
                 
                 ### XXX: GET contact max as well???
-                ax11.plot(stretch_pct, contact[:,j,0], color = color, linewidth = linewidth, markersize = markersize, label = f'F_N = {F_N[j]:g}')
-                ax11.plot(stretch_pct[rup_true], contact[rup_true, j, 0], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color=color)  
-                ax11.plot(stretch_pct[rup_false], contact[rup_false, j, 0], linestyle = 'None', marker = marker, markersize = markersize, color=color)  
+                ax11.plot(stretch_pct, contact_mean[:,j,0], color = color, linewidth = linewidth, markersize = markersize, label = f'F_N = {F_N[j]:g}')
+                ax11.plot(stretch_pct[rup_true], contact_mean[rup_true, j, 0], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color=color)  
+                ax11.plot(stretch_pct[rup_false], contact_mean[rup_false, j, 0], linestyle = 'None', marker = marker, markersize = markersize, color=color)  
                 
-                ax22.plot(stretch_pct, contact[:,j,1], color = color, linewidth = linewidth, markersize = markersize, label = f'F_N = {F_N[j]:g}')
-                ax22.plot(stretch_pct[rup_true], contact[rup_true, j, 1], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color=color)  
-                ax22.plot(stretch_pct[rup_false], contact[rup_false, j, 1], linestyle = 'None', marker = marker, markersize = markersize, color=color)  
+                ax22.plot(stretch_pct, contact_mean[:,j,1], color = color, linewidth = linewidth, markersize = markersize, label = f'F_N = {F_N[j]:g}')
+                ax22.plot(stretch_pct[rup_true], contact_mean[rup_true, j, 1], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color=color)  
+                ax22.plot(stretch_pct[rup_false], contact_mean[rup_false, j, 1], linestyle = 'None', marker = marker, markersize = markersize, color=color)  
             
-        ylim = (np.min(contact[~np.isnan(contact)]), np.max(contact[~np.isnan(contact)]))
+        ylim = (np.min(contact_mean[~np.isnan(contact_mean)]), np.max(contact_mean[~np.isnan(contact_mean)]))
 
         ax11.set(xlabel='stretch [%]', ylabel='contact (full sheet) [%]')
         ax11.set_ylim(ylim)
@@ -251,16 +252,16 @@ def plot_multi(folders, eval_rupture = False, stretch_lim = [None, None],  FN_li
                 rup_true = np.argwhere(rup[i, :])
                 rup_false = np.argwhere(~rup[i, :])
                 
-                ax33.plot(F_N, contact[i, :, 0], color = color, linewidth = linewidth, label = f'stretch = {stretch_pct[i]:g}')
-                ax33.plot(F_N[rup_true], contact[i, rup_true, 0], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color=color)  
-                ax33.plot(F_N[rup_false], contact[i, rup_false, 0], linestyle = 'None', marker = marker, markersize = markersize, color=color)  
+                ax33.plot(F_N, contact_mean[i, :, 0], color = color, linewidth = linewidth, label = f'stretch = {stretch_pct[i]:g}')
+                ax33.plot(F_N[rup_true], contact_mean[i, rup_true, 0], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color=color)  
+                ax33.plot(F_N[rup_false], contact_mean[i, rup_false, 0], linestyle = 'None', marker = marker, markersize = markersize, color=color)  
                 
-                ax44.plot(F_N, contact[i, :, 1], color = color, linewidth = linewidth, label = f'stretch = {stretch_pct[i]:g}')
-                ax44.plot(F_N[rup_true], contact[i, rup_true, 1], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color=color)  
-                ax44.plot(F_N[rup_false], contact[i, rup_false, 1], linestyle = 'None', marker = marker, markersize = markersize, color=color)  
+                ax44.plot(F_N, contact_mean[i, :, 1], color = color, linewidth = linewidth, label = f'stretch = {stretch_pct[i]:g}')
+                ax44.plot(F_N[rup_true], contact_mean[i, rup_true, 1], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color=color)  
+                ax44.plot(F_N[rup_false], contact_mean[i, rup_false, 1], linestyle = 'None', marker = marker, markersize = markersize, color=color)  
                 
 
-        ylim = (np.min(contact[~np.isnan(contact)]), np.max(contact[~np.isnan(contact)]))
+        ylim = (np.min(contact_mean[~np.isnan(contact_mean)]), np.max(contact_mean[~np.isnan(contact_mean)]))
 
         ax33.set(xlabel='$F_N$ [nN]', ylabel='contact (full sheet) [%]')
         ax33.set_ylim(ylim)
@@ -282,19 +283,21 @@ def plot_multi(folders, eval_rupture = False, stretch_lim = [None, None],  FN_li
 
 
 
-def stability_heatmap(folders, eval_rupture = False):
+def stability_heatmap(folders, mean_pct = 0.5, std_pct = 0.01, eval_rupture = False):
     stretch_lim = [None, 0.23]
     FN_lim = [None, 220]
     for folder in folders:
-        stretch_pct, F_N, Ff, Ff_std, rup, filenames, contact = read_multi_folder(folder, eval_rupture, stretch_lim, FN_lim)
+        stretch_pct, F_N, Ff, Ff_std, rup, filenames, contact_mean, contact_std = read_multi_folder(folder, mean_pct, std_pct, eval_rupture, stretch_lim, FN_lim)
         
-        
-        plot_heatmap( Ff_std[:, :, 0, 1],
+        print()
+        plot_heatmap( Ff_std[:, :, 0],
                      ['Stretch [%]', stretch_pct], 
                      ['$F_N$ [nN]', F_N])
         
 
         plt.show()
+        
+        
 
 if __name__ == "__main__":
     # folders = ['../Data/multi_fast']
@@ -304,6 +307,8 @@ if __name__ == "__main__":
     # stability_heatmap(folders)
     
     folders = ['../Data/Multi/cuts/ref4']
-    obj = plot_multi(folders, False, stretch_lim = [None, None])
+    
+    # obj = plot_multi(folders)
+    stability_heatmap(folders)
     plt.show()
     
