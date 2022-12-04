@@ -337,13 +337,13 @@ if __name__ == "__main__":
     
     
     
-    custom_comp = [ '../Data/Multi/nocuts/ref1/stretch_15000_folder/job0/system_drag_Ff.txt',
-                    '../Data/Multi/nocuts/ref1/stretch_15000_folder/job1/system_drag_Ff.txt',
-                    '../Data/Multi/nocuts/ref1/stretch_15000_folder/job2/system_drag_Ff.txt']
+    custom_comp = [ '../Data/Multi/updated_LJ/ref1/stretch_15000_folder/job0/system_drag_Ff.txt',
+                    '../Data/Multi/contact_area_cut130/cut130/stretch_15000_folder/job0/system_drag_Ff.txt']
                 #    '../Data/Multi/nocuts/ref1/stretch_315000_folder/job2/system_drag_Ff.txt']
     
     
-    obj = drag_length_dependency('../Data/Multi/cuts/ref3/stretch_15000_folder/job0/system_drag_Ff.txt')
+    obj = drag_length_dependency('../Data/Multi/updated_LJ/ref1/stretch_15000_folder/job2/system_drag_Ff.txt')
+    obj = drag_length_dependency('../Data/Multi/contact_area_cut110/cut110/stretch_15000_folder/job2/system_drag_Ff.txt')
     
     
     # vel_compare.pop(4)

@@ -314,7 +314,7 @@ if __name__ == "__main__":
     # folders = ['../Data/BIG_MULTI_nocut']
     # stability_heatmap(folders)
     
-    folders = ['../Data/Multi/contact_area_cut130/cut130']
+    folders = ['../Data/Multi/updated_LJ/ref1']
     # folders = ['../Data/Multi/contact_area_cut80/cut80',
     #            '../Data/Multi/contact_area_cut90/cut90',
     #            '../Data/Multi/contact_area_cut100/cut100',
