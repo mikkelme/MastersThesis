@@ -136,18 +136,32 @@ neigh_modify        delay 0 every 1 one 10000
 # pair_coeff * 3 lj/cut 0.0 0.0 
 
 
-# ------- SI SUBSTRATE TERSOFF ------- # 
+# # ------- SI SUBSTRATE TERSOFF ------- # 
+# # Potentials: C-C: Tersoff, C-Si: LJ, Si-Si: SW
+# variable LJ_sigma equal 3.26 (3.326?)
+# pair_style hybrid tersoff lj/cut $(v_LJ_sigma*2.5) sw 
+# pair_coeff * * tersoff ${root}/C.tersoff C NULL NULL   # Sheet C-C
+# pair_coeff 1 2 lj/cut 0.008909 ${LJ_sigma}             # Interaction C-Si 
+# pair_coeff * * sw ${root}/si.sw NULL Si NULL           # Substrate Si-Si
+# pair_coeff * 3  lj/cut 0.0 0.0 
+
+
+
+# ------- SI SUBSTRATE TERSOFF ------- # Nature: The evolving quality of frictional contact with graphene
 # Potentials: C-C: Tersoff, C-Si: LJ, Si-Si: SW
-variable LJ_sigma equal 3.26 
+variable LJ_sigma equal 3.0
 pair_style hybrid tersoff lj/cut $(v_LJ_sigma*2.5) sw 
 pair_coeff * * tersoff ${root}/C.tersoff C NULL NULL   # Sheet C-C
-pair_coeff 1 2 lj/cut 0.008909 ${LJ_sigma}             # Interaction C-Si 
+pair_coeff 1 2 lj/cut 0.092 ${LJ_sigma}             # Interaction C-Si 
 pair_coeff * * sw ${root}/si.sw NULL Si NULL           # Substrate Si-Si
 pair_coeff * 3  lj/cut 0.0 0.0 
 
 
+
+
 variable LJ_equil equal $(2^(1/6) * v_LJ_sigma)
-variable contact_cut_off equal $(v_LJ_equil*1.1)
+# variable contact_cut_off equal $(v_LJ_equil*1.1)
+variable contact_cut_off equal 4.0
 
 timestep $(v_dt)
 variable damp equal 1.0 # ps                        

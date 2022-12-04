@@ -92,7 +92,11 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.01, eval_rupture = Fal
     return  stretch_pct, F_N, Ff, Ff_std, rup, filenames, contact_mean, contact_std 
 
 
-def plot_multi(folders, mean_pct = 0.5, std_pct = 0.01, eval_rupture = False, stretch_lim = [None, None],  FN_lim = [None, None]):
+def plot_multi(folders, mean_pct = 0.5, std_pct = 0.01, eval_rupture = False, stretch_lim = [None, None],  FN_lim = [None, None], show_filename = True):
+    
+    
+    
+    
     for folder in folders:
         stretch_pct, F_N, Ff, Ff_std, rup, filenames, contact_mean, contact_std = read_multi_folder(folder, mean_pct, std_pct, eval_rupture, stretch_lim, FN_lim)
     
@@ -110,7 +114,10 @@ def plot_multi(folders, mean_pct = 0.5, std_pct = 0.01, eval_rupture = False, st
         for group in reversed(range(3)):
             # --- Plotting --- #
             fig = plt.figure(num = unique_fignum())
-            fig.suptitle(group_name[group])
+            if show_filename:
+                fig.suptitle(group_name[group] + " | " +  folder)
+            else:
+                fig.suptitle(group_name[group])
             grid = (4,2)
             ax1 = plt.subplot2grid(grid, (0, 0), colspan=1)
             ax2 = plt.subplot2grid(grid, (0, 1), colspan=1)
@@ -210,6 +217,7 @@ def plot_multi(folders, mean_pct = 0.5, std_pct = 0.01, eval_rupture = False, st
 
 
         fig = plt.figure(num = unique_fignum())
+        if show_filename: fig.suptitle(folder)
         grid = (2,2)
         ax11 = plt.subplot2grid(grid, (0, 0), colspan=1)
         ax22 = plt.subplot2grid(grid, (0, 1), colspan=1)
@@ -306,9 +314,15 @@ if __name__ == "__main__":
     # folders = ['../Data/BIG_MULTI_nocut']
     # stability_heatmap(folders)
     
-    folders = ['../Data/Multi/cuts/ref4']
+    folders = ['../Data/Multi/contact_area_cut130/cut130']
+    # folders = ['../Data/Multi/contact_area_cut80/cut80',
+    #            '../Data/Multi/contact_area_cut90/cut90',
+    #            '../Data/Multi/contact_area_cut100/cut100',
+    #            '../Data/Multi/contact_area_cut110/cut110',
+    #            '../Data/Multi/contact_area_cut120/cut120',
+    #            '../Data/Multi/contact_area_cut130/cut130']
     
-    # obj = plot_multi(folders)
-    stability_heatmap(folders)
+    obj = plot_multi(folders)
+    # stability_heatmap(folders)
     plt.show()
     

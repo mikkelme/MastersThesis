@@ -2,9 +2,9 @@ from simulation_runner import *
 
 def one_config_multi_data():
     main_folder = 'Multi'
-    test_name   = 'contact_area_cut130'
-    sim_name    = 'cut130'
-    jobname     = 'cut130' 
+    test_name   = 'updated_LJ'
+    sim_name    = 'ref1'
+    jobname     = 'ref1' 
     
     
     variables = {
@@ -15,7 +15,7 @@ def one_config_multi_data():
         "pause_time2": 10,
         "stretch_speed_pct": 0.001,
         "drag_speed": 20, # [m/s]
-        "drag_length": 200, # <--- Should be super safe!
+        "drag_length": 200, #
         "K": 30.0,
         "root": "..",
         "out_ext": date.today(), 
@@ -46,4 +46,4 @@ def one_config_multi_data():
 
 if __name__ == "__main__":
     # Run ref 5 with ultra low FN?
-    # one_config_multi_data()
+    one_config_multi_data()
