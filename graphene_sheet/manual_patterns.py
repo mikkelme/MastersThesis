@@ -7,7 +7,7 @@ from graphene_sheet.build_utils import *
 
 def pop_up_pattern(multiples, unitsize = (5,7), sp = 1):
     # --- Parameters --- #
-    mat = np.ones((multiples[0]*10, multiples[1]*10)) # lattice matrix
+    mat = np.ones((multiples[0]*10, multiples[1]*10)).astype('int') # lattice matrix
     ref = np.array([0, 0]) # reference center element
     size = unitsize # Size of pop_up pattern
 

@@ -2,7 +2,7 @@ import sys
 sys.path.append('../') # parent folder: MastersThesis
 
 from ase.build import graphene_nanoribbon
-from ase.build import graphene
+# from ase.build import graphene
 
 from ase.io import  lammpsdata
 from ase.visualize import view
@@ -12,6 +12,7 @@ import numpy as np
 from graphene_sheet.manual_patterns import *
 from graphene_sheet.RN_walks import *
 
+import os
 
 def build_graphene_sheet(mat, view_lattice = False, write_file = False):
     Cdis = 1.42 # carbon-carbon distance [Å]
@@ -22,7 +23,7 @@ def build_graphene_sheet(mat, view_lattice = False, write_file = False):
 
     xlen = mat.shape[0]
     ylen = mat.shape[1]//2
-  
+    print(xlen, ylen)
     # --- Create graphene lattice --- #
     atoms = graphene_nanoribbon(xlen, ylen, type='zigzag', saturated=False, C_C=Cdis, vacuum=2.0)
     atoms.pbc = [False, False, False] # Set x,y,z to non periodic (not sure if this is relevant)
@@ -43,7 +44,7 @@ def build_graphene_sheet(mat, view_lattice = False, write_file = False):
     atoms.set_positions(new_posistions)
     atoms.set_cell(new_cell)
 
-    #--- Reorder atoms ---#
+    #--- Reorder atoms ---# (Is this important)
     yline_len = 2*ylen 
     for i in range(1,xlen, 2):
         for j in range(yline_len):
@@ -65,33 +66,50 @@ def build_graphene_sheet(mat, view_lattice = False, write_file = False):
     if write_file != False:
         lammpsdata.write_lammps_data(write, atoms)
 
-
     # write('../Presentation/Images/cutpattern.png', atoms)
     return atoms
 
 
+def save_mat(mat, folder):
+    file_id = 1
+    
+    # Existing data without extension
+    existing_data = [o.split(".")[0] for o in os.listdir(folder)] 
 
+    # Generate unique filename    
+    filename = f"tmp{file_id}"
+    while filename in existing_data:
+        file_id += 1
+        filename = f"tmp{file_id}"
+    
+    # Save matrix as array
+    np.save(os.path.join(folder, filename), mat)
+   
 
-
+   
 
 if __name__ == "__main__":
-    # multiples = (4, 5)
-    # unitsize = (5,7)
-    # mat = pop_up_pattern(multiples, unitsize, sp = 2)
+    multiples = (4, 5)
+    unitsize = (5,7)
+    mat = pop_up_pattern(multiples, unitsize, sp = 2)
 
+    # mat[:] = 1
+    mat = np.ones((2,50))
+    # save_mat(mat, "test_data")
     
+    # exit()
     
-    RN = RN_Generator( size = (50,50), 
-                       num_walks = 9,
-                       max_steps = 15,
-                       max_dis = 1,
-                       bias = [(1,1), 0.5],
-                       periodic = True,
-                       avoid_unvalid = False,
-                       grid_start = True,
-                       center_elem = True)
+    # RN = RN_Generator( size = (50,50), 
+    #                    num_walks = 9,
+    #                    max_steps = 15,
+    #                    max_dis = 1,
+    #                    bias = [(1,1), 0.5],
+    #                    periodic = True,
+    #                    avoid_unvalid = False,
+    #                    grid_start = True,
+    #                    center_elem = True)
     
-    mat = RN.generate()
+    # mat = RN.generate()
     
     
     # mat = RN.valid
@@ -100,13 +118,12 @@ if __name__ == "__main__":
     # mat[mat == 2] = 0
     
     
-    mat, pullblock = build_pull_blocks(mat, pullblock = 6, sideblock = 0)
+    # mat, pullblock = build_pull_blocks(mat, pullblock = 6, sideblock = 0)
     build_graphene_sheet(mat, view_lattice = True)
 
 
 
 
-    # build_graphene_sheet(mat, view_lattice = True, write = './sheet_vacuum.txt')
 
 
    

@@ -12,8 +12,8 @@ def build_config(sheet_mat, substrate_file, pullblock = None, mode = "all", view
 
     bottom_substrate_freeze = 5.5 # [Å]
     contact_depth = 8 # [Å]
-    # substrate_atomic_num = 14 # Si [atomic number]
-    substrate_atomic_num = 79 # Áu [atomic number]
+    substrate_atomic_num = 14 # Si [atomic number]
+    # substrate_atomic_num = 79 # Áu [atomic number]
     eps = 1e-6
 
     # --- Load atomic structures --- #
@@ -21,7 +21,7 @@ def build_config(sheet_mat, substrate_file, pullblock = None, mode = "all", view
     if pullblock != None:
         sheet_mat, pullblock = build_pull_blocks(sheet_mat, pullblock = pullblock)
 
-    sheet = build_graphene_sheet(sheet_mat, view_lattice = False, write=False)
+    sheet = build_graphene_sheet(sheet_mat, view_lattice = False, write_file=False)
     substrate = lammpsdata.read_lammps_data(substrate_file, Z_of_type=None, style='atomic', sort_by_id=True, units='metal')
     substrate.set_atomic_numbers(np.ones(substrate.get_global_number_of_atoms())*substrate_atomic_num) # For visualization
     
@@ -123,11 +123,12 @@ def build_config(sheet_mat, substrate_file, pullblock = None, mode = "all", view
 
 
 if __name__ == "__main__":
+    exit()
     multiples = (3, 5)  
     unitsize = (5,7)
     mat = pop_up_pattern(multiples, unitsize, sp = 2)
-    mat[:, :] = 1 # Nocuts
-    # substrate_file = "../substrate/crystal_Si_substrate.txt"
+    # mat[:, :] = 1 # Nocuts
+    substrate_file = "../substrate/crystal_Si_substrate.txt"
     # substrate_file = "../substrate/amorph_substrate.txt"
-    substrate_file = "../substrate/crystal_gold_substrate.txt"
-    build_config(mat, substrate_file, pullblock = 6, mode = "all", view_atoms = True, write = True, ext = "gold_nocuts")
+    # substrate_file = "../substrate/crystal_gold_substrate.txt"
+    build_config(mat, substrate_file, pullblock = 6, mode = "all", view_atoms = True, write = True, ext = "big")

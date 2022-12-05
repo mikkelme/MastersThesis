@@ -147,14 +147,24 @@ neigh_modify        delay 0 every 1 one 10000
 
 
 
-# ------- SI SUBSTRATE TERSOFF ------- # Nature: The evolving quality of frictional contact with graphene
+# ------- AMORPHIC SI SUBSTRATE TERSOFF ------- # Nature: The evolving quality of frictional contact with graphene 
 # Potentials: C-C: Tersoff, C-Si: LJ, Si-Si: SW
 variable LJ_sigma equal 3.0
 pair_style hybrid tersoff lj/cut $(v_LJ_sigma*2.5) sw 
 pair_coeff * * tersoff ${root}/C.tersoff C NULL NULL   # Sheet C-C
-pair_coeff 1 2 lj/cut 0.092 ${LJ_sigma}             # Interaction C-Si 
+pair_coeff 1 2 lj/cut 0.0096 ${LJ_sigma}             # Interaction C-Si 
 pair_coeff * * sw ${root}/si.sw NULL Si NULL           # Substrate Si-Si
 pair_coeff * 3  lj/cut 0.0 0.0 
+
+
+# # ------- SI SUBSTRATE TERSOFF ------- # Nature: The evolving quality of frictional contact with graphene
+# # Potentials: C-C: Tersoff, C-Si: LJ, Si-Si: SW
+# variable LJ_sigma equal 3.0
+# pair_style hybrid tersoff lj/cut $(v_LJ_sigma*2.5) sw 
+# pair_coeff * * tersoff ${root}/C.tersoff C NULL NULL   # Sheet C-C
+# pair_coeff 1 2 lj/cut 0.092 ${LJ_sigma}             # Interaction C-Si 
+# pair_coeff * * sw ${root}/si.sw NULL Si NULL           # Substrate Si-Si
+# pair_coeff * 3  lj/cut 0.0 0.0 
 
 
 

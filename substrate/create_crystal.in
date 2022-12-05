@@ -1,7 +1,7 @@
 units metal
 newton on  # newtons 3rd law for pairs
 
-boundary p p m  # p s p ?
+boundary p p m 
 atom_style atomic
 
 
@@ -31,7 +31,7 @@ create_atoms 1 box
 
 # --- Dynamics --- #
 # parameters
-variable temp equal 300.0 # [Kelvin]
+variable temp equal 100.0 # [Kelvin]
 
 # Stillinger-Weber (SW)
 pair_style sw

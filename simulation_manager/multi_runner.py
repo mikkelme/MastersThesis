@@ -2,9 +2,9 @@ from simulation_runner import *
 
 def one_config_multi_data():
     main_folder = 'Multi'
-    test_name   = 'updated_LJ'
-    sim_name    = 'nocut'
-    jobname     = 'nocut' 
+    test_name   = 'amorph'
+    sim_name    = 'cuts'
+    jobname     = 'cuts' 
     
     
     variables = {
@@ -19,7 +19,8 @@ def one_config_multi_data():
         "K": 30.0,
         "root": "..",
         "out_ext": date.today(), 
-        "config_data": "sheet_substrate_nocuts",
+        "config_data": "sheet_substrate_amorph",
+        # "config_data": "sheet_substrate_nocuts",
         # "config_data": "sheet_substrate",
         "stretch_max_pct": 0.20,
         "drag_dir_x": 0,
