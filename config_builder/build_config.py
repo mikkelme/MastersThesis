@@ -136,7 +136,7 @@ class config_builder:
             if not self.is_build: self.build()
             minmax = self.get_minmax(self.sheet)
             Lx, Ly = minmax[1,:2] - minmax[0,:2]
-            subpos = np.array([Lx + 20, Ly*1.2 + 20, 16]) # Lx, Ly, Lz
+            subpos = np.array([Lx + 20, Ly*1.5 + 20, 16]) # Lx, Ly, Lz
             
             # Set substrate Lx, Ly, Lz from input
             for i, pos in enumerate(substrate):
@@ -345,10 +345,10 @@ def build_config(sheet_mat, substrate_file, pullblock = None, mode = "all", view
 
 
 if __name__ == "__main__":
-    # multiples = (3, 5)  
-    multiples = (9,14)  
-    # unitsize = (5,7)
-    unitsize = (13,15)
+    multiples = (3, 5)  
+    # multiples = (9,14)  
+    unitsize = (5,7)
+    # unitsize = (13,15)
     mat = pop_up_pattern(multiples, unitsize, sp = 2)
     # mat[:, :] = 1 # Nocuts
     substrate_file = "../substrate/crystal_Si_substrate_big.txt"
@@ -363,5 +363,5 @@ if __name__ == "__main__":
     builder.add_substrate([None, None, None])
     # builder.build()
     builder.view('all')
-    # builder.save("all", ext = 'test', path = '.')
+    builder.save("all", ext = 'test', path = '.')
     

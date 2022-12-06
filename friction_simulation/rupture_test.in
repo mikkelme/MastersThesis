@@ -1,0 +1,114 @@
+variable dt equal 0.001 
+variable T equal 100.0
+variable relax_time equal 15
+variable pause_time1 equal 5
+variable pause_time2 equal 5 
+variable stretch_speed_pct equal 0.005  # Make sure that script is not run with tp high strecth
+# ^^^ Maybe hardcode this one?
+variable drag_speed equal 2 
+variable drag_length equal 50 
+variable K equal 1.8724527210000002 
+variable root string ..
+variable out_ext string test
+variable config_data string sheet_substrate_test
+variable stretch_max_pct equal 0.50
+variable drag_dir_x equal 0 
+variable drag_dir_y equal 1 
+variable F_N equal 62.41 
+
+
+###########################################
+# Relax system in vacuum and stretch      #
+# until rupture is detected               #
+###########################################
+
+# Setup system and delete substrate immediately
+include ${root}/setup_sim.in
+delete_atoms group substrate
+
+
+compute ystress sheet reduce ave c_peratom[1]
+fix YS sheet ave/time 1 1000 1000 c_ystress
+
+
+compute sheet_chunk sheet chunk/atom type
+compute sheet_VCM sheet vcm/chunk sheet_chunk
+variable sheet_VCM equal c_sheet_VCM[1][2]
+# fix YS sheet ave/time 1 1000 1000 c_ystress c_sheet_COM[2] v_sheet_VCM file rupture_data_${out_ext}.txt 
+
+# compute PB_ylow sheet group/group PB_ylow_NVT
+# compute PB_yhigh sheet group/group PB_yhigh_NVT
+
+
+
+# ----------  Relax sheet ---------- #
+# Add spring to restrict rotation or movement of sheet COM:
+#  - Hold PB COM in initial x-position
+#  - Hold sheet COM in initial position
+fix PB_ylow_x_hold PB_ylow_rigid spring tether 1e5 $(c_sheet_COM[1]) NULL NULL 0.0
+fix PB_high_x_hold PB_yhigh_rigid spring tether 1e5 $(c_sheet_COM[1]) NULL NULL 0.0
+fix sheet_COM_hold full_sheet spring tether 1e5 $(c_sheet_COM[1]) $(c_sheet_COM[2]) NULL 0.0
+
+print "--> Relax: $(v_relax_steps) timesteps, $(v_relax_steps*dt) ps"
+
+
+thermo_style custom step time v_stretch_pct f_YS 
+run $(v_relax_steps)
+
+# Lock S0 after relaxing and export S0 info via y-pos of tmp type 3 atom
+variable S0 equal $(v_S0) 
+
+unfix PB_ylow_x_hold
+unfix PB_high_x_hold
+unfix sheet_COM_hold
+
+
+# ---------- Stretch sheet ---------- #
+
+
+# Update fixes
+fix ylow_move  PB_ylow_rigid move linear 0 $(-v_stretch_speed/2) NULL units box
+fix yhigh_move PB_yhigh_rigid move linear 0 $(v_stretch_speed/2) NULL units box
+
+print "--> Stretch: $(v_stretch_steps) timesteps, $(v_stretch_steps*dt) ps"
+
+
+variable rupture_stretch equal $(v_stretch_pct)
+variable max_stress equal $(f_YS)
+variable stop_lim equal -100
+thermo_style custom step time v_stretch_pct f_YS v_rupture_stretch v_max_stress v_stop_lim
+
+
+label loop
+variable a loop 100
+
+run 1000
+
+
+if "$(f_YS) < $(v_stop_lim) && $(v_stretch_pct) > 0.05" then "jump SELF break"
+if "$(step) > $(v_relax_steps + v_stretch_steps)" then "jump SELF break"
+
+if "$(f_YS) > $(v_max_stress)" then  &
+"variable max_stress equal $(f_YS)" &
+"variable rupture_stretch equal $(v_stretch_pct)"
+
+
+next a
+
+variable stop_lim equal $(0.5*v_max_stress)
+
+
+jump SELF loop
+label break
+print "ALL DONE"
+print $(v_rupture_stretch)
+
+
+# run $(v_stretch_steps)
+# restart 0
+
+# Unfix moves (relevant if continued directly)
+unfix ylow_move
+unfix yhigh_move
+
+

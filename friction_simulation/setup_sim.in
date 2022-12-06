@@ -209,6 +209,10 @@ variable full_sheet_bond_pct equal f_full_sheet_bond_hist[2][3]
 # Inner sheet 
 compute sheet_fx sheet reduce sum fx        # Total force x
 compute sheet_fy sheet reduce sum fy        # Total force y
+
+compute sheet_ymin sheet reduce min y   
+compute sheet_ymax sheet reduce max y 
+
 compute coord sheet coord/atom cutoff 2.7   # Coordination number
 compute peratom sheet stress/atom NULL      # stress field
 # variable stress_atom atom sqrt(c_peratom[1]*c_peratom[1]+c_peratom[2]*c_peratom[2]+c_peratom[3]*c_peratom[3]) # Stress norm (xx, yy, zz)
@@ -241,7 +245,7 @@ compute subtopTemp substrate_top temp
 
 
 ## - Activate computes - ## 
-thermo_style custom c_sheet_fz c_PB_ylow_ymax c_PB_yhigh_ymin c_substrate_zhigh c_PB_ylow_rigid_com[2] c_PB_yhigh_rigid_com[2] c_sheet_COM[3]
+thermo_style custom c_sheet_fz c_PB_ylow_ymax c_PB_yhigh_ymin c_substrate_zhigh c_PB_ylow_rigid_com[2] c_PB_yhigh_rigid_com[2] c_sheet_COM[3] c_sheet_ymin c_sheet_ymax
 run 0 # activate compute
 
 # ---------- Derived variables ---------- #
@@ -255,7 +259,8 @@ variable move_force_xy_norm equal sqrt(v_move_force_x^2+v_move_force_x^2)
 
 ## -- Stretch -- ##
 # variable S0 equal v_pullblock_ylo-v_pullblock_yhi   # OLD rough version
-variable S0 equal c_PB_yhigh_ymin-c_PB_ylow_ymax    # start len of inner sheet 
+# variable S0 equal c_PB_yhigh_ymin-c_PB_ylow_ymax    # start len of inner sheet 
+variable S0 equal c_sheet_ymax-c_sheet_ymin    # start len of inner sheet 
 
 # Restart file: Get S0 stored in type 3 tmp atom
 if ${readable} then "thermo_style custom c_get_S0 c_PB_ylow_ymax c_PB_yhigh_ymin" &
@@ -263,7 +268,8 @@ if ${readable} then "thermo_style custom c_get_S0 c_PB_ylow_ymax c_PB_yhigh_ymin
 "variable S0 equal $(c_get_S0)" &
 "delete_atoms group S0_info"
 
-variable S_len equal c_PB_yhigh_ymin-c_PB_ylow_ymax # Updated len of inner sheet
+# variable S_len equal c_PB_yhigh_ymin-c_PB_ylow_ymax # Updated len of inner sheet
+variable S_len equal c_sheet_ymax-c_sheet_ymin 
 variable stretch_pct equal (v_S_len-v_S0)/v_S0  # Updated stretch pct
 variable stretch_speed equal v_stretch_speed_pct*v_S0 
 

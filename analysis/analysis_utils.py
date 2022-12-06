@@ -288,6 +288,24 @@ def read_histogram(filename):
 
     return timestep, hist
 
+# # Time-averaged data for fix rupture_output
+# # TimeStep c_y_stress c_PB_ylow c_PB_yhigh
+# 100 -900943 0 0
+# 200 854381 0 0
+# 300 -507658 0 0
+# 400 33397.7 0 0
+# 500 727896 0 0
+# 600 -130056 0 0
+# 700 -159157 0 0
+# 800 204057 0 0
+def read_ave_time(filename):
+    infile = open(filename, 'r')
+    infile.readline() # Skip first comment
+    var = infile.readline().strip("# \n").split(' ')
+    data = np.loadtxt(filename)
+    return dict([(var[i], data[:, i]) for i in range(len(var))])     
+    
+
 
 def read_ave_time_vector(filename):
     infile = open(filename, 'r')
