@@ -3,7 +3,7 @@ variable T equal 100.0
 variable relax_time equal 15
 variable pause_time1 equal 5
 variable pause_time2 equal 5 
-variable stretch_speed_pct equal 0.005  # Make sure that script is not run with tp high strecth
+variable stretch_speed_pct equal 0.001  # Make sure that script is not run with tp high strecth
 # ^^^ Maybe hardcode this one?
 variable drag_speed equal 2 
 variable drag_length equal 50 
@@ -27,18 +27,8 @@ include ${root}/setup_sim.in
 delete_atoms group substrate
 
 
-compute ystress sheet reduce ave c_peratom[1]
-fix YS sheet ave/time 1 1000 1000 c_ystress
-
-
-compute sheet_chunk sheet chunk/atom type
-compute sheet_VCM sheet vcm/chunk sheet_chunk
-variable sheet_VCM equal c_sheet_VCM[1][2]
-# fix YS sheet ave/time 1 1000 1000 c_ystress c_sheet_COM[2] v_sheet_VCM file rupture_data_${out_ext}.txt 
-
-# compute PB_ylow sheet group/group PB_ylow_NVT
-# compute PB_yhigh sheet group/group PB_yhigh_NVT
-
+compute YS sheet reduce ave c_peratom[1]
+fix YS sheet ave/time 1 1000 1000 c_YS # y stress
 
 
 # ----------  Relax sheet ---------- #
@@ -48,67 +38,60 @@ variable sheet_VCM equal c_sheet_VCM[1][2]
 fix PB_ylow_x_hold PB_ylow_rigid spring tether 1e5 $(c_sheet_COM[1]) NULL NULL 0.0
 fix PB_high_x_hold PB_yhigh_rigid spring tether 1e5 $(c_sheet_COM[1]) NULL NULL 0.0
 fix sheet_COM_hold full_sheet spring tether 1e5 $(c_sheet_COM[1]) $(c_sheet_COM[2]) NULL 0.0
-
 print "--> Relax: $(v_relax_steps) timesteps, $(v_relax_steps*dt) ps"
 
 
 thermo_style custom step time v_stretch_pct f_YS 
 run $(v_relax_steps)
 
-# Lock S0 after relaxing and export S0 info via y-pos of tmp type 3 atom
+# Lock S0 after relaxing 
 variable S0 equal $(v_S0) 
 
+# Unfix
 unfix PB_ylow_x_hold
 unfix PB_high_x_hold
 unfix sheet_COM_hold
 
 
 # ---------- Stretch sheet ---------- #
-
-
 # Update fixes
 fix ylow_move  PB_ylow_rigid move linear 0 $(-v_stretch_speed/2) NULL units box
 fix yhigh_move PB_yhigh_rigid move linear 0 $(v_stretch_speed/2) NULL units box
 
+
 print "--> Stretch: $(v_stretch_steps) timesteps, $(v_stretch_steps*dt) ps"
+variable valid_stretch  equal $(v_stretch_pct)
+variable valid_step     equal $(step)
+variable max_stress     equal $(f_YS)
+variable stop_lim       equal -100
+thermo_style custom step time v_stretch_pct v_valid_stretch f_YS v_max_stress v_stop_lim
 
-
-variable rupture_stretch equal $(v_stretch_pct)
-variable max_stress equal $(f_YS)
-variable stop_lim equal -100
-thermo_style custom step time v_stretch_pct f_YS v_rupture_stretch v_max_stress v_stop_lim
-
-
+# --- While Loop --- #
 label loop
-variable a loop 100
+run 1000 # Increment system
 
-run 1000
-
-
+# Stopping conditions
 if "$(f_YS) < $(v_stop_lim) && $(v_stretch_pct) > 0.05" then "jump SELF break"
 if "$(step) > $(v_relax_steps + v_stretch_steps)" then "jump SELF break"
 
+# Update variables
 if "$(f_YS) > $(v_max_stress)" then  &
 "variable max_stress equal $(f_YS)" &
-"variable rupture_stretch equal $(v_stretch_pct)"
-
-
-next a
-
+"variable valid_stretch equal $(v_stretch_pct)" &
+"variable valid_step equal $(step)"
 variable stop_lim equal $(0.5*v_max_stress)
-
 
 jump SELF loop
 label break
-print "ALL DONE"
-print $(v_rupture_stretch)
+### END ###
 
 
-# run $(v_stretch_steps)
-# restart 0
+print """
+# --- Rupture detected --- #
+Last valid point: Timestep = $(v_valid_step), Time = $(v_valid_step*dt) ps
+Stretch value = $(v_valid_stretch)
+Yield stress = $(v_max_stress) eV/ang^3
+"""
 
-# Unfix moves (relevant if continued directly)
-unfix ylow_move
-unfix yhigh_move
 
 
