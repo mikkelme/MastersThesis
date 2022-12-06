@@ -92,7 +92,7 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.01, eval_rupture = Fal
     return  stretch_pct, F_N, Ff, Ff_std, rup, filenames, contact_mean, contact_std 
 
 
-def plot_multi(folders, mean_pct = 0.5, std_pct = 0.01, eval_rupture = False, stretch_lim = [None, None],  FN_lim = [None, None], show_filename = True):
+def plot_multi(folders, mean_pct = 0.5, std_pct = 0.01, eval_rupture = True, stretch_lim = [None, None],  FN_lim = [None, None], show_filename = True):
     
     
     
@@ -314,8 +314,7 @@ if __name__ == "__main__":
     # folders = ['../Data/BIG_MULTI_nocut']
     # stability_heatmap(folders)
     
-    folders = ['../Data/Multi/amorph/nocuts',
-               '../Data/Multi/amorph/cuts']
+    folders = ['../Data/Multi/big/big']
     # folders = ['../Data/Multi/contact_area_cut80/cut80',
     #            '../Data/Multi/contact_area_cut90/cut90',
     #            '../Data/Multi/contact_area_cut100/cut100',

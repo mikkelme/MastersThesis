@@ -3,8 +3,8 @@ from simulation_runner import *
 def one_config_multi_data():
     main_folder = 'Multi'
     test_name   = 'big'
-    sim_name    = 'big'
-    jobname     = 'big' 
+    sim_name    = 'cuts2'
+    jobname     = 'cuts2' 
     
     
     variables = {
@@ -23,7 +23,7 @@ def one_config_multi_data():
         # "config_data": "sheet_substrate_amorph",
         # "config_data": "sheet_substrate_nocuts",
         # "config_data": "sheet_substrate",
-        "stretch_max_pct": 0.20,
+        "stretch_max_pct": 0.10,
         "drag_dir_x": 0,
         "drag_dir_y": 1
     }

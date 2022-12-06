@@ -33,7 +33,7 @@ thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_p
 run $(v_relax_steps-1)
 
 # Lock S0 after relaxing and export S0 info via y-pos of tmp type 3 atom
-variable S0 equal $(c_PB_yhigh_ymin-c_PB_ylow_ymax) 
+variable S0 equal $(v_S0) 
 if  "${num_stretch_files}>=1" then "create_atoms 3 single 0 $(v_S0) 0" &
 "group S0_info type 3"
 run 1

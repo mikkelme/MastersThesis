@@ -263,7 +263,7 @@ variable move_force_xy_norm equal sqrt(v_move_force_x^2+v_move_force_x^2)
 variable S0 equal c_sheet_ymax-c_sheet_ymin    # start len of inner sheet 
 
 # Restart file: Get S0 stored in type 3 tmp atom
-if ${readable} then "thermo_style custom c_get_S0 c_PB_ylow_ymax c_PB_yhigh_ymin" &
+if ${readable} then "thermo_style custom c_get_S0 c_sheet_ymin c_sheet_ymax" &
 "run 0" &
 "variable S0 equal $(c_get_S0)" &
 "delete_atoms group S0_info"
