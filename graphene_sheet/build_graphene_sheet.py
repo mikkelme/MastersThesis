@@ -1,6 +1,8 @@
 import sys
 sys.path.append('../') # parent folder: MastersThesis
 
+import ase # go through imports to clean up
+
 from ase.build import graphene_nanoribbon
 # from ase.build import graphene
 
@@ -23,7 +25,8 @@ def build_graphene_sheet(mat, view_lattice = False, write_file = False):
 
     xlen = mat.shape[0]
     ylen = mat.shape[1]//2
-    print(xlen, ylen)
+    
+    
     # --- Create graphene lattice --- #
     atoms = graphene_nanoribbon(xlen, ylen, type='zigzag', saturated=False, C_C=Cdis, vacuum=2.0)
     atoms.pbc = [False, False, False] # Set x,y,z to non periodic (not sure if this is relevant)
@@ -89,12 +92,12 @@ def save_mat(mat, folder):
    
 
 if __name__ == "__main__":
-    multiples = (4, 5)
+    # multiples = (4, 5)
+    multiples = (5, 10)
     unitsize = (5,7)
     mat = pop_up_pattern(multiples, unitsize, sp = 2)
 
     # mat[:] = 1
-    mat = np.ones((2,50))
     # save_mat(mat, "test_data")
     
     # exit()

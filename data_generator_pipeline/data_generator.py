@@ -20,14 +20,29 @@ class data_generator:
         self.shape = np.shape(mat)        
     
         self.set_sheet_size()
+        
+        
     def set_sheet_size(self):
+        """ Set sheet size according to configuration matrix shape """
         xlen = self.shape[0]
         ylen = self.shape[1]//2
         a = 3*self.Cdis/np.sqrt(3)
         
         self.Lx = a/6*np.sqrt(3) + (xlen-1) * a/2*np.sqrt(3)
         self.Ly = a/2 + (ylen-1) * a
-        print(self.Lx, self.Ly)
+        
+        # Lx = 200; Ly = 200
+        # xlen = (Lx - a/6*np.sqrt(3))/(a/2*np.sqrt(3)) + 1 
+        # ylen = (Ly - a/2)/a +1 
+        # print("...", xlen, ylen)
+        
+    def get_substrate_size(self, stretch_pct, margins = (10, 10)):
+        """ Get substrate size considered sretch and x,y-margines """
+        Lx = self.Lx + 2*margins[0]å
+        Ly = self.Ly * (1 + stretch_pct) + 2*margins[1]
+        return Lx, Ly
+        
+        
       
 
 
@@ -60,7 +75,12 @@ def read_configurations(folder):
 
 if __name__ == "__main__":
     configs = read_configurations("../graphene_sheet/test_data")
-    gen = data_generator(configs[0])
+    conf = data_generator(configs[0])
+    print(conf.Lx, conf.Ly)
+    print(conf.get_substrate_size(0.20))
+    
+    
+ 
     
     
     # gen = data_generator()
