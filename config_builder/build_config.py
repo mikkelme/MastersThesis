@@ -12,13 +12,12 @@ class DiamondFactory(FaceCenteredCubicFactory):
 class config_builder:
     def __init__(self, mat):
         self.mat = mat
-        self.sheet = build_graphene_sheet(self.mat) # Is this okay? XXX
 
 
         # ASE objects
-        # self.sheet      = None   # Graphene sheet
-        self.substrate  = None   # Si substrate
-        self.merge      = None   # Sheet + substrate
+        self.sheet      = None # Graphene sheet
+        self.substrate  = None # Si substrate
+        self.merge      = None # Sheet + substrate
     
     
         # Parameters
@@ -37,6 +36,10 @@ class config_builder:
         self.name_dict = {'sheet'     : 'sheet',
                           'substrate' : 'substrate',
                           'all'       : 'sheet_substrate'}
+        
+        
+        self.build()
+        self.is_build = True
         
     
 
@@ -89,11 +92,12 @@ class config_builder:
         else:
             self.align_and_adjust_cell(self.sheet)
             
-
         # Update object dictionary
         self.obj_dict['sheet'] = self.sheet
         self.obj_dict['substrate'] = self.substrate
         self.obj_dict['all'] = self.merge
+        self.is_build = True
+        
 
     def align_and_adjust_cell(self, object):
         """ Align with origo and adjust cell """
@@ -107,10 +111,13 @@ class config_builder:
 
         
     
-    def add_pullblocks(self, PB_rows):
+    def add_pullblocks(self, PB_rows = 6):
         """ Add pullblocks to sheet with length PB_len """
         self.PB_rows = PB_rows
         self.mat, self.PB = build_pull_blocks(self.mat, pullblock = PB_rows)
+        self.is_build = False
+        
+        
          
 
     def add_substrate(self, substrate = None):
@@ -126,6 +133,7 @@ class config_builder:
         
         elif hasattr(substrate, "__len__"): # Create Si crystal in ASE
             # --- Default values --- #
+            if not self.is_build: self.build()
             minmax = self.get_minmax(self.sheet)
             Lx, Ly = minmax[1,:2] - minmax[0,:2]
             subpos = np.array([Lx + 20, Ly*1.2 + 20, 16]) # Lx, Ly, Lz
@@ -155,12 +163,16 @@ class config_builder:
             
             
         self.obj_dict['substrate'] = self.substrate
+        self.is_build = False
         
-            
-
+        
+        
         
     def save(self, object = 'all', ext = '', path = '.'):
         """ Save configuration as lammps txt file """
+        
+        if not self.is_build: self.build()
+            
         path = "."
         
         # Get updated minmax        
@@ -208,6 +220,7 @@ class config_builder:
 
 
     def view(self, object = 'all'):
+        if not self.is_build: self.build()
         obj = self.obj_dict[object]      
         assert obj is not None, f"{object}-object is not created"
         view(obj)
@@ -332,9 +345,10 @@ def build_config(sheet_mat, substrate_file, pullblock = None, mode = "all", view
 
 
 if __name__ == "__main__":
-    multiples = (3, 5)  
-    # multiples = (9,14)  
-    unitsize = (5,7)
+    # multiples = (3, 5)  
+    multiples = (9,14)  
+    # unitsize = (5,7)
+    unitsize = (13,15)
     mat = pop_up_pattern(multiples, unitsize, sp = 2)
     # mat[:, :] = 1 # Nocuts
     substrate_file = "../substrate/crystal_Si_substrate_big.txt"
@@ -344,10 +358,10 @@ if __name__ == "__main__":
 
 
     builder = config_builder(mat)
-    builder.add_pullblocks(PB_rows = 6)
-    builder.add_substrate(substrate_file)
+    builder.add_pullblocks()
+    # builder.add_substrate(substrate_file)
     builder.add_substrate([None, None, None])
-    builder.build()
+    # builder.build()
     builder.view('all')
     # builder.save("all", ext = 'test', path = '.')
     

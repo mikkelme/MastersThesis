@@ -31,14 +31,11 @@ class data_generator:
         self.Lx = a/6*np.sqrt(3) + (xlen-1) * a/2*np.sqrt(3)
         self.Ly = a/2 + (ylen-1) * a
         
-        # Lx = 200; Ly = 200
-        # xlen = (Lx - a/6*np.sqrt(3))/(a/2*np.sqrt(3)) + 1 
-        # ylen = (Ly - a/2)/a +1 
-        # print("...", xlen, ylen)
+    
         
     def get_substrate_size(self, stretch_pct, margins = (10, 10)):
         """ Get substrate size considered sretch and x,y-margines """
-        Lx = self.Lx + 2*margins[0]å
+        Lx = self.Lx + 2*margins[0]
         Ly = self.Ly * (1 + stretch_pct) + 2*margins[1]
         return Lx, Ly
         
