@@ -19,6 +19,8 @@ class config_builder:
         self.substrate  = None # Si substrate
         self.merge      = None # Sheet + substrate
     
+        self.PB_rows = 0
+        self.a = None
     
         # Parameters
         self.sheet_substrate_dis = 2.8 # [Å] 
@@ -102,8 +104,13 @@ class config_builder:
     def align_and_adjust_cell(self, object):
         """ Align with origo and adjust cell """
         minmax = self.get_minmax(object)
-        trans = -minmax[0, :] + np.ones(3)*self.eps
         
+        # Add space for PBC for substrate
+        if self.a is not None: 
+            minmax_substrate = self.get_minmax(self.substrate)
+            minmax[1,:2] = np.max((minmax[1,:2], minmax_substrate[1,:2] + self.a/4), axis = 0)
+        
+        trans = -minmax[0, :] + np.ones(3)*self.eps
         for obj in [self.sheet, self.substrate, self.merge]:
             if obj is not None:
                 obj.translate(trans)
@@ -144,11 +151,14 @@ class config_builder:
                     subpos[i] = pos
 
             # --- Build diamond --- #
-            a = 5.430953 # Lattice constant
+            self.a = 5.430953 # Lattice constant
             
             # Get lattice size
-            subpos[:2] += a/4 
-            size = np.ceil([pos/a for pos in subpos]).astype('int')
+            subpos[:2] += self.a/4 
+            size = np.ceil([pos/self.a for pos in subpos]).astype('int')
+            
+            # size = np.array([3, 3, 3])
+            print(size)
             
             # Build
             Diamond = DiamondFactory()
@@ -156,7 +166,7 @@ class config_builder:
                             size = size, 
                             symbol = 'Si', 
                             pbc = (1,1,0), 
-                            latticeconstant = a)
+                            latticeconstant = self.a)
         
         else:
             exit(f'substrate = {substrate}, is not understood.')
@@ -302,41 +312,38 @@ def build_config(sheet_mat, substrate_file, pullblock = None, mode = "all", view
     substrate_contact_zlo = minmax_substrate[1,2] - contact_depth 
 
 
+    if mode == "all":
+        if view_atoms: view(merge)
+        if write:
+            lammpsdata.write_lammps_data(f'./sheet_substrate_{ext}.txt', merge, specorder = specorder, velocities = True)
+            outfile = open(f'sheet_substrate_{ext}_info.in', 'w')
+    elif mode == "sheet":
+        sheet.translate(trans_vec2)
+        sheet.set_cell(minmax_merge[1,:] + trans_vec2 + np.ones(3)*eps)
 
+        if view_atoms: view(sheet)
+        if write:
+            lammpsdata.write_lammps_data(f'./sheet_{ext}.txt', sheet, specorder = specorder, velocities = False)
+            outfile = open(f'sheet_{ext}_info.in', 'w')
 
+    elif mode == "substrate":
+        merge.translate(trans_vec2)
+        merge.set_cell(minmax_merge[1,:] + trans_vec2 + np.ones(3)*eps)
+        if view_atoms: view(substrate)
+        if write:
+            lammpsdata.write_lammps_data(f'./substrate_{ext}.txt', substrate, specorder = specorder, velocities = True)
+            outfile = open('substrate_{ext}_info.in', 'w')
+    else:
+        return
 
-    # if mode == "all":
-    #     if view_atoms: view(merge)
-    #     if write:
-    #         lammpsdata.write_lammps_data(f'./sheet_substrate_{ext}.txt', merge, specorder = specorder, velocities = True)
-    #         outfile = open(f'sheet_substrate_{ext}_info.in', 'w')
-    # elif mode == "sheet":
-    #     sheet.translate(trans_vec2)
-    #     sheet.set_cell(minmax_merge[1,:] + trans_vec2 + np.ones(3)*eps)
+    if write:
+        # Pullblock
+        for i in range(len(PB_lim)):
+            outfile.write(f'variable pullblock_{PB_varname[i]} equal {PB_lim[i]}\n') 
 
-    #     if view_atoms: view(sheet)
-    #     if write:
-    #         lammpsdata.write_lammps_data(f'./sheet_{ext}.txt', sheet, specorder = specorder, velocities = False)
-    #         outfile = open(f'sheet_{ext}_info.in', 'w')
-
-    # elif mode == "substrate":
-    #     merge.translate(trans_vec2)
-    #     merge.set_cell(minmax_merge[1,:] + trans_vec2 + np.ones(3)*eps)
-    #     if view_atoms: view(substrate)
-    #     if write:
-    #         lammpsdata.write_lammps_data(f'./substrate_{ext}.txt', substrate, specorder = specorder, velocities = True)
-    #         outfile = open('substrate_{ext}_info.in', 'w')
-    # else:
-    #     return
-
-    # if write:
-    #     # Pullblock
-    #     for i in range(len(PB_lim)):
-    #         outfile.write(f'variable pullblock_{PB_varname[i]} equal {PB_lim[i]}\n') 
-
-    #     # Substrate
-    #     outfile.write(f'variable substrate_freeze_zhi equal {substrate_freeze_zhi}\n') 
-    #     outfile.write(f'variable substrate_contact_zlo equal {substrate_contact_zlo}\n') 
+        # Substrate
+        outfile.write(f'variable substrate_freeze_zhi equal {substrate_freeze_zhi}\n') 
+        outfile.write(f'variable substrate_contact_zlo equal {substrate_contact_zlo}\n') 
 
 
 
@@ -349,9 +356,13 @@ if __name__ == "__main__":
     # multiples = (9,14)  
     unitsize = (5,7)
     # unitsize = (13,15)
+    
+    # mat = np.ones((4, 6))
     mat = pop_up_pattern(multiples, unitsize, sp = 2)
+    
     # mat[:, :] = 1 # Nocuts
-    substrate_file = "../substrate/crystal_Si_substrate_big.txt"
+    substrate_file = "../substrate/crystal_Si_substrate_test.txt"
+    # substrate_file = "../substrate/crystal_Si_substrate_big.txt"
     # substrate_file = "../substrate/amorph_substrate.txt"
     # substrate_file = "../substrate/crystal_gold_substrate.txt"
     # build_config(mat, substrate_file, pullblock = 6, mode = "all", view_atoms = True, write = True, ext = "big")
@@ -360,8 +371,16 @@ if __name__ == "__main__":
     builder = config_builder(mat)
     builder.add_pullblocks()
     # builder.add_substrate(substrate_file)
-    builder.add_substrate([None, None, None])
+    # builder.add_substrate([None, None, None])
     # builder.build()
-    builder.view('all')
-    builder.save("all", ext = 'test', path = '.')
+    # builder.view('all')
+    # builder.save("all", ext = 'in_lammps', path = '.')
     
+    
+    builder.add_substrate(substrate_file)
+    builder.save("all", ext = 'in_lammps', path = '.')
+    builder.view('all')
+    
+    builder.add_substrate([82, 132, 16])
+    builder.save("all", ext = 'in_python', path = '.')
+    builder.view('all')

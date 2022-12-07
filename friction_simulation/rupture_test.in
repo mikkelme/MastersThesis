@@ -1,16 +1,16 @@
 variable dt equal 0.001 
 variable T equal 100.0
-variable relax_time equal 15
+variable relax_time equal 5
 variable pause_time1 equal 5
 variable pause_time2 equal 5 
-variable stretch_speed_pct equal 0.001  # Make sure that script is not run with tp high strecth
+variable stretch_speed_pct equal 0.005  # Make sure that script is not run with tp high strecth
 # ^^^ Maybe hardcode this one?
 variable drag_speed equal 2 
 variable drag_length equal 50 
 variable K equal 1.8724527210000002 
 variable root string ..
-variable out_ext string test
-variable config_data string sheet_substrate_test
+variable out_ext string in_python
+variable config_data string sheet_substrate_in_python
 variable stretch_max_pct equal 0.50
 variable drag_dir_x equal 0 
 variable drag_dir_y equal 1 
@@ -24,11 +24,26 @@ variable F_N equal 62.41
 
 # Setup system and delete substrate immediately
 include ${root}/setup_sim.in
-delete_atoms group substrate
+# delete_atoms group substrate
+
+# --- Rupture detection --- #
+variable local_Nevery equal 10     # use input values every this many time steps
+variable local_Nrepeat equal 10    # number of times to use input values for calculating averages
+variable local_Nfreq equal 1000    # calculate averages every this many time steps
 
 
-compute YS sheet reduce ave c_peratom[1]
-fix YS sheet ave/time 1 1000 1000 c_YS # y stress
+# y-stress
+compute YS sheet reduce ave c_peratom[2]
+fix YS sheet ave/time ${local_Nevery} ${local_Nrepeat} ${local_Nfreq} c_YS # time average
+
+# Cluster count
+compute cluster_atom all cluster/atom 4.0 # Atoms clustering within threshold
+compute Nchunk all chunk/atom c_cluster_atom compress yes # Non empty chunks (accesing as a scalar gives num chunks)
+fix Nchunk full_sheet ave/time ${local_Nevery} ${local_Nrepeat} ${local_Nfreq} c_Nchunk # time average
+
+# compute MSD_clean sheet msd com no average no
+# compute MSD_com sheet msd com yes average no
+# compute MSD_com_ave sheet msd com yes average yes
 
 
 # ----------  Relax sheet ---------- #
@@ -41,7 +56,7 @@ fix sheet_COM_hold full_sheet spring tether 1e5 $(c_sheet_COM[1]) $(c_sheet_COM[
 print "--> Relax: $(v_relax_steps) timesteps, $(v_relax_steps*dt) ps"
 
 
-thermo_style custom step time v_stretch_pct f_YS 
+thermo_style custom step time v_stretch_pct f_YS c_Nchunk
 run $(v_relax_steps)
 
 # Lock S0 after relaxing 
@@ -52,8 +67,9 @@ unfix PB_ylow_x_hold
 unfix PB_high_x_hold
 unfix sheet_COM_hold
 
-
+quit
 # ---------- Stretch sheet ---------- #
+
 # Update fixes
 fix ylow_move  PB_ylow_rigid move linear 0 $(-v_stretch_speed/2) NULL units box
 fix yhigh_move PB_yhigh_rigid move linear 0 $(v_stretch_speed/2) NULL units box
@@ -64,15 +80,19 @@ variable valid_stretch  equal $(v_stretch_pct)
 variable valid_step     equal $(step)
 variable max_stress     equal $(f_YS)
 variable stop_lim       equal -100
-thermo_style custom step time v_stretch_pct v_valid_stretch f_YS v_max_stress v_stop_lim
+thermo_style custom step time v_stretch_pct v_valid_stretch f_YS v_max_stress v_stop_lim c_Nchunk
+
+
+
 
 # --- While Loop --- #
 label loop
 run 1000 # Increment system
 
 # Stopping conditions
-if "$(f_YS) < $(v_stop_lim) && $(v_stretch_pct) > 0.05" then "jump SELF break"
-if "$(step) > $(v_relax_steps + v_stretch_steps)" then "jump SELF break"
+if "$(f_YS) < $(v_stop_lim) && $(v_stretch_pct) > 0.03" then "jump SELF break" # y-stress drop (after 3 pct stretch)
+if "$(f_Nchunk) > 1.5" then "jump SELF break" # 2 or more clusters => not contiguous
+if "$(step) > $(v_relax_steps + v_stretch_steps)" then "jump SELF break" # Stretch completed (no rupture)
 
 # Update variables
 if "$(f_YS) > $(v_max_stress)" then  &

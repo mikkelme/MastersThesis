@@ -73,8 +73,8 @@ def read_configurations(folder):
 if __name__ == "__main__":
     configs = read_configurations("../graphene_sheet/test_data")
     conf = data_generator(configs[0])
-    print(conf.Lx, conf.Ly)
-    print(conf.get_substrate_size(0.20))
+    # print(conf.Lx, conf.Ly)
+    # conf.get_substrate_size(0.20)
     
     
  

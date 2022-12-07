@@ -8,9 +8,9 @@ atom_style atomic
 # ---- Create atoms --- #
 # Parameters
 variable a equal 5.430953   # lattice spacing [Å]
-variable xmin equal 220  # [Å]
-variable ymin equal 260 # [Å]
-variable zmin equal 15 # [Å]
+variable xmin equal 82  # [Å]
+variable ymin equal 132 # [Å]
+variable zmin equal 16 # [Å]
 
 # Number of unit cells to get closest to x-y-z-max
 variable xlen equal $(ceil((v_xmin + 1/4*v_a)/v_a))  # [a]
@@ -20,15 +20,19 @@ variable zlen equal $(ceil((v_zmin)/v_a))  # [a]
 # variable ylen equal $(round((v_ymax + 1/4*v_a)/v_a))  # [a]
 # variable zlen equal $(round((v_zmax)/v_a))  # [a]
 
+# variable xlen equal 1 
+# variable ylen equal 1 
+# variable zlen equal 1 
+
 
 print "xlen, ylen, zlen:  ($(v_xlen), $(v_ylen), $(v_zlen))"
 print "Max pos:  $(v_xlen*v_a - 1/4*v_a), $(v_ylen*v_a - 1/4*v_a), $(-v_zlen*v_a)"
-quit # Check dimenstions before running
+# quit # Check dimenstions before running
 
 
 
 lattice diamond ${a} 
-region	simreg block 0 ${xlen}  0 ${ylen} -${zlen} 0 units lattice
+region	simreg block 0 ${xlen}  0 ${ylen} 0 ${zlen} units lattice
 
 create_box 1 simreg 
 create_atoms 1 box
@@ -54,14 +58,14 @@ fix                 nvt all nvt temp ${temp} ${temp} 0.1
 
 thermo              100
 thermo_style custom step time temp cpu cpuremain
-dump 1 all atom 100 dump.data
+dump 1 all custom 100 dump.data id type x y z
+dump_modify 1 pbc yes
 
 
 
-
-run 1 
-# run $(floor(5/dt)) # relax  
-# write_data crystal_Si_substrate_big.txt
+# run 1000
+run $(floor(5/dt)) # relax  
+write_data crystal_Si_substrate_test.txt
 
 
 
