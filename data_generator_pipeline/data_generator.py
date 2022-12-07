@@ -27,6 +27,7 @@ class data_generator:
         xlen = self.shape[0]
         ylen = self.shape[1]//2
         a = 3*self.Cdis/np.sqrt(3)
+        print(a)
         
         self.Lx = a/6*np.sqrt(3) + (xlen-1) * a/2*np.sqrt(3)
         self.Ly = a/2 + (ylen-1) * a

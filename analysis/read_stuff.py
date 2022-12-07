@@ -55,7 +55,7 @@ def read_cluster(filename):
     # print(data.keys())
     # exit()
     plt.figure(num = unique_fignum())
-    plt.plot(time, data['c_cc1'], label = "cluster count")
+    plt.plot(time, data['c_Nchunk'], label = "cluster count")
     
     plt.legend()
     
@@ -65,8 +65,8 @@ def read_cluster(filename):
  
 if __name__ == '__main__':
     # filename = '../friction_simulation/my_simulation_space/rupture_data_test.txt'
-    filename = '../friction_simulation/my_simulation_space/MSD.txt'
-    # read_ystress(filename)
+    # filename = '../friction_simulation/my_simulation_space/MSD.txt'
+    read_ystress('../friction_simulation/my_simulation_space/YS.txt')
     # read_MSD(filename)
-    read_cluster(filename)
+    read_cluster('../friction_simulation/my_simulation_space/cluster.txt')
     plt.show()

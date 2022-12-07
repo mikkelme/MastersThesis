@@ -6,6 +6,24 @@
 # Setup system
 include ${root}/setup_sim.in
 
+###########################################
+# --- Rupture detection --- #
+variable local_Nevery equal 100     # use input values every this many time steps
+variable local_Nrepeat equal 10    # number of times to use input values for calculating averages
+variable local_Nfreq equal 1000    # calculate averages every this many time steps
+
+
+# y-stress
+compute YS sheet reduce ave c_peratom[2]
+fix YS sheet ave/time ${local_Nevery} ${local_Nrepeat} ${local_Nfreq} c_YS file YS.txt# time average
+
+# Cluster count
+compute cluster_atom all cluster/atom 4.0 # Atoms clustering within threshold
+compute Nchunk all chunk/atom c_cluster_atom compress yes # Non empty chunks (accesing as a scalar gives num chunks)
+fix Nchunk full_sheet ave/time ${local_Nevery} ${local_Nrepeat} ${local_Nfreq} c_Nchunk file cluster.txt # time average
+###########################################
+
+
 # ----------  Write restart files ---------- #
 variable num_stretch_files index 0
 if "${num_stretch_files}<=1" then "jump SELF no_restart"

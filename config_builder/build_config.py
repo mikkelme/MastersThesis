@@ -377,10 +377,6 @@ if __name__ == "__main__":
     # builder.save("all", ext = 'in_lammps', path = '.')
     
     
-    builder.add_substrate(substrate_file)
-    builder.save("all", ext = 'in_lammps', path = '.')
-    builder.view('all')
-    
-    builder.add_substrate([82, 132, 16])
-    builder.save("all", ext = 'in_python', path = '.')
+    builder.add_substrate([None, None, None])
+    builder.save("all", ext = 'test', path = '.')
     builder.view('all')

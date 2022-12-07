@@ -9,8 +9,8 @@ variable drag_speed equal 2
 variable drag_length equal 50 
 variable K equal 1.8724527210000002 
 variable root string ..
-variable out_ext string in_python
-variable config_data string sheet_substrate_in_python
+variable out_ext string test
+variable config_data string sheet_substrate
 variable stretch_max_pct equal 0.50
 variable drag_dir_x equal 0 
 variable drag_dir_y equal 1 
@@ -24,10 +24,10 @@ variable F_N equal 62.41
 
 # Setup system and delete substrate immediately
 include ${root}/setup_sim.in
-# delete_atoms group substrate
+delete_atoms group substrate
 
 # --- Rupture detection --- #
-variable local_Nevery equal 10     # use input values every this many time steps
+variable local_Nevery equal 100     # use input values every this many time steps
 variable local_Nrepeat equal 10    # number of times to use input values for calculating averages
 variable local_Nfreq equal 1000    # calculate averages every this many time steps
 
@@ -67,7 +67,6 @@ unfix PB_ylow_x_hold
 unfix PB_high_x_hold
 unfix sheet_COM_hold
 
-quit
 # ---------- Stretch sheet ---------- #
 
 # Update fixes
