@@ -154,6 +154,8 @@
 #### Week 48 (05/12 - 11/12) - Working from Pisa
 - Beginnning the work on the multi configuration data generation pipeline. 
 - Planning to do some stability test to lock in my simulations parameters in the mean while. 
+- Made a script for testing stretch range of a cut confiugration in lammps. This includes an in-lammps method for detecting rupture using y-stress and cluster count. I plan to implement this for the friciton simulaiton as well to completely bypass a scondary analysis using coordination numbers. 
+- Changed Cdis from 1.42 Å to 1.461 Å as this gave a more stable initial strutcure in practice. During that I searched for optimized tersoff parameters for graphebne since this deviation from theoretical atom spacing was odd. But the optimized parameters I tried did not work well for the cutted configuration so I'm sticking to the orignal parameters for C-C bonds. 
 
 
 

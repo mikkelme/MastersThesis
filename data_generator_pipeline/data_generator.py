@@ -12,7 +12,9 @@ class data_generator:
         assert mat.shape[0] > 0 and mat.shape[1] > 0, shape_error
         
         self.mat = mat
-        self.Cdis = 1.42 # carbon-carbon distance [Å]
+        # self.Cdis = 1.42 # carbon-carbon distance [Å]
+        self.Cdis = 1.461 # carbon-carbon distance [Å]
+        
 
         self.dir = " "
         self.substrate = " "

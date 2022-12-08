@@ -183,8 +183,6 @@ class config_builder:
         
         if not self.is_build: self.build()
             
-        path = "."
-        
         # Get updated minmax        
         minmax_sheet = self.get_minmax(self.sheet)
         minmax_substrate = self.get_minmax(self.substrate)
@@ -359,7 +357,6 @@ if __name__ == "__main__":
     
     # mat = np.ones((4, 6))
     mat = pop_up_pattern(multiples, unitsize, sp = 2)
-    
     # mat[:, :] = 1 # Nocuts
     substrate_file = "../substrate/crystal_Si_substrate_test.txt"
     # substrate_file = "../substrate/crystal_Si_substrate_big.txt"
@@ -378,5 +375,5 @@ if __name__ == "__main__":
     
     
     builder.add_substrate([None, None, None])
-    builder.save("all", ext = 'test', path = '.')
+    builder.save("all", ext = 'test', path = '../friction_simulation')
     builder.view('all')

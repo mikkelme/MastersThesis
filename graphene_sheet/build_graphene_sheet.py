@@ -17,7 +17,8 @@ from graphene_sheet.RN_walks import *
 import os
 
 def build_graphene_sheet(mat, view_lattice = False, write_file = False):
-    Cdis = 1.42 # carbon-carbon distance [Å]
+    # Cdis = 1.42 # carbon-carbon distance [Å]
+    Cdis = 1.461 # carbon-carbon distance [Å] 
     
     shape_error = f"SHAPE ERROR: Got matrix of shape {np.shape(mat)}, y-axis must be multiple of 2 and both nonzero integer."
     assert mat.shape[0]%1 == 0 and mat.shape[1]%1 == 0 and mat.shape[1]%2 == 0, shape_error

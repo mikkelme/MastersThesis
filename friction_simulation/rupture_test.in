@@ -1,6 +1,6 @@
 variable dt equal 0.001 
 variable T equal 100.0
-variable relax_time equal 5
+variable relax_time equal 15
 variable pause_time1 equal 5
 variable pause_time2 equal 5 
 variable stretch_speed_pct equal 0.005  # Make sure that script is not run with tp high strecth
