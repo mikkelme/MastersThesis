@@ -3,6 +3,11 @@
 # config file or from restart file. # 
 #####################################
 
+
+# General settings
+variable rupture_detection index 1 # Whether to run rupture detection
+
+
 # SWITCH: read_data || read_restart
 variable restart_file index None
 variable readable equal is_file(${restart_file})
@@ -109,7 +114,7 @@ print "Setting up simulation from read_restart: ${restart_file}"
 read_restart ${restart_file}
 include ${root}/${config_data}_info.in 
 compute get_S0 S0_info reduce sum y # Retrieve information about S0 via type 3 tmp atom
-
+variable is_ruptured equal 0 # Default value
 
 ###############################
 ### --- Common settings --- ###
@@ -214,9 +219,18 @@ compute sheet_ymin sheet reduce min y
 compute sheet_ymax sheet reduce max y 
 
 compute coord sheet coord/atom cutoff 2.7   # Coordination number
-compute peratom sheet stress/atom NULL      # stress field
-# variable stress_atom atom sqrt(c_peratom[1]*c_peratom[1]+c_peratom[2]*c_peratom[2]+c_peratom[3]*c_peratom[3]) # Stress norm (xx, yy, zz)
+compute sheet_stress sheet stress/atom NULL      # stress field
+# variable stress_atom atom sqrt(c_sheet_stress[1]*c_sheet_stress[1]+c_sheet_stress[2]*c_sheet_stress[2]+c_sheet_stress[3]*c_sheet_stress[3]) # Stress norm (xx, yy, zz)
 # ^^^ This is not so important if it reduces computation time considerably 
+
+
+# 1) y stress average, 2) Atoms clustering within threshold
+if "${rupture_detection}" then & 
+"compute YS sheet reduce ave c_sheet_stress[2]" & 
+"compute cluster_atom full_sheet cluster/atom 4.0"
+
+
+
 
 fix sheet_bond_hist sheet ave/histo 1 1 1 -0.5 1.5 2 c_bond_coord mode vector beyond end
 variable sheet_bond_pct equal f_sheet_bond_hist[2][3]

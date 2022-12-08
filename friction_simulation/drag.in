@@ -10,6 +10,9 @@ variable to_stretch_max_pct equal $(v_stretch_max_pct)
 variable readable equal is_file(${restart_file})
 if !${readable} then "jump SELF system_is_running"
 
+#######################################
+### --- Setup from read_restart --- ###
+#######################################
 include ${root}/setup_sim.in
 variable to_stretch_max_pct equal v_stretch_pct # Update stretch_max_pct with val from restart file
 unfix PB_ave 
@@ -47,8 +50,10 @@ print "-------------------------"
 print ""
 
 
+##############################
+### --- Running system --- ###
+##############################
 label system_is_running
-
 
 # Write variables to info_file.txt
 print """&
@@ -68,8 +73,14 @@ stretch_max_pct ${to_stretch_max_pct}
 drag_dir_x ${drag_dir_x}
 drag_dir_y ${drag_dir_y}
 F_N ${F_N}
-restart_file: ${restart_file}&
+restart_file ${restart_file} &
 """ file info_file.txt
+
+if "${is_ruptured}" then "jump SELF after_drag"
+
+#### Working here
+# ERROR: Fix ID Y for fix vector does not exist (src/fix_vector.cpp:189)
+
 
 
 # ---------- Pause 1 ---------- #
@@ -140,4 +151,13 @@ fix move_va virtuel_atom move linear $(v_drag_speed*v_drag_dir_x/v_dir_norm) $(v
 
 print "--> Drag : $(v_drag_steps) timesteps, $(v_drag_steps*dt) ps"
 run  $(v_drag_steps) 
+
+
+
+label after_drag
+
+print """&
+is_ruptured ${is_ruptured}
+""" append info_file.txt
+
 

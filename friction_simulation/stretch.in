@@ -3,18 +3,10 @@
 # restart files if num_stretch_files > 0. #
 ###########################################
 
-# Consider moving this to setup_sim instead for more generality
-# 0 = False, else = True
-
-
-
-variable rupture_detection index 1
-variable is_ruptured equal 0
-
-
 
 # Setup system
 include ${root}/setup_sim.in
+variable is_ruptured equal 0 # Default value
 
 
 
@@ -32,24 +24,16 @@ variable YS_Nevery equal floor(v_YS_Nfreq/v_YS_vals)
 variable cluster_Nevery equal floor(v_detection_freq/v_cluster_vals)
 
 
-# print ${YS_Nfreq}
-# print ${YS_vals}
-# print ${YS_Nevery}
-# print " "
 
-# print ${detection_freq}
-# print ${cluster_vals} 
-# print ${cluster_Nevery}
-
-
-compute YS sheet reduce ave c_peratom[2]
+# compute YS sheet reduce ave c_sheet_stress[2] # <------ Condider x^2 + y^2 or similar ... or?
 fix YS sheet ave/time ${YS_Nevery} ${YS_vals} ${YS_Nfreq} c_YS file YS.txt # time average
 
 # Cluster count
-compute cluster_atom full_sheet cluster/atom 4.0 # Atoms clustering within threshold
+# compute cluster_atom full_sheet cluster/atom 4.0 # Atoms clustering within threshold
 compute Ncluster full_sheet chunk/atom c_cluster_atom compress yes # Non empty chunks (accesing as a scalar gives num chunks)
 fix Ncluster full_sheet ave/time ${cluster_Nevery} ${cluster_vals} ${detection_freq} c_Ncluster file cluster.txt # time average
 
+# uncompute
 
 label no_rupture_computes 
 
@@ -129,6 +113,17 @@ if "${stop_condition}" then "variable is_ruptured equal 1"
 unfix rupture_detector
 
 
+if "${is_ruptured}" then "print 'IT IS RUPTURED'" &
+else "print 'IT IS NOT RUPTURED'"
+
+
+
+# Unfix (Uncompute) fixes (computes) with specific Nevery Nrepeat Nfreq choices
+unfix YS
+uncompute Ncluster 
+unfix Ncluster
+
+# variable is_ruptured equal 1
 
 # ---------- After stretch ---------- # 
 label after_stretch
@@ -139,18 +134,3 @@ unfix ylow_move
 unfix yhigh_move
 
 
-
-
-if "${is_ruptured}" then "print 'IT IS RUPTURED'" &
-else "print 'IT IS NOT RUPTURED'"
-
-
-
-
-# run $(v_stretch_steps) every 3000 &
-#     "if '$(f_YS) < $(0.5*v_max_YS) && $(v_stretch_pct) > 0.03' then 'print STOP=LASTMAX'" &
-#     "if '$(f_Ncluster) > 1.5' then 'print STOP=Ncluster'" #&
-#     # "unfix YS_mean_vec" &
-#     # "fix YS_mean_vec sheet vector ${local_Nfreq} f_YS"
-
-quit
