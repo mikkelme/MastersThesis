@@ -5,7 +5,11 @@
 
 # Consider moving this to setup_sim instead for more generality
 # 0 = False, else = True
-variable rupture_detection equal 1 # 
+
+
+
+variable rupture_detection index 1
+variable is_ruptured equal 0
 
 
 
@@ -17,19 +21,35 @@ include ${root}/setup_sim.in
 # --- Rupture detection computes --- #
 if "!${rupture_detection}" then "jump SELF no_rupture_computes"
 
-variable local_Nevery equal 1     # use input values every this many time steps
-variable local_Nrepeat equal 10    # number of times to use input values for calculating averages
-variable local_Nfreq equal 10    # calculate averages every this many time steps
+variable detection_freq equal 1000  # Number of timesteps between each rupture check
+variable YS_mean_vals equal 10      # Number of y-stress mean values sampled
+variable YS_vals equal 10           # Number of individual samples for each y-stress mean value
+variable cluster_vals equal 10      # Number of cluster values sampled
 
 
-# y-stress
+variable YS_Nfreq equal floor(v_detection_freq/v_YS_mean_vals)
+variable YS_Nevery equal floor(v_YS_Nfreq/v_YS_vals)
+variable cluster_Nevery equal floor(v_detection_freq/v_cluster_vals)
+
+
+# print ${YS_Nfreq}
+# print ${YS_vals}
+# print ${YS_Nevery}
+# print " "
+
+# print ${detection_freq}
+# print ${cluster_vals} 
+# print ${cluster_Nevery}
+
+
 compute YS sheet reduce ave c_peratom[2]
-fix YS sheet ave/time ${local_Nevery} ${local_Nrepeat} ${local_Nfreq} c_YS file YS.txt # time average
+fix YS sheet ave/time ${YS_Nevery} ${YS_vals} ${YS_Nfreq} c_YS file YS.txt # time average
 
 # Cluster count
 compute cluster_atom full_sheet cluster/atom 4.0 # Atoms clustering within threshold
-compute Nchunk full_sheet chunk/atom c_cluster_atom compress yes # Non empty chunks (accesing as a scalar gives num chunks)
-fix Nchunk full_sheet ave/time ${local_Nevery} ${local_Nrepeat} ${local_Nfreq} c_Nchunk file cluster.txt # time average
+compute Ncluster full_sheet chunk/atom c_cluster_atom compress yes # Non empty chunks (accesing as a scalar gives num chunks)
+fix Ncluster full_sheet ave/time ${cluster_Nevery} ${cluster_vals} ${detection_freq} c_Ncluster file cluster.txt # time average
+
 
 label no_rupture_computes 
 
@@ -81,51 +101,38 @@ print "--> Stretch: $(v_stretch_steps) timesteps, $(v_stretch_steps*dt) ps"
 ### No rupture detection ###
 if "${rupture_detection}" then "jump SELF rupture_detection_stretch"
 run $(v_stretch_steps)
-restart 0
 jump SELF after_stretch
 
 
 
-### No rupture detection ###
+### Rupture detection ###
 label rupture_detection_stretch
 
-variable detection_freq equal 1000
-
-fix YS_mean_vec sheet vector ${local_Nfreq} f_YS # Store mean values in vector
+# Calculations for rupture detection
+fix YS_mean_vec sheet vector ${YS_Nfreq} f_YS # Store mean values in vector
 variable max_YS equal max(f_YS_mean_vec)
 variable latest_YS equal f_YS
 
 thermo_style custom step time cpu cpuremain v_stretch_pct v_latest_YS v_max_YS 
 
-
-# run $(v_stretch_steps) every 3000 &
-#     "if '$(f_YS) < $(0.5*v_max_YS) && $(v_stretch_pct) > 0.03' then 'print STOP=LASTMAX'" &
-#     "if '$(f_Nchunk) > 1.5' then 'print STOP=NCHUNK'" #&
-#     # "unfix YS_mean_vec" &
-#     # "fix YS_mean_vec sheet vector ${local_Nfreq} f_YS"
-
-variable A equal $(v_latest_YS>1e6)
-variable B equal $(v_stretch_pct>0.1)
-# variable condition equal $(v_A && v_B)
-variable condition equal $(f_YS < 0.5*v_max_YS && v_stretch_pct > 0.03)
-
-print $(v_condition)
-quit
+# Rupture conditions
+variable stress_drop equal "f_YS < 0.5*v_max_YS"
+variable cluster_split equal "f_Ncluster > 1" 
+variable min_stretch equal "v_stretch_pct > 0.03"
+variable stop_condition equal "(v_stress_drop || v_cluster_split) && v_min_stretch"
 
 
-fix rupture_detector sheet halt ${detection_freq} v_A || $(v_B) error continue
-# fix rupture_detector sheet halt ${detection_freq} $(v_latest_YS)>1e6 || $(v_stretch_pct)>0.03 error continue
-run $(v_stretch_steps)
-
-
-print "STOPPED"
-
-
+if "$(v_stop_condition)" then "jump SELF after_stretch"
+fix rupture_detector sheet halt ${detection_freq} v_stop_condition != 0 error continue
+run $(v_stretch_steps) 
+if "${stop_condition}" then "variable is_ruptured equal 1"
+unfix rupture_detector
 
 
 
 # ---------- After stretch ---------- # 
 label after_stretch
+restart 0
 
 # Unfix moves (relevant if continued directly)
 unfix ylow_move
@@ -134,3 +141,16 @@ unfix yhigh_move
 
 
 
+if "${is_ruptured}" then "print 'IT IS RUPTURED'" &
+else "print 'IT IS NOT RUPTURED'"
+
+
+
+
+# run $(v_stretch_steps) every 3000 &
+#     "if '$(f_YS) < $(0.5*v_max_YS) && $(v_stretch_pct) > 0.03' then 'print STOP=LASTMAX'" &
+#     "if '$(f_Ncluster) > 1.5' then 'print STOP=Ncluster'" #&
+#     # "unfix YS_mean_vec" &
+#     # "fix YS_mean_vec sheet vector ${local_Nfreq} f_YS"
+
+quit

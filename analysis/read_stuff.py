@@ -55,7 +55,7 @@ def read_cluster(filename):
     # print(data.keys())
     # exit()
     plt.figure(num = unique_fignum())
-    plt.plot(time, data['c_Nchunk'], label = "cluster count")
+    plt.plot(time, data['c_Ncluster'], label = "cluster count")
     
     plt.legend()
     
