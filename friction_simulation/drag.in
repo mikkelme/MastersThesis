@@ -3,6 +3,13 @@
 # along given direction.           #
 ####################################
 
+# --- Rupture detection parameters --- #
+variable detection_freq equal 1000  # Number of timesteps between each rupture check
+variable YS_mean_vals equal 10      # Number of y-stress mean values sampled
+variable YS_vals equal 10           # Number of individual samples for each y-stress mean value
+variable cluster_vals equal 10      # Number of cluster values sampled
+
+
 
 # Setup system
 variable restart_file index None
@@ -78,8 +85,32 @@ restart_file ${restart_file} &
 
 if "${is_ruptured}" then "jump SELF after_drag"
 
-#### Working here
-# ERROR: Fix ID Y for fix vector does not exist (src/fix_vector.cpp:189)
+
+# ------------------ Rupture detection calculations ------------------ #
+if "!${rupture_detection}" then "jump SELF skip_rupture_calculations"
+
+# Sampling parameters 
+variable YS_Nfreq equal floor(v_detection_freq/v_YS_mean_vals)
+variable YS_Nevery equal floor(v_YS_Nfreq/v_YS_vals)
+variable cluster_Nevery equal floor(v_detection_freq/v_cluster_vals)
+
+# y-stress 
+fix YS sheet ave/time ${YS_Nevery} ${YS_vals} ${YS_Nfreq} c_YS file YS.txt # Mean values
+fix YS_mean_vec sheet vector ${YS_Nfreq} f_YS              # Store mean values in vector
+variable max_YS equal max(f_YS_mean_vec)                   # Compute max of mean values
+
+# Cluster count mean value 
+fix Ncluster full_sheet ave/time ${cluster_Nevery} ${cluster_vals} ${detection_freq} c_Ncluster file cluster.txt
+
+# Rupture conditions
+variable stress_drop equal "f_YS < 0.5*v_max_YS"
+variable cluster_split equal "f_Ncluster > 1" 
+variable stop_condition equal "v_stress_drop || v_cluster_split"
+
+fix rupture_detector sheet halt ${detection_freq} v_stop_condition != 0 error continue 
+########################################################################
+label skip_rupture_calculations 
+
 
 
 
@@ -92,6 +123,8 @@ thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp
 
 print "--> Pause 1: $(v_pause1_steps) timesteps, $(v_pause1_steps*dt) ps"
 run  $(v_pause1_steps) 
+if "${is_ruptured}" then "jump SELF after_drag"
+
 
 # ---------- Apply normal force ---------- #
 print "--> Apply normal force = $(v_F_N)"
@@ -111,11 +144,14 @@ print "--> damper on (viscosity = $(v_viscosity)) "
 # Run with damper on
 if $(v_step_dampen)>$(v_pause2_steps) then "variable step_dampen equal v_pause2_steps"
 run $(v_step_dampen)
+if "${is_ruptured}" then "jump SELF after_drag"
 
 # Run remaining with damper off
 unfix PB_damper
 print "--> damper off"
 run  $(v_pause2_steps-v_step_dampen) 
+if "${is_ruptured}" then "jump SELF after_drag"
+
 
 # ---------- Drag sheet ---------- #
 # Create virtuel atom (place in sheet COM)
@@ -123,7 +159,6 @@ thermo_style custom c_sheet_COM[3]
 run 0
 create_atoms 3 single $(c_sheet_COM[1]) $(c_sheet_COM[2]) $(c_sheet_COM[3])
 group virtuel_atom type 3
-
 
 
 if "$(v_K) != 0" then "jump SELF spring_move"
@@ -151,11 +186,12 @@ fix move_va virtuel_atom move linear $(v_drag_speed*v_drag_dir_x/v_dir_norm) $(v
 
 print "--> Drag : $(v_drag_steps) timesteps, $(v_drag_steps*dt) ps"
 run  $(v_drag_steps) 
+if "${is_ruptured}" then "jump SELF after_drag"
 
 
 
+# ------------ After drag ------------ # 
 label after_drag
-
 print """&
 is_ruptured ${is_ruptured}
 """ append info_file.txt

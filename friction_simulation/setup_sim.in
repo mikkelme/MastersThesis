@@ -224,11 +224,11 @@ compute sheet_stress sheet stress/atom NULL      # stress field
 # ^^^ This is not so important if it reduces computation time considerably 
 
 
-# 1) y stress average, 2) Atoms clustering within threshold
+# 1) y stress average, 2) Cluster id per atom, 3) Total cluster count (when accesing as a scalar)
 if "${rupture_detection}" then & 
 "compute YS sheet reduce ave c_sheet_stress[2]" & 
-"compute cluster_atom full_sheet cluster/atom 4.0"
-
+"compute cluster_atom full_sheet cluster/atom 4.0" &
+"compute Ncluster full_sheet chunk/atom c_cluster_atom compress yes"
 
 
 
@@ -293,7 +293,6 @@ variable dir_norm equal $(sqrt(v_drag_dir_x^2+v_drag_dir_y^2))
 # # RDF
 # compute myRDF sheet rdf 1000 1 1 #cutoff 8.65 
 # fix tmp all ave/time 100 1 100 c_myRDF[*] file rdf.txt mode vector
-
 
 
 
