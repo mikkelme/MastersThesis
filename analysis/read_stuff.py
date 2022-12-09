@@ -6,14 +6,13 @@ from analysis_utils import *
 def read_ystress(filename):
     data = read_ave_time(filename)
     
-    
 
     time = data['TimeStep']
     stress = data['c_YS']
-    stress_filter = savgol_filter(5, 1, stress)[0]
     
     plt.figure(num = unique_fignum())
     plt.plot(time, stress)
+    
     
     # plt.figure(num = unique_fignum())
     # vel = stress_filter[1:] - stress_filter[:-1]
@@ -66,7 +65,7 @@ def read_cluster(filename):
 if __name__ == '__main__':
     # filename = '../friction_simulation/my_simulation_space/rupture_data_test.txt'
     # filename = '../friction_simulation/my_simulation_space/MSD.txt'
-    read_ystress('../friction_simulation/my_simulation_space/YS.txt')
     # read_MSD(filename)
+    read_ystress('../friction_simulation/my_simulation_space/YS.txt')
     read_cluster('../friction_simulation/my_simulation_space/cluster.txt')
     plt.show()

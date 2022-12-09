@@ -95,19 +95,20 @@ variable YS_Nevery equal floor(v_YS_Nfreq/v_YS_vals)
 variable cluster_Nevery equal floor(v_detection_freq/v_cluster_vals)
 
 # y-stress 
-fix YS sheet ave/time ${YS_Nevery} ${YS_vals} ${YS_Nfreq} c_YS file YS.txt # Mean values
+fix YS sheet ave/time ${YS_Nevery} ${YS_vals} ${YS_Nfreq} c_YS #file YS.txt # Mean values
 fix YS_mean_vec sheet vector ${YS_Nfreq} f_YS              # Store mean values in vector
 variable max_YS equal max(f_YS_mean_vec)                   # Compute max of mean values
 
 # Cluster count mean value 
-fix Ncluster full_sheet ave/time ${cluster_Nevery} ${cluster_vals} ${detection_freq} c_Ncluster file cluster.txt
+fix Ncluster full_sheet ave/time ${cluster_Nevery} ${cluster_vals} ${detection_freq} c_Ncluster #file cluster.txt
 
 # Rupture conditions
-variable stress_drop equal "f_YS < 0.5*v_max_YS"
+variable stress_drop equal "f_YS < 0.1*v_max_YS"
 variable cluster_split equal "f_Ncluster > 1" 
-variable stop_condition equal "v_stress_drop || v_cluster_split"
+variable min_stress equal "v_max_YS > 1e5"
+variable is_ruptured equal "(v_stress_drop && v_min_stress) || v_cluster_split"
 
-fix rupture_detector sheet halt ${detection_freq} v_stop_condition != 0 error continue 
+fix rupture_detector sheet halt ${detection_freq} v_is_ruptured != 0 error continue 
 ########################################################################
 label skip_rupture_calculations 
 
@@ -119,7 +120,7 @@ label skip_rupture_calculations
 velocity PB_tot_rigid set 0 0 0
 unfix PB_ave 
 fix PB_ave PB_tot_rigid aveforce 0 0 0 # Average force vector completely
-thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp
+thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct
 
 print "--> Pause 1: $(v_pause1_steps) timesteps, $(v_pause1_steps*dt) ps"
 run  $(v_pause1_steps) 
@@ -129,7 +130,7 @@ if "${is_ruptured}" then "jump SELF after_drag"
 # ---------- Apply normal force ---------- #
 print "--> Apply normal force = $(v_F_N)"
 fix normal_force PB_tot addforce 0.0 0.0 $(-v_F_N/count(PB_tot))
-thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct c_sheet_COM[3] c_Ff[3] f_normal_force[3] c_sheet_fz v_sub_sheet_seperation
+thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct c_sheet_COM[3] c_Ff[3] f_normal_force[3] c_sheet_fz v_sub_sheet_seperation
 
 # Add damper
 variable viscosity equal 0.05
@@ -166,7 +167,7 @@ if "$(v_K) != 0" then "jump SELF spring_move"
 unfix nve 
 fix nve non_drag_atoms nve 
 fix move_PB PB_tot_rigid move linear $(v_drag_speed*v_drag_dir_x/v_dir_norm) $(v_drag_speed*v_drag_dir_y/v_dir_norm) NULL units box 
-thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct c_sheet_COM[1] c_sheet_COM[2] c_Ff[1] c_Ff[2] v_move_force_xy_norm  
+# thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct c_sheet_COM[1] c_sheet_COM[2] c_Ff[1] c_Ff[2] v_move_force_xy_norm  
 jump SELF after_move_commands
 
 # Spring move
@@ -174,20 +175,25 @@ label spring_move
 fix spring_force PB_tot_rigid spring couple virtuel_atom $(v_K) 0.0 0.0 NULL 0.0
 variable v_move_force_x equal f_spring_force[1] 
 variable v_move_force_y equal f_spring_force[2] 
-thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct c_sheet_COM[1] c_sheet_COM[2] f_spring_force[4]
+# thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct c_sheet_COM[1] c_sheet_COM[2] f_spring_force[4]
 label after_move_commands
 
-
-# Output
-fix friction_force_spring all ave/time ${Nevery} ${Nrepeat} ${Nfreq} v_move_force_x v_move_force_y c_Ff_sheet[1] c_Ff_sheet[2] c_Ff_sheet[3] c_Ff_PB[1] c_Ff_PB[2] c_Ff_PB[3] c_sheet_COM[1] c_sheet_COM[2] c_sheet_COM[3] v_full_sheet_bond_pct v_sheet_bond_pct file system_${out_ext}_Ff.txt 
 
 # Move virtuel atom 
 fix move_va virtuel_atom move linear $(v_drag_speed*v_drag_dir_x/v_dir_norm) $(v_drag_speed*v_drag_dir_y/v_dir_norm) 0 units box 
 
+# Thermo
+if "!${rupture_detection}" then &
+"thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct c_sheet_COM[1] c_sheet_COM[2]" &
+else &
+"thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct c_sheet_COM[1] c_sheet_COM[2] f_YS v_max_YS f_Ncluster" 
+
+# Output
+fix friction_force_spring all ave/time ${Nevery} ${Nrepeat} ${Nfreq} v_move_force_x v_move_force_y c_Ff_sheet[1] c_Ff_sheet[2] c_Ff_sheet[3] c_Ff_PB[1] c_Ff_PB[2] c_Ff_PB[3] c_sheet_COM[1] c_sheet_COM[2] c_sheet_COM[3] v_full_sheet_bond_pct v_sheet_bond_pct file system_${out_ext}_Ff.txt 
+
+# Run
 print "--> Drag : $(v_drag_steps) timesteps, $(v_drag_steps*dt) ps"
 run  $(v_drag_steps) 
-if "${is_ruptured}" then "jump SELF after_drag"
-
 
 
 # ------------ After drag ------------ # 
