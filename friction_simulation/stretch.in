@@ -19,7 +19,7 @@ include ${root}/setup_sim.in
 
 
 # ----------  Write restart files ---------- #
-variable num_stretch_files index 0
+# variable num_stretch_files index 0
 if "${num_stretch_files}<=1" then "jump SELF no_restart"
 
 variable restart_freq equal floor(v_stretch_steps/(v_num_stretch_files-1))
