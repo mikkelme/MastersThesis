@@ -223,7 +223,7 @@ compute sheet_stress sheet stress/atom NULL      # stress field
 # ^^^ This is not so important if it reduces computation time considerably 
 
 
-# 1) y stress average, 2) Cluster id per atom, 3) Total cluster count (when accesing as a scalar)
+# 1) y stress average, 2) Cluster id per atom, 3) 
 if "${rupture_detection}" then & 
 "compute YS sheet reduce ave c_sheet_stress[2]" & 
 "compute cluster_atom full_sheet cluster/atom 4.0" &
@@ -280,6 +280,7 @@ if ${readable} then "thermo_style custom c_get_S0 c_sheet_ymin c_sheet_ymax" &
 "run 0" &
 "variable S0 equal $(c_get_S0)" &
 "delete_atoms group S0_info"
+
 
 # variable S_len equal c_PB_yhigh_ymin-c_PB_ylow_ymax # Updated len of inner sheet
 variable S_len equal c_sheet_ymax-c_sheet_ymin 

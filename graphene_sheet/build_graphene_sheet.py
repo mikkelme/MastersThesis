@@ -16,10 +16,7 @@ from graphene_sheet.RN_walks import *
 
 import os
 
-def build_graphene_sheet(mat, view_lattice = False, write_file = False):
-    # Cdis = 1.42 # carbon-carbon distance [Å]
-    Cdis = 1.461 # carbon-carbon distance [Å] 
-    
+def build_graphene_sheet(mat, Cdis = 1.461):
     shape_error = f"SHAPE ERROR: Got matrix of shape {np.shape(mat)}, y-axis must be multiple of 2 and both nonzero integer."
     assert mat.shape[0]%1 == 0 and mat.shape[1]%1 == 0 and mat.shape[1]%2 == 0, shape_error
     assert mat.shape[0] > 0 and mat.shape[1] > 0, shape_error
@@ -30,7 +27,7 @@ def build_graphene_sheet(mat, view_lattice = False, write_file = False):
     
     # --- Create graphene lattice --- #
     atoms = graphene_nanoribbon(xlen, ylen, type='zigzag', saturated=False, C_C=Cdis, vacuum=2.0)
-    atoms.pbc = [False, False, False] # Set x,y,z to non periodic (not sure if this is relevant)
+    atoms.pbc = [True, True, False] # (not sure if this is relevant)
 
 
     # Swap axes: y <-> z
@@ -64,13 +61,6 @@ def build_graphene_sheet(mat, view_lattice = False, write_file = False):
                 del atoms[i*yline_len+j]
 
    
-    if view_lattice: 
-        view(atoms)
-
-    if write_file != False:
-        lammpsdata.write_lammps_data(write, atoms)
-
-    # write('../Presentation/Images/cutpattern.png', atoms)
     return atoms
 
 

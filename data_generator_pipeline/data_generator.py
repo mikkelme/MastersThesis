@@ -2,7 +2,6 @@ import numpy as np
 import os
 
 
-from ase.build import graphene_nanoribbon
 
 
 class data_generator:
@@ -12,16 +11,15 @@ class data_generator:
         assert mat.shape[0] > 0 and mat.shape[1] > 0, shape_error
         
         self.mat = mat
-        # self.Cdis = 1.42 # carbon-carbon distance [Å]
-        self.Cdis = 1.461 # carbon-carbon distance [Å]
-        
+        self.Cdis = 1.461 # carbon-carbon distance [Å]         
 
-        self.dir = " "
-        self.substrate = " "
-
-        self.shape = np.shape(mat)        
-    
+        self.shape = np.shape(mat)            
         self.set_sheet_size()
+        
+        
+        # self.dir = " "
+        # self.substrate = " "
+
         
         
     def set_sheet_size(self):
@@ -29,7 +27,6 @@ class data_generator:
         xlen = self.shape[0]
         ylen = self.shape[1]//2
         a = 3*self.Cdis/np.sqrt(3)
-        print(a)
         
         self.Lx = a/6*np.sqrt(3) + (xlen-1) * a/2*np.sqrt(3)
         self.Ly = a/2 + (ylen-1) * a
@@ -43,6 +40,12 @@ class data_generator:
         return Lx, Ly
         
         
+    def run(self):
+        num_stretch_vals
+        num_F_N
+        F_N interval 
+
+      print("lets run")  
       
 
 
@@ -76,6 +79,9 @@ def read_configurations(folder):
 if __name__ == "__main__":
     configs = read_configurations("../graphene_sheet/test_data")
     conf = data_generator(configs[0])
+    conf.run()
+    
+    
     # print(conf.Lx, conf.Ly)
     # conf.get_substrate_size(0.20)
     

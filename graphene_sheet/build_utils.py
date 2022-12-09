@@ -163,3 +163,19 @@ def build_pull_blocks(mat, pullblock = 6, sideblock = 0):
     
     return new_mat, pullblock
 
+
+def get_minmax(object):
+    """ Get min and max position of ASE objects as 
+        a matrix with on the format
+                        --------------------
+                    | xmin | ymin | zmin |
+            minmax =    --------------------
+                    | xmax | ymax | zmax |
+                        --------------------
+    """
+    pos = object.get_positions()
+    min_vals = np.min(pos, axis = 0)
+    max_vals = np.max(pos, axis = 0)
+    return np.array([min_vals, max_vals]) 
+        
+    
