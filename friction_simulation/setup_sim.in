@@ -114,7 +114,6 @@ print "Setting up simulation from read_restart: ${restart_file}"
 read_restart ${restart_file}
 include ${root}/${config_data}_info.in 
 compute get_S0 S0_info reduce sum y # Retrieve information about S0 via type 3 tmp atom
-variable is_ruptured equal 0 # Default value
 
 ###############################
 ### --- Common settings --- ###
@@ -228,8 +227,8 @@ compute sheet_stress sheet stress/atom NULL      # stress field
 if "${rupture_detection}" then & 
 "compute YS sheet reduce ave c_sheet_stress[2]" & 
 "compute cluster_atom full_sheet cluster/atom 4.0" &
-"compute Ncluster full_sheet chunk/atom c_cluster_atom compress yes"
-
+"compute Ncluster full_sheet chunk/atom c_cluster_atom compress yes" 
+variable is_ruptured equal 0 # Default value
 
 
 fix sheet_bond_hist sheet ave/histo 1 1 1 -0.5 1.5 2 c_bond_coord mode vector beyond end

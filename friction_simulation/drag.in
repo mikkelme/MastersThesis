@@ -198,8 +198,15 @@ run  $(v_drag_steps)
 
 # ------------ After drag ------------ # 
 label after_drag
-print """&
-is_ruptured ${is_ruptured}
-""" append info_file.txt
+
+if "${rupture_detection}" then &
+"print 'is_ruptured ${is_ruptured}' append info_file.txt" &
+else &
+"print 'is_ruptured None' append info_file.txt" 
+
+
+# print """&
+# is_ruptured ${is_ruptured}
+# """ append info_file.txt
 
 

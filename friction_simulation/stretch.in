@@ -12,8 +12,6 @@ variable cluster_vals equal 10      # Number of cluster values sampled
 
 # Setup system
 include ${root}/setup_sim.in
-variable is_ruptured equal 0 # Default value
-
 
 
 
@@ -109,5 +107,4 @@ if "${rupture_detection}" then &
 # Unfix moves (relevant if continued directly)
 unfix ylow_move
 unfix yhigh_move
-
 
