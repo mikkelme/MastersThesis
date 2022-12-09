@@ -16,9 +16,10 @@ def build_substrate(subpos, a_Si = 5.430953):
         minimum dimensions (Lx, Ly, Lz) = subpos  """
     
     # Get lattice size
-    subpos[:2] += a_Si/4 
+    print(subpos)
     size = np.ceil([pos/a_Si for pos in subpos]).astype('int')
     
+    print(size)
     # Build
     Diamond = DiamondFactory()
     atoms = Diamond(directions = [[1,0,0], [0,1,0], [0,0,1]], 

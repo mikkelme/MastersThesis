@@ -8,8 +8,8 @@ atom_style atomic
 # ---- Create atoms --- #
 # Parameters
 variable a equal 5.430953   # lattice spacing [Å]
-variable xmin equal 82  # [Å]
-variable ymin equal 132 # [Å]
+variable xmin equal 85  # [Å]
+variable ymin equal 137 # [Å]
 variable zmin equal 16 # [Å]
 
 # Number of unit cells to get closest to x-y-z-max
@@ -36,6 +36,7 @@ region	simreg block 0 ${xlen}  0 ${ylen} 0 ${zlen} units lattice
 
 create_box 1 simreg 
 create_atoms 1 box
+# create_atoms 1 region simreg
 
 # --- Dynamics --- #
 # parameters
@@ -63,9 +64,9 @@ dump_modify 1 pbc yes
 
 
 
-# run 1000
-run $(floor(5/dt)) # relax  
-write_data crystal_Si_substrate_test.txt
+run 100
+# run $(floor(5/dt)) # relax  
+# write_data crystal_Si_substrate_test.txt
 
 
 

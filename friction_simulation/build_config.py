@@ -129,12 +129,12 @@ class config_builder:
             minmax = get_minmax(self.sheet)
             Lx, Ly = minmax[1,:2] - minmax[0,:2]
             subpos = np.array([Lx + 20, Ly*1.5 + 20, 16]) # Lx, Ly, Lz
+    
             # Set substrate Lx, Ly, Lz from input (overwrite default values)
             for i, pos in enumerate(substrate):
                 if pos is not None:
                     subpos[i] = pos
-            subpos[:2] += self.a_Si/4 
-            
+                    
             # Build
             self.substrate = build_substrate(subpos, self.a_Si)
         else:
@@ -222,7 +222,7 @@ if __name__ == "__main__":
     # builder.add_substrate(substrate_file)
     builder.add_substrate([None, None, None])
     builder.build()
-    builder.view('all')
-    # builder.save("sheet", ext = 'only', path = '.')
+    builder.view('sheet')
+    builder.save("sheet", ext = 'only', path = '.')
     
     

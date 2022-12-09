@@ -28,12 +28,48 @@ atom_style atomic # coarse-grain liquids, solids, metals
 read_data ${root}/${config_data}.txt extra/atom/types 1  # sheet and substrate (1 extra type for virtuel atom)
 include ${root}/${config_data}_info.in                   # import variables
 
+
+###################
+# Build Substrate #
+###################
+
+
+variable a equal 5.430953   # lattice spacing [Å]
+variable xmin equal 84  # [Å]
+variable ymin equal 135 # [Å]
+variable zmin equal 16 # [Å]
+
+# Number of unit cells to get closest to x-y-z-max
+variable xlen equal $(ceil((v_xmin + 1/4*v_a)/v_a))  # [a]
+variable ylen equal $(ceil((v_ymin + 1/4*v_a)/v_a))  # [a]
+variable zlen equal $(ceil((v_zmin)/v_a))  # [a]
+
+print "xlen, ylen, zlen:  ($(v_xlen), $(v_ylen), $(v_zlen))"
+print "Max pos:  $(v_xlen*v_a - 1/4*v_a), $(v_ylen*v_a - 1/4*v_a), $(-v_zlen*v_a)"
+
+
+
+lattice diamond ${a} 
+region	substrate_region block 0 ${xlen}  0 ${ylen} 0 ${zlen} units lattice
+
+# change_box all x final -10 20 boundary f s s
+
+# create_box 1 substrate_region 
+create_atoms 1 region substrate_region
+dump 1 all custom 100 what_is_going_on.data id type x y z
+
+###################
+###################
+###################
 # --- Masses --- #            
 mass 1 12.0107          # C
 mass 2 28.0855          # Si
 # mass 2 196.966570     # Au
 mass 3 1.0              # Virtuel atom
 
+
+write_data what_is_going_on.txt
+quit
 
 # --- Regions and groups --- #
 variable eps equal 0.1 # small number to ensure all atoms is inside interval
