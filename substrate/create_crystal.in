@@ -64,9 +64,9 @@ dump_modify 1 pbc yes
 
 
 
-run 100
+write_data crystal_Si_substrate_test.txt
+# run 100
 # run $(floor(5/dt)) # relax  
-# write_data crystal_Si_substrate_test.txt
 
 
 

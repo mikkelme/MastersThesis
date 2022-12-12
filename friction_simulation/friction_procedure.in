@@ -10,7 +10,8 @@ variable K index 1.8724527210000002
 variable root index ..
 variable out_ext index test
 variable config_data index sheet_only
-variable stretch_max_pct index 0.50
+# variable config_data index sheet_substrate_test
+variable stretch_max_pct index 0.0
 variable drag_dir_x index 0 
 variable drag_dir_y index 1 
 variable F_N index 62.41 

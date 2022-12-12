@@ -25,67 +25,33 @@ boundary p p m
 atom_style atomic # coarse-grain liquids, solids, metals
 
 # --- Read files --- #
-read_data ${root}/${config_data}.txt extra/atom/types 1  # sheet and substrate (1 extra type for virtuel atom)
+read_data ${root}/${config_data}.txt extra/atom/types 1  # sheet and (optional) substrate (1 extra type for virtuel atom)
 include ${root}/${config_data}_info.in                   # import variables
 
-
-###################
-# Build Substrate #
-###################
-
-
-variable a equal 5.430953   # lattice spacing [Å]
-variable xmin equal 84  # [Å]
-variable ymin equal 135 # [Å]
-variable zmin equal 16 # [Å]
-
-# Number of unit cells to get closest to x-y-z-max
-variable xlen equal $(ceil((v_xmin + 1/4*v_a)/v_a))  # [a]
-variable ylen equal $(ceil((v_ymin + 1/4*v_a)/v_a))  # [a]
-variable zlen equal $(ceil((v_zmin)/v_a))  # [a]
-
-print "xlen, ylen, zlen:  ($(v_xlen), $(v_ylen), $(v_zlen))"
-print "Max pos:  $(v_xlen*v_a - 1/4*v_a), $(v_ylen*v_a - 1/4*v_a), $(-v_zlen*v_a)"
-
-
-
-lattice diamond ${a} 
-region	substrate_region block 0 ${xlen}  0 ${ylen} 0 ${zlen} units lattice
-
-# change_box all x final -10 20 boundary f s s
-
-# create_box 1 substrate_region 
-create_atoms 1 region substrate_region
-dump 1 all custom 100 what_is_going_on.data id type x y z
-
-###################
-###################
-###################
 # --- Masses --- #            
 mass 1 12.0107          # C
 mass 2 28.0855          # Si
-# mass 2 196.966570     # Au
 mass 3 1.0              # Virtuel atom
 
 
-write_data what_is_going_on.txt
-quit
 
 # --- Regions and groups --- #
 variable eps equal 0.1 # small number to ensure all atoms is inside interval
 
+
 ## Sheet 
 region sheet_region block INF INF $(v_pullblock_yhi+v_eps) $(v_pullblock_ylo-v_eps) ${pullblock_zlo} INF
-region full_sheet_region block INF INF INF INF ${pullblock_zlo} INF
 group  sheet region sheet_region
-group  full_sheet region full_sheet_region 
+group full_sheet type 1
+
+# region full_sheet_region block INF INF INF INF ${pullblock_zlo} INF
+# group  full_sheet region full_sheet_region 
 
 # Extra compute to get sheet min max
 compute full_sheet_ymin full_sheet reduce min y  
 compute full_sheet_ymax full_sheet reduce max y  
 thermo_style custom c_full_sheet_ymin c_full_sheet_ymax
 run 0
-
 
 ## Pullblocks
 region PB_ylow_region  block INF INF INF $(v_pullblock_yhi+v_eps) ${pullblock_zlo} INF
@@ -110,14 +76,96 @@ group PB_tot_rigid union PB_ylow_rigid PB_yhigh_rigid
 ## Substrate
 group  substrate type 2
 
-# Extra compute to get sub min
-compute substrate_zmin substrate reduce min z  
-thermo_style custom c_substrate_zmin
+
+
+#######################################
+# Build Substrate if not in read file #
+#######################################
+
+# Check if substrate is included in the file
+if "$(count(substrate)) > 0" then "jump SELF substrate_built"
+
+# --- Build parameters --- #
+variable a_Si equal 5.430953   # lattice spacing [Å]
+variable substrate_x_margin equal 10 # margin between sheet and substrate edge in x-direction [Å]
+variable substrate_y_margin equal 5 # margin between sheet and substrate edge y-direction [Å]
+variable sheet_substrate_dis equal 2.8  # Distance between shhet and substrate top
+
+
+# Number of layers for various substrate sections
+variable substrate_freeze_layers equal 3 # [num layers]
+variable substrate_NVT_layers equal 3 # [num layers]
+variable substrate_contact_layers equal 3 # [num layers]
+
+
+# --- Get setup measurements --- #
+# Get min-max sheet values
+compute full_sheet_xmin full_sheet reduce min x  
+compute full_sheet_xmax full_sheet reduce max x  
+compute full_sheet_z full_sheet reduce ave z  
+thermo_style custom c_full_sheet_xmin c_full_sheet_xmax c_full_sheet_ymin c_full_sheet_ymax c_full_sheet_z
 run 0
 
-region substrate_freeze_region block INF INF INF INF INF ${substrate_freeze_zhi}
-region substrate_freeze_and_NVT_region block INF INF INF INF INF $(2*v_substrate_freeze_zhi - c_substrate_zmin)
-region substrate_contact_region block INF INF INF INF ${substrate_contact_zlo} ${pullblock_zlo}
+# Calculate sheet center and length of the sheet
+variable full_sheet_Lx equal $(c_full_sheet_xmax - c_full_sheet_xmin) 
+variable full_sheet_Ly equal $(c_full_sheet_ymax - c_full_sheet_ymin) 
+variable full_sheet_xcenter equal $((c_full_sheet_xmin + c_full_sheet_xmax)/2)
+variable full_sheet_ycenter equal $((c_full_sheet_ymin + c_full_sheet_ymax)/2)
+
+# Minimum length required for substrate in x-y directions
+variable xmin equal $(v_full_sheet_Lx + v_substrate_x_margin)  # [Å]
+variable ymin equal $(v_full_sheet_Ly*(1+v_stretch_max_pct) + v_substrate_y_margin) # [Å]
+variable xlen equal $(ceil((v_xmin + 1/4*v_a_Si)/v_a_Si))  # [a_Si] 
+variable ylen equal $(ceil((v_ymin + 1/4*v_a_Si)/v_a_Si))  # [a_Si] 
+
+# Respective sections depths
+variable substrate_freeze_depth equal $(v_substrate_freeze_layers * v_a_Si/4)
+variable substrate_contact_depth equal $(v_substrate_contact_layers * v_a_Si/4)
+
+
+# Depth of substrate 
+variable num_substrate_layers equal $(v_substrate_freeze_layers + v_substrate_NVT_layers + v_substrate_contact_layers)
+variable zlen equal $(v_num_substrate_layers/4 - v_eps) # [a_Si]
+
+
+# --- Build substrate --- #
+lattice diamond ${a_Si} 
+region	substrate_region block 0 ${xlen} 0 ${ylen} 0 ${zlen} 
+
+# Reshape simulation box and fill with atoms
+change_box all x final 0 ${xlen} 
+change_box all y final 0 ${ylen} 
+change_box all z final 0 ${zlen} 
+create_atoms 2 region substrate_region
+
+# Readjust to align with substrate
+displace_atoms full_sheet move $(v_a_Si*v_xlen/2 - v_full_sheet_xcenter) $(v_a_Si*v_ylen/2 - v_full_sheet_ycenter) $(v_a_Si*(v_zlen+v_eps-1/4) + v_sheet_substrate_dis - c_full_sheet_z) units box
+
+
+# Clean 
+uncompute full_sheet_xmin 
+uncompute full_sheet_xmax 
+uncompute full_sheet_z 
+
+
+group substrate type 2
+label substrate_built
+
+
+# write_data what_is_going_on.txt
+# quit 
+
+
+# --- Finish group setup for substrate --- #
+# Extra compute to get sub min max
+compute substrate_zmin substrate reduce min z  
+compute substrate_zmax substrate reduce max z  
+thermo_style custom c_substrate_zmin c_substrate_zmax
+run 0
+
+region substrate_freeze_region block INF INF INF INF INF $(v_substrate_freeze_depth - c_substrate_zmin - v_eps) units box
+region substrate_freeze_and_NVT_region block INF INF INF INF INF $(v_eps + c_substrate_zmax - v_substrate_contact_depth) units box
+region substrate_contact_region block INF INF INF INF $(v_eps + c_substrate_zmax - v_substrate_contact_depth) $(c_substrate_zmax + v_eps) units box
 
 group substrate_freeze region substrate_freeze_region
 group substrate_freeze_and_NVT region substrate_freeze_and_NVT_region
@@ -125,15 +173,14 @@ group substrate_contact region substrate_contact_region
 group substrate_top subtract substrate substrate_freeze_and_NVT
 group substrate_NVT subtract substrate_freeze_and_NVT substrate_freeze
 
+
 ## Moving atoms
 group NVE_atoms subtract all substrate_freeze 
 group NVT_atoms union PB_ylow_NVT PB_yhigh_NVT substrate_NVT
 group free_atoms subtract all PB_tot substrate_freeze 
 group non_drag_atoms subtract all PB_tot_rigid substrate_freeze 
 
-
-# velocity free_atoms create ${T} 5432373 dist gaussian
-# velocity free_atoms create $(v_T-50) 5432373 dist gaussian
+# Set velocity 
 velocity free_atoms create 0 5432373 dist gaussian
 
 # JUMP
@@ -338,10 +385,25 @@ variable dump_freq index 1000
 variable thermo index 1000
 thermo $(v_thermo)
 
+if "dump_freq == 0" then "jump SELF skip_dump"
+
 dump 1 all custom $(v_dump_freq) system_${out_ext}.data id type x y z vx vy vz c_bond_coord
 dump 2 full_sheet custom $(v_dump_freq) full_sheet_${out_ext}.data id type x y z vx vy vz c_bond_coord
-fix coord_out sheet ave/histo ${Nevery} ${Nrepeat} ${Nfreq} -0.5 5.5 6 c_coord mode vector file sheet_${out_ext}_chist.txt
+label skip_dump
+
+# fix coord_out sheet ave/histo ${Nevery} ${Nrepeat} ${Nfreq} -0.5 5.5 6 c_coord mode vector file sheet_${out_ext}_chist.txt
 # fix contact_bonds full_sheet ave/time ${Nevery} ${Nrepeat} ${Nfreq} v_sheet_bond_pct v_full_sheet_bond_pct file bond_pct.txt # For presentation purposes
+
+
+# Visualize groups: Freeze/Semifreeze, NVT, Only NVE
+# #########################################################################################################
+# group pure_NVE subtract NVE_atoms PB_tot NVT_atoms                                                      #
+# group locked subtract all NVT_atoms pure_NVE                                                            #
+# dump view1 NVT_atoms custom $(v_dump_freq) NVT_atoms.data id type x y z                                 #
+# dump view2 pure_NVE custom $(v_dump_freq) pure_NVE.data id type x y z                                   #
+# dump view3 locked custom $(v_dump_freq) locked.data id type x y z                                       #
+# dump view4  substrate_freeze_and_NVT custom $(v_dump_freq)  substrate_freeze_and_NVT.data id type x y z #
+# #########################################################################################################
 
 
 # ---------- Print procedure schedule ---------- #
@@ -384,3 +446,9 @@ print "--------------------"
 print "--------------------"
 print ""
 
+run 1
+quit
+
+###### TODO #######
+# Uncompute and fix everything not needed 
+# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

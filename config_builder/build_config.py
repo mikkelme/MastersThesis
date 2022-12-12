@@ -23,7 +23,7 @@ class config_builder:
         self.Cdis = 1.461 # carbon-carbon distance [Å] TODO: Take as input from data_generator???
         self.sheet_substrate_dis = 2.8 # [Å] 
         self.bottom_substrate_freeze = 5.5 # [Å]
-        self.contact_depth = 8 # [Å]
+        self.contact_depth = 5.5 # [Å]
         self.substrate_atomic_num = 14 # Si [atomic number]
         self.eps = 1e-6
         
@@ -164,13 +164,13 @@ class config_builder:
         
         PB_yhi = np.max(sheet_pos[sheet_pos[:,1] <  minmax_sheet[0,1] + PB_len + self.eps, 1])
         PB_ylo = np.min(sheet_pos[sheet_pos[:,1] >  minmax_sheet[1,1] - PB_len - self.eps, 1])
-        PB_zlo = (minmax_sheet[0,2] + minmax_substrate[1,2])/2
+        # PB_zlo = (minmax_sheet[0,2] + minmax_substrate[1,2])/2
         
         PB_lim = [PB_yhi, PB_ylo, PB_zlo]
-        PB_varname = ['yhi', 'ylo', 'zlo']
+        PB_varname = ['yhi', 'ylo'] #, 'zlo']
 
-        substrate_freeze_zhi = minmax_substrate[0,2] + self.bottom_substrate_freeze
-        substrate_contact_zlo = minmax_substrate[1,2] - self.contact_depth 
+        # substrate_freeze_zhi = minmax_substrate[0,2] + self.bottom_substrate_freeze
+        # substrate_contact_zlo = minmax_substrate[1,2] - self.contact_depth 
 
         # --- Write data --- #
         if ext != '' : ext = f'_{ext}' 
@@ -189,8 +189,10 @@ class config_builder:
             outfile.write(f'variable pullblock_{PB_varname[i]} equal {PB_lim[i]}\n') 
 
         # Substrate
-        outfile.write(f'variable substrate_freeze_zhi equal {substrate_freeze_zhi}\n') 
-        outfile.write(f'variable substrate_contact_zlo equal {substrate_contact_zlo}\n') 
+        outfile.write(f'variable substrate_freeze_depth equal {self.bottom_substrate_freeze}\n') 
+        outfile.write(f'variable substrate_contact_depth equal {self.contact_depth = 8}\n')
+        # outfile.write(f'variable substrate_freeze_zhi equal {substrate_freeze_zhi}\n') 
+        # outfile.write(f'variable substrate_contact_zlo equal {substrate_contact_zlo}\n') 
 
 
 
