@@ -38,14 +38,11 @@ mass 3 1.0              # Virtuel atom
 # --- Regions and groups --- #
 variable eps equal 0.1 # small number to ensure all atoms is inside interval
 
-
 ## Sheet 
 region sheet_region block INF INF $(v_pullblock_yhi+v_eps) $(v_pullblock_ylo-v_eps) ${pullblock_zlo} INF
 group  sheet region sheet_region
 group full_sheet type 1
 
-# region full_sheet_region block INF INF INF INF ${pullblock_zlo} INF
-# group  full_sheet region full_sheet_region 
 
 # Extra compute to get sheet min max
 compute full_sheet_ymin full_sheet reduce min y  
@@ -143,6 +140,10 @@ displace_atoms full_sheet move $(v_a_Si*v_xlen/2 - v_full_sheet_xcenter) $(v_a_S
 
 
 # Clean 
+variable full_sheet_Lx delete
+variable full_sheet_Ly delete
+variable full_sheet_xcenter delete
+variable full_sheet_ycenter delete
 uncompute full_sheet_xmin 
 uncompute full_sheet_xmax 
 uncompute full_sheet_z 
@@ -300,7 +301,7 @@ compute sheet_fy sheet reduce sum fy        # Total force y
 compute sheet_ymin sheet reduce min y   
 compute sheet_ymax sheet reduce max y 
 
-compute coord sheet coord/atom cutoff 2.7   # Coordination number
+# compute coord sheet coord/atom cutoff 2.7   # Coordination number
 compute sheet_stress sheet stress/atom NULL      # stress field
 # variable stress_atom atom sqrt(c_sheet_stress[1]*c_sheet_stress[1]+c_sheet_stress[2]*c_sheet_stress[2]+c_sheet_stress[3]*c_sheet_stress[3]) # Stress norm (xx, yy, zz)
 # ^^^ This is not so important if it reduces computation time considerably 
@@ -356,7 +357,17 @@ variable move_force_xy_norm equal sqrt(v_move_force_x^2+v_move_force_x^2)
 ## -- Stretch -- ##
 # variable S0 equal v_pullblock_ylo-v_pullblock_yhi   # OLD rough version
 # variable S0 equal c_PB_yhigh_ymin-c_PB_ylow_ymax    # start len of inner sheet 
+# variable S0 equal c_sheet_ymax-c_sheet_ymin    # start len of inner sheet 
 variable S0 equal c_sheet_ymax-c_sheet_ymin    # start len of inner sheet 
+####
+####
+####
+####
+change to edge of rigid part for stretch measurements
+####
+####
+####
+####
 
 # Restart file: Get S0 stored in type 3 tmp atom
 if ${readable} then "thermo_style custom c_get_S0 c_sheet_ymin c_sheet_ymax" &
@@ -449,6 +460,8 @@ print ""
 run 1
 quit
 
-###### TODO #######
-# Uncompute and fix everything not needed 
-# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# Clean up
+uncompute full_sheet_ymin
+uncompute full_sheet_ymax
+uncompute substrate_zmin 
+uncompute substrate_zmax
