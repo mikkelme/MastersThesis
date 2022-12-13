@@ -43,26 +43,24 @@ unfix sheet_COM_hold
 
 # ----------  Write restart files ---------- #
 # variable num_stretch_files index 0
-if "${num_stretch_files}<=1" then "jump SELF no_restart"
+if "${num_stretch_files}<=1" then "jump SELF after_restart"
 
+variable RNSEED index -1  # Random seed (use command-line argument: -var RNSEED $RANDOM, to generate seed)
+if "${RNSEED} >= 0" then "jump SELF RN_restart"  
 
-# Make if-sentence to enable/disable structured/random
-# variable restart_freq equal floor(v_stretch_steps/(v_num_stretch_files-1))
-# variable       stride equal stride(v_relax_steps,$(v_relax_steps+v_stretch_steps+v_restart_freq),v_restart_freq)
-# restart  v_restart_steps stretch_*_restart
-
-variable RNSEED index 1234  # Random seed (use command-line argument: -var RNSEED $RANDOM, to get random seed)
-variable restart_freq equal floor(v_stretch_steps/(v_num_stretch_files))
-variable RN equal round(random(1,5,${RNSEED}))
-variable RN_stride equal v_stride-v_RN
-
-
-variable start equal v_relax_steps+v_restart_freq*ceil((step-v_relax_steps)/v_restart_freq) # interval start
-variable restart_steps equal round(random(v_start+1,v_start+v_restart_freq,${RNSEED})) # random timestep in [start+1, start + restart_freq]
+variable restart_freq equal floor(v_stretch_steps/(v_num_stretch_files-1))
+variable       stride equal stride(v_relax_steps,$(v_relax_steps+v_stretch_steps+v_restart_freq),v_restart_freq)
 restart  v_restart_steps stretch_*_restart
 
-label no_restart
+jump SELF after_restart
+label RN_restart
 
+variable restart_freq equal floor(v_stretch_steps/(v_num_stretch_files))
+variable start equal v_relax_steps+v_restart_freq*ceil((step-v_relax_steps)/v_restart_freq) # interval start
+variable restart_steps equal round(random(v_start+1,v_start+v_restart_freq,v_RNSEED+1)) # random timestep in [start+1, start + restart_freq]
+restart  v_restart_steps stretch_*_restart
+
+label after_restart
 
 
 # ------------------ Rupture detection calculations ------------------ #
