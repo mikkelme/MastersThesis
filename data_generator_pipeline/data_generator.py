@@ -1,7 +1,9 @@
 import numpy as np
 import os
 
-
+import sys
+sys.path.append('../') # parent folder: MastersThesis
+from config_builder.build_config import *
 
 
 class data_generator:
@@ -14,12 +16,11 @@ class data_generator:
         self.Cdis = 1.461 # carbon-carbon distance [Å]         
 
         self.shape = np.shape(mat)            
-        self.set_sheet_size()
+        # self.set_sheet_size()
         
         
-        # self.dir = " "
+        self.dir = "egil:CONFIGS"
         # self.substrate = " "
-
         
         
     def set_sheet_size(self):
@@ -32,7 +33,6 @@ class data_generator:
         self.Ly = a/2 + (ylen-1) * a
         
     
-        
     def get_substrate_size(self, stretch_pct, margins = (10, 10)):
         """ Get substrate size considered sretch and x,y-margines """
         Lx = self.Lx + 2*margins[0]
@@ -41,11 +41,20 @@ class data_generator:
         
         
     def run(self):
-        num_stretch_vals
-        num_F_N
-        F_N interval 
+        builder = config_builder(self.mat)
+        builder.add_pullblocks()
+        
+        builder.save("sheet", ext = 'tmp', path = '.')
+        
+        # builder.view('sheet')
+        # proc = Simulation_runner(variables)
+        
+        # sim = Simulator(directory = dir, overwrite=False)
+        # print("lets run")  
+        # num_stretch_vals
+        # num_F_N
+        # F_N interval 
 
-      print("lets run")  
       
 
 

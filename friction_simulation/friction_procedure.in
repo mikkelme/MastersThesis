@@ -1,7 +1,7 @@
 variable dt index 0.001 #0.0025
 variable T index 100.0
 variable relax_time index 1
-variable stretch_speed_pct equal 0.01
+variable stretch_speed_pct equal 0.05
 variable pause_time1 index 1
 variable pause_time2 index 1 
 variable drag_speed index 2 
@@ -21,6 +21,8 @@ variable num_stretch_files index 0
 variable run_rupture_test index 1
 
 
+variable SMAX equal $(v_stretch_max_pct) 
+
 # Run rupture test or standard friciton simulation 
 if "${run_rupture_test}" then &
 "variable detection_freq equal 100" &
@@ -28,11 +30,21 @@ if "${run_rupture_test}" then &
 "variable YS_vals_stretch equal 10" &
 "variable cluster_vals_stretch equal 100" &
 "include ${root}/stretch.in" &
-else & 
-"include ${root}/stretch.in" &
-"include ${root}/drag.in"
+"variable SMAX equal {rup_stretch}" &
+
+#######
+# Possible solution from here
+# take SMAX from file and start new simulations
+# after calling clear. Thus we might be able to 
+# put things back as they were before defining SMAX
+# for this remember the to_stretch_max_pct trick in drag.
+#######
 
 
+
+
+include ${root}/stretch.in
+include ${root}/drag.in
 
 
 

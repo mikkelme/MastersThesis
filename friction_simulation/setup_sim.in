@@ -111,7 +111,7 @@ variable full_sheet_ycenter equal $((c_full_sheet_ymin + c_full_sheet_ymax)/2)
 
 # Minimum length required for substrate in x-y directions
 variable xmin equal $(v_full_sheet_Lx + v_substrate_x_margin)  # [Å]
-variable ymin equal $(v_full_sheet_Ly*(1+v_stretch_max_pct) + v_substrate_y_margin) # [Å]
+variable ymin equal $(v_full_sheet_Ly*(1+v_SMAX) + v_substrate_y_margin) # [Å]
 variable xlen equal $(ceil((v_xmin + 1/4*v_a_Si)/v_a_Si))  # [a_Si] 
 variable ylen equal $(ceil((v_ymin + 1/4*v_a_Si)/v_a_Si))  # [a_Si] 
 
@@ -404,7 +404,7 @@ label skip_dump
 # Timestamps
 
 variable relax_steps equal $(floor(v_relax_time/dt))
-variable stretch_steps equal $(floor(v_stretch_max_pct/v_stretch_speed_pct/dt))
+variable stretch_steps equal $(floor(v_SMAX/v_stretch_speed_pct/dt))
 variable pause1_steps equal $(floor(v_pause_time1/dt))
 variable pause2_steps equal $(floor(v_pause_time2/dt))
 variable drag_steps equal $(floor(v_drag_length/v_drag_speed/dt))
@@ -417,7 +417,7 @@ print "--> Relax (step 0, 0 ps)"
 print "Time: $(v_relax_steps) steps = $(v_relax_steps*dt) ps" 
 print ""
 print "--> Stretch sheet (step $(v_relax_steps), $(v_relax_steps*dt) ps)"
-print "Amount: $(v_stretch_max_pct) % = $(v_stretch_max_pct*(v_pullblock_ylo-v_pullblock_yhi)) ang "
+print "Amount: $(v_SMAX) % = $(v_SMAX*(v_pullblock_ylo-v_pullblock_yhi)) ang "
 print "Speed: $(v_stretch_speed_pct) %/ps = $(v_stretch_speed) ang/ps"
 print "Time:  $(v_stretch_steps) steps = $(v_stretch_steps*dt) ps"
 print ""

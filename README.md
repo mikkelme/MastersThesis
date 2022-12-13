@@ -159,6 +159,11 @@
 - Implemented the rupture test directly in the friction simulation procedure. This also makes it possible to run the rupture test wihtin the setup_sim.in stretch.in framework. 
 - Next step is to implement the opportunity to create the Si-substrate directly in lammps such that I can run rupture test and go directly to a friction simulation with a suitable substrate size. 
 
+#### Week 49 (12/12 - 18/12) - Working from Pisa
+- Implemented substrate build in lammps, keeping oportunity to providing the substrate through a txt file. 
+- Implemented refined definition of rupture stretch in rupture test
+- Cleaned up in computes and fixes.
+- Working on pipeline for configuration folder (numpy files) -> data.
 
 
 

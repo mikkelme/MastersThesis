@@ -2,7 +2,7 @@ import sys
 sys.path.append('../') # parent folder: MastersThesis
 
 from graphene_sheet.build_graphene_sheet import *
-from build_substrate import *
+from config_builder.build_substrate import *
 # from graphene_sheet.build_utils import *
 
 
@@ -153,10 +153,10 @@ class config_builder:
             
         # Get updated minmax        
         minmax_sheet = get_minmax(self.sheet)
-        minmax_substrate = get_minmax(self.substrate)
         
         # Set order for types to insure consistensy data file
-        specorder = ['C', self.substrate.get_chemical_symbols()[0]]
+        # specorder = ['C', self.substrate.get_chemical_symbols()[0]]
+        specorder = ['C', 'Si']
         
         # --- Compute info --- #
         PB_len = self.PB_rows/self.mat.shape[1] * (minmax_sheet[1,1] - minmax_sheet[0,1])
@@ -164,13 +164,10 @@ class config_builder:
         
         PB_yhi = np.max(sheet_pos[sheet_pos[:,1] <  minmax_sheet[0,1] + PB_len + self.eps, 1])
         PB_ylo = np.min(sheet_pos[sheet_pos[:,1] >  minmax_sheet[1,1] - PB_len - self.eps, 1])
-        # PB_zlo = (minmax_sheet[0,2] + minmax_substrate[1,2])/2
         
-        PB_lim = [PB_yhi, PB_ylo, PB_zlo]
-        PB_varname = ['yhi', 'ylo'] #, 'zlo']
+        PB_lim = [PB_yhi, PB_ylo]
+        PB_varname = ['yhi', 'ylo']
 
-        # substrate_freeze_zhi = minmax_substrate[0,2] + self.bottom_substrate_freeze
-        # substrate_contact_zlo = minmax_substrate[1,2] - self.contact_depth 
 
         # --- Write data --- #
         if ext != '' : ext = f'_{ext}' 
@@ -189,10 +186,9 @@ class config_builder:
             outfile.write(f'variable pullblock_{PB_varname[i]} equal {PB_lim[i]}\n') 
 
         # Substrate
-        outfile.write(f'variable substrate_freeze_depth equal {self.bottom_substrate_freeze}\n') 
-        outfile.write(f'variable substrate_contact_depth equal {self.contact_depth = 8}\n')
-        # outfile.write(f'variable substrate_freeze_zhi equal {substrate_freeze_zhi}\n') 
-        # outfile.write(f'variable substrate_contact_zlo equal {substrate_contact_zlo}\n') 
+        if self.substrate is not None:
+            outfile.write(f'variable substrate_freeze_depth equal {self.bottom_substrate_freeze}\n') 
+            outfile.write(f'variable substrate_contact_depth equal {self.contact_depth}\n')
 
 
 

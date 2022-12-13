@@ -13,7 +13,6 @@ variable cluster_vals_drag equal 10      # Number of cluster values sampled
 
 # Setup system
 variable restart_file index None
-variable to_stretch_max_pct equal $(v_stretch_max_pct)
 variable readable equal is_file(${restart_file})
 if !${readable} then "jump SELF system_is_running"
 
@@ -21,7 +20,7 @@ if !${readable} then "jump SELF system_is_running"
 ### --- Setup from read_restart --- ###
 #######################################
 include ${root}/setup_sim.in
-variable to_stretch_max_pct equal v_stretch_pct # Update stretch_max_pct with val from restart file
+variable SMAX equal v_stretch_pct # Update stretch_max_pct with val from restart file
 unfix PB_ave 
 fix PB_ave PB_tot aveforce 0 0 0 # Average force vector completely
 
@@ -76,7 +75,7 @@ K ${K}
 root ${root}
 out_ext ${out_ext}
 config_data ${config_data}
-stretch_max_pct ${to_stretch_max_pct}
+SMAX ${SMAX}
 drag_dir_x ${drag_dir_x}
 drag_dir_y ${drag_dir_y}
 F_N ${F_N}
