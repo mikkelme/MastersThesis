@@ -22,8 +22,8 @@ class config_builder:
         # Parameters
         self.Cdis = 1.461 # carbon-carbon distance [Å] TODO: Take as input from data_generator???
         self.sheet_substrate_dis = 2.8 # [Å] 
-        self.bottom_substrate_freeze = 5.5 # [Å]
-        self.contact_depth = 5.5 # [Å]
+        self.bottom_substrate_freeze = 4 # [Å]
+        self.contact_depth = 4 # [Å]
         self.substrate_atomic_num = 14 # Si [atomic number]
         self.eps = 1e-6
         

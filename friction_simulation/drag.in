@@ -158,7 +158,7 @@ if "${is_ruptured}" then "jump SELF after_drag"
 # Create virtuel atom (place in sheet COM)
 thermo_style custom c_sheet_COM[3] 
 run 0
-create_atoms 3 single $(c_sheet_COM[1]) $(c_sheet_COM[2]) $(c_sheet_COM[3])
+create_atoms 3 single $(c_sheet_COM[1]) $(c_sheet_COM[2]) $(c_sheet_COM[3]) units box
 group virtuel_atom type 3
 
 

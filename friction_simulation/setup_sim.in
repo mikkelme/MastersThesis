@@ -34,27 +34,37 @@ mass 2 28.0855          # Si
 mass 3 1.0              # Virtuel atom
 
 
-
 # --- Regions and groups --- #
 variable eps equal 0.1 # small number to ensure all atoms is inside interval
 
-## Sheet 
-region sheet_region block INF INF $(v_pullblock_yhi+v_eps) $(v_pullblock_ylo-v_eps) ${pullblock_zlo} INF
-group  sheet region sheet_region
 group full_sheet type 1
+group  substrate type 2
 
 
-# Extra compute to get sheet min max
+# Computes for sheet and substrate position 
+compute full_sheet_xmin full_sheet reduce min x  
+compute full_sheet_xmax full_sheet reduce max x  
 compute full_sheet_ymin full_sheet reduce min y  
 compute full_sheet_ymax full_sheet reduce max y  
-thermo_style custom c_full_sheet_ymin c_full_sheet_ymax
+compute full_sheet_z full_sheet reduce ave z 
+compute substrate_zmin substrate reduce min z  
+compute substrate_zmax substrate reduce max z  
+thermo_style custom c_full_sheet_xmin c_full_sheet_xmax c_full_sheet_ymin c_full_sheet_ymax c_full_sheet_z c_substrate_zmin c_substrate_zmax 
 run 0
 
+
+if "!$(count(substrate)) > 0" then "variable sheet_substrate_border string INF" &
+else "variable sheet_substrate_border equal $((c_substrate_zmax + c_full_sheet_z)/2)"
+
+## Sheet 
+region sheet_region block INF INF $(v_pullblock_yhi+v_eps) $(v_pullblock_ylo-v_eps) ${sheet_substrate_border} INF
+group  sheet region sheet_region
+
 ## Pullblocks
-region PB_ylow_region  block INF INF INF $(v_pullblock_yhi+v_eps) ${pullblock_zlo} INF
-region PB_ylow_rigid_region block INF INF INF $((c_full_sheet_ymin + v_pullblock_yhi)/2) ${pullblock_zlo} INF 
-region PB_yhigh_region block INF INF $(v_pullblock_ylo-v_eps) INF ${pullblock_zlo} INF
-region PB_yhigh_rigid_region block INF INF $((c_full_sheet_ymax + v_pullblock_ylo)/2) INF ${pullblock_zlo} INF 
+region PB_ylow_region  block INF INF INF $(v_pullblock_yhi+v_eps) ${sheet_substrate_border} INF
+region PB_ylow_rigid_region block INF INF INF $((c_full_sheet_ymin + v_pullblock_yhi)/2) ${sheet_substrate_border} INF 
+region PB_yhigh_region block INF INF $(v_pullblock_ylo-v_eps) INF ${sheet_substrate_border} INF
+region PB_yhigh_rigid_region block INF INF $((c_full_sheet_ymax + v_pullblock_ylo)/2) INF ${sheet_substrate_border} INF 
 
 # PB ylow
 group PB_ylow region PB_ylow_region
@@ -70,8 +80,7 @@ group PB_yhigh_NVT subtract PB_yhigh PB_yhigh_rigid
 group PB_tot union PB_ylow PB_yhigh
 group PB_tot_rigid union PB_ylow_rigid PB_yhigh_rigid
 
-## Substrate
-group  substrate type 2
+
 
 
 
@@ -84,25 +93,16 @@ if "$(count(substrate)) > 0" then "jump SELF substrate_built"
 
 # --- Build parameters --- #
 variable a_Si equal 5.430953   # lattice spacing [Å]
-variable substrate_x_margin equal 10 # margin between sheet and substrate edge in x-direction [Å]
-variable substrate_y_margin equal 5 # margin between sheet and substrate edge y-direction [Å]
+variable substrate_x_margin equal 20 # margin between sheet and substrate edge in x-direction [Å]
+variable substrate_y_margin equal 15 # margin between sheet and substrate edge y-direction [Å]
 variable sheet_substrate_dis equal 2.8  # Distance between shhet and substrate top
-
 
 # Number of layers for various substrate sections
 variable substrate_freeze_layers equal 3 # [num layers]
 variable substrate_NVT_layers equal 3 # [num layers]
 variable substrate_contact_layers equal 3 # [num layers]
 
-
-# --- Get setup measurements --- #
-# Get min-max sheet values
-compute full_sheet_xmin full_sheet reduce min x  
-compute full_sheet_xmax full_sheet reduce max x  
-compute full_sheet_z full_sheet reduce ave z  
-thermo_style custom c_full_sheet_xmin c_full_sheet_xmax c_full_sheet_ymin c_full_sheet_ymax c_full_sheet_z
-run 0
-
+# --- Get measurements --- #
 # Calculate sheet center and length of the sheet
 variable full_sheet_Lx equal $(c_full_sheet_xmax - c_full_sheet_xmin) 
 variable full_sheet_Ly equal $(c_full_sheet_ymax - c_full_sheet_ymin) 
@@ -115,15 +115,13 @@ variable ymin equal $(v_full_sheet_Ly*(1+v_stretch_max_pct) + v_substrate_y_marg
 variable xlen equal $(ceil((v_xmin + 1/4*v_a_Si)/v_a_Si))  # [a_Si] 
 variable ylen equal $(ceil((v_ymin + 1/4*v_a_Si)/v_a_Si))  # [a_Si] 
 
-# Respective sections depths
+# Respective section depths
 variable substrate_freeze_depth equal $(v_substrate_freeze_layers * v_a_Si/4)
 variable substrate_contact_depth equal $(v_substrate_contact_layers * v_a_Si/4)
-
 
 # Depth of substrate 
 variable num_substrate_layers equal $(v_substrate_freeze_layers + v_substrate_NVT_layers + v_substrate_contact_layers)
 variable zlen equal $(v_num_substrate_layers/4 - v_eps) # [a_Si]
-
 
 # --- Build substrate --- #
 lattice diamond ${a_Si} 
@@ -135,7 +133,7 @@ change_box all y final 0 ${ylen}
 change_box all z final 0 ${zlen} 
 create_atoms 2 region substrate_region
 
-# Readjust to align with substrate
+# Readjust to align sheet with substrate
 displace_atoms full_sheet move $(v_a_Si*v_xlen/2 - v_full_sheet_xcenter) $(v_a_Si*v_ylen/2 - v_full_sheet_ycenter) $(v_a_Si*(v_zlen+v_eps-1/4) + v_sheet_substrate_dis - c_full_sheet_z) units box
 
 
@@ -146,24 +144,23 @@ variable full_sheet_xcenter delete
 variable full_sheet_ycenter delete
 uncompute full_sheet_xmin 
 uncompute full_sheet_xmax 
-uncompute full_sheet_z 
 
-
+# Update substrate compute
 group substrate type 2
-label substrate_built
-
-
-# write_data what_is_going_on.txt
-# quit 
-
-
-# --- Finish group setup for substrate --- #
-# Extra compute to get sub min max
+uncompute substrate_zmin 
+uncompute substrate_zmax 
 compute substrate_zmin substrate reduce min z  
 compute substrate_zmax substrate reduce max z  
-thermo_style custom c_substrate_zmin c_substrate_zmax
+thermo_style custom c_substrate_zmin c_substrate_zmax 
 run 0
 
+label substrate_built
+# write_data what_is_going_on.txt
+########################################################################
+
+
+# --- Continue regions and groups setup ---#
+## Substrate
 region substrate_freeze_region block INF INF INF INF INF $(v_substrate_freeze_depth - c_substrate_zmin - v_eps) units box
 region substrate_freeze_and_NVT_region block INF INF INF INF INF $(v_eps + c_substrate_zmax - v_substrate_contact_depth) units box
 region substrate_contact_region block INF INF INF INF $(v_eps + c_substrate_zmax - v_substrate_contact_depth) $(c_substrate_zmax + v_eps) units box
@@ -235,24 +232,24 @@ neigh_modify        delay 0 every 1 one 10000
 
 
 
-# ------- AMORPHIC SI SUBSTRATE TERSOFF ------- # Nature: The evolving quality of frictional contact with graphene 
-# Potentials: C-C: Tersoff, C-Si: LJ, Si-Si: SW
-variable LJ_sigma equal 3.0
-pair_style hybrid tersoff lj/cut $(v_LJ_sigma*2.5) sw 
-pair_coeff * * tersoff ${root}/C.tersoff C NULL NULL   # Sheet C-C
-pair_coeff 1 2 lj/cut 0.0096 ${LJ_sigma}             # Interaction C-Si 
-pair_coeff * * sw ${root}/si.sw NULL Si NULL           # Substrate Si-Si
-pair_coeff * 3  lj/cut 0.0 0.0 
-
-
-# # ------- SI SUBSTRATE TERSOFF ------- # Nature: The evolving quality of frictional contact with graphene
+# # ------- AMORPHIC SI SUBSTRATE TERSOFF ------- # Nature: The evolving quality of frictional contact with graphene 
 # # Potentials: C-C: Tersoff, C-Si: LJ, Si-Si: SW
 # variable LJ_sigma equal 3.0
 # pair_style hybrid tersoff lj/cut $(v_LJ_sigma*2.5) sw 
 # pair_coeff * * tersoff ${root}/C.tersoff C NULL NULL   # Sheet C-C
-# pair_coeff 1 2 lj/cut 0.092 ${LJ_sigma}             # Interaction C-Si 
+# pair_coeff 1 2 lj/cut 0.0096 ${LJ_sigma}             # Interaction C-Si 
 # pair_coeff * * sw ${root}/si.sw NULL Si NULL           # Substrate Si-Si
 # pair_coeff * 3  lj/cut 0.0 0.0 
+
+
+# ------- SI SUBSTRATE TERSOFF ------- # Nature: The evolving quality of frictional contact with graphene
+# Potentials: C-C: Tersoff, C-Si: LJ, Si-Si: SW
+variable LJ_sigma equal 3.0
+pair_style hybrid tersoff lj/cut $(v_LJ_sigma*2.5) sw 
+pair_coeff * * tersoff ${root}/C.tersoff C NULL NULL   # Sheet C-C
+pair_coeff 1 2 lj/cut 0.092 ${LJ_sigma}                # Interaction C-Si 
+pair_coeff * * sw ${root}/si.sw NULL Si NULL           # Substrate Si-Si
+pair_coeff * 3  lj/cut 0.0 0.0 
 
 
 
@@ -320,12 +317,8 @@ variable sheet_bond_pct equal f_sheet_bond_hist[2][3]
 
 
 ## - Pullblocks - ##
-compute PB_ylow_ymax PB_ylow reduce max y   # Lower y-limit for sheet
-compute PB_yhigh_ymin PB_yhigh reduce min y # Upper y-limit for sheet
-# compute PB_ylow_com PB_ylow com             # Center of mass PB_ylow
-# compute PB_yhigh_com PB_yhigh com           # Center of mass PB_yhigh
-compute PB_ylow_rigid_com PB_ylow_rigid com             # Center of mass PB_ylow_rigid
-compute PB_yhigh_rigid_com PB_yhigh_rigid com           # Center of mass PB_yhigh_rigid
+compute PB_ylow_rigid_ymax PB_ylow_rigid reduce max y   # Lower y-limit for sheet
+compute PB_yhigh_rigid_ymin PB_yhigh_rigid reduce min y # Upper y-limit for sheet
 
 ## -- Substrate -- ##
 compute substrate_zhigh substrate reduce max z # Max z-val of substrate
@@ -342,7 +335,7 @@ compute subtopTemp substrate_top temp
 
 
 ## - Activate computes - ## 
-thermo_style custom c_sheet_fz c_PB_ylow_ymax c_PB_yhigh_ymin c_substrate_zhigh c_PB_ylow_rigid_com[2] c_PB_yhigh_rigid_com[2] c_sheet_COM[3] c_sheet_ymin c_sheet_ymax
+thermo_style custom c_PB_yhigh_rigid_ymin c_PB_ylow_rigid_ymax c_sheet_COM[1] #c_sheet_fz c_PB_ylow_rigid_ymax c_PB_yhigh_rigid_ymin c_substrate_zhigh c_PB_ylow_rigid_com[2] c_PB_yhigh_rigid_com[2] c_sheet_COM[3] c_sheet_ymin c_sheet_ymax
 run 0 # activate compute
 
 # ---------- Derived variables ---------- #
@@ -355,29 +348,19 @@ variable move_force_y equal c_sheet_fy+c_Ff[2]
 variable move_force_xy_norm equal sqrt(v_move_force_x^2+v_move_force_x^2)  
 
 ## -- Stretch -- ##
-# variable S0 equal v_pullblock_ylo-v_pullblock_yhi   # OLD rough version
-# variable S0 equal c_PB_yhigh_ymin-c_PB_ylow_ymax    # start len of inner sheet 
-# variable S0 equal c_sheet_ymax-c_sheet_ymin    # start len of inner sheet 
-variable S0 equal c_sheet_ymax-c_sheet_ymin    # start len of inner sheet 
-####
-####
-####
-####
-change to edge of rigid part for stretch measurements
-####
-####
-####
-####
+variable S0 equal c_PB_yhigh_rigid_ymin-c_PB_ylow_rigid_ymax    # start len of inner sheet 
+
 
 # Restart file: Get S0 stored in type 3 tmp atom
-if ${readable} then "thermo_style custom c_get_S0 c_sheet_ymin c_sheet_ymax" &
+# Add: c_sheet_ymin c_sheet_ymax to thermo? <-----------------
+if ${readable} then "thermo_style custom c_get_S0" &
 "run 0" &
 "variable S0 equal $(c_get_S0)" &
 "delete_atoms group S0_info"
 
 
-# variable S_len equal c_PB_yhigh_ymin-c_PB_ylow_ymax # Updated len of inner sheet
-variable S_len equal c_sheet_ymax-c_sheet_ymin 
+variable S_len equal c_PB_yhigh_rigid_ymin-c_PB_ylow_rigid_ymax # Updated len of inner sheet
+# variable S_len equal c_sheet_ymax-c_sheet_ymin 
 variable stretch_pct equal (v_S_len-v_S0)/v_S0  # Updated stretch pct
 variable stretch_speed equal v_stretch_speed_pct*v_S0 
 
@@ -396,7 +379,7 @@ variable dump_freq index 1000
 variable thermo index 1000
 thermo $(v_thermo)
 
-if "dump_freq == 0" then "jump SELF skip_dump"
+if "${dump_freq} == 0" then "jump SELF skip_dump"
 
 dump 1 all custom $(v_dump_freq) system_${out_ext}.data id type x y z vx vy vz c_bond_coord
 dump 2 full_sheet custom $(v_dump_freq) full_sheet_${out_ext}.data id type x y z vx vy vz c_bond_coord
@@ -457,11 +440,17 @@ print "--------------------"
 print "--------------------"
 print ""
 
-run 1
-quit
 
 # Clean up
+uncompute sheet_ymin
+uncompute sheet_ymax
 uncompute full_sheet_ymin
 uncompute full_sheet_ymax
+uncompute full_sheet_z 
 uncompute substrate_zmin 
 uncompute substrate_zmax
+
+
+
+# run 1
+# quit

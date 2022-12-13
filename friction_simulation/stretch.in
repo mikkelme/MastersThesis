@@ -18,19 +18,6 @@ include ${root}/setup_sim.in
 
 
 
-# ----------  Write restart files ---------- #
-# variable num_stretch_files index 0
-if "${num_stretch_files}<=1" then "jump SELF no_restart"
-
-variable restart_freq equal floor(v_stretch_steps/(v_num_stretch_files-1))
-variable       stride equal stride(v_relax_steps,$(v_relax_steps+v_stretch_steps+v_restart_freq),v_restart_freq)
-restart        v_stride stretch_*_restart
-
-label no_restart
-
-
-
-
 # ----------  Relax sheet ---------- #
 # Add spring to restrict rotation or movement of sheet COM:
 #  - Hold PB COM in initial x-position
@@ -52,6 +39,30 @@ run 1
 unfix PB_ylow_x_hold
 unfix PB_high_x_hold
 unfix sheet_COM_hold
+
+
+# ----------  Write restart files ---------- #
+# variable num_stretch_files index 0
+if "${num_stretch_files}<=1" then "jump SELF no_restart"
+
+
+# Make if-sentence to enable/disable structured/random
+# variable restart_freq equal floor(v_stretch_steps/(v_num_stretch_files-1))
+# variable       stride equal stride(v_relax_steps,$(v_relax_steps+v_stretch_steps+v_restart_freq),v_restart_freq)
+# restart  v_restart_steps stretch_*_restart
+
+variable RNSEED index 1234  # Random seed (use command-line argument: -var RNSEED $RANDOM, to get random seed)
+variable restart_freq equal floor(v_stretch_steps/(v_num_stretch_files))
+variable RN equal round(random(1,5,${RNSEED}))
+variable RN_stride equal v_stride-v_RN
+
+
+variable start equal v_relax_steps+v_restart_freq*ceil((step-v_relax_steps)/v_restart_freq) # interval start
+variable restart_steps equal round(random(v_start+1,v_start+v_restart_freq,${RNSEED})) # random timestep in [start+1, start + restart_freq]
+restart  v_restart_steps stretch_*_restart
+
+label no_restart
+
 
 
 # ------------------ Rupture detection calculations ------------------ #
@@ -89,12 +100,15 @@ label skip_rupture_calculations
 
 
 
+
+
 # ---------- Stretch sheet ---------- # 
 # Update fixes
 fix ylow_move  PB_ylow_rigid move linear 0 $(-v_stretch_speed/2) NULL units box
 fix yhigh_move PB_yhigh_rigid move linear 0 $(v_stretch_speed/2) NULL units box
 
 print "--> Stretch: $(v_stretch_steps) timesteps, $(v_stretch_steps*dt) ps"
+
 run $(v_stretch_steps)
 restart 0
 
