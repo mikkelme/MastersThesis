@@ -4,18 +4,37 @@
 ###########################################
 
 
+# --- Default settings --- #
+variable num_stretch_files index 0
+variable run_rupture_test index 0
 
-# --- Rupture detection parameters --- #
+# Rupture detection parameters 
 if "${run_rupture_test}" then "jump SELF rupture_parameters_already_defined"
-variable detection_freq_stretch equal 1000  # Number of timesteps between each rupture check
-variable YS_mean_vals_stretch equal 10      # Number of y-stress mean values sampled
-variable YS_vals_stretch equal 10           # Number of individual samples for each y-stress mean value
-variable cluster_vals_stretch equal 10      # Number of cluster values sampled
+variable detection_freq         equal 1000  # Number of timesteps between each rupture check
+variable YS_mean_vals_stretch   equal 10      # Number of y-stress mean values sampled
+variable YS_vals_stretch        equal 10           # Number of individual samples for each y-stress mean value
+variable cluster_vals_stretch   equal 10      # Number of cluster values sampled
 label rupture_parameters_already_defined
 
-# Setup system
+
+
+# --- Setup system --- #
 include ${root}/setup_sim.in
 
+# Write relevant variables to info_file.txt
+print """&
+root ${root}
+config_data ${config_data}
+out_ext ${out_ext}
+dt ${dt}
+temp ${T}
+relax_time ${relax_time}
+stretch_speed_pct ${stretch_speed_pct}
+stretch_max_pct ${stretch_max_pct}
+num_stretch_files ${num_stretch_files}
+rupture_detection ${rupture_detection}
+run_rupture_test ${run_rupture_test} &
+""" file info_file.txt
 
 
 # ----------  Relax sheet ---------- #
@@ -42,7 +61,6 @@ unfix sheet_COM_hold
 
 
 # ----------  Write restart files ---------- #
-# variable num_stretch_files index 0
 if "${num_stretch_files}<=1" then "jump SELF after_restart"
 
 variable RNSEED index -1  # Random seed (use command-line argument: -var RNSEED $RANDOM, to generate seed)
@@ -50,13 +68,13 @@ if "${RNSEED} >= 0" then "jump SELF RN_restart"
 
 variable restart_freq equal floor(v_stretch_steps/(v_num_stretch_files-1))
 variable       stride equal stride(v_relax_steps,$(v_relax_steps+v_stretch_steps+v_restart_freq),v_restart_freq)
-restart  v_restart_steps stretch_*_restart
+restart  v_stride stretch_*_restart
 
 jump SELF after_restart
 label RN_restart
 
-variable restart_freq equal floor(v_stretch_steps/(v_num_stretch_files))
-variable start equal v_relax_steps+v_restart_freq*ceil((step-v_relax_steps)/v_restart_freq) # interval start
+variable restart_freq  equal floor(v_stretch_steps/(v_num_stretch_files))
+variable start         equal v_relax_steps+v_restart_freq*ceil((step-v_relax_steps)/v_restart_freq) # interval start
 variable restart_steps equal round(random(v_start+1,v_start+v_restart_freq,v_RNSEED+1)) # random timestep in [start+1, start + restart_freq]
 restart  v_restart_steps stretch_*_restart
 
@@ -67,28 +85,27 @@ label after_restart
 if "!${rupture_detection}" then "jump SELF skip_rupture_calculations"
 
 # Sampling parameters 
-variable YS_Nfreq equal floor(v_detection_freq_stretch/v_YS_mean_vals_stretch)
-variable YS_Nevery equal floor(v_YS_Nfreq/v_YS_vals_stretch)
-variable cluster_Nevery equal floor(v_detection_freq_stretch/v_cluster_vals_stretch)
-
-
-print ${YS_Nfreq}
+variable YS_Nfreq       equal floor(v_detection_freq/v_YS_mean_vals_stretch)
+variable YS_Nevery      equal floor(v_YS_Nfreq/v_YS_vals_stretch)
+variable cluster_Nevery equal floor(v_detection_freq/v_cluster_vals_stretch)
 
 # y-stress 
-fix YS sheet ave/time ${YS_Nevery} ${YS_vals_stretch} ${YS_Nfreq} c_YS #file YS.txt # Mean values
+fix YS sheet ave/time ${YS_Nevery} ${YS_vals_stretch} ${YS_Nfreq} c_YS file YS.txt # Mean values
 fix YS_mean_vec sheet vector ${YS_Nfreq} f_YS              # Store mean values in vector
+fix stretch_pct_vec sheet vector ${YS_Nfreq} v_stretch_pct     # Store stretch values in vector
 variable max_YS equal max(f_YS_mean_vec)                   # Compute max of mean values
 
+
 # Cluster count mean value 
-fix Ncluster full_sheet ave/time ${cluster_Nevery} ${cluster_vals_stretch} ${detection_freq_stretch} c_Ncluster #file cluster.txt
+fix Ncluster full_sheet ave/time ${cluster_Nevery} ${cluster_vals_stretch} ${detection_freq} c_Ncluster file cluster.txt
 
 # Rupture conditions
-variable stress_drop equal "f_YS < 0.1*v_max_YS"
-variable cluster_split equal "f_Ncluster > 1" 
-variable min_stretch equal "v_stretch_pct > 0.03"
+variable stress_drop    equal "f_YS < 0.1*v_max_YS"
+variable cluster_split  equal "f_Ncluster > 1" 
+variable min_stretch    equal "v_stretch_pct > 0.03"
 variable stop_condition equal "(v_stress_drop && v_min_stretch) || v_cluster_split"
 
-fix rupture_detector sheet halt ${detection_freq_stretch} v_stop_condition != 0 error continue 
+fix rupture_detector sheet halt ${detection_freq} v_stop_condition != 0 error continue 
 
 # if thermo == detection_freq the following is possible
 # thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct f_YS v_max_YS f_Ncluster
@@ -113,14 +130,50 @@ restart 0
 
 
 # ---------- After stretch ---------- # 
-# Update is_ruptured and unfix fixes with specific Nevery Nrepeat Nfreq choices
-if "${rupture_detection}" then & 
-"variable is_ruptured equal $(v_stop_condition)" &
-"unfix YS" &
-"unfix YS_mean_vec" &
-"unfix Ncluster" &
-"unfix rupture_detector"
+## Rupture detection: ON/OFF
+if "!${rupture_detection}" then &
+"print 'is_ruptured None' append info_file.txt" &
+"jump SELF no_rupture_detection"
 
+## Write is_ruptured to info file
+variable is_ruptured equal $(v_stop_condition)
+print "is_ruptured ${is_ruptured}" append info_file.txt
+
+## Is ruptured: TRUE/FALSE
+if "!${is_ruptured}" then "jump SELF no_rupture"
+
+## Estimate last valid stretch from max stress value
+variable rup_YS equal 0
+variable rup_step equal 0
+variable rup_stretch equal 0
+
+# Get argmax y-stress
+variable a loop $((step - v_relax_steps)/v_YS_Nfreq + 1)
+label loop
+variable YS_a equal f_YS_mean_vec[${a}]
+if "${YS_a} > ${rup_YS}" then &
+"variable rup_YS equal ${YS_a} " &
+"variable rup_step equal $(v_relax_steps+(v_a-1)*v_YS_Nfreq)" &
+"variable rup_stretch equal f_stretch_pct_vec[${a}] " 
+next a
+jump SELF loop
+
+# Write rupture step and stretch value to info file
+print """&
+rupture_step ${rup_step}
+rupture_stretch ${rup_stretch} &
+""" append info_file.txt
+
+label no_rupture
+
+# Unfix 
+unfix YS 
+unfix YS_mean_vec 
+unfix Ncluster 
+unfix rupture_detector 
+
+
+label no_rupture_detection
 
 # Unfix moves (relevant if continued directly)
 unfix ylow_move

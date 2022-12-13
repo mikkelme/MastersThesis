@@ -4,7 +4,7 @@
 #####################################
 
 
-# General settings
+# --- Default settings --- #
 variable rupture_detection index 1 # Whether to run rupture detection
 
 
@@ -402,6 +402,7 @@ label skip_dump
 
 # ---------- Print procedure schedule ---------- #
 # Timestamps
+
 variable relax_steps equal $(floor(v_relax_time/dt))
 variable stretch_steps equal $(floor(v_stretch_max_pct/v_stretch_speed_pct/dt))
 variable pause1_steps equal $(floor(v_pause_time1/dt))
