@@ -4,6 +4,7 @@ import os
 import sys
 sys.path.append('../') # parent folder: MastersThesis
 from config_builder.build_config import *
+from simulation_manager.multi_runner import *
 
 
 class data_generator:
@@ -19,8 +20,8 @@ class data_generator:
         # self.set_sheet_size()
         
         
-        self.dir = "egil:CONFIGS"
-        # self.substrate = " "
+        # self.dir = "egil:CONFIGS"
+        # self.dir = "./CONFIGS"
         
         
     def set_sheet_size(self):
@@ -44,7 +45,20 @@ class data_generator:
         builder = config_builder(self.mat)
         builder.add_pullblocks()
         
-        builder.save("sheet", ext = 'tmp', path = '.')
+        header = "./CONFIGS/test1"
+        dir = os.path.join(header, "conf1")
+        
+        num_stretch_files = 5
+        F_N = np.sort(np.random.uniform(0.1, 1, 5))*1e-9
+        variables = {}
+        
+        one_config_multi_data(header, dir, variables, num_stretch_files, F_N, RN_stretch = True)
+        
+        # builder.save("sheet", ext = 'tmp', path = '.')
+        
+        
+        
+        
         
         # builder.view('sheet')
         # proc = Simulation_runner(variables)

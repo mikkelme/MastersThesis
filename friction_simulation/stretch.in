@@ -8,18 +8,40 @@
 variable num_stretch_files index 0
 variable run_rupture_test index 0
 
-# Rupture detection parameters 
-if "${run_rupture_test}" then "jump SELF rupture_parameters_already_defined"
-variable detection_freq         equal 1000  # Number of timesteps between each rupture check
-variable YS_mean_vals_stretch   equal 10      # Number of y-stress mean values sampled
-variable YS_vals_stretch        equal 10           # Number of individual samples for each y-stress mean value
-variable cluster_vals_stretch   equal 10      # Number of cluster values sampled
-label rupture_parameters_already_defined
+# Define SMAX in case of no rupture test
+if "!${run_rupture_test}" then "variable SMAX equal $(v_stretch_max_pct)" 
 
+# Check is this is before of after planned rupture test
+if "$(is_file(rupture_test.txt))" then "variable run_rupture_test_ equal 0" &
+else "variable run_rupture_test_ equal ${run_rupture_test}"
+
+
+# --- Rupture detection --- #
+# Default rupture detection parameters 
+variable detection_freq         equal 1000  # Number of timesteps between each rupture check
+variable YS_mean_vals_stretch   equal 10    # Number of y-stress mean values sampled
+variable YS_vals_stretch        equal 10    # Number of individual samples for each y-stress mean value
+variable cluster_vals_stretch   equal 10    # Number of cluster values sampled
+variable stretch_slow_down      equal 1
+
+# Updated parameters for rupture test
+if "${run_rupture_test_}" then &
+"variable detection_freq        equal 100" &
+"variable YS_mean_vals_stretch  equal 10" &
+"variable YS_vals_stretch       equal 10" &
+"variable cluster_vals_stretch  equal 100" &
+"variable stretch_slow_down     equal 5" &
 
 
 # --- Setup system --- #
 include ${root}/setup_sim.in
+variable info_file string info_file.txt
+
+
+if "${run_rupture_test_}" then &
+"variable info_file string rupture_test.txt" &
+"variable stretch_speed          equal $(v_stretch_speed/v_stretch_slow_down)" &
+"variable stretch_steps equal $(floor(v_stretch_slow_down*v_SMAX/v_stretch_speed_pct/dt))" 
 
 # Write relevant variables to info_file.txt
 print """&
@@ -29,12 +51,11 @@ out_ext ${out_ext}
 dt ${dt}
 temp ${T}
 relax_time ${relax_time}
-stretch_speed_pct ${stretch_speed_pct}
+stretch_speed_pct $(v_stretch_speed_pct/v_stretch_slow_down)
 SMAX ${SMAX}
 num_stretch_files ${num_stretch_files}
 rupture_detection ${rupture_detection}
-run_rupture_test ${run_rupture_test} &
-""" file info_file.txt
+""" file ${info_file}
 
 
 # ----------  Relax sheet ---------- #
@@ -89,18 +110,17 @@ fix rupture_detector sheet halt ${detection_freq} v_stop_condition != 0 error co
 # if thermo == detection_freq the following is possible
 # thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct f_YS v_max_YS f_Ncluster
 
-jump SELF after_restart
 label skip_rupture_calculations 
 
 
 # ----------  Write restart files ---------- #
-if "${num_stretch_files}<=1" then "jump SELF after_restart"
+if "${num_stretch_files}<=1 || ${run_rupture_test_}" then "jump SELF after_restart"
 
 variable RNSEED index -1  # Random seed (use command-line argument: -var RNSEED $RANDOM, to generate seed)
 if "${RNSEED} >= 0" then "jump SELF RN_restart"  
 
-variable restart_freq equal floor(v_stretch_steps/(v_num_stretch_files-1))
-variable       stride equal stride(v_relax_steps,$(v_relax_steps+v_stretch_steps+v_restart_freq),v_restart_freq)
+variable restart_freq equal floor((v_stretch_steps-1)/(v_num_stretch_files-1))
+variable       stride equal stride(v_relax_steps+1,$(v_relax_steps+v_stretch_steps+v_restart_freq),v_restart_freq)
 restart  v_stride stretch_*_restart
 
 jump SELF after_restart
@@ -134,7 +154,10 @@ if "!${rupture_detection}" then &
 
 ## Write is_ruptured to info file
 variable is_ruptured equal $(v_stop_condition)
-print "is_ruptured ${is_ruptured}" append info_file.txt
+print """
+run_rupture_test ${run_rupture_test_}
+is_ruptured ${is_ruptured} &
+""" append ${info_file}
 
 ## Is ruptured: TRUE/FALSE
 if "!${is_ruptured}" then "jump SELF no_rupture"
@@ -159,9 +182,10 @@ jump SELF loop
 print """&
 rupture_step ${rup_step}
 rupture_stretch ${rup_stretch} &
-""" append info_file.txt
+""" append ${info_file}
+variable SMAX equal ${rup_stretch} # <---------------- #
 
-label no_rupture
+label no_rupture ####################################
 
 # Unfix 
 unfix YS 
@@ -170,9 +194,14 @@ unfix Ncluster
 unfix rupture_detector 
 
 
-label no_rupture_detection
+label no_rupture_detection ###########################
 
 # Unfix moves (relevant if continued directly)
 unfix ylow_move
 unfix yhigh_move
 
+
+# Repeat script without rupture detection
+if "${run_rupture_test_}" then &
+"clear" &
+"include ${root}/stretch.in"

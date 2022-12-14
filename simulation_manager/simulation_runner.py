@@ -30,6 +30,7 @@ class Simulation_runner:
             "drag_dir_x": 0,
             "drag_dir_y": 1,
             "F_N": 10e-9, # [N]
+            "run_rupture_test": 0
         }
         
         

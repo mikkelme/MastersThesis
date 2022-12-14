@@ -1,16 +1,24 @@
-from simulation_runner import *
+import sys
+sys.path.append('../') # parent folder: MastersThesis
+from simulation_manager.simulation_runner import *
 
-def one_config_multi_data():
+def one_config_multi_data(header, dir, variables, num_stretch_files, F_N, RN_stretch = False):
+    proc = Simulation_runner(variables)
    
     
     print(f"Samples: {num_stretch_files} x {len(F_N)} = {num_stretch_files*len(F_N)}")
-    print(f"Stretch: {np.around(np.linspace(0,variables['stretch_max_pct'], num_stretch_files), decimals = 3)}")
+    if RN_stretch:
+        print("Stretch: Uniform random in intervals:")
+        Sstep = proc.variables['stretch_max_pct']/num_stretch_files
+        for i in range(num_stretch_files-1):
+            print(f"[{i*Sstep:g}, {(i+1)*Sstep:g}),", end = " ")
+        print(f"[{(i+1)*Sstep:g}, {(i+2)*Sstep:g})")
+    else:
+        print(f"Stretch: {np.around(np.linspace(0,proc.variables['stretch_max_pct'], num_stretch_files), decimals = 3)}")
     print(f"F_N: {F_N*1e9} nN")
-    # exit("Safety break")
+    exit("Safety break")
     
-    proc = Simulation_runner(variables)
-    header = f"egil:{main_folder}/{test_name}/"
-    dir = f"{header}{sim_name}"
+    
     
     proc.variables["out_ext"] = sim_name
     proc.multi_run(header, dir, num_stretch_files, F_N, num_procs = 16, jobname = jobname)
@@ -21,6 +29,9 @@ if __name__ == "__main__":
     test_name   = 'big'
     sim_name    = 'cuts2'
     jobname     = 'cuts2' 
+    
+    header = f"egil:{main_folder}/{test_name}/"
+    dir = f"{header}{sim_name}"
     
     variables = {
         "dt": 0.001,
@@ -45,7 +56,7 @@ if __name__ == "__main__":
     # F_N = np.array([10, 100, 200, 300])*1e-9
     F_N = np.linspace(0.1e-9, 1e-9, 3)
     
-    
+    one_config_multi_data(header, dir, variables, num_stretch_files, F_N, RN_stretch = True)
     
     
     # # Run ref 5 with ultra low FN?

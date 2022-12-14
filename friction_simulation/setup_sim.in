@@ -409,6 +409,8 @@ variable pause1_steps equal $(floor(v_pause_time1/dt))
 variable pause2_steps equal $(floor(v_pause_time2/dt))
 variable drag_steps equal $(floor(v_drag_length/v_drag_speed/dt))
 
+
+# Might get chancged if run_rupture_test is on <------------ ###
 # Print
 print "--------------------"
 print "------SCHEDULE------"
