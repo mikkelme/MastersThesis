@@ -126,8 +126,7 @@ class config_builder:
             if not self.is_build: self.build()
             
             # Get default values
-            minmax = get_minmax(self.sheet)
-            Lx, Ly = minmax[1,:2] - minmax[0,:2]
+            Lx, Ly = self.get_sheet_size()
             subpos = np.array([Lx + 20, Ly*1.5 + 20, 16]) # Lx, Ly, Lz
             # Set substrate Lx, Ly, Lz from input (overwrite default values)
             for i, pos in enumerate(substrate):
@@ -145,7 +144,10 @@ class config_builder:
         self.is_build = False
         
         
-        
+    def get_sheet_size(self):
+        minmax = get_minmax(self.sheet)
+        Lx, Ly = minmax[1,:2] - minmax[0,:2]
+        return Lx, Ly
         
     def save(self, object = 'all', ext = '', path = '.'):
         """ Save configuration as lammps txt file """
@@ -201,26 +203,33 @@ class config_builder:
 
 
 if __name__ == "__main__":
-    multiples = (3, 5)  
+    multiples = (6, 11)  
+    multiples = (5, 9)  
+    multiples = (4, 7)  
+    multiples = (3, 5)
     unitsize = (5,7)
     
     # multiples = (9,14)  
     # unitsize = (13,15)
     
     # mat = np.ones((4, 6))
+    
     mat = pop_up_pattern(multiples, unitsize, sp = 2)
-    # mat[:, :] = 1 # Nocuts
+    mat[:, :] = 1 # Nocuts
     
     
     # substrate_file = "../substrate/crystal_Si_substrate_test.txt"
 
 
     builder = config_builder(mat)
+    size_name = 'x'.join([str(round(v)) for v in builder.get_sheet_size()])
     builder.add_pullblocks()
+    builder.view('sheet')
+    builder.save("sheet", ext = f"nocut_{size_name}", path = '.')
+    print(size_name)
+  
+  
     # builder.add_substrate(substrate_file)
-    builder.add_substrate([None, None, None])
-    builder.build()
-    builder.view('all')
-    # builder.save("sheet", ext = 'only', path = '.')
+    # builder.add_substrate([None, None, None])
     
     

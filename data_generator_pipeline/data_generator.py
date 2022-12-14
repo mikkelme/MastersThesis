@@ -45,14 +45,25 @@ class data_generator:
         builder = config_builder(self.mat)
         builder.add_pullblocks()
         
-        header = "./CONFIGS/test1"
+        header = "egil:CONFIGS/test1"
         dir = os.path.join(header, "conf1")
         
         num_stretch_files = 5
         F_N = np.sort(np.random.uniform(0.1, 1, 5))*1e-9
-        variables = {}
         
-        one_config_multi_data(header, dir, variables, num_stretch_files, F_N, RN_stretch = True)
+        proc = Simulation_runner()
+        proc.config_path = '../config_builder' 
+        
+        # TODO: 
+        # Set variables RNSEED, run_rupture_test and num_stretch_files before
+        # calling multi_run. This is more elegant I think. 
+        # Consider adding a add_variables method to the Simulatio_runner class
+        # to get fast acces to the merging of dictionaties
+        
+        proc.multi_run(header, dir, num_stretch_files, F_N, RN_stretch = True, num_procs = 16, jobname = "CONF")
+   
+        
+        #, RN_stretch = True)
         
         # builder.save("sheet", ext = 'tmp', path = '.')
         

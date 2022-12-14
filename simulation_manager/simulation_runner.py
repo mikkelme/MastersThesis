@@ -19,20 +19,21 @@ class Simulation_runner:
             "relax_time": 15,
             "pause_time1": 5,
             "pause_time2": 5,
-            "stretch_speed_pct": 0.001,
-            "drag_speed": 1, # [m/s]
-            "drag_length": 30 ,
-            "K": 30.0,
-            "root": "..",
-            "out_ext": date.today(), 
-            "config_data": "sheet_substrate",
+            "stretch_speed_pct": 0.005,
             "stretch_max_pct": 0.2,
+            "drag_length": 200 ,
+            "drag_speed": 20, # [m/s]
+            "K": 30.0,
             "drag_dir_x": 0,
             "drag_dir_y": 1,
-            "F_N": 10e-9, # [N]
+            "F_N": 1e-9, # [N]
+            "config_data": "sheet_substrate",
+            "root": "..",
+            "out_ext": date.today(), 
             "run_rupture_test": 0
         }
         
+        self.config_path = '../config_builder' # NEW XXX
         
         # --- Convertion factors: SI -> metal --- #
         self.N_to_eV_over_ang = 6.24150907e8    # force: N -> eV/Å
@@ -77,20 +78,38 @@ class Simulation_runner:
             
     
         
-    def multi_run(self, header, dir, num_stretch_files, F_N, num_procs = 16, jobname = 'MULTI'):
-        sim = Simulator(directory = dir, overwrite=True)
+    def multi_run(self, header, dir, num_stretch_files, F_N, RN_stretch = False, num_procs = 16, jobname = 'MULTI'):
+        sim = Simulator(directory = dir, overwrite=False)
+        
+        print_info = True  
+        if print_info:
+            print(f"Samples: {num_stretch_files} x {len(F_N)} = {num_stretch_files*len(F_N)}")
+            if RN_stretch:
+                print("Stretch: Uniform random in intervals:")
+                Sstep = self.variables['stretch_max_pct']/num_stretch_files
+                for i in range(num_stretch_files-1):
+                    print(f"[{i*Sstep:g}, {(i+1)*Sstep:g}),", end = " ")
+                print(f"[{(i+1)*Sstep:g}, {(i+2)*Sstep:g})")
+            else:
+                print(f"Stretch: {np.around(np.linspace(0,self.variables['stretch_max_pct'], num_stretch_files), decimals = 3)}")
+            print(f"F_N: {F_N*1e9} nN")
+        exit("Safety break")
+    
         
         self.move_files_to_dest(["../friction_simulation/setup_sim.in", 
                         "../friction_simulation/stretch.in",
                         "../friction_simulation/drag.in",
                         "../potentials/si.sw",
                         "../potentials/C.tersoff",
-                        f"../config_builder/{self.variables['config_data']}.txt",
-                        f"../config_builder/{self.variables['config_data']}_info.in" ], header)
+                        f"{self.config_path}/{self.variables['config_data']}.txt",
+                        f"{self.config_path}/{self.variables['config_data']}_info.in" ], header)
     
         
 
         sim.set_input_script("../friction_simulation/stretch.in", num_stretch_files = num_stretch_files, **self.variables)    
+        sim.set_input_script("../friction_simulation/stretch.in", num_stretch_files = num_stretch_files
+                                                                  RNSEED = '$RANDOM',
+                                                                  run_rupture_test = 1, **self.variables)    
         
         slurm_args = {'job-name':jobname, 'partition':'normal', 'ntasks':num_procs, 'nodes':1}
         sim.pre_generate_jobscript(num_procs=num_procs, lmp_exec="lmp", slurm_args = slurm_args)    
@@ -134,6 +153,7 @@ class Simulation_runner:
             
 
 if __name__ == "__main__":
+    
     pass
     # test = Simulation_runner()
     # test.move_file_to_dest("./test1.py", "egil:MYTEST/")

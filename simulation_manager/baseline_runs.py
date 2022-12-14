@@ -3,29 +3,28 @@ from simulation_runner import *
 
 def drag_length():
     main_folder = 'Baseline'
-    test_name   = 'drag_length_s200nN'
-    sim_name    = 'ref'
+    test_name   = 'drag_length_size'
+    sim_name    = '130x138'
     
     variables = {
         "dt": 0.001,
         "T": 100.0, # [K]
         "relax_time": 15,
         "pause_time1": 5,
-        "pause_time2": 10,
-        "stretch_speed_pct": 0.001,
-        "drag_speed": 1, # [m/s]
-        "drag_length": 200,
+        "pause_time2": 5,
+        "stretch_speed_pct": 0.005,
+        "stretch_max_pct": 0,
+        "drag_length": 200 ,
+        "drag_speed": 20, # [m/s]
         "K": 30.0,
-        "root": "..",
-        "out_ext": date.today(), 
-        "config_data": "sheet_substrate_nocuts",
-        # "config_data": "sheet_substrate_amorph_nocuts",
-        "stretch_max_pct": 0.2,
         "drag_dir_x": 0,
         "drag_dir_y": 1,
-        "F_N": 200e-9, # [N]
+        "F_N": 1e-9, # [N]
+        "config_data": "sheet_nocut_108x113",
+        "root": "..",
+        "out_ext": sim_name, 
+        "run_rupture_test": 0
     }
-  
     
     proc = Simulation_runner(variables)
     header = f"egil:{main_folder}/{test_name}/"
@@ -44,7 +43,7 @@ def drag_length():
     sim = Simulator(directory = dir, overwrite=True)
     sim.copy_to_wd( "../friction_simulation/friction_procedure.in")
         
-    proc.variables["out_ext"] = sim_name
+    # proc.variables["out_ext"] = sim_name
     sim.set_input_script("../friction_simulation/friction_procedure.in", **proc.variables)
     slurm_args = {'job-name':sim_name, 'partition':'normal', 'ntasks':16, 'nodes':1}
     sim.run(num_procs=16, lmp_exec="lmp", slurm=True, slurm_args=slurm_args)
@@ -104,5 +103,5 @@ def dt():
 
 
 if __name__ == "__main__":
-    # drag_length()
+    drag_length()
     # dt()

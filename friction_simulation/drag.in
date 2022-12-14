@@ -3,12 +3,12 @@
 # along given direction.           #
 ####################################
 
-# --- Rupture detection parameters --- #
-variable detection_freq_drag equal 1000  # Number of timesteps between each rupture check
-variable YS_mean_vals_drag equal 10      # Number of y-stress mean values sampled
-variable YS_vals_drag equal 10           # Number of individual samples for each y-stress mean value
-variable cluster_vals_drag equal 10      # Number of cluster values sampled
-
+# --- Rupture detection --- #
+# Default rupture detection parameters 
+variable detection_freq         equal 10000 # Number of timesteps between each rupture check
+variable YS_mean_vals           equal 10    # Number of y-stress mean values sampled
+variable YS_vals_stretch        equal 10    # Number of individual samples for each y-stress mean value
+variable cluster_vals           equal 10    # Number of cluster values sampled
 
 
 # Setup system
@@ -90,17 +90,17 @@ if "${is_ruptured}" then "jump SELF after_drag"
 if "!${rupture_detection}" then "jump SELF skip_rupture_calculations"
 
 # Sampling parameters 
-variable YS_Nfreq equal floor(v_detection_freq_drag/v_YS_mean_vals_drag)
-variable YS_Nevery equal floor(v_YS_Nfreq/v_YS_vals_drag)
-variable cluster_Nevery equal floor(v_detection_freq_drag/v_cluster_vals_drag)
+variable YS_Nfreq equal floor(v_detection_freq/v_YS_mean_vals)
+variable YS_Nevery equal floor(v_YS_Nfreq/v_YS_vals)
+variable cluster_Nevery equal floor(v_detection_freq/v_cluster_vals)
 
 # y-stress 
-fix YS sheet ave/time ${YS_Nevery} ${YS_vals_drag} ${YS_Nfreq} c_YS #file YS.txt # Mean values
+fix YS sheet ave/time ${YS_Nevery} ${YS_vals} ${YS_Nfreq} c_YS #file YS.txt # Mean values
 fix YS_mean_vec sheet vector ${YS_Nfreq} f_YS              # Store mean values in vector
 variable max_YS equal max(f_YS_mean_vec)                   # Compute max of mean values
 
 # Cluster count mean value 
-fix Ncluster full_sheet ave/time ${cluster_Nevery} ${cluster_vals_drag} ${detection_freq_drag} c_Ncluster #file cluster.txt
+fix Ncluster full_sheet ave/time ${cluster_Nevery} ${cluster_vals} ${detection_freq} c_Ncluster #file cluster.txt
 
 # Rupture conditions
 variable stress_drop equal "f_YS < 0.1*v_max_YS"
@@ -108,7 +108,7 @@ variable cluster_split equal "f_Ncluster > 1"
 variable min_stress equal "v_max_YS > 1e5"
 variable is_ruptured equal "(v_stress_drop && v_min_stress) || v_cluster_split"
 
-fix rupture_detector sheet halt ${detection_freq_drag} v_is_ruptured != 0 error continue 
+fix rupture_detector sheet halt ${detection_freq} v_is_ruptured != 0 error continue 
 ########################################################################
 label skip_rupture_calculations 
 
@@ -124,7 +124,7 @@ thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_p
 
 print "--> Pause 1: $(v_pause1_steps) timesteps, $(v_pause1_steps*dt) ps"
 run  $(v_pause1_steps) 
-if "${is_ruptured}" then "jump SELF after_drag"
+if "${is_ruptured}" then "jump SELF after"
 
 
 # ---------- Apply normal force ---------- #

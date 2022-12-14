@@ -6,17 +6,17 @@ def one_config_multi_data(header, dir, variables, num_stretch_files, F_N, RN_str
     proc = Simulation_runner(variables)
    
     
-    print(f"Samples: {num_stretch_files} x {len(F_N)} = {num_stretch_files*len(F_N)}")
-    if RN_stretch:
-        print("Stretch: Uniform random in intervals:")
-        Sstep = proc.variables['stretch_max_pct']/num_stretch_files
-        for i in range(num_stretch_files-1):
-            print(f"[{i*Sstep:g}, {(i+1)*Sstep:g}),", end = " ")
-        print(f"[{(i+1)*Sstep:g}, {(i+2)*Sstep:g})")
-    else:
-        print(f"Stretch: {np.around(np.linspace(0,proc.variables['stretch_max_pct'], num_stretch_files), decimals = 3)}")
-    print(f"F_N: {F_N*1e9} nN")
-    exit("Safety break")
+    # print(f"Samples: {num_stretch_files} x {len(F_N)} = {num_stretch_files*len(F_N)}")
+    # if RN_stretch:
+    #     print("Stretch: Uniform random in intervals:")
+    #     Sstep = proc.variables['stretch_max_pct']/num_stretch_files
+    #     for i in range(num_stretch_files-1):
+    #         print(f"[{i*Sstep:g}, {(i+1)*Sstep:g}),", end = " ")
+    #     print(f"[{(i+1)*Sstep:g}, {(i+2)*Sstep:g})")
+    # else:
+    #     print(f"Stretch: {np.around(np.linspace(0,proc.variables['stretch_max_pct'], num_stretch_files), decimals = 3)}")
+    # print(f"F_N: {F_N*1e9} nN")
+    # exit("Safety break")
     
     
     

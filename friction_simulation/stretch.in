@@ -19,17 +19,17 @@ else "variable run_rupture_test_ equal ${run_rupture_test}"
 # --- Rupture detection --- #
 # Default rupture detection parameters 
 variable detection_freq         equal 1000  # Number of timesteps between each rupture check
-variable YS_mean_vals_stretch   equal 10    # Number of y-stress mean values sampled
-variable YS_vals_stretch        equal 10    # Number of individual samples for each y-stress mean value
-variable cluster_vals_stretch   equal 10    # Number of cluster values sampled
+variable YS_mean_vals            equal 10    # Number of y-stress mean values sampled
+variable YS_vals                 equal 10    # Number of individual samples for each y-stress mean value
+variable cluster_vals            equal 10    # Number of cluster values sampled
 variable stretch_slow_down      equal 1
 
 # Updated parameters for rupture test
 if "${run_rupture_test_}" then &
 "variable detection_freq        equal 100" &
-"variable YS_mean_vals_stretch  equal 10" &
-"variable YS_vals_stretch       equal 10" &
-"variable cluster_vals_stretch  equal 100" &
+"variable YS_mean_vals          equal 10" &
+"variable YS_vals               equal 10" &
+"variable cluster_vals          equal 100" &
 "variable stretch_slow_down     equal 5" &
 
 
@@ -85,19 +85,19 @@ unfix sheet_COM_hold
 if "!${rupture_detection}" then "jump SELF skip_rupture_calculations"
 
 # Sampling parameters 
-variable YS_Nfreq       equal floor(v_detection_freq/v_YS_mean_vals_stretch)
-variable YS_Nevery      equal floor(v_YS_Nfreq/v_YS_vals_stretch)
-variable cluster_Nevery equal floor(v_detection_freq/v_cluster_vals_stretch)
+variable YS_Nfreq       equal floor(v_detection_freq/v_YS_mean_vals)
+variable YS_Nevery      equal floor(v_YS_Nfreq/v_YS_vals)
+variable cluster_Nevery equal floor(v_detection_freq/v_cluster_vals)
 
 # y-stress 
-fix YS sheet ave/time ${YS_Nevery} ${YS_vals_stretch} ${YS_Nfreq} c_YS #file YS.txt # Mean values
+fix YS sheet ave/time ${YS_Nevery} ${YS_vals} ${YS_Nfreq} c_YS #file YS.txt # Mean values
 fix YS_mean_vec sheet vector ${YS_Nfreq} f_YS              # Store mean values in vector
 fix stretch_pct_vec sheet vector ${YS_Nfreq} v_stretch_pct     # Store stretch values in vector
 variable max_YS equal max(f_YS_mean_vec)                   # Compute max of mean values
 
 
 # Cluster count mean value 
-fix Ncluster full_sheet ave/time ${cluster_Nevery} ${cluster_vals_stretch} ${detection_freq} c_Ncluster #file cluster.txt
+fix Ncluster full_sheet ave/time ${cluster_Nevery} ${cluster_vals} ${detection_freq} c_Ncluster #file cluster.txt
 
 # Rupture conditions
 variable stress_drop    equal "f_YS < 0.1*v_max_YS"
