@@ -14,6 +14,7 @@ variable cluster_vals_drag equal 10      # Number of cluster values sampled
 # Setup system
 variable restart_file index None
 variable readable equal is_file(${restart_file})
+variable SMAX equal $(v_stretch_max_pct) 
 if !${readable} then "jump SELF system_is_running"
 
 #######################################
