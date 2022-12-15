@@ -82,7 +82,7 @@ K ${K}
 drag_dir_x ${drag_dir_x}
 drag_dir_y ${drag_dir_y}
 F_N ${F_N}
-restart_file ${restart_file} &
+restart_file ${restart_file}
 rupture_detection ${rupture_detection}
 """ file info_file.txt
 

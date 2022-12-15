@@ -1,7 +1,7 @@
 from simulation_runner import *
 
 
-def drag_length():
+def single_run():
     main_folder = 'Baseline'
     test_name   = 'vel'
     sim_name    = 'v40'
@@ -64,7 +64,7 @@ def vary_variable(test_name = 'dt', variable_name = 'dt', variable_values = [], 
         "pause_time2": 5,
         "stretch_speed_pct": 0.005,
         "stretch_max_pct": 0,
-        "drag_length": 200 ,
+        "drag_length": 400 ,
         "drag_speed": 20, # [m/s]
         "K": 30.0,
         "drag_dir_x": 0,
@@ -79,21 +79,33 @@ def vary_variable(test_name = 'dt', variable_name = 'dt', variable_values = [], 
 
     proc = Simulation_runner(variables)
     header = f"egil:{main_folder}/{test_name}/"
+    
     proc.move_files_to_dest(["../friction_simulation/setup_sim.in", 
-                        "../friction_simulation/stretch.in",
-                        "../friction_simulation/drag.in",
-                        "../potentials/si.sw",
-                        "../potentials/C.tersoff",
-                        f"../config_builder/{proc.variables['config_data']}.txt",
-                        f"../config_builder/{proc.variables['config_data']}_info.in" ], header)
+                             "../friction_simulation/stretch.in",
+                             "../friction_simulation/drag.in",
+                             "../potentials/si.sw",
+                             "../potentials/C.tersoff"], header)
+    
+    if variable_name != "config_data":
+        proc.move_files_to_dest([f"../config_builder/{proc.variables['config_data']}.txt",
+                                 f"../config_builder/{proc.variables['config_data']}_info.in" ], header)
   
   
-    for val in variable_values:
-        sim_name  = f'{sim_prefix}_{val}'
+  
+    for i, val in enumerate(variable_values):
+        if hasattr(sim_prefix, '__len__'):
+            sim_name  = sim_prefix[i]
+        else:
+            sim_name  = f'{sim_prefix}_{val}'
         dir = f"{header}{sim_name}/"
+        
         
         proc.variables["out_ext"] = sim_name
         proc.variables[variable_name] = val
+        
+        if variable_name == "config_data":
+            proc.move_files_to_dest([f"../config_builder/{proc.variables['config_data']}.txt",
+                                    f"../config_builder/{proc.variables['config_data']}_info.in" ], header)
      
         sim = Simulator(directory = dir, overwrite=True)
         sim.copy_to_wd( "../friction_simulation/friction_procedure.in")
@@ -109,8 +121,9 @@ if __name__ == "__main__":
     vel_range = [1, 5, 10, 20, 30, 40]
     temp_range = [5, 50, 100, 200, 300, 400, 500]
     K_range = [0, 10, 30, 50, 100]
+    size_name = ['64x62', '86x87', '108x113', '130x138', '152x163', '174x189']
+    size_range = [f"sheet_nocut_{s}" for s in size_name]
     
-    # vary_variable(test_name = 'spring', variable_name = 'K',  variable_values = K_range, sim_prefix = 'K')
-    
-    
+
+    # vary_variable(test_name = 'size', variable_name = 'config_data',  variable_values = size_range, sim_prefix = size_name)
     # drag_length()

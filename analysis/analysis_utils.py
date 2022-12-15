@@ -37,7 +37,12 @@ def read_info_file(filename):
     dict = {}
     infile = open(filename, 'r')
     for line in infile:
-        key, val = line.split()
+        
+        try:
+            key, val = line.split()
+        except ValueError:
+            pass
+            # print(f"Cannot read info line: {line}")
         try:
             val = float(val)
         except ValueError:
@@ -135,7 +140,6 @@ def analyse_friction_file(filename, mean_pct = 1, std_pct = None):
     
     data = read_friction_file(filename)    
     time = data['TimeStep'] * dt # [ps]
-    
     
      
     # Organize in columns: parallel to drag, perpendicular to drag, z-axis

@@ -203,10 +203,13 @@ class config_builder:
 
 
 if __name__ == "__main__":
-    multiples = (6, 11)  
-    multiples = (5, 9)  
-    multiples = (4, 7)  
-    multiples = (3, 5)
+    multiples = (8, 15)  
+    # multiples = (7, 13)  
+    # multiples = (6, 11)  
+    # multiples = (6, 11)  
+    # multiples = (5, 9)  
+    # multiples = (4, 7)  
+    # multiples = (3, 5)
     unitsize = (5,7)
     
     # multiples = (9,14)  

@@ -11,8 +11,10 @@ def drag_length_dependency(filename):
     
    
     # mean_window = int(np.argmin(np.abs(VA_pos - 50)))
-    mean_window = int(0.5*len(time))
-    std_window = int(0.2*mean_window)
+    runmean_wpct = 0.5
+    runstd_wpct = 0.2
+    mean_window = int(runmean_wpct*len(time))
+    std_window = int(runstd_wpct*mean_window)
     
     
     group_name = {0: 'full_sheet', 1: 'sheet', 2: 'PB'}
@@ -24,7 +26,6 @@ def drag_length_dependency(filename):
         ax3 = plt.subplot2grid(grid, (0, 0), colspan=1)
         ax4 = plt.subplot2grid(grid, (0, 1), colspan=1)
         
-       
        
         fig1 = plt.figure(num = unique_fignum())
         fig1.suptitle(filename)
@@ -49,11 +50,11 @@ def drag_length_dependency(filename):
         ax1.plot(VA_pos, runmean, label = "running mean")
         ax1.plot(VA_pos, cum_max(Ff), label = "Cum max")
         # ax1.plot(VA_pos, cumTopQuantileMax(Ff, quantile, brute_force = False), label = f"Top {quantile*100}% max mean")
-        ax1.set(xlabel='COM$\parallel$ [Å]', ylabel='$F_\parallel$ [nN]')
+        ax1.set(xlabel='VA pos $\parallel$ [Å]', ylabel='$F_\parallel$ [nN]')
         ax1.legend(loc = 'lower center', fontsize = 10, ncol=2, fancybox = True, shadow = True)
               
         ax3.plot(VA_pos, rel_std, label = "Ff std")
-        ax3.set(xlabel='COM$\parallel$ [Å]', ylabel='Ff rel. runmean std')
+        ax3.set(xlabel='VA pos $\parallel$ [Å]', ylabel='Ff rel. runmean std')
         runmean = running_mean(contact, window_len = mean_window)[0]
         rel_std = running_mean(runmean, window_len = std_window)[1]/runmean[~np.isnan(runmean)][-1]
         
@@ -62,11 +63,11 @@ def drag_length_dependency(filename):
         ax2.plot(VA_pos, cum_mean(contact), label = "Cum mean")
         ax2.plot(VA_pos, runmean, label = "running mean")
         ax2.legend(loc = 'lower center', fontsize = 10, ncol=2, fancybox = True, shadow = True)
-        ax2.set(xlabel='COM$\parallel$ [Å]', ylabel='Contact (Full sheet) [%]')
+        ax2.set(xlabel='VA pos $\parallel$ [Å]', ylabel='Contact (Full sheet) [%]')
         
         ref = runmean[~np.isnan(runmean)][-1]
         ax4.plot(VA_pos, rel_std, label = "Contact std")
-        ax4.set(xlabel='COM$\parallel$ [Å]', ylabel='Contact rel. runmean std')
+        ax4.set(xlabel='VA pos $\parallel$ [Å]', ylabel='Contact rel. runmean std')
 
         
     # for ax in [ax1, ax2]:
@@ -81,7 +82,7 @@ def drag_length_dependency(filename):
 def drag_length_compare(filenames):
     group_name = {0: 'full_sheet', 1: 'sheet', 2: 'PB'}
     
-    xaxis = "COM" # 'time' || 'COM'
+    xaxis = "VA_pos" # 'time' || 'COM'
     relative = False
     
     g = 0
@@ -89,7 +90,7 @@ def drag_length_compare(filenames):
     quantile = 0.999
     runmean_wpct = 0.5
     runstd_wpct = 0.2
-    
+   
     fig1 = plt.figure(figsize = (6, 6), num = 0)
     fig1.suptitle("Mean $F_\parallel$ [nN]")
     
@@ -118,16 +119,25 @@ def drag_length_compare(filenames):
     
     for i, filename in enumerate(filenames):
         print(f"\rFile: ({i+1}/{len(filenames)}) || Reading data | {filename}       ", end = " ")
+        # if i == 3:
+        #     print()
+        #     exit("HERE")
         data = analyse_friction_file(filename)   
         COM = data['COM_sheet'][:,0]
         time = data['time']
+        info = read_info_file('/'.join(filename.split('/')[:-1]) + '/info_file.txt' )
+        VA_pos = (time - time[0]) * info['drag_speed']  # virtual atom position
         contact = data['contact'][:,0]
         Ff = data[f'Ff_{group_name[g]}'][:,0]
         
+        mean_window = int(runmean_wpct*len(time))
+        std_window = int(runstd_wpct*mean_window)
+    
+        
         if xaxis == 'time':
             x = time; xlabel = 'Time [ps]'
-        elif xaxis == 'COM':
-            x = COM; xlabel = 'COM$_\parallel$ [Å]'
+        elif xaxis == 'VA_pos':
+            x = VA_pos; xlabel = 'VA pos $\parallel$ [Å]'
         else:
             print(f'xaxis = {xaxis} is not a known setting.')
         
@@ -135,81 +145,79 @@ def drag_length_compare(filenames):
             xlabel = 'Rel ' + xlabel
             x /= x[-1] # relative drag
         
-        
         # --- Ff (mean) --- # 
         print(f"\rFile: ({i+1}/{len(filenames)}) | Mean Ff | {filename}       ", end = " ")
         cummean = cum_mean(Ff)
-        _, cummean_runstd = running_mean(cummean, window_len = int(runstd_wpct*len(cummean)))
+        cummean_rel_runstd = running_mean(cummean, window_len = std_window)[1]/cummean[~np.isnan(cummean)][-1]
         
-        runmean, runstd = running_mean(Ff, window_len = int(runmean_wpct*len(Ff)))
-        _, runmean_runstd = running_mean(runmean, window_len = int(runstd_wpct*len(runmean)))
-        
+        runmean = running_mean(Ff, window_len = mean_window)[0]
+        runmean_rel_runstd = running_mean(runmean, window_len = std_window)[1]/runmean[~np.isnan(runmean)][-1]
         
         # Mean
         ax1.plot(x, cummean)
-        ax2.plot(x, cummean_runstd, label = filename)
+        ax2.plot(x, cummean_rel_runstd, label = filename)
+        ax1.set(xlabel=xlabel, ylabel='cum mean')
+        ax2.set(xlabel=xlabel, ylabel='Rel. runmean std')
         
         # Running mean 
         ax3.plot(x, runmean)
-        ax4.plot(x, runmean_runstd)
+        ax4.plot(x, runmean_rel_runstd)
         ax3.set_xlim(ax1.get_xlim())
         ax4.set_xlim(ax2.get_xlim())
-    
+        ax3.set(xlabel=xlabel, ylabel=f'run mean ({runmean_wpct*100:.0f}%)')
+        ax4.set(xlabel=xlabel, ylabel='Rel. runmean std')
         
-        # --- Ff (max) --- # 
+            
+        # --- Ff (max) --- #  (not updated)
         print(f"\rFile: ({i+1}/{len(filenames)}) | Max Ff | {filename}       ", end = " ")
         cummean_topmax = cumTopQuantileMax(np.abs(data[f'Ff_{group_name[g]}'][:,0]), quantile)
-        _, cummean_topmax_runstd = running_mean(cummean_topmax, window_len = int(runstd_wpct*len(cummean_topmax)))
+        cummean_rel_runstd = running_mean(cummean_topmax, window_len = std_window)[1]/cummean_topmax[~np.isnan(cummean_topmax)][-1]
+        # _, cummean_topmax_runstd = running_mean(cummean_topmax, window_len = int(runstd_wpct*len(cummean_topmax)))
         
         cummax = cum_max(data[f'Ff_{group_name[g]}'][:,0])
-        _, cummax_runstd = running_mean(cummax, window_len = int(runstd_wpct*len(cummax)))
+        cummax_rel_runstd = running_mean(cummax, window_len = std_window)[1]/cummax[~np.isnan(cummax)][-1]
+        # _, cummax_runstd = running_mean(cummax, window_len = int(runstd_wpct*len(cummax)))
+
 
        
         # Mean top quantile max
         ax5.plot(x, cummean_topmax)
-        ax6.plot(x, cummean_topmax_runstd, label = filename)
+        ax6.plot(x, cummean_rel_runstd, label = filename)
+        ax5.set(xlabel=xlabel, ylabel='cum mean top max')
+        ax6.set(xlabel=xlabel, ylabel=f'cummean topmax rel. std')
        
         # Max 
         ax7.plot(x, cummax)
-        ax8.plot(x, cummax_runstd)
+        ax8.plot(x, cummax_rel_runstd)
+        ax7.set(xlabel=xlabel, ylabel='cum max')
+        ax8.set(xlabel=xlabel, ylabel=f'cummax topmax rel std')
+        
+    
     
         # --- Contact --- #
         print(f"\rFile: ({i+1}/{len(filenames)}) | Mean contact | {filename}       ", end = " ")
         cummean = cum_mean(contact)
-        _, cummean_runstd = running_mean(cummean, window_len = int(runstd_wpct*len(cummean)))
+        cummean_rel_runstd = running_mean(cummean, window_len = std_window)[1]/cummean[~np.isnan(cummean)][-1]
         
-        runmean, runstd = running_mean(contact, window_len = int(runmean_wpct*len(contact)))
-        _, runmean_runstd = running_mean(runmean, window_len = int(runstd_wpct*len(runmean)))
+        runmean = running_mean(contact, window_len = mean_window)[0]
+        runmean_rel_runstd = running_mean(runmean, window_len = std_window)[1]/runmean[~np.isnan(runmean)][-1]
         
-        
+            
         # Mean 
         ax9.plot(x, cummean, label = filename)
-        ax10.plot(x, cummean_runstd)
-        
+        ax10.plot(x, cummean_rel_runstd)
+        ax9.set(xlabel=xlabel, ylabel='cum mean')
+        ax10.set(xlabel=xlabel, ylabel='Rel. runmean std')
         
         # Running mean 
         ax11.plot(x, runmean)
-        ax12.plot(x, runmean_runstd)
+        ax12.plot(x, runmean_rel_runstd)
         ax11.set_xlim(ax9.get_xlim())
         ax12.set_xlim(ax10.get_xlim())
-  
+        ax11.set(xlabel=xlabel, ylabel=f'run mean ({runmean_wpct*100:.0f}%)')
+        ax12.set(xlabel=xlabel, ylabel='Rel. runmean std')
+    
     print()
-    
-    ax1.set(xlabel=xlabel, ylabel='cum mean')
-    ax2.set(xlabel=xlabel, ylabel=f'cum mean run std ({runstd_wpct*100:.0f}%)')
-    ax3.set(xlabel=xlabel, ylabel=f'run mean ({runmean_wpct*100:.0f}%)')
-    ax4.set(xlabel=xlabel, ylabel=f'run mean run std ({runstd_wpct*100:.0f}%)')
-    
-    ax5.set(xlabel=xlabel, ylabel='cum mean top max')
-    ax6.set(xlabel=xlabel, ylabel=f'cum mean top max run std ({runstd_wpct*100:.0f}%)')
-    ax7.set(xlabel=xlabel, ylabel='cum max')
-    ax8.set(xlabel=xlabel, ylabel=f'cum mean top max run std ({runstd_wpct*100:.0f}%)')
-    
-    ax9.set(xlabel=xlabel, ylabel='cum mean')
-    ax10.set(xlabel=xlabel, ylabel=f'cum mean run std ({runstd_wpct*100:.0f}%)')
-    ax11.set(xlabel=xlabel, ylabel=f'run mean ({runmean_wpct*100:.0f}%)')
-    ax12.set(xlabel=xlabel, ylabel=f'run mean run std ({runstd_wpct*100:.0f}%)')
-    
     # for ax in [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9, ax10, ax11, ax12]:
     #     add_xaxis(ax, time, COM, xlabel='COM$\parallel$ [Å]', decimals = 1)    
     
@@ -226,12 +234,23 @@ def drag_length_compare(filenames):
     return obj
 
 
-def dt_dependency(filenames, dt, drag_cap = 0):
-    fig = plt.figure()
+def variable_dependency(filenames, variable_name = 'dt', drag_cap = None):
+    
+    
+    fig = plt.figure(figsize = (6, 6), num = unique_fignum())
     grid = (3,1)
     ax1 = plt.subplot2grid(grid, (0, 0), colspan=1)
     ax2 = plt.subplot2grid(grid, (1, 0), colspan=1)
     ax3 = plt.subplot2grid(grid, (2, 0), colspan=1)
+    
+    
+    mean_pct = 0.5
+    std_pct = 0.01
+    fricData = analyse_friction_file(friction_file, mean_pct, std_pct)
+    ### Working here XXX XXX
+    exit("working here")
+    
+    
     
     Ffmax = np.zeros(len(filenames))
     Ffmean = np.zeros(len(filenames))
@@ -279,10 +298,25 @@ def dt_dependency(filenames, dt, drag_cap = 0):
 if __name__ == "__main__":
     # Parrent folder
     
-    sizes = get_files_in_folder('../Data/Baseline/drag_length_size', ext = 'Ff.txt') 
-    # drag_length_compare(sizes)
-    obj = drag_length_dependency(sizes[0])
+    # size = get_files_in_folder('../Data/Baseline/size', ext = 'Ff.txt') 
+    spring = get_files_in_folder('../Data/Baseline/spring', ext = 'Ff.txt')
+    temp = get_files_in_folder('../Data/Baseline/temp', ext = 'Ff.txt')
+    vel = get_files_in_folder('../Data/Baseline/vel', ext = 'Ff.txt')
+    dt = get_files_in_folder('../Data/Baseline/dt', ext = 'Ff.txt')
+    
+    drag_length_compare(dt)
+    
+    # obj = drag_length_dependency(vel[3])
   
+  
+  
+  
+  
+  
+  
+  
+  
+    #################################################################################
     # PF = "drag_length" 
     # PF = "drag_length_200nN" 
     # # PF = "drag_length_s200nN" 
