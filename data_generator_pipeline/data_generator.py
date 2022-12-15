@@ -56,10 +56,11 @@ class data_generator:
         proc.add_variables(config_data = f'sheet_{config_ext}' )
         
         # Directories 
-        header = "egil:CONFIGS/test1"
-        dir = os.path.join(header, "conf1")
+        header = "egil:CONFIGS/test"
+        dir = os.path.join(header, "conf")
         proc.config_path = config_path
         
+    
         
         # Multi run settings 
         num_stretch_files = 5
@@ -68,7 +69,8 @@ class data_generator:
         
         proc.add_variables(num_stretch_files = num_stretch_files, 
                            RNSEED = '$RANDOM',
-                           run_rupture_test = 1)
+                           run_rupture_test = 1,
+                           stretch_max_pct = 0.7)
         
 
         # Start multi run

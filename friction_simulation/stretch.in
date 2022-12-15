@@ -71,9 +71,10 @@ run $(v_relax_steps-1)
 
 # Lock S0 after relaxing and export S0 info via y-pos of tmp type 3 atom
 variable S0 equal $(v_S0) 
-if  "${num_stretch_files}>=1" then "create_atoms 3 single 0 $(v_S0) 0" &
+if  "${num_stretch_files}>=1" then "create_atoms 3 single 0 $(v_S0) 0 units box" &
 "group S0_info type 3"
 run 1
+
 
 unfix PB_ylow_x_hold
 unfix PB_high_x_hold

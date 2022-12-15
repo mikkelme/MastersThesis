@@ -181,6 +181,13 @@ group non_drag_atoms subtract all PB_tot_rigid substrate_freeze
 # Set velocity 
 velocity free_atoms create 0 5432373 dist gaussian
 
+
+uncompute full_sheet_ymin
+uncompute full_sheet_ymax
+uncompute full_sheet_z 
+uncompute substrate_zmin 
+uncompute substrate_zmax
+
 # JUMP
 jump SELF common_settings 
 
@@ -195,6 +202,7 @@ print "Setting up simulation from read_restart: ${restart_file}"
 read_restart ${restart_file}
 include ${root}/${config_data}_info.in 
 compute get_S0 S0_info reduce sum y # Retrieve information about S0 via type 3 tmp atom
+
 
 ###############################
 ### --- Common settings --- ###
@@ -352,12 +360,10 @@ variable S0 equal c_PB_yhigh_rigid_ymin-c_PB_ylow_rigid_ymax    # start len of i
 
 
 # Restart file: Get S0 stored in type 3 tmp atom
-# Add: c_sheet_ymin c_sheet_ymax to thermo? <-----------------
-if ${readable} then "thermo_style custom c_get_S0" &
+if ${readable} then "thermo_style custom c_get_S0 c_PB_yhigh_rigid_ymin c_PB_ylow_rigid_ymax" &
 "run 0" &
 "variable S0 equal $(c_get_S0)" &
 "delete_atoms group S0_info"
-
 
 variable S_len equal c_PB_yhigh_rigid_ymin-c_PB_ylow_rigid_ymax # Updated len of inner sheet
 # variable S_len equal c_sheet_ymax-c_sheet_ymin 
@@ -447,11 +453,7 @@ print ""
 # Clean up
 uncompute sheet_ymin
 uncompute sheet_ymax
-uncompute full_sheet_ymin
-uncompute full_sheet_ymax
-uncompute full_sheet_z 
-uncompute substrate_zmin 
-uncompute substrate_zmax
+
 
 
 

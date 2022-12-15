@@ -294,56 +294,55 @@ def dt_dependency(filenames, dt, drag_cap = 0):
 
 
 if __name__ == "__main__":
-    # dt_files = ['../Data/Baseline/dt/dt_0.002/system_dt_0.002_Ff.txt', 
-    #            '../Data/Baseline/drag_length/ref/system_ref_Ff.txt',
-    #            '../Data/Baseline/dt/dt_0.0005/system_dt_0.0005_Ff.txt',
-    #            '../Data/Baseline/dt/dt_0.00025/system_dt_0.00025_Ff.txt']
-    # dt_vals = [0.002, 0.001, 0.0005, 0.00025]
-    
     # Parrent folder
+    # obj = drag_length_dependency('../Data/Multi/updated_LJ/ref1/stretch_15000_folder/job2/system_drag_Ff.txt')
+    
+    sizes = get_files_in_folder('../Data/Baseline/drag_length_size', ext = 'Ff.txt') 
+    drag_length_compare(sizes)
+  
     # PF = "drag_length" 
-    PF = "drag_length_200nN" 
-    # PF = "drag_length_s200nN" 
+    # PF = "drag_length_200nN" 
+    # # PF = "drag_length_s200nN" 
     
-    ref = f'../Data/Baseline/{PF}/ref/system_ref_Ff.txt'
+    # ref = f'../Data/Baseline/{PF}/ref/system_ref_Ff.txt'
     
-    v05 = f'../Data/Baseline/{PF}/v05/system_v05_Ff.txt'
-    v5 = f'../Data/Baseline/{PF}/v5/system_v5_Ff.txt'
-    v10 = f'../Data/Baseline/{PF}/v10/system_v10_Ff.txt'
-    v20 = f'../Data/Baseline/{PF}/v20/system_v20_Ff.txt'
-    v50 = f'../Data/Baseline/{PF}/v50/system_v50_Ff.txt'
-    v100 = f'../Data/Baseline/{PF}/v100/system_v100_Ff.txt'
+    # v05 = f'../Data/Baseline/{PF}/v05/system_v05_Ff.txt'
+    # v5 = f'../Data/Baseline/{PF}/v5/system_v5_Ff.txt'
+    # v10 = f'../Data/Baseline/{PF}/v10/system_v10_Ff.txt'
+    # v20 = f'../Data/Baseline/{PF}/v20/system_v20_Ff.txt'
+    # v50 = f'../Data/Baseline/{PF}/v50/system_v50_Ff.txt'
+    # v100 = f'../Data/Baseline/{PF}/v100/system_v100_Ff.txt'
     
-    K0 = f'../Data/Baseline/{PF}/K0/system_K0_Ff.txt'
-    K5 = f'../Data/Baseline/{PF}/K5/system_K5_Ff.txt'
-    K10 = f'../Data/Baseline/{PF}/K10/system_K10_Ff.txt'
+    # K0 = f'../Data/Baseline/{PF}/K0/system_K0_Ff.txt'
+    # K5 = f'../Data/Baseline/{PF}/K5/system_K5_Ff.txt'
+    # K10 = f'../Data/Baseline/{PF}/K10/system_K10_Ff.txt'
     
-    T5 = f'../Data/Baseline/{PF}/T5/system_T5_Ff.txt'
-    T50 = f'../Data/Baseline/{PF}/T50/system_T50_Ff.txt'
-    T200 = f'../Data/Baseline/{PF}/T200/system_T200_Ff.txt'
-    T300 = f'../Data/Baseline/{PF}/T300/system_T300_Ff.txt'
+    # T5 = f'../Data/Baseline/{PF}/T5/system_T5_Ff.txt'
+    # T50 = f'../Data/Baseline/{PF}/T50/system_T50_Ff.txt'
+    # T200 = f'../Data/Baseline/{PF}/T200/system_T200_Ff.txt'
+    # T300 = f'../Data/Baseline/{PF}/T300/system_T300_Ff.txt'
    
-    amorph = f'../Data/Baseline/{PF}/amorph/system_amorph_Ff.txt'
-    gold = f'../Data/Baseline/{PF}/gold/system_gold_Ff.txt'
+    # amorph = f'../Data/Baseline/{PF}/amorph/system_amorph_Ff.txt'
+    # gold = f'../Data/Baseline/{PF}/gold/system_gold_Ff.txt'
    
-    vel_compare = [v05, ref, v5, v10, v20, v50, v100]
-    temp_compare = [T5, ref, T300]
-    K_compare = [K5, K10, ref, K0]
-    substrate_compare = [ref, amorph, gold]
+    # vel_compare = [v05, ref, v5, v10, v20, v50, v100]
+    # temp_compare = [T5, ref, T300]
+    # K_compare = [K5, K10, ref, K0]
+    # substrate_compare = [ref, amorph, gold]
     
-    v10_comp = [f'../Data/Baseline/{PF}/v10/system_v10_Ff.txt' for PF in ['drag_length', 
-                                                                             'drag_length_200nN', 
-                                                                             'drag_length_s200nN']]
-    
-    
-    
-    custom_comp = [ '../Data/Multi/updated_LJ/ref1/stretch_15000_folder/job0/system_drag_Ff.txt',
-                    '../Data/Multi/contact_area_cut130/cut130/stretch_15000_folder/job0/system_drag_Ff.txt']
-                #    '../Data/Multi/nocuts/ref1/stretch_315000_folder/job2/system_drag_Ff.txt']
+    # v10_comp = [f'../Data/Baseline/{PF}/v10/system_v10_Ff.txt' for PF in ['drag_length', 
+    #                                                                          'drag_length_200nN', 
+    #                                                                          'drag_length_s200nN']]
     
     
-    obj = drag_length_dependency('../Data/Multi/updated_LJ/ref1/stretch_15000_folder/job2/system_drag_Ff.txt')
-    obj = drag_length_dependency('../Data/Multi/contact_area_cut110/cut110/stretch_15000_folder/job2/system_drag_Ff.txt')
+    
+    # custom_comp = [ '../Data/Multi/updated_LJ/ref1/stretch_15000_folder/job0/system_drag_Ff.txt',
+    #                 '../Data/Multi/contact_area_cut130/cut130/stretch_15000_folder/job0/system_drag_Ff.txt']
+    #             #    '../Data/Multi/nocuts/ref1/stretch_315000_folder/job2/system_drag_Ff.txt']
+    
+    
+    # obj = drag_length_dependency('../Data/Multi/updated_LJ/ref1/stretch_15000_folder/job2/system_drag_Ff.txt')
+    # obj = drag_length_dependency('../Data/Multi/contact_area_cut110/cut110/stretch_15000_folder/job2/system_drag_Ff.txt')
     
     
     # vel_compare.pop(4)
