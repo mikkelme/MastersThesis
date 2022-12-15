@@ -125,13 +125,12 @@ def decompose_wrt_drag_dir(x, y, drag_direction):
     return proj_para, proj_perp
 
 
-def analyse_friction_file(filename, mean_pct = 1, std_pct = 0):
+def analyse_friction_file(filename, mean_pct = 1, std_pct = None):
     # window_length = 50
     # polyorder = 5
     info = read_info_file('/'.join(filename.split('/')[:-1]) + '/info_file.txt' )
     drag_direction = np.array((info['drag_dir_x'], info['drag_dir_y']))
     dt = info['dt']
-    
     
     
     data = read_friction_file(filename)    
@@ -180,8 +179,6 @@ def analyse_friction_file(filename, mean_pct = 1, std_pct = 0):
         contact_mean_sheet = np.mean(contact[-mean_window:, 1])
         contact_std = np.full(2, np.nan)
         
-    
-    
     else:
         std_window = int(len(time) * std_pct)
         
@@ -210,7 +207,7 @@ def analyse_friction_file(filename, mean_pct = 1, std_pct = 0):
     updated_data = {}
     for name in varnames:
         updated_data[name] = eval(name)
-      
+    
     return updated_data
     
     
@@ -288,16 +285,7 @@ def read_histogram(filename):
 
     return timestep, hist
 
-# # Time-averaged data for fix rupture_output
-# # TimeStep c_y_stress c_PB_ylow c_PB_yhigh
-# 100 -900943 0 0
-# 200 854381 0 0
-# 300 -507658 0 0
-# 400 33397.7 0 0
-# 500 727896 0 0
-# 600 -130056 0 0
-# 700 -159157 0 0
-# 800 204057 0 0
+
 def read_ave_time(filename):
     infile = open(filename, 'r')
     infile.readline() # Skip first comment
@@ -579,6 +567,7 @@ def mean_cut_and_std(arr, mean_window, std_window):
         and standard deviation of last <std_window> of a running mean
         with length <mean_window>. """
         
+    
     assert mean_window + std_window <= len(arr), "Window error: mean_window + std_window > array length"
     assert 2 <= mean_window and mean_window <= len(arr), "Mean window must be in the interval [2, array length]"
     
@@ -597,20 +586,7 @@ def mean_cut_and_std(arr, mean_window, std_window):
 
 
 if __name__ == "__main__":
-    # filename = "../friction_simulation/my_simulation_space/rdf.txt"
-    # read_ave_time_vector(filename)
-    
-    # filename = "../friction_simulation/my_simulation_space/info_file.txt"
-    
-    filename = "../Data/Multi/nocuts/ref2/stretch_15000_folder/job5/system_drag_Ff.txt"
-    data = analyse_friction_file(filename, avg_pct = 1, std_pct = 0)
-    # arr = data['Ff_full_sheet'][:,0]
-    arr = data['contact'][:,0]
-    # print(np.shape(arr))
-    # exit()
-    mw = int(0.5*len(arr))
-    sw = int(0.1*len(arr))
-
-    mean, std =mean_cut_and_std(arr, mw, None)
-    print(mean, std)
-    
+   
+    filename = '../Data/Baseline/drag_length_size/108x113/system_108x113_Ff.txt'
+     
+    data = analyse_friction_file(filename)   

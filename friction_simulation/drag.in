@@ -66,24 +66,26 @@ label system_is_running
 
 # Write variables to info_file.txt
 print """&
+root ${root}
+config_data ${config_data}
+out_ext ${out_ext}
 dt ${dt}
 temp ${T}
 relax_time ${relax_time}
+stretch_speed_pct ${stretch_speed_pct}
+SMAX ${SMAX}
 pause_time1 ${pause_time1}
 pause_time2 ${pause_time2}
-stretch_speed_pct ${stretch_speed_pct}
 drag_speed ${drag_speed}
 drag_length ${drag_length}
 K ${K}
-root ${root}
-out_ext ${out_ext}
-config_data ${config_data}
-SMAX ${SMAX}
 drag_dir_x ${drag_dir_x}
 drag_dir_y ${drag_dir_y}
 F_N ${F_N}
 restart_file ${restart_file} &
+rupture_detection ${rupture_detection}
 """ file info_file.txt
+
 
 if "${is_ruptured}" then "jump SELF after_drag"
 

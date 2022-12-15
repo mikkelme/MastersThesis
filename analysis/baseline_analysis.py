@@ -121,9 +121,8 @@ def drag_length_compare(filenames):
         data = analyse_friction_file(filename)   
         COM = data['COM_sheet'][:,0]
         time = data['time']
-        contact = data['contact'][0]
+        contact = data['contact'][:,0]
         Ff = data[f'Ff_{group_name[g]}'][:,0]
-        
         
         if xaxis == 'time':
             x = time; xlabel = 'Time [ps]'
@@ -149,12 +148,8 @@ def drag_length_compare(filenames):
         # Mean
         ax1.plot(x, cummean)
         ax2.plot(x, cummean_runstd, label = filename)
-        # output = np.flip(cum_std(np.flip(cummean)))
-        # map = ~np.isnan(output)
-        # ax1.plot(x, cummean)
-        # ax2.plot(x[~np.isnan(output)], output[~np.isnan(output)], "-o", markersize = 3, label = filename)
         
-         # Running mean 
+        # Running mean 
         ax3.plot(x, runmean)
         ax4.plot(x, runmean_runstd)
         ax3.set_xlim(ax1.get_xlim())
@@ -173,18 +168,10 @@ def drag_length_compare(filenames):
         # Mean top quantile max
         ax5.plot(x, cummean_topmax)
         ax6.plot(x, cummean_topmax_runstd, label = filename)
-        # output = np.flip(cum_std(np.flip(cummean_topmax)))
-        # map = ~np.isnan(output)
-        # ax5.plot(x, cummean_topmax)
-        # ax6.plot(x[~np.isnan(output)], output[~np.isnan(output)], "-o", markersize = 3, label = filename)
        
         # Max 
         ax7.plot(x, cummax)
         ax8.plot(x, cummax_runstd)
-        # output = np.flip(cum_std(np.flip(cummax)))
-        # map = ~np.isnan(output)
-        # ax7.plot(x, cummax)
-        # ax8.plot(x[~np.isnan(output)], output[~np.isnan(output)], "-o", markersize = 3)
     
         # --- Contact --- #
         print(f"\rFile: ({i+1}/{len(filenames)}) | Mean contact | {filename}       ", end = " ")
@@ -199,10 +186,6 @@ def drag_length_compare(filenames):
         ax9.plot(x, cummean, label = filename)
         ax10.plot(x, cummean_runstd)
         
-        # output = np.flip(cum_std(np.flip(cummean)))
-        # map = ~np.isnan(output)
-        # ax9.plot(x, cummean, label = filename)
-        # ax10.plot(x[~np.isnan(output)], output[~np.isnan(output)], "-o", markersize = 3)
         
         # Running mean 
         ax11.plot(x, runmean)
@@ -295,10 +278,10 @@ def dt_dependency(filenames, dt, drag_cap = 0):
 
 if __name__ == "__main__":
     # Parrent folder
-    # obj = drag_length_dependency('../Data/Multi/updated_LJ/ref1/stretch_15000_folder/job2/system_drag_Ff.txt')
     
     sizes = get_files_in_folder('../Data/Baseline/drag_length_size', ext = 'Ff.txt') 
-    drag_length_compare(sizes)
+    # drag_length_compare(sizes)
+    obj = drag_length_dependency(sizes[0])
   
     # PF = "drag_length" 
     # PF = "drag_length_200nN" 

@@ -3,8 +3,8 @@ from simulation_runner import *
 
 def drag_length():
     main_folder = 'Baseline'
-    test_name   = 'drag_length_size'
-    sim_name    = '130x138'
+    test_name   = 'vel'
+    sim_name    = 'v40'
     
     variables = {
         "dt": 0.001,
@@ -15,7 +15,7 @@ def drag_length():
         "stretch_speed_pct": 0.005,
         "stretch_max_pct": 0,
         "drag_length": 200 ,
-        "drag_speed": 20, # [m/s]
+        "drag_speed": 40, # [m/s]
         "K": 30.0,
         "drag_dir_x": 0,
         "drag_dir_y": 1,
@@ -49,29 +49,33 @@ def drag_length():
     sim.run(num_procs=16, lmp_exec="lmp", slurm=True, slurm_args=slurm_args)
 
 
-def dt():
+def vary_variable(test_name = 'dt', variable_name = 'dt', variable_values = [], sim_prefix = None):
+    assert len(variable_values) > 0, "Variable values has length 0."
     main_folder = 'Baseline'
-    test_name   = 'dt'
+    if sim_prefix is None:
+        sim_prefix = test_name
     
+    # Default values
     variables = {
-        "dt": 0,
+        "dt": 0.001,
         "T": 100.0, # [K]
-        "relax_time": 5,
+        "relax_time": 15,
         "pause_time1": 5,
         "pause_time2": 5,
-        "stretch_speed_pct": 0.001,
-        "drag_speed": 1, # [m/s]
+        "stretch_speed_pct": 0.005,
+        "stretch_max_pct": 0,
         "drag_length": 200 ,
+        "drag_speed": 20, # [m/s]
         "K": 30.0,
-        "root": "..",
-        "out_ext": date.today(), 
-        "config_data": "sheet_substrate_nocuts",
-        "stretch_max_pct": 0.0,
         "drag_dir_x": 0,
         "drag_dir_y": 1,
-        "F_N": 10e-9, # [N]
+        "F_N": 1e-9, # [N]
+        "config_data": "sheet_nocut_108x113",
+        "root": "..",
+        "out_ext": 'tmp', 
+        "run_rupture_test": 0
     }
-
+    
 
     proc = Simulation_runner(variables)
     header = f"egil:{main_folder}/{test_name}/"
@@ -79,23 +83,20 @@ def dt():
                         "../friction_simulation/stretch.in",
                         "../friction_simulation/drag.in",
                         "../potentials/si.sw",
-                        "../potentials/C.tersoff"], header)
-    
-    
-    
-    dt_range = [0.00025, 0.0005, 0.001, 0.002]
-    for dt in dt_range:
-        sim_name  = f'{test_name}_{dt}'
+                        "../potentials/C.tersoff",
+                        f"../config_builder/{proc.variables['config_data']}.txt",
+                        f"../config_builder/{proc.variables['config_data']}_info.in" ], header)
+  
+  
+    for val in variable_values:
+        sim_name  = f'{sim_prefix}_{val}'
         dir = f"{header}{sim_name}/"
         
         proc.variables["out_ext"] = sim_name
-        proc.variables["dt"] = dt
-        proc.variables["drag_length"] = dt/0.001*200
-            
+        proc.variables[variable_name] = val
+     
         sim = Simulator(directory = dir, overwrite=True)
-        sim.copy_to_wd( "../friction_simulation/friction_procedure.in",
-                            f"../config_builder/{proc.variables['config_data']}.txt",
-                            f"../config_builder/{proc.variables['config_data']}_info.in" )
+        sim.copy_to_wd( "../friction_simulation/friction_procedure.in")
             
         sim.set_input_script("../friction_simulation/friction_procedure.in", **proc.variables)
         slurm_args = {'job-name':sim_name, 'partition':'normal', 'ntasks':16, 'nodes':1}
@@ -103,5 +104,13 @@ def dt():
 
 
 if __name__ == "__main__":
-    drag_length()
-    # dt()
+    
+    dt_range = [0.00025, 0.0005, 0.001, 0.002]
+    vel_range = [1, 5, 10, 20, 30, 40]
+    temp_range = [5, 50, 100, 200, 300, 400, 500]
+    K_range = [0, 10, 30, 50, 100]
+    
+    # vary_variable(test_name = 'spring', variable_name = 'K',  variable_values = K_range, sim_prefix = 'K')
+    
+    
+    # drag_length()
