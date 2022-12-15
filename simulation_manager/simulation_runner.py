@@ -12,7 +12,7 @@ from lammps_simulator.device import SlurmGPU
 
 class Simulation_runner:
     def __init__(self, variables = {}) :
-        # Standard variables
+        # Default variables
         self.variables = {
             "dt": 0.001,
             "T": 100.0, # [K]
@@ -21,7 +21,10 @@ class Simulation_runner:
             "pause_time2": 5,
             "stretch_speed_pct": 0.005,
             "stretch_max_pct": 0.2,
-            "drag_length": 200 ,
+            "run_rupture_test": 0,
+            "num_stretch_files": 0,
+            "RNSEED": -1,
+            "drag_length": 200,
             "drag_speed": 20, # [m/s]
             "K": 30.0,
             "drag_dir_x": 0,
@@ -29,11 +32,11 @@ class Simulation_runner:
             "F_N": 1e-9, # [N]
             "config_data": "sheet_substrate",
             "root": "..",
-            "out_ext": date.today(), 
-            "run_rupture_test": 0
+            "out_ext": date.today()
         }
         
-        self.config_path = '../config_builder' # NEW XXX
+
+        self.config_path = '../config_builder'
         
         # --- Convertion factors: SI -> metal --- #
         self.N_to_eV_over_ang = 6.24150907e8    # force: N -> eV/Å
@@ -46,17 +49,24 @@ class Simulation_runner:
             "drag_speed": self.m_to_ang/self.s_to_ps, 
             "K": self.N_to_eV_over_ang/self.m_to_ang }
 
+        # Convert default values before updating with input
+        self.convert_units(["F_N", "K", "drag_speed"]) 
+        self.update_variables(variables)
         
+        
+    def update_variables(self, dict):
         # --- Update variables in class dict --- #
-        for key in variables:
+        for key in dict:
             if key in self.variables:
-                self.variables[key] = variables[key]
+                self.variables[key] = dict[key]
+                if key in self.conv_dict:
+                    self.convert_units([key])
             else: 
                 print(f"WARNING: Variable \"{key}\" is not defined")
                 
-        self.convert_units(["F_N", "K", "drag_speed"])
-     
-           
+    def add_variables(self, **kwargs):
+        self.update_variables(kwargs)
+        
     def convert_units(self, varnames):
         for key in varnames:
             try:
@@ -67,6 +77,16 @@ class Simulation_runner:
             
             self.variables[key] *= conv 
        
+    
+    def __str__(self):
+        s = "# Class variable dictionary\n"
+        for key in self.variables:
+            s += f'{key} = {self.variables[key]}\n'
+        s += f'\n# Class variables\n'
+        s += f'config path = {self.config_path}'
+        return s
+    
+    
     def move_file_to_dest(self, file, dest):
         ssh, dir = dest.split(':')
         subprocess.run(f'rsync -av --rsync-path=\"mkdir -p {dir} && rsync\" {file} {ssh}:{dir}', shell = True)
@@ -78,24 +98,43 @@ class Simulation_runner:
             
     
         
-    def multi_run(self, header, dir, num_stretch_files, F_N, RN_stretch = False, num_procs = 16, jobname = 'MULTI'):
-        sim = Simulator(directory = dir, overwrite=False)
+    def multi_run(self, header, dir, F_N, num_procs = 16, jobname = 'MULTI'):
+        print_info = True # Print ({stretch}, {F_N}) sets
         
-        print_info = True  
+        # Abbreviation (avoid calling self.variables a lot)
+        num_stretch_files = self.variables['num_stretch_files']
+        stretch_max_pct = self.variables['stretch_max_pct']
+        RNSEED = self.variables['RNSEED']
+        
+        # Verify validity of RNSEED and interpret for print info
+        if RNSEED == '$RANDOM':
+            RN_stretch = True
+        else:
+            try:
+                RNSEED = int(RNSEED)
+                self.variables['RNSEED'] = RNSEED
+                RN_stretch = RNSEED >= 0
+    
+            except ValueError:
+                exit(f'RNSEED: {RNSEED}, is not valid')
+                
+        # Print info
         if print_info:
-            print(f"Samples: {num_stretch_files} x {len(F_N)} = {num_stretch_files*len(F_N)}")
+            print(f"Samples (stretch x F_N): {num_stretch_files } x {len(F_N)} = {num_stretch_files * len(F_N)}")
             if RN_stretch:
                 print("Stretch: Uniform random in intervals:")
-                Sstep = self.variables['stretch_max_pct']/num_stretch_files
-                for i in range(num_stretch_files-1):
-                    print(f"[{i*Sstep:g}, {(i+1)*Sstep:g}),", end = " ")
-                print(f"[{(i+1)*Sstep:g}, {(i+2)*Sstep:g})")
+                stretch_step =  stretch_max_pct/num_stretch_files 
+                for i in range(num_stretch_files - 1):
+                    print(f"[{i*stretch_step:g}, {(i+1)*stretch_step:g}),", end = " ")
+                print(f"[{(i+1)*stretch_step:g}, {(i+2)*stretch_step:g})")
             else:
-                print(f"Stretch: {np.around(np.linspace(0,self.variables['stretch_max_pct'], num_stretch_files), decimals = 3)}")
+                print(f"Stretch: {np.around(np.linspace(0, stretch_max_pct, num_stretch_files), decimals = 3)}")
             print(f"F_N: {F_N*1e9} nN")
-        exit("Safety break")
+        # exit("Safety break")
     
-        
+    
+        # Make directory and transfer scripts    
+        sim = Simulator(directory = dir, overwrite=False)
         self.move_files_to_dest(["../friction_simulation/setup_sim.in", 
                         "../friction_simulation/stretch.in",
                         "../friction_simulation/drag.in",
@@ -105,15 +144,15 @@ class Simulation_runner:
                         f"{self.config_path}/{self.variables['config_data']}_info.in" ], header)
     
         
-
-        sim.set_input_script("../friction_simulation/stretch.in", num_stretch_files = num_stretch_files, **self.variables)    
-        sim.set_input_script("../friction_simulation/stretch.in", num_stretch_files = num_stretch_files
-                                                                  RNSEED = '$RANDOM',
-                                                                  run_rupture_test = 1, **self.variables)    
-        
+        # Set input script and slurm arguments
+        sim.set_input_script("../friction_simulation/stretch.in", **self.variables)    
         slurm_args = {'job-name':jobname, 'partition':'normal', 'ntasks':num_procs, 'nodes':1}
+        
+        
+        # --- Jobscript for multi run --- #
         sim.pre_generate_jobscript(num_procs=num_procs, lmp_exec="lmp", slurm_args = slurm_args)    
 
+        # Set parameters for stretch 
         self.variables['root'] += '/../..'
         job_array = 'job_array=('
         for i in range(len(F_N)):
@@ -128,7 +167,7 @@ class Simulation_runner:
             job_array += '\"'
         job_array += ')'
         
-        
+        # Add bash commands for executing drag.in for all stretch restart files
         sim.add_to_jobscript(f"\nwait\
         \n{job_array}\n\
         \nfor file in *_restart; do\
@@ -148,6 +187,7 @@ class Simulation_runner:
         \n    mv $file $folder1/$file\
         \ndone")
         
+        # --- RUN --- #
         sim.run(slurm = True, execute = True)
         
             

@@ -42,43 +42,43 @@ class data_generator:
         
         
     def run(self):
+        config_ext = 'tmp'
+        config_path = '.'
+        
+        
+        # Intialize simulation runner
+        proc = Simulation_runner()
+        
+        # Build sheet 
         builder = config_builder(self.mat)
         builder.add_pullblocks()
+        builder.save("sheet", ext = config_ext, path = config_path)
+        proc.add_variables(config_data = f'sheet_{config_ext}' )
         
+        # Directories 
         header = "egil:CONFIGS/test1"
         dir = os.path.join(header, "conf1")
+        proc.config_path = config_path
         
+        
+        # Multi run settings 
         num_stretch_files = 5
         F_N = np.sort(np.random.uniform(0.1, 1, 5))*1e-9
+        # F_N = np.linspace(0.1e-9, 1e-9, 3)
         
-        proc = Simulation_runner()
-        proc.config_path = '../config_builder' 
+        proc.add_variables(num_stretch_files = num_stretch_files, 
+                           RNSEED = '$RANDOM',
+                           run_rupture_test = 1)
         
-        # TODO: 
-        # Set variables RNSEED, run_rupture_test and num_stretch_files before
-        # calling multi_run. This is more elegant I think. 
-        # Consider adding a add_variables method to the Simulatio_runner class
-        # to get fast acces to the merging of dictionaties
-        
-        proc.multi_run(header, dir, num_stretch_files, F_N, RN_stretch = True, num_procs = 16, jobname = "CONF")
-   
-        
-        #, RN_stretch = True)
-        
-        # builder.save("sheet", ext = 'tmp', path = '.')
-        
-        
-        
-        
-        
-        # builder.view('sheet')
-        # proc = Simulation_runner(variables)
-        
-        # sim = Simulator(directory = dir, overwrite=False)
-        # print("lets run")  
-        # num_stretch_vals
-        # num_F_N
-        # F_N interval 
+
+        # Start multi run
+        proc.multi_run(header, dir, F_N, num_procs = 16, jobname = "CONF")
+       
+        # Remove config files after transfering
+        os.remove(os.path.join(config_path,f'sheet_{config_ext}.txt'))
+        os.remove(os.path.join(config_path,f'sheet_{config_ext}_info.in'))
+
+    
 
       
 

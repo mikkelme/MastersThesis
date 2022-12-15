@@ -8,12 +8,11 @@
 variable num_stretch_files index 0
 variable run_rupture_test index 0
 
-# Define SMAX in case of no rupture test
-if "!${run_rupture_test}" then "variable SMAX equal $(v_stretch_max_pct)" 
-
 # Check is this is before of after planned rupture test
 if "$(is_file(rupture_test.txt))" then "variable run_rupture_test_ equal 0" &
-else "variable run_rupture_test_ equal ${run_rupture_test}"
+else &
+"variable run_rupture_test_ equal ${run_rupture_test}" &
+"variable SMAX equal $(v_stretch_max_pct)" 
 
 
 # --- Rupture detection --- #
