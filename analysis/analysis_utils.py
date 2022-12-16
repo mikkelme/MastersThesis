@@ -130,16 +130,24 @@ def decompose_wrt_drag_dir(x, y, drag_direction):
     return proj_para, proj_perp
 
 
-def analyse_friction_file(filename, mean_pct = 1, std_pct = None):
+def analyse_friction_file(filename, mean_pct = 0.5, std_pct = None, drag_cap = None):
     # window_length = 50
     # polyorder = 5
     info = read_info_file('/'.join(filename.split('/')[:-1]) + '/info_file.txt' )
     drag_direction = np.array((info['drag_dir_x'], info['drag_dir_y']))
     dt = info['dt']
     
-    
-    data = read_friction_file(filename)    
+    data = read_friction_file(filename)  
     time = data['TimeStep'] * dt # [ps]
+    VA_pos = (time - time[0]) * info['drag_speed']  # virtual atom position
+    
+    if drag_cap is not None:
+        map = [VA_pos <= drag_cap][0]
+        for key in data:
+            data[key] = data[key][map]
+            
+    time = data['TimeStep'] * dt # [ps]
+    VA_pos = (time - time[0]) * info['drag_speed']  # virtual atom position
     
      
     # Organize in columns: parallel to drag, perpendicular to drag, z-axis

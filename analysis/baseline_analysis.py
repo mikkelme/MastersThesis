@@ -234,8 +234,12 @@ def drag_length_compare(filenames):
     return obj
 
 
-def variable_dependency(filenames, variable_name = 'dt', drag_cap = None):
-    
+def variable_dependency(filenames, variable_name = None, drag_cap = None):
+    assert variable_name is not None, "Please define variable_name varying." 
+    list_type = not isinstance(variable_name, str) and hasattr(variable_name, '__len__')
+    if list_type:
+        assert len(variable_name) == len(filenames), f"variable values provided through variable_name ({type(variable_name)}) with len {len(variable_name)} does not match the filenames with len {len(filenames)}"
+
     
     fig = plt.figure(figsize = (6, 6), num = unique_fignum())
     grid = (3,1)
@@ -245,50 +249,75 @@ def variable_dependency(filenames, variable_name = 'dt', drag_cap = None):
     
     
     mean_pct = 0.5
-    std_pct = 0.01
-    fricData = analyse_friction_file(friction_file, mean_pct, std_pct)
-    ### Working here XXX XXX
-    exit("working here")
+    std_pct = None
     
-    
-    
+    linewidth = 1.5
+    marker = 'o'
+    markersize = 2.5
+    rup_marker = 'x'
+    rupmarkersize = markersize * 3
+            
+
     Ffmax = np.zeros(len(filenames))
     Ffmean = np.zeros(len(filenames))
-    Fftopmax= np.zeros(len(filenames))
-    dt = np.array(dt)
+    contact = np.zeros(len(filenames))
+    variable = np.zeros(len(filenames))
+    is_ruptured = np.zeros(len(filenames))
     
-    quantile = 0.99
     for i, filename in enumerate(filenames):
-        data = analyse_friction_file(filename)  
+        data = analyse_friction_file(filename, mean_pct, std_pct, drag_cap = drag_cap)  
+        info = read_info_file('/'.join(filename.split('/')[:-1]) + '/info_file.txt' )
+        time = data['time']
+        Ff = data['Ff']
+        VA_pos = (time - time[0]) * info['drag_speed']  # virtual atom position
         
-        if drag_cap > 0:
-            COM = data['COM_sheet'][:,0]
-            Ff = data['Ff_full_sheet'][COM <= drag_cap, 0]
-            Ffmax[i] = np.max(Ff)
-            Ffmean[i] = np.mean(Ff)
-            
-            topN, Fftopmax[i] = TopQuantileMax(Ff, quantile, mean = True)
-            
-            # topn = int((1-quantile)*len(Ff))
-            # Fftopmax[i] = np.mean(Ff[np.argpartition(Ff, -topn)[-topn:]])
-            # print(topn, Fftopmax[i])
-            # exit()
-            
-           
+        
+        Ffmax[i] = Ff[0,0] # full sheet max
+        Ffmean[i] = Ff[0, 1] # full sheet mean
+        contact[i] = data['contact_mean'][0]
+        if list_type:
+            variable[i] = variable_name[i]
         else:
-            Ffmax[i] = data['Ff'][0, 0]
-            Ffmean[i] = data['Ff'][0, 1]
-        
-     
-    ax1.plot(dt, Ffmax, linestyle = None, marker = 'o', color = color_cycle(0))
-    ax1.set(xlabel='dt $[ps]$', ylabel='max $F_\parallel$ $[eV/Å]$')
+            try:
+                variable[i] = info[variable_name]
+            except KeyError:
+                print(f'key: {variable_name} not found in info. Valid keys are:')
+                exit(info.keys())
+                
+        is_ruptured[i] = info['is_ruptured']
+            
     
-    ax2.plot(dt, Fftopmax, linestyle = None, marker = 'o', color = color_cycle(1))
-    ax2.set(xlabel='dt $[ps]$', ylabel=f'max (top {quantile*100}%) $F_\parallel$ $[eV/Å]$')
+    sort = np.argsort(variable)
+    variable = variable[sort]
+    Ffmax = Ffmax[sort]
+    Ffmean = Ffmean[sort]
+    contact = contact[sort]
+    is_ruptured = is_ruptured[sort]
     
+    rup_true = np.argwhere(is_ruptured > 0)
+    rup_false = np.argwhere(is_ruptured == 0)
     
-    ax3.plot(dt, Ffmean, linestyle = None, marker = 'o', color = color_cycle(2))
-    ax3.set(xlabel='dt $[ps]$', ylabel='mean $F_\parallel$ $[eV/Å]$')
+    xlabel = variable_name
+    if list_type:
+        Ffmax /= variable**2
+        Ffmean /= variable**2
+        xlabel = 'sheet length' # TODO
+    
+    ax1.plot(variable, Ffmax, linewidth = linewidth, color = color_cycle(0))
+    ax1.plot(variable[rup_true], Ffmax[rup_true], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color = color_cycle(0))
+    ax1.plot(variable[rup_false], Ffmax[rup_false], linestyle = 'None', marker = marker, markersize = markersize, color = color_cycle(0))
+    ax1.set(xlabel=xlabel, ylabel='max $F_\parallel$ $[eV/Å]$')
+    
+                
+    ax2.plot(variable, Ffmean, linewidth = linewidth, color = color_cycle(1))
+    ax2.plot(variable[rup_true], Ffmean[rup_true], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color = color_cycle(1))
+    ax2.plot(variable[rup_false], Ffmean[rup_false], linestyle = 'None', marker = marker, markersize = markersize, color = color_cycle(1))
+    ax2.set(xlabel=xlabel, ylabel='mean $F_\parallel$ $[eV/Å]$')
+    
+    ax3.plot(variable, contact, linewidth = linewidth, color = color_cycle(2))
+    ax3.plot(variable[rup_true], contact[rup_true], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color = color_cycle(2))
+    ax3.plot(variable[rup_false], contact[rup_false], linestyle = 'None', marker = marker, markersize = markersize, color = color_cycle(2))
+    ax3.set(xlabel=xlabel, ylabel='Mean contact [%]"')
     
     fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
 
@@ -298,15 +327,20 @@ def variable_dependency(filenames, variable_name = 'dt', drag_cap = None):
 if __name__ == "__main__":
     # Parrent folder
     
-    # size = get_files_in_folder('../Data/Baseline/size', ext = 'Ff.txt') 
+    size = get_files_in_folder('../Data/Baseline/size', ext = 'Ff.txt') 
+    size_val = [round(np.sqrt(eval(s.split('_')[-2].replace('x','*')))) for s in size]
+    
     spring = get_files_in_folder('../Data/Baseline/spring', ext = 'Ff.txt')
     temp = get_files_in_folder('../Data/Baseline/temp', ext = 'Ff.txt')
     vel = get_files_in_folder('../Data/Baseline/vel', ext = 'Ff.txt')
     dt = get_files_in_folder('../Data/Baseline/dt', ext = 'Ff.txt')
     
-    drag_length_compare(dt)
+    variable_dependency(temp, variable_name = 'temp')
+    # variable_dependency(size, variable_name = size_val)
     
-    # obj = drag_length_dependency(vel[3])
+    
+    # drag_length_compare(size)
+    # obj = drag_length_dependency(spring[0])
   
   
   

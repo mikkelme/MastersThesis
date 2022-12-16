@@ -48,7 +48,7 @@ root ${root}
 config_data ${config_data}
 out_ext ${out_ext}
 dt ${dt}
-temp ${T}
+T ${T}
 relax_time ${relax_time}
 stretch_speed_pct $(v_stretch_speed_pct/v_stretch_slow_down)
 SMAX ${SMAX}
