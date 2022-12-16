@@ -1,4 +1,0 @@
-variable pullblock_yhi equal 37.65931144430884
-variable pullblock_ylo equal 102.18773030569116
-variable substrate_freeze_depth equal 4
-variable substrate_contact_depth equal 4

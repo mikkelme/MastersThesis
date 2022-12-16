@@ -83,7 +83,6 @@ group PB_tot_rigid union PB_ylow_rigid PB_yhigh_rigid
 
 
 
-
 #######################################
 # Build Substrate if not in read file #
 #######################################
@@ -457,5 +456,5 @@ uncompute sheet_ymax
 
 
 
-# run 1
-# quit
+run 1
+quit
