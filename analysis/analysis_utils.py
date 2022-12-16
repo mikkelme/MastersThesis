@@ -192,7 +192,7 @@ def analyse_friction_file(filename, mean_pct = 0.5, std_pct = None, drag_cap = N
         contact_std = np.full(2, np.nan)
         
     else:
-        std_window = int(len(time) * std_pct)
+        std_window = int(mean_window * std_pct)
         
         mean_full_sheet, std_full_sheet = mean_cut_and_std(Ff_full_sheet[:, 0], mean_window, std_window)
         mean_sheet, std_sheet = mean_cut_and_std(Ff_sheet[:, 0], mean_window, std_window)
@@ -208,9 +208,13 @@ def analyse_friction_file(filename, mean_pct = 0.5, std_pct = None, drag_cap = N
     Ff = np.array([[max_full_sheet, mean_full_sheet],
                     [max_sheet, mean_sheet],
                     [max_PB, mean_PB]])
+    contact_mean = np.array([contact_mean_full_sheet, contact_mean_sheet])
     
         
-    contact_mean = np.array([contact_mean_full_sheet, contact_mean_sheet])
+    # Calculate relative (to mean) std
+    Ff_std /= Ff[:,1]   
+    contact_std /= contact_mean
+    
     
     
     varnames = ['time', 'move_force', 'Ff_full_sheet', 'Ff_sheet', 'Ff_PB', 'COM_sheet', 'FN', 'Ff', 'Ff_std', 'contact', 'contact_mean', 'contact_std']

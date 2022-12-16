@@ -241,15 +241,20 @@ def variable_dependency(filenames, variable_name = None, drag_cap = None):
         assert len(variable_name) == len(filenames), f"variable values provided through variable_name ({type(variable_name)}) with len {len(variable_name)} does not match the filenames with len {len(filenames)}"
 
     
-    fig = plt.figure(figsize = (6, 6), num = unique_fignum())
+    fig2 = plt.figure(figsize = (6, 6), num = unique_fignum())
+    grid = (2,1)
+    ax4 = plt.subplot2grid(grid, (0, 0), colspan=1)
+    ax5 = plt.subplot2grid(grid, (1, 0), colspan=1)
+    
+    
+    fig1 = plt.figure(figsize = (6, 6), num = unique_fignum())
     grid = (3,1)
     ax1 = plt.subplot2grid(grid, (0, 0), colspan=1)
     ax2 = plt.subplot2grid(grid, (1, 0), colspan=1)
     ax3 = plt.subplot2grid(grid, (2, 0), colspan=1)
     
-    
     mean_pct = 0.5
-    std_pct = None
+    std_pct = 0.2
     
     linewidth = 1.5
     marker = 'o'
@@ -260,7 +265,9 @@ def variable_dependency(filenames, variable_name = None, drag_cap = None):
 
     Ffmax = np.zeros(len(filenames))
     Ffmean = np.zeros(len(filenames))
+    Ff_std = np.zeros(len(filenames))
     contact = np.zeros(len(filenames))
+    contact_std = np.zeros(len(filenames))
     variable = np.zeros(len(filenames))
     is_ruptured = np.zeros(len(filenames))
     
@@ -274,7 +281,9 @@ def variable_dependency(filenames, variable_name = None, drag_cap = None):
         
         Ffmax[i] = Ff[0,0] # full sheet max
         Ffmean[i] = Ff[0, 1] # full sheet mean
+        Ff_std[i] = data['Ff_std'][0] # ful sheet std from run mean
         contact[i] = data['contact_mean'][0]
+        contact_std[i] = data['contact_std'][0] # full sheet std from run mean
         if list_type:
             variable[i] = variable_name[i]
         else:
@@ -291,7 +300,9 @@ def variable_dependency(filenames, variable_name = None, drag_cap = None):
     variable = variable[sort]
     Ffmax = Ffmax[sort]
     Ffmean = Ffmean[sort]
+    Ff_std = Ff_std[sort]
     contact = contact[sort]
+    contact_std = contact_std[sort]
     is_ruptured = is_ruptured[sort]
     
     rup_true = np.argwhere(is_ruptured > 0)
@@ -307,7 +318,6 @@ def variable_dependency(filenames, variable_name = None, drag_cap = None):
     ax1.plot(variable[rup_true], Ffmax[rup_true], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color = color_cycle(0))
     ax1.plot(variable[rup_false], Ffmax[rup_false], linestyle = 'None', marker = marker, markersize = markersize, color = color_cycle(0))
     ax1.set(xlabel=xlabel, ylabel='max $F_\parallel$ $[eV/Å]$')
-    
                 
     ax2.plot(variable, Ffmean, linewidth = linewidth, color = color_cycle(1))
     ax2.plot(variable[rup_true], Ffmean[rup_true], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color = color_cycle(1))
@@ -319,8 +329,21 @@ def variable_dependency(filenames, variable_name = None, drag_cap = None):
     ax3.plot(variable[rup_false], contact[rup_false], linestyle = 'None', marker = marker, markersize = markersize, color = color_cycle(2))
     ax3.set(xlabel=xlabel, ylabel='Mean contact [%]"')
     
-    fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    fig1.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
 
+
+    # --- STD --- #
+    
+    
+    ax4.plot(variable, Ff_std, linewidth = linewidth, color = color_cycle(1))
+    ax4.plot(variable[rup_true], Ff_std[rup_true], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color = color_cycle(1))
+    ax4.plot(variable[rup_false], Ff_std[rup_false], linestyle = 'None', marker = marker, markersize = markersize, color = color_cycle(1))
+    ax4.set(xlabel=xlabel, ylabel='Ff std')
+    
+    ax5.plot(variable, contact_std, linewidth = linewidth, color = color_cycle(2))
+    ax5.plot(variable[rup_true], contact_std[rup_true], linestyle = 'None', marker = rup_marker, markersize = rupmarkersize, color = color_cycle(2))
+    ax5.plot(variable[rup_false], contact_std[rup_false], linestyle = 'None', marker = marker, markersize = markersize, color = color_cycle(2))
+    ax5.set(xlabel=xlabel, ylabel='Contact std')
     
 
 
