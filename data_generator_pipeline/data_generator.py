@@ -8,20 +8,19 @@ from simulation_manager.multi_runner import *
 
 
 class data_generator:
-    def __init__(self, mat):
+    def __init__(self, mat, config_ext):
         shape_error = f"SHAPE ERROR: Got matrix of shape {np.shape(mat)}, y-axis must be multiple of 2 and both nonzero integer."
         assert mat.shape[0]%1 == 0 and mat.shape[1]%1 == 0 and mat.shape[1]%2 == 0, shape_error
         assert mat.shape[0] > 0 and mat.shape[1] > 0, shape_error
         
         self.mat = mat
         self.Cdis = 1.461 # carbon-carbon distance [Å]         
-
         self.shape = np.shape(mat)            
-        # self.set_sheet_size()
         
+        self.header =  "egil:CONFIGS/cut_nocut"
+        self.dir = os.path.join(self.header, "conf")
         
-        # self.dir = "egil:CONFIGS"
-        # self.dir = "./CONFIGS"
+        self.config_ext = config_ext
         
         
     def set_sheet_size(self):
@@ -36,15 +35,14 @@ class data_generator:
     
     def get_substrate_size(self, stretch_pct, margins = (10, 10)):
         """ Get substrate size considered sretch and x,y-margines """
+        self.set_sheet_size()
         Lx = self.Lx + 2*margins[0]
         Ly = self.Ly * (1 + stretch_pct) + 2*margins[1]
         return Lx, Ly
         
         
     def run(self):
-        config_ext = 'tmp'
         config_path = '.'
-        
         
         # Intialize simulation runner
         proc = Simulation_runner()
@@ -52,19 +50,17 @@ class data_generator:
         # Build sheet 
         builder = config_builder(self.mat)
         builder.add_pullblocks()
-        builder.save("sheet", ext = config_ext, path = config_path)
-        proc.add_variables(config_data = f'sheet_{config_ext}' )
+        builder.save("sheet", ext = self.config_ext, path = config_path)
+        config_data = f'sheet_{self.config_ext}'
+        proc.add_variables(config_data = config_data)
         
         # Directories 
-        header = "egil:CONFIGS/test"
-        dir = os.path.join(header, "conf")
         proc.config_path = config_path
         
-    
         
         # Multi run settings 
-        num_stretch_files = 5
-        F_N = np.sort(np.random.uniform(0.1, 1, 5))*1e-9
+        num_stretch_files = 10
+        F_N = np.sort(np.random.uniform(0.1, 10, 10))*1e-9
         # F_N = np.linspace(0.1e-9, 1e-9, 3)
         
         proc.add_variables(num_stretch_files = num_stretch_files, 
@@ -74,57 +70,73 @@ class data_generator:
         
 
         # Start multi run
-        proc.multi_run(header, dir, F_N, num_procs = 16, jobname = "CONF")
+        proc.multi_run(self.header, self.dir, F_N, num_procs = 16, jobname = "Dgen2")
        
         # Remove config files after transfering
-        os.remove(os.path.join(config_path,f'sheet_{config_ext}.txt'))
-        os.remove(os.path.join(config_path,f'sheet_{config_ext}_info.in'))
+        os.remove(os.path.join(config_path,f'{config_data}.txt'))
+        os.remove(os.path.join(config_path,f'{config_data}_info.in'))
 
     
-
-      
-
-
+class configuration_manager():
+    def __init__(self):
+        self.configs = []
+        self.config_ext = []
     
-
-def read_configurations(folder):
-    configs = []
-    # print(f"Reading configurations | dir: {folder}")
-    for file in os.listdir(folder):
+    def add(self, path):
         try:
-            mat = np.load(os.path.join(folder,file))
-            configs.append(mat)
-            # print("√ |", file)
-            
+            mat = np.load(path)
         except ValueError:
-            pass
-            # print("X |", file)
-    return configs
+            return False
+        
+        self.configs.append(mat)
+        return True
+            
+    
+    def read_folder(self, folder):
+        print(f"Reading configurations | dir: {folder}")
+        rejected = []
+        for file in os.listdir(folder):
+            path = os.path.join(folder, file)
+            success = self.add(path)    
+            if success:
+                self.config_ext.append(file.split('.')[-2])
+                print(f'\r√ |, {file}', end = "")
+                
+            else:
+                rejected.append(file)
+                print(f'\rX |, {file}', end = "")
+                
+        if len(rejected) == 0:
+            print(f'\rRead folder succesfully.')
+        else:
+            string = ('\n').join([s for s in rejected])
+            print(f'\rRejected:                       \n{string}', )
+    
+    def run_all(self):
+        all_unique = (len(set(self.config_ext)) == len(self.config_ext))
+        if all_unique:
+            for (mat, ext) in zip(self.configs, self.config_ext):
+                gen = data_generator(mat, ext)
+                gen.run() # settings hardcoded/defined in data_generator for now XXX
+        else:
+            print("Error: Extension names are not unique all")
+            exit(f'Found {len(self.config_ext) - len(set(self.config_ext))} repeated value(s).')
 
-
-
-
-
-
-
+    def __str__(self):
+        string = "------------------------\n"
+        string += f'Num configs = {len(self.configs)}\n'
+        string +=  ('\n').join([s for s in self.config_paths])
+        string += "\n------------------------"
+        return string
 
 
 
 
 
 if __name__ == "__main__":
-    configs = read_configurations("../graphene_sheet/test_data")
-    conf = data_generator(configs[0])
-    conf.run()
+    configs = configuration_manager()
+    configs.read_folder('../config_builder/cut_nocut/')
+    # configs.run_all()
     
     
-    # print(conf.Lx, conf.Ly)
-    # conf.get_substrate_size(0.20)
     
-    
- 
-    
-    
-    # gen = data_generator()
-    # gen.read_configurations("../graphene_sheet/test_data" )
-    # gen.get_sheet_size(gen.configs[0])

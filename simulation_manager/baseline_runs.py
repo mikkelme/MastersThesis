@@ -15,7 +15,7 @@ def single_run():
         "stretch_speed_pct": 0.005,
         "stretch_max_pct": 0,
         "drag_length": 200 ,
-        "drag_speed": 40, # [m/s]
+        "drag_speed": 20, # [m/s]
         "K": 30.0,
         "drag_dir_x": 0,
         "drag_dir_y": 1,

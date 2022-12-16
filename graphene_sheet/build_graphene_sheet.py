@@ -64,20 +64,20 @@ def build_graphene_sheet(mat, Cdis = 1.461):
     return atoms
 
 
-def save_mat(mat, folder):
-    file_id = 1
+# def save_mat(mat, folder):
+#     file_id = 1
     
-    # Existing data without extension
-    existing_data = [o.split(".")[0] for o in os.listdir(folder)] 
+#     # Existing data without extension
+#     existing_data = [o.split(".")[0] for o in os.listdir(folder)] 
 
-    # Generate unique filename    
-    filename = f"tmp{file_id}"
-    while filename in existing_data:
-        file_id += 1
-        filename = f"tmp{file_id}"
+#     # Generate unique filename    
+#     filename = f"tmp{file_id}"
+#     while filename in existing_data:
+#         file_id += 1
+#         filename = f"tmp{file_id}"
     
-    # Save matrix as array
-    np.save(os.path.join(folder, filename), mat)
+#     # Save matrix as array
+#     np.save(os.path.join(folder, filename), mat)
    
 
    

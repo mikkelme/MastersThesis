@@ -293,8 +293,11 @@ def variable_dependency(filenames, variable_name = None, drag_cap = None):
                 print(f'key: {variable_name} not found in info. Valid keys are:')
                 exit(info.keys())
                 
-        is_ruptured[i] = info['is_ruptured']
-            
+        try:
+            is_ruptured[i] = info['is_ruptured']
+        except KeyError:
+            is_ruptured[i] = 0
+              
     
     sort = np.argsort(variable)
     variable = variable[sort]
@@ -358,12 +361,15 @@ if __name__ == "__main__":
     vel = get_files_in_folder('../Data/Baseline/vel', ext = 'Ff.txt')
     dt = get_files_in_folder('../Data/Baseline/dt', ext = 'Ff.txt')
     
-    variable_dependency(temp, variable_name = 'temp')
     # variable_dependency(size, variable_name = size_val)
+    # variable_dependency(spring, variable_name = 'K')
+    variable_dependency(temp, variable_name = 'temp')
+    # variable_dependency(vel, variable_name = 'drag_speed')
     
     
-    # drag_length_compare(size)
-    # obj = drag_length_dependency(spring[0])
+    
+    # drag_length_compare(vel)
+    # obj = drag_length_dependency(size[0])
   
   
   

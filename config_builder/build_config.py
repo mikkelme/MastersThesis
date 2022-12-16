@@ -193,6 +193,23 @@ class config_builder:
             outfile.write(f'variable substrate_contact_depth equal {self.contact_depth}\n')
 
 
+    def save_mat(self, path, prefix = 'conf'):
+        file_id = 1
+        savename = f"{prefix}{file_id}"
+        try:
+            existing_data = (',').join(os.listdir(path))
+        except FileNotFoundError:
+            os.makedirs(path)
+            existing_data = (',').join(os.listdir(path))
+            
+        while savename in existing_data:
+            file_id += 1
+            savename = f"{prefix}{file_id}"
+        
+        # # Save matrix as array
+        np.save(os.path.join(path, savename), self.mat)
+    
+
 
     def view(self, object = 'all'):
         if not self.is_build: self.build()
@@ -203,33 +220,26 @@ class config_builder:
 
 
 if __name__ == "__main__":
-    multiples = (8, 15)  
-    # multiples = (7, 13)  
-    # multiples = (6, 11)  
-    # multiples = (6, 11)  
-    # multiples = (5, 9)  
-    # multiples = (4, 7)  
-    # multiples = (3, 5)
+    # multiples = (8, 15) # 174x189
+    # multiples = (7, 13) # 152x163
+    # multiples = (6, 11) # 130x138
+    multiples = (5, 9)  # 108x113
+    # multiples = (4, 7)  # 86x87
+    # multiples = (3, 5)  # 64x62
     unitsize = (5,7)
     
-    # multiples = (9,14)  
-    # unitsize = (13,15)
-    
-    # mat = np.ones((4, 6))
     
     mat = pop_up_pattern(multiples, unitsize, sp = 2)
     mat[:, :] = 1 # Nocuts
     
-    
-    # substrate_file = "../substrate/crystal_Si_substrate_test.txt"
-
 
     builder = config_builder(mat)
     size_name = 'x'.join([str(round(v)) for v in builder.get_sheet_size()])
     builder.add_pullblocks()
     builder.view('sheet')
-    builder.save("sheet", ext = f"nocut_{size_name}", path = '.')
-    print(size_name)
+    # builder.save_mat('./cut_nocut', 'nocut')  
+    # builder.save("sheet", ext = f"nocut_{size_name}", path = '.')
+    # print(size_name)
   
   
     # builder.add_substrate(substrate_file)
