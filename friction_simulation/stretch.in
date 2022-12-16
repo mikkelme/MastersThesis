@@ -53,7 +53,7 @@ relax_time ${relax_time}
 stretch_speed_pct $(v_stretch_speed_pct/v_stretch_slow_down)
 SMAX ${SMAX}
 num_stretch_files ${num_stretch_files}
-rupture_detection ${rupture_detection}
+rupture_detection ${rupture_detection} &
 """ file ${info_file}
 
 
@@ -154,7 +154,7 @@ if "!${rupture_detection}" then &
 
 ## Write is_ruptured to info file
 variable is_ruptured equal $(v_stop_condition)
-print """
+print """&
 run_rupture_test ${run_rupture_test_}
 is_ruptured ${is_ruptured} &
 """ append ${info_file}
