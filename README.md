@@ -164,6 +164,7 @@
 - Implemented refined definition of rupture stretch in rupture test
 - Cleaned up in computes and fixes.
 - Working on pipeline for configuration folder (numpy files) -> data.
+- Doing some test on bigger sheets. So far nothing alarming og surprising. Not really a big difference in stability other than it might stabilize a bit faster than small sheets.
 
 
 
