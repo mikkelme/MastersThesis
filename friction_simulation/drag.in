@@ -5,8 +5,8 @@
 
 # --- Rupture detection --- #
 # Default rupture detection parameters 
-# variable detection_freq         equal 10000 # Number of timesteps between each rupture check
-variable detection_freq         equal 1000 # Number of timesteps between each rupture check
+variable detection_freq         equal 10000 # Number of timesteps between each rupture check
+# variable detection_freq         equal 1000 # Number of timesteps between each rupture check
 variable YS_mean_vals           equal 10    # Number of y-stress mean values sampled
 variable YS_vals                equal 10    # Number of individual samples for each y-stress mean value
 variable cluster_vals           equal 10    # Number of cluster values sampled
@@ -195,7 +195,7 @@ label after_move_commands
 fix move_va virtuel_atom move linear $(v_drag_speed*v_drag_dir_x/v_dir_norm) $(v_drag_speed*v_drag_dir_y/v_dir_norm) 0 units box 
 
 # Thermo
-# thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct c_sheet_COM[1] c_sheet_COM[2]
+thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct c_sheet_COM[1] c_sheet_COM[2]
 
 # if "!${rupture_detection}" then &
 # "thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct c_sheet_COM[1] c_sheet_COM[2]" &
@@ -207,7 +207,7 @@ fix friction_force_spring all ave/time ${Nevery} ${Nrepeat} ${Nfreq} v_move_forc
 
 # Run
 print "--> Drag : $(v_drag_steps) timesteps, $(v_drag_steps*dt) ps"
-thermo_style custom step time v_stretch_pct v_stress_drop v_CN_drop v_cluster_split ######
+# thermo_style custom step time v_stretch_pct v_stress_drop v_CN_drop v_cluster_split ######
 run  $(v_drag_steps) 
 
 

@@ -147,7 +147,7 @@ fix yhigh_move PB_yhigh_rigid move linear 0 $(v_stretch_speed/2) NULL units box
 
 print "--> Stretch: $(v_stretch_steps) timesteps, $(v_stretch_steps*dt) ps"
 
-thermo_style custom step time v_stretch_pct v_stress_drop v_CN_drop v_cluster_split ########
+# thermo_style custom step time v_stretch_pct v_stress_drop v_CN_drop v_cluster_split ########
 run $(v_stretch_steps)
 restart 0
 

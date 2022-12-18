@@ -122,7 +122,7 @@ class configuration_manager():
             print(self.config_ext)
             idx = np.argwhere(np.array(self.config_ext) == id).ravel()
             if len(idx) == 1:
-                gen = data_generator(self.configs[idx[0]], self.configs[idx[0]])
+                gen = data_generator(self.configs[idx[0]], self.config_ext[idx[0]])
                 gen.run()
             else:
                 exit(f"Found {len(idx)} candidates for run specific with extension {id}")

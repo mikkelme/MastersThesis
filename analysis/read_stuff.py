@@ -102,7 +102,8 @@ if __name__ == '__main__':
 
     # read_rdf('../friction_simulation/my_simulation_space/rdf.txt')
     
-    read_ystress('../friction_simulation/my_simulation_space/YS.txt')
+    # read_ystress('../friction_simulation/my_simulation_space/YS.txt')
     # read_cluster('../friction_simulation/my_simulation_space/cluster.txt')
     # read_CN('../friction_simulation/my_simulation_space/CN.txt')
+    read_CN('../Data/CONFIGS/cut_updated_rupture/conf/CN.txt')
     plt.show()
