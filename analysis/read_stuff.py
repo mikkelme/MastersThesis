@@ -55,17 +55,54 @@ def read_cluster(filename):
     # exit()
     plt.figure(num = unique_fignum())
     plt.plot(time, data['c_Ncluster'], label = "cluster count")
+  
     
     plt.legend()
     
-     
+
+
+def read_CN(filename):
+    data = read_ave_time(filename)
+    
+    time = data['TimeStep']
+    plt.figure(num = unique_fignum())
+    print(data['c_CN_ave'].max(), data['c_CN_ave'].min())
+    plt.plot(time, data['c_CN_ave'], label = "CN ave")
+    plt.xlabel("Time step")
+    plt.ylabel("mean (CN (cutoff = 2.2 Å))")
+    
+    plt.legend()
     
 
+    
+def read_rdf(filename):
+    timestep, data = read_ave_time_vector(filename)
+    
+    idx = 0
+    r = data[idx, :, 0]
+    gr = data[idx, :, 1]
+    group_coord = data[idx, :, 2]
+    
+    plt.figure(num = unique_fignum())
+    plt.plot(r, gr, label = "cluster count")
+    plt.xlabel("r [Å]")
+    plt.ylabel("g(r)")
+    
+    plt.figure(num = unique_fignum())
+    plt.plot(r, group_coord, label = "cluster count")
+    plt.xlabel("r [Å]")
+    plt.ylabel("coord(r)")
+    # plt.legend()
  
 if __name__ == '__main__':
     # filename = '../friction_simulation/my_simulation_space/rupture_data_test.txt'
     # filename = '../friction_simulation/my_simulation_space/MSD.txt'
     # read_MSD(filename)
+    
+
+    # read_rdf('../friction_simulation/my_simulation_space/rdf.txt')
+    
     read_ystress('../friction_simulation/my_simulation_space/YS.txt')
-    read_cluster('../friction_simulation/my_simulation_space/cluster.txt')
+    # read_cluster('../friction_simulation/my_simulation_space/cluster.txt')
+    # read_CN('../friction_simulation/my_simulation_space/CN.txt')
     plt.show()

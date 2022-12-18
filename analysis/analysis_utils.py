@@ -338,8 +338,8 @@ def read_ave_time_vector(filename):
     timestep = np.array(timestep)
     data = np.array(data)
     
-    test = data.reshape(len(timestep), Nbins, 3)
-    return timestep, test
+    data = data.reshape(len(timestep), Nbins, 3)
+    return timestep, data
    
  
 

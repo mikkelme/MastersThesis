@@ -117,6 +117,22 @@ class configuration_manager():
             string = ('\n').join([s for s in rejected])
             print(f'\rRejected:                       \n{string}', )
     
+    def run_specific(self, id):
+        if isinstance(id, str):
+            print(self.config_ext)
+            idx = np.argwhere(np.array(self.config_ext) == id).ravel()
+            if len(idx) == 1:
+                gen = data_generator(self.configs[idx[0]], self.configs[idx[0]])
+                gen.run()
+            else:
+                exit(f"Found {len(idx)} candidates for run specific with extension {id}")
+        elif isinstance(id, int):
+            gen = data_generator(self.configs[idx], self.configs[idx])
+            gen.run()
+
+            
+
+    
     def run_all(self):
         all_unique = (len(set(self.config_ext)) == len(self.config_ext))
         if all_unique:
@@ -130,7 +146,7 @@ class configuration_manager():
     def __str__(self):
         string = "------------------------\n"
         string += f'Num configs = {len(self.configs)}\n'
-        string +=  ('\n').join([s for s in self.config_paths])
+        string +=  ('\n').join([s for s in self.config_ext])
         string += "\n------------------------"
         return string
 
@@ -141,6 +157,8 @@ class configuration_manager():
 if __name__ == "__main__":
     configs = configuration_manager()
     configs.read_folder('../config_builder/cut_nocut/')
+    configs.run_specific("cut1")
+    # print(configs)
     # configs.run_all()
     
     

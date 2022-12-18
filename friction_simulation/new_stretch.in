@@ -90,22 +90,39 @@ variable YS_Nevery      equal floor(v_YS_Nfreq/v_YS_vals)
 variable cluster_Nevery equal floor(v_detection_freq/v_cluster_vals)
 
 # y-stress 
-fix YS sheet ave/time ${YS_Nevery} ${YS_vals} ${YS_Nfreq} c_YS #file YS.txt # Mean values
+fix YS sheet ave/time ${YS_Nevery} ${YS_vals} ${YS_Nfreq} c_YS file YS.txt # Mean values
 fix YS_mean_vec sheet vector ${YS_Nfreq} f_YS              # Store mean values in vector
 fix stretch_pct_vec sheet vector ${YS_Nfreq} v_stretch_pct     # Store stretch values in vector
 variable max_YS equal max(f_YS_mean_vec)                   # Compute max of mean values
 
+# CN (coordination number)
+####### 
+compute CN sheet coord/atom cutoff 2.2   # Coordination number
+compute CN_ave sheet reduce ave c_CN
+fix CN sheet ave/time ${YS_Nevery} ${YS_vals} ${YS_Nfreq} c_CN_ave file CN.txt 
+fix CN_mean_vec sheet vector ${YS_Nfreq} f_CN              
+variable max_CN equal max(f_CN_mean_vec)             
+variable CN_tol equal $(1-4/count(sheet))
+
+# compute CN_max sheet reduce max c_CN
+# fix CN sheet ave/time ${cluster_Nevery} ${cluster_vals} ${detection_freq} c_CN_ave c_CN_min c_CN_max file CN.txt
+# fix coord_out sheet ave/histo ${Nevery} ${Nrepeat} ${Nfreq} -0.5 5.5 6 c_coord mode vector file sheet_${out_ext}_chist.txt
+#######
 
 # Cluster count mean value 
-fix Ncluster full_sheet ave/time ${cluster_Nevery} ${cluster_vals} ${detection_freq} c_Ncluster #file cluster.txt
+fix Ncluster full_sheet ave/time ${cluster_Nevery} ${cluster_vals} ${detection_freq} c_Ncluster file cluster.txt
 
 # Rupture conditions
-variable stress_drop    equal "f_YS < 0.1*v_max_YS"
+variable stress_drop    equal "f_YS < 0.5*v_max_YS"
+variable CN_drop        equal "f_CN < v_CN_tol*v_max_CN"
 variable cluster_split  equal "f_Ncluster > 1" 
 variable min_stretch    equal "v_stretch_pct > 0.03"
 variable stop_condition equal "(v_stress_drop && v_min_stretch) || v_cluster_split"
 
-fix rupture_detector sheet halt ${detection_freq} v_stop_condition != 0 error continue 
+thermo_style custom step time cpu cpuremain v_stretch_pct v_stress_drop v_CN_drop v_cluster_split
+
+# fix rupture_detector sheet halt ${detection_freq} v_stop_condition != 0 error continue 
+
 
 # if thermo == detection_freq the following is possible
 # thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct f_YS v_max_YS f_Ncluster
@@ -143,7 +160,7 @@ print "--> Stretch: $(v_stretch_steps) timesteps, $(v_stretch_steps*dt) ps"
 
 run $(v_stretch_steps)
 restart 0
-
+quit
 
 
 # ---------- After stretch ---------- # 

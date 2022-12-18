@@ -199,7 +199,7 @@ print "Setting up simulation from read_restart: ${restart_file}"
 
 # --- Read restart file --- #
 read_restart ${restart_file}
-include ${root}/${config_data}_info.in 
+# include ${root}/${config_data}_info.in ### IS THIS NESSECARY
 compute get_S0 S0_info reduce sum y # Retrieve information about S0 via type 3 tmp atom
 
 
@@ -306,14 +306,17 @@ compute sheet_ymin sheet reduce min y
 compute sheet_ymax sheet reduce max y 
 
 # compute coord sheet coord/atom cutoff 2.7   # Coordination number
-compute sheet_stress sheet stress/atom NULL      # stress field
+# compute sheet_stress sheet stress/atom NULL      # stress field
 # variable stress_atom atom sqrt(c_sheet_stress[1]*c_sheet_stress[1]+c_sheet_stress[2]*c_sheet_stress[2]+c_sheet_stress[3]*c_sheet_stress[3]) # Stress norm (xx, yy, zz)
 # ^^^ This is not so important if it reduces computation time considerably 
 
 
-# 1) y stress average, 2) Cluster id per atom, 3) 
+# 1) y stress average, 2) Coordination number 3) Cluster id per atom, 3) 
 if "${rupture_detection}" then & 
+"compute sheet_stress sheet stress/atom NULL" &
 "compute YS sheet reduce ave c_sheet_stress[2]" & 
+"compute CN sheet coord/atom cutoff 2.2" &
+"compute CN_ave sheet reduce ave c_CN" &
 "compute cluster_atom full_sheet cluster/atom 4.0" &
 "compute Ncluster full_sheet chunk/atom c_cluster_atom compress yes" 
 variable is_ruptured equal 0 # Default value
@@ -373,9 +376,10 @@ variable stretch_speed equal v_stretch_speed_pct*v_S0
 variable dir_norm equal $(sqrt(v_drag_dir_x^2+v_drag_dir_y^2))
 
 # # RDF
-# compute myRDF sheet rdf 1000 1 1 #cutoff 8.65 
+# compute myRDF sheet rdf 1000 1 1 # cutoff 8.65 
 # fix tmp all ave/time 100 1 100 c_myRDF[*] file rdf.txt mode vector
-
+# run 100
+# quit
 
 
 
@@ -424,7 +428,7 @@ print "--> Relax (step 0, 0 ps)"
 print "Time: $(v_relax_steps) steps = $(v_relax_steps*dt) ps" 
 print ""
 print "--> Stretch sheet (step $(v_relax_steps), $(v_relax_steps*dt) ps)"
-print "Amount: $(v_SMAX) % = $(v_SMAX*(v_pullblock_ylo-v_pullblock_yhi)) ang "
+print "Amount: $(v_SMAX) % = $(v_SMAX*v_S_len) ang "
 print "Speed: $(v_stretch_speed_pct) %/ps = $(v_stretch_speed) ang/ps"
 print "Time:  $(v_stretch_steps) steps = $(v_stretch_steps*dt) ps"
 print ""
@@ -452,6 +456,7 @@ print ""
 # Clean up
 uncompute sheet_ymin
 uncompute sheet_ymax
+
 
 
 
