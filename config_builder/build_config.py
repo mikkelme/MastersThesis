@@ -223,14 +223,15 @@ if __name__ == "__main__":
     # multiples = (8, 15) # 174x189
     # multiples = (7, 13) # 152x163
     # multiples = (6, 11) # 130x138
-    multiples = (5, 9)  # 108x113
+    # multiples = (5, 9)  # 108x113
     # multiples = (4, 7)  # 86x87
     # multiples = (3, 5)  # 64x62
+    multiples = (2, 2)    # 42x24
     unitsize = (5,7)
     
     
     mat = pop_up_pattern(multiples, unitsize, sp = 2)
-    mat[:, :] = 1 # Nocuts
+    # mat[:, :] = 1 # Nocuts
     
 
     builder = config_builder(mat)
@@ -238,8 +239,8 @@ if __name__ == "__main__":
     builder.add_pullblocks()
     builder.view('sheet')
     # builder.save_mat('./cut_nocut', 'nocut')  
-    # builder.save("sheet", ext = f"nocut_{size_name}", path = '.')
-    # print(size_name)
+    builder.save("sheet", ext = f"cut_{size_name}", path = '.')
+    print(size_name)
   
   
     # builder.add_substrate(substrate_file)

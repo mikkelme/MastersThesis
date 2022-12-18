@@ -86,11 +86,14 @@ def get_files_in_folder(path, ext = None, exclude = None):
                     filenames.append(os.path.join(dir, file))
     return filenames
 
-def get_dirs_in_path(d):
-    return [os.path.join(d, o) for o in os.listdir(d) if os.path.isdir(os.path.join(d,o))]
-           
+def get_dirs_in_path(d, sort = False):
+    d = str(d)
+    dirs = [os.path.join(d, o) for o in os.listdir(d) if os.path.isdir(os.path.join(d,o))]
+    if sort: return np.sort(dirs)
+    return dirs       
 
 def find_single_file(path, ext):
+    path = str(path)
     file_list = [os.path.join(path, f) for f in os.listdir(path) if f[-len(ext):] == ext]
     assert(len(file_list) == 1), f"{len(file_list)} candidates for file with extenstion {ext} in {path} found:\n{file_list}."
     return file_list[0]

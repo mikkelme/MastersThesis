@@ -14,6 +14,11 @@ class data_generator:
         assert mat.shape[0] > 0 and mat.shape[1] > 0, shape_error
         
         self.mat = mat
+        
+        # TODO: Consider reading array from file to ease the flow
+        # for sending the saved array to the cluster as well
+        
+        
         self.Cdis = 1.461 # carbon-carbon distance [Å]         
         self.shape = np.shape(mat)            
         

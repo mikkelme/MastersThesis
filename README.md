@@ -165,6 +165,8 @@
 - Cleaned up in computes and fixes.
 - Working on pipeline for configuration folder (numpy files) -> data.
 - Doing some test on bigger sheets. So far nothing alarming og surprising. Not really a big difference in stability other than it might stabilize a bit faster than small sheets.
+- Submitted first automatic from-arrays-to-multi-run runs and updated framework for analyzing new data astructure.
+- Observed that the rupture test was not fool proof. I will try to implement the only secure thing I can think off: Locate nearest neighbours to all atoms and check if these neighbours is nearby throughout the simulation.
 
 
 

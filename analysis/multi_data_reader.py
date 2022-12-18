@@ -9,96 +9,98 @@ def read_info_file_old(filename):
     
 
 
-def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.01, eval_rupture = False, stretch_lim = [None, None],  FN_lim = [None, None]):
+def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.2, stretch_lim = [None, None],  FN_lim = [None, None], exclude_ruptures = True):
     # Settings
     info_file = 'info_file.txt'
     friction_ext = 'Ff.txt'
     chist_ext = 'chist.txt'
-    ruptol = 0 # 0.5
     
-    # avg_pct = 0.5 # last % to average over
-    # std_pct = 0.01
         
     data = []
-    stretchfile = find_single_file(folder, ext = chist_ext)
-    for a, stretch_dir in enumerate(get_dirs_in_path(folder)):
-        alen = len(get_dirs_in_path(folder))
-        for b, job_dir in enumerate(get_dirs_in_path(stretch_dir)):
-            blen = len(get_dirs_in_path(stretch_dir))
-            progress = a * blen + b
-            total = alen * blen
+    
+    # Loop through stretch folders, format: stretch_{TimeStep}_folder
+    for i, stretch_folder in enumerate(get_dirs_in_path(folder, sort = True)): 
+        num_stretch = len(get_dirs_in_path(folder))
+        
+        # Loop through F_N folders, format: job{j}
+        for j, job_dir in enumerate(get_dirs_in_path(stretch_folder, sort = True)):
+            num_FN = len(get_dirs_in_path(stretch_folder))
+            progress = i * num_FN + j
+            total = num_stretch * num_FN
             print(f"\r ({progress+1}/{total}) | {job_dir} ", end = " ")
             
-            try:
+            try: # If file exist
+                # Get run parameters
                 info_dict = read_info_file(os.path.join(job_dir,info_file))
-                stretch_pct = info_dict['stretch_max_pct']
+                stretch_pct = info_dict['SMAX']
                 F_N = metal_to_SI(info_dict['F_N'], 'F')*1e9
-                
-                
-                if eval_rupture:
-                    chist_file = find_single_file(job_dir, ext = chist_ext)
-                    rupture_score = detect_rupture(chist_file, stretchfile)
-                else: 
-                    rupture_score = 0
-                
+                rupture = info_dict['is_ruptured']
+        
                 # Get data
                 friction_file = find_single_file(job_dir, ext = friction_ext)     
                 fricData = analyse_friction_file(friction_file, mean_pct, std_pct)
-                data.append((stretch_pct, F_N, fricData['Ff'], fricData['Ff_std'], rupture_score, job_dir, fricData['contact_mean'], fricData['contact_std']))  
+                data.append((stretch_pct, F_N, fricData['Ff'], fricData['Ff_std'], rupture, job_dir, fricData['contact_mean'], fricData['contact_std']))  
             
             except FileNotFoundError:
                 print(f"<-- Missing file")
     print()
     
-    
     data = np.array(data, dtype = 'object')
     stretch_pct, F_N, Ff, Ff_std, rup, filenames, contact_mean, contact_std = organize_data(data)
     
-    # Trim to limits 
+    # --- Trim to limits --- #
+    # Handle different version of limit definitions
     if stretch_lim[0] == None: stretch_lim[0] = np.min(stretch_pct) - 1
     if stretch_lim[1] == None: stretch_lim[1] = np.max(stretch_pct) + 1
     if FN_lim[0] == None: FN_lim[0] = np.min(F_N) - 1
     if FN_lim[1] == None: FN_lim[1] = np.max(F_N) + 1
     
-    stretch_args = np.argwhere(np.logical_and(stretch_lim[0] <= stretch_pct, stretch_pct <= stretch_lim[-1])).flatten()
-    FN_args = np.argwhere(np.logical_and(FN_lim[0] <= F_N, F_N <= FN_lim[-1])).flatten()
+    # Get idx
+    stretch_idx = np.argwhere(np.logical_and(stretch_lim[0] <= stretch_pct, stretch_pct <= stretch_lim[-1])).flatten()
+    FN_idx = np.argwhere(np.logical_and(FN_lim[0] <= F_N, F_N <= FN_lim[-1])).flatten()
     
-    stretch_pct = stretch_pct[stretch_args]
-    F_N = F_N[FN_args]
-    Ff = Ff[stretch_args][:, FN_args]
-    Ff_std = Ff_std[stretch_args][:, FN_args]
-    rup = rup[stretch_args][:, FN_args] > ruptol
-    filenames = filenames[stretch_args][:, FN_args]
-    contact_mean = contact_mean[stretch_args][:, FN_args].astype('float')
-    contact_std = contact_std[stretch_args][:, FN_args].astype('float')
+    # Apply index
+    stretch_pct = stretch_pct[stretch_idx]
+    F_N = F_N[FN_idx]
+    Ff = Ff[stretch_idx][:, FN_idx]
+    Ff_std = Ff_std[stretch_idx][:, FN_idx]
+    rup = rup[stretch_idx][:, FN_idx] > 0
+    filenames = filenames[stretch_idx][:, FN_idx]
+    contact_mean = contact_mean[stretch_idx][:, FN_idx].astype('float')
+    contact_std = contact_std[stretch_idx][:, FN_idx].astype('float')
     
     
-    if eval_rupture:
+    # --- Rupture detection --- #
+    if rup.any():
+        # Print information
+        print(f"Ruptures detected in \'{folder}\':")
         detections = [["stretch %", "F_N", "Filenames"]]
-        for i in range(len(stretch_pct)):
-            for j in range(len(F_N)):
-                if rup[i,j] > ruptol:
-                    detections.append([stretch_pct[i], F_N[j], filenames[i,j]])
+        map = np.argwhere(rup)
+        for (i,j) in map:
+            detections.append([stretch_pct[i], F_N[j], filenames[i,j].strip(folder)])
+        print(np.array(detections))
         
-        if len(detections) > 1:
-            print("Rupture detected:")
-            print(np.array(detections))
-        else:
-            print("No rupture detected")
-    else: 
-        print("eval_rupture = False")
-    
+        if exclude_ruptures: # Remove data points for ruptured files
+            Ff[map[:, 0], map[:, 1]] = np.nan
+            Ff_std[map[:, 0], map[:, 1]] = np.nan
+            rup[map[:, 0], map[:, 1]] = np.nan
+            filenames[map[:, 0], map[:, 1]] = np.nan
+            contact_mean[map[:, 0], map[:, 1]] = np.nan
+            contact_std[map[:, 0], map[:, 1]] = np.nan
+            
+        
+    else:
+        print("No rupture detected")
     
     return  stretch_pct, F_N, Ff, Ff_std, rup, filenames, contact_mean, contact_std 
 
 
-def plot_multi(folders, mean_pct = 0.5, std_pct = 0.01, eval_rupture = True, stretch_lim = [None, None],  FN_lim = [None, None], show_filename = True):
-    
-    
-    
+def plot_multi(folders, mean_pct = 0.5, std_pct = 0.01, stretch_lim = [None, None],  FN_lim = [None, None], show_filename = True):
     
     for folder in folders:
-        stretch_pct, F_N, Ff, Ff_std, rup, filenames, contact_mean, contact_std = read_multi_folder(folder, mean_pct, std_pct, eval_rupture, stretch_lim, FN_lim)
+        stretch_pct, F_N, Ff, Ff_std, rup, filenames, contact_mean, contact_std = read_multi_folder(folder, mean_pct, std_pct, stretch_lim, FN_lim, exclude_ruptures = True)
+    
+    
     
         group_name = {0: 'Full sheet', 1: 'Sheet', 2: 'PB'}
         linewidth = 1.5
@@ -314,14 +316,10 @@ if __name__ == "__main__":
     # folders = ['../Data/BIG_MULTI_nocut']
     # stability_heatmap(folders)
     
-    folders = ['../Data/Multi/big/big']
-    # folders = ['../Data/Multi/contact_area_cut80/cut80',
-    #            '../Data/Multi/contact_area_cut90/cut90',
-    #            '../Data/Multi/contact_area_cut100/cut100',
-    #            '../Data/Multi/contact_area_cut110/cut110',
-    #            '../Data/Multi/contact_area_cut120/cut120',
-    #            '../Data/Multi/contact_area_cut130/cut130']
-    
+    folders = ['../Data/CONFIGS/cut_nocut/conf',
+               '../Data/CONFIGS/cut_nocut/conf_1']
+   
+    folders.pop(0)
     obj = plot_multi(folders)
     # stability_heatmap(folders)
     plt.show()
