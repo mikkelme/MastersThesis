@@ -95,11 +95,11 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.2, stretch_lim = [None
     # --- Rupture detection --- #
     if rup.any():
         # Print information
-        print(f"Ruptures detected in \'{folder}\':")
         detections = [["stretch %", "F_N", "Filenames"]]
         map = np.argwhere(rup)
         for (i,j) in map:
             detections.append([stretch_pct[i], F_N[j], filenames[i,j].strip(folder)])
+        print(f"{len(detections)-1} Ruptures detected in \'{folder}\':")
         print(np.array(detections))
         
         if exclude_ruptures: # Remove data points for ruptured files
@@ -341,10 +341,12 @@ if __name__ == "__main__":
     folders = ['../Data/CONFIGS/cut_nocut/conf',
                '../Data/CONFIGS/cut_nocut/conf_1',
                '../Data/CONFIGS/cut_nocut/conf_2',
+               '../Data/CONFIGS/cut_nocut/conf_3',
                ]
    
     folders.pop(0)
-    folders.pop(1)
+    folders.pop(0)
+    folders.pop(0)
     obj = plot_multi(folders)
     # stability_heatmap(folders)
     plt.show()

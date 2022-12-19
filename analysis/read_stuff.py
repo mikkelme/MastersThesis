@@ -73,7 +73,7 @@ def read_vel(filename):
     veltol = 25
     
     plt.figure(num = unique_fignum())
-    plt.plot(time, data['v_vel_max_over_std'], label = "max/std LAMMPS")
+    plt.plot(time, data['v_vel_cummax_over_std'], label = "cummax/std LAMMPS")
     plt.hlines(veltol, data['TimeStep'][0], data['TimeStep'][-1] , linestyle = '--', color = 'black')
     
     
@@ -130,5 +130,8 @@ if __name__ == '__main__':
     # read_cluster('../friction_simulation/my_simulation_space/cluster.txt')
     # read_CN('../friction_simulation/my_simulation_space/CN.txt')
     read_vel('../friction_simulation/my_simulation_space/vel.txt')
+    
+    
+    # read_vel('../Data/CONFIGS/cut_nocut/conf_3/stretch_15342_folder/job0/vel.txt')
     
     plt.show()

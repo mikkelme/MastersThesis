@@ -64,8 +64,8 @@ class data_generator:
         
         
         # Multi run settings 
-        num_stretch_files = 10
-        F_N = np.sort(np.random.uniform(0.1, 10, 10))*1e-9
+        num_stretch_files = 5
+        F_N = np.sort(np.random.uniform(0.1, 10, 5))*1e-9
         # F_N = np.linspace(0.1e-9, 1e-9, 3)
         
         proc.add_variables(num_stretch_files = num_stretch_files, 
