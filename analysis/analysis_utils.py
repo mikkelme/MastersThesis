@@ -95,7 +95,11 @@ def get_dirs_in_path(d, sort = False):
 def find_single_file(path, ext):
     path = str(path)
     file_list = [os.path.join(path, f) for f in os.listdir(path) if f[-len(ext):] == ext]
-    assert(len(file_list) == 1), f"{len(file_list)} candidates for file with extenstion {ext} in {path} found:\n{file_list}."
+    if len(file_list) == 0:
+        raise FileNotFoundError
+    if len(file_list) > 1:
+        exit(f'{len(file_list)} candidates for file with extenstion {ext} in {path} found:\n{file_list}')
+        # assert(len(file_list) == 1), f"{len(file_list)} candidates for file with extenstion {ext} in {path} found:\n{file_list}."
     return file_list[0]
 
 def avg_forward(interval, *args):

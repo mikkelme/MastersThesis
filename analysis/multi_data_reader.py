@@ -3,6 +3,8 @@ from rupture_detect import *
 import random
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
+from read_stuff import *
+
 def read_info_file_old(filename):
     stretch_pct, F_N = np.loadtxt(filename, unpack=True, delimiter = ',')
     return stretch_pct, F_N
@@ -36,26 +38,35 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.2, stretch_lim = [None
                 F_N = metal_to_SI(info_dict['F_N'], 'F')*1e9
                 rupture = info_dict['is_ruptured']
                 
-                # if rupture:
-                #     plt.figure(num = unique_fignum())
+                if rupture:
+                    plt.figure(num = unique_fignum())
+                    plt.subplot(3,1,1)
+                    plt.title(f'{job_dir}\nstretch = {stretch_pct},  F_N = {F_N}')
+                    read_vel(os.path.join(job_dir,'vel.txt'), create_fig = False)
                     
-                #     plt.subplot(2,1,1)
-                #     plt.title(f'{job_dir}\nstretch = {stretch_pct},  F_N = {F_N}')
-                #     dat = read_ave_time(os.path.join(job_dir,'YS.txt'))
-                #     runmax = cum_max(dat['c_YS'])
-                #     YStol = 0.95*runmax
-                #     plt.plot(dat['TimeStep'], dat['c_YS'])
-                #     plt.plot(dat['TimeStep'], YStol, linestyle = '--', color = 'black')
-                #     plt.ylabel("YS")
+                    plt.subplot(3,1,2)
+                    read_CN(os.path.join(job_dir,'CN.txt'), create_fig = False)
+                    
+                    plt.subplot(3,1,3)
+                    read_ystress(os.path.join(job_dir,'YS.txt'), create_fig = False)
+                    
+                    
+                    # plt.title(f'{job_dir}\nstretch = {stretch_pct},  F_N = {F_N}')
+                    # dat = read_ave_time(os.path.join(job_dir,'YS.txt'))
+                    # runmax = cum_max(dat['c_YS'])
+                    # YStol = 0.95*runmax
+                    # plt.plot(dat['TimeStep'], dat['c_YS'])
+                    # plt.plot(dat['TimeStep'], YStol, linestyle = '--', color = 'black')
+                    # plt.ylabel("YS")
 
-                #     plt.subplot(2,1,2)
-                #     dat = read_ave_time(os.path.join(job_dir,'CN.txt'))
-                #     runmax = cum_max(dat['c_CN_ave'])
-                #     CNtol = (1-2/4090)*runmax
-                #     plt.plot(dat['TimeStep'], dat['c_CN_ave'])
-                #     plt.plot(dat['TimeStep'], CNtol, linestyle = '--', color = 'black')
-                #     plt.ylabel("CN")
-                #     plt.xlabel("Timestep")
+                    # plt.subplot(2,1,2)
+                    # dat = read_ave_time(os.path.join(job_dir,'CN.txt'))
+                    # runmax = cum_max(dat['c_CN_ave'])
+                    # CNtol = (1-2/4090)*runmax
+                    # plt.plot(dat['TimeStep'], dat['c_CN_ave'])
+                    # plt.plot(dat['TimeStep'], CNtol, linestyle = '--', color = 'black')
+                    # plt.ylabel("CN")
+                    # plt.xlabel("Timestep")
                     
                     
                 # Get data
@@ -67,6 +78,8 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.2, stretch_lim = [None
                 print(f"<-- Missing file")
     print()
     
+    plt.show()
+    exit()
     data = np.array(data, dtype = 'object')
     stretch_pct, F_N, Ff, Ff_std, rup, filenames, contact_mean, contact_std = organize_data(data)
     

@@ -7,19 +7,16 @@ def read_MSD(filename):
     data = read_ave_time(filename)
     
     time = data['TimeStep']
-    print(data.keys())
     
     plt.figure(num = unique_fignum())
-    plt.plot(time, data['c_MSD_clean[2]'], label = "clean")
-    plt.plot(time, data['c_MSD_com[2]'], label = "com")
-    plt.plot(time, data['c_MSD_com_ave[2]'], label = "com + ave")
-    plt.plot(time, data['c_disp_ave'], label = "disp ave")
-    plt.plot(time, data['c_disp_max'], label = "disp max")
+    plt.plot(time, data['v_MSD_clean'], label = "clean")
+    plt.plot(time, data['v_MSD_com'], label = "com")
+    plt.plot(time, data['v_MSD_com_ave'], label = "com_ave")
     
     plt.legend()
     
 
-def read_ystress(filename):
+def read_ystress(filename, create_fig = True):
     data = read_ave_time(filename)
     
     time = data['TimeStep']
@@ -28,7 +25,7 @@ def read_ystress(filename):
     runmax = cum_max(stress)
     YStol = 0.95*runmax
     
-    plt.figure(num = unique_fignum())
+    if create_fig: plt.figure(num = unique_fignum())
     plt.plot(time, stress)
     plt.plot(time, YStol, linestyle = '--', color = 'black')
     
@@ -36,20 +33,20 @@ def read_ystress(filename):
     
     
 
-def read_cluster(filename):
+def read_cluster(filename, create_fig = True):
     data = read_ave_time(filename)
     time = data['TimeStep']
-    plt.figure(num = unique_fignum())
+    if create_fig: plt.figure(num = unique_fignum())
     plt.plot(time, data['c_Ncluster'], label = "cluster count")
     plt.legend()
     
 
 
-def read_CN(filename):
+def read_CN(filename, create_fig = True):
     data = read_ave_time(filename)
     
     time = data['TimeStep']
-    plt.figure(num = unique_fignum())
+    if create_fig: plt.figure(num = unique_fignum())
     # print(data['c_CN_ave'].max(), data['c_CN_ave'].min())
     
     sheet_atoms = 4600
@@ -66,14 +63,17 @@ def read_CN(filename):
     
 
 
-def read_vel(filename):
+def read_vel(filename, create_fig = True):
     data = read_ave_time(filename)
     time = data['TimeStep']
     
     veltol = 25
+    if create_fig: plt.figure(num = unique_fignum())
     
-    plt.figure(num = unique_fignum())
     plt.plot(time, data['v_vel_cummax_over_std'], label = "cummax/std LAMMPS")
+    plt.plot(time, data['c_vel_max'], label = "c_vel_max)")
+    plt.plot(time, data['c_ave_vel'], label = "c_ave_vel")
+    plt.plot(time, data['v_std_vel'], label = "v_std_vel")
     plt.hlines(veltol, data['TimeStep'][0], data['TimeStep'][-1] , linestyle = '--', color = 'black')
     
     
@@ -129,9 +129,10 @@ if __name__ == '__main__':
     # read_ystress('../friction_simulation/my_simulation_space/YS.txt')
     # read_cluster('../friction_simulation/my_simulation_space/cluster.txt')
     # read_CN('../friction_simulation/my_simulation_space/CN.txt')
-    read_vel('../friction_simulation/my_simulation_space/vel.txt')
+    # read_vel('../friction_simulation/my_simulation_space/vel.txt')
+    read_MSD('../friction_simulation/my_simulation_space/MSD.txt')
     
     
-    # read_vel('../Data/CONFIGS/cut_nocut/conf_3/stretch_15342_folder/job0/vel.txt')
+    # read_vel('../Data/CONFIGS/cut_nocut/conf_3/stretch_15172_folder/job0/vel.txt')
     
     plt.show()
