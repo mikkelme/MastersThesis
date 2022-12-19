@@ -35,7 +35,29 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.2, stretch_lim = [None
                 stretch_pct = info_dict['SMAX']
                 F_N = metal_to_SI(info_dict['F_N'], 'F')*1e9
                 rupture = info_dict['is_ruptured']
-        
+                
+                # if rupture:
+                #     plt.figure(num = unique_fignum())
+                    
+                #     plt.subplot(2,1,1)
+                #     plt.title(f'{job_dir}\nstretch = {stretch_pct},  F_N = {F_N}')
+                #     dat = read_ave_time(os.path.join(job_dir,'YS.txt'))
+                #     runmax = cum_max(dat['c_YS'])
+                #     YStol = 0.95*runmax
+                #     plt.plot(dat['TimeStep'], dat['c_YS'])
+                #     plt.plot(dat['TimeStep'], YStol, linestyle = '--', color = 'black')
+                #     plt.ylabel("YS")
+
+                #     plt.subplot(2,1,2)
+                #     dat = read_ave_time(os.path.join(job_dir,'CN.txt'))
+                #     runmax = cum_max(dat['c_CN_ave'])
+                #     CNtol = (1-2/4090)*runmax
+                #     plt.plot(dat['TimeStep'], dat['c_CN_ave'])
+                #     plt.plot(dat['TimeStep'], CNtol, linestyle = '--', color = 'black')
+                #     plt.ylabel("CN")
+                #     plt.xlabel("Timestep")
+                    
+                    
                 # Get data
                 friction_file = find_single_file(job_dir, ext = friction_ext)     
                 fricData = analyse_friction_file(friction_file, mean_pct, std_pct)
@@ -317,9 +339,12 @@ if __name__ == "__main__":
     # stability_heatmap(folders)
     
     folders = ['../Data/CONFIGS/cut_nocut/conf',
-               '../Data/CONFIGS/cut_nocut/conf_1']
+               '../Data/CONFIGS/cut_nocut/conf_1',
+               '../Data/CONFIGS/cut_nocut/conf_2',
+               ]
    
     folders.pop(0)
+    folders.pop(1)
     obj = plot_multi(folders)
     # stability_heatmap(folders)
     plt.show()

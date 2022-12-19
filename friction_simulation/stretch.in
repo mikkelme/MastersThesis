@@ -90,7 +90,7 @@ variable YS_Nevery      equal floor(v_YS_Nfreq/v_YS_vals)
 variable cluster_Nevery equal floor(v_detection_freq/v_cluster_vals)
 
 # y-stress 
-fix YS sheet ave/time ${YS_Nevery} ${YS_vals} ${YS_Nfreq} c_YS #file YS.txt # Mean values
+fix YS sheet ave/time ${YS_Nevery} ${YS_vals} ${YS_Nfreq} c_YS file YS.txt # Mean values
 fix YS_mean_vec sheet vector ${YS_Nfreq} f_YS              # Store mean values in vector
 fix stretch_pct_vec sheet vector ${YS_Nfreq} v_stretch_pct     # Store stretch values in vector
 variable max_YS equal max(f_YS_mean_vec)                   # Compute max of mean values
@@ -101,17 +101,39 @@ fix CN_mean_vec sheet vector ${YS_Nfreq} f_CN
 variable max_CN equal max(f_CN_mean_vec)             
 variable CN_tol equal $(1-2/count(sheet))
 
+
+# Velocity 
+##########################################
+compute vel sheet property/atom vx vy
+variable velnorm_atom atom sqrt(c_vel[1]^2+c_vel[2]^2) #vel norm for xy plane
+
+compute vel_max sheet reduce max v_velnorm_atom 
+compute ave_vel sheet reduce ave v_velnorm_atom 
+compute avesq_vel sheet reduce avesq v_velnorm_atom 
+variable std_vel equal sqrt(c_avesq_vel-c_ave_vel^2)
+
+fix vel_std_vec sheet vector ${YS_Nfreq} v_std_vel              
+fix vel_max_vec sheet vector 1 c_vel_max              
+variable vel_max equal max(f_vel_max_vec)             
+# variable vel_max_over_std $(v_vel_max/ave(f_vel_std_vec))
+variable vel_max_over_std equal v_vel_max/ave(f_vel_std_vec)
+
+fix vel sheet ave/time ${YS_Nfreq} 1 ${YS_Nfreq} v_vel_max_over_std file vel.txt # For debugging
+##########################################
+
 # Cluster count mean value 
-fix Ncluster full_sheet ave/time ${cluster_Nevery} ${cluster_vals} ${detection_freq} c_Ncluster #file cluster.txt
+fix Ncluster full_sheet ave/time ${cluster_Nevery} ${cluster_vals} ${detection_freq} c_Ncluster file cluster.txt
 
 # Rupture conditions
 variable stress_drop    equal "f_YS < 0.5*v_max_YS"
 variable CN_drop        equal "f_CN < v_CN_tol*v_max_CN"
+variable vel_peak       equal "v_vel_max_over_std>25"
 variable cluster_split  equal "f_Ncluster > 1" 
 variable min_stretch    equal "v_stretch_pct > 0.03"
 variable stop_condition equal "(v_stress_drop && v_min_stretch) || v_cluster_split"
 
-fix rupture_detector sheet halt ${detection_freq} v_stop_condition != 0 error continue 
+fix rupture_detector sheet halt ${detection_freq} v_vel_peak != 0 error continue 
+# fix rupture_detector sheet halt ${detection_freq} v_stop_condition != 0 error continue 
 
 # if thermo == detection_freq the following is possible
 # thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct f_YS v_max_YS f_Ncluster
@@ -212,3 +234,4 @@ unfix yhigh_move
 if "${run_rupture_test_}" then &
 "clear" &
 "include ${root}/stretch.in"
+
