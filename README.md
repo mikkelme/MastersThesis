@@ -169,6 +169,12 @@
 - Observed that the rupture test was not fool proof. I will try to implement the only secure thing I can think off: Locate nearest neighbours to all atoms and check if these neighbours is nearby throughout the simulation.
 
 
+#### Week 49 (19/12 - 25/12) - Working from Pisa
+- Tested the rupture detection and found it insufficient for the drag phase.
+- I've then added coordination number, max velocity and finally MSD metrics to unravel this problem. Only the MSD (com yes ave yes) seems to be reliant in the drag phase. For the stretch phase all three methods was looking great. 
+- I've run some testes on different system sizes (and therefore also slightly different cut on the boundaries) to verify that the rupture detection is stable
+- In the mean time I work on the data_generator_pipeline framework to make is ready to launch a lot of simulaitons in the early days of the new year hopefully.
+
 
 ## Things to remember 
 
