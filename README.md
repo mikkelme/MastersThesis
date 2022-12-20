@@ -145,13 +145,13 @@
 - For the non stretch sheet with 200 nN I observe that the non-bonded atoms aligns with the substrate such that the non-bonded atoms forms lines that stays in space as the sheet moves over the substrate. This is seen on multiple drag speeds. 
 
 
-#### Week 47 (28/11 - 04/12) - Working from Pisa
+#### Week 48 (28/11 - 04/12) - Working from Pisa
 - Did my midway presentation.
 - I found that low range $F_N$ gives more promising results regarding an increase in friction as a function of stretch for my pop up pattern. This was in the range [0.1, 10] nN. 
 - I cannot show any connection to contact area and friction, and if I have to force a connection upon the data I actually see that friction decrease with contact area for my pop up pattern. This might be specific to this pattern and I will wait to see how this behaves for a different pattern. 
 - I tested different cut off for contact area with the idea that this might be the course of the above point, but the result was pretty stable an qualitatively the same.
 
-#### Week 48 (05/12 - 11/12) - Working from Pisa
+#### Week 49 (05/12 - 11/12) - Working from Pisa
 - Beginnning the work on the multi configuration data generation pipeline. 
 - Planning to do some stability test to lock in my simulations parameters in the mean while. 
 - Made a script for testing stretch range of a cut confiugration in lammps. This includes an in-lammps method for detecting rupture using y-stress and cluster count. I plan to implement this for the friciton simulaiton as well to completely bypass a secondary analysis using coordination numbers. 
@@ -159,7 +159,7 @@
 - Implemented the rupture test directly in the friction simulation procedure. This also makes it possible to run the rupture test wihtin the setup_sim.in stretch.in framework. 
 - Next step is to implement the opportunity to create the Si-substrate directly in lammps such that I can run rupture test and go directly to a friction simulation with a suitable substrate size. 
 
-#### Week 49 (12/12 - 18/12) - Working from Pisa
+#### Week 50 (12/12 - 18/12) - Working from Pisa
 - Implemented substrate build in lammps, keeping oportunity to providing the substrate through a txt file. 
 - Implemented refined definition of rupture stretch in rupture test
 - Cleaned up in computes and fixes.
@@ -169,7 +169,7 @@
 - Observed that the rupture test was not fool proof. I will try to implement the only secure thing I can think off: Locate nearest neighbours to all atoms and check if these neighbours is nearby throughout the simulation.
 
 
-#### Week 49 (19/12 - 25/12) - Working from Pisa
+#### Week 51 (19/12 - 25/12) - Working from Pisa
 - Tested the rupture detection and found it insufficient for the drag phase.
 - I've then added coordination number, max velocity and finally MSD metrics to unravel this problem. Only the MSD (com yes ave yes) seems to be reliant in the drag phase. For the stretch phase all three methods was looking great. 
 - I've run some testes on different system sizes (and therefore also slightly different cut on the boundaries) to verify that the rupture detection is stable
