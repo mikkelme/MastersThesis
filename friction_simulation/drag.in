@@ -136,7 +136,6 @@ fix vel sheet ave/time ${YS_Nfreq} 1 ${YS_Nfreq} v_vel_cummax_over_std c_vel_max
 compute MSD_clean sheet msd com no average no
 compute MSD_com sheet msd com yes average no
 compute MSD_com_ave sheet msd com yes average yes
-
 variable MSD_clean  equal sqrt(c_MSD_clean[1]^2+c_MSD_clean[2]^2)
 variable MSD_com  equal sqrt(c_MSD_com[1]^2+c_MSD_com[2]^2)
 variable MSD_com_ave  equal sqrt(c_MSD_com_ave[1]^2+c_MSD_com_ave[2]^2)
@@ -152,12 +151,13 @@ fix Ncluster full_sheet ave/time ${cluster_Nevery} ${cluster_vals} ${detection_f
 variable stress_drop    equal "f_YS < 0.8*v_max_YS"
 variable CN_drop        equal "f_CN < v_CN_tol*v_max_CN"
 variable vel_peak       equal "v_vel_cummax_over_std>25"
+variable MSD_peak       equal  "v_MSD_com>3.0"
 variable cluster_split  equal "f_Ncluster > 1" 
 variable min_stress     equal "v_max_YS > 1e5"
 # variable is_ruptured    equal "(v_stress_drop && v_min_stress) || v_CN_drop || v_cluster_split"
 
-# variable is_ruptured equal v_vel_peak
-variable is_ruptured equal 0 #<------------------------------#
+variable is_ruptured equal v_MSD_peak
+# variable is_ruptured equal 0 #<------------------------------#
 fix rupture_detector sheet halt ${detection_freq} v_is_ruptured != 0 error continue 
 ########################################################################
 label skip_rupture_calculations 

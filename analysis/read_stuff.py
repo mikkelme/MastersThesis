@@ -3,31 +3,30 @@ import matplotlib.pyplot as plt
 
 from analysis_utils import *
 
-def read_MSD(filename):
+def read_MSD(filename, create_fig = True):
     data = read_ave_time(filename)
-    
     time = data['TimeStep']
     
-    plt.figure(num = unique_fignum())
-    plt.plot(time, data['v_MSD_clean'], label = "clean")
+    if create_fig: plt.figure(num = unique_fignum())
+    # plt.plot(time, data['v_MSD_clean'], label = "clean")
     plt.plot(time, data['v_MSD_com'], label = "com")
     plt.plot(time, data['v_MSD_com_ave'], label = "com_ave")
-    
+    plt.ylabel('MSD')
     plt.legend()
     
 
 def read_ystress(filename, create_fig = True):
     data = read_ave_time(filename)
-    
     time = data['TimeStep']
     stress = data['c_YS']
     
     runmax = cum_max(stress)
-    YStol = 0.95*runmax
+    YStol = 0.8*runmax
     
     if create_fig: plt.figure(num = unique_fignum())
     plt.plot(time, stress)
     plt.plot(time, YStol, linestyle = '--', color = 'black')
+    plt.ylabel('$\sigma_y$')
     
 
     
@@ -36,16 +35,18 @@ def read_ystress(filename, create_fig = True):
 def read_cluster(filename, create_fig = True):
     data = read_ave_time(filename)
     time = data['TimeStep']
+    
     if create_fig: plt.figure(num = unique_fignum())
     plt.plot(time, data['c_Ncluster'], label = "cluster count")
+    plt.ylabel('# cluster')
     plt.legend()
     
 
 
 def read_CN(filename, create_fig = True):
     data = read_ave_time(filename)
-    
     time = data['TimeStep']
+    
     if create_fig: plt.figure(num = unique_fignum())
     # print(data['c_CN_ave'].max(), data['c_CN_ave'].min())
     

@@ -38,14 +38,15 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.2, stretch_lim = [None
                 F_N = metal_to_SI(info_dict['F_N'], 'F')*1e9
                 rupture = info_dict['is_ruptured']
                 
-                if rupture:
+                if True:
                     plt.figure(num = unique_fignum())
                     plt.subplot(3,1,1)
                     plt.title(f'{job_dir}\nstretch = {stretch_pct},  F_N = {F_N}')
                     read_vel(os.path.join(job_dir,'vel.txt'), create_fig = False)
                     
                     plt.subplot(3,1,2)
-                    read_CN(os.path.join(job_dir,'CN.txt'), create_fig = False)
+                    read_MSD(os.path.join(job_dir,'MSD.txt'), create_fig = False)
+                    # read_CN(os.path.join(job_dir,'CN.txt'), create_fig = False)
                     
                     plt.subplot(3,1,3)
                     read_ystress(os.path.join(job_dir,'YS.txt'), create_fig = False)
