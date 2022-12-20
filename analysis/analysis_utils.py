@@ -76,14 +76,15 @@ def get_files_in_folder(path, ext = None, exclude = None):
     filenames = []
     for dir in [x[0] for x in os.walk(path)]:
         for file in os.listdir(dir):
-            if ext is None and exclude is None :
+            if ext is None :
                 filenames.append(os.path.join(dir, file))
-            elif exclude is None:
+            else:
                 if file[-len(ext):] == ext:
                     filenames.append(os.path.join(dir, file))
-            else:
-                if file[-len(ext):] == ext and exclude not in file:
-                    filenames.append(os.path.join(dir, file))
+                    
+            if exclude is not None:
+                if exclude in file:
+                    filenames.pop()
     return filenames
 
 def get_dirs_in_path(d, sort = False):

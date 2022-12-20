@@ -37,7 +37,8 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.2, stretch_lim = [None
                 try:
                     rupture = info_dict['is_ruptured']
                 except KeyError: # is_ruptred not yet added to file
-                    continue
+                    pass
+                    # continue
                     # print(job_dir)
                     # print(info_dict.keys())
                     # exit()
@@ -46,7 +47,7 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.2, stretch_lim = [None
                 
                 stretch_pct = info_dict['SMAX']
                 F_N = metal_to_SI(info_dict['F_N'], 'F')*1e9
-                if rupture:
+                if True:
                     plt.figure(num = unique_fignum())
                     plt.subplot(3,1,1)
                     plt.title(f'{job_dir}\nstretch = {stretch_pct},  F_N = {F_N}')
@@ -79,9 +80,9 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.2, stretch_lim = [None
                     
                     
                 # Get data
-                friction_file = find_single_file(job_dir, ext = friction_ext)     
-                fricData = analyse_friction_file(friction_file, mean_pct, std_pct)
-                data.append((stretch_pct, F_N, fricData['Ff'], fricData['Ff_std'], rupture, job_dir, fricData['contact_mean'], fricData['contact_std']))  
+                # friction_file = find_single_file(job_dir, ext = friction_ext)     
+                # fricData = analyse_friction_file(friction_file, mean_pct, std_pct)
+                # data.append((stretch_pct, F_N, fricData['Ff'], fricData['Ff_std'], rupture, job_dir, fricData['contact_mean'], fricData['contact_std']))  
             
             except FileNotFoundError:
                 print(f"<-- Missing file")

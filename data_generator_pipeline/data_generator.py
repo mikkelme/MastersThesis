@@ -5,7 +5,7 @@ import sys
 sys.path.append('../') # parent folder: MastersThesis
 from config_builder.build_config import *
 from simulation_manager.multi_runner import *
-
+from analysis.analysis_utils import get_files_in_folder
 
 class data_generator:
     def __init__(self, filename, header =  'egil:CONFIGS/cut_nocut', simname = 'conf', config_ext = None):#, config_ext):
@@ -102,7 +102,8 @@ class data_generator:
         os.remove(lammps_file_info)
         
 
-    
+
+
 class configuration_manager():
     def __init__(self):
         self.configs = []
@@ -176,10 +177,13 @@ class configuration_manager():
 
 
 if __name__ == "__main__":
+    files = get_files_in_folder('../config_builder/cut_nocut/', exclude = 'DS_Store')
+    print(files)
+    # filename = '../config_builder/cut_nocut/cut1.npy'
+    # gen = data_generator(filename)
+    # gen.run()
     
-    filename = '../config_builder/cut_nocut/cut1.npy'
-    gen = data_generator(filename)
-    gen.run()
+    # read_folder('../config_builder/cut_nocut/')
     
     # configs = configuration_manager()
     # configs.read_folder('../config_builder/cut_nocut/')

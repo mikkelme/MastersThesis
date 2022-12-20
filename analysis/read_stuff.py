@@ -8,9 +8,11 @@ def read_MSD(filename, create_fig = True):
     time = data['TimeStep']
     
     if create_fig: plt.figure(num = unique_fignum())
-    # plt.plot(time, data['v_MSD_clean'], label = "clean")
+    MSDtol = 3.0
     plt.plot(time, data['v_MSD_com'], label = "com")
-    plt.plot(time, data['v_MSD_com_ave'], label = "com_ave")
+    # plt.plot(time, data['v_MSD_clean'], label = "clean")
+    # plt.plot(time, data['v_MSD_com_ave'], label = "com_ave")
+    plt.hlines(MSDtol, data['TimeStep'][0], data['TimeStep'][-1] , linestyle = '--', color = 'black')
     plt.ylabel('MSD')
     plt.legend()
     
