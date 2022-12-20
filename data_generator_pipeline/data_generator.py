@@ -8,24 +8,38 @@ from simulation_manager.multi_runner import *
 
 
 class data_generator:
-    def __init__(self, mat, config_ext):
-        shape_error = f"SHAPE ERROR: Got matrix of shape {np.shape(mat)}, y-axis must be multiple of 2 and both nonzero integer."
-        assert mat.shape[0]%1 == 0 and mat.shape[1]%1 == 0 and mat.shape[1]%2 == 0, shape_error
-        assert mat.shape[0] > 0 and mat.shape[1] > 0, shape_error
+    def __init__(self, filename, header =  'egil:CONFIGS/cut_nocut', simname = 'conf', config_ext = None):#, config_ext):
         
-        self.mat = mat
+        try:
+            self.mat = np.load(filename)
+            assert self.mat.shape[0]%1 == 0 and self.mat.shape[1]%1 == 0 and self.mat.shape[1]%2 == 0
+            assert self.mat.shape[0] > 0 and self.mat.shape[1] > 0
+            
         
-        # TODO: Consider reading array from file to ease the flow
-        # for sending the saved array to the cluster as well
+        except ValueError:
+            print(f"Could not load file: {filename}")
+            return # XXX
+        except FileNotFoundError:
+            print(f"File not found: {filename}")
+            return # XXX
+        except AssertionError:
+            print(f"SHAPE ERROR: Got matrix of shape {np.shape(self.mat)}, y-axis must be multiple of 2 and both nonzero integer.")
+            return # XXX
+        
+        if config_ext is None:
+            self.config_ext = filename.split('/')[-1].split('.')[0]
+        else:
+            self.config_ext = config_ext
         
         
         self.Cdis = 1.461 # carbon-carbon distance [Å]         
-        self.shape = np.shape(mat)            
+        self.shape = np.shape(self.mat)            
         
-        self.header =  "egil:CONFIGS/cut_nocut"
-        self.dir = os.path.join(self.header, "conf")
+        # Path
+        self.npy_file = filename # Remember array filename
+        self.header =  header
+        self.dir = os.path.join(self.header, simname)
         
-        self.config_ext = config_ext
         
         
     def set_sheet_size(self):
@@ -52,16 +66,16 @@ class data_generator:
         # Intialize simulation runner
         proc = Simulation_runner()
         
-        # Build sheet 
+        # # Build sheet 
         builder = config_builder(self.mat)
         builder.add_pullblocks()
-        builder.save("sheet", ext = self.config_ext, path = config_path)
+        png_file                            = builder.save_view('sheet', path = config_path)
+        lammps_file_txt, lammps_file_info   = builder.save_lammps("sheet", ext = self.config_ext, path = config_path)
         config_data = f'sheet_{self.config_ext}'
         proc.add_variables(config_data = config_data)
         
         # Directories 
         proc.config_path = config_path
-        
         
         # Multi run settings 
         num_stretch_files = 5
@@ -73,13 +87,20 @@ class data_generator:
                            run_rupture_test = 1,
                            stretch_max_pct = 0.7)
         
+        # Transfer config npy- and png-file 
+        proc.move_files_to_dest([self.npy_file,
+                                 png_file], self.header)
+
 
         # Start multi run
         proc.multi_run(self.header, self.dir, F_N, num_procs = 16, jobname = "Dgen2")
        
-        # Remove config files after transfering
-        os.remove(os.path.join(config_path,f'{config_data}.txt'))
-        os.remove(os.path.join(config_path,f'{config_data}_info.in'))
+       
+        # Remove generated files locally
+        os.remove(png_file)
+        os.remove(lammps_file_txt)
+        os.remove(lammps_file_info)
+        
 
     
 class configuration_manager():
@@ -155,9 +176,17 @@ class configuration_manager():
 
 
 if __name__ == "__main__":
-    configs = configuration_manager()
-    configs.read_folder('../config_builder/cut_nocut/')
-    configs.run_specific("cut1")
+    
+    filename = '../config_builder/cut_nocut/cut1.npy'
+    gen = data_generator(filename)
+    gen.run()
+    
+    # configs = configuration_manager()
+    # configs.read_folder('../config_builder/cut_nocut/')
+    # configs.run_specific("cut1")
+    
+    
+    
     # print(configs)
     # configs.run_all()
     

@@ -149,7 +149,7 @@ class config_builder:
         Lx, Ly = minmax[1,:2] - minmax[0,:2]
         return Lx, Ly
         
-    def save(self, object = 'all', ext = '', path = '.'):
+    def save_lammps(self, object = 'all', ext = '', path = '.'):
         """ Save configuration as lammps txt file """
         if not self.is_build: self.build()
             
@@ -174,14 +174,17 @@ class config_builder:
         # --- Write data --- #
         if ext != '' : ext = f'_{ext}' 
         savename = os.path.join(path, self.name_dict[object]) + ext
+        config_file = savename + '.txt'
+        info_file = savename + '_info.in'
+        
         
         # Lammps data
-        lammpsdata.write_lammps_data(savename + '.txt', atoms = self.obj_dict[object], 
+        lammpsdata.write_lammps_data(config_file, atoms = self.obj_dict[object], 
                                                         specorder = specorder, 
                                                         velocities = True)
     
         # Info file
-        outfile = open(savename + '_info.in', 'w')
+        outfile = open(info_file, 'w')
         
         # PB 
         for i in range(len(PB_lim)):
@@ -192,6 +195,8 @@ class config_builder:
             outfile.write(f'variable substrate_freeze_depth equal {self.bottom_substrate_freeze}\n') 
             outfile.write(f'variable substrate_contact_depth equal {self.contact_depth}\n')
 
+
+        return config_file, info_file
 
     def save_mat(self, path, prefix = 'conf'):
         file_id = 1
@@ -206,19 +211,40 @@ class config_builder:
             file_id += 1
             savename = f"{prefix}{file_id}"
         
-        # # Save matrix as array
-        np.save(os.path.join(path, savename), self.mat)
-    
+        # Save matrix as array
+        array_file = os.path.join(path, savename)
+        np.save(array_file, self.mat)
+        return array_file
 
 
-    def view(self, object = 'all'):
-        if not self.is_build: self.build()
-        obj = self.obj_dict[object]      
-        assert obj is not None, f"{object}-object is not created"
+    def save_view(self, object = None, path = '.', ):
+        obj = self.get_object(object)
+        png_file = os.path.join(path,'config.png')
+        write(png_file, obj)
+        return png_file
+
+    def view(self, object = None):
+        obj = self.get_object(object)
         view(obj)
         
 
-
+    def get_object(self, object = None):
+        if not self.is_build: self.build()
+        try:
+            if object is None:
+                obj = self.obj_dict['all']
+                if obj is None:
+                    obj = self.obj_dict['sheet']     
+            else:  
+                obj = self.obj_dict[object] 
+        except KeyError:
+            exit(f'Object: \"{object}\", is not understood.')     
+        
+        assert obj is not None, f"\"{object}\"-object is not created"
+        return obj
+    
+    
+    
 if __name__ == "__main__":
     # multiples = (8, 15) # 174x189
     # multiples = (7, 13) # 152x163
