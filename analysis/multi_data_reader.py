@@ -34,11 +34,19 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.2, stretch_lim = [None
             try: # If file exist
                 # Get run parameters
                 info_dict = read_info_file(os.path.join(job_dir,info_file))
+                try:
+                    rupture = info_dict['is_ruptured']
+                except KeyError: # is_ruptred not yet added to file
+                    continue
+                    # print(job_dir)
+                    # print(info_dict.keys())
+                    # exit()
+                    
+                    
+                
                 stretch_pct = info_dict['SMAX']
                 F_N = metal_to_SI(info_dict['F_N'], 'F')*1e9
-                rupture = info_dict['is_ruptured']
-                
-                if True:
+                if rupture:
                     plt.figure(num = unique_fignum())
                     plt.subplot(3,1,1)
                     plt.title(f'{job_dir}\nstretch = {stretch_pct},  F_N = {F_N}')

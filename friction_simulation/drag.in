@@ -151,7 +151,7 @@ fix Ncluster full_sheet ave/time ${cluster_Nevery} ${cluster_vals} ${detection_f
 variable stress_drop    equal "f_YS < 0.8*v_max_YS"
 variable CN_drop        equal "f_CN < v_CN_tol*v_max_CN"
 variable vel_peak       equal "v_vel_cummax_over_std>25"
-variable MSD_peak       equal  "v_MSD_com>3.0"
+variable MSD_peak       equal "v_MSD_com>3.0"
 variable cluster_split  equal "f_Ncluster > 1" 
 variable min_stress     equal "v_max_YS > 1e5"
 # variable is_ruptured    equal "(v_stress_drop && v_min_stress) || v_CN_drop || v_cluster_split"
@@ -163,24 +163,22 @@ fix rupture_detector sheet halt ${detection_freq} v_is_ruptured != 0 error conti
 label skip_rupture_calculations 
 
 
-
-
 # ---------- Pause 1 ---------- #
 # Update fixes
 velocity PB_tot_rigid set 0 0 0
 unfix PB_ave 
 fix PB_ave PB_tot_rigid aveforce 0 0 0 # Average force vector completely
-thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct
+thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct v_is_ruptured
 
 print "--> Pause 1: $(v_pause1_steps) timesteps, $(v_pause1_steps*dt) ps"
 run  $(v_pause1_steps) 
-if "${is_ruptured}" then "jump SELF after"
+if "${is_ruptured}" then "jump SELF after_drag"
 
 
 # ---------- Apply normal force ---------- #
 print "--> Apply normal force = $(v_F_N)"
 fix normal_force PB_tot addforce 0.0 0.0 $(-v_F_N/count(PB_tot))
-thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct c_sheet_COM[3] c_Ff[3] f_normal_force[3] c_sheet_fz v_sub_sheet_seperation
+thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct c_sheet_COM[3] c_Ff[3] f_normal_force[3] c_sheet_fz v_sub_sheet_seperation v_is_ruptured
 
 # Add damper
 variable viscosity equal 0.05
@@ -195,6 +193,8 @@ print "--> damper on (viscosity = $(v_viscosity)) "
 # Run with damper on
 if $(v_step_dampen)>$(v_pause2_steps) then "variable step_dampen equal v_pause2_steps"
 run $(v_step_dampen)
+
+
 if "${is_ruptured}" then "jump SELF after_drag"
 
 # Run remaining with damper off
@@ -233,7 +233,7 @@ label after_move_commands
 fix move_va virtuel_atom move linear $(v_drag_speed*v_drag_dir_x/v_dir_norm) $(v_drag_speed*v_drag_dir_y/v_dir_norm) 0 units box 
 
 # Thermo
-thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct c_sheet_COM[1] c_sheet_COM[2]
+thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct c_sheet_COM[1] c_sheet_COM[2] v_is_ruptured # keep is_ruptured to avoid "not current" problem
 
 # if "!${rupture_detection}" then &
 # "thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct c_sheet_COM[1] c_sheet_COM[2]" &
