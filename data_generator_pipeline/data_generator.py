@@ -104,95 +104,87 @@ class data_generator:
 
 
 
-class configuration_manager():
-    def __init__(self):
-        self.configs = []
-        self.config_ext = []
+# class configuration_manager():
+#     def __init__(self):
+#         self.configs = []
+#         self.config_ext = []
     
-    def add(self, path):
-        try:
-            mat = np.load(path)
-        except ValueError:
-            return False
+#     def add(self, path):
+#         try:
+#             mat = np.load(path)
+#         except ValueError:
+#             return False
         
-        self.configs.append(mat)
-        return True
+#         self.configs.append(mat)
+#         return True
             
     
-    def read_folder(self, folder):
-        print(f"Reading configurations | dir: {folder}")
-        rejected = []
-        for file in os.listdir(folder):
-            path = os.path.join(folder, file)
-            success = self.add(path)    
-            if success:
-                self.config_ext.append(file.split('.')[-2])
-                print(f'\r√ |, {file}', end = "")
+#     def read_folder(self, folder):
+#         print(f"Reading configurations | dir: {folder}")
+#         rejected = []
+#         for file in os.listdir(folder):
+#             path = os.path.join(folder, file)
+#             success = self.add(path)    
+#             if success:
+#                 self.config_ext.append(file.split('.')[-2])
+#                 print(f'\r√ |, {file}', end = "")
                 
-            else:
-                rejected.append(file)
-                print(f'\rX |, {file}', end = "")
+#             else:
+#                 rejected.append(file)
+#                 print(f'\rX |, {file}', end = "")
                 
-        if len(rejected) == 0:
-            print(f'\rRead folder succesfully.')
-        else:
-            string = ('\n').join([s for s in rejected])
-            print(f'\rRejected:                       \n{string}', )
+#         if len(rejected) == 0:
+#             print(f'\rRead folder succesfully.')
+#         else:
+#             string = ('\n').join([s for s in rejected])
+#             print(f'\rRejected:                       \n{string}', )
     
-    def run_specific(self, id):
-        if isinstance(id, str):
-            print(self.config_ext)
-            idx = np.argwhere(np.array(self.config_ext) == id).ravel()
-            if len(idx) == 1:
-                gen = data_generator(self.configs[idx[0]], self.config_ext[idx[0]])
-                gen.run()
-            else:
-                exit(f"Found {len(idx)} candidates for run specific with extension {id}")
-        elif isinstance(id, int):
-            gen = data_generator(self.configs[idx], self.configs[idx])
-            gen.run()
+#     def run_specific(self, id):
+#         if isinstance(id, str):
+#             print(self.config_ext)
+#             idx = np.argwhere(np.array(self.config_ext) == id).ravel()
+#             if len(idx) == 1:
+#                 gen = data_generator(self.configs[idx[0]], self.config_ext[idx[0]])
+#                 gen.run()
+#             else:
+#                 exit(f"Found {len(idx)} candidates for run specific with extension {id}")
+#         elif isinstance(id, int):
+#             gen = data_generator(self.configs[idx], self.configs[idx])
+#             gen.run()
 
             
 
     
-    def run_all(self):
-        all_unique = (len(set(self.config_ext)) == len(self.config_ext))
-        if all_unique:
-            for (mat, ext) in zip(self.configs, self.config_ext):
-                gen = data_generator(mat, ext)
-                gen.run() # settings hardcoded/defined in data_generator for now XXX
-        else:
-            print("Error: Extension names are not unique all")
-            exit(f'Found {len(self.config_ext) - len(set(self.config_ext))} repeated value(s).')
+#     def run_all(self):
+#         all_unique = (len(set(self.config_ext)) == len(self.config_ext))
+#         if all_unique:
+#             for (mat, ext) in zip(self.configs, self.config_ext):
+#                 gen = data_generator(mat, ext)
+#                 gen.run() # settings hardcoded/defined in data_generator for now XXX
+#         else:
+#             print("Error: Extension names are not unique all")
+#             exit(f'Found {len(self.config_ext) - len(set(self.config_ext))} repeated value(s).')
 
-    def __str__(self):
-        string = "------------------------\n"
-        string += f'Num configs = {len(self.configs)}\n'
-        string +=  ('\n').join([s for s in self.config_ext])
-        string += "\n------------------------"
-        return string
+#     def __str__(self):
+#         string = "------------------------\n"
+#         string += f'Num configs = {len(self.configs)}\n'
+#         string +=  ('\n').join([s for s in self.config_ext])
+#         string += "\n------------------------"
+#         return string
 
 
 
+def run_files(filenames):
+    for file in filenames:
+        gen = data_generator(filename)
+        gen.run()
+        
 
 
 if __name__ == "__main__":
-    files = get_files_in_folder('../config_builder/cut_nocut/', exclude = 'DS_Store')
-    print(files)
-    # filename = '../config_builder/cut_nocut/cut1.npy'
-    # gen = data_generator(filename)
-    # gen.run()
+    # run_files(get_files_in_folder('../config_builder/cut_nocut/', exclude = 'DS_Store'))
     
-    # read_folder('../config_builder/cut_nocut/')
-    
-    # configs = configuration_manager()
-    # configs.read_folder('../config_builder/cut_nocut/')
-    # configs.run_specific("cut1")
-    
-    
-    
-    # print(configs)
-    # configs.run_all()
-    
-    
+    gen = data_generator('../config_builder/cut_nocut/cut1.npy')
+    gen.run()
+   
     
