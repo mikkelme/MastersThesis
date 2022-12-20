@@ -173,7 +173,7 @@
 - Tested the rupture detection and found it insufficient for the drag phase.
 - I've then added coordination number, max velocity and finally MSD metrics to unravel this problem. Only the MSD (com yes ave yes) seems to be reliant in the drag phase. For the stretch phase all three methods was looking great. 
 - I've run some testes on different system sizes (and therefore also slightly different cut on the boundaries) to verify that the rupture detection is stable
-- In the mean time I work on the data_generator_pipeline framework to make is ready to launch a lot of simulaitons in the early days of the new year hopefully.
+- In the mean time I work on the data_generator_pipeline framework to make is ready to launch a lot of simulaitons in the early days of the new year hopefully.t
 
 
 ## Things to remember 
