@@ -364,13 +364,13 @@ if __name__ == "__main__":
     folders = ['../Data/CONFIGS/cut_nocut/conf',
                '../Data/CONFIGS/cut_nocut/conf_1',
                '../Data/CONFIGS/cut_nocut/conf_2',
-               '../Data/CONFIGS/cut_nocut/conf_3',
+               '../Data/CONFIGS/cut_nocut/conf_4',
                ]
    
     folders.pop(0)
     folders.pop(0)
     folders.pop(0)
-    obj = plot_multi(folders)
+    obj = plot_multi([ '../Data/CONFIGS/cut_nocut/conf_3'])
     # stability_heatmap(folders)
     plt.show()
     

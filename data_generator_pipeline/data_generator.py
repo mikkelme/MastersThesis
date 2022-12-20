@@ -87,13 +87,13 @@ class data_generator:
                            run_rupture_test = 1,
                            stretch_max_pct = 0.7)
         
-        # Transfer config npy- and png-file 
-        proc.move_files_to_dest([self.npy_file,
-                                 png_file], self.header)
-
 
         # Start multi run
         proc.multi_run(self.header, self.dir, F_N, num_procs = 16, jobname = "Dgen2")
+        # ^^^Get updated dir for overwrite = False XXX
+        
+        # Transfer config npy- and png-file 
+        proc.move_files_to_dest([self.npy_file, png_file], self.dir) # TODO: retrive the updated name conf_x XXX
        
        
         # Remove generated files locally
@@ -184,7 +184,8 @@ def run_files(filenames):
 if __name__ == "__main__":
     # run_files(get_files_in_folder('../config_builder/cut_nocut/', exclude = 'DS_Store'))
     
-    gen = data_generator('../config_builder/cut_nocut/cut1.npy')
+    # gen = data_generator('../config_builder/cut_nocut/cut1.npy')
+    gen = data_generator('../config_builder/cut_nocut/cut_big.npy')
     gen.run()
    
     

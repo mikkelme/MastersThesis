@@ -134,7 +134,7 @@ class Simulation_runner:
     
     
         # Make directory and transfer scripts    
-        sim = Simulator(directory = dir, overwrite=False)
+        sim = Simulator(directory = dir, overwrite=False) # TODO: get updated dir
         self.move_files_to_dest(["../friction_simulation/setup_sim.in", 
                         "../friction_simulation/stretch.in",
                         "../friction_simulation/drag.in",

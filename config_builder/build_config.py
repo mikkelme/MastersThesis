@@ -246,11 +246,11 @@ class config_builder:
     
     
 if __name__ == "__main__":
-    # multiples = (8, 15) # 174x189
+    multiples = (8, 15) # 174x189
     # multiples = (7, 13) # 152x163
     # multiples = (6, 11) # 130x138
     # multiples = (5, 9)  # 108x113
-    multiples = (4, 7)  # 86x87
+    # multiples = (4, 7)  # 86x87
     # multiples = (3, 5)  # 64x62
     # multiples = (2, 2)    # 42x24
     unitsize = (5,7)
@@ -264,8 +264,8 @@ if __name__ == "__main__":
     size_name = 'x'.join([str(round(v)) for v in builder.get_sheet_size()])
     builder.add_pullblocks()
     builder.view('sheet')
-    # builder.save_mat('./cut_nocut', 'nocut')  
-    builder.save("sheet", ext = f"cut_{size_name}", path = '.')
+    builder.save_mat('./cut_nocut', 'cut_big')  
+    # builder.save("sheet", ext = f"cut_{size_name}", path = '.')
     print(size_name)
   
   
