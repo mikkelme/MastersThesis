@@ -98,47 +98,14 @@ variable YS_Nfreq equal floor(v_detection_freq/v_YS_mean_vals)
 variable YS_Nevery equal floor(v_YS_Nfreq/v_YS_vals)
 variable cluster_Nevery equal floor(v_detection_freq/v_cluster_vals)
 
-# y-stress 
-fix YS sheet ave/time ${YS_Nevery} ${YS_vals} ${YS_Nfreq} c_YS file YS.txt # Mean values
-fix YS_mean_vec sheet vector ${YS_Nfreq} f_YS              # Store mean values in vector
-variable max_YS equal max(f_YS_mean_vec)                   # Compute max of mean values
-
-# Coordination number
-fix CN sheet ave/time ${YS_Nevery} ${YS_vals} ${YS_Nfreq} c_CN_ave file CN.txt 
-fix CN_mean_vec sheet vector ${YS_Nfreq} f_CN              
-variable max_CN equal max(f_CN_mean_vec)             
-variable CN_tol equal $(1-4/count(sheet))
-
-
-# Velocity 
-##########################################
-compute vel sheet property/atom vx vy
-variable velnorm_atom atom sqrt(c_vel[1]^2+c_vel[2]^2) #vel norm for xy plane
-
-compute vel_max sheet reduce max v_velnorm_atom 
-compute ave_vel sheet reduce ave v_velnorm_atom 
-compute avesq_vel sheet reduce avesq v_velnorm_atom 
-
-variable std_vel equal sqrt(c_avesq_vel-c_ave_vel^2)
-variable vel_max equal c_vel_max-c_ave_vel  # subtract average velocity (avoid problems with slip)
-
-fix vel_std_vec sheet vector ${YS_Nfreq} v_std_vel              
-fix vel_max_vec sheet vector 1 v_vel_max         
-variable vel_cummax equal max(f_vel_max_vec)             
-variable vel_cummax_over_std equal v_vel_cummax/ave(f_vel_std_vec)
-
-fix vel sheet ave/time ${YS_Nfreq} 1 ${YS_Nfreq} v_vel_cummax_over_std c_vel_max c_ave_vel v_std_vel file vel.txt # For debugging
-##########################################
-
-
 # MSD
 ##########################################
-compute MSD_clean sheet msd com no average no
-compute MSD_com sheet msd com yes average no
-compute MSD_com_ave sheet msd com yes average yes
-variable MSD_clean  equal sqrt(c_MSD_clean[1]^2+c_MSD_clean[2]^2)
-variable MSD_com  equal sqrt(c_MSD_com[1]^2+c_MSD_com[2]^2)
-variable MSD_com_ave  equal sqrt(c_MSD_com_ave[1]^2+c_MSD_com_ave[2]^2)
+compute MSD_clean    sheet msd com no  average no
+compute MSD_com      sheet msd com yes average no
+compute MSD_com_ave  sheet msd com yes average yes
+variable MSD_clean   equal sqrt(c_MSD_clean[1]^2+c_MSD_clean[2]^2)
+variable MSD_com     equal sqrt(c_MSD_com[1]^2+c_MSD_com[2]^2)
+variable MSD_com_ave equal sqrt(c_MSD_com_ave[1]^2+c_MSD_com_ave[2]^2)
 
 fix MSD sheet ave/time ${YS_Nevery} ${YS_vals} ${YS_Nfreq} v_MSD_clean v_MSD_com v_MSD_com_ave file MSD.txt 
 ##########################################
@@ -148,17 +115,12 @@ fix MSD sheet ave/time ${YS_Nevery} ${YS_vals} ${YS_Nfreq} v_MSD_clean v_MSD_com
 fix Ncluster full_sheet ave/time ${cluster_Nevery} ${cluster_vals} ${detection_freq} c_Ncluster file cluster.txt
 
 # Rupture conditions
-variable stress_drop    equal "f_YS < 0.8*v_max_YS"
-variable CN_drop        equal "f_CN < v_CN_tol*v_max_CN"
-variable vel_peak       equal "v_vel_cummax_over_std>25"
-variable MSD_peak       equal "v_MSD_com>3.0"
+variable MSD_peak       equal "v_MSD_com_ave>1.0"
 variable cluster_split  equal "f_Ncluster > 1" 
-variable min_stress     equal "v_max_YS > 1e5"
-# variable is_ruptured    equal "(v_stress_drop && v_min_stress) || v_CN_drop || v_cluster_split"
+variable is_ruptured    equal "v_MSD_peak || v_cluster_split"
 
-variable is_ruptured equal v_MSD_peak
-# variable is_ruptured equal 0 #<------------------------------#
-fix rupture_detector sheet halt ${detection_freq} v_is_ruptured != 0 error continue 
+# fix rupture_detector sheet halt ${detection_freq} v_is_ruptured != 0 error continue 
+fix rupture_detector sheet halt ${detection_freq} v_is_ruptured != 0 error soft 
 ########################################################################
 label skip_rupture_calculations 
 
@@ -168,17 +130,17 @@ label skip_rupture_calculations
 velocity PB_tot_rigid set 0 0 0
 unfix PB_ave 
 fix PB_ave PB_tot_rigid aveforce 0 0 0 # Average force vector completely
-thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct v_is_ruptured
+thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct #v_is_ruptured
 
 print "--> Pause 1: $(v_pause1_steps) timesteps, $(v_pause1_steps*dt) ps"
 run  $(v_pause1_steps) 
-if "${is_ruptured}" then "jump SELF after_drag"
+# if "${is_ruptured}" then "jump SELF after_drag"
 
 
 # ---------- Apply normal force ---------- #
 print "--> Apply normal force = $(v_F_N)"
 fix normal_force PB_tot addforce 0.0 0.0 $(-v_F_N/count(PB_tot))
-thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct c_sheet_COM[3] c_Ff[3] f_normal_force[3] c_sheet_fz v_sub_sheet_seperation v_is_ruptured
+thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct c_sheet_COM[3] c_Ff[3] f_normal_force[3] c_sheet_fz v_sub_sheet_seperation #v_is_ruptured
 
 # Add damper
 variable viscosity equal 0.05
@@ -195,13 +157,13 @@ if $(v_step_dampen)>$(v_pause2_steps) then "variable step_dampen equal v_pause2_
 run $(v_step_dampen)
 
 
-if "${is_ruptured}" then "jump SELF after_drag"
+# if "${is_ruptured}" then "jump SELF after_drag"
 
 # Run remaining with damper off
 unfix PB_damper
 print "--> damper off"
 run  $(v_pause2_steps-v_step_dampen) 
-if "${is_ruptured}" then "jump SELF after_drag"
+# if "${is_ruptured}" then "jump SELF after_drag"
 
 
 # ---------- Drag sheet ---------- #
@@ -233,7 +195,7 @@ label after_move_commands
 fix move_va virtuel_atom move linear $(v_drag_speed*v_drag_dir_x/v_dir_norm) $(v_drag_speed*v_drag_dir_y/v_dir_norm) 0 units box 
 
 # Thermo
-thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct c_sheet_COM[1] c_sheet_COM[2] v_is_ruptured # keep is_ruptured to avoid "not current" problem
+thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct c_sheet_COM[1] c_sheet_COM[2] #v_is_ruptured # keep is_ruptured to avoid "not current" problem
 
 # if "!${rupture_detection}" then &
 # "thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct c_sheet_COM[1] c_sheet_COM[2]" &

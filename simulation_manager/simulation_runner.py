@@ -1,6 +1,7 @@
 import numpy as np
 from datetime import date
 import subprocess
+import os
 
 # from lammps_simulator import Simulator
 
@@ -106,6 +107,10 @@ class Simulation_runner:
         stretch_max_pct = self.variables['stretch_max_pct']
         RNSEED = self.variables['RNSEED']
         
+        # self.variables['root'] = '.'
+        
+        
+        
         # Verify validity of RNSEED and interpret for print info
         if RNSEED == '$RANDOM':
             RN_stretch = True
@@ -134,14 +139,17 @@ class Simulation_runner:
     
     
         # Make directory and transfer scripts    
-        sim = Simulator(directory = dir, overwrite=False) # TODO: get updated dir
+        sim = Simulator(directory = dir, overwrite=False) 
+        dir = sim.sim_settings['dir'] # Get updated dir (relevant for overwrite = False)
+        root_path = os.path.normpath(os.path.join(dir, self.variables['root']))
+        
         self.move_files_to_dest(["../friction_simulation/setup_sim.in", 
                         "../friction_simulation/stretch.in",
                         "../friction_simulation/drag.in",
                         "../potentials/si.sw",
                         "../potentials/C.tersoff",
                         f"{self.config_path}/{self.variables['config_data']}.txt",
-                        f"{self.config_path}/{self.variables['config_data']}_info.in" ], header)
+                        f"{self.config_path}/{self.variables['config_data']}_info.in" ], root_path)
     
         
         # Set input script and slurm arguments
@@ -189,6 +197,7 @@ class Simulation_runner:
         
         # --- RUN --- #
         sim.run(slurm = True, execute = True)
+        return root_path
         
             
 

@@ -256,18 +256,20 @@ if __name__ == "__main__":
     unitsize = (5,7)
     
     
-    mat = pop_up_pattern(multiples, unitsize, sp = 2)
-    # mat[:, :] = 1 # Nocuts
+    for mul in  [(7, 13), (6, 11), (5, 9), (4, 7), (3, 5), (2, 2)] :
+        
+     
+        mat = pop_up_pattern(mul, unitsize, sp = 2)
+        # mat[:, :] = 1 # Nocuts
+        
+        builder = config_builder(mat)
+        size_name = 'x'.join([str(round(v)) for v in builder.get_sheet_size()])
+        builder.add_pullblocks()
+        builder.view('sheet')
+        builder.save_mat('./sizes', f"cut_{size_name}")  
+        # builder.save("sheet", ext = f"cut_{size_name}", path = '.')
+        print(size_name)
     
-
-    builder = config_builder(mat)
-    size_name = 'x'.join([str(round(v)) for v in builder.get_sheet_size()])
-    builder.add_pullblocks()
-    builder.view('sheet')
-    builder.save_mat('./cut_nocut', 'cut_big')  
-    # builder.save("sheet", ext = f"cut_{size_name}", path = '.')
-    print(size_name)
-  
   
     # builder.add_substrate(substrate_file)
     # builder.add_substrate([None, None, None])

@@ -48,7 +48,7 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.2, stretch_lim = [None
                 F_N = metal_to_SI(info_dict['F_N'], 'F')*1e9
                 
                 
-                if False:
+                if True:
                     plt.figure(num = unique_fignum())
                     plt.subplot(3,1,1)
                     plt.title(f'{job_dir}\nstretch = {stretch_pct},  F_N = {F_N}')
@@ -311,7 +311,7 @@ if __name__ == "__main__":
    
     # folders.pop(0)
     
-    obj = plot_multi([ '../Data/CONFIGS/cut_nocut/conf_3'])
+    obj = plot_multi([ '../Data/CONFIGS/cut_nocut/conf_5'])
     # stability_heatmap(folders)
     plt.show()
     

@@ -84,6 +84,12 @@ unfix sheet_COM_hold
 # ------------------ Rupture detection calculations ------------------ #
 if "!${rupture_detection}" then "jump SELF skip_rupture_calculations"
 
+compute sheet_stress sheet stress/atom NULL 
+compute YS sheet reduce ave c_sheet_stress[2]  
+# compute CN sheet coord/atom cutoff 2.2 
+# compute CN_ave sheet reduce ave c_CN 
+
+
 # Sampling parameters 
 variable YS_Nfreq       equal floor(v_detection_freq/v_YS_mean_vals)
 variable YS_Nevery      equal floor(v_YS_Nfreq/v_YS_vals)
@@ -95,11 +101,11 @@ fix YS_mean_vec sheet vector ${YS_Nfreq} f_YS              # Store mean values i
 fix stretch_pct_vec sheet vector ${YS_Nfreq} v_stretch_pct     # Store stretch values in vector
 variable max_YS equal max(f_YS_mean_vec)                   # Compute max of mean values
 
-# Coordination number
-fix CN sheet ave/time ${YS_Nevery} ${YS_vals} ${YS_Nfreq} c_CN_ave file CN.txt 
-fix CN_mean_vec sheet vector ${YS_Nfreq} f_CN              
-variable max_CN equal max(f_CN_mean_vec)             
-variable CN_tol equal $(1-2/count(sheet))
+# # Coordination number
+# fix CN sheet ave/time ${YS_Nevery} ${YS_vals} ${YS_Nfreq} c_CN_ave file CN.txt 
+# fix CN_mean_vec sheet vector ${YS_Nfreq} f_CN              
+# variable max_CN equal max(f_CN_mean_vec)             
+# variable CN_tol equal $(1-2/count(sheet))
 
 
 # Velocity 
@@ -122,20 +128,17 @@ variable vel_cummax_over_std equal v_vel_cummax/ave(f_vel_std_vec)
 fix vel sheet ave/time ${YS_Nfreq} 1 ${YS_Nfreq} v_vel_cummax_over_std file vel.txt # For debugging
 ##########################################
 
-
-
 # Cluster count mean value 
 fix Ncluster full_sheet ave/time ${cluster_Nevery} ${cluster_vals} ${detection_freq} c_Ncluster file cluster.txt
 
 # Rupture conditions
 variable stress_drop    equal "f_YS < 0.5*v_max_YS"
-variable CN_drop        equal "f_CN < v_CN_tol*v_max_CN"
+# variable CN_drop        equal "f_CN < v_CN_tol*v_max_CN"
 variable vel_peak       equal "v_vel_cummax_over_std>25"
 variable cluster_split  equal "f_Ncluster > 1" 
 variable min_stretch    equal "v_stretch_pct > 0.03"
-# variable stop_condition equal "(v_stress_drop && v_min_stretch) || v_cluster_split"
+variable stop_condition equal " v_vel_peak || (v_stress_drop && v_min_stretch) || v_cluster_split"
 
-variable stop_condition equal v_vel_peak
 fix rupture_detector sheet halt ${detection_freq} v_stop_condition != 0 error continue 
 
 # if thermo == detection_freq the following is possible
@@ -231,6 +234,7 @@ label no_rupture_detection ###########################
 # Unfix moves (relevant if continued directly)
 unfix ylow_move
 unfix yhigh_move
+
 
 
 # Repeat script without rupture detection

@@ -8,7 +8,7 @@ from simulation_manager.multi_runner import *
 from analysis.analysis_utils import get_files_in_folder
 
 class data_generator:
-    def __init__(self, filename, header =  'egil:CONFIGS/cut_nocut', simname = 'conf', config_ext = None):#, config_ext):
+    def __init__(self, filename, header =  'egil:CONFIGS/sizes', simname = 'conf', config_ext = None):#, config_ext):
         
         try:
             self.mat = np.load(filename)
@@ -78,23 +78,23 @@ class data_generator:
         proc.config_path = config_path
         
         # Multi run settings 
-        num_stretch_files = 5
-        F_N = np.sort(np.random.uniform(0.1, 10, 5))*1e-9
+        num_stretch_files = 7
+        # F_N = np.sort(np.random.uniform(0.1, 10, 5))*1e-9
+        F_N = np.array([1, 10])*1e-9
         # F_N = np.linspace(0.1e-9, 1e-9, 3)
         
         proc.add_variables(num_stretch_files = num_stretch_files, 
                            RNSEED = '$RANDOM',
                            run_rupture_test = 1,
-                           stretch_max_pct = 0.7)
+                           stretch_max_pct = 0.7,
+                           root = '.')
         
 
         # Start multi run
-        proc.multi_run(self.header, self.dir, F_N, num_procs = 16, jobname = "Dgen2")
-        # ^^^Get updated dir for overwrite = False XXX
+        root_path = proc.multi_run(self.header, self.dir, F_N, num_procs = 16, jobname = "Dgen2")
         
         # Transfer config npy- and png-file 
-        proc.move_files_to_dest([self.npy_file, png_file], self.dir) # TODO: retrive the updated name conf_x XXX
-       
+        proc.move_files_to_dest([self.npy_file, png_file], root_path)
        
         # Remove generated files locally
         os.remove(png_file)
@@ -176,16 +176,16 @@ class data_generator:
 
 def run_files(filenames):
     for file in filenames:
-        gen = data_generator(filename)
+        gen = data_generator(file)
         gen.run()
         
 
 
 if __name__ == "__main__":
-    # run_files(get_files_in_folder('../config_builder/cut_nocut/', exclude = 'DS_Store'))
+    run_files(get_files_in_folder('../config_builder/sizes/', exclude = 'DS_Store'))
     
     # gen = data_generator('../config_builder/cut_nocut/cut1.npy')
-    gen = data_generator('../config_builder/cut_nocut/cut_big.npy')
-    gen.run()
+    # gen = data_generator('../config_builder/sizes/cut_42x24.npy')
+    # gen.run()
    
     
