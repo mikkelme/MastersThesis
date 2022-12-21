@@ -237,20 +237,27 @@ def analyse_friction_file(filename, mean_pct = 0.5, std_pct = None, drag_cap = N
     
 
     
-def organize_data(data): # Working title
+def organize_data(data, stretch_lim, FN_lim): 
     """ organize by column 0 and 1 """
+    
+    # try:
+    # except IndexError:
+    #     print(np.shape(data))
+    
+    # Get sorted array of unique stretch_pct and F_N 
     stretch_pct = np.unique(data[:,0]) 
     F_N = np.unique(data[:,1])
     
+    
     output = []    
+    
+    # Retrieve object and add corresponding shape to output list
     for col in range(2, data.shape[1]):
         obj = data[0,col]
-        # print(obj, type(obj))
         shape = (len(stretch_pct), len(F_N)) + np.shape(obj)
-        # output.append(np.full(shape, np.nan, dtype = type(obj)))
         output.append(np.full(shape, np.nan, dtype = 'object'))
 
-   
+    # Match object values to stetch_pct and F_N 
     for i, s in enumerate(stretch_pct):
         for j, fn in enumerate(F_N):
             index = np.argwhere((data[:,0] == s) & (data[:,1] == fn))
@@ -259,8 +266,29 @@ def organize_data(data): # Working title
                     output[col-2][i,j] = data[index[0][0], col]
                   
     
-            
-    return np.array(stretch_pct, dtype = 'float'), np.array(F_N, dtype = 'float'), *output,
+    # --- Trim to limits --- #
+    # Handle different version of limit definitions
+    if stretch_lim[0] == None: stretch_lim[0] = np.min(stretch_pct) - 1
+    if stretch_lim[1] == None: stretch_lim[1] = np.max(stretch_pct) + 1
+    if FN_lim[0] == None: FN_lim[0] = np.min(F_N) - 1
+    if FN_lim[1] == None: FN_lim[1] = np.max(F_N) + 1
+    
+    # Get idx
+    stretch_idx = np.argwhere(np.logical_and(stretch_lim[0] <= stretch_pct, stretch_pct <= stretch_lim[-1])).flatten()
+    FN_idx = np.argwhere(np.logical_and(FN_lim[0] <= F_N, F_N <= FN_lim[-1])).flatten()
+    
+    # Apply index
+    stretch_pct = stretch_pct[stretch_idx].astype('float')
+    F_N = F_N[FN_idx].astype('float')
+    for i in range(len(output)):
+        try:
+            output[i] = output[i][stretch_idx][:, FN_idx].astype('float')
+        except ValueError:
+            output[i] = output[i][stretch_idx][:, FN_idx].astype('str')
+        
+                    
+    return stretch_pct, F_N, *output,
+    # return np.array(stretch_pct, dtype = 'float'), np.array(F_N, dtype = 'float'), *output,
     
     
     
