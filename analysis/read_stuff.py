@@ -8,7 +8,7 @@ def read_MSD(filename, create_fig = True):
     time = data['TimeStep']
     
     if create_fig: plt.figure(num = unique_fignum())
-    MSDtol = 3.0
+    MSDtol = 1.0 # For COM AVE
     plt.plot(time, data['v_MSD_com'], label = "com")
     # plt.plot(time, data['v_MSD_clean'], label = "clean")
     plt.plot(time, data['v_MSD_com_ave'], label = "com_ave")
@@ -78,7 +78,7 @@ def read_vel(filename, create_fig = True):
     # plt.plot(time, data['c_ave_vel'], label = "c_ave_vel")
     # plt.plot(time, data['v_std_vel'], label = "v_std_vel")
     plt.hlines(veltol, data['TimeStep'][0], data['TimeStep'][-1] , linestyle = '--', color = 'black')
-    
+    plt.ylabel("velocity (cummax / std")
     
     
     
@@ -133,7 +133,7 @@ if __name__ == '__main__':
     read_cluster('../friction_simulation/my_simulation_space/cluster.txt')
     # read_CN('../friction_simulation/my_simulation_space/CN.txt')
     read_vel('../friction_simulation/my_simulation_space/vel.txt')
-    # read_MSD('../friction_simulation/my_simulation_space/MSD.txt')
+    read_MSD('../friction_simulation/my_simulation_space/MSD.txt')
     
     
     # read_vel('../Data/CONFIGS/cut_nocut/conf_3/stretch_15172_folder/job0/vel.txt')

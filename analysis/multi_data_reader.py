@@ -37,10 +37,9 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.2, stretch_lim = [None
                 try:
                     is_ruptured = info_dict['is_ruptured']
                 except KeyError: # is_ruptred not yet added to file
-                    print("Sim not done")
-                    continue
-                    # print(job_dir)
-                    # print(info_dict.keys())
+                    # print("Sim not done")
+                    # continue
+                    is_ruptured = 0
                     
                 
                 
@@ -48,7 +47,7 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.2, stretch_lim = [None
                 F_N = metal_to_SI(info_dict['F_N'], 'F')*1e9
                 
                 
-                if True:
+                if False:
                     plt.figure(num = unique_fignum())
                     plt.subplot(3,1,1)
                     plt.title(f'{job_dir}\nstretch = {stretch_pct},  F_N = {F_N}')
@@ -303,15 +302,15 @@ if __name__ == "__main__":
     # folders = ['../Data/BIG_MULTI_nocut']
     # stability_heatmap(folders)
     
-    folders = ['../Data/CONFIGS/cut_nocut/conf',
-               '../Data/CONFIGS/cut_nocut/conf_1',
-               '../Data/CONFIGS/cut_nocut/conf_2',
-               '../Data/CONFIGS/cut_nocut/conf_4',
-               ]
+    # folders = ['../Data/CONFIGS/cut_n',
+    #            '../Data/CONFIGS/cut_nocut/conf_1',
+    #            '../Data/CONFIGS/cut_nocut/conf_2',
+    #            '../Data/CONFIGS/cut_nocut/conf_4',
+    #            ]
    
     # folders.pop(0)
     
-    obj = plot_multi([ '../Data/CONFIGS/cut_nocut/conf_5'])
+    obj = plot_multi([ '../Data/CONFIGS/sizes/conf_5'])
     # stability_heatmap(folders)
     plt.show()
     
