@@ -78,20 +78,21 @@ class data_generator:
         proc.config_path = config_path
         
         # Multi run settings 
-        num_stretch_files = 7
-        # F_N = np.sort(np.random.uniform(0.1, 10, 5))*1e-9
-        F_N = np.array([1, 10])*1e-9
+        num_stretch_files = 10
+        F_N = np.sort(np.random.uniform(0.1, 10, 10))*1e-9
+        # F_N = np.array([1, 10])*1e-9
         # F_N = np.linspace(0.1e-9, 1e-9, 3)
         
         proc.add_variables(num_stretch_files = num_stretch_files, 
                            RNSEED = '$RANDOM',
                            run_rupture_test = 1,
                            stretch_max_pct = 0.7,
-                           root = '.')
+                           root = '.',
+                           dump_freq = 100000)
         
 
         # Start multi run
-        root_path = proc.multi_run(self.header, self.dir, F_N, num_procs = 16, jobname = "Dgen2")
+        root_path = proc.multi_run(self.header, self.dir, F_N, num_procs = 16, jobname = "cut_sizes")
         
         # Transfer config npy- and png-file 
         proc.move_files_to_dest([self.npy_file, png_file], root_path)
@@ -174,15 +175,15 @@ class data_generator:
 
 
 
-def run_files(filenames):
+def run_files(filenames, header):
     for file in filenames:
-        gen = data_generator(file)
+        gen = data_generator(file, header)
         gen.run()
         
 
 
 if __name__ == "__main__":
-    run_files(get_files_in_folder('../config_builder/sizes/', exclude = 'DS_Store'))
+    run_files(get_files_in_folder('../config_builder/nocut_sizes/', exclude = 'DS_Store'), header =  'egil:CONFIGS/nocut_sizes')
     
     # gen = data_generator('../config_builder/cut_nocut/cut1.npy')
     # gen = data_generator('../config_builder/sizes/cut_42x24.npy')

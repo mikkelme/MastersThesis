@@ -18,6 +18,7 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.2, stretch_lim = [None
     chist_ext = 'chist.txt'
     
         
+    
     data = []
     rupture = []
     # Loop through stretch folders, format: stretch_{TimeStep}_folder
@@ -37,9 +38,9 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.2, stretch_lim = [None
                 try:
                     is_ruptured = info_dict['is_ruptured']
                 except KeyError: # is_ruptred not yet added to file
-                    # print("Sim not done")
-                    # continue
-                    is_ruptured = 0
+                    print("Sim not done")
+                    continue
+                    # is_ruptured = 0
                     
                 
                 
@@ -99,9 +100,11 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.2, stretch_lim = [None
     if rup.any():
         # Print information
         detections = [["stretch %", "F_N", "Filenames"]]
-        map = np.argwhere(rup)
+        map = np.argwhere(rup == 1)
         for (i,j) in map:
-            detections.append([rup_stretch_pct[i], rup_F_N[j], filenames[i,j].strip(folder)])
+            print(filenames[i,j], folder)
+            detections.append([rup_stretch_pct[i], rup_F_N[j], filenames[i,j].removeprefix(folder)])
+           
         print(f"{len(detections)-1} Ruptures detected in \'{folder}\':")
         print(np.array(detections))
                 

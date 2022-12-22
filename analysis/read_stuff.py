@@ -129,13 +129,13 @@ if __name__ == '__main__':
 
     # read_rdf('../friction_simulation/my_simulation_space/rdf.txt')
     
-    read_ystress('../friction_simulation/my_simulation_space/YS.txt')
-    read_cluster('../friction_simulation/my_simulation_space/cluster.txt')
+    # read_ystress('../friction_simulation/my_simulation_space/YS.txt')
+    # read_cluster('../friction_simulation/my_simulation_space/cluster.txt')
     # read_CN('../friction_simulation/my_simulation_space/CN.txt')
-    read_vel('../friction_simulation/my_simulation_space/vel.txt')
-    read_MSD('../friction_simulation/my_simulation_space/MSD.txt')
+    # read_vel('../friction_simulation/my_simulation_space/vel.txt')
+    # read_MSD('../friction_simulation/my_simulation_space/MSD.txt')
     
+    read_MSD('../Data/CONFIGS/sizes/conf_5/stretch_31489_folder/job1/MSD.txt')
     
-    # read_vel('../Data/CONFIGS/cut_nocut/conf_3/stretch_15172_folder/job0/vel.txt')
     
     plt.show()
