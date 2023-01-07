@@ -105,8 +105,8 @@ def multi_plot_compare(folder1, folder2):
     figs = [fig1, fig2, fig3, fig4, fig5, fig6, fig7]
     ax = np.array([[ax11, ax21, ax31, ax41, ax51, ax61, ax71], [ax12, ax22,  ax32, ax42, ax52, ax62, ax72]]).T
     for f, folder in enumerate(folders):
-        stretch_pct, F_N, Ff, Ff_std, rup, filenames, contact = read_multi_folder(folder, eval_rupture = False, stretch_lim = [None, 0.22])
-        
+        (stretch_pct, F_N, Ff, Ff_std, contact_mean, contact_std), (rup_stretch_pct, rup_F_N, rup, filenames) = read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.01)
+        # stretch_pct, F_N, Ff, Ff_std, rup, filenames, contact = read_multi_folder(folder, eval_rupture = False, stretch_lim = [None, 0.22])
         group = 0
         
         
@@ -116,10 +116,10 @@ def multi_plot_compare(folder1, folder2):
             ax[0, f].plot(F_N, Ff[i, :, group, 1], marker = 'o', markersize = 3, color = color, label = f'stretch = {stretch_pct[i]:g}')
             ax[0, f].set(xlabel='$F_N$ [nN]', ylabel='mean $F_\parallel$ [nN]')
             
-            ax[4, f].plot(F_N, contact[i, :, 0], marker = 'o', markersize = 3,  color = color, label = f'stretch = {stretch_pct[i]:g}')
+            ax[4, f].plot(F_N, contact_mean[i, :, 0], marker = 'o', markersize = 3,  color = color, label = f'stretch = {stretch_pct[i]:g}')
             ax[4, f].set(xlabel='$F_N$ [nN]', ylabel='Bond count [%]')
             
-            ax[5, f].plot(contact[i, :, 0], Ff[i, :, group, 1], marker = 'o', markersize = 3,  color = color, label = f'stretch = {stretch_pct[i]:g}')
+            ax[5, f].plot(contact_mean[i, :, 0], Ff[i, :, group, 1], marker = 'o', markersize = 3,  color = color, label = f'stretch = {stretch_pct[i]:g}')
             ax[5, f].set(xlabel='Bond count [%] (variable $F_N$)', ylabel='mean $F_\parallel$ [nN]')
 
     
@@ -133,10 +133,10 @@ def multi_plot_compare(folder1, folder2):
             ax[2, f].plot(stretch_pct, Ff[:, j, group, 1], marker = 'o', markersize = 3,  color = color, label = f'F_N = {F_N[j]:g}')
             ax[2, f].set(xlabel='stretch [%]', ylabel='mean $F_\parallel$ [nN]')
             
-            ax[3, f].plot(stretch_pct, contact[:, j, 0], marker = 'o', markersize = 3,  color = color, label = f'F_N = {F_N[j]:g}')
+            ax[3, f].plot(stretch_pct, contact_mean[:, j, 0], marker = 'o', markersize = 3,  color = color, label = f'F_N = {F_N[j]:g}')
             ax[3, f].set(xlabel='stretch [%]', ylabel='Bond count [%]')
             
-            ax[6, f].plot(contact[:, j, 0], Ff[:, j, group, 1], marker = 'o', markersize = 3,  color = color, label = f'F_N = {F_N[j]:g}')
+            ax[6, f].plot(contact_mean[:, j, 0], Ff[:, j, group, 1], marker = 'o', markersize = 3,  color = color, label = f'F_N = {F_N[j]:g}')
             ax[6, f].set(xlabel='Bond count [%] (variable stretch)', ylabel='mean $F_\parallel$ [nN]')
             
     
@@ -245,7 +245,7 @@ if __name__ == "__main__":
     # friction_plot(filename)
     # contact_plot(filename)
     
-    # multi_plot_compare('../Data/Multi/nocuts/ref3', '../Data/Multi/cuts/ref3')
-    multi_plot_max_mean('../Data/Multi/cuts/ref2')
+    multi_plot_compare('../Data/CONFIGS/nocut_sizes/conf_2', '../Data/CONFIGS/cut_sizes/conf_2')
+    # multi_plot_max_mean('../Data/Multi/cuts/ref2')
     # multi_plot_groups('../Data/Multi/cuts/ref3')
     plt.show()

@@ -86,15 +86,20 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.2, stretch_lim = [None
                     friction_file = find_single_file(job_dir, ext = friction_ext)     
                     fricData = analyse_friction_file(friction_file, mean_pct, std_pct)
                     data.append((stretch_pct, F_N, fricData['Ff'], fricData['Ff_std'], fricData['contact_mean'], fricData['contact_std']))  
+                else:
+                    data.append((stretch_pct, F_N, np.nan, np.nan, np.nan, np.nan))  
+                    
             
             except FileNotFoundError:
                 print(f"<-- Missing file")
     print()
     
+    
     data = np.array(data, dtype = 'object')
     rupture = np.array(rupture, dtype = 'object')
     stretch_pct, F_N, Ff, Ff_std, contact_mean, contact_std = organize_data(data, stretch_lim, FN_lim)
-    rup_stretch_pct, rup_F_N, rup, filenames = organize_data(rupture, stretch_lim, FN_lim)
+    rup_stretch_pct, rup_F_N, rup, filenames = organize_data(rupture, stretch_lim, FN_lim) # XXX 
+    
     
     # --- Rupture detection --- #
     if rup.any():
@@ -282,17 +287,26 @@ def plot_multi(folders, mean_pct = 0.5, std_pct = 0.01, stretch_lim = [None, Non
 
 
 
-def stability_heatmap(folders, mean_pct = 0.5, std_pct = 0.01, eval_rupture = False):
+def stability_heatmap(folders, mean_pct = 0.5, std_pct = 0.01, stretch_lim = [None, None],  FN_lim = [None, None]):
     stretch_lim = [None, 0.23]
     FN_lim = [None, 220]
     for folder in folders:
-        stretch_pct, F_N, Ff, Ff_std, rup, filenames, contact_mean, contact_std = read_multi_folder(folder, mean_pct, std_pct, eval_rupture, stretch_lim, FN_lim)
+        (stretch_pct, F_N, Ff, Ff_std, contact_mean, contact_std), (rup_stretch_pct, rup_F_N, rup, filenames) = read_multi_folder(folder, mean_pct, std_pct, stretch_lim, FN_lim)
+        # stretch_pct, F_N, Ff, Ff_std, rup, filenames, contact_mean, contact_std = read_multi_folder(folder, mean_pct, std_pct, eval_rupture, stretch_lim, FN_lim)
+        
         
         print()
-        plot_heatmap( Ff_std[:, :, 0],
+        ax = plot_heatmap( Ff_std[:, :, 0],
                      ['Stretch [%]', stretch_pct], 
                      ['$F_N$ [nN]', F_N])
         
+        
+        # Add markers for missing files (M) and ruptures (X)
+        missing_map = np.argwhere(np.isnan(rup)).T + 0.5 
+        rupture_map = np.argwhere(rup == 1).T + 0.5
+        ax.scatter(rupture_map[0, :], rupture_map[1, :], marker="x", color="black", s=100)        
+        ax.scatter(missing_map[0, :], missing_map[1, :], marker="$M$", color="black", s=100)        
+
 
         plt.show()
         
@@ -313,7 +327,7 @@ if __name__ == "__main__":
    
     # folders.pop(0)
     
-    obj = plot_multi([ '../Data/CONFIGS/sizes/conf_5'])
-    # stability_heatmap(folders)
+    # obj = plot_multi([ '../Data/CONFIGS/cut_sizes/conf'])
+    stability_heatmap([ '../Data/CONFIGS/cut_sizes/conf_6'])
     plt.show()
     

@@ -363,13 +363,13 @@ if __name__ == "__main__":
     
     # variable_dependency(size, variable_name = size_val)
     # variable_dependency(spring, variable_name = 'K')
-    variable_dependency(temp, variable_name = 'temp')
+    # variable_dependency(temp, variable_name = 'temp')
     # variable_dependency(vel, variable_name = 'drag_speed')
     
     
     
     # drag_length_compare(vel)
-    # obj = drag_length_dependency(size[0])
+    obj = drag_length_dependency('../Data/CONFIGS/cut_sizes/conf_1/stretch_16050_folder/job7/system_drag_Ff.txt')
   
   
   

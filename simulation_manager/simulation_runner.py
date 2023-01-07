@@ -33,7 +33,8 @@ class Simulation_runner:
             "F_N": 1e-9, # [N]
             "config_data": "sheet_substrate",
             "root": "..",
-            "out_ext": date.today()
+            "out_ext": date.today(),
+            "dump_freq": 1000
         }
         
 

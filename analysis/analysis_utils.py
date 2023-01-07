@@ -604,6 +604,7 @@ def plot_heatmap(heat, param1, param2, title = None):
     ax.set_ylabel(param2_label)
     plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
     # plt.subplots_adjust(hspace=0.3)
+    return ax
    
 
 def unique_fignum():
