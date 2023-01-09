@@ -173,7 +173,14 @@
 - Tested the rupture detection and found it insufficient for the drag phase.
 - I've then added coordination number, max velocity and finally MSD metrics to unravel this problem. Only the MSD (com yes ave yes) seems to be reliant in the drag phase. For the stretch phase all three methods was looking great. 
 - I've run some testes on different system sizes (and therefore also slightly different cut on the boundaries) to verify that the rupture detection is stable
-- In the mean time I work on the data_generator_pipeline framework to make is ready to launch a lot of simulaitons in the early days of the new year hopefully.t
+- In the mean time I work on the data_generator_pipeline framework to make is ready to launch a lot of simulaitons in the early days of the new year hopefully.
+
+
+#### Week 2 (09/01/2023 - 15/01/2023) - Working from Pisa
+- Back in buisiness looking at runs for different sizes. around 100 x 100 Å might be a good size. I'm going to implement the honeycomb pattern first to see whether this fit within a 100 x 100 frame. 
+- Doing a few test of running with less cores to see if I can use the cluster more effeciently.
+- Made scripts for analyzing the data and gathering it in folder easily readable for the ML process. 
+- Implemented the dataloader in pytorch to test that the data input format is working.
 
 
 ## Things to remember 

@@ -103,7 +103,7 @@ class config_builder:
 
         
     
-    def add_pullblocks(self, PB_rows = 6):
+    def add_pullblocks(self, PB_rows = 12):
         """ Add pullblocks to sheet with length PB_len """
         self.PB_rows = PB_rows
         self.mat, self.PB = build_pull_blocks(self.mat, pullblock = PB_rows)
@@ -255,19 +255,29 @@ if __name__ == "__main__":
     # multiples = (2, 2)    # 42x24
     
     
+    # unitsize = (5,7)
+    # for mul in  [(8, 15), (7, 13), (6, 11), (5, 9), (4, 7), (3, 5), (2, 2)] :
+        
+    #     mat = pop_up_pattern(mul, unitsize, sp = 2)
+    #     mat[:, :] = 1 # Nocuts
+        
+    #     builder = config_builder(mat)
+    #     size_name = 'x'.join([str(round(v)) for v in builder.get_sheet_size()])
+       # # builder.add_pullblocks() pull block is added later XXX
+    #     builder.view('sheet')
+    #     builder.save_mat('./nocut_sizes', f"cut_{size_name}")  
+    #     # builder.save("sheet", ext = f"cut_{size_name}", path = '.')
+    #     print(size_name)
+    
+    
     unitsize = (5,7)
-    for mul in  [(8, 15), (7, 13), (6, 11), (5, 9), (4, 7), (3, 5), (2, 2)] :
-        
-        mat = pop_up_pattern(mul, unitsize, sp = 2)
-        mat[:, :] = 1 # Nocuts
-        
-        builder = config_builder(mat)
-        size_name = 'x'.join([str(round(v)) for v in builder.get_sheet_size()])
-        builder.add_pullblocks()
-        builder.view('sheet')
-        builder.save_mat('./nocut_sizes', f"cut_{size_name}")  
-        # builder.save("sheet", ext = f"cut_{size_name}", path = '.')
-        print(size_name)
+    mat = pop_up_pattern((5,9), unitsize, sp = 2)
+    builder = config_builder(mat)
+    size_name = 'x'.join([str(round(v)) for v in builder.get_sheet_size()])
+    builder.add_pullblocks()
+    # builder.view('sheet')
+    builder.save_lammps('sheet', ext = f"cut_{size_name}", path = '.')
+
     
   
     # builder.add_substrate(substrate_file)

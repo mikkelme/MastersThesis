@@ -68,8 +68,8 @@ class data_generator:
         
         # # Build sheet 
         builder = config_builder(self.mat)
-        builder.add_pullblocks()
         png_file                            = builder.save_view('sheet', path = config_path)
+        builder.add_pullblocks()
         lammps_file_txt, lammps_file_info   = builder.save_lammps("sheet", ext = self.config_ext, path = config_path)
         config_data = f'sheet_{self.config_ext}'
         proc.add_variables(config_data = config_data)

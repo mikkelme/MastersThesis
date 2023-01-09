@@ -1,15 +1,15 @@
 variable dt index 0.001 #0.0025
-variable T index 100.0
-variable relax_time index 5
+variable T index 200.0
+variable relax_time index 15
 variable stretch_speed_pct index 0.01 #0.05
-variable pause_time1 index 1
-variable pause_time2 index 1 
+variable pause_time1 index 5
+variable pause_time2 index 5 
 variable drag_speed index 2 
 variable drag_length index 1
 variable K index 1.8724527210000002 
 variable root index ..
 variable out_ext index test
-variable config_data index sheet_cut_64x62
+variable config_data index sheet_cut_108x113
 variable stretch_max_pct index 0.1
 variable drag_dir_x index 0 
 variable drag_dir_y index 1 

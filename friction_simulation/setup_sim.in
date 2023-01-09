@@ -94,7 +94,8 @@ if "$(count(substrate)) > 0" then "jump SELF substrate_built"
 variable a_Si equal 5.430953   # lattice spacing [Å]
 variable substrate_x_margin equal 20 # margin between sheet and substrate edge in x-direction [Å]
 variable substrate_y_margin equal 15 # margin between sheet and substrate edge y-direction [Å]
-variable sheet_substrate_dis equal 2.8  # Distance between shhet and substrate top
+# variable sheet_substrate_dis equal 2.8  # Distance between shhet and substrate top
+variable sheet_substrate_dis equal 3.0  # Distance between shhet and substrate top
 
 # Number of layers for various substrate sections
 variable substrate_freeze_layers equal 3 # [num layers]
