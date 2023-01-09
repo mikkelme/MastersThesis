@@ -1,0 +1,18 @@
+stretch,0.0753728917726972
+F_N,2.1891977860339713
+scan_angle,"(0.0, 1.0)"
+dt,0.001
+T,200.0
+drag_speed,0.2
+drag_length,400.0
+K,1.8724527210000002
+stretch_speed_pct,0.01
+relax_time,15.0
+pause_time1,5.0
+pause_time2,5.0
+rupture_stretch,0.173829371517983
+Ff_max,1.7788951158249298
+Ff_mean,0.07010594123665179
+Ff_mean_std,0.03159654932666703
+contact,0.8828154278427842
+contact_std,6.320299306531358e-05
