@@ -68,20 +68,21 @@ def pop_up_pattern(multiples, unitsize = (5,7), sp = 1):
     return mat
 
 
-def capacitor_line(ref, num_gaps = 3, xlen = 4, xsp = 3, ylen = 9):
+def capacitor_line(ref, num_gaps = 3, xlen = 5, xsp = 3, ylen = 9):
+    """     
+    """
     assert num_gaps % 2 == 1, "num_gaps must be odd"
-    # assert xlen % 2 == 1, "xlen must be odd"
+    assert xlen % 2 == 1, "xlen must be odd"
     assert ylen % 2 == 1, "ylen must be odd"
     assert xsp % 2 == 1, "xsp must be odd"
     
-    # assert xlen > 0, "xlen must be > 0" 
-    # assert ylen > 0, "ylen must be > 0" # Maybe >= 3 for it to make sense
-    # assert ysp > 0, "ysp must be > 0" 
+    assert xlen > 0, "xlen must be > 0" 
+    assert ylen > 0, "ylen must be > 0" # Maybe >= 3 for it to make sense
+    assert ysp > 0, "ysp must be > 0" 
     
     
     delmap = []
     for k in range(-num_gaps//2, 1+num_gaps//2):
-    # for k in range(2):
         xmod = xsp // 2 + 1
         
         start_pos = ref + [2*k*(xlen+2*xmod-1), 0]
@@ -105,49 +106,44 @@ def capacitor_line(ref, num_gaps = 3, xlen = 4, xsp = 3, ylen = 9):
         
         
     
-    # delmap = []
-    # for k in range(-num_gaps//2, 1+num_gaps//2):
-    #     ymod = ysp // 2 + 1
-    #     start_pos = ref + [0, k*(ylen + 1+ (ymod-1)*2)]
-    #     working_pos = start_pos + [0, ymod]
-        
-    #     # Draw horisontal capacitor shapes
-    #     for i in range(1, 1+(xlen-1)//2):
-    #         delmap.append(working_pos + [2*i, 0])
-    #         delmap.append(working_pos - [2*i, 0])
-    #         delmap.append(working_pos + [2*i, (ylen-1)])
-    #         delmap.append(working_pos - [2*i, -(ylen-1)])
-            
-    #     # Draw vertical lines connection capacitor shapes
-    #     for j in range(ylen):
-    #         # print(working_pos + [0, j])
-    #         delmap.append(working_pos + [0, j])
-            
-        
-        
-            
     return delmap
 
 def honeycomb():
     """ Inspired by Scotch Cushion Lock Protective Wrap """
     
-    # Parameters 
-    ydist = 6
     
-    xlen = 15
-    ylen = 17
-    xsp = 3
+    # mat = np.ones((50, 90)).astype('int') # lattice matrix
     
+    # mat = np.ones((100, 200)).astype('int') # lattice matrix
+    # ref = np.array([50, 50]) # reference center element
+    
+    mat = np.ones((50, 100)).astype('int') # lattice matrix
+    ref = np.array([25, 25]) # reference center element
+    
+    # Honeycomb variables
+    xwidth = 3 
+    ywidth = 3  
+    bridge_thickness = 1
+    bridge_len = 9 
+    ####################
+    
+    assert xwidth%2 == 1, "xwidth must be odd"
+    assert bridge_thickness%2 == 1, "bridge_thickness must be odd"
+    assert bridge_len%2 == 1, "bridge_len must be odd"
+    
+    
+    
+    
+    # Capacitor lines parameters 
+    xlen = xwidth + bridge_thickness + 4 + 1
+    ylen = bridge_len
+    xsp = bridge_thickness
     
     num_gaps = 9
     num_lines = 9
     
-    # mat = np.ones((50, 90)).astype('int') # lattice matrix
-    mat = np.ones((100, 200)).astype('int') # lattice matrix
-    ref = np.array([50, 50]) # reference center element
     
-    
-    trans_ver = (1 + ylen//2 + ydist)
+    trans_ver = (1 + ylen//2 + ywidth + 1)
     for even in range(0, num_lines, 2):
         ref_plus = ref + [0, even*trans_ver]
         ref_neg = ref - [0, even*trans_ver]

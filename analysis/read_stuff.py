@@ -23,7 +23,7 @@ def read_ystress(filename, create_fig = True):
     stress = data['c_YS']
     
     runmax = cum_max(stress)
-    YStol = 0.8*runmax
+    YStol = 0.5*runmax
     
     if create_fig: plt.figure(num = unique_fignum())
     plt.plot(time, stress)
@@ -126,14 +126,16 @@ if __name__ == '__main__':
     # filename = '../friction_simulation/my_simulation_space/MSD.txt'
     # read_MSD(filename)
     
-
+    # path =  '../Data/CONFIGS/cut_sizes/conf_1/' 
+    path = '../friction_simulation/my_simulation_space/' 
+    
     # read_rdf('../friction_simulation/my_simulation_space/rdf.txt')
     
-    read_ystress('../friction_simulation/my_simulation_space/YS.txt')
-    read_cluster('../friction_simulation/my_simulation_space/cluster.txt')
-    # read_CN('../friction_simulation/my_simulation_space/CN.txt')
-    read_vel('../friction_simulation/my_simulation_space/vel.txt')
-    # read_MSD('../friction_simulation/my_simulation_space/MSD.txt')
+    read_ystress(os.path.join(path,'YS.txt'))
+    read_cluster(os.path.join(path,'cluster.txt'))
+    # read_CN(os.path.join(path,'CN.txt'))
+    read_vel(os.path.join(path,'vel.txt'))
+    # read_MSD(os.path.join('MSD.txt)')
     
     # read_MSD('../Data/CONFIGS/sizes/conf_5/stretch_31489_folder/job1/MSD.txt')
     

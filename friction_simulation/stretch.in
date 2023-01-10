@@ -138,10 +138,11 @@ variable stress_drop    equal "f_YS < 0.5*v_max_YS"
 variable vel_peak       equal "v_vel_cummax_over_std>25"
 variable cluster_split  equal "f_Ncluster > 1" 
 variable min_stretch    equal "v_stretch_pct > 0.03"
+variable stress_threshold    equal "v_max_YS > 250000"
 # variable stop_condition equal " v_vel_peak || (v_stress_drop && v_min_stretch) || v_cluster_split"
-variable stop_condition equal " v_vel_peak || v_cluster_split"
+variable stop_condition equal " (v_stress_drop && v_stress_threshold) || v_cluster_split"
 
-# fix rupture_detector sheet halt ${detection_freq} v_stop_condition != 0 error continue 
+fix rupture_detector sheet halt ${detection_freq} v_stop_condition != 0 error continue 
 
 # if thermo == detection_freq the following is possible
 # thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct f_YS v_max_YS f_Ncluster

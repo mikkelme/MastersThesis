@@ -1,7 +1,7 @@
 variable dt index 0.001 #0.0025
 variable T index 200.0
 variable relax_time index 10
-variable stretch_speed_pct index 0.005 #0.01
+variable stretch_speed_pct index 0.01
 variable pause_time1 index 5
 variable pause_time2 index 5 
 variable drag_speed index 2 
