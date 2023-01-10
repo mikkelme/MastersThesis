@@ -78,7 +78,7 @@ def capacitor_line(ref, num_gaps = 3, xlen = 5, xsp = 3, ylen = 9):
     
     assert xlen > 0, "xlen must be > 0" 
     assert ylen > 0, "ylen must be > 0" # Maybe >= 3 for it to make sense
-    assert ysp > 0, "ysp must be > 0" 
+    assert xsp > 0, "xsp must be > 0" 
     
     
     delmap = []
@@ -114,16 +114,16 @@ def honeycomb():
     
     # mat = np.ones((50, 90)).astype('int') # lattice matrix
     
-    # mat = np.ones((100, 200)).astype('int') # lattice matrix
-    # ref = np.array([50, 50]) # reference center element
+    mat = np.ones((100, 200)).astype('int') # lattice matrix
+    ref = np.array([50, 50]) # reference center element
     
-    mat = np.ones((50, 100)).astype('int') # lattice matrix
-    ref = np.array([25, 25]) # reference center element
+    # mat = np.ones((50, 100)).astype('int') # lattice matrix
+    # ref = np.array([25, 25]) # reference center element
     
     # Honeycomb variables
     xwidth = 3 
     ywidth = 3  
-    bridge_thickness = 1
+    bridge_thickness = 3
     bridge_len = 9 
     ####################
     

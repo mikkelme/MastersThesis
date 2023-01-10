@@ -36,7 +36,7 @@ if "${run_rupture_test_}" then &
 include ${root}/setup_sim.in
 variable info_file string info_file.txt
 
-delete_atoms group substrate  # XXXXXXXX
+# delete_atoms group substrate  # XXXXXXXX
 
 if "${run_rupture_test_}" then &
 "variable info_file string rupture_test.txt" &
@@ -140,7 +140,7 @@ variable cluster_split  equal "f_Ncluster > 1"
 variable min_stretch    equal "v_stretch_pct > 0.03"
 variable stress_threshold    equal "v_max_YS > 250000"
 # variable stop_condition equal " v_vel_peak || (v_stress_drop && v_min_stretch) || v_cluster_split"
-variable stop_condition equal " (v_stress_drop && v_stress_threshold) || v_cluster_split"
+variable stop_condition equal " (v_stress_drop && v_stress_threshold && v_min_stretch) || v_cluster_split"
 
 fix rupture_detector sheet halt ${detection_freq} v_stop_condition != 0 error continue 
 

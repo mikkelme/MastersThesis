@@ -309,9 +309,9 @@ if __name__ == "__main__":
     
     mat = honeycomb()
     builder = config_builder(mat)
-    # print(builder)
+    print(builder)
     builder.add_pullblocks()
     builder.view('sheet')
-    # builder.save_lammps('sheet', ext = 'honeycomb', path = '.')
+    builder.save_lammps('sheet', ext = 'honeycomb', path = '.')
 
     
