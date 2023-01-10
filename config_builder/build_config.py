@@ -83,7 +83,6 @@ class config_builder:
         self.obj_dict['all'] = self.merge
         self.is_build = True
     
-
  
     def align_and_adjust_cell(self, object):
         """ Align with origo and adjust cell """
@@ -102,15 +101,13 @@ class config_builder:
                 obj.set_cell(minmax[1,:] + trans + np.ones(3)*self.eps)
 
         
-    
     def add_pullblocks(self, PB_rows = 12):
         """ Add pullblocks to sheet with length PB_len """
         self.PB_rows = PB_rows
         self.mat, self.PB = build_pull_blocks(self.mat, pullblock = PB_rows)
         self.is_build = False
         
-        
-         
+              
     def add_substrate(self, substrate = None):
         """ Add substrate by reading file or creating it in ASE. 
             when <substrate> is type:
@@ -244,6 +241,37 @@ class config_builder:
         return obj
     
     
+    def __str__(self):
+        string = 'Build status: '
+        if self.is_build:
+            string += 'Build\n'
+        else:
+            string += 'Not build\n'
+        
+        
+        if self.is_build:
+            string += 'Active object: '
+            for key in self.obj_dict:
+                if self.obj_dict[key] is not None:
+                    string += f'{self.name_dict[key]}, '
+               
+
+            string += '\n'
+        
+        Lx, Ly = self.get_sheet_size()
+        string += f'Sheet size: ({Lx:g}, {Ly:g})'
+    
+        #  # Dictionaries
+        # self.obj_dict  = {'sheet'     : self.sheet,
+        #                   'substrate' : self.substrate,
+        #                   'all'       : self.merge}
+        
+        # self.name_dict = {'sheet'     : 'sheet',
+        #                   'substrate' : 'substrate',
+        #                   'all'       : 'sheet_substrate'}
+        
+        
+        return string
     
 if __name__ == "__main__":
     # multiples = (8, 15) # 174x189
@@ -279,10 +307,12 @@ if __name__ == "__main__":
 
     
     
-    mat = honeycomb()
+    # mat = honeycomb()
+    mat = np.ones((10, 10))
     builder = config_builder(mat)
-    builder.add_pullblocks()
+    print(builder)
+    # builder.add_pullblocks()
     builder.view('sheet')
-    # builder.save_lammps('sheet', ext = f"cut_{size_name}", path = '.')
+    # builder.save_lammps('sheet', ext = 'honeycomb', path = '.')
 
     

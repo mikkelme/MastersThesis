@@ -68,33 +68,60 @@ def pop_up_pattern(multiples, unitsize = (5,7), sp = 1):
     return mat
 
 
-def capacitor_line(ref, num_gaps = 1, xlen = 5, ysp = 1, ylen = 7):
+def capacitor_line(ref, num_gaps = 3, xlen = 4, xsp = 3, ylen = 9):
     assert num_gaps % 2 == 1, "num_gaps must be odd"
-    assert xlen % 2 == 1, "xlen must be odd"
+    # assert xlen % 2 == 1, "xlen must be odd"
     assert ylen % 2 == 1, "ylen must be odd"
-    assert ysp % 2 == 1, "ysp must be odd"
+    assert xsp % 2 == 1, "xsp must be odd"
     
-    assert xlen > 0, "xlen must be > 0" 
-    assert ylen > 0, "ylen must be > 0" # Maybe >= 3 for it to make sense
-    assert ysp > 0, "ysp must be > 0" 
+    # assert xlen > 0, "xlen must be > 0" 
+    # assert ylen > 0, "ylen must be > 0" # Maybe >= 3 for it to make sense
+    # assert ysp > 0, "ysp must be > 0" 
+    
     
     delmap = []
     for k in range(-num_gaps//2, 1+num_gaps//2):
-        ymod = ysp // 2 + 1
-        start_pos = ref + [0, k*(ylen + 1+ (ymod-1)*2)]
-        working_pos = start_pos + [0, ymod]
+    # for k in range(2):
+        xmod = xsp // 2 + 1
         
-        # Draw horisontal capacitor shapes
-        for i in range(1, 1+(xlen-1)//2):
+        start_pos = ref + [2*k*(xlen+2*xmod-1), 0]
+        working_pos = start_pos + [2*(xsp//2+1), 0]
+        
+        # # Draw horisontal lines connection capacitor shapes
+        for i in range(xlen):
             delmap.append(working_pos + [2*i, 0])
-            delmap.append(working_pos - [2*i, 0])
-            delmap.append(working_pos + [2*i, (ylen-1)])
-            delmap.append(working_pos - [2*i, -(ylen-1)])
-            
-        # Draw vertical lines connection capacitor shapes
-        for j in range(ylen):
-            # print(working_pos + [0, j])
+        
+        
+        # Draw vertical capacitor shapes
+        for j in range(1, 1+(ylen-1)//2):
             delmap.append(working_pos + [0, j])
+            delmap.append(working_pos - [0, j])
+            delmap.append(working_pos + [2*(xlen-1), j])
+            delmap.append(working_pos - [-2*(xlen-1), j])
+            
+            
+            
+        
+        
+        
+    
+    # delmap = []
+    # for k in range(-num_gaps//2, 1+num_gaps//2):
+    #     ymod = ysp // 2 + 1
+    #     start_pos = ref + [0, k*(ylen + 1+ (ymod-1)*2)]
+    #     working_pos = start_pos + [0, ymod]
+        
+    #     # Draw horisontal capacitor shapes
+    #     for i in range(1, 1+(xlen-1)//2):
+    #         delmap.append(working_pos + [2*i, 0])
+    #         delmap.append(working_pos - [2*i, 0])
+    #         delmap.append(working_pos + [2*i, (ylen-1)])
+    #         delmap.append(working_pos - [2*i, -(ylen-1)])
+            
+    #     # Draw vertical lines connection capacitor shapes
+    #     for j in range(ylen):
+    #         # print(working_pos + [0, j])
+    #         delmap.append(working_pos + [0, j])
             
         
         
@@ -104,44 +131,47 @@ def capacitor_line(ref, num_gaps = 1, xlen = 5, ysp = 1, ylen = 7):
 def honeycomb():
     """ Inspired by Scotch Cushion Lock Protective Wrap """
     
-    # Parameters (for honeycomb)
-    ydist = 2
-    assert ydist%2 == 0, "ydist must be even to keep ref on similar top/bottom position"
+    # Parameters 
+    ydist = 6
     
-    # (capacitor lines)
-    xlen = 9
-    ysp = 3
-    ylen = 15
-    num_gaps = 3
-    
-    print((xlen//4) + 1)
-    
-    mat = np.ones((50, 90)).astype('int') # lattice matrix
-    ref = np.array([6, 22]) # reference center element
+    xlen = 15
+    ylen = 17
+    xsp = 3
     
     
+    num_gaps = 9
+    num_lines = 9
     
-    # num_lines = 7
+    # mat = np.ones((50, 90)).astype('int') # lattice matrix
+    mat = np.ones((100, 200)).astype('int') # lattice matrix
+    ref = np.array([50, 50]) # reference center element
     
-    # trans_hor = (1 + xlen + ydist)
-    # for even in range(0, num_lines, 2):
-    #     even_ref = ref + [even*trans_hor, 0]
-    #     delmap = capacitor_line(even_ref, num_gaps, xlen, ysp, ylen)
-    #     delete_atoms(mat, center_elem_trans_to_atoms(delmap, full = True))
+    
+    trans_ver = (1 + ylen//2 + ydist)
+    for even in range(0, num_lines, 2):
+        ref_plus = ref + [0, even*trans_ver]
+        ref_neg = ref - [0, even*trans_ver]
+        
+        delmap = capacitor_line(ref_plus, num_gaps, xlen, xsp, ylen)
+        delmap += capacitor_line(ref_neg, num_gaps, xlen, xsp, ylen)
+        delete_atoms(mat, center_elem_trans_to_atoms(delmap, full = True))
         
     
-    # for odd in range(1, num_lines, 2):
-    #     odd_ref = ref + [odd*trans_hor,-(1+ ysp//2 + ylen//2)]
-    #     delmap = capacitor_line(odd_ref, num_gaps, xlen, ysp, ylen)
-    #     delete_atoms(mat, center_elem_trans_to_atoms(delmap, full = True))
+    for odd in range(1, num_lines, 2):
+        ref_plus = ref + [(2*(1 + xsp//2 + xlen//2)), odd*trans_ver]
+        ref_neg = ref - [(2*(1 + xsp//2 + xlen//2)), odd*trans_ver]
+        
+        delmap = capacitor_line(ref_plus, num_gaps, xlen, xsp, ylen)
+        delmap += capacitor_line(ref_neg, num_gaps, xlen, xsp, ylen)
+        delete_atoms(mat, center_elem_trans_to_atoms(delmap, full = True))
 
     
     
     
     # Reverse for visulaization purposes
-    mat[mat == 1] = 2
-    mat[mat == 0] = 1
-    mat[mat == 2] = 0
+    # mat[mat == 1] = 2
+    # mat[mat == 0] = 1
+    # mat[mat == 2] = 0
     return mat    
 
 
