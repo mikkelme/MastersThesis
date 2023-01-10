@@ -270,17 +270,19 @@ if __name__ == "__main__":
     #     print(size_name)
     
     
-    unitsize = (5,7)
-    mat = pop_up_pattern((5,9), unitsize, sp = 2)
-    builder = config_builder(mat)
-    size_name = 'x'.join([str(round(v)) for v in builder.get_sheet_size()])
-    builder.add_pullblocks()
-    # builder.view('sheet')
-    builder.save_lammps('sheet', ext = f"cut_{size_name}", path = '.')
+    # unitsize = (5,7)
+    # mat = pop_up_pattern((5,9), unitsize, sp = 2)
+    # builder = config_builder(mat)
+    # size_name = 'x'.join([str(round(v)) for v in builder.get_sheet_size()])
+    # # builder.view('sheet')
+    # builder.save_lammps('sheet', ext = f"cut_{size_name}", path = '.')
 
     
-  
-    # builder.add_substrate(substrate_file)
-    # builder.add_substrate([None, None, None])
     
+    mat = honeycomb()
+    builder = config_builder(mat)
+    builder.add_pullblocks()
+    builder.view('sheet')
+    # builder.save_lammps('sheet', ext = f"cut_{size_name}", path = '.')
+
     
