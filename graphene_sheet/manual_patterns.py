@@ -68,6 +68,78 @@ def pop_up_pattern(multiples, unitsize = (5,7), sp = 1):
     return mat
 
 
+
+
+
+
+def pop_up(ref = None):
+    mat = np.ones((50, 100)).astype('int') # lattice matrix
+    if ref is None:
+        ref = np.array([mat.shape[0]//2, mat.shape[1]//4]) # default reference center element
+    # ref = np.array([25, 24])
+    # size = (5,3) # Size of pop_up pattern
+    size = (1,3) # Size of pop_up pattern
+    sp = 1
+    
+    assert (np.abs(size[0] - size[1]) - 2)%4 == 0, f"Unit size = {size} did not fulfill: |size[1]-size[0]| = 2, 4, 6, 10..."
+    assert np.min(size) > 0, f"Unit size: {size} must have positives entries."
+   
+    # --- Set up cut out pattern --- #
+    # Define axis for pattern cut out
+    m, n = np.shape(mat)
+    axis1 = np.array([2*(2 + sp + size[0]//2), 2 + sp + size[0]//2]) # up right
+    axis2 = np.array([- 2*(1 + size[1]//2 + sp), 3*(1 + size[1]//2 + sp)]) # up left
+    unit2_axis =  np.array([3 + size[0]//2 + size[1]//2, 1 + size[0]//4 + size[1]//4 - size[1]]) + (2*sp, -sp) # 2nd unit relative to ref
+
+ 
+    # Create unit1 and unit2
+    up = ref[0]%2 == 0
+    line1 = [ref]
+    line2 = []
+    
+    if up:
+        for i in range((size[0]-1)//2):
+            line1.append(ref - [i+1, (i+1)//2 ])
+            line1.append(ref + [i + 1, i//2 + 1])
+
+        for i in range(sp, size[1] + sp):
+            line2.append(ref + [i+1, -(i + (i+1)//2 + 1)])
+
+    else:
+        for i in range((size[0]-1)//2):
+            line1.append(ref + [i+1, (i+1)//2 ])
+            line1.append(ref - [i + 1, i//2 + 1])
+
+
+        for i in range(sp, size[1] + sp):
+            line2.append(ref + [i+1, -(i + i//2 + 2)]) 
+
+    
+    del_unit1 = np.array(line1 + line2)
+    del_unit2 = np.array(line1 + line2) + unit2_axis
+
+
+    # --- Translate cut-out-units across lattice --- # 
+    # Estimate how far to translate (times 2 to be safe)
+    range1 = int(np.ceil(np.dot(np.array([m,n]), axis1)/np.dot(axis1, axis1))) + 1      # project top-right corner on axis 1 vector
+    range2 = int(np.ceil(np.dot(np.array([0,n]), axis2)/np.dot(axis2, axis2)/2))  + 1   # project top-left corner on axis 2 vector
+
+    print(axis1)
+    print(axis2)
+    
+    # Translate and cut out
+    for i in range(-range1, range1+1):
+        for j in range(-range2, range2+1):
+            vec = i*axis1 + j*axis2 
+            del_map1 = del_unit1 + vec
+            del_map2 = del_unit2 + vec
+
+            mat = delete_atoms(mat, center_elem_trans_to_atoms(del_map1, full = True))
+            mat = delete_atoms(mat, center_elem_trans_to_atoms(del_map2, full = True))
+
+    return mat
+
+
 def capacitor_line(ref, num_gaps = 3, xlen = 5, xsp = 3, ylen = 9):
     """     
     """
@@ -101,10 +173,7 @@ def capacitor_line(ref, num_gaps = 3, xlen = 5, xsp = 3, ylen = 9):
             delmap.append(working_pos - [-2*(xlen-1), j])
             
             
-            
-        
-        
-        
+ 
     
     return delmap
 
@@ -235,5 +304,17 @@ def half_octans():
 
 
 if __name__ == "__main__":
-    pass
-    # mat = pop_up_pattern((3,3))
+    mat = np.ones((20, 50)).astype('int') # lattice matrix
+   
+    matrices = [] 
+    for i in range(mat.shape[0]):
+        for j in range(mat.shape[1]//2):
+            mat = pop_up(ref = np.array((i,j)))
+            print(i, j, i*mat.shape[1]//2 + j, len(matrices))
+            if len(matrices) == 0:
+                matrices.append(mat)
+                
+            if not np.any(np.all(mat == matrices, axis = 1)):
+                matrices.append(mat)
+            
+                

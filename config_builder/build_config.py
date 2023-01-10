@@ -307,11 +307,12 @@ if __name__ == "__main__":
 
     
     
-    mat = honeycomb()
+    # mat = honeycomb()
+    mat = pop_up()
     builder = config_builder(mat)
     print(builder)
-    builder.add_pullblocks()
+    # builder.add_pullblocks()
     builder.view('sheet')
-    builder.save_lammps('sheet', ext = 'honeycomb', path = '.')
+    # builder.save_lammps('sheet', ext = 'honeycomb', path = '.')
 
     
