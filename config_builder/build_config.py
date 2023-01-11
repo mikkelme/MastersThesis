@@ -287,7 +287,6 @@ def pop_up_dataset(shape = (60, 106), max_sp = 1, max_cut = (5,5)):
     ref = 'RAND'
     
     # Produce and store data points
-    sizes = []
     count = 0
     for sp in range(1, max_sp + 1):
         for i in range(1, max_cut[0] + 1):
@@ -297,7 +296,7 @@ def pop_up_dataset(shape = (60, 106), max_sp = 1, max_cut = (5,5)):
                     mat = pop_up(shape, size = (i,j), sp = sp, ref = ref)
                     name = f'sp{sp}({i},{j})'
                     if store:
-                        print(f'\rStoring ({count:03d})| overwrite = {overwrite}) | sp = {sp}/{max_sp}, size = ({i:02d},{j:02d})/({max_cut[0]},{max_cut[1]}) ', end = "")
+                        print(f'\rStoring ({count:03d})| overwrite = {overwrite} | sp = {sp}/{max_sp}, size = ({i:02d},{j:02d})/({max_cut[0]},{max_cut[1]}) ', end = "")
                         builder = config_builder(mat)
                         builder.save_mat(dir, name, overwrite)
                         builder.save_view(dir, 'sheet', name, overwrite)
@@ -313,14 +312,56 @@ def pop_up_dataset(shape = (60, 106), max_sp = 1, max_cut = (5,5)):
         outfile.write(f'Total configurations: {count}')
     
     
-def honeycomb_dataset(shape = (60, 106)):
-    pass
+def honeycomb_dataset(shape = (60, 106), max_val = (1, 5, 5, 5)):
+    # max_val: {xwidth, ywidth, bridge_thickness, bridge_len}
+    
+    # Parameters
+    dir = './honeycomb'
+    overwrite = True
+    store = True
+    ref = 'RAND'
+    
+
+    # # Produce and store data points
+    count = 0
+    for xwidth in (x for x in range(1, max_val[0]+1) if x%2 == 1):
+         for ywidth in range(1, max_val[1]+1):
+            for bridge_thickness in (x for x in range(1, max_val[2]+1) if x%2 == 1):
+                for bridge_len in (x for x in range(1, max_val[3]+1) if x%2 == 1):
+                        count += 1  
+                        mat = honeycomb(shape, xwidth, ywidth, bridge_thickness, bridge_len, ref = ref)
+                        name = f'{xwidth}{ywidth}{bridge_thickness}{bridge_len}'
+                        
+                        if store:
+                            print(f'\rStoring ({count:03d})| overwrite = {overwrite} | ({xwidth}, {ywidth}, {bridge_thickness}, {bridge_len})/({max_val[0]}, {max_val[1]}, {max_val[2]}, {max_val[3]})', end = "")
+                            builder = config_builder(mat)
+                            builder.save_mat(dir, name, overwrite)
+                            builder.save_view(dir, 'sheet', name, overwrite)
+                        
+                        else:
+                            print(f'\rCounting ({count:03d})| ({xwidth}, {ywidth}, {bridge_thickness}, {bridge_len})/({max_val[0]}, {max_val[1]}, {max_val[2]}, {max_val[3]}) ', end = "")
+
+      # Write dataset info
+    with open(os.path.join(dir,'dataset_info.txt'), 'w') as outfile:
+        outfile.write('DATASET INFO\n')
+        outfile.write(f'Date: {date.today()}\n')
+        outfile.write(f'Generated as: honeycomb_dataset(shape = ({shape[0]},{shape[1]}), max_val = ({max_val[0]}, {max_val[1]}, {max_val[2]}, {max_val[3]}))\n')
+        outfile.write(f'ref: {ref}\n')
+        outfile.write(f'Total configurations: {count}')
+    
+                        
+                        
+        
+    
+    
+    
+    # xwidth = 1, ywidth = 1,  bridge_thickness = 1, bridge_len = 5, ref = None
         
     
 if __name__ == "__main__":
     
     # pop_up_dataset(shape = (60, 106), max_sp = 4, max_cut = (9,13))
-  
+    honeycomb_dataset()
     
     # mat = pop_up(shape = (60, 106), size = (3,9), sp = 1, ref = None)
     # builder = config_builder(mat)

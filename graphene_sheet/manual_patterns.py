@@ -148,9 +148,11 @@ def honeycomb(shape = (50, 100), xwidth = 1, ywidth = 1,  bridge_thickness = 1, 
     # Reference position
     if ref is None: # Defaults to center
         ref = np.array([mat.shape[0]//2, mat.shape[1]//4]) 
+    elif ref == 'RAND': # Random reference on the sheet
+        ref = np.array((random.randint(0, mat.shape[0]), random.randint(0, mat.shape[1]//2)))
     else:
         ref = np.array(ref)
-    
+  
    
     # Catch unvalid settings
     assert xwidth%2 == 1, "xwidth must be odd"
@@ -163,15 +165,14 @@ def honeycomb(shape = (50, 100), xwidth = 1, ywidth = 1,  bridge_thickness = 1, 
     ylen = bridge_len
     xsp = bridge_thickness
     
-    # Estimate how far to translate
-    num_lines = int(np.ceil((mat.shape[1]//2) / trans_ver))
-    num_gaps = int((np.ceil(mat.shape[0] / (2*(xlen+ 2*(xsp//2 + 1) -1)))) // 2 * 2 + 1)
-    
-    
-    
-    # --- Build and translate capacitor (looking) lines --- #
+    # Vertical translation
     trans_ver = (1 + ylen//2 + ywidth + 1)
     
+    # Estimate how far to translate
+    num_lines = int(np.ceil((mat.shape[1]//2) / trans_ver))
+    num_gaps = int((np.ceil(2*(mat.shape[0] / (2*(xlen+ 2*(xsp//2 + 1) -1))))) // 2 * 2 + 1)
+    
+    # --- Build and translate capacitor (looking) lines --- #
     # Even rows
     for even in range(0, num_lines, 2):
         ref_plus = ref + [0, even*trans_ver]
