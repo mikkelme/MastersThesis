@@ -8,7 +8,7 @@ from simulation_manager.multi_runner import *
 from analysis.analysis_utils import get_files_in_folder
 
 class data_generator:
-    def __init__(self, filename, header =  'egil:CONFIGS/sizes', simname = 'conf', config_ext = None):#, config_ext):
+    def __init__(self, filename, header =  'egil:CONFIGS/honeycomb', simname = 'JOB', config_ext = None):
         
         try:
             self.mat = np.load(filename)
@@ -68,9 +68,9 @@ class data_generator:
         
         # # Build sheet 
         builder = config_builder(self.mat)
-        png_file                            = builder.save_view('sheet', path = config_path)
+        png_file = builder.save_view(config_path, 'sheet')
         builder.add_pullblocks()
-        lammps_file_txt, lammps_file_info   = builder.save_lammps("sheet", ext = self.config_ext, path = config_path)
+        lammps_file_txt, lammps_file_info = builder.save_lammps("sheet", ext = self.config_ext, path = config_path)
         config_data = f'sheet_{self.config_ext}'
         proc.add_variables(config_data = config_data)
         
@@ -78,21 +78,21 @@ class data_generator:
         proc.config_path = config_path
         
         # Multi run settings 
-        num_stretch_files = 10
-        F_N = np.sort(np.random.uniform(0.1, 10, 10))*1e-9
-        # F_N = np.array([1, 10])*1e-9
-        # F_N = np.linspace(0.1e-9, 1e-9, 3)
+        num_stretch_files = 1
+        F_N = np.array([5])*1e-9
+        # F_N = np.sort(np.random.uniform(0.1, 10, 10))*1e-9
+        
         
         proc.add_variables(num_stretch_files = num_stretch_files, 
                            RNSEED = '$RANDOM',
                            run_rupture_test = 1,
-                           stretch_max_pct = 0.7,
+                           stretch_max_pct = 2.0,
                            root = '.',
-                           dump_freq = 100000)
+                           dump_freq = 10000)
         
         
         # Start multi run
-        root_path = proc.multi_run(self.header, self.dir, F_N, num_procs = 16, jobname = "cut_sizes")
+        root_path = proc.multi_run(self.header, self.dir, F_N, num_procs = 16, jobname = f"HC{self.config_ext}")
         
         # Transfer config npy- and png-file 
         proc.move_files_to_dest([self.npy_file, png_file], root_path)
@@ -104,18 +104,18 @@ class data_generator:
         
 
 
-def run_files(filenames, header):
+def run_files(filenames, header, simname):
     for file in filenames:
-        gen = data_generator(file, header)
+        gen = data_generator(file, header, simname)
         gen.run()
         
 
 
 if __name__ == "__main__":
-    run_files(get_files_in_folder('../config_builder/nocut_sizes/', exclude = 'DS_Store'), header =  'egil:CONFIGS/nocut_sizes')
+    # run_files(get_files_in_folder('../config_builder/nocut_sizes/', exclude = 'DS_Store'), header =  'egil:CONFIGS/nocut_sizes')
     
-    # gen = data_generator('../config_builder/cut_nocut/cut1.npy')
-    # gen = data_generator('../config_builder/sizes/cut_42x24.npy')
-    # gen.run()
-   
+    files = get_files_in_folder('../config_builder/honeycomb/', ext = '.npy')
+    run_files(files, header =  'egil:CONFIGS/honeycomb', simname = 'single_run')
+    
+    
     

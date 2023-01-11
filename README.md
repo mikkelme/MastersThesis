@@ -181,6 +181,10 @@
 - Doing a few test of running with less cores to see if I can use the cluster more effeciently.
 - Made scripts for analyzing the data and gathering it in folder easily readable for the ML process. 
 - Implemented the dataloader in pytorch to test that the data input format is working.
+- Decided on a ~ 130 x 132 Å sheet which is hopefully a good compromise between space and computational ease. With this size I estimate that I can get around 550 simulations per day when running each simulation on a single core and having all 768 availbele. The ladder might not be the case though. I aim to get at least 10000 simulations meaning at least ~18 days of runtime. This is not to bad considering that I have a lot to do with the ML code and writing in general.
+- Created configurations dataset for pop-up (#116) and honeycomb (#45) patterns.
+- Submitted single {F_N, stretch} data point to simulaiton for each honeycomb pattern for testing (with rupture test on)
+
 
 
 ## Things to remember 

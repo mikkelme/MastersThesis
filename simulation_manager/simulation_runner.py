@@ -111,7 +111,6 @@ class Simulation_runner:
         # self.variables['root'] = '.'
         
         
-        
         # Verify validity of RNSEED and interpret for print info
         if RNSEED == '$RANDOM':
             RN_stretch = True
@@ -132,7 +131,7 @@ class Simulation_runner:
                 stretch_step =  stretch_max_pct/num_stretch_files 
                 for i in range(num_stretch_files - 1):
                     print(f"[{i*stretch_step:g}, {(i+1)*stretch_step:g}),", end = " ")
-                print(f"[{(i+1)*stretch_step:g}, {(i+2)*stretch_step:g})")
+                print(f"[{(num_stretch_files - 1)*stretch_step:g}, {(num_stretch_files)*stretch_step:g})")
             else:
                 print(f"Stretch: {np.around(np.linspace(0, stretch_max_pct, num_stretch_files), decimals = 3)}")
             print(f"F_N: {F_N*1e9} nN")

@@ -219,14 +219,14 @@ class config_builder:
                     
         return savename
     
-    def save_mat(self, path, savename, overwrite = False):
+    def save_mat(self, path, savename, overwrite = True):
         savename = self.check_name(path, savename, '.npy', overwrite)
         array_file = os.path.join(path, savename)
         np.save(array_file, self.mat)
         return array_file
 
 
-    def save_view(self, path = '.', object = None, savename = 'config.png', overwrite = False):
+    def save_view(self, path = '.', object = None, savename = 'config', overwrite = True):
         savename = self.check_name(path, savename, '.png', overwrite)
         obj = self.get_object(object)
         png_file = os.path.join(path,savename)
