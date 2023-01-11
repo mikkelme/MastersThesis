@@ -261,19 +261,27 @@ class config_builder:
         Lx, Ly = self.get_sheet_size()
         string += f'Sheet size: ({Lx:g}, {Ly:g})'
     
-        #  # Dictionaries
-        # self.obj_dict  = {'sheet'     : self.sheet,
-        #                   'substrate' : self.substrate,
-        #                   'all'       : self.merge}
-        
-        # self.name_dict = {'sheet'     : 'sheet',
-        #                   'substrate' : 'substrate',
-        #                   'all'       : 'sheet_substrate'}
-        
-        
+
         return string
     
+    
+    
+    
+def pop_up_dataset(shape = (60, 106)):
+    # Build all valid pertubations of input variables in given range
+    # Add mirrored values if wanted
+    # Avoid duplicates
+    # Pertubate ref randomly?
+    
+    
+    
+    
+    
 if __name__ == "__main__":
+    
+    pop_up_dataset
+    
+    
     # multiples = (8, 15) # 174x189
     # multiples = (7, 13) # 152x163
     # multiples = (6, 11) # 130x138
@@ -306,13 +314,42 @@ if __name__ == "__main__":
     # builder.save_lammps('sheet', ext = f"cut_{size_name}", path = '.')
 
     
+    # shape = (60, 106)
+    # # shape = (50, 100)
+    # mat = honeycomb(shape,  xwidth = 1, 
+    #                         ywidth = 1, 
+    #                         bridge_thickness = 1, 
+    #                         bridge_len = 9)
     
-    # mat = honeycomb()
-    mat = pop_up()
-    builder = config_builder(mat)
-    print(builder)
-    # builder.add_pullblocks()
-    builder.view('sheet')
-    # builder.save_lammps('sheet', ext = 'honeycomb', path = '.')
+    # # mat = pop_up(shape, size = (3,9), 
+    # #                     sp = 4 )
+    
+    
+    # # # Reverse for visulaization purposes
+    # # mat[mat == 1] = 2
+    # # mat[mat == 0] = 1
+    # # mat[mat == 2] = 0
+    
+    
+    
+    # builder = config_builder(mat)
+    # print(builder)
+    # # builder.add_pullblocks()
+    # builder.view('sheet')
+    # # builder.save_lammps('sheet', ext = 'honeycomb', path = '.')
+
+
+
+    # mat = pop_up(np.array((30,28)))
+    # # mat = pop_up(np.array((25,26)))
+    # # Reverse for visulaization purposes
+    # mat[mat == 1] = 2
+    # mat[mat == 0] = 1
+    # mat[mat == 2] = 0
+    # builder = config_builder(mat)
+    # print(builder)
+    # # builder.add_pullblocks()
+    # builder.view('sheet')
+    # # builder.save_lammps('sheet', ext = 'honeycomb', path = '.')
 
     
