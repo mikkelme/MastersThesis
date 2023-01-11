@@ -5,6 +5,8 @@ from graphene_sheet.build_graphene_sheet import *
 from config_builder.build_substrate import *
 # from graphene_sheet.build_utils import *
 
+from datetime import date
+
 
 class config_builder:
     def __init__(self, mat):
@@ -195,28 +197,39 @@ class config_builder:
 
         return config_file, info_file
 
-    def save_mat(self, path, prefix = 'conf'):
-        file_id = 1
-        savename = f"{prefix}{file_id}"
+    def check_name(self, path, savename, extension, overwrite = False):
         try:
             existing_data = (',').join(os.listdir(path))
         except FileNotFoundError:
             os.makedirs(path)
             existing_data = (',').join(os.listdir(path))
             
-        while savename in existing_data:
-            file_id += 1
-            savename = f"{prefix}{file_id}"
+        if overwrite: return savename + extension
         
-        # Save matrix as array
+        file_id = 0
+        tryname = savename + extension
+        while tryname in existing_data:
+            file_id += 1
+            tryname = f"{savename}_{file_id}{extension}"
+            
+        if file_id > 0:
+            savename = tryname
+        else:
+            savename += extension
+                    
+        return savename
+    
+    def save_mat(self, path, savename, overwrite = False):
+        savename = self.check_name(path, savename, '.npy', overwrite)
         array_file = os.path.join(path, savename)
         np.save(array_file, self.mat)
         return array_file
 
 
-    def save_view(self, object = None, path = '.', ):
+    def save_view(self, path = '.', object = None, savename = 'config.png', overwrite = False):
+        savename = self.check_name(path, savename, '.png', overwrite)
         obj = self.get_object(object)
-        png_file = os.path.join(path,'config.png')
+        png_file = os.path.join(path,savename)
         write(png_file, obj)
         return png_file
 
@@ -266,21 +279,59 @@ class config_builder:
     
     
     
+def pop_up_dataset(shape = (60, 106), max_sp = 1, max_cut = (5,5)):
+    # Parameters
+    dir = './pop_up'
+    overwrite = True
+    store = True
+    ref = 'RAND'
     
-def pop_up_dataset(shape = (60, 106)):
-    # Build all valid pertubations of input variables in given range
-    # Add mirrored values if wanted
-    # Avoid duplicates
-    # Pertubate ref randomly?
+    # Produce and store data points
+    sizes = []
+    count = 0
+    for sp in range(1, max_sp + 1):
+        for i in range(1, max_cut[0] + 1):
+            for j in range(1, max_cut[1] + 1):
+                if (np.abs(i - j) - 2)%4 == 0:
+                    count += 1  
+                    mat = pop_up(shape, size = (i,j), sp = sp, ref = ref)
+                    name = f'sp{sp}({i},{j})'
+                    if store:
+                        print(f'\rStoring ({count:03d})| overwrite = {overwrite}) | sp = {sp}/{max_sp}, size = ({i:02d},{j:02d})/({max_cut[0]},{max_cut[1]}) ', end = "")
+                        builder = config_builder(mat)
+                        builder.save_mat(dir, name, overwrite)
+                        builder.save_view(dir, 'sheet', name, overwrite)
+                    else:
+                        print(f'\rCounting ({count:03d}) | sp = {sp}/{max_sp}, size = ({i:02d},{j:02d})/({max_cut[0]},{max_cut[1]}) ', end = "")
+
+    # Write dataset info
+    with open(os.path.join(dir,'dataset_info.txt'), 'w') as outfile:
+        outfile.write('DATASET INFO\n')
+        outfile.write(f'Date: {date.today()}\n')
+        outfile.write(f'Generated as: pop_up_dataset(shape = ({shape[0]},{shape[1]}), max_sp = {max_sp}, max_cut = ({max_cut[0]},{max_cut[1]}))\n')
+        outfile.write(f'ref: {ref}\n')
+        outfile.write(f'Total configurations: {count}')
     
     
-    
-    
+def honeycomb_dataset(shape = (60, 106)):
+    pass
+        
     
 if __name__ == "__main__":
     
-    pop_up_dataset
+    # pop_up_dataset(shape = (60, 106), max_sp = 4, max_cut = (9,13))
+  
     
+    # mat = pop_up(shape = (60, 106), size = (3,9), sp = 1, ref = None)
+    # builder = config_builder(mat)
+    # builder.add_pullblocks()
+    # builder.save_lammps("sheet", ext = f"illegal", path = '.')
+    
+    # builder.view()
+    
+  
+  
+  
     
     # multiples = (8, 15) # 174x189
     # multiples = (7, 13) # 152x163
@@ -305,51 +356,4 @@ if __name__ == "__main__":
     #     # builder.save("sheet", ext = f"cut_{size_name}", path = '.')
     #     print(size_name)
     
-    
-    # unitsize = (5,7)
-    # mat = pop_up_pattern((5,9), unitsize, sp = 2)
-    # builder = config_builder(mat)
-    # size_name = 'x'.join([str(round(v)) for v in builder.get_sheet_size()])
-    # # builder.view('sheet')
-    # builder.save_lammps('sheet', ext = f"cut_{size_name}", path = '.')
-
-    
-    # shape = (60, 106)
-    # # shape = (50, 100)
-    # mat = honeycomb(shape,  xwidth = 1, 
-    #                         ywidth = 1, 
-    #                         bridge_thickness = 1, 
-    #                         bridge_len = 9)
-    
-    # # mat = pop_up(shape, size = (3,9), 
-    # #                     sp = 4 )
-    
-    
-    # # # Reverse for visulaization purposes
-    # # mat[mat == 1] = 2
-    # # mat[mat == 0] = 1
-    # # mat[mat == 2] = 0
-    
-    
-    
-    # builder = config_builder(mat)
-    # print(builder)
-    # # builder.add_pullblocks()
-    # builder.view('sheet')
-    # # builder.save_lammps('sheet', ext = 'honeycomb', path = '.')
-
-
-
-    # mat = pop_up(np.array((30,28)))
-    # # mat = pop_up(np.array((25,26)))
-    # # Reverse for visulaization purposes
-    # mat[mat == 1] = 2
-    # mat[mat == 0] = 1
-    # mat[mat == 2] = 0
-    # builder = config_builder(mat)
-    # print(builder)
-    # # builder.add_pullblocks()
-    # builder.view('sheet')
-    # # builder.save_lammps('sheet', ext = 'honeycomb', path = '.')
-
     
