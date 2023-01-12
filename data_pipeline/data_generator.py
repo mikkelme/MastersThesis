@@ -93,6 +93,7 @@ class data_generator:
         
         # Start multi run
         root_path = proc.multi_run(self.header, self.dir, F_N, num_procs = 16, jobname = f"HC{self.config_ext}")
+        print(f'root_path = {root_path}')
         
         # Transfer config npy- and png-file 
         proc.move_files_to_dest([self.npy_file, png_file], root_path)
@@ -115,6 +116,8 @@ if __name__ == "__main__":
     # run_files(get_files_in_folder('../config_builder/nocut_sizes/', exclude = 'DS_Store'), header =  'egil:CONFIGS/nocut_sizes')
     
     files = get_files_in_folder('../config_builder/honeycomb/', ext = '.npy')
+    files = files[20:]
+    print(files)
     run_files(files, header =  'egil:CONFIGS/honeycomb', simname = 'single_run')
     
     

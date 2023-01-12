@@ -1,14 +1,39 @@
 \newpage
-\chapter*{Theory}
-\addcontentsline{toc}{chapter}{Method} 
+\chapter{Background Theory and Method}
+% \addcontentsline{toc}{chapter}{Background Theory and Method} 
 
+Small introtext to motivate this chapter. What am I going to go over here.
 
 
 \section{Tribology - friction}
-Check out: Fundamentals of Friction: Macroscopic and Microscopic Processes
-or search for other background information. 
-\subsection{Macroscopic scale}
-\subsubsection{Dry friction} (from wikipedia so far: https://en.wikipedia.org/wiki/Friction)
+
+The study of friction, wear and lubrication between two surfaces in relative motion is called tribology. \cite{gnecco_meyer_2015}.
+
+We will limit ourself to the field of dry sliding friction. In general we can divide friction in to two scales: Macroscopic and microscopic, for which the properties turns out to differ quite substantially. 
+
+
+
+% Check out: Fundamentals of Friction: Macroscopic and Microscopic Processes
+% or search for other background information. 
+\subsection{Friction on a macroscopic scale}
+
+The first studies of frictions took place at a macroscopic level on the scale of visible everyday objects. The work of Leonardo da Vinci (1452–1519), Guillaume Amontons (1663-705) and Charles de Coulomb (1736-1806) all contributed to what is known as Amontons’ law. Amontons’ law describes the friction force accuring when starting and keeping a solid block moving against a solid surface. This emperical law states that friction force tangential to the moving direction is entirely independent of contact area and sliding velocity. Instead it relies on the normal force $F_N$ and the material specific friction coefficient $\mu$ as
+\begin{align*}
+  F_f = \mu \ F_N.
+\end{align*}
+
+Further it distinguish between \textit{static friciton} and \textit{kinetic friction} as the cases of a non moving contact and a moving sliding contact resepectively. Each type of friction comes with its own friction coefficient, $\mu_s$ and $\mu_k$ for static and kinetic friction respectively, usually with values lower than one and $\mu_s \ge \mu_k$. \cite{gnecco_meyer_2015}[p. 6]
+
+
+\subsubsection{Dry friction} 
+
+
+
+
+\newpage
+
+
+(from wikipedia so far: https://en.wikipedia.org/wiki/Friction)
 
 the elementary processes of dry, wearless surface sliding 
 
@@ -26,11 +51,13 @@ The trouble is that the coefficients of friction measured in nanotribological ex
 We were astonished to discover that molecules that could flex or slide even just a little in response to the oscillatory motion of the microbalance were linked to low friction levels at the macro-scale. Put another way, exceptionally low friction at the atomic scale was not a prerequisite for the substantial reduction in macroscopic friction. (\url{https://physicsworld.com/a/friction-at-the-nano-scale/})
 
 
-At face value, the transition from a static strained configuration to full sliding is concep- tually as simple as overcoming an energy barrier. However, practical single- and multiple- contact conditions are characterized by complex interaction profiles plus nontrivial internal dynamics. As a result, the interplay of thermal drifts, contact ageing, contact-contact in- teractions, and macroscopic elastic deformations introduce significant complications, and make the depinning transition from static to kinetic friction an active field of research. The depinning dynamics affects in particular the transition between stick-slip and smooth slid- ing for sliding friction. (Current trends in the physics of nanoscale friction)
+At face value, the transition from a static strained configuration to full sliding is conceptually as simple as overcoming an energy barrier. However, practical single- and multiple- contact conditions are characterized by complex interaction profiles plus nontrivial internal dynamics. As a result, the interplay of thermal drifts, contact ageing, contact-contact in- teractions, and macroscopic elastic deformations introduce significant complications, and make the depinning transition from static to kinetic friction an active field of research. The depinning dynamics affects in particular the transition between stick-slip and smooth slid- ing for sliding friction. (Current trends in the physics of nanoscale friction)
 
 In Atomic Force Microscopy (AFM) experiments, when the tip scans over the monolayers at low speeds, friction force is reported to increase with the logarithm of the velocity, similar to that observed when the tip scans across crystalline surfaces. This velocity dependence is interpreted in terms of thermally activated depinning of interlocking barriers involving interfacial atoms. (Current trends in the physics of nanoscale friction)
 
 Da Vinci-Amontons law – friction independent of area – is not confirmed at the microscopic scale. In most nanoscale investigations the friction of a single con- tact is found to increase linearly with the contact area [27–29]. In contrast, structurally mismatched atomically flat and hard crystalline or amorphous surfaces are expected to produce a sublinear increase of friction with contact area. The frequent finding of friction proportional to area even in some of these cases can be understood as a consequence of softness, either if the interface, or of surface contaminants leading to effectively pseudo- commensurate interfaces [30, 31] (Current trends in the physics of nanoscale friction)
+
+
 \begin{itemize}
     \item Amontons' First Law: The force of friction is directly proportional to the applied load.
     \item Amontons' Second Law: The force of friction is independent of the apparent area of contact.
@@ -41,17 +68,17 @@ Columbd friction
     F_f \le \mu F_n
 \end{align*}
 
-\subsubsection*{Static and dynamic/kinetic friction}
+\subsubsection{Static and kinetic friction} % Dynamic/kinetic friction
 
-\subsection{Microscopic scale / Nanotribology}
-\subsubsection*{Stick slip}
+\subsection{Friction on a microscopic scale - Nanotribology}
+\subsubsection{Stick slip}
 
-\subsubsection*{Commensurate and incommensurate}
+\subsubsection{Commensurate and incommensurate}
 As expected, high levels of friction were present in the commensurate positions and extremely low friction was found when the surfaces were incommensurate. (\url{https://physicsworld.com/a/friction-at-the-nano-scale/})
 
 
-\subsubsection*{Tomlinson model}
-\subsubsection*{Superlubricity}
+\subsubsection{Tomlinson model}
+\subsubsection{Superlubricity?}
 Superlubricity, now a pervasive concept of modern tribology, dates back to the math- ematical framework of the Frenkel Kontorova model for incommensurate interfaces [40]. When two contacting crystalline workpieces are out of registry, by lattice mismatch or angular misalignment, the minimal force required to achieve sliding, i.e. the static friction, tends to zero in the thermodynamic limit – that is, it can at most grow as a power less than one of the area – provided the two substrates are stiff enough. (Current trends in the physics of nanoscale friction)
 
 
@@ -63,7 +90,7 @@ A breakdown of structural lubricity may occur at the heterogeneous interface of 
 Indeed, we know from theory and simulation [74–76] that even in clean wearless friction experiments with perfect atomic structures, superlubricity at large scales may, for example, surrender due to the soft elastic strain deformations of contacting systems. (Current trends in the physics of nanoscale friction)
 
 
-\subsection*{Temperature dependence}
+\subsection{Temperature dependence}
 Thus, it is commonly expected that the friction of a dry nanocontact should classically decrease with increasing temperature provided no other surface or material parameters are altered by the temperature changes [77, 80–83]. (Current trends in the physics of nanoscale friction)
 
 \begin{itemize}
@@ -80,7 +107,15 @@ Accurate FFM measurements on few-layer graphene systems show that friction decre
 \begin{itemize}
   \item General properties and crystal structure
 \end{itemize}
-\section{MD simulations}
+\section{Molecular Dynamics}
+\subsection{Potentials}
+\subsection{LAMMPS}
+\subsection{Intregration}
+\subsection{Thermostats}
+\subsection{Graphene}
+
+
+
 \begin{itemize}
   \item MD simulation (classical or ab initio)
   \item Basics of classical MD simulations: Integration and stuff
@@ -105,4 +140,26 @@ The surface force apparatus (SFA), the scanning tunneling microscopes (STM), and
   \item Using machine learning for inverse designs partly eliminate the black box problem. When a design is produced we can test it, and if it works we not rely on machine learning connections to verify it's relevance. 
   \item However, using explanaitons techniques such as maybe t-SNE, Deep dream, LRP, Shapley values and linearizations, we can try to understand why the AI chose as it did. This can lead to an increased understanding of each design feature. Again this is not dependent on the complex network of the network as this can be tested and veriied independently of the network. 
 \end{itemize}
+
+\subsection{Feed forward network / Neural networks}
+\subsection{CNN for image recognition}
+\subsection{GAN (encoder + deoder)}
+\subsection{Inverse desing using machine learning}
+\subsection{Prediction explanation}
+\subsubsection{Shapley}
+\subsubsection{Lineariations}
+\subsubsection{LRP}
+\subsubsection{t-SNE}
+
+
+
+\section{Generating cuts in the graphene sheet}
+\subsection{Defining the sheet configuration}
+\subsubsection{Indexing}
+\subsubsection{Removing atoms}
+\subsubsection{Pull blocks}
+\subsection{Kirigami inspired cut out patterns}
+\subsubsection{Pop-up pattern}
+\subsubsection{Honeycomb}
+\subsubsection{Random walk}
 

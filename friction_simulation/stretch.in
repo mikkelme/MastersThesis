@@ -151,10 +151,14 @@ label skip_rupture_calculations
 
 
 # ----------  Write restart files ---------- #
-if "${num_stretch_files}<=1 || ${run_rupture_test_}" then "jump SELF after_restart"
+if "${num_stretch_files}<1 || ${run_rupture_test_}" then "jump SELF after_restart"
 
 variable RNSEED index -1  # Random seed (use command-line argument: -var RNSEED $RANDOM, to generate seed)
 if "${RNSEED} >= 0" then "jump SELF RN_restart"  
+
+if "${num_stretch_files}==1" then &
+"restart $(v_relax_steps+v_stretch_steps) stretch_*_restart" &
+"jump SELF after_restart"
 
 variable restart_freq equal floor((v_stretch_steps-1)/(v_num_stretch_files-1))
 variable       stride equal stride(v_relax_steps+1,$(v_relax_steps+v_stretch_steps+v_restart_freq),v_restart_freq)
