@@ -186,6 +186,8 @@
 - Submitted single {F_N, stretch} data point to simulaiton for each honeycomb pattern for testing (with rupture test on)
 - Began structuring thesis and writing some theory on friction.
 - Testing rupture detection on honeycomb pattern and it is not responding as well as hoped. Especially for low stretch of patterns where the internal strength is low such that the drag will push the center to the side (it falls behind) increasing the MSD quite dramtically.
+- Found bug in job script generator for multirun (restart files was first moved to right place after sbatch is called). This worked for a low number of jobs but crashed for many jobs submitted at the same time. 
+- Working on automatic baseline tester from a folder of baseline npy configs
 
 
 
