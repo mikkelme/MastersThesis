@@ -108,8 +108,13 @@ class Simulation_runner:
         stretch_max_pct = self.variables['stretch_max_pct']
         RNSEED = self.variables['RNSEED']
         
-        # self.variables['root'] = '.'
         
+        nice_val = 100
+        # nice_val = None
+        if nice_val is None:
+            nice = ''
+        else:
+            nice = f'--nice {nice_val}'
         
         # Verify validity of RNSEED and interpret for print info
         if RNSEED == '$RANDOM':
@@ -182,17 +187,17 @@ class Simulation_runner:
         \n    [ -f \"$file\" ] || break\
         \n    folder1=\"${{file%_*}}\"_folder\
         \n    mkdir $folder1\
+        \n    mv $file $folder1/$file\
         \n    cd $folder1\
         \n    for i in ${{!job_array[@]}}; do\
         \n      folder2=job\"$i\"\
         \n      mkdir $folder2\
         \n      echo \"${{job_array[$i]}} -var restart_file ../$file\" > $folder2/job$i.sh\
         \n      cd $folder2\
-        \n      sbatch job$i.sh\
+        \n      sbatch job$i.sh {nice}\
         \n      cd ..\
         \n    done\
         \n    cd ..\
-        \n    mv $file $folder1/$file\
         \ndone")
         
         # --- RUN --- #

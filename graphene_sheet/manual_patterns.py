@@ -30,7 +30,8 @@ def pop_up(shape = (50, 100), size = (5,3), sp = 1, ref = None):
         ref = np.array(ref)
   
     # Catch unvalid settings
-    assert (np.abs(size[0] - size[1]) - 2)%4 == 0, f"Unit size = {size} did not fulfill: |size[1]-size[0]| = 2, 4, 6, 10..."
+    assert size[0]%2 == 1 and size[1]%2 == 1, f"Unit size = {size} must only contain odd numbers"
+    assert (np.abs(size[0] - size[1]) - 2)%4 == 0, f"Unit size = {size} did not fulfill: |size[1]-size[0]| = 2, 6, 10..."
     assert np.min(size) > 0, f"Unit size: {size} must have positives entries."
    
     # --- Set up cut out pattern --- #
