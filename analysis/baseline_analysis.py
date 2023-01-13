@@ -369,7 +369,7 @@ if __name__ == "__main__":
     
     
     # drag_length_compare(vel)
-    obj = drag_length_dependency('../Data/CONFIGS/cut_sizes/conf_1/stretch_16050_folder/job7/system_drag_Ff.txt')
+    obj = drag_length_dependency('../Data/CONFIGS/honeycomb/single_run_2/stretch_16528_folder/job0/system_drag_Ff.txt')
   
   
   

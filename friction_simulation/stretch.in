@@ -138,7 +138,7 @@ variable stress_drop    equal "f_YS < 0.5*v_max_YS"
 variable vel_peak       equal "v_vel_cummax_over_std>25"
 variable cluster_split  equal "f_Ncluster > 1" 
 variable min_stretch    equal "v_stretch_pct > 0.03"
-variable stress_threshold    equal "v_max_YS > 250000"
+variable stress_threshold    equal "f_YS > 250000"
 # variable stop_condition equal " v_vel_peak || (v_stress_drop && v_min_stretch) || v_cluster_split"
 variable stop_condition equal " (v_stress_drop && v_stress_threshold && v_min_stretch) || v_cluster_split"
 

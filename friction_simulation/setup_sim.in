@@ -7,7 +7,6 @@
 # --- Default settings --- #
 variable rupture_detection index 1 # Whether to run rupture detection
 
-
 # SWITCH: read_data || read_restart
 variable restart_file index None
 variable readable equal is_file(${restart_file})

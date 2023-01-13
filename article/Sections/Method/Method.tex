@@ -50,6 +50,20 @@
   \item ...
 \end{itemize}
 
+
+\section{Handling ruptures}
+Considered the following parameters to define rupture events.
+\begin{itemize}
+  \item Stress (in stretch direction) drop
+  \item Max velocity peak (peak in cummax divided by std)
+  \item peak in value MSD (com ave)
+  \item Drop in coordination number
+  \item Number of clusters (should be constant 1). This is the most secure one
+\end{itemize}
+
+
+Ideally one would store the nearest neighbours for each atom and check that thoose neighbours satays in proximity during the simulation. This would capture even the smallest rupture, but this is not availble at runtime in Lammps which made it non ideal. In addiditon this calculation would also be computational heavy because of the algorithm needed to make this investigation but also considering the fact that we cannot due early stopping and thus need to run a lot of ruptured sheet to the end of the simulation time. 
+
 \section{Sampling data}
 \begin{itemize}
   \item Different drag angles

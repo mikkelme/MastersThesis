@@ -122,22 +122,18 @@ def read_rdf(filename):
     # plt.legend()
  
 if __name__ == '__main__':
-    # filename = '../friction_simulation/my_simulation_space/rupture_data_test.txt'
-    # filename = '../friction_simulation/my_simulation_space/MSD.txt'
-    # read_MSD(filename)
     
-    # path =  '../Data/CONFIGS/cut_sizes/conf_1/' 
     path = '../friction_simulation/my_simulation_space/' 
+    # path = '../Data/CONFIGS/honeycomb/single_run_4'
     
-    # read_rdf('../friction_simulation/my_simulation_space/rdf.txt')
     
-    read_ystress(os.path.join(path,'YS.txt'))
-    read_cluster(os.path.join(path,'cluster.txt'))
+    # read_cluster(os.path.join(path,'cluster.txt'))
+    # read_vel(os.path.join(path,'vel.txt'))
+    # read_ystress(os.path.join(path,'YS.txt'))
+    
+    read_MSD(os.path.join(path, 'MSD.txt'))
     # read_CN(os.path.join(path,'CN.txt'))
-    read_vel(os.path.join(path,'vel.txt'))
-    # read_MSD(os.path.join('MSD.txt)')
     
-    # read_MSD('../Data/CONFIGS/sizes/conf_5/stretch_31489_folder/job1/MSD.txt')
     
     
     plt.show()

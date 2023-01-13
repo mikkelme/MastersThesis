@@ -185,6 +185,7 @@
 - Created configurations dataset for pop-up (#116) and honeycomb (#45) patterns.
 - Submitted single {F_N, stretch} data point to simulaiton for each honeycomb pattern for testing (with rupture test on)
 - Began structuring thesis and writing some theory on friction.
+- Testing rupture detection on honeycomb pattern and it is not responding as well as hoped. Especially for low stretch of patterns where the internal strength is low such that the drag will push the center to the side (it falls behind) increasing the MSD quite dramtically.
 
 
 

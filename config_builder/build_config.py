@@ -361,18 +361,20 @@ def honeycomb_dataset(shape = (60, 106), max_val = (1, 5, 5, 5)):
 if __name__ == "__main__":
     
     # pop_up_dataset(shape = (60, 106), max_sp = 4, max_cut = (9,13))
-    honeycomb_dataset()
+    # honeycomb_dataset(shape = (60, 106), max_val = (1, 5, 5, 5))
     
-    # mat = pop_up(shape = (60, 106), size = (3,9), sp = 1, ref = None)
-    # builder = config_builder(mat)
-    # builder.add_pullblocks()
-    # builder.save_lammps("sheet", ext = f"illegal", path = '.')
+    
+    mat = honeycomb((60, 106), 1, 1, 1, 1)
+    builder = config_builder(mat)
+    builder.add_pullblocks()
+    builder.view()
+    builder.save_lammps("sheet", ext = f"1115", path = '../friction_simulation')
     
     # builder.view()
     
   
   
-  
+    #######################################################
     
     # multiples = (8, 15) # 174x189
     # multiples = (7, 13) # 152x163
