@@ -21,13 +21,13 @@ def single_run():
     header = f"egil:{main_folder}/{test_name}/"
     dir = f"{header}{sim_name}/"
     
-    # proc.move_files_to_dest(["../friction_simulation/setup_sim.in", 
-    #                     "../friction_simulation/stretch.in",
-    #                     "../friction_simulation/drag.in",
-    #                     "../potentials/si.sw",
-    #                     "../potentials/C.tersoff",
-    #                     f"../config_builder/{proc.variables['config_data']}.txt",
-    #                     f"../config_builder/{proc.variables['config_data']}_info.in" ], header)
+    proc.move_files_to_dest(["../friction_simulation/setup_sim.in", 
+                        "../friction_simulation/stretch.in",
+                        "../friction_simulation/drag.in",
+                        "../potentials/si.sw",
+                        "../potentials/C.tersoff",
+                        f"../config_builder/{proc.variables['config_data']}.txt",
+                        f"../config_builder/{proc.variables['config_data']}_info.in" ], header)
         
     sim = Simulator(directory = dir, overwrite=True)
     sim.copy_to_wd( "../friction_simulation/friction_procedure.in")
@@ -106,13 +106,15 @@ def vary_variable(test_name = 'dt', variable_name = 'dt', variable_values = [], 
 
 if __name__ == "__main__":
     
-    dt_range = [0.00025, 0.0005, 0.001, 0.002]
-    vel_range = [1, 5, 10, 20, 30, 40]
-    temp_range = [5, 50, 100, 200, 300, 400, 500]
-    K_range = [0, 10, 30, 50, 100]
-    size_name = ['64x62', '86x87', '108x113', '130x138', '152x163', '174x189']
-    size_range = [f"sheet_nocut_{s}" for s in size_name]
+    # dt_range = [0.00025, 0.0005, 0.001, 0.002]
+    # vel_range = [1, 5, 10, 20, 30, 40]
+    # temp_range = [5, 50, 100, 200, 300, 400, 500]
+    # K_range = [0, 10, 30, 50, 100]
+    # size_name = ['64x62', '86x87', '108x113', '130x138', '152x163', '174x189']
+    # size_range = [f"sheet_nocut_{s}" for s in size_name]
     
 
-    # vary_variable(test_name = 'size', variable_name = 'config_data',  variable_values = size_range, sim_prefix = size_name)
+    vary_variable(test_name = 'size', variable_name = 'config_data',  variable_values = size_range, sim_prefix = size_name)
+    
+    
     single_run()

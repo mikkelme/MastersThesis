@@ -40,6 +40,8 @@ class data_generator:
         self.header =  header
         self.dir = os.path.join(self.header, simname)
         
+        self.config_path = '.' # Where to save new files
+
         
         
     def set_sheet_size(self):
@@ -60,22 +62,66 @@ class data_generator:
         return Lx, Ly
         
         
-    def run(self):
-        config_path = '.'
+    def run_single(self, main_folder, test_name, sim_name, variables = {}, copy = True, cores = 16): # TODO 
+        # main_folder = 'Baseline'
+        # # test_name   = 'vel'
+        # # sim_name    = 'v40'
+        # test_name   = 'time'
+        # sim_name    = '1cGrif'
+        
+            
+        # Intialize simulation runner
+        proc = Simulation_runner()
+        
+        # Build sheet 
+        builder = config_builder(self.mat)
+        png_file = builder.save_view(self.config_path, 'sheet')
+        builder.add_pullblocks()
+        lammps_file_txt, lammps_file_info = builder.save_lammps("sheet", ext = self.config_ext, path = self.config_path)
+        config_data = f'sheet_{self.config_ext}'
+        proc.add_variables(config_data = config_data)
+        
+        # Directories 
+        proc.config_path = self.config_path
+        
+        
+        header = f"egil:{main_folder}/{test_name}/"
+        dir = f"{header}{sim_name}/"
+    
+        if copy:
+            proc.move_files_to_dest(["../friction_simulation/setup_sim.in", 
+                            "../friction_simulation/stretch.in",
+                            "../friction_simulation/drag.in",
+                            "../potentials/si.sw",
+                            "../potentials/C.tersoff",
+                            f"../config_builder/{proc.variables['config_data']}.txt",
+                            f"../config_builder/{proc.variables['config_data']}_info.in" ], header)
+        
+        sim = Simulator(directory = dir, overwrite=True)
+        sim.copy_to_wd( "../friction_simulation/friction_procedure.in")
+            
+        # proc.variables["out_ext"] = sim_name
+        sim.set_input_script("../friction_simulation/friction_procedure.in", **proc.variables)
+        slurm_args = {'job-name':sim_name, 'partition':'normal', 'ntasks':cores, 'nodes':1}
+        sim.run(num_procs=cores, lmp_exec="lmp", slurm=True, slurm_args=slurm_args)
+        
+            
+    
+    def run_multi(self):
         
         # Intialize simulation runner
         proc = Simulation_runner()
         
         # # Build sheet 
         builder = config_builder(self.mat)
-        png_file = builder.save_view(config_path, 'sheet')
+        png_file = builder.save_view(self.config_path, 'sheet')
         builder.add_pullblocks()
-        lammps_file_txt, lammps_file_info = builder.save_lammps("sheet", ext = self.config_ext, path = config_path)
+        lammps_file_txt, lammps_file_info = builder.save_lammps("sheet", ext = self.config_ext, path = self.config_path)
         config_data = f'sheet_{self.config_ext}'
         proc.add_variables(config_data = config_data)
         
         # Directories 
-        proc.config_path = config_path
+        proc.config_path = self.config_path
         
         # Multi run settings 
         num_stretch_files = 1
@@ -93,7 +139,7 @@ class data_generator:
         
         # Start multi run
         root_path = proc.multi_run(self.header, self.dir, F_N, num_procs = 16, jobname = f"HC{self.config_ext}")
-        print(f'root_path = {root_path}')
+        # print(f'root_path = {root_path}')
         
         # Transfer config npy- and png-file 
         proc.move_files_to_dest([self.npy_file, png_file], root_path)
@@ -108,17 +154,19 @@ class data_generator:
 def run_files(filenames, header, simname):
     for file in filenames:
         gen = data_generator(file, header, simname)
-        gen.run()
+        gen.run_multi()
         
 
 
 if __name__ == "__main__":
     # run_files(get_files_in_folder('../config_builder/nocut_sizes/', exclude = 'DS_Store'), header =  'egil:CONFIGS/nocut_sizes')
     
-    files = get_files_in_folder('../config_builder/honeycomb/', ext = '.npy')
-    files = files[20:]
-    print(files)
-    run_files(files, header =  'egil:CONFIGS/honeycomb', simname = 'single_run')
+    # files = get_files_in_folder('../config_builder/honeycomb/', ext = '.npy')
+    # files = files[20:]
+    # print(files)
+    # run_files(files, header =  'egil:CONFIGS/honeycomb', simname = 'single_run')
+    
+    pass
     
     
-    
+   

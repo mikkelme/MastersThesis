@@ -1,5 +1,0 @@
-variable pullblock_yhi equal 20.237523931520766
-variable pullblock_ylo equal 82.9550836735898
-variable pullblock_zlo equal 17.683415119175876
-variable substrate_freeze_zhi equal 5.500001000000001
-variable substrate_contact_zlo equal 8.283415119175874

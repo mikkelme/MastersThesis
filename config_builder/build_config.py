@@ -363,21 +363,24 @@ def honeycomb_dataset(shape = (60, 106), min_val = (1, 1, 1, 1), max_val = (1, 5
     
 if __name__ == "__main__":
     
-    pop_up_dataset(shape = (60, 106), min_sp = 2, max_sp = 4, max_cut = (9,13))
+    # pop_up_dataset(shape = (60, 106), min_sp = 2, max_sp = 4, max_cut = (9,13))
     # honeycomb_dataset(shape = (60, 106), min_val = (2, 2, 1, 1), max_val = (3, 5, 5, 5))
     
     
     # mat = honeycomb((60, 106), 3, 2, 1, 5)
     
 
-    # mat = pop_up((60, 106), (1,3), 2)
+    mat = pop_up((60, 106), (1,3), 2)
+    mat[:] = 1
     # mat[mat == 1] = 2
     # mat[mat == 0] = 1
     # mat[mat == 2] = 0
-    # builder = config_builder(mat)
+    builder = config_builder(mat)
     # builder.add_pullblocks()
-    # builder.view()
-    # builder.save_lammps("sheet", ext = f"3215", path = '../friction_simulation')
+    builder.view()
+    builder.save_mat('./baseline', 'nocut')
+    builder.save_view('./baseline', 'sheet', 'nocut')
+    # builder.save_lammps("sheet", ext = f"nocut", path = './baseline')
     
     
   
