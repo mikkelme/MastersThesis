@@ -189,7 +189,8 @@
 - Found bug in job script generator for multirun (restart files was first moved to right place after sbatch is called). This worked for a low number of jobs but crashed for many jobs submitted at the same time. 
 - Working on automatic baseline tester from a folder of baseline npy configs
 
-
+#### Week 3 (16/01/2023 - 22/01/2023) - Working from Pisa
+- Rewrote friction simulation with atomi_style "bonds" to solve continuing problems with rupture detection. Initial test shows promising results for this being the general solution to all cuts. 
 
 ## Things to remember 
 
