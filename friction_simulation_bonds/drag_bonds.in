@@ -3,30 +3,17 @@
 # along given direction.           #
 ####################################
 
-# --- Rupture detection --- #
-# Default rupture detection parameters 
-# variable detection_freq         equal 10000 # Number of timesteps between each rupture check
-variable detection_freq         equal 1000 # Number of timesteps between each rupture check
-variable YS_mean_vals           equal 10    # Number of y-stress mean values sampled
-variable YS_vals                equal 10    # Number of individual samples for each y-stress mean value
-variable cluster_vals           equal 10    # Number of cluster values sampled
 
 # Setup system
 variable restart_file index None
 variable readable equal is_file(${restart_file})
 variable SMAX equal $(v_stretch_max_pct) 
-
-print "TEST"
-print "${restart_file}"
-print "${readable}"
-
 if !${readable} then "jump SELF system_is_running"
 
 #######################################
 ### --- Setup from read_restart --- ###
 #######################################
-include ${root}/setup_sim.in
-
+include ${root}/setup_sim_bonds.in
 
 variable SMAX equal v_stretch_pct # Update stretch_max_pct with val from restart file
 unfix PB_ave 
@@ -64,9 +51,6 @@ print "-------------------------"
 print ""
 
 
-# thermo_style custom c_PB_yhigh_rigid_ymin c_PB_ylow_rigid_ymax c_sheet_COM[1]
-# run 0 # activate compute
-
 ##############################
 ### --- Running system --- ###
 ##############################
@@ -95,65 +79,31 @@ rupture_detection ${rupture_detection} &
 """ file info_file.txt
 
 
+if "${rupture_detection}" then "thermo_style custom c_bmax" "run 0"
 if "${is_ruptured}" then "jump SELF after_drag"
-
-
-# ------------------ Rupture detection calculations ------------------ #
-if "!${rupture_detection}" then "jump SELF skip_rupture_calculations"
-
-# Sampling parameters 
-variable YS_Nfreq equal floor(v_detection_freq/v_YS_mean_vals)
-variable YS_Nevery equal floor(v_YS_Nfreq/v_YS_vals)
-variable cluster_Nevery equal floor(v_detection_freq/v_cluster_vals)
-
-# MSD
-##########################################
-compute MSD_clean    sheet msd com no  average no
-compute MSD_com      sheet msd com yes average no
-compute MSD_com_ave  sheet msd com yes average yes
-variable MSD_clean   equal sqrt(c_MSD_clean[1]^2+c_MSD_clean[2]^2)
-variable MSD_com     equal sqrt(c_MSD_com[1]^2+c_MSD_com[2]^2)
-variable MSD_com_ave equal sqrt(c_MSD_com_ave[1]^2+c_MSD_com_ave[2]^2)
-
-fix MSD sheet ave/time ${YS_Nevery} ${YS_vals} ${YS_Nfreq} v_MSD_clean v_MSD_com v_MSD_com_ave file MSD.txt 
-##########################################
-
-
-
-# Cluster count mean value 
-fix Ncluster full_sheet ave/time ${cluster_Nevery} ${cluster_vals} ${detection_freq} c_Ncluster file cluster.txt
-
-# Rupture conditions
-variable MSD_peak       equal "v_MSD_com_ave > 15.0"
-variable cluster_split  equal "f_Ncluster > 1" 
-
-# Save stop_condition bool in vector keep is_ruptured current even for non integer timesteps
-variable stop_condition  equal "v_MSD_peak || v_cluster_split"
-fix stop_condition_vec sheet vector ${detection_freq} v_stop_condition 
-variable is_ruptured    equal max(f_stop_condition_vec)       
-# fix rupture_detector sheet halt ${detection_freq} v_is_ruptured != 0 error continue  <----------!!!!!!!!
-
-########################################################################
-label skip_rupture_calculations 
-
 
 # ---------- Pause 1 ---------- #
 # Update fixes
 velocity PB_tot_rigid set 0 0 0
 unfix PB_ave 
 fix PB_ave PB_tot_rigid aveforce 0 0 0 # Average force vector completely
-thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct
 
+if "${rupture_detection}" then "thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct c_bmax" &
+else "thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct"
 
 print "--> Pause 1: $(v_pause1_steps) timesteps, $(v_pause1_steps*dt) ps"
 run  $(v_pause1_steps) 
-# if "${is_ruptured}" then "jump SELF after_drag" <----------!!!!!!!!
+if "${is_ruptured}" then "jump SELF after_drag"
+
+
 
 
 # ---------- Apply normal force ---------- #
 print "--> Apply normal force = $(v_F_N)"
 fix normal_force PB_tot addforce 0.0 0.0 $(-v_F_N/count(PB_tot))
-thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct c_sheet_COM[3] c_Ff[3] f_normal_force[3] c_sheet_fz v_sub_sheet_seperation 
+
+if "${rupture_detection}" then "thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct c_sheet_COM[3] c_Ff[3] f_normal_force[3] c_sheet_fz v_sub_sheet_seperation c_bmax" &
+else "thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct c_sheet_COM[3] c_Ff[3] f_normal_force[3] c_sheet_fz v_sub_sheet_seperation"
 
 # Add damper
 variable viscosity equal 0.05
@@ -168,14 +118,17 @@ print "--> damper on (viscosity = $(v_viscosity)) "
 # Run with damper on
 if $(v_step_dampen)>$(v_pause2_steps) then "variable step_dampen equal v_pause2_steps"
 run $(v_step_dampen)
-# if "${is_ruptured}" then "jump SELF after_drag" <----------!!!!!!!!
+if "${is_ruptured}" then "jump SELF after_drag"
+
 
 
 # Run remaining with damper off
 unfix PB_damper
 print "--> damper off"
 run  $(v_pause2_steps-v_step_dampen) 
-# if "${is_ruptured}" then "jump SELF after_drag" <----------!!!!!!!!
+if "${is_ruptured}" then "jump SELF after_drag"
+
+
 
 
 # ---------- Drag sheet ---------- #
@@ -203,12 +156,8 @@ label after_move_commands
 fix move_va virtuel_atom move linear $(v_drag_speed*v_drag_dir_x/v_dir_norm) $(v_drag_speed*v_drag_dir_y/v_dir_norm) 0 units box 
 
 # Thermo
-thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct c_sheet_COM[1] c_sheet_COM[2] 
-
-# if "!${rupture_detection}" then &
-# "thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct c_sheet_COM[1] c_sheet_COM[2]" &
-# else &
-# "thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct c_sheet_COM[1] c_sheet_COM[2] f_YS v_max_YS f_Ncluster" 
+if "${rupture_detection}" then "thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct c_sheet_COM[1] c_sheet_COM[2] c_bmax" &
+else "thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct c_sheet_COM[1] c_sheet_COM[2]"
 
 # Output
 fix friction_force_spring all ave/time ${Nevery} ${Nrepeat} ${Nfreq} v_move_force_x v_move_force_y c_Ff_sheet[1] c_Ff_sheet[2] c_Ff_sheet[3] c_Ff_PB[1] c_Ff_PB[2] c_Ff_PB[3] c_sheet_COM[1] c_sheet_COM[2] c_sheet_COM[3] v_full_sheet_bond_pct v_sheet_bond_pct file system_${out_ext}_Ff.txt 
@@ -220,6 +169,8 @@ run  $(v_drag_steps)
 
 # ------------ After drag ------------ # 
 label after_drag
+variable is_ruptured equal $(v_bondbreak)
+
 
 if "${rupture_detection}" then &
 "print 'is_ruptured ${is_ruptured}' append info_file.txt" &

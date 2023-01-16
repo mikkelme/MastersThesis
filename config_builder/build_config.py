@@ -177,11 +177,33 @@ class config_builder:
         info_file = savename + '_info.in'
         
         
-        # Lammps data
-        lammpsdata.write_lammps_data(config_file, atoms = self.obj_dict[object], 
+        # Lammps 'atomic' style data file
+        tmp_data = './tmp_lammps_data.txt'
+        lammpsdata.write_lammps_data(tmp_data, atoms = self.obj_dict[object], 
                                                         specorder = specorder, 
-                                                        velocities = True)
-    
+                                                        velocities = False,
+                                                        units = "metal")
+        
+
+        # Rewrite to 'bond' style format
+        infile = open(tmp_data, 'r')
+        outfile = open(config_file, 'w')
+        
+        while True:
+            line = infile.readline()
+            outfile.write(line)
+            if line[:5] == "Atoms":
+                outfile.write(infile.readline())
+                break
+        
+        for line in infile:
+            words = line.split()
+            words.insert(1, '0')
+            words += ['0', '0', '0\n']
+            outfile.write(' '.join(s for s in words))
+            
+        os.remove(tmp_data)
+        
         # Info file
         outfile = open(info_file, 'w')
         
@@ -370,17 +392,19 @@ if __name__ == "__main__":
     # mat = honeycomb((60, 106), 3, 2, 1, 5)
     
 
-    mat = pop_up((60, 106), (1,3), 2)
-    mat[:] = 1
+    # mat = pop_up((60, 106), (1,3), 2)
+    mat = pop_up((20, 40), (5,7), 2)
+    # mat[:] = 1
     # mat[mat == 1] = 2
     # mat[mat == 0] = 1
     # mat[mat == 2] = 0
     builder = config_builder(mat)
-    # builder.add_pullblocks()
-    builder.view()
-    builder.save_mat('./baseline', 'nocut')
-    builder.save_view('./baseline', 'sheet', 'nocut')
-    # builder.save_lammps("sheet", ext = f"nocut", path = './baseline')
+    builder.add_pullblocks()
+    # builder.view()
+    
+    # builder.save_mat('./baseline', 'nocut')
+    # builder.save_view('./baseline', 'sheet', 'nocut')
+    builder.save_lammps("sheet", ext = f"small", path = '../friction_simulation_bonds')
     
     
   

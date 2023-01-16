@@ -1,0 +1,154 @@
+###########################################
+# Relax and stretch system, and export    #
+# restart files if num_stretch_files > 0. #
+###########################################
+
+
+# --- Default settings --- #
+variable num_stretch_files index 0
+variable run_rupture_test index 0
+
+# Check is this is before of after planned rupture test
+if "$(is_file(rupture_test.txt))" then "variable run_rupture_test_ equal 0" &
+else &
+"variable run_rupture_test_ equal ${run_rupture_test}" &
+"variable SMAX equal $(v_stretch_max_pct)" 
+
+
+
+# --- Setup system --- #
+include ${root}/setup_sim_bonds.in
+variable info_file string info_file.txt
+# delete_atoms group substrate  # XXXXXXXX
+
+
+
+# --- Rupture detection --- #
+if "${run_rupture_test_}" then &
+"variable stretch_slow_down     equal 5" &
+else &
+"variable stretch_slow_down     equal 1"
+
+
+# --- Write info --- #
+if "${run_rupture_test_}" then &
+"variable info_file string rupture_test.txt" &
+"variable stretch_speed          equal $(v_stretch_speed/v_stretch_slow_down)" &
+"variable stretch_steps equal $(floor(v_stretch_slow_down*v_SMAX/v_stretch_speed_pct/dt))" 
+
+print """&
+root ${root}
+config_data ${config_data}
+out_ext ${out_ext}
+dt ${dt}
+T ${T}
+relax_time ${relax_time}
+stretch_speed_pct $(v_stretch_speed_pct/v_stretch_slow_down)
+SMAX ${SMAX}
+num_stretch_files ${num_stretch_files}
+rupture_detection ${rupture_detection} &
+""" file ${info_file}
+
+
+# ----------  Relax sheet ---------- #
+# Add spring to restrict rotation or movement of sheet COM:
+#  - Hold PB COM in initial x-position
+#  - Hold sheet COM in initial position
+fix PB_ylow_x_hold PB_ylow_rigid spring tether 1e5 $(c_sheet_COM[1]) NULL NULL 0.0
+fix PB_high_x_hold PB_yhigh_rigid spring tether 1e5 $(c_sheet_COM[1]) NULL NULL 0.0
+fix sheet_COM_hold full_sheet spring tether 1e5 $(c_sheet_COM[1]) $(c_sheet_COM[2]) NULL 0.0
+
+print "--> Relax: $(v_relax_steps) timesteps, $(v_relax_steps*dt) ps"
+thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct # c_bmax v_is_ruptured
+run $(v_relax_steps-1)
+if "${is_ruptured}" then "jump SELF after_stretch"
+
+# Lock S0 after relaxing and export S0 info via y-pos of tmp type 3 atom
+variable S0 equal $(v_S0) 
+if  "${num_stretch_files}>=1" then "create_atoms 3 single 0 $(v_S0) 0 units box" &
+"group S0_info type 3"
+run 1
+if "${is_ruptured}" then "jump SELF after_stretch"
+
+unfix PB_ylow_x_hold
+unfix PB_high_x_hold
+unfix sheet_COM_hold
+
+# ----------  Write restart files ---------- #
+if "${num_stretch_files}<1 || ${run_rupture_test_}" then "jump SELF after_restart"
+
+variable RNSEED index -1  # Random seed (use command-line argument: -var RNSEED $RANDOM, to generate seed)
+if "${RNSEED} >= 0" then "jump SELF RN_restart"  
+
+if "${num_stretch_files}==1" then &
+"restart $(v_relax_steps+v_stretch_steps) stretch_*_restart" &
+"jump SELF after_restart"
+
+variable restart_freq equal floor((v_stretch_steps-1)/(v_num_stretch_files-1))
+variable       stride equal stride(v_relax_steps+1,$(v_relax_steps+v_stretch_steps+v_restart_freq),v_restart_freq)
+restart  v_stride stretch_*_restart
+
+jump SELF after_restart
+label RN_restart
+
+variable restart_freq  equal floor(v_stretch_steps/(v_num_stretch_files))
+variable start         equal v_relax_steps+v_restart_freq*ceil((step-v_relax_steps)/v_restart_freq) # interval start
+variable restart_steps equal round(random(v_start+1,v_start+v_restart_freq,v_RNSEED+1)) # random timestep in [start+1, start + restart_freq]
+restart  v_restart_steps stretch_*_restart
+
+label after_restart
+
+
+# ---------- Stretch sheet ---------- # 
+# Update fixes
+fix ylow_move  PB_ylow_rigid move linear 0 $(-v_stretch_speed/2) NULL units box
+fix yhigh_move PB_yhigh_rigid move linear 0 $(v_stretch_speed/2) NULL units box
+
+print "--> Stretch: $(v_stretch_steps) timesteps, $(v_stretch_steps*dt) ps"
+run $(v_stretch_steps)
+restart 0
+
+# Unfix moves (relevant if continued directly)
+unfix ylow_move
+unfix yhigh_move
+
+
+
+# ---------- After stretch ---------- # 
+label after_stretch
+## rupture detection: TRUE/FALSE
+if "!${rupture_detection}" then &
+"print 'is_ruptured None' append info_file.txt" &
+"jump SELF no_rupture_detection"
+
+# Write is_ruptured to info file
+# variable is_ruptured equal $(v_bondbreak)
+print """&
+run_rupture_test ${run_rupture_test_}
+is_ruptured ${is_ruptured} &
+""" append ${info_file}
+
+## Is ruptured: TRUE/FALSE
+if "!${is_ruptured}" then "jump SELF no_rupture"
+
+# Write rupture step and stretch value to info file
+thermo_style custom c_PB_yhigh_rigid_ymin c_PB_ylow_rigid_ymax
+run 0
+print """&
+rupture_step $(step)
+rupture_stretch ${stretch_pct} &
+""" append ${info_file}
+variable SMAX equal ${stretch_pct} 
+label no_rupture 
+
+# Unfix 
+unfix rupture_detector 
+label no_rupture_detection 
+
+
+
+# Repeat script without rupture test
+if "${run_rupture_test_}" then &
+"clear" &
+"include ${root}/stretch_bonds.in"
+

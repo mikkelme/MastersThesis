@@ -30,8 +30,6 @@ def read_ystress(filename, create_fig = True):
     plt.plot(time, YStol, linestyle = '--', color = 'black')
     plt.ylabel('$\sigma_y$')
     
-
-    
     
 
 def read_cluster(filename, create_fig = True):
@@ -120,6 +118,27 @@ def read_rdf(filename):
     plt.xlabel("r [Å]")
     plt.ylabel("coord(r)")
     # plt.legend()
+    
+    
+    
+
+
+def read_CNP(filename, create_fig = True):
+    data = read_ave_time(filename)
+    time = data['TimeStep']
+    
+    if create_fig: plt.figure(num = unique_fignum())
+    # print(data['c_CN_ave'].max(), data['c_CN_ave'].min())
+    
+
+    
+    plt.plot(time, data['c_cnp_ave_1'], label = "cnp ave_1")
+    plt.plot(time, data['c_cnp_ave_25'], label = "cnp ave_25")
+    plt.plot(time, data['c_cnp_ave_3'], label = "cnp ave_3")
+    plt.plot(time, data['c_cnp_ave_35'], label = "cnp ave_35")
+    plt.plot(time, data['c_cnp_ave_4'], label = "cnp ave_4")
+    
+    plt.legend()
  
 if __name__ == '__main__':
     
@@ -132,7 +151,10 @@ if __name__ == '__main__':
     # read_ystress(os.path.join(path,'YS.txt'))
     
     read_MSD(os.path.join(path, 'MSD.txt'))
-    # read_CN(os.path.join(path,'CN.txt'))
+    read_CN(os.path.join(path,'CN.txt'))
+    read_CNP(os.path.join(path,'cnp.txt'))
+    
+    
     
     
     

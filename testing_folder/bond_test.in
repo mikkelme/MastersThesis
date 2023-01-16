@@ -1,0 +1,54 @@
+units metal
+newton on 
+boundary p p m  
+atom_style bond 
+# atom_style atomic
+
+# Graphene lattice
+lattice custom 2.419 &
+        a1    0                 1.0     0     &
+        a2    $(sqrt(3)/2)      0.5     0     &
+        a3    $(1/(2*sqrt(3)))  0.5     0.83  &
+        basis 0                 0       0     &
+        basis $(1/3)            $(1/3)  0.0
+
+# Simulation box & atoms
+region sheet_reg block 5 25 5 25 0 0.5 
+region boxreg block 0 30 0 30 -5 5 
+create_box 1 boxreg
+create_atoms 1 region sheet_reg basis 1 1
+
+
+# # Add substrate
+# lattice diamond 5.430953 
+# region	subreg block 10 20 10 20 -2 -1
+# create_atoms 2 region subreg
+
+# # Mass            
+# mass 1 12.0107  
+# mass 2 28.0855
+
+# # Potential
+# pair_style hybrid tersoff sw  lj/cut 7.0
+# pair_coeff * * tersoff ../potentials/C.tersoff C NULL   # Sheet C-C
+# pair_coeff 1 2 lj/cut 0.0092 3.0
+# pair_coeff * * sw ../potentials/si.sw NULL Si           # Substrate Si-Si
+
+
+mass 1 12.0107  
+pair_style tersoff
+pair_coeff * * C.tersoff C 
+
+
+# velocity all create 1.0 5432373 dist gaussian
+
+timestep 0.001
+fix nve all nve 
+
+# Output
+thermo 10
+dump 1 all custom 100 dump_bond.data id type x y z vx vy vz
+# run 200
+write_data bond_test.txt
+
+

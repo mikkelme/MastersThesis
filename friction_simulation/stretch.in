@@ -103,8 +103,8 @@ fix stretch_pct_vec sheet vector ${YS_Nfreq} v_stretch_pct     # Store stretch v
 variable max_YS equal max(f_YS_mean_vec)                   # Compute max of mean values
 
 # # Coordination number
-# fix CN sheet ave/time ${YS_Nevery} ${YS_vals} ${YS_Nfreq} c_CN_ave file CN.txt 
-# fix CN_mean_vec sheet vector ${YS_Nfreq} f_CN              
+fix CN sheet ave/time ${YS_Nevery} ${YS_vals} ${YS_Nfreq} c_CN_ave file CN.txt 
+fix CN_mean_vec sheet vector ${YS_Nfreq} f_CN              
 # variable max_CN equal max(f_CN_mean_vec)             
 # variable CN_tol equal $(1-2/count(sheet))
 
@@ -128,6 +128,49 @@ variable vel_cummax_over_std equal v_vel_cummax/ave(f_vel_std_vec)
 
 fix vel sheet ave/time ${YS_Nfreq} 1 ${YS_Nfreq} v_vel_cummax_over_std file vel.txt # For debugging
 ##########################################
+
+
+
+# Experimenting
+##########################################
+# compute 1 all damage/atom
+# compute test sheet property/local natom1, natom2
+# compute 1 sheet property/local ntype1 ntype2
+# compute cnp_1 sheet cnp/atom 2
+# compute cnp_25 sheet cnp/atom 2.5
+# compute cnp_3 sheet cnp/atom 3
+# compute cnp_35 sheet cnp/atom 3.5
+# compute cnp_4 sheet cnp/atom 4
+# compute cnp_ave_1 sheet reduce ave c_cnp_1
+# compute cnp_ave_25 sheet reduce ave c_cnp_25
+# compute cnp_ave_3 sheet reduce ave c_cnp_3
+# compute cnp_ave_35 sheet reduce ave c_cnp_35
+# compute cnp_ave_4 sheet reduce ave c_cnp_4
+# fix cnp sheet ave/time ${YS_Nevery} ${YS_vals} ${YS_Nfreq} c_cnp_ave_1 c_cnp_ave_25 c_cnp_ave_3 c_cnp_ave_35 c_cnp_ave_4 file cnp.txt 
+
+
+# fix 1 all property/atom mol ghost yes
+# fix 1 all property/atom bonds
+# create_bonds many all all 1 1.0 1.2
+# bond_style harmonic
+# compute OO sheet orientorder/atom
+# compute OO all orientorder/atom degrees 5 4 6 8 10 12 nnn NULL cutoff 1.5 components 4
+# compute OO all orientorder/atom degrees 5 4 6 8 10 12 nnn NULL cutoff 1.5 
+# compute OO all orientorder/atom components 6
+# compute CO all coord/atom orientorder OO 0.5
+
+# dump dump_OO sheet custom 100 dump_OO.txt c_OO[*]
+# dump dump_OO sheet custom 100 dump_OO.txt mol
+# dump dump_CN sheet custom 100 dump_CN.txt CO
+
+
+
+# "compute CN sheet coord/atom cutoff 2.2" &
+# "compute CN_ave sheet reduce ave c_CN" &
+
+##########################################
+
+
 
 # Cluster count mean value 
 fix Ncluster full_sheet ave/time ${cluster_Nevery} ${cluster_vals} ${detection_freq} c_Ncluster file cluster.txt
