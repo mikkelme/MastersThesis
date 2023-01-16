@@ -59,7 +59,9 @@ fix PB_high_x_hold PB_yhigh_rigid spring tether 1e5 $(c_sheet_COM[1]) NULL NULL 
 fix sheet_COM_hold full_sheet spring tether 1e5 $(c_sheet_COM[1]) $(c_sheet_COM[2]) NULL 0.0
 
 print "--> Relax: $(v_relax_steps) timesteps, $(v_relax_steps*dt) ps"
-thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct # c_bmax v_is_ruptured
+
+if "${rupture_detection}" then "thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct c_bmax " &
+else "thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct"
 run $(v_relax_steps-1)
 if "${is_ruptured}" then "jump SELF after_stretch"
 
@@ -108,6 +110,7 @@ print "--> Stretch: $(v_stretch_steps) timesteps, $(v_stretch_steps*dt) ps"
 run $(v_stretch_steps)
 restart 0
 
+
 # Unfix moves (relevant if continued directly)
 unfix ylow_move
 unfix yhigh_move
@@ -142,9 +145,8 @@ variable SMAX equal ${stretch_pct}
 label no_rupture 
 
 # Unfix 
-unfix rupture_detector 
+unfix rupture_detector
 label no_rupture_detection 
-
 
 
 # Repeat script without rupture test

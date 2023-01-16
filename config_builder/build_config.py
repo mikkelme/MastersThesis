@@ -393,18 +393,19 @@ if __name__ == "__main__":
     
 
     # mat = pop_up((60, 106), (1,3), 2)
-    mat = pop_up((20, 40), (5,7), 2)
+    # mat = pop_up((60, 106), (5,3), 1)
+    mat = honeycomb((60, 106), 3, 2, 1, 5)
     # mat[:] = 1
     # mat[mat == 1] = 2
     # mat[mat == 0] = 1
     # mat[mat == 2] = 0
     builder = config_builder(mat)
     builder.add_pullblocks()
-    # builder.view()
+    builder.view()
     
     # builder.save_mat('./baseline', 'nocut')
     # builder.save_view('./baseline', 'sheet', 'nocut')
-    builder.save_lammps("sheet", ext = f"small", path = '../friction_simulation_bonds')
+    builder.save_lammps("sheet", ext = f"ruptest", path = '../friction_simulation_bonds')
     
     
   

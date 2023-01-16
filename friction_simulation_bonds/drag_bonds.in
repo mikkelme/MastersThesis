@@ -165,12 +165,11 @@ fix friction_force_spring all ave/time ${Nevery} ${Nrepeat} ${Nfreq} v_move_forc
 # Run
 print "--> Drag : $(v_drag_steps) timesteps, $(v_drag_steps*dt) ps"
 run  $(v_drag_steps) 
-
+unfix rupture_step
+run 10000
 
 # ------------ After drag ------------ # 
 label after_drag
-variable is_ruptured equal $(v_bondbreak)
-
 
 if "${rupture_detection}" then &
 "print 'is_ruptured ${is_ruptured}' append info_file.txt" &
