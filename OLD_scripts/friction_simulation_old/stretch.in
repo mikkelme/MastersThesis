@@ -1,0 +1,294 @@
+###########################################
+# Relax and stretch system, and export    #
+# restart files if num_stretch_files > 0. #
+###########################################
+
+
+# --- Default settings --- #
+variable num_stretch_files index 0
+variable run_rupture_test index 0
+
+# Check is this is before of after planned rupture test
+if "$(is_file(rupture_test.txt))" then "variable run_rupture_test_ equal 0" &
+else &
+"variable run_rupture_test_ equal ${run_rupture_test}" &
+"variable SMAX equal $(v_stretch_max_pct)" 
+
+
+# --- Rupture detection --- #
+# Default rupture detection parameters 
+variable detection_freq         equal 1000  # Number of timesteps between each rupture check
+variable YS_mean_vals            equal 10    # Number of y-stress mean values sampled
+variable YS_vals                 equal 10    # Number of individual samples for each y-stress mean value
+variable cluster_vals            equal 10    # Number of cluster values sampled
+variable stretch_slow_down      equal 1
+
+# Updated parameters for rupture test
+if "${run_rupture_test_}" then &
+"variable detection_freq        equal 100" &
+"variable YS_mean_vals          equal 10" &
+"variable YS_vals               equal 10" &
+"variable cluster_vals          equal 100" &
+"variable stretch_slow_down     equal 5" &
+
+
+# --- Setup system --- #
+include ${root}/setup_sim.in
+variable info_file string info_file.txt
+
+# delete_atoms group substrate  # XXXXXXXX
+
+if "${run_rupture_test_}" then &
+"variable info_file string rupture_test.txt" &
+"variable stretch_speed          equal $(v_stretch_speed/v_stretch_slow_down)" &
+"variable stretch_steps equal $(floor(v_stretch_slow_down*v_SMAX/v_stretch_speed_pct/dt))" 
+
+# Write relevant variables to info_file.txt
+print """&
+root ${root}
+config_data ${config_data}
+out_ext ${out_ext}
+dt ${dt}
+T ${T}
+relax_time ${relax_time}
+stretch_speed_pct $(v_stretch_speed_pct/v_stretch_slow_down)
+SMAX ${SMAX}
+num_stretch_files ${num_stretch_files}
+rupture_detection ${rupture_detection} &
+""" file ${info_file}
+
+
+# ----------  Relax sheet ---------- #
+# Add spring to restrict rotation or movement of sheet COM:
+#  - Hold PB COM in initial x-position
+#  - Hold sheet COM in initial position
+fix PB_ylow_x_hold PB_ylow_rigid spring tether 1e5 $(c_sheet_COM[1]) NULL NULL 0.0
+fix PB_high_x_hold PB_yhigh_rigid spring tether 1e5 $(c_sheet_COM[1]) NULL NULL 0.0
+fix sheet_COM_hold full_sheet spring tether 1e5 $(c_sheet_COM[1]) $(c_sheet_COM[2]) NULL 0.0
+
+print "--> Relax: $(v_relax_steps) timesteps, $(v_relax_steps*dt) ps"
+thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct
+run $(v_relax_steps-1)
+
+# Lock S0 after relaxing and export S0 info via y-pos of tmp type 3 atom
+variable S0 equal $(v_S0) 
+if  "${num_stretch_files}>=1" then "create_atoms 3 single 0 $(v_S0) 0 units box" &
+"group S0_info type 3"
+run 1
+
+
+unfix PB_ylow_x_hold
+unfix PB_high_x_hold
+unfix sheet_COM_hold
+
+
+# ------------------ Rupture detection calculations ------------------ #
+if "!${rupture_detection}" then "jump SELF skip_rupture_calculations"
+
+compute sheet_stress sheet stress/atom NULL 
+compute YS sheet reduce ave c_sheet_stress[2]  
+# compute CN sheet coord/atom cutoff 2.2 
+# compute CN_ave sheet reduce ave c_CN 
+
+
+# Sampling parameters 
+variable YS_Nfreq       equal floor(v_detection_freq/v_YS_mean_vals)
+variable YS_Nevery      equal floor(v_YS_Nfreq/v_YS_vals)
+variable cluster_Nevery equal floor(v_detection_freq/v_cluster_vals)
+
+# y-stress 
+fix YS sheet ave/time ${YS_Nevery} ${YS_vals} ${YS_Nfreq} c_YS file YS.txt # Mean values
+fix YS_mean_vec sheet vector ${YS_Nfreq} f_YS              # Store mean values in vector
+fix stretch_pct_vec sheet vector ${YS_Nfreq} v_stretch_pct     # Store stretch values in vector
+variable max_YS equal max(f_YS_mean_vec)                   # Compute max of mean values
+
+# # Coordination number
+fix CN sheet ave/time ${YS_Nevery} ${YS_vals} ${YS_Nfreq} c_CN_ave file CN.txt 
+fix CN_mean_vec sheet vector ${YS_Nfreq} f_CN              
+# variable max_CN equal max(f_CN_mean_vec)             
+# variable CN_tol equal $(1-2/count(sheet))
+
+
+# Velocity 
+##########################################
+compute vel sheet property/atom vx vy
+variable velnorm_atom atom sqrt(c_vel[1]^2+c_vel[2]^2) #vel norm for xy plane
+
+compute vel_max sheet reduce max v_velnorm_atom 
+compute ave_vel sheet reduce ave v_velnorm_atom 
+compute avesq_vel sheet reduce avesq v_velnorm_atom 
+
+variable std_vel equal sqrt(c_avesq_vel-c_ave_vel^2)
+variable vel_max equal c_vel_max-c_ave_vel  # subtract average velocity (avoid problems with slip)
+
+fix vel_std_vec sheet vector ${YS_Nfreq} v_std_vel              
+fix vel_max_vec sheet vector 1 v_vel_max         
+variable vel_cummax equal max(f_vel_max_vec)             
+variable vel_cummax_over_std equal v_vel_cummax/ave(f_vel_std_vec)
+
+fix vel sheet ave/time ${YS_Nfreq} 1 ${YS_Nfreq} v_vel_cummax_over_std file vel.txt # For debugging
+##########################################
+
+
+
+# Experimenting
+##########################################
+# compute 1 all damage/atom
+# compute test sheet property/local natom1, natom2
+# compute 1 sheet property/local ntype1 ntype2
+# compute cnp_1 sheet cnp/atom 2
+# compute cnp_25 sheet cnp/atom 2.5
+# compute cnp_3 sheet cnp/atom 3
+# compute cnp_35 sheet cnp/atom 3.5
+# compute cnp_4 sheet cnp/atom 4
+# compute cnp_ave_1 sheet reduce ave c_cnp_1
+# compute cnp_ave_25 sheet reduce ave c_cnp_25
+# compute cnp_ave_3 sheet reduce ave c_cnp_3
+# compute cnp_ave_35 sheet reduce ave c_cnp_35
+# compute cnp_ave_4 sheet reduce ave c_cnp_4
+# fix cnp sheet ave/time ${YS_Nevery} ${YS_vals} ${YS_Nfreq} c_cnp_ave_1 c_cnp_ave_25 c_cnp_ave_3 c_cnp_ave_35 c_cnp_ave_4 file cnp.txt 
+
+
+# fix 1 all property/atom mol ghost yes
+# fix 1 all property/atom bonds
+# create_bonds many all all 1 1.0 1.2
+# bond_style harmonic
+# compute OO sheet orientorder/atom
+# compute OO all orientorder/atom degrees 5 4 6 8 10 12 nnn NULL cutoff 1.5 components 4
+# compute OO all orientorder/atom degrees 5 4 6 8 10 12 nnn NULL cutoff 1.5 
+# compute OO all orientorder/atom components 6
+# compute CO all coord/atom orientorder OO 0.5
+
+# dump dump_OO sheet custom 100 dump_OO.txt c_OO[*]
+# dump dump_OO sheet custom 100 dump_OO.txt mol
+# dump dump_CN sheet custom 100 dump_CN.txt CO
+
+
+
+# "compute CN sheet coord/atom cutoff 2.2" &
+# "compute CN_ave sheet reduce ave c_CN" &
+
+##########################################
+
+
+
+# Cluster count mean value 
+fix Ncluster full_sheet ave/time ${cluster_Nevery} ${cluster_vals} ${detection_freq} c_Ncluster file cluster.txt
+
+# Rupture conditions
+variable stress_drop    equal "f_YS < 0.5*v_max_YS"
+# variable CN_drop        equal "f_CN < v_CN_tol*v_max_CN"
+variable vel_peak       equal "v_vel_cummax_over_std>25"
+variable cluster_split  equal "f_Ncluster > 1" 
+variable min_stretch    equal "v_stretch_pct > 0.03"
+variable stress_threshold    equal "f_YS > 250000"
+# variable stop_condition equal " v_vel_peak || (v_stress_drop && v_min_stretch) || v_cluster_split"
+variable stop_condition equal " (v_stress_drop && v_stress_threshold && v_min_stretch) || v_cluster_split"
+
+fix rupture_detector sheet halt ${detection_freq} v_stop_condition != 0 error continue 
+
+# if thermo == detection_freq the following is possible
+# thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct f_YS v_max_YS f_Ncluster
+
+label skip_rupture_calculations 
+
+
+# ----------  Write restart files ---------- #
+if "${num_stretch_files}<1 || ${run_rupture_test_}" then "jump SELF after_restart"
+
+variable RNSEED index -1  # Random seed (use command-line argument: -var RNSEED $RANDOM, to generate seed)
+if "${RNSEED} >= 0" then "jump SELF RN_restart"  
+
+if "${num_stretch_files}==1" then &
+"restart $(v_relax_steps+v_stretch_steps) stretch_*_restart" &
+"jump SELF after_restart"
+
+variable restart_freq equal floor((v_stretch_steps-1)/(v_num_stretch_files-1))
+variable       stride equal stride(v_relax_steps+1,$(v_relax_steps+v_stretch_steps+v_restart_freq),v_restart_freq)
+restart  v_stride stretch_*_restart
+
+jump SELF after_restart
+label RN_restart
+
+variable restart_freq  equal floor(v_stretch_steps/(v_num_stretch_files))
+variable start         equal v_relax_steps+v_restart_freq*ceil((step-v_relax_steps)/v_restart_freq) # interval start
+variable restart_steps equal round(random(v_start+1,v_start+v_restart_freq,v_RNSEED+1)) # random timestep in [start+1, start + restart_freq]
+restart  v_restart_steps stretch_*_restart
+
+label after_restart
+
+
+# ---------- Stretch sheet ---------- # 
+# Update fixes
+fix ylow_move  PB_ylow_rigid move linear 0 $(-v_stretch_speed/2) NULL units box
+fix yhigh_move PB_yhigh_rigid move linear 0 $(v_stretch_speed/2) NULL units box
+
+print "--> Stretch: $(v_stretch_steps) timesteps, $(v_stretch_steps*dt) ps"
+
+# thermo_style custom step time v_stretch_pct v_stress_drop v_CN_drop v_cluster_split ########
+run $(v_stretch_steps)
+restart 0
+
+
+
+# ---------- After stretch ---------- # 
+## Rupture detection: ON/OFF
+if "!${rupture_detection}" then &
+"print 'is_ruptured None' append info_file.txt" &
+"jump SELF no_rupture_detection"
+
+## Write is_ruptured to info file
+variable is_ruptured equal $(v_stop_condition)
+print """&
+run_rupture_test ${run_rupture_test_}
+is_ruptured ${is_ruptured} &
+""" append ${info_file}
+
+## Is ruptured: TRUE/FALSE
+if "!${is_ruptured}" then "jump SELF no_rupture"
+
+## Estimate last valid stretch from max stress value
+variable rup_YS equal 0
+variable rup_step equal 0
+variable rup_stretch equal 0
+
+# Get argmax y-stress
+variable a loop $((step - v_relax_steps)/v_YS_Nfreq + 1)
+label loop
+variable YS_a equal f_YS_mean_vec[${a}]
+if "${YS_a} > ${rup_YS}" then &
+"variable rup_YS equal ${YS_a} " &
+"variable rup_step equal $(v_relax_steps+(v_a-1)*v_YS_Nfreq)" &
+"variable rup_stretch equal f_stretch_pct_vec[${a}] " 
+next a
+jump SELF loop
+
+# Write rupture step and stretch value to info file
+print """&
+rupture_step ${rup_step}
+rupture_stretch ${rup_stretch} &
+""" append ${info_file}
+variable SMAX equal ${rup_stretch} # <---------------- #
+
+label no_rupture ####################################
+
+# Unfix 
+unfix YS 
+unfix YS_mean_vec 
+unfix Ncluster 
+unfix rupture_detector 
+
+
+label no_rupture_detection ###########################
+
+# Unfix moves (relevant if continued directly)
+unfix ylow_move
+unfix yhigh_move
+
+
+
+# Repeat script without rupture detection
+if "${run_rupture_test_}" then &
+"clear" &
+"include ${root}/stretch.in"
+

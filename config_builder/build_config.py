@@ -301,9 +301,9 @@ class config_builder:
     
     
     
-def pop_up_dataset(shape = (60, 106), min_sp = 1, max_sp = 1, max_cut = (5,5)):
+def pop_up_dataset(shape = (62, 106), min_sp = 1, max_sp = 4, max_cut = (9,13)):
     # Parameters
-    dir = './pop_up_2'
+    dir = './pop_up'
     overwrite = True
     store = True
     ref = 'RAND'
@@ -336,13 +336,13 @@ def pop_up_dataset(shape = (60, 106), min_sp = 1, max_sp = 1, max_cut = (5,5)):
             outfile.write(f'Total configurations: {count}')
         
     
-def honeycomb_dataset(shape = (60, 106), min_val = (1, 1, 1, 1), max_val = (1, 5, 5, 5)):
+def honeycomb_dataset(shape = (62, 106), min_val = (2, 1, 1, 1), max_val = (3, 5, 5, 5)):
     # max_val: {xwidth, ywidth, bridge_thickness, bridge_len}
     
     # Parameters
-    dir = './honeycomb2'
+    dir = './honeycomb'
     overwrite = True
-    store = False
+    store = True
     ref = 'RAND'
     
 
@@ -375,64 +375,62 @@ def honeycomb_dataset(shape = (60, 106), min_val = (1, 1, 1, 1), max_val = (1, 5
             outfile.write(f'Total configurations: {count}')
         
                         
-                        
-        
+
+def baseline_dataset(shape = (62, 106)):
+    dir = './baseline'
+    overwrite = True
+    ref = None
+    
+    # Nocut
+    names =    ['nocut', 'sp1(7,5)', '3215']
+    matrices = [np.ones((shape[0], shape[1])).astype('int'),
+                pop_up(shape, (7,5), 1, ref),
+                honeycomb(shape, 3, 2, 1, 5, ref)]
+    
+    for name, mat in zip(names, matrices):
+        print(f'\rStoring | overwrite = {overwrite} | {name}     ', end = "")
+        builder = config_builder(mat)
+        builder.save_mat(dir, name, overwrite)
+        builder.save_view(dir, 'sheet', name, overwrite)
+    print()
+
+    with open(os.path.join(dir,'dataset_info.txt'), 'w') as outfile:
+        outfile.write('DATASET INFO\n')
+        outfile.write(f'Date: {date.today()}\n')
+        outfile.write(f'Generated as:\n')
+        outfile.write(f'np.ones(({shape[0]}, {shape[1]})).astype(\'int\')\n')
+        outfile.write(f'pop_up({shape}, (7,5), 1, {ref})\n')
+        outfile.write(f'honeycomb({shape}, 3, 2, 1, 5, {ref})\n')
+        outfile.write(f'Total configurations: 3')
     
     
     
-    # xwidth = 1, ywidth = 1,  bridge_thickness = 1, bridge_len = 5, ref = None
-        
-    
+  
 if __name__ == "__main__":
     
-    # pop_up_dataset(shape = (60, 106), min_sp = 2, max_sp = 4, max_cut = (9,13))
-    # honeycomb_dataset(shape = (60, 106), min_val = (2, 2, 1, 1), max_val = (3, 5, 5, 5))
+    # pop_up_dataset(shape = (62, 106), min_sp = 1, max_sp = 4, max_cut = (9,13))
+    # honeycomb_dataset(shape = (62, 106), min_val = (2, 1, 1, 1), max_val = (3, 5, 5, 5))
+    # baseline_dataset()
+    
+    pass
     
     
     # mat = honeycomb((60, 106), 3, 2, 1, 5)
-    
-
-    # mat = pop_up((60, 106), (1,3), 2)
-    # mat = pop_up((60, 106), (5,3), 1)
-    mat = honeycomb((60, 106), 3, 2, 1, 5)
+    # mat = pop_up((60, 106), (5,7), 1)
+    # mat = honeycomb((60, 106), 3, 2, 1, 5)
     # mat[:] = 1
     # mat[mat == 1] = 2
     # mat[mat == 0] = 1
     # mat[mat == 2] = 0
-    builder = config_builder(mat)
-    builder.add_pullblocks()
-    builder.view()
-    
-    # builder.save_mat('./baseline', 'nocut')
-    # builder.save_view('./baseline', 'sheet', 'nocut')
-    builder.save_lammps("sheet", ext = f"ruptest", path = '../friction_simulation_bonds')
+    # builder = config_builder(mat)
+    # builder.add_pullblocks()
+    # builder.view()
+    # builder.save_lammps("sheet", ext = f"ruptest", path = '../friction_simulation')
     
     
   
   
     #######################################################
     
-    # multiples = (8, 15) # 174x189
-    # multiples = (7, 13) # 152x163
-    # multiples = (6, 11) # 130x138
-    # multiples = (5, 9)  # 108x113
-    # multiples = (4, 7)  # 86x87
-    # multiples = (3, 5)  # 64x62
-    # multiples = (2, 2)    # 42x24
-    
-    
-    # unitsize = (5,7)
-    # for mul in  [(8, 15), (7, 13), (6, 11), (5, 9), (4, 7), (3, 5), (2, 2)] :
-        
-    #     mat = pop_up_pattern(mul, unitsize, sp = 2)
-    #     mat[:, :] = 1 # Nocuts
-        
-    #     builder = config_builder(mat)
-    #     size_name = 'x'.join([str(round(v)) for v in builder.get_sheet_size()])
-       # # builder.add_pullblocks() pull block is added later XXX
-    #     builder.view('sheet')
-    #     builder.save_mat('./nocut_sizes', f"cut_{size_name}")  
-    #     # builder.save("sheet", ext = f"cut_{size_name}", path = '.')
-    #     print(size_name)
-    
+
     

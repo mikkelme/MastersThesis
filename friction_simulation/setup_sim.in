@@ -21,11 +21,17 @@ print "Setting up simulation from read_data: ${config_data}.txt"
 units metal
 newton on #newtons 3rd law for pairs
 boundary p p m  
-atom_style atomic # coarse-grain liquids, solids, metals
+atom_style bond
+
+
 
 # --- Read files --- #
-read_data ${root}/${config_data}.txt extra/atom/types 1  # sheet and (optional) substrate (1 extra type for virtuel atom)
+read_data ${root}/${config_data}.txt extra/atom/types 1 extra/bond/types 1 extra/bond/per/atom 10 
 include ${root}/${config_data}_info.in                   # import variables
+
+bond_style zero
+bond_coeff *
+
 
 # --- Masses --- #            
 mass 1 12.0107          # C
@@ -158,6 +164,7 @@ label substrate_built
 ########################################################################
 
 
+
 # --- Continue regions and groups setup ---#
 ## Substrate
 region substrate_freeze_region block INF INF INF INF INF $(v_substrate_freeze_depth - c_substrate_zmin - v_eps) units box
@@ -187,6 +194,8 @@ uncompute full_sheet_z
 uncompute substrate_zmin 
 uncompute substrate_zmax
 
+thermo_style custom step
+run 0
 # JUMP
 jump SELF common_settings 
 
@@ -199,7 +208,6 @@ print "Setting up simulation from read_restart: ${restart_file}"
 
 # --- Read restart file --- #
 read_restart ${restart_file}
-# include ${root}/${config_data}_info.in ### IS THIS NESSECARY
 compute get_S0 S0_info reduce sum y # Retrieve information about S0 via type 3 tmp atom
 
 
@@ -209,44 +217,6 @@ compute get_S0 S0_info reduce sum y # Retrieve information about S0 via type 3 t
 label common_settings
 neighbor            0.5 bin
 neigh_modify        delay 0 every 1 one 10000
-
-
-# # Potentials: C-C: Airebo, C-Si: LJ, Si-Si: SW
-# pair_style hybrid sw lj/cut 8.15 airebo 6.4 1 1 # lj_cutoff = 2.5*sigma 
-# pair_coeff * * airebo ${root}/CH.airebo C NULL NULL    # Sheet C-C
-# pair_coeff 1 2 lj/cut 0.008909 3.26                    # Interaction C-Si 
-# pair_coeff * * sw ${root}/si.sw NULL Si NULL           # Substrate Si-Si
-# pair_coeff * 3  lj/cut 0.0 0.0 
-
-# ------- GOLD SUBSTRATE ------- # 
-# Potentials: C-C: Airebo, C-Si: LJ, Si-Si: SW
-# variable LJ_sigma equal 2.74 
-# pair_style hybrid eam/fs lj/cut $(v_LJ_sigma*2.5) airebo 6.4 1 1 
-# pair_coeff * * airebo ${root}/CH.airebo C NULL NULL     # Sheet C-C
-# pair_coeff 1 2 lj/cut 0.022 ${LJ_sigma}                        # Interaction C-Si 
-# pair_coeff * * eam/fs ${root}/FeAu-eam-LJ.fs NULL Au NULL      # Substrate Au-Au
-# pair_coeff * 3 lj/cut 0.0 0.0 
-
-
-# # ------- SI SUBSTRATE TERSOFF ------- # 
-# # Potentials: C-C: Tersoff, C-Si: LJ, Si-Si: SW
-# variable LJ_sigma equal 3.26 (3.326?)
-# pair_style hybrid tersoff lj/cut $(v_LJ_sigma*2.5) sw 
-# pair_coeff * * tersoff ${root}/C.tersoff C NULL NULL   # Sheet C-C
-# pair_coeff 1 2 lj/cut 0.008909 ${LJ_sigma}             # Interaction C-Si 
-# pair_coeff * * sw ${root}/si.sw NULL Si NULL           # Substrate Si-Si
-# pair_coeff * 3  lj/cut 0.0 0.0 
-
-
-
-# # ------- AMORPHIC SI SUBSTRATE TERSOFF ------- # Nature: The evolving quality of frictional contact with graphene 
-# # Potentials: C-C: Tersoff, C-Si: LJ, Si-Si: SW
-# variable LJ_sigma equal 3.0
-# pair_style hybrid tersoff lj/cut $(v_LJ_sigma*2.5) sw 
-# pair_coeff * * tersoff ${root}/C.tersoff C NULL NULL   # Sheet C-C
-# pair_coeff 1 2 lj/cut 0.0096 ${LJ_sigma}             # Interaction C-Si 
-# pair_coeff * * sw ${root}/si.sw NULL Si NULL           # Substrate Si-Si
-# pair_coeff * 3  lj/cut 0.0 0.0 
 
 
 # ------- SI SUBSTRATE TERSOFF ------- # Nature: The evolving quality of frictional contact with graphene
@@ -259,6 +229,32 @@ pair_coeff * * sw ${root}/si.sw NULL Si NULL           # Substrate Si-Si
 pair_coeff * 3  lj/cut 0.0 0.0 
 
 
+# Create bonds for rupture detection
+variable bond_rmax_create equal 1.5 # Max length of created bonds
+variable bond_rbreak equal 4.0      # Rupture length for bonds
+
+
+# if "${rupture_detection}" then &
+# "create_bonds many sheet sheet 1 0.0 ${bond_rmax_create}" &
+# "special_bonds lj 1 1 1" & 
+# "compute         bdist sheet bond/local dist" &
+# "compute         bmax sheet reduce max c_bdist" &
+# "variable        is_ruptured equal c_bmax>v_bond_rbreak" &
+# "fix rupture_detector sheet halt 1 v_is_ruptured != 0 error continue" &
+# else &
+# "variable is_ruptured equal 0"
+
+if "${rupture_detection} && !${readable}" then &
+"create_bonds many sheet sheet 1 0.0 ${bond_rmax_create}" &
+"special_bonds lj 1 1 1" & 
+
+if "${rupture_detection}" then &
+"compute         bdist sheet bond/local dist" &
+"compute         bmax sheet reduce max c_bdist" &
+"variable        is_ruptured equal c_bmax>v_bond_rbreak" &
+"fix rupture_detector sheet halt 1 v_is_ruptured != 0 error continue" &
+else &
+"variable is_ruptured equal 0"
 
 
 variable LJ_equil equal $(2^(1/6) * v_LJ_sigma)
@@ -270,13 +266,9 @@ variable damp equal 1.0 # ps
 fix nve NVE_atoms nve # (microcanonical) 
 fix nvt NVT_atoms langevin ${T} ${T} ${damp} 48279 # (canonical)
 
-# fix nve semifree_atoms nve # (microcanonical) 
-# fix nvt semifree_atoms langevin ${T} ${T} ${damp} 48279 # (canonical)
 
 fix 2 all balance 1000 1.05 shift xy 10 1.05 # balance number of particles computed on each processor 
 fix PB_ave PB_tot_rigid aveforce NULL NULL 0 # Average z-force
-# fix PB_ave PB_tot aveforce NULL NULL 0 # Average z-force
-
 
 
 # --- Convertion: SI to metal --- #
@@ -308,21 +300,10 @@ compute sheet_ymax sheet reduce max y
 # compute coord sheet coord/atom cutoff 2.7   # Coordination number
 # compute sheet_stress sheet stress/atom NULL      # stress field
 # variable stress_atom atom sqrt(c_sheet_stress[1]*c_sheet_stress[1]+c_sheet_stress[2]*c_sheet_stress[2]+c_sheet_stress[3]*c_sheet_stress[3]) # Stress norm (xx, yy, zz)
-# ^^^ This is not so important if it reduces computation time considerably 
 
 
-# Num clusters in sheet
-if "${rupture_detection}" then & 
-"compute cluster_atom full_sheet cluster/atom 4.0" &
-"compute Ncluster full_sheet chunk/atom c_cluster_atom compress yes" 
-variable is_ruptured equal 0 # Default value
-
-# # 1) y stress average, 2) Coordination number 3) Cluster id per atom, 3) 
+# # Num clusters in sheet
 # if "${rupture_detection}" then & 
-# "compute sheet_stress sheet stress/atom NULL" &
-# "compute YS sheet reduce ave c_sheet_stress[2]" & 
-# "compute CN sheet coord/atom cutoff 2.2" &
-# "compute CN_ave sheet reduce ave c_CN" &
 # "compute cluster_atom full_sheet cluster/atom 4.0" &
 # "compute Ncluster full_sheet chunk/atom c_cluster_atom compress yes" 
 # variable is_ruptured equal 0 # Default value
@@ -345,14 +326,15 @@ compute Ff_sheet substrate group/group sheet # friction forces
 compute Ff_PB substrate group/group PB_tot # friction forces
 
 ## Temperature of free atoms ##
-# compute freeTemp free_atoms temp
 compute sheetTemp sheet temp
 compute subtopTemp substrate_top temp
 
 
 ## - Activate computes - ## 
-thermo_style custom c_PB_yhigh_rigid_ymin c_PB_ylow_rigid_ymax c_sheet_COM[1] #c_sheet_fz c_PB_ylow_rigid_ymax c_PB_yhigh_rigid_ymin c_substrate_zhigh c_PB_ylow_rigid_com[2] c_PB_yhigh_rigid_com[2] c_sheet_COM[3] c_sheet_ymin c_sheet_ymax
+thermo_style custom c_PB_yhigh_rigid_ymin c_PB_ylow_rigid_ymax c_sheet_COM[1] 
 run 0 # activate compute
+
+
 
 # ---------- Derived variables ---------- #
 ## -- Seperation -- ##
@@ -374,7 +356,6 @@ if ${readable} then "thermo_style custom c_get_S0 c_PB_yhigh_rigid_ymin c_PB_ylo
 "delete_atoms group S0_info"
 
 variable S_len equal c_PB_yhigh_rigid_ymin-c_PB_ylow_rigid_ymax # Updated len of inner sheet
-# variable S_len equal c_sheet_ymax-c_sheet_ymin 
 variable stretch_pct equal (v_S_len-v_S0)/v_S0  # Updated stretch pct
 variable stretch_speed equal v_stretch_speed_pct*v_S0 
 
@@ -386,7 +367,6 @@ variable dir_norm equal $(sqrt(v_drag_dir_x^2+v_drag_dir_y^2))
 # fix tmp all ave/time 100 1 100 c_myRDF[*] file rdf.txt mode vector
 # run 100
 # quit
-
 
 
 # ---------- Output ---------- #
@@ -459,13 +439,10 @@ print "--------------------"
 print ""
 
 
+
+
 # Clean up
 uncompute sheet_ymin
 uncompute sheet_ymax
 
 
-
-
-
-# run 1
-# quit

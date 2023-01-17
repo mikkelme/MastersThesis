@@ -7,15 +7,14 @@ from config_builder.build_config import *
 from simulation_manager.multi_runner import *
 from analysis.analysis_utils import get_files_in_folder
 
-class data_generator:
-    def __init__(self, filename, header =  'egil:CONFIGS/honeycomb', simname = 'JOB', config_ext = None):
+class Data_generator:
+    def __init__(self, filename, header =  'egil:CONFIGS/honeycomb', simname = 'test', config_ext = None):
         
         try:
             self.mat = np.load(filename)
             assert self.mat.shape[0]%1 == 0 and self.mat.shape[1]%1 == 0 and self.mat.shape[1]%2 == 0
             assert self.mat.shape[0] > 0 and self.mat.shape[1] > 0
             
-        
         except ValueError:
             print(f"Could not load file: {filename}")
             return # XXX
@@ -39,10 +38,16 @@ class data_generator:
         self.npy_file = filename # Remember array filename
         self.header =  header
         self.dir = os.path.join(self.header, simname)
-        
-        self.config_path = '.' # Where to save new files
+        self.config_path = '.' # Where to save new files temporary
 
-        
+
+    def __str__(self):
+        s = 'class: Data_generator\n'
+        s += f'filename: {self.npy_file}\n'
+        s += f'header: {self.header}\n'
+        s += f'dir: {self.dir}\n'
+        s += f'config_ext: {self.config_ext}\n'
+        return s
         
     def set_sheet_size(self):
         """ Set sheet size according to configuration matrix shape """
@@ -63,6 +68,7 @@ class data_generator:
         
         
     def run_single(self, main_folder, test_name, sim_name, variables = {}, copy = True, cores = 16): # TODO 
+        # XXX Work in progress
         # main_folder = 'Baseline'
         # # test_name   = 'vel'
         # # sim_name    = 'v40'
@@ -104,15 +110,14 @@ class data_generator:
         sim.set_input_script("../friction_simulation/friction_procedure.in", **proc.variables)
         slurm_args = {'job-name':sim_name, 'partition':'normal', 'ntasks':cores, 'nodes':1}
         sim.run(num_procs=cores, lmp_exec="lmp", slurm=True, slurm_args=slurm_args)
-        
-            
+                  
     
-    def run_multi(self):
+    def run_multi(self, F_N, variables = {}, num_procs = 16):
         
         # Intialize simulation runner
-        proc = Simulation_runner()
+        proc = Simulation_runner(variables)
         
-        # # Build sheet 
+        # Build sheet 
         builder = config_builder(self.mat)
         png_file = builder.save_view(self.config_path, 'sheet')
         builder.add_pullblocks()
@@ -124,22 +129,21 @@ class data_generator:
         proc.config_path = self.config_path
         
         # Multi run settings 
-        num_stretch_files = 1
-        F_N = np.array([5])*1e-9
-        # F_N = np.sort(np.random.uniform(0.1, 10, 10))*1e-9
+        # num_stretch_files = 1
+        # F_N = np.array([5])*1e-9
+        # # F_N = np.sort(np.random.uniform(0.1, 10, 10))*1e-9
         
         
-        proc.add_variables(num_stretch_files = num_stretch_files, 
-                           RNSEED = '$RANDOM',
-                           run_rupture_test = 1,
-                           stretch_max_pct = 2.0,
-                           root = '.',
-                           dump_freq = 10000)
+        # proc.add_variables(num_stretch_files = num_stretch_files, 
+        #                    RNSEED = '$RANDOM',
+        #                    run_rupture_test = 1,
+        #                    stretch_max_pct = 2.0,
+        #                    root = '.',
+        #                    dump_freq = 10000)
         
         
         # Start multi run
-        root_path = proc.multi_run(self.header, self.dir, F_N, num_procs = 16, jobname = f"HC{self.config_ext}")
-        # print(f'root_path = {root_path}')
+        root_path = proc.multi_run(self.header, self.dir, F_N, num_procs = num_procs, jobname = self.config_ext)
         
         # Transfer config npy- and png-file 
         proc.move_files_to_dest([self.npy_file, png_file], root_path)
