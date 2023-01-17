@@ -191,6 +191,8 @@
 
 #### Week 3 (16/01/2023 - 22/01/2023) - Working from Pisa
 - Rewrote friction simulation with atomi_style "bonds" to solve continuing problems with rupture detection. Initial test shows promising results for this being the general solution to all cuts. 
+- Did more testing of bonds rupture test (successfull) and fixed a few bugs in the new friction simulation.
+- Made baseline runner using npy files and submitted a test with varying temperature for all three baseline configs: nocut, pop-up sp1(7,5) and honeycomb 3215.
 
 ## Things to remember 
 
