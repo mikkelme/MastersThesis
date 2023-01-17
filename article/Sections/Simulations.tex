@@ -1,0 +1,66 @@
+\newpage
+\chapter*{Simulations}
+\addcontentsline{toc}{chapter}{Simulations} 
+
+
+
+
+% Reconsider later if some if this is better placed in methods section
+% or under different title
+\section*{Frictional properties of the intact graphene sheet}
+The friction measurment simulation is governed by the following parameters, which is divided into three sub categories for the purpose of this thesis as shown in table \ref{tab:param}.
+
+
+
+\begin{table}[H]
+  \begin{center}
+  \caption{Parameters of the numerical procedure for measuring friction.}
+  \label{tab:param}
+  \begin{tabular}{ | c | m{8cm}| m{5cm}|} 
+    \hline
+    Category & Parameter name: description & Category purpose \\ 
+    \hline
+    Physical & 
+    \begin{itemize}
+      \item[-] T: Temperature for the Langevin thermostat.
+      \item[-] $v_{drag}$: Drag speed for the sheet translation.
+    \end{itemize} &
+    Parameters that we expect to have an inevitably effect on the system friction properties, for which the choice will be a baseline for our studies.
+    \\ \hline
+    Measurement & 
+    \begin{itemize}
+      \item[-] $dt$: Integration timestep.
+      \item[-] $t_R$: Relaxtion time before strething.
+      \item[-] Pauses between stretch and adding normal force and between dragging the sheet.  
+      \item[-] Stretch Speed: How fast to stretch the sheet.
+      \item[-] $K$: Spring constant for the spring responsible of translating the sheet. An infinte spring constant is achieved by moving the end blocks as a rigid body (Lammps: fix move).
+      \item[-] Drag Length: How far to translate the sheet.
+      \item[-] Sheet size: Spatial size of the 2D sheet.  
+    \end{itemize} &
+    Paramters that effects the simulation dynamics and the 'experimental procedure' that we a mimicking. We aim to choose to these paramters such that the friction properties is stable for small perturbations.  \\ \hline
+    ML input & 
+    \begin{itemize}
+      \item[-] Sheet configuration: A binary matrix containing information of which atoms is removed (0) and which is still present (1) in the graphene structure.
+      \item[-] Scan angle: The direction for which we translate the sheet.
+      \item[-] Stretch amount: The relative sheet stretch in percentage.
+      \item[-] $F_N$: Applied normal force to the end blocks.
+    \end{itemize} &
+    The ramaining paramters that serve as the governing variables in the optimization process for certain friction properties and is thus the input variables for the ML part. 
+    \\ \hline
+  \end{tabular}
+  \end{center}
+\end{table}
+
+
+We should try to set the physcis and measurement parameters in such a way that we reduce computation speed where it is doesn't infer with the frictional properties study.
+
+We need to define some ranges for the ML input paramters. $F_N$, stretch ranges where it is not prone to ruptures. The configuration it self does not have clear rules but is also being regulated by the no rupture requirement. 
+
+
+
+
+\section*{Observations}
+
+\begin{itemize}
+  \item stretch $= 0$ \% and $F_N = 188$ eV/Å yielded a very small amount of wear (two atoms visually out of place), for which the sheet dug into the substrate when passing by the second time. For the same normal force but 0.25 \% this problem did not occour. We need to stay out of the friction wear regime. Amorphic substrate is even more prone to this problem of wear.
+\end{itemize}
