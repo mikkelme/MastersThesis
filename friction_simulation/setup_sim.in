@@ -234,16 +234,6 @@ variable bond_rmax_create equal 1.5 # Max length of created bonds
 variable bond_rbreak equal 4.0      # Rupture length for bonds
 
 
-# if "${rupture_detection}" then &
-# "create_bonds many sheet sheet 1 0.0 ${bond_rmax_create}" &
-# "special_bonds lj 1 1 1" & 
-# "compute         bdist sheet bond/local dist" &
-# "compute         bmax sheet reduce max c_bdist" &
-# "variable        is_ruptured equal c_bmax>v_bond_rbreak" &
-# "fix rupture_detector sheet halt 1 v_is_ruptured != 0 error continue" &
-# else &
-# "variable is_ruptured equal 0"
-
 if "${rupture_detection} && !${readable}" then &
 "create_bonds many sheet sheet 1 0.0 ${bond_rmax_create}" &
 "special_bonds lj 1 1 1" & 

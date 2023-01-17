@@ -164,13 +164,11 @@ run  $(v_drag_steps)
 
 # ------------ After drag ------------ # 
 label after_drag
-# #-#-#-#-#-#-#-#-#-#-#-#-#
-# unfix rupture_detector
-# run 10000
-# #-#-#-#-#-#-#-#-#-#-#-#-#
 
 if "${rupture_detection}" then &
 "print 'is_ruptured ${is_ruptured}' append info_file.txt" &
 else &
 "print 'is_ruptured None' append info_file.txt" 
+
+if "${is_ruptured}" then "print 'rupture_step $(step)' append info_file.txt"
 

@@ -33,13 +33,14 @@ class Data_generator:
         
         self.Cdis = 1.461 # carbon-carbon distance [Å]         
         self.shape = np.shape(self.mat)            
+        self.simname = simname
         
         # Path
         self.npy_file = filename # Remember array filename
         self.header =  header
         self.dir = os.path.join(self.header, simname)
         self.config_path = '.' # Where to save new files temporary
-
+        
 
     def __str__(self):
         s = 'class: Data_generator\n'
@@ -67,50 +68,53 @@ class Data_generator:
         return Lx, Ly
         
         
-    def run_single(self, main_folder, test_name, sim_name, variables = {}, copy = True, cores = 16): # TODO 
-        # XXX Work in progress
-        # main_folder = 'Baseline'
-        # # test_name   = 'vel'
-        # # sim_name    = 'v40'
-        # test_name   = 'time'
-        # sim_name    = '1cGrif'
-        
-            
+    def run_single(self, variables = {}, num_procs = 16, copy = True): # TODO 
         # Intialize simulation runner
-        proc = Simulation_runner()
+        proc = Simulation_runner(variables)
         
-        # Build sheet 
-        builder = config_builder(self.mat)
-        png_file = builder.save_view(self.config_path, 'sheet')
-        builder.add_pullblocks()
-        lammps_file_txt, lammps_file_info = builder.save_lammps("sheet", ext = self.config_ext, path = self.config_path)
-        config_data = f'sheet_{self.config_ext}'
-        proc.add_variables(config_data = config_data)
         
         # Directories 
-        proc.config_path = self.config_path
+        # proc.config_path = self.config_path
         
-        
-        header = f"egil:{main_folder}/{test_name}/"
-        dir = f"{header}{sim_name}/"
+        config_data = f'sheet_{self.config_ext}'
+        proc.add_variables(config_data = config_data)
     
         if copy:
+            # Build sheet 
+            builder = config_builder(self.mat)
+            png_file = builder.save_view(self.config_path, 'sheet')
+            builder.add_pullblocks()
+            lammps_file_txt, lammps_file_info = builder.save_lammps("sheet", ext = self.config_ext, path = self.config_path)
+
+            # Move files to header
             proc.move_files_to_dest(["../friction_simulation/setup_sim.in", 
-                            "../friction_simulation/stretch.in",
-                            "../friction_simulation/drag.in",
-                            "../potentials/si.sw",
-                            "../potentials/C.tersoff",
-                            f"../config_builder/{proc.variables['config_data']}.txt",
-                            f"../config_builder/{proc.variables['config_data']}_info.in" ], header)
+                        "../friction_simulation/stretch.in",
+                        "../friction_simulation/drag.in",
+                        "../potentials/si.sw",
+                        "../potentials/C.tersoff",
+                        f"{self.config_path}/{proc.variables['config_data']}.txt",
+                        f"{self.config_path}/{proc.variables['config_data']}_info.in" ], self.header)
+    
         
-        sim = Simulator(directory = dir, overwrite=True)
-        sim.copy_to_wd( "../friction_simulation/friction_procedure.in")
+        
+        sim = Simulator(directory = self.dir, overwrite=True)
+        main_script = "../friction_simulation/friction_procedure.in"
+        sim.copy_to_wd(main_script)
             
-        # proc.variables["out_ext"] = sim_name
-        sim.set_input_script("../friction_simulation/friction_procedure.in", **proc.variables)
-        slurm_args = {'job-name':sim_name, 'partition':'normal', 'ntasks':cores, 'nodes':1}
-        sim.run(num_procs=cores, lmp_exec="lmp", slurm=True, slurm_args=slurm_args)
-                  
+        proc.variables["out_ext"] = self.simname
+        sim.set_input_script(main_script, **proc.variables)
+        slurm_args = {'job-name':self.simname, 'partition':'normal', 'ntasks':num_procs, 'nodes':1}
+        sim.run(num_procs=num_procs, lmp_exec="lmp", slurm=True, slurm_args=slurm_args)
+          
+        if copy:  
+            # Transfer config npy- and png-file 
+            proc.move_files_to_dest([self.npy_file, png_file], self.header)
+        
+            # Remove generated files locally
+            os.remove(png_file)
+            os.remove(lammps_file_txt)
+            os.remove(lammps_file_info)    
+                
     
     def run_multi(self, F_N, variables = {}, num_procs = 16):
         
