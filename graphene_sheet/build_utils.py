@@ -108,7 +108,7 @@ def connected_neigh_atom(pos):
     """ Get three connected neightbours in sheet
         and direction for single atom sites. """
     x, y = pos
-    Cdis = 1.42
+    Cdis = 1.461
     a = 3*Cdis/np.sqrt(3)
     x_ver = a*np.sqrt(3)/6  # vertical
     y_ver = a/2             # vertical
@@ -128,7 +128,7 @@ def connected_neigh_center_elem(pos):
     """ Get three connected neightbours in sheet
         and direction for center elements. """
     x, y = pos
-    Cdis = 1.42
+    Cdis = 1.461
     a = 3*Cdis/np.sqrt(3)
     a1 = a/2 * np.array([np.sqrt(3), 1])
     a2 = a/2 * np.array([np.sqrt(3), -1])
