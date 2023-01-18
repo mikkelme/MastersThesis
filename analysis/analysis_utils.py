@@ -13,6 +13,9 @@ from matplotlib.colors import ListedColormap, BoundaryNorm
 
 
 def read_friction_file(filename):
+    """ Read friction file and return dictionary 
+        corresponding to columns of file """
+        
     infile = open(filename, 'r')
     infile.readline()
     header = infile.readline().strip('#\n ').split(' ')
@@ -21,14 +24,14 @@ def read_friction_file(filename):
     data = np.loadtxt(filename)
     outdict = dict(zip(header, data.T))
     
-    # Change name of keys
-    xyz_to_elem = {'x':'[1]', 'y':'[2]'}
-    elem_to_xyz = ['x', 'y', 'z']
-    if 'f_spring_force[1]' in outdict:
-        old_keys = [key for key in outdict.keys() if 'f_spring_force' in key] 
-        # new_keys = ['v_move_force' + key.strip('f_spring_force') for key in old_keys ]     
-        new_keys = ['v_move_force_' + elem_to_xyz[int(key.strip('f_spring_force[]'))-1] for key in old_keys ]     
-        for old_key, new_key in zip(old_keys, new_keys): outdict[new_key] = outdict.pop(old_key)
+    # # Change name of keys
+    # xyz_to_elem = {'x':'[1]', 'y':'[2]'}
+    # elem_to_xyz = ['x', 'y', 'z']
+    # if 'f_spring_force[1]' in outdict:
+    #     old_keys = [key for key in outdict.keys() if 'f_spring_force' in key] 
+    #     # new_keys = ['v_move_force' + key.strip('f_spring_force') for key in old_keys ]     
+    #     new_keys = ['v_move_force_' + elem_to_xyz[int(key.strip('f_spring_force[]'))-1] for key in old_keys ]     
+    #     for old_key, new_key in zip(old_keys, new_keys): outdict[new_key] = outdict.pop(old_key)
         
     return outdict
 
@@ -138,32 +141,60 @@ def decompose_wrt_drag_dir(x, y, drag_direction):
     return proj_para, proj_perp
 
 
+def get_info(filename):
+    """ Find info file assuming it is in the same folder
+        as the filename provided here and return info dictionary """
+    dir = '/'.join(filename.split('/')[:-1]) + '/info_file.txt'
+    return read_info_file(dir)
+
+
+def gather_xyz(x, y, z, drag_direction):
+    """ Decompose x and y along drag direction and 
+        combine with z direction """
+    x, y = decompose_wrt_drag_dir(x, y, drag_direction)
+    if z is None:
+        z = np.zeros(len(x))
+    
+    return np.vstack((x, y, z)).T
+    
+
+
 def analyse_friction_file(filename, mean_pct = 0.5, std_pct = None, drag_cap = None):
-    # window_length = 50
-    # polyorder = 5
-    info = read_info_file('/'.join(filename.split('/')[:-1]) + '/info_file.txt' )
+    """ Analyse friction file and output measurements... """
+    
+    # --- Retrieve data --- #
+    # Get info
+    info = get_info(filename)
     drag_direction = np.array((info['drag_dir_x'], info['drag_dir_y']))
     dt = info['dt']
     
+    # Read friction file
     data = read_friction_file(filename)  
     time = data['TimeStep'] * dt # [ps]
     VA_pos = (time - time[0]) * info['drag_speed']  # virtual atom position
     
+    
+    # --- Analyse --- #
+    # Optional: Trim down length of drag 
     if drag_cap is not None:
         map = [VA_pos <= drag_cap][0]
         for key in data:
             data[key] = data[key][map]
             
-    time = data['TimeStep'] * dt # [ps]
-    VA_pos = (time - time[0]) * info['drag_speed']  # virtual atom position
     
-     
-    # Organize in columns: parallel to drag, perpendicular to drag, z-axis
-    move_force = np.vstack((decompose_wrt_drag_dir(data['v_move_force_x'], data['v_move_force_y'], drag_direction), np.zeros(len(data['v_move_force_x'])))).T
-    Ff_sheet = np.vstack((decompose_wrt_drag_dir(data['c_Ff_sheet[1]'], data['c_Ff_sheet[2]'], drag_direction), data['c_Ff_sheet[3]'])).T
-    Ff_PB = np.vstack((decompose_wrt_drag_dir(data['c_Ff_PB[1]'], data['c_Ff_PB[2]'], drag_direction), data['c_Ff_PB[3]'])).T
-    COM_sheet = np.vstack((decompose_wrt_drag_dir(data['c_sheet_COM[1]'], data['c_sheet_COM[2]'], drag_direction), data['c_sheet_COM[3]'])).T
+    # Decompose x, y along drag direction and gather in matrix with z component
+    # columns: parallel to drag, perpendicular to drag, z direction     
+    move_force  = gather_xyz(data['v_move_force_x'], data['v_move_force_y'], None,                   drag_direction)
+    Ff_sheet    = gather_xyz(data['c_Ff_sheet[1]'],  data['c_Ff_sheet[2]'],  data['c_Ff_sheet[3]'],  drag_direction)
+    Ff_PB       = gather_xyz(data['c_Ff_PB[1]'],     data['c_Ff_PB[2]'],     data['c_Ff_PB[3]'],     drag_direction)
+    COM_sheet   = gather_xyz(data['c_sheet_COM[1]'], data['c_sheet_COM[2]'], data['c_sheet_COM[3]'], drag_direction)
     COM_sheet -= COM_sheet[0,:] # origo as reference point
+    
+    print(move_force)
+    exit("Working here | analysis_utils.py: analyse_friction_file(...)") ## TODO: Working here 
+    
+    
+    
     
     # Convert units
     move_force = metal_to_SI(move_force, 'F')*1e9

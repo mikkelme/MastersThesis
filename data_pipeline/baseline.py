@@ -39,13 +39,26 @@ def baseline_temp(names, files):
 
 def baseline_vel(names, files):
     """ Vary drag velocity """
-    pass
+    variable_key = 'drag_speed'
+    test_name = 'vel'
+    vel_range = [1, 5, 10, 20, 30, 50, 100]
+    sim_names = ['v1', 'v5', 'v10', 'v20', 'v30', 'v50', 'v100']
+    vary_variable(names, files, test_name, sim_names, variable_key, vel_range)
+    
+    
 def baseline_dt(names, files):
     """ Vary dt """
     pass
+
 def baseline_K(names, files):
     """ Vary spring constant """
-    pass
+    variable_key = 'K'
+    test_name = 'spring'
+    K_range = [0, 1, 5, 20, 30, 50, 100]
+    sim_names = ['K0', 'K1', 'K5', 'K20', 'K30', 'K50', 'K100']
+    vary_variable(names, files, test_name, sim_names, variable_key, K_range)
+    
+    
     
 def vary_variable(names, files, test_name, simnames, variable_key, variable_range):
     num_procs = 16
@@ -70,5 +83,6 @@ if __name__ == '__main__':
     # print(files)
     
     # baseline_temp(names, files)
+    baseline_vel(names, files)
     # baseline_multi_stretch(config_names, files)
     pass

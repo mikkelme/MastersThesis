@@ -16,7 +16,7 @@ class Simulation_runner:
         # Default variables
         self.variables = {
             "dt": 0.001,
-            "T": 200, #100.0, # [K]
+            "T": 300, # [K]
             "relax_time": 15,
             "pause_time1": 5,
             "pause_time2": 5,

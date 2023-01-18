@@ -1,5 +1,40 @@
 from analysis_utils import *
 
+
+def single_measurement(filename, ):
+    """ Analyse a single friction measurement """
+    
+    # Parameters 
+    mean_window_pct = 0.5 # relative length of the mean window [% of total duration]
+    std_window_pct = 0.2  # relative length of the std windoe [% of mean window]
+    group = 0 # Full sheet / Sheet / Pull blocl 
+    
+
+    
+    data = analyse_friction_file(filename, mean_window_pct, std_window_pct)    
+    time = data['time']
+    COM = data['COM_sheet'][:,0]
+    contact = data['contact'][:,0]
+    group_name = {0: 'full_sheet', 1: 'sheet', 2: 'PB'}
+    
+    info = read_info_file('/'.join(filename.split('/')[:-1]) + '/info_file.txt' )
+    VA_pos = (time - time[0]) * info['drag_speed']  # virtual atom position
+    
+   
+    mean_window = int(mean_window_pct*len(time)) # mean window length
+    std_window = int(std_window_pct*mean_window) # std windoe length
+
+
+    # plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
+    # Ff = data[f'Ff_{group_name[group]}'][:,0]
+    # print(data[f'Ff_{group_name[group]}'])
+
+
+        
+
+
+
+
 def drag_length_dependency(filename):
     data = analyse_friction_file(filename)    
     time = data['time']
@@ -352,14 +387,15 @@ def variable_dependency(filenames, variable_name = None, drag_cap = None):
 
 if __name__ == "__main__":
     # Parrent folder
+    path = '../Data/Baseline'
     
-    size = get_files_in_folder('../Data/Baseline/size', ext = 'Ff.txt') 
-    size_val = [round(np.sqrt(eval(s.split('_')[-2].replace('x','*')))) for s in size]
+    # size = get_files_in_folder('../Data/Baseline/size', ext = 'Ff.txt') 
+    # size_val = [round(np.sqrt(eval(s.split('_')[-2].replace('x','*')))) for s in size]
     
-    spring = get_files_in_folder('../Data/Baseline/spring', ext = 'Ff.txt')
-    temp = get_files_in_folder('../Data/Baseline/temp', ext = 'Ff.txt')
-    vel = get_files_in_folder('../Data/Baseline/vel', ext = 'Ff.txt')
-    dt = get_files_in_folder('../Data/Baseline/dt', ext = 'Ff.txt')
+    # spring = get_files_in_folder('../Data/Baseline/spring', ext = 'Ff.txt')
+    # temp = get_files_in_folder('../Data/Baseline/temp', ext = 'Ff.txt')
+    # vel = get_files_in_folder('../Data/Baseline/vel', ext = 'Ff.txt')
+    # dt = get_files_in_folder('../Data/Baseline/dt', ext = 'Ff.txt')
     
     # variable_dependency(size, variable_name = size_val)
     # variable_dependency(spring, variable_name = 'K')
@@ -368,11 +404,17 @@ if __name__ == "__main__":
     
     
     
+    # temp = get_files_in_folder('../Data/Baseline/honeycomb/temp', ext = 'Ff.txt')
+    
+    # drag_length_compare(temp)
+    
+    # temp = get_files_in_folder('../Data/Baseline/temp', ext = 'Ff.txt')
     # drag_length_compare(vel)
-    obj = drag_length_dependency('../Data/CONFIGS/honeycomb/single_run_2/stretch_16528_folder/job0/system_drag_Ff.txt')
+    # obj = drag_length_dependency(os.path.join(path,'nocut/temp/T5/system_2023-01-17_Ff.txt'))
   
   
   
+    single_measurement(os.path.join(path,'nocut/temp/T300/system_2023-01-17_Ff.txt'))
   
   
   
