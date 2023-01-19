@@ -168,7 +168,8 @@ def analyse_friction_file(filename, mean_window_pct = 0.5, std_window_pct = None
         drag_cap (_type_, optional): Reduce the data length by setting a max drag value. Defaults to None, meaning no reduction
 
     Returns:
-        dict: Dictionary containing the following elements. N refer to data length.
+        dict: Info dictionary containing LAMMPS variables an basic outputs.
+        dict: Data dictionary containing the following elements. N refer to data length.
         ----------------------------------------------------------------------------------------------------------------------------
         Key         [unit]: description.                   Shape
         ----------------------------------------------------------------------------------------------------------------------------
@@ -317,9 +318,7 @@ def analyse_friction_file(filename, mean_window_pct = 0.5, std_window_pct = None
     updated_data = {}
     for name in varnames:
         updated_data[name] = eval(name)
-        print(name, np.shape(updated_data[name]))
-    exit()    
-    return updated_data
+    return info, updated_data
     
 
 
@@ -341,6 +340,30 @@ def mean_cut_and_std(arr, mean_window, std_window):
     return mean, std
         
     
+
+def plot_xy_time(fig, ax, x, y, z, z_label = 'time $[ps]$', cmap = 'gist_rainbow'):
+    """ Plot 2D x,y-plot with colorbar for z devolopment """
+    points = np.array([x, y]).T.reshape(-1, 1, 2)
+    segments = np.concatenate([points[:-1], points[1:]], axis=1)
+    
+    # Create a continuous norm to map from data points to colors
+    norm = plt.Normalize(z.min(), z.max())
+    lc = LineCollection(segments, cmap=cmap, norm=norm)
+
+    # Set the values used for colormapping
+    lc.set_array(z)
+    lc.set_linewidth(2)
+    line = ax.add_collection(lc)
+    cbar = fig.colorbar(line, ax=ax)
+   
+    cbar.set_label(z_label, rotation=270, labelpad = 20)
+   
+    # Set limits
+    xsp = np.abs(x.max() - x.min()) * 0.1
+    ysp = np.abs(y.max() - y.min()) * 0.1 
+    if xsp != 0: ax.set_xlim(x.min() - xsp, x.max() + xsp)
+    if ysp != 0: ax.set_ylim(y.min() - ysp, y.max() + ysp)
+
 
 
     

@@ -1,11 +1,10 @@
 import sys
 sys.path.append('../') # parent folder: MastersThesis
-
-from config_builder.build_config import *
-from plot_set import *
-from analysis.analysis_utils import *
 import matplotlib.pyplot as plt
 import numpy as np
+from plot_set import *
+from analysis.analysis_utils import *
+from config_builder.build_config import *
 from ase.visualize.plot import plot_atoms
 
 

@@ -1,34 +1,6 @@
 from analysis_utils import *
 
 
-def single_measurement(filename, ):
-    """ Analyse a single friction measurement """
-    
-    # Parameters 
-    mean_window_pct = 0.5 # relative length of the mean window [% of total duration]
-    std_window_pct = 0.2  # relative length of the std windoe [% of mean window]
-    group = 0 # Full sheet / Sheet / Pull blocl 
-    
-
-    
-    data = analyse_friction_file(filename, mean_window_pct, std_window_pct)    
-    time = data['time']
-    COM = data['COM_sheet'][:,0]
-    contact = data['contact'][:,0]
-    group_name = {0: 'full_sheet', 1: 'sheet', 2: 'PB'}
-    
-    info = read_info_file('/'.join(filename.split('/')[:-1]) + '/info_file.txt' )
-    VA_pos = (time - time[0]) * info['drag_speed']  # virtual atom position
-    
-   
-    mean_window = int(mean_window_pct*len(time)) # mean window length
-    std_window = int(std_window_pct*mean_window) # std window length
-
-
-    # plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
-    # Ff = data[f'Ff_{group_name[group]}'][:,0]
-    # print(data[f'Ff_{group_name[group]}'])
-
 
         
 
@@ -414,7 +386,7 @@ if __name__ == "__main__":
   
   
   
-    single_measurement(os.path.join(path,'nocut/temp/T300/system_2023-01-17_Ff.txt'))
+    # single_measurement(os.path.join(path,'nocut/temp/T300/system_2023-01-17_Ff.txt'))
   
   
   
