@@ -295,8 +295,8 @@ def analyse_friction_file(filename, mean_window_pct = 0.5, std_window_pct = None
     
         
     # Relative std: std/mean
-    Ff_std /= Ff[:,1]   
-    contact_std /= contact_mean
+    Ff_std /= np.abs(Ff[:,1])   
+    contact_std /= np.abs(contact_mean)
     
     
     # --- Output dictionary --- #
@@ -571,15 +571,9 @@ def running_mean(arr, window_len = 1000):
     assert window_len > 0, "window length must be > 0"
     mean_window = np.ones(window_len)/window_len
     
-    
-    # left_padding = window_len//2
-    # right_padding = (window_len-1)//2
-    
     left_padding = window_len//2 + (window_len-1)//2
     right_padding = 0
     
-
-    # print(left_padding, right_padding)
     new_arr = np.full(len(arr) + left_padding + right_padding, np.nan)
     new_arr[left_padding or None:-right_padding or None] = arr
     
@@ -587,8 +581,6 @@ def running_mean(arr, window_len = 1000):
     mean_sqr = np.convolve(new_arr**2, mean_window, mode='valid')
     std = np.sqrt(mean_sqr - mean**2)
     
-    
-    # return np.convolve(arr, mean_window, mode='valid')
     return mean, std
 
 
@@ -674,27 +666,51 @@ def TopQuantileMax(arr, quantile, mean = True):
     
 
 
-def add_xaxis(ax1, x, xnew, xlabel, decimals = 1):
+def add_xaxis(ax1, x, xnew, xlabel, decimals = 1, fontsize = 14):
     xlim = ax1.get_xlim()
     
     tick_loc = ax1.get_xticks()
     tick_loc = tick_loc[np.logical_and(xlim[0] < tick_loc, tick_loc < xlim[1])]
     
-    sorter = np.argsort(x)
-    arg_idx = np.searchsorted(x, tick_loc, sorter=sorter)
+    dx = (x[-1]-x[0])/(len(x)-1)
+    dxnew = (xnew[-1]-xnew[0])/(len(xnew)-1)
+    xticks = np.round(tick_loc/dx*dxnew, decimals)
+    if decimals == 0:
+        xticks = xticks.astype('int')
     
-    map = arg_idx <= sorter[-1]
-    tick_arg = sorter[arg_idx[map]]
-    tick_loc = tick_loc[map]
-    
+        
     ax2 = ax1.twiny()
     ax2.set_xlim(ax1.get_xlim())
     ax2.set_xticks(tick_loc)
-    ax2.set_xticklabels(np.round(xnew[tick_arg], decimals))
+    
+    ax2.set_xticklabels(xticks)
     ax2.set(xlabel=xlabel)
+    ax2.xaxis.label.set_fontsize(fontsize)
     
     # Position new axis behind for interactive to work
     ax1.set_zorder(ax2.get_zorder()+1)
+    
+    
+    # sorter = np.argsort(x)
+    # arg_idx = np.searchsorted(x, tick_loc, sorter=sorter)
+    
+    # map = arg_idx <= sorter[-1]
+    # tick_arg = sorter[arg_idx[map]]
+    # tick_loc = tick_loc[map]
+    
+    # ax2 = ax1.twiny()
+    # ax2.set_xlim(ax1.get_xlim())
+    # ax2.set_xticks(tick_loc)
+    
+    # xticks = np.round(xnew[tick_arg], decimals)
+    # if decimals == 0:
+    #     xticks = xticks.astype('int')
+    # ax2.set_xticklabels(xticks)
+    # ax2.set(xlabel=xlabel)
+    # ax2.xaxis.label.set_fontsize(fontsize)
+    
+    # # Position new axis behind for interactive to work
+    # ax1.set_zorder(ax2.get_zorder()+1)
     
     
 
