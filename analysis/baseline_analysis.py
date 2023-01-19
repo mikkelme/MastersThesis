@@ -22,7 +22,7 @@ def single_measurement(filename, ):
     
    
     mean_window = int(mean_window_pct*len(time)) # mean window length
-    std_window = int(std_window_pct*mean_window) # std windoe length
+    std_window = int(std_window_pct*mean_window) # std window length
 
 
     # plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')

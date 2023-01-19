@@ -159,8 +159,39 @@ def gather_xyz(x, y, z, drag_direction):
     
 
 
-def analyse_friction_file(filename, mean_pct = 0.5, std_pct = None, drag_cap = None):
-    """ Analyse friction file and output measurements... """
+def analyse_friction_file(filename, mean_window_pct = 0.5, std_window_pct = None, drag_cap = None):
+    """ Analyse friction file and output measurements as a dictionary
+    Args:
+        filename (string): filename path
+        mean_window_pct (float, optional): Length of window for calculating mean [% of data length]. Defaults to 0.5.
+        std_window_pct (_type_, optional): Length of window for calculating std [% of mean window length]. Defaults to None, meaning no std calculation.
+        drag_cap (_type_, optional): Reduce the data length by setting a max drag value. Defaults to None, meaning no reduction
+
+    Returns:
+        dict: Dictionary containing the following elements. N refer to data length.
+        ----------------------------------------------------------------------------------------------------------------------------
+        Key         [unit]: description.                   Shape
+        ----------------------------------------------------------------------------------------------------------------------------
+        time          [ps]: Time.                          Shape (N,)  : N x [time]
+        move_force    [nN]: Force applied to move sheet.   Shape (N, 3): N x [parallel to drag, perpendicular to drag, z component]
+        Ff_full_sheet [nN]: Friction force on full sheet.  Shape (N, 3): N x [parallel to drag, perpendicular to drag, z component]
+        Ff_sheet      [nN]: Friction force on inner sheet. Shape (N, 3): N x [parallel to drag, perpendicular to drag, z component]
+        Ff_PB         [nN]: Friction force on pull blocks. Shape (N, 3): N x [parallel to drag, perpendicular to drag, z component]
+        COM_sheet      [Å]: Sheet center of mass.          Shape (N, 3): N x [parallel to drag, perpendicular to drag, z component]
+        
+        FN            [nN]: Normal force substrate acting on full sheet.  Shape (3,)  : [full sheet, sheet, PB]
+        Ff            [nN]: Mean and max friction force parallel to drag. Shape (3, 2): [max full sheet, mean full sheet]
+                                                                                        [max sheet     , mean sheet     ]
+                                                                                        [max PB        , mean PB        ]
+        Ff_std        [nN]: Std on mean friction.                         Shape (3,)  : [full sheet, sheet, PB]
+        contact        [-]: Contact between substrate and sheet.          Shape (N, 2): N x [full sheet, sheet]
+        contact_mean   [-]: Mean contact.                                 Shape (2,)  : [full sheet, sheet]
+        contact_std    [-]: Std on mean contact.                          Shape (2,)  : [full sheet, sheet]
+        ----------------------------------------------------------------------------------------------------------------------------
+    """ 
+
+    
+
     
     # --- Retrieve data --- #
     # Get info
@@ -173,8 +204,7 @@ def analyse_friction_file(filename, mean_pct = 0.5, std_pct = None, drag_cap = N
     time = data['TimeStep'] * dt # [ps]
     VA_pos = (time - time[0]) * info['drag_speed']  # virtual atom position
     
-    
-    # --- Analyse --- #
+    # --- Organize --- #
     # Optional: Trim down length of drag 
     if drag_cap is not None:
         map = [VA_pos <= drag_cap][0]
@@ -190,82 +220,128 @@ def analyse_friction_file(filename, mean_pct = 0.5, std_pct = None, drag_cap = N
     COM_sheet   = gather_xyz(data['c_sheet_COM[1]'], data['c_sheet_COM[2]'], data['c_sheet_COM[3]'], drag_direction)
     COM_sheet -= COM_sheet[0,:] # origo as reference point
     
-    print(move_force)
-    exit("Working here | analysis_utils.py: analyse_friction_file(...)") ## TODO: Working here 
-    
-    
-    
-    
-    # Convert units
+    # Convert units: metal -> SI [nN]
     move_force = metal_to_SI(move_force, 'F')*1e9
     Ff_sheet = metal_to_SI(Ff_sheet, 'F')*1e9
     Ff_PB = metal_to_SI(Ff_PB, 'F')*1e9
     
-    # Smoothen
-    # Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2], move_force[:,0], move_force[:,1] = savgol_filter(window_length, polyorder, Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2], move_force[:,0], move_force[:,1])
+    # Combine 
     Ff_full_sheet = Ff_sheet + Ff_PB
     
+    # Smoothen
+    # Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2], move_force[:,0], move_force[:,1] = savgol_filter(window_length, polyorder, Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2], move_force[:,0], move_force[:,1])
+    
+    # Normal force
     FN_full_sheet = np.mean(Ff_full_sheet[:,2])
     FN_sheet = np.mean(Ff_sheet[:,2])
     FN_PB = np.mean(Ff_PB[:,2])
     FN = np.array((FN_full_sheet, FN_sheet, FN_PB))
     
-    
-    mean_window = int(len(time) * mean_pct)
-    
-    max_full_sheet = Ff_full_sheet[:,0].max()
-    max_sheet = Ff_sheet[:,0].max()
-    max_PB = Ff_PB[:,0].max()
-    
+    # Contact
     contact = np.vstack((data['v_full_sheet_bond_pct'], data['v_sheet_bond_pct'])).T
     
     
-    if std_pct is None:
-        mean_full_sheet = np.mean(Ff_full_sheet[-mean_window:,0])
-        mean_sheet = np.mean(Ff_sheet[-mean_window:,0])
-        mean_PB = np.mean(Ff_PB[-mean_window:,0])
-        Ff_std = np.full(3, np.nan)
+    # --- Analyse --- #
     
-        contact_mean_full_sheet = np.mean(contact[-mean_window:, 0])
-        contact_mean_sheet = np.mean(contact[-mean_window:, 1])
+    mean_window = int(mean_window_pct*len(time)) # mean window length
+
+
+    # Max friction: parallel to drag direction
+    max_full_sheet = Ff_full_sheet[:,0].max() # Full sheet
+    max_sheet = Ff_sheet[:,0].max()           # Inner sheet
+    max_PB = Ff_PB[:,0].max()                 # Pull blocks
+    
+    # Mean and std 
+    if std_window_pct is None:
+        # Mean friction: parallel to drag direction
+        mean_full_sheet = np.mean(Ff_full_sheet[-mean_window:,0])  # Full sheet
+        mean_sheet = np.mean(Ff_sheet[-mean_window:,0])            # Inner sheet
+        mean_PB = np.mean(Ff_PB[-mean_window:,0])                  # Pull blocks
+        
+        # Mean contact
+        contact_mean_full_sheet = np.mean(contact[-mean_window:, 0]) # Full sheet
+        contact_mean_sheet = np.mean(contact[-mean_window:, 1])      # Inner sheet
+        
+        # Empty arrays for std 
+        Ff_std = np.full(3, np.nan)
         contact_std = np.full(2, np.nan)
         
     else:
-        std_window = int(mean_window * std_pct)
+        std_window = int(std_window_pct*mean_window) # std window length
         
-        mean_full_sheet, std_full_sheet = mean_cut_and_std(Ff_full_sheet[:, 0], mean_window, std_window)
-        mean_sheet, std_sheet = mean_cut_and_std(Ff_sheet[:, 0], mean_window, std_window)
-        mean_PB, std_PB = mean_cut_and_std(Ff_PB[:, 0], mean_window, std_window)
+        # Mean and std friction: parallel to drag direction
+        mean_full_sheet, std_full_sheet = mean_cut_and_std(Ff_full_sheet[:, 0], mean_window, std_window) # Full sheet
+        mean_sheet,      std_sheet      = mean_cut_and_std(Ff_sheet[:, 0],      mean_window, std_window) # Inner sheet
+        mean_PB,         std_PB         = mean_cut_and_std(Ff_PB[:, 0],         mean_window, std_window) # Pull blocks
         
-        contact_mean_full_sheet, contact_std_full_sheet = mean_cut_and_std(contact[:, 0], mean_window, std_window)
-        contact_mean_sheet, contact_std_sheet = mean_cut_and_std(contact[:, 1], mean_window, std_window)    
+        # Mean and std contact 
+        contact_mean_full_sheet, contact_std_full_sheet = mean_cut_and_std(contact[:, 0], mean_window, std_window) # Full sheet
+        contact_mean_sheet,      contact_std_sheet      = mean_cut_and_std(contact[:, 1], mean_window, std_window) # Inner sheet
         
-        Ff_std = np.array([std_full_sheet, std_sheet, std_PB])
-        contact_std = np.array([contact_std_full_sheet, contact_std_sheet])
+        # Gather std
+        Ff_std      = np.array([std_full_sheet          , std_sheet         , std_PB])
+        contact_std = np.array([contact_std_full_sheet  , contact_std_sheet])
+        
         
     
-    Ff = np.array([[max_full_sheet, mean_full_sheet],
-                    [max_sheet, mean_sheet],
-                    [max_PB, mean_PB]])
+    # Gather mean and max friction
+    Ff = np.array([ [max_full_sheet , mean_full_sheet],
+                    [max_sheet      , mean_sheet],
+                    [max_PB         , mean_PB]      ])
+    
+    # Gather mean contact
     contact_mean = np.array([contact_mean_full_sheet, contact_mean_sheet])
     
         
-    # Calculate relative (to mean) std
+    # Relative std: std/mean
     Ff_std /= Ff[:,1]   
     contact_std /= contact_mean
     
     
-    
-    varnames = ['time', 'move_force', 'Ff_full_sheet', 'Ff_sheet', 'Ff_PB', 'COM_sheet', 'FN', 'Ff', 'Ff_std', 'contact', 'contact_mean', 'contact_std']
+    # --- Output dictionary --- #
+    # Variables to include in dictionary
+    varnames = ['time', 
+                'move_force', 
+                'Ff_full_sheet', 
+                'Ff_sheet', 
+                'Ff_PB', 
+                'COM_sheet', 
+                'FN', 
+                'Ff', 
+                'Ff_std', 
+                'contact', 
+                'contact_mean', 
+                'contact_std']
 
-    # output
+    # Fill dictionary 
     updated_data = {}
     for name in varnames:
         updated_data[name] = eval(name)
-    
+        print(name, np.shape(updated_data[name]))
+    exit()    
     return updated_data
     
+
+
+def mean_cut_and_std(arr, mean_window, std_window):
+    """ Calculate mean of last <mean_window> of array (of length: mean_window)
+        and standard deviation of last <std_window> of a running mean
+        with length <mean_window>. """
+          
+    assert mean_window + std_window <= len(arr), "Window error: mean_window + std_window > array length"
+    assert 2 <= mean_window and mean_window <= len(arr), "Mean window must be in the interval [2, array length]"
+        
+    # Running mean of needed part for std
+    end_part = mean_window + std_window 
+    running_mean = np.convolve(arr[::-1][:end_part], np.ones(mean_window)/mean_window, mode='valid')
     
+    # Output
+    mean = running_mean[0]
+    std = np.std(running_mean[:std_window])
+    return mean, std
+        
+    
+
 
     
 def organize_data(data, stretch_lim, FN_lim): 
@@ -466,18 +542,6 @@ def cum_std(arr, points = 100):
     return out
 
 
-# def running_mean(arr, window_len = 10):
-#     assert window_len <= len(arr), "window length cannot be longer than array length."
-#     assert window_len > 0, "window length must be > 0"
-#     mean_window = np.ones(window_len)/window_len
-    
-#     left_padding = window_len//2
-#     right_padding = (window_len-1)//2
-#     new_arr = np.full(len(arr) + left_padding + right_padding, np.nan)
-#     new_arr[left_padding or None:-right_padding or None] = arr
-#     out = np.convolve(new_arr, mean_window, mode='valid')
-#     # return np.convolve(arr, mean_window, mode='valid')
-#     return out
 
 def running_mean(arr, window_len = 1000):
     assert window_len <= len(arr), "window length cannot be longer than array length."
@@ -646,26 +710,6 @@ def unique_fignum():
 
 
 
-def mean_cut_and_std(arr, mean_window, std_window):
-    """ Calculate mean of last <mean_window> of array (of length: mean_window)
-        and standard deviation of last <std_window> of a running mean
-        with length <mean_window>. """
-        
-    
-    assert mean_window + std_window <= len(arr), "Window error: mean_window + std_window > array length"
-    assert 2 <= mean_window and mean_window <= len(arr), "Mean window must be in the interval [2, array length]"
-    
-        
-    # Running mean of needed part for std
-    end_part = mean_window + std_window 
-    running_mean = np.convolve(arr[::-1][:end_part], np.ones(mean_window)/mean_window, mode='valid')
-    
-    # Output
-    mean = running_mean[0]
-    std = np.std(running_mean[:std_window])
-    return mean, std
-        
-    
     
 
 
