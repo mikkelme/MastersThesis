@@ -8,14 +8,26 @@ from analysis.analysis_utils import *
 
 
 def temp(path, save = False):
-    common = 'temp'
-    folders = [os.path.join(path, 'nocut', common), 
-               os.path.join(path, 'popup', common),
-               os.path.join(path, 'honeycomb', common)]
+    common_folder = 'temp' 
+    folders = [os.path.join(path, 'nocut', common_folder), 
+               os.path.join(path, 'popup', common_folder),
+               os.path.join(path, 'honeycomb', common_folder)]
     names = ['nocut', 'popup', 'honeycomb']
     variable_dependency(folders, names, 'T', '$T$ [K]', save)
+    
+    
+def vel(path, save = False):
+    common_folder = 'vel' 
+    folders = [os.path.join(path, 'nocut', common_folder), 
+               os.path.join(path, 'popup', common_folder),
+               os.path.join(path, 'honeycomb', common_folder)]
+    names = ['nocut', 'popup', 'honeycomb']
+    convert = metal_to_SI(1, 's')/metal_to_SI(1,'t')
+    variable_dependency(folders, names, 'drag_speed', '$Drag speed$ [---]', save, convert = convert)
+    
+    
 
-def variable_dependency(folders, names, variable_key, xlabel, save = False):
+def variable_dependency(folders, names, variable_key, xlabel, save = False, convert = None):
     mean_window_pct = 0.5 # relative length of the mean window [% of total duration]
     std_window_pct = 0.2  # relative length of the std windoe [% of mean window]
     
@@ -23,7 +35,7 @@ def variable_dependency(folders, names, variable_key, xlabel, save = False):
     fig_mean = plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
     ax_mean = plt.gca()
     
-    
+
     fig_max = plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
     ax_max = plt.gca()
     
@@ -51,6 +63,10 @@ def variable_dependency(folders, names, variable_key, xlabel, save = False):
         Ff_mean = Ff_mean[sort]
         Ff_mean_std = Ff_mean_std[sort]
         
+        if convert is not None:
+            var *= convert
+    
+        
         
         ax_max.plot(var, Ff_max, '-o', color = color_cycle(i), label = names[i]) 
         ax_mean.errorbar(var, Ff_mean, yerr = Ff_mean_std, marker = 'o', capsize=6, color = color_cycle(i), label = names[i]) 
@@ -77,5 +93,6 @@ def variable_dependency(folders, names, variable_key, xlabel, save = False):
 if __name__ == "__main__":
     path = '../Data/Baseline'
     
-    temp(path, save = False)
+    # temp(path, save = False)
+    vel(path, save = False)
     plt.show()

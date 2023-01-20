@@ -108,6 +108,7 @@ class Data_generator:
           
         if copy:  
             # Transfer config npy- and png-file 
+            
             proc.move_files_to_dest([self.npy_file, png_file], self.header)
         
             # Remove generated files locally

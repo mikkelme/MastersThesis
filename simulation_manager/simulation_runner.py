@@ -90,6 +90,10 @@ class Simulation_runner:
     
     
     def move_file_to_dest(self, file, dest):
+        if '(' in file or ')' in file:
+            file = file.replace("(", "\(")
+            file = file.replace(")", "\)")
+        
         ssh, dir = dest.split(':')
         subprocess.run(f'rsync -av --rsync-path=\"mkdir -p {dir} && rsync\" {file} {ssh}:{dir}', shell = True)
         
@@ -208,6 +212,6 @@ class Simulation_runner:
 
 if __name__ == "__main__":
     
-    pass
     # test = Simulation_runner()
-    # test.move_file_to_dest("./test1.py", "egil:MYTEST/")
+    # test.move_file_to_dest("../config_builder/baseline/sp1(7,5).npy", "egil:./") 
+    pass

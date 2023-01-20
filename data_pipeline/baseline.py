@@ -48,12 +48,19 @@ def baseline_vel(names, files):
     
 def baseline_dt(names, files):
     """ Vary dt """
-    pass
+    variable_key = 'dt'
+    test_name = 'dt'
+    dt_range = [0.0001, 0.00025, 0.0005, 0.001, 0.0015, 0.002]
+    sim_names = ['dt01', 'dt025', 'dt05', 'dt10', 'dt15', 'dt20' ]
+    vary_variable(names, files, test_name, sim_names, variable_key, dt_range)
 
 def baseline_K(names, files):
     """ Vary spring constant """
     variable_key = 'K'
     test_name = 'spring'
+    # files.pop(0); names.pop(0)
+    # print(files)
+    # print(names)
     K_range = [0, 1, 5, 20, 30, 50, 100]
     sim_names = ['K0', 'K1', 'K5', 'K20', 'K30', 'K50', 'K100']
     vary_variable(names, files, test_name, sim_names, variable_key, K_range)
@@ -83,6 +90,10 @@ if __name__ == '__main__':
     # print(files)
     
     # baseline_temp(names, files)
-    baseline_vel(names, files)
+    # baseline_vel(names, files)
+    # baseline_K(names, files)
+    # baseline_dt(names, files)
+    
+    
     # baseline_multi_stretch(config_names, files)
     pass
