@@ -193,6 +193,8 @@
 - Rewrote friction simulation with atomi_style "bonds" to solve continuing problems with rupture detection. Initial test shows promising results for this being the general solution to all cuts. 
 - Did more testing of bonds rupture test (successfull) and fixed a few bugs in the new friction simulation.
 - Made baseline runner using npy files and submitted a test with varying temperature for all three baseline configs: nocut, pop-up sp1(7,5) and honeycomb 3215.
+- Produced a lot of figures for single measurement baseline in artice
+- Put on simulations for baselin varying variables: temperature, drag speed, dt and K. 
 
 ## Things to remember 
 
