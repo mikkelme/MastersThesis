@@ -273,6 +273,107 @@ to 4-5 layers, and then it approaches graphite values [97, 99, 101, 107, 108]. (
 \subsection{Defining the system}
 Include figure of system to point out thermo layers and freeze layers.
 
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[b]{0.80\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/system_sideview.png}
+      \caption{Side view}
+      \label{fig:sideview}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.80\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/system_topview.png}
+      \caption{Top view}
+      \label{fig:topview}
+  \end{subfigure}
+  \hfill
+     \caption{System. 27456 atoms in total: 7272 with thermostat (orange), 7272 is locked (light blue) and the remaing 12912 just with NVE. (Get better colors)}
+     \label{fig:system}
+\end{figure}
+
+% 1440 atoms in PB. 6360 atoms in inner sheet. 7800 in full sheet. 6552 in substrate freeze. 6552 atoms in group substrate_NVT. 20904 atoms in group NVE_atoms.
+% 7272 atoms in group NVT_atoms. 12912 atoms in group pure_NVE.
+% 7272 atoms in group locked
+
+
+
+
+\begin{table}[H]
+  \begin{center}
+  \caption{System atom count and region division.}
+  \label{tab:system_count}
+  \begin{tabular}{ |c|| c | c | c | c | c | c |} \hline
+    \textbf{Region} & \textbf{Total}  & Sub region & Sub total & \textbf{NVE} & \textbf{NVT} & \textbf{Locked} \\ \hline   
+    \multirow{2}{*}{Sheet} & \multirow{2}{*}{7800} & Inner sheet & 6360 & 6360 & 0 & 0 \\ %\hline
+    & & Pull blocks & 1440 & 0 & 720 & 720 \\ \hline   
+    \multirow{2}{*}{Substrate} & \multirow{2}{*}{19656} & Upper & 6552 & 6552 & 0 & 0 \\ %\hline
+    & & Middle & 6552 & 0 & 6552 & 0 \\ %\hline
+    & & Bottom & 6552 & 0 & 0 & 6552 \\ \hline \hline   
+    All & 27456 & \multicolumn{2}{r|}{} & 12912 & 7272 & 7272 \\ \hline 
+  \end{tabular}
+  \end{center}
+\end{table}
+
+
+
+% \begin{table}[ht]
+%   \caption{Multi-column and multi-row table}
+%   \begin{center}
+%   \begin{tabular}{ccc}
+%       \hline
+%       \multicolumn{2}{c}{\multirow{2}{*}{Multi-col-row}}&X\\
+%       \multicolumn{2}{c}{}&X\\
+%       \hline
+%       X&X&X\\
+%       \hline
+%   \end{tabular}
+%   \end{center}
+%   \label{tab:multicol}
+%   \end{table}
+
+
+% \begin{table}[H]
+%   \begin{center}
+%   \caption{System atom counts}
+%   \label{tab:param}
+%   \begin{tabular}{ | c | m{4cm}| m{4cm} | m{4cm} | m{4cm} |} \hline
+%     \textbf{Region} & \textbf{Total} & \textbf{NVE} & \textbf{NVT} & \textbf{Locked} \\ \hline   
+%     Full sheet (inner sheet + PB) & 
+%     \begin{itemize}
+%       \item[] Inner sheet: 6360
+%       \item[] Pull blocks: 1440
+%     \end{itemize} & 
+%     \begin{itemize}
+%       \item[] Inner sheet: 6360
+%       \item[] Pull blocks: 1440
+%     \end{itemize} & 
+%     \begin{itemize}
+%       \item[] Inner sheet: 0
+%       \item[] Pull blocks: 720
+%     \end{itemize} & 
+%     \begin{itemize}
+%       \item[] Inner sheet: 0
+%       \item[] Pull blocks: 720
+%     \end{itemize} & 
+%     6360 & 720 & 720 \\ \hline   
+%     Substrate & 19656 & 6552 & 6552 & 6552 \\ \hline   
+%     All & 27456 & 12912 & 7272 & 7272 \\ \hline
+%   \end{tabular}
+%   \end{center}
+% \end{table}
+
+
+
+
+% m{8cm}| m{5cm}
+% \begin{itemize} 
+%   \item Inner sheet: 6360 
+%   \item Pull blocks (PB): 1440   
+% \end{itemize} 
+
 \subsection{Creating sheets}
 
 We are going to create a 2D sheet graphene sheet. 

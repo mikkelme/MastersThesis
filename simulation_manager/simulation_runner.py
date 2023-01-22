@@ -34,7 +34,7 @@ class Simulation_runner:
             "config_data": "sheet_substrate",
             "root": "..",
             "out_ext": date.today(),
-            "dump_freq": 1000
+            "dump_freq": 10000
         }
         
 
