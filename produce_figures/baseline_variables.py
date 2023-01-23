@@ -113,7 +113,7 @@ def variable_dependency(folders, names, variable_key, xlabel, convert = None, er
             var[j] = float(info[variable_key])
             Ff_max[j] = data['Ff'][0, 0]
             Ff_mean[j] = data['Ff'][0, 1]
-            Ff_mean_std[j] = data['Ff_std'][0]
+            Ff_mean_std[j] = data['Ff_std'][0]*data['Ff'][0, 1] # rel. error -> abs. error
             
             if map is not None:
                 if var[j] in map:
@@ -170,4 +170,4 @@ if __name__ == "__main__":
     spring(path, save = True)
     dt(path, save = True)
     
-    # plt.show()
+    plt.show()
