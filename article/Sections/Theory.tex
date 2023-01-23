@@ -264,10 +264,138 @@ to 4-5 layers, and then it approaches graphite values [97, 99, 101, 107, 108]. (
   \item General properties and crystal structure
 \end{itemize}
 \subsection{Molecular Dynamics}
+
+
+
 \subsubsection{Potentials}
+% \cite{PhysRevB.37.6991}
 The choices of potentials is mainly based on the on \cite{li_evolving_2016}. The covalent bonds of C-C in graphene and Si-Si in the substrate is described by the Tersoff and Stillinger–Weber potentials, respectively. A typical 6–12 Lennard–Jones potential is used to describe the van der Waals adhesive interaction between graphene and the substrate. 
 
+
+Quantum-mechanical calculations is more accurate but to numerical intensive.
+
+
+Despite recent progress in this respect, it is clear that there will always be interesting problems beyond the reach of ab initio approaches \cite{PhysRevB.37.6991}.
+
+In particular, pair potentials are completely inapplicable to strongly co- valent systems such as semiconductors \cite{PhysRevB.37.6991}.
+
+Pair potentials comes from the following expansion. The energy of $N$ interacting particles may be written 
+\begin{align*}
+  E = \sum_i V_i(\vec{r}_i) + \sum_{i < j} V_2(\vec{r}_i, \vec{r}_j) +  \sum_{i < j < k} V_3(\vec{r}_i, \vec{r}_j, \vec{r}_i) + \cdots,
+\end{align*}
+where $\vec{r}_n$ is the position of the $n$th particle and $V_m$ is called an $m$-body potential.
+The first one-body term corresponds to an external potential, followed by the two-body term, three-body term an so on. The simplest model that includes parrticle interaction is the pair potential truncating the expansion after the two-body term. A general feature of the pair potentials is that they favor close-packed structures which is unsuited to describe covalent bonds that take more open structures. In order to accomodate the description of covalent bonds the natural step is to include the next step of the expansion, the three-body terms. 
+
+
+
 \subsubsection{Tersoff}
+% https://docs.lammps.org/pair_tersoff.html
+% https://interatomic-potentials.readthedocs.io/en/latest/doc/tersoff.html
+% https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Supplemental_Modules_(Physical_and_Theoretical_Chemistry)/Chemical_Bonding/Fundamentals_of_Chemical_Bonding/Bond_Order_and_Lengths
+% https://en.wikipedia.org/wiki/Bond_order_potential
+
+
+% \cite{PhysRevB.37.6991}
+
+The tersoff potential abandon the idea of a general $N$-body form and attempts instead to build the model on a more physics informed approach. The more neighbours an atom has the weaker the bonds will be. Thus it introduces the bond order (bond strentgh), that is environment specific and increase with bond coordination (number of neighbours for a given atom). The potential energy is taken to have the form
+
+\begin{align*}
+  E &= \sum_i E_i = \frac{1}{2}\sum_{i \ne j} V_{ij}, \\
+  V_{ij} &= f_C(r_{ij}) \big[f_R(r_{ij}) + b_{ij}f_A(r_{ij})  \big],
+\end{align*}
+
+% where the total potential energy is decomposed into an atom site energy $E_i$ and a bond energy $v_{ij}$. 
+where the total potential energy is decomposed into a bond energy $v_{ij}$. The indices $i$ and $j$ run over the atoms of the system with $r_{ij}$ denoting the distance between atom $i$ and $j$. The bond energy is composed of a repulsive term $f_R$, arising from overlapping wave functions, and a attractive term $f_A$ associated with bonding. $f_c$ is simple a smooth cut-off function to increase computational efficiency. $b_{ij}$ represent the bond order, i.e. the strength of the bonds, which depends inversely on the number of bonds, the bond angles ($\theta_{ijk}$) and optionally the relative bonds lengths ($r_{ij}$, $r{jk}$). Notice that an additional cut-off term $a_{ij}$ was orginally multiplied to $f_R$ as a way of including terms that limit the range of the interactions to the first neighbour shell. These kind of limitations is already included in $b_{ij}$ for the attractive term $f_A$ but is often omitted for the repulsive term $f_R$ and we do so by setting $a_{ij} = 1$. \\
+The cut-off function goes from 1 to 0 over a small interval range $R \pm D$ as
+\begin{align*}
+  f_C(r) =
+  \begin{cases}
+    1 & r < R - D \\
+    \frac{1}{2} - \frac{1}{2} \sin{(\frac{\pi}{2} \frac{r - R}{D})} & R - D < r < R + D\\
+    0 & r > R + D
+  \end{cases},
+\end{align*}
+which is continuous and differentiable for all $r$. $R$ is usually chosen to include only the first neighbour shell. \\
+The repulsive and attractive terms $f_R$ and $f_A$ is modelled as an exponetial function, just as in a morse potential, 
+\begin{align*}
+ f_R(r) &= A \exp(-\lambda_1 r), \\
+ f_A(r) &= -B \exp \big(-\lambda_2 r\big),
+\end{align*}
+
+
+The novel feature of the model lies in modeling of the bond order $b_{ij}f_A$ which includes a three-body interactions by summing over a third atom $k \ne i,j$ within the cut-off $r_{ik} < R + D$.
+
+\begin{align*}
+  b_{i j} & =\big(1+\beta^n \zeta_{i j}\big)^{-\frac{1}{2 n}} \\
+  \zeta_{i j} & =\sum_{k \ne i,j} f_C(r_{i k}) g\Big(\theta_{i j k}\left(r_{i j}, r_{i k}\right)\Big) \exp \left(\lambda_3{ }^m\big(r_{i j}-r_{i k}\right)^m\big) \\
+  g(\theta) & =\gamma_{i j k}\left(1+\frac{c^2}{d^2}-\frac{c^2}{\left[d^2+\left(\cos \theta-\cos \theta_0\right)^2\right]}\right)
+\end{align*}
+
+$\zeta_{i,j}$ is effective coordination 
+% and considering the angle $\theta_{ijk}$, that is the angle between bonds $r_{ij}$ and $r_{jk}$.
+
+
+
+
+% The tersoff potential is a bond order potential. Used to describe covalent bonds.
+
+% In the article it was used to describe Si-Si. 
+
+% Tersoff article
+% The central idea is that, in real sys-
+% tems, the bond order (i.e., the strength of each bond) de-
+% pends upon the local environment. In particular, an
+% atom with many neighbors forms weaker bonds than an require statistical averages, quantum-mechanical calcula- atom with few neighbors. 
+
+% atomic coordination number (number of neighbours).
+
+
+% The potential is written as simple pair potential depending on the distance bewteen atoms, but the bond strength is modified by the bond order term, taking into account the environment and three-body interactions. As bond coordination increases the value of $b_{ij}$ will decrease. For a single bond $b_{ij} = 1$ and for infinte bonds $n? \to \inf$ we get $b_{ij} \to 0$.
+
+
+
+% \begin{align*}
+%   f_R(r) & =A \exp \left(-\lambda_1 r\right) \\
+%   f_A(r) & =-B \exp \left(-\lambda_2 r\right) \\
+%   b_{i j} & =\left(1+\beta^n \zeta_{i j}\right)^{-\frac{1}{2 n}} \\
+%   \zeta_{i j} & =\sum_{k \neq i, j} f_C\left(r_{i k}+\delta\right) g\left[\theta_{i j k}\left(r_{i j}, r_{i k}\right)\right] \exp \left[\lambda_3{ }^m\left(r_{i j}-r_{i k}\right)^m\right] \\
+%   g(\theta) & =\gamma_{i j k}\left(1+\frac{c^2}{d^2}-\frac{c^2}{\left[d^2+\left(\cos \theta-\cos \theta_0\right)^2\right]}\right)
+% \end{align*}
+
+
+
+\begin{table}[H]
+  \begin{center}
+  \caption{Parameters of the numerical procedure for measuring friction.}
+  \label{tab:param}
+  \begin{tabular}{ | c | c | c|} \hline
+    Parameter & Value & Description \\ \hline 
+    $m$ & 3.0 &  \\ \hline
+    $\gamma$ & 1.0 & \\ \hline
+    $\lambda_3$ & 0.0 [1/Å] & \\ \hline
+    $c$ & \num{3.8049e4} & \\ \hline
+    $d$ & 4.3484 & \\ \hline
+    $\cos{(\theta_0)}$ & -0.57058  & \\ \hline
+    $n$ & 0.72751 & \\ \hline
+    $\beta$ & \num{1.5724e-7} & \\ \hline
+    % λ2 (1/distance units) & & \\ \hline
+    % B (energy units) & & \\ \hline
+    % R (distance units) & & \\ \hline
+    % D (distance units) & & \\ \hline
+    % λ1 (1/distance units) & & \\ \hline
+    % A (energy units) & & \\ \hline
+    % \\ \hline
+  \end{tabular}
+  \end{center}
+\end{table}
+
+
+% # element 1, element 2, element 3, m,  γ,  λ3, c,       d,     cosθ0,   n,      β,        λ2,    B,     R,   D,   λ1,    A 
+%   C          C          C          3.0 1.0 0.0 3.8049e4 4.3484 -0.57058 0.72751 1.5724e-7 2.2119 346.74 1.95 0.15 3.4879 1393.6
+
+
+
+
 \subsubsection{Stillinger weber}
 \subsubsection{Leonard Jones}
 \subsubsection{LAMMPS}
