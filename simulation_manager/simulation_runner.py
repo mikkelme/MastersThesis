@@ -27,7 +27,8 @@ class Simulation_runner:
             "RNSEED": -1,
             "drag_length": 400,
             "drag_speed": 20, # [m/s]
-            "K": 30.0,
+            # "K": 30.0,
+            "K": 0,
             "drag_dir_x": 0,
             "drag_dir_y": 1,
             "F_N": 1e-9, # [N]

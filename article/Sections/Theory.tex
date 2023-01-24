@@ -266,113 +266,98 @@ to 4-5 layers, and then it approaches graphite values [97, 99, 101, 107, 108]. (
 \subsection{Molecular Dynamics}
 
 
+% Quantum-mechanical calculations is more accurate but to numerical intensive.
+
+% Despite recent progress in this respect, it is clear that there will always be interesting problems beyond the reach of ab initio approaches \cite{PhysRevB.37.6991}.
 
 \subsubsection{Potentials}
 % \cite{PhysRevB.37.6991}
-The choices of potentials is mainly based on the on \cite{li_evolving_2016}. The covalent bonds of C-C in graphene and Si-Si in the substrate is described by the Tersoff and Stillinger–Weber potentials, respectively. A typical 6–12 Lennard–Jones potential is used to describe the van der Waals adhesive interaction between graphene and the substrate. 
 
+The choices of potentials used in the MD simulation is mainly based on the on \cite{li_evolving_2016} which have a somewhat similar MD friction simulation, the difference being that they impose a Si-tip on the graphene sheet supported by a Si-substrate where we impose drag the whole sheet upon the substrate. Nonetheless this serves as a good anchor for the methodology of the setup. The covalent bonds of C-C in graphene and Si-Si in the substrate is described by the Tersoff and Stillinger–Weber potentials, respectively. A typical 12-6 Lennard–Jones potential is used to describe the van der Waals adhesive interaction between graphene and the substrate. \\
 
-Quantum-mechanical calculations is more accurate but to numerical intensive.
+\paragraph*{General formulation of potentials...?}
 
-
-Despite recent progress in this respect, it is clear that there will always be interesting problems beyond the reach of ab initio approaches \cite{PhysRevB.37.6991}.
-
-In particular, pair potentials are completely inapplicable to strongly co- valent systems such as semiconductors \cite{PhysRevB.37.6991}.
-
-Pair potentials comes from the following expansion. The energy of $N$ interacting particles may be written 
+On a general note we can generalize the n-body potential as the expansion in orders of participating atoms as 
 \begin{align*}
   E = \sum_i V_1(\vec{r}_i) + 
       \sum_{\substack{i, j \\ i < j}} V_2(\vec{r}_i, \vec{r}_j) +  
-      \sum_{\substack{i,j,k \\ i < j < k}} V_3(\vec{r}_i, \vec{r}_j, \vec{r}_i) + \cdots,
-\end{align*}
-% \sum_{\substack{i=0 \\ i\neq 4}}^n i
-% \begin{align*}
-%   E = \sum_i V_i(\vec{r}_i) + \sum_i\sum_{j>i} V_2(\vec{r}_i, \vec{r}_j) +  \sum_i\sum_{j>i}\sum_{k>j} V_3(\vec{r}_i, \vec{r}_j, \vec{r}_i) + \cdots,
-% \end{align*}
-where $\vec{r}_n$ is the position of the $n$th particle and $V_m$ is called an $m$-body potential.
-The first one-body term corresponds to an external potential, followed by the two-body term, three-body term an so on. The simplest model that includes parrticle interaction is the pair potential truncating the expansion after the two-body term. A general feature of the pair potentials is that they favor close-packed structures which is unsuited to describe covalent bonds that take more open structures. In order to accomodate the description of covalent bonds the natural step is to include the next step of the expansion, the three-body terms. 
+      \sum_{\substack{i,j,k \\ i < j < k}} V_3(\vec{r}_i, \vec{r}_j, \vec{r}_i) + \cdots.
+\end{align*} 
+where $\vec{r}_n$ is the position of the $n$th particle and $V_m$ is called an $m$-body potential  \cite{PhysRevB.37.6991}. The first
+one-body term corresponds to an external potential, followed by the two-body term, the three-body term and so on.The simplest model that includes parrticle interaction is the pair potential truncating the expansion after the two-body term. A general feature of the pair potentials is that they favor close-packed structures which is unsuited to describe covalent bonds that take more open structures. In particular, pair potentials are completely inapplicable to strongly co- valent systems such as semiconductors \cite{PhysRevB.37.6991}. In order to accomodate the description of covalent bonds the natural step is thus to include the next step of the expansion, the three-body
+terms, as we will see for the modeling of the graphene sheet C-C bonds and the Silicon sheet Si-Si bonds. For the interaction between the sheet and the substrate we can nøjes med a Lennard Jones pair potential describing the non-bonded van der Waals interaction.
 
-\subsubsection{Leonard Jones}
+
+\subsubsection{Lennard Jones}
+This sections is based on [\cite{docs_lammps_LJ}, \cite{C9CP05445F}, \cite{chem_libretexts_LJ}].
+
+
+
+The Lennard Jones is probably one of the most famous pair potentials used in MD simulations. The Lennard-Jones (LJ) models the potential energy between two non-bonding atoms based solely on interatomc distance $r$. The model accounts for attractive forces arising from (dipole-dipole, dipole-induced dipole, and London interactions) and repulsive forces that capture the hard core (is this safe to say?) of overlapping wave functions at small distances. Thus is assummes neutrally charged atoms and was orginally proposed for noble gases. The classical 12-6 version of the model (refering to the powers of the repulsive and attractive form respectively) reads
+\begin{align*}
+  E = 4\epsilon \left[\left(\frac{\sigma}{r}\right)^{12} - \left(\frac{\sigma}{r}\right)^6 \right ], \qquad r < r_c,
+\end{align*}
+
+where $r$ is the interatomic distance with cut-off $r_c$, $\epsilon$ denotes the depth of the potential well and $\sigma$ the distance where the potential is zero. By solving for the potential minimum ($dE/dr = 0$) we find the equilibrium distance to be $r_0 = \sigma 2^{1/6}$, which makes it clear that sigma effectively sets the equilirbium distance between atoms, i.e. the dividing line for which the net force is repulsive or attractive. While the LJ in many ways is oversimplified model that is insufficient in its description of ... (get source and concrete examples) it is commonly used as a model for intermaterial interactions (between moving object and substrate) in friction studies [\cite{li_evolving_2016}, \cite{ZHANG201585}, \cite{kim_nano-scale_2009}].
+
+
 
 
 
 \subsubsection{Stillinger weber}
-% https://docs.lammps.org/pair_sw.html
-% \cite{PhysRevB.31.5262}
+This section is based on [\cite{docs_lammps_sw}, \cite{PhysRevB.31.5262}]
+
 
 The stillinger weber potential takes the form of a three body potential
 \begin{align*}
-  E &=\sum_i \sum_{j>i} \phi_2(r_{i j})+\sum_i \sum_{j \neq i} \sum_{k>j} \phi_3(r_{ij}, r_{ik}, \theta_{ijk}).
+  E &=\sum_i \sum_{j>i} \phi_2(r_{i j})+\sum_i \sum_{j \neq i} \sum_{k>j} \phi_3(r_{ij}, r_{ik}, \theta_{ijk}),
 \end{align*}
-The two-body term $\phi_2$ builds from the Lennard-Jones (LJ) model with the addition of an exponetial term
-\begin{align*}
-  \phi_2(r_{i j}) & =A \epsilon_{ij}\left[B\left(\frac{\sigma}{r_{ij}}\right)^{p_{ij}} - \left(\frac{\sigma}{r_{ij}}\right)^{q}\right] \exp (\frac{\sigma}{r_{ij}-a \sigma}).
-\end{align*}
+where $r_{ij}$ denotes the distance between atom $i$ and $j$ and $\theta_{ijk}$ the angle between bond $ij$ and $jk$. The summations is over all neighbours $j$ and $k$ of atom $i$ within a cut-off distance $r = a\sigma$. \\
+The two-body term $\phi_2$ builds from the Lennard-Jones (LJ) model with the addition of an exponetial cutoff term
+\begin{align}
+  \phi_2(r_{i j}) & =A_{ij} \epsilon_{ij}\left[B_{ij}\left(\frac{\sigma_{ij}}{r_{ij}}\right)^{p_{ij}} - \left(\frac{\sigma_{ij}}{r_{ij}}\right)^{q_{ij}}\right] \exp (\frac{\sigma_{ij}}{r_{ij}-a_{ij} \sigma_{ij}}).
+  \label{eq:sw_2}
+\end{align}
 
-The model parameters $A$, $\epsilon$, $B$, $\sigma$, $p$, $q$ and $a$ should be specified for each unique atom type pair, but since we are only dealing with Si-Si bonds we can exclude the $i,j$ indices on thoose. We see that the first term is reminiscent of the Lennard-Jones potential while the last term forces the potential to zero at $r=a\sigma$.
+The model parameters $A$, $\epsilon$, $B$, $\sigma$, $p$, $q$ and $a$ comes with $i,j$ indices to indicate that theese parameters should be specified for each unique pair of atom types. However, in our case we will only provide a single value for each model parameters as we are exclusively dealing with Si-Si bonds. We see that the first term in eq.~\eqref{eq:sw_2} is reminiscent of the Lennard-Jones potential while the last term effectively drives the portential to zero at $r=a\sigma$, which is the reason that we cut-off the model evaluation at that point. With the specific model parameters for the Si-Si modelling (see table \ref{tab:sw_param}) the cut-off becomes $\sim 3.8$ Å. \\
+The three body term includes an angle dependency as
+\begin{align}
+  \phi_3(r_{ij}, r_{ik}, \theta_{ijk}) &= \lambda_{ijk} \ \epsilon_{ijk} \Big[\cos \theta_{ijk}-\cos \theta_{0,ijk}\Big]^2 \exp (\frac{\gamma_{ij} \sigma_{ij}}{r_{ij} - a_{ij} \sigma_{ij}}) \exp (\frac{\gamma_{ik} \sigma_{ik}}{r_{ik} - a_{ik} \sigma_{ik}}),
+  \label{eq:sw_3}
+\end{align}
+where $\theta_{0,ijk}$ is the equilibrium angle. The first term of eg.~\eqref{eq:sw_3} includes an angle dependency analog to a harmonic oscillator based on a cosine angle distance from the equilibrium angle. The final two terms act again as a cut-off by driving the potential to zero at $r_{ij} = a_{ij}\sigma_{ij}$ and $r_{ik} = a_{ik}\sigma_{ik}$. \\ 
+The parameters used for the Si-Si bond modeling is displayed in table \ref{tab:sw_param} along with a (quick/superficial) interpretation of each model parameter.
 
-\begin{align*}
-  \phi_3(r_{ij}, r_{ik}, \theta_{ijk}) &= \lambda \ \epsilon \Big[\cos \theta_{ijk}-\cos \theta_{0,ijk}\Big]^2 \exp (\frac{\gamma \sigma}{r_{ij} - a \sigma}) \exp (\frac{\gamma \sigma}{r_{ik} - a \sigma}).
-\end{align*}
-Similar here the added model parameters should be defined for all unique triplets of atom types. 
-
-%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%
-% WORKING HERE
-%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%
-
-% and three-body term $\phi_3$ takes respectively take the form
-% \begin{align*}
-%   \phi_2(r_{i j}) & =A_{ij} \epsilon_{ij}\left[B_{ij}\left(\frac{\sigma_{ij}}{r_{ij}}\right)^{p_{ij}} - \left(\frac{\sigma_{ij}}{r_{ij}}\right)^{q_{ij}}\right] \exp (\frac{\sigma_{ij}}{r_{ij}-a_{ij} \sigma_{ij}}), \\
-%   \phi_3(r_{ij}, r_{ik}, \theta_{ijk}) &= \lambda_{ijk} \ \epsilon_{ijk}\Big[\cos \theta_{ijk}-\cos \theta_{0,ijk}\Big]^2 \exp (\frac{\gamma_{ij} \sigma_{ij}}{r_{ij}-a_{ij} \sigma_{ij}}) \exp (\frac{\gamma_{ik} \sigma_{ik}}{r_{ik}-a_{ik} \sigma_{ik}}).
-% \end{align*}
-$r_{ij}$ denotes the distance between atom $i$ and $j$ and $\theta_{ijk}$ the angle between bond $ij$ and $jk$. The summations is over all neighbours $j$ and $k$ of atom $i$ within a cutoff (decide about ``-'' or not) distance  $a/\sigma$? (cutoff: r = a)? The indices for $\sigma, p, q, a, \lambda$ denotes the oppoertunity to specify different parameters for different atom types. In our case this is not used as this will only model Si-Si interactions. 
-
-
-
-
-$\epsilon$ is the depth of the potential well (LJ). $\sigma$ is the distance at which the potential is zero
 
 
 \begin{table}[H]
   \begin{center}
-  \caption{Parameters for the stilliner weber potential used for intermolecular interactions in the silicon substrate}
-  \label{tab:param}
-  \begin{tabular}{ | c | c | c|} \hline
+  \caption{Parameters for the stilliner weber potential used for intermolecular interactions in the silicon substrate.}
+  \label{tab:sw_param}
+  \begin{tabular}{ | c | c | L{9cm} |} \hline
     Parameter & Value & Description \\ \hline 
-    $\epsilon$ & 2.1683  & ... \\ \hline
-    $\sigma$ & 2.0951 & ... \\ \hline
-    $a$ & 1.80 & ... \\ \hline
-    $\lambda$ & 21.0 & ... \\ \hline
-    $\gamma$ & 1.20 & ... \\ \hline
-    $\cos{(\theta_0)}$ & -1/3 & Equilibrium angle \\ \hline
-    $A$ &  7.049556277 & \\ \hline
-    $B$ &  0.6022245584 &  \\ \hline
-    $p$  & 4.0 & \\ \hline
-    $q$  & 0.0 & \\ \hline
-    $tol$  & 0.0 & \\ \hline
+    $\epsilon$ & 2.1683  & Effects the individual depth of the potential well for each atom type pair/tiplets. \\ \hline
+    $\sigma$ & 2.0951 & Distance for which the two-body term is zero. \\ \hline
+    $a$ & 1.80 & Effects the individual cut-off distance for each atom type pair. \\ \hline
+    $\lambda$ & 21.0 & Effects the overall depth of the three-body potential well. \\ \hline
+    $\gamma$ & 1.20 & Effects the shape of the three-body cut-off terms. \\ \hline
+    $\cos{(\theta_0)}$ & -1/3 & Cosine of equilibrium angle. \\ \hline
+    $A$ &  7.049556277 & Effects the overall depth of the two-body potential well. \\ \hline
+    $B$ &  0.6022245584 & Scales the repulsion part of the two-body term. \\ \hline
+    $p$  & 4.0 & Sets the power of the repulsion part of the two-body term. \\ \hline
+    $q$  & 0.0 & Sets the power of the attraction part of the two-body term. \\ \hline
+    $tol$  & 0.0 & LAMMPS: Option to define a different cut-off than the theoretical of $r = a\sigma$. $tol = 0$ refers to the theoretical being used. \\ \hline
   \end{tabular}
   \end{center}
 \end{table}
 
 
-% #   element 1, element 2, element 3,
-% #   epsilon, sigma, a, lambda, gamma, costheta0, A, B, p, q, tol
-
-% Si Si Si 
-% eps2.1683  sigma2.0951  a1.80  lambda21.0  gamma1.20  -0.333333333333 A7.049556277  0.6022245584  4.0  0.0 0.0
 
 \subsubsection{Tersoff}
-% https://docs.lammps.org/pair_tersoff.html
-% https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Supplemental_Modules_(Physical_and_Theoretical_Chemistry)/Chemical_Bonding/Fundamentals_of_Chemical_Bonding/Bond_Order_and_Lengths
-% https://en.wikipedia.org/wiki/Bond_order_potential
-
-
 % https://interatomic-potentials.readthedocs.io/en/latest/doc/tersoff.html
-% \cite{PhysRevB.37.6991}
+% https://chem.libretexts.org/Bookshelves/ Physical_and_Theoretical_Chemistry_Textbook_Maps/Supplemental_Modules_(Physical_and_Theoretical_Chemistry)/Chemical_Bonding/Fundamentals_of_Chemical_Bonding/Bond_Order_and_Lengths
+This section is baded on [\cite{docs_lammps_tersoff}, \cite{PhysRevB.37.6991}].
+
 
 The tersoff potential abandon the idea of a general $N$-body form and attempts instead to build the model on a more physics informed approach. The more neighbours an atom has the weaker the bonds will be. Thus it introduces the bond order (bond strentgh), that is environment specific and increase with bond coordination (number of neighbours for a given atom). The potential energy is taken to have the form
 

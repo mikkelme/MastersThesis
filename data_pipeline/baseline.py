@@ -75,12 +75,12 @@ def vary_variable(names, files, test_name, simnames, variable_key, variable_rang
     for i in range(len(files)):
         name, file = names[i], files[i]
         for i, val in enumerate(variable_range):    
-            gen = Data_generator(file, header = f'egil:Baseline/{name}/{test_name}', simname = simnames[i], config_ext = name)
+            gen = Data_generator(file, header = f'egil:Baseline_fixmove/{name}/{test_name}', simname = simnames[i], config_ext = name)
             variables = {variable_key       : val,
                          'dump_freq'        : 10000,
                          'stretch_max_pct'  : stretch}
 
-            gen.run_single(variables, num_procs = num_procs, copy= i==0)
+            gen.run_single(variables, num_procs = num_procs, copy = i==0)
  
 
 
@@ -91,11 +91,11 @@ if __name__ == '__main__':
     # print(files)
     
     # baseline_temp(names, files)
-    # baseline_vel(names, files)
+    baseline_vel(names, files)
     # baseline_K(names, files)
     # baseline_dt(names, files)
     
 
-    baseline_multi_stretch(names, files)
+    # baseline_multi_stretch(names, files)
     
     pass
