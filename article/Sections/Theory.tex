@@ -289,44 +289,40 @@ terms, as we will see for the modeling of the graphene sheet C-C bonds and the S
 
 
 \subsubsection{Lennard Jones}
+% TODO: Add potential curve figure
 This sections is based on [\cite{docs_lammps_LJ}, \cite{C9CP05445F}, \cite{chem_libretexts_LJ}].
 
-
-
-The Lennard Jones is probably one of the most famous pair potentials used in MD simulations. The Lennard-Jones (LJ) models the potential energy between two non-bonding atoms based solely on interatomc distance $r$. The model accounts for attractive forces arising from (dipole-dipole, dipole-induced dipole, and London interactions) and repulsive forces that capture the hard core (is this safe to say?) of overlapping wave functions at small distances. Thus is assummes neutrally charged atoms and was orginally proposed for noble gases. The classical 12-6 version of the model (refering to the powers of the repulsive and attractive form respectively) reads
-\begin{align*}
+The Lennard-Jones (LJ) model is probably one of the most famous pair potentials used in MD simulations. LJ models the potential energy between two non-bonding atoms based solely on interatomc distance $r$. The model accounts for attractive forces arising from dipole-dipole, dipole-induced dipole and London interactions, and repulsive forces that capture the hard core (is this safe to say?) of overlapping wave functions at small distances. Thus it is assummes neutrally charged atoms and was orginally proposed for noble gases. The classical 12-6 version of the model (refering to the power law of the repulsive and attractive forces respectively) reads
+\begin{align}
   E = 4\epsilon \left[\left(\frac{\sigma}{r}\right)^{12} - \left(\frac{\sigma}{r}\right)^6 \right ], \qquad r < r_c,
-\end{align*}
-
-where $r$ is the interatomic distance with cut-off $r_c$, $\epsilon$ denotes the depth of the potential well and $\sigma$ the distance where the potential is zero. By solving for the potential minimum ($dE/dr = 0$) we find the equilibrium distance to be $r_0 = \sigma 2^{1/6}$, which makes it clear that sigma effectively sets the equilirbium distance between atoms, i.e. the dividing line for which the net force is repulsive or attractive. While the LJ in many ways is oversimplified model that is insufficient in its description of ... (get source and concrete examples) it is commonly used as a model for intermaterial interactions (between moving object and substrate) in friction studies [\cite{li_evolving_2016}, \cite{ZHANG201585}, \cite{kim_nano-scale_2009}].
-
-
-
+  \label{eq:LJ}
+\end{align}
+where $r$ is the interatomic distance with cut-off $r_c$, $\epsilon$ is the depth of the potential well and $\sigma$ the distance where the potential is zero. By solving for the potential minimum ($dE/dr = 0$) we find the equilibrium distance to be $r_0 = \sigma 2^{1/6}$. This makes for an even cleary interpration of $\sigma$ which effectively sets the equilirbium distance between atoms, i.e. the dividing line for which the net force is repulsive or attractive. While the LJ model in many ways is an oversimplified model that is insufficient in its description of ... (get source and concrete examples) it is commonly used as a model for intermaterial interactions (between moving object and substrate) in friction studies [\cite{li_evolving_2016}, \cite{ZHANG201585}, \cite{kim_nano-scale_2009}].
 
 
 \subsubsection{Stillinger weber}
+% Todo: Add some potential curve figure? or figure of three body angles?
 This section is based on [\cite{docs_lammps_sw}, \cite{PhysRevB.31.5262}]
-
 
 The stillinger weber potential takes the form of a three body potential
 \begin{align*}
   E &=\sum_i \sum_{j>i} \phi_2(r_{i j})+\sum_i \sum_{j \neq i} \sum_{k>j} \phi_3(r_{ij}, r_{ik}, \theta_{ijk}),
 \end{align*}
 where $r_{ij}$ denotes the distance between atom $i$ and $j$ and $\theta_{ijk}$ the angle between bond $ij$ and $jk$. The summations is over all neighbours $j$ and $k$ of atom $i$ within a cut-off distance $r = a\sigma$. \\
-The two-body term $\phi_2$ builds from the Lennard-Jones (LJ) model with the addition of an exponetial cutoff term
+The two-body term $\phi_2$ builds from the LJ model with the addition of an exponetial cutoff term
 \begin{align}
   \phi_2(r_{i j}) & =A_{ij} \epsilon_{ij}\left[B_{ij}\left(\frac{\sigma_{ij}}{r_{ij}}\right)^{p_{ij}} - \left(\frac{\sigma_{ij}}{r_{ij}}\right)^{q_{ij}}\right] \exp (\frac{\sigma_{ij}}{r_{ij}-a_{ij} \sigma_{ij}}).
   \label{eq:sw_2}
 \end{align}
 
-The model parameters $A$, $\epsilon$, $B$, $\sigma$, $p$, $q$ and $a$ comes with $i,j$ indices to indicate that theese parameters should be specified for each unique pair of atom types. However, in our case we will only provide a single value for each model parameters as we are exclusively dealing with Si-Si bonds. We see that the first term in eq.~\eqref{eq:sw_2} is reminiscent of the Lennard-Jones potential while the last term effectively drives the portential to zero at $r=a\sigma$, which is the reason that we cut-off the model evaluation at that point. With the specific model parameters for the Si-Si modelling (see table \ref{tab:sw_param}) the cut-off becomes $\sim 3.8$ Å. \\
+The model parameters $A$, $\epsilon$, $B$, $\sigma$, $p$, $q$ and $a$ comes with $i,j$ indices to indicate that theese parameters should be specified for each unique pair of atom types. However, in our case we will only provide a single value for each model parameter as we are exclusively dealing with Si-Si bonds. We see that the first term in eq.~\eqref{eq:sw_2} is reminiscent of the LJ model in eq.~\eqref{eq:LJ} while the last term effectively drives the potential to zero at $r=a\sigma$, which is thus the chosen cut-off distance for the potential evaluation. With the model parameters for the Si-Si modelling (see table \ref{tab:sw_param}) the cut-off becomes $\sim 3.8$ Å. \\
 The three body term includes an angle dependency as
 \begin{align}
   \phi_3(r_{ij}, r_{ik}, \theta_{ijk}) &= \lambda_{ijk} \ \epsilon_{ijk} \Big[\cos \theta_{ijk}-\cos \theta_{0,ijk}\Big]^2 \exp (\frac{\gamma_{ij} \sigma_{ij}}{r_{ij} - a_{ij} \sigma_{ij}}) \exp (\frac{\gamma_{ik} \sigma_{ik}}{r_{ik} - a_{ik} \sigma_{ik}}),
   \label{eq:sw_3}
 \end{align}
-where $\theta_{0,ijk}$ is the equilibrium angle. The first term of eg.~\eqref{eq:sw_3} includes an angle dependency analog to a harmonic oscillator based on a cosine angle distance from the equilibrium angle. The final two terms act again as a cut-off by driving the potential to zero at $r_{ij} = a_{ij}\sigma_{ij}$ and $r_{ik} = a_{ik}\sigma_{ik}$. \\ 
-The parameters used for the Si-Si bond modeling is displayed in table \ref{tab:sw_param} along with a (quick/superficial) interpretation of each model parameter.
+where $\theta_{0,ijk}$ is the equilibrium angle. The first term of eq.~\eqref{eq:sw_3} includes an angle dependency analog to a harmonic oscillator based on a cosine angle distance from the equilibrium angle. The final two terms act again as a cut-off function by driving the potential to zero at $r_{ij} = a_{ij}\sigma_{ij}$ and $r_{ik} = a_{ik}\sigma_{ik}$ respectively. \\ 
+The parameters used for the Si-Si bond modeling is displayed in table \ref{tab:sw_param} along with an interpretation of each model parameter.
 
 
 
@@ -336,17 +332,17 @@ The parameters used for the Si-Si bond modeling is displayed in table \ref{tab:s
   \label{tab:sw_param}
   \begin{tabular}{ | c | c | L{9cm} |} \hline
     Parameter & Value & Description \\ \hline 
-    $\epsilon$ & 2.1683  & Effects the individual depth of the potential well for each atom type pair/tiplets. \\ \hline
-    $\sigma$ & 2.0951 & Distance for which the two-body term is zero. \\ \hline
-    $a$ & 1.80 & Effects the individual cut-off distance for each atom type pair. \\ \hline
-    $\lambda$ & 21.0 & Effects the overall depth of the three-body potential well. \\ \hline
-    $\gamma$ & 1.20 & Effects the shape of the three-body cut-off terms. \\ \hline
+    $\epsilon$ & 2.1683  & Individual depth of the potential well for each atom type pair/tiplets. \\ \hline
+    $\sigma$ & 2.0951 & Distance for which the individual pair interactions has zero potential (analog to the LJ model). \\ \hline
+    $a$ & 1.80 & The individual cut-off distance for each atom type pair. \\ \hline
+    $\lambda$ & 21.0 & The overall depth of the three-body potential well. \\ \hline
+    $\gamma$ & 1.20 & The shape of the three-body cut-off terms. \\ \hline
     $\cos{(\theta_0)}$ & -1/3 & Cosine of equilibrium angle. \\ \hline
-    $A$ &  7.049556277 & Effects the overall depth of the two-body potential well. \\ \hline
+    $A$ &  7.049556277 & The overall depth of the two-body potential well. \\ \hline
     $B$ &  0.6022245584 & Scales the repulsion part of the two-body term. \\ \hline
-    $p$  & 4.0 & Sets the power of the repulsion part of the two-body term. \\ \hline
-    $q$  & 0.0 & Sets the power of the attraction part of the two-body term. \\ \hline
-    $tol$  & 0.0 & LAMMPS: Option to define a different cut-off than the theoretical of $r = a\sigma$. $tol = 0$ refers to the theoretical being used. \\ \hline
+    $p$  & 4.0 & The power dependency for the repulsion part of the two-body term. \\ \hline
+    $q$  & 0.0 & The power dependency for the attraction part of the two-body term. \\ \hline
+    tol  & 0.0 & LAMMPS: Option to define a different cut-off than the theoretical of $r = a\sigma$. $tol = 0$ refers to the theoretical being used. \\ \hline
   \end{tabular}
   \end{center}
 \end{table}
@@ -354,12 +350,15 @@ The parameters used for the Si-Si bond modeling is displayed in table \ref{tab:s
 
 
 \subsubsection{Tersoff}
+% Add figure similar to: https://en.wikipedia.org/wiki/Bond_order_potential#/media/File:Bond-order_interatomic_potential.png, showing bond order curves.
+
+
 % https://interatomic-potentials.readthedocs.io/en/latest/doc/tersoff.html
 % https://chem.libretexts.org/Bookshelves/ Physical_and_Theoretical_Chemistry_Textbook_Maps/Supplemental_Modules_(Physical_and_Theoretical_Chemistry)/Chemical_Bonding/Fundamentals_of_Chemical_Bonding/Bond_Order_and_Lengths
-This section is baded on [\cite{docs_lammps_tersoff}, \cite{PhysRevB.37.6991}].
+This section is based on [\cite{docs_lammps_tersoff}, \cite{PhysRevB.37.6991}].
 
 
-The tersoff potential abandon the idea of a general $N$-body form and attempts instead to build the model on a more physics informed approach. The more neighbours an atom has the weaker the bonds will be. Thus it introduces the bond order (bond strentgh), that is environment specific and increase with bond coordination (number of neighbours for a given atom). The potential energy is taken to have the form
+The tersoff potential abandon the idea of a general $n$-body form and attempts instead to build the model on a more physics informed approach; The more neighbours an atom has the weaker the bonds will be. Thus it introduces the bond order (bond strentgh), that is environment specific and decrease with increasing bond coordination (number of neighbours for a given atom). The potential energy is taken to have the form
 
 \begin{align*}
   E &= \sum_i E_i = \frac{1}{2}\sum_{i \ne j} V_{ij}, \\
@@ -367,8 +366,23 @@ The tersoff potential abandon the idea of a general $N$-body form and attempts i
 \end{align*}
 
 % where the total potential energy is decomposed into an atom site energy $E_i$ and a bond energy $v_{ij}$. 
-where the total potential energy is decomposed into a bond energy $V_{ij}$. The indices $i$ and $j$ run over the atoms of the system with $r_{ij}$ denoting the distance between atom $i$ and $j$. The bond energy is composed of a repulsive term $f_R$, arising from overlapping wave functions, and a attractive term $f_A$ associated with bonding. $f_c$ is simple a smooth cut-off function to increase computational efficiency. $b_{ij}$ represent the bond order, i.e. the strength of the bonds, which depends inversely on the number of bonds, the bond angles ($\theta_{ijk}$) and optionally the relative bonds lengths ($r_{ij}$, $r{jk}$). Notice that an additional cut-off term $a_{ij}$ was orginally multiplied to $f_R$ as a way of including terms that limit the range of the interactions to the first neighbour shell. These kind of limitations is already included in $b_{ij}$ for the attractive term $f_A$ but is often omitted for the repulsive term $f_R$ and we do so by setting $a_{ij} = 1$. \\
-The cut-off function goes from 1 to 0 over a small interval range $R \pm D$ as
+where the total potential energy is decomposed into a bond energy $V_{ij}$. The
+indices $i$ and $j$ run over the atoms of the system with $r_{ij}$ denoting the
+distance between atom $i$ and $j$. Notice that the sum includes all combinations
+of $i,j$ where $i\ne j$ meaning that the same bond is double counted which is
+the reason for the additional factor $1/2$. The reasoning behind comes from the asymmetry of the bond order $b_{ij}\ne b_{ji}$ leading to a $V_{ij}\ne V_{ji}$. The bond energy is
+composed of a repulsive term $f_R$, arising from overlapping wave functions, and
+an attractive term $f_A$ associated with bonding. $f_c$ is simply a smooth
+cut-off function to increase computational efficiency. $b_{ij}$ represent the
+bond order, i.e. the strength of the bonds, which depends inversely on the
+number of bonds, the bond angles ($\theta_{ijk}$) and optionally the relative
+bonds lengths ($r_{ij}$, $r{jk}$). Notice that an additional cut-off term
+$a_{ij}$ was orginally multiplied to $f_R$ as a way of including terms that
+limit the range of the interactions to the first neighbour shell. These kind of
+limitations is already included in $b_{ij}$ for the attractive term $f_A$ but is
+often omitted for the repulsive term $f_R$, and we do so to by setting $a_{ij} = 1$.
+\\
+The cut-off function $f_C$ goes from 1 to 0 over a small interval range $R \pm D$ as
 \begin{align*}
   f_C(r) =
   \begin{cases}
@@ -378,41 +392,40 @@ The cut-off function goes from 1 to 0 over a small interval range $R \pm D$ as
   \end{cases},
 \end{align*}
 which is continuous and differentiable for all $r$. $R$ is usually chosen to include only the first neighbour shell. \\
-The repulsive and attractive terms $f_R$ and $f_A$ is modelled as an exponetial function, just as in a morse potential, 
+The repulsive and attractive terms $f_R$ and $f_A$ is modelled as an exponetial function, similar to a morse potential, 
 \begin{align*}
  f_R(r) &= A \exp(-\lambda_1 r), \\
- f_A(r) &= -B \exp \big(-\lambda_2 r\big),
+ f_A(r) &= -B \exp \big(-\lambda_2 r\big).
 \end{align*}
 
+The novel feature of the model lies in modeling of the bond order $b_{ij}$ which includes three-body interactions by summing over a third atom $k \ne i,j$ within the cut-off $r_{ik} < R + D$ as shown in the following.
 
-The novel feature of the model lies in modeling of the bond order $b_{ij}f_A$ which includes a three-body interactions by summing over a third atom $k \ne i,j$ within the cut-off $r_{ik} < R + D$.
-
-\begin{align*}
+\begin{align}
   b_{i j} & =\big(1+\beta^n \zeta_{i j}^n\big)^{-\frac{1}{2 n}} \\
   \zeta_{i j} & =\sum_{k \ne i,j} f_C(r_{i k}) g\Big(\theta_{i j k}\left(r_{i j}, r_{i k}\right)\Big) \exp \left(\lambda_3{ }^m\big(r_{i j}-r_{i k}\right)^m\big) \\
-  g(\theta) & =\gamma_{i j k}\left(1+\frac{c^2}{d^2}-\frac{c^2}{\left[d^2+\left(\cos \theta-\cos \theta_0\right)^2\right]}\right)
-\end{align*}
+  g(\theta) & =\gamma_{i j k}\left(1+\frac{c^2}{d^2}-\frac{c^2}{\left[d^2+\left(\cos \theta-\cos \theta_0\right)^2\right]}\right).
+  \label{eq:tersoff_bond_order}
+\end{align}
 
-$\zeta_{i,j}$ is effective coordination and $g(\theta)$ is minimized at the equilibrium angle $\theta = \theta_0$.
-% and considering the angle $\theta_{ijk}$, that is the angle between bonds $r_{ij}$ and $r_{jk}$.
-
+In eq.~\eqref{eq:tersoff_bond_order} $\zeta_{i,j}$ is an effective coordination and $g(\theta)$ captures angle dependency as it is minimized at the equilibrium angle $\theta = \theta_0$. \\
+The parameters used to model the graphene C-C bonds is summarized in table \ref{tab:tersoff_param}
 
 
 
 \begin{table}[H]
   \begin{center}
   \caption{Parameters for the tersoff potential used for intermolecular interations in the graphene sheet}
-  \label{tab:param}
-  \begin{tabular}{ | c | c | c|} \hline
+  \label{tab:tersoff_param}
+  \begin{tabular}{ | c | c | L{9cm} |} \hline
     Parameter & Value & Description \\ \hline 
     $m$ & 3.0 & Default (not used since $\lambda_3 = 0$ ) \\ \hline
-    $\gamma$ & 1.0 & \\ \hline
-    $\lambda_3$ & 0.0 Å$^{-1}$ & \\ \hline
+    $\gamma$ & 1.0 & ... \\ \hline
+    $\lambda_3$ & 0.0 Å$^{-1}$ & ... \\ \hline
     $c$ & \num{3.8049e4} & Strength of the angular effect \\ \hline
     $d$ & 4.3484 & Determines the ``sharpness'' of the angular dependency \\ \hline
-    $\cos{(\theta_0)}$ & -0.57058  & \\ \hline
-    $n$ & 0.72751 & \\ \hline
-    $\beta$ & \num{1.5724e-7} & \\ \hline
+    $\cos{(\theta_0)}$ & -0.57058 & Cosine of the equilibrium angle \\ \hline
+    $n$ & 0.72751 & Power law exponent for the bond order dependency \\ \hline
+    $\beta$ & \num{1.5724e-7} & ... \\ \hline
     $\lambda_2$ & 2.2119 Å$^{-1}$ & Decay of repulsion potential term \\ \hline
     $B$ & 346.74 eV & Attractive potential term minimum at core ($ r_{ij} = 0$).  \\ \hline
     $R$ & 1.95 Å & Center distance for cut-off \\ \hline
@@ -422,23 +435,6 @@ $\zeta_{i,j}$ is effective coordination and $g(\theta)$ is minimized at the equi
   \end{tabular}
   \end{center}
 \end{table}
-
-
-% The tersoff potential is a bond order potential. Used to describe covalent bonds.
-
-% In the article it was used to describe Si-Si. 
-
-% Tersoff article
-% The central idea is that, in real sys-
-% tems, the bond order (i.e., the strength of each bond) de-
-% pends upon the local environment. In particular, an
-% atom with many neighbors forms weaker bonds than an require statistical averages, quantum-mechanical calcula- atom with few neighbors. 
-
-% atomic coordination number (number of neighbours).
-
-
-% The potential is written as simple pair potential depending on the distance bewteen atoms, but the bond strength is modified by the bond order term, taking into account the environment and three-body interactions. As bond coordination increases the value of $b_{ij}$ will decrease. For a single bond $b_{ij} = 1$ and for infinte bonds $n? \to \inf$ we get $b_{ij} \to 0$.
-
 
 
 
