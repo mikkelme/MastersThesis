@@ -102,12 +102,14 @@ def variable_dependency(folders, names, variable_key, xlabel, convert = None, er
         files = get_files_in_folder(folder, ext = '_Ff.txt')
         num_files = len(files)
         
-        var = np.zeros(num_files)    
-        Ff_max = np.zeros(num_files)   
-        Ff_mean = np.zeros(num_files)   
-        Ff_mean_std = np.zeros(num_files)
+        var = np.full(num_files, np.nan)    
+        Ff_max = np.full(num_files, np.nan)   
+        Ff_mean = np.full(num_files, np.nan)   
+        Ff_mean_std = np.full(num_files, np.nan)
         for j, file in enumerate(files):
             info, data = analyse_friction_file(file, mean_window_pct, std_window_pct)    
+            if (info, data) == (None, None):
+                continue
             
             
             var[j] = float(info[variable_key])
@@ -163,11 +165,14 @@ def variable_dependency(folders, names, variable_key, xlabel, convert = None, er
 
 
 if __name__ == "__main__":
-    path = '../Data/Baseline'
     
-    temp(path, save = True)
-    vel(path, save = True)
-    spring(path, save = True)
-    dt(path, save = True)
+    # path = '../Data/Baseline'
+    # temp(path, save = False)
+    
+    path = '../Data/Baseline_fixmove'
+    # temp(path, save = False)
+    vel(path, save = False)
+    # spring(path, save = False)
+    # dt(path, save = False)
     
     plt.show()

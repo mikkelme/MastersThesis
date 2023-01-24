@@ -12,7 +12,7 @@ def baseline_multi_stretch(names, files):
     """ Vary stretch for 3 different normal forces """
     for i in range(len(files)):
         name, file = names[i], files[i]
-        gen = Data_generator(file, header = f'egil:Baseline/{name}', simname = 'multi_stretch', config_ext = name)
+        gen = Data_generator(file, header = f'egil:Baseline_fixmove/{name}', simname = 'multi_stretch', config_ext = name)
         variables = {'num_stretch_files': 30, 
                      'RNSEED'           : -1,
                      'run_rupture_test' : 1,
@@ -23,7 +23,7 @@ def baseline_multi_stretch(names, files):
         F_N = np.array([0.1, 1, 10])*1e-9
         # F_N = np.sort(np.random.uniform(0.1, 10, 10))*1e-9
         
-        gen.run_multi(F_N, variables, num_procs = 4)
+        gen.run_multi(F_N, variables, num_procs = 16)
         
         
 def baseline_multi_FN(names, files):
@@ -91,11 +91,10 @@ if __name__ == '__main__':
     # print(files)
     
     # baseline_temp(names, files)
-    baseline_vel(names, files)
+    # baseline_vel(names, files)
     # baseline_K(names, files)
     # baseline_dt(names, files)
     
-
     # baseline_multi_stretch(names, files)
     
     pass

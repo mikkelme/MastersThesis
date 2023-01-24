@@ -198,6 +198,7 @@ def analyse_friction_file(filename, mean_window_pct = 0.5, std_window_pct = None
     info = get_info(filename)
     if not 'is_ruptured' in info:
         print(f'Not done | filename: {filename}')
+        return None, None
     
     drag_direction = np.array((info['drag_dir_x'], info['drag_dir_y']))
     dt = info['dt']

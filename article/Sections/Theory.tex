@@ -442,7 +442,47 @@ The parameters used to model the graphene C-C bonds is summarized in table \ref{
 \subsubsection{Integration}
 \subsubsection{Thermostats}
 
+In order to control the temperature in the simulation we apply what is called a thermostat. There exist a variety of such including Nosé-Hoover, Gaussian, Berendsen, Langevin thermostat and many other. We will use the ladder. \\
 
+% https://levich.ccny.cuny.edu/koplik/molecular_simulation/AT2.pdf
+The Langevin equaiton is a stochastic differential equaiton, describing the brownian motion of particles in a liquid, as well as a number of other physical systems. 
+
+% Not really a legit source, but we start from here:
+% https://home.gwu.edu/~yxzhao/ResearchNotes/ResearchNote007Thermostat.pdf
+%  it accelerates particles with a random force, and imposes a friction/damping on the velocities of the particles. The strength of the random force is proportional to the damping: more damping, more forcing. The random force transfers kinetic energy to the simulation, and the friction takes kinetic energy out of the simulation.
+
+% We take the Langevin equaiton into account when considering the motion of large particles through a sea of smaller ones.
+
+% \begin{align*}
+%   \ddot{x} = \nabla \phi - \gamma \dot{x} + \sigma \xi
+% \end{align*}
+% or
+% \begin{align*}
+%   \frac{d \vec{q}_i}{d t} = \frac{\vec{p}_i}{m_i}, \quad \frac{d \vec{p}_i}{d t}=-\frac{\partial \phi(\vec{q})}{\partial \vec{q}_i}-\gamma \vec{p}_i+\sigma \xi_i
+% \end{align*}
+% $\vec{p}_i$ is the momentum of particle $i$ (I guess) and $\vec{q}_i$ is the position.
+
+
+% The smaller particles creates a damping force
+
+
+%%%%%%%%%%%%%%%%%%%%%%
+
+% https://www.sciencedirect.com/science/article/pii/S0378437119312828
+
+Langevin equation (following better source)
+\begin{align*}
+  m\ddot{r} = f - \alpha \dot{r} + \beta(t)
+\end{align*}
+which is essentially newtons 2. under the action of a deterministic force $f$ and two additional forces representing the interaction with a heatbath: a friction froce $-\alpha \dot{r}$ where $\alpha > 0$ is a friction coefficient and Gaussian white noise with zero mean and delta-finction auto-correlation:
+\begin{align*}
+  \langle \beta(t) \rangle &= 0 \\
+  \langle \beta(t) \beta(t') = 2k_B T \alpha \delta(t-t')
+\end{align*}
+
+%%%%%%%%%%%%%%%%%%
+%% Working here %%
+%%%%%%%%%%%%%%%%%%
 
 \subsection{Defining the system}
 Include figure of system to point out thermo layers and freeze layers.
