@@ -84,7 +84,7 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.2, stretch_lim = [None
                 if not is_ruptured:
                     # Get data
                     friction_file = find_single_file(job_dir, ext = friction_ext)     
-                    fricData = analyse_friction_file(friction_file, mean_pct, std_pct)
+                    _, fricData = analyse_friction_file(friction_file, mean_pct, std_pct)
                     data.append((stretch_pct, F_N, fricData['Ff'], fricData['Ff_std'], fricData['contact_mean'], fricData['contact_std']))  
                 else:
                     data.append((stretch_pct, F_N, np.nan, np.nan, np.nan, np.nan))  

@@ -424,7 +424,7 @@ def organize_data(data, stretch_lim, FN_lim):
     
     
     
-def get_color_value(value, minValue, maxValue, cmap='viridis'):
+def get_color_value(value, minValue, maxValue, scale = 'linear', cmap='viridis'):
     """Get color from colormap. (From Henrik)
     Parameters
     -----------------
@@ -434,9 +434,31 @@ def get_color_value(value, minValue, maxValue, cmap='viridis'):
     :returns: 4-vector containing colormap values. 
     This is useful if you are plotting data from several simulations, and want to color them based on some parameters changing between the simulations. For example, you may want the color to gradually change along a clormap as the temperature increases. 
     """
-    diff = maxValue-minValue
+    
     cmap = matplotlib.cm.get_cmap(cmap)
+    
+    if scale == 'linear':
+        pass
+    elif scale == 'log':
+        minValue = np.log10(minValue)
+        maxValue = np.log10(maxValue)
+        value = np.log10(value)
+    else:
+        exit(f'scale = \'{scale}\' is not defined.')
+    
+    diff = maxValue-minValue
     rgba = cmap((value-minValue)/diff)
+    
+    # if scale == 'linear':
+    #     rgba = cmap((value-minValue)/diff)
+    # if scale == 'log':
+    #     minValue = np.log10(minValue)
+    #     maxValue = np.log10(maxValue)
+    #     value = np.log10(value)
+    #     print(minValue, value, maxValue, '->' )
+    #     rgba = cmap((value-minValue)/diff)
+         
+    
     return rgba
 
 
