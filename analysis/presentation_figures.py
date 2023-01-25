@@ -61,7 +61,7 @@ def contact_plot(filename):
     plt.legend()
 
     plt.xlabel("Time [ps]")
-    plt.ylabel("Bond count")
+    plt.ylabel("Rel. bond count")
     add_xaxis(ax, time, COM, xlabel='COM$\parallel$ [Å]', decimals = 1) 
     
     plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
@@ -136,10 +136,10 @@ def multi_plot_compare(folder1, folder2):
             ax[0, f].set(xlabel='$F_N$ [nN]', ylabel='mean $F_\parallel$ [nN]')
             
             ax[4, f].plot(F_N, contact_mean[i, :, 0], marker = 'o', markersize = 3,  color = color, label = f'Stretch = {stretch_pct[i]:g}')
-            ax[4, f].set(xlabel='$F_N$ [nN]', ylabel='Bond count')
+            ax[4, f].set(xlabel='$F_N$ [nN]', ylabel='Rel. bond count')
             
             ax[5, f].plot(contact_mean[i, :, 0], Ff[i, :, group, 1], marker = 'o', markersize = 3,  color = color, label = f'Stretch = {stretch_pct[i]:g}')
-            ax[5, f].set(xlabel='Bond count (variable $F_N$)', ylabel='mean $F_\parallel$ [nN]')
+            ax[5, f].set(xlabel='Rel. bond count (variable $F_N$)', ylabel='mean $F_\parallel$ [nN]')
 
     
     
@@ -153,10 +153,10 @@ def multi_plot_compare(folder1, folder2):
             ax[2, f].set(xlabel='Stretch ', ylabel='mean $F_\parallel$ [nN]')
             
             ax[3, f].plot(stretch_pct, contact_mean[:, j, 0], marker = 'o', markersize = 3,  color = color, label = f'F_N = {F_N[j]:g}')
-            ax[3, f].set(xlabel='Stretch ', ylabel='Bond count ')
+            ax[3, f].set(xlabel='Stretch ', ylabel='Rel. bond count ')
             
             ax[6, f].plot(contact_mean[:, j, 0], Ff[:, j, group, 1], marker = 'o', markersize = 3,  color = color, label = f'F_N = {F_N[j]:g}')
-            ax[6, f].set(xlabel='Bond count  (variable stretch)', ylabel='mean $F_\parallel$ [nN]')
+            ax[6, f].set(xlabel='Rel. bond count  (variable stretch)', ylabel='mean $F_\parallel$ [nN]')
             
     
     

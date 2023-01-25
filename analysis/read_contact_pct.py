@@ -36,7 +36,7 @@ def read_contact_pct(filename):
     
     plt.plot(time,  full_sheet_bond_pct, label = "full_sheet bonds")
     plt.xlabel("Time [ps]")
-    plt.ylabel("Bond count")
+    plt.ylabel("Rel. bond count")
     
     # xlim = ax.get_xlim()
     ylim = ax.get_ylim()

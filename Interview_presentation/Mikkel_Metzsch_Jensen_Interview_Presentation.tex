@@ -148,7 +148,7 @@
 %	PRESENTATION INFORMATION
 %----------------------------------------------------------------------------------------
 
-\title[PhD interview presentation]{PhD interview presentation} % The short title in the optional parameter appears at the bottom of every slide, the full title in the main parameter is only on the title page
+\title[PhD Interview Presentation]{PhD Interview Presentation} % The short title in the optional parameter appears at the bottom of every slide, the full title in the main parameter is only on the title page
 
 % \subtitle{Optional Subtitle} % Presentation subtitle, remove this command if a subtitle isn't required
 
@@ -156,7 +156,7 @@
 
 \institute[UiO]{University of Oslo} % Your institution, the optional parameter can be used for the institution shorthand and will appear on the bottom of every slide after author names, while the required parameter is used on the title slide and can include your email address or additional information on separate lines
 
-\date[\today]{Master's thesis midway presentation \\ January 26, 2023} % Presentation date or conference/meeting name, the optional parameter can contain a shortened version to appear on the bottom of every slide, while the required parameter value is output to the title slide
+\date[\today]{Interview regarding the PhD position \\ at Karlsruhe Institute of Technology \\ January 26, 2023} % Presentation date or conference/meeting name, the optional parameter can contain a shortened version to appear on the bottom of every slide, while the required parameter value is output to the title slide
 
 %----------------------------------------------------------------------------------------
 
@@ -192,19 +192,22 @@
 
 \begin{frame}
 	\frametitle{Academic Background}
-	\framesubtitle{Summary and interest?}
+	% \framesubtitle{Introduction}
 
-	Education
+	{\large Education}
 	\begin{itemize}
-		\item Bachelor in physcis 
-		\item Master in Computational Science: Materials Science 
+		\item Bachelor in physcis.
+		\item Master in Computational Science: Materials Science. 
 	\end{itemize}
-	Interest
+	\hfill \\
+	\hfill \\
+	{\large Scientiffic interests}
 	\begin{itemize}
-		\item Computational approach
-		\item Design and creation 
-		\item Optimization problems
-		\item Machine learning 
+		\item Numerical methods.
+		\item Optimization problems.
+		\item Machine learning.
+		\item Materials science and statistical mechanics.
+		\item Design and innovation.
 	\end{itemize}
 \end{frame}
 
@@ -218,16 +221,16 @@
 
 	{\large Python} 
 	\begin{itemize}
-		\item Workhorse of all my work.
+		\item Workhorse for most of my work.
 		\item Object oriented code.
 		\item Machine learning through PyTorch and TensorFlow.
 	\end{itemize}
 
 	{\large Julia} 
 	\begin{itemize}
-		\item Alternative to Python 
-		\item Finite element analysis using Gridap
-		\item Mesh geometris using Gmsh
+		\item Alternative to Python. 
+		\item Finite element analysis using Gridap.
+		\item Mesh geometris using Gmsh.
 	\end{itemize}
 
 	\begin{figure}
@@ -270,7 +273,7 @@
 			\item [-] Integration 
 			\item [-] Simulation of stochastic systems.
 		\end{itemize}
-		\item Two years teaching assistant.
+		\item Two years as a teaching assistant.
 	\end{itemize}
 
 	% LU decomposition, the Verlet algorithm, Runge-Kutta methods, the Crank-Nicolson method, Gaussian quadrature, Monte Carlo methods, Markov chains, and the Metropolis algorithm.
@@ -279,7 +282,7 @@
 	\begin{itemize}
 		\item High performance computing 
 		\begin{itemize}
-			\item [-] General code optimization.
+			\item [-] General code optimization techniques.
 			\item [-] Data traffic and cache managenemt.
 			\item [-] Parallel programming (MPI and OpenMP).
 			\item [-] Modern data architecture.
@@ -296,11 +299,11 @@
 	{\large LAMMPS} \\
 	Large-scale Atomic/Molecular Massively Parallel Simulator
 	\begin{itemize}
-		\item Statistical mechanics and thermodynamics
-		\item Structure recognition
-		\item Porous systems 
-		\item Contact forces
-		\item Friction properties
+		\item Statistical mechanics and thermodynamics.
+		\item Porous systems. 
+		\item Contact forces.
+		\item Friction properties.
+		\item Structure recognition.
 	\end{itemize}
 
 
@@ -310,28 +313,28 @@
 	\frametitle{Programming experience}
 	\framesubtitle{Machine learning (ML)}
 
-	{\large Pytorch (/ TensorFlow)} 
+	{\large PyTorch} (TensorFlow) 
 	\begin{itemize}
 		\item Basic ML concepts: 
 		\begin{itemize}
 			\item [-] Optimizers
-			\item [-] Loss / cost functions
+			\item [-] Cost functions.
 			\item [-] General learning strategies (learning rates, drop out, normalization etc.)
 		\end{itemize}
 		
 		\item Data handling and augmentation.
-		\item Fundamental architecture types 
+		\item Fundamental architecture types. 
 		\begin{itemize}
-			\item [-] Feed Forward Networks
-			\item [-] CNN
-			\item [-] RNN 
-			\item [-] GAN
+			\item [-] Feed Forward Networks.
+			\item [-] CNN.
+			\item [-] RNN.
+			\item [-] GAN.
 		\end{itemize}
-		\item Network performance analysis
-		\item Basic basic techniques for AI predictions explainations
+		\item Network performance analysis.
+		\item Basic techniques for AI prediction explainations.
 		\begin{itemize}
-			\item [-] Shapley values 
-			\item [-] Gradient linearization methods
+			\item [-] Shapley values.
+			\item [-] Gradient linearization methods.
 		\end{itemize}
 	
 	\end{itemize}
@@ -354,9 +357,9 @@
 	\framesubtitle{Scope}
 
  
-	Tuning frictional properties of graphene sheets using kirigami inspired cuts and inverse design
+	{\large Tuning frictional properties of graphene sheets using kirigami inspired cuts and inverse design}
 	\newline
-	\newline
+	% \newline
 	
 
 
@@ -368,9 +371,9 @@
 		\begin{itemize}
 			\item Low / high friction coefficient.
 			\item Coupling between stretch and friction.
+			\item Nonlinear friction coefficients (even negative).
 		\end{itemize} 
 	\end{enumerate}
-
 \end{frame}
 
 
@@ -388,23 +391,25 @@
 
 \end{frame}
 
+% \begin{frame}
+% 	\frametitle{Master's thesis}
+% 	\framesubtitle{Choosing a cut pattern}
+% 	\begin{itemize}
+% 		\item Kirigami design on macroscale.
+% 	\end{itemize}
+% 	\begin{figure}
+% 		\includegraphics[width=0.6\linewidth]{figures/kirigami_pattern_inspiration.png}
+% 		\caption{New pop-up strategy inspired by cuts, not folds - Leah Burrows, Harvard John A. Paulson School of Engineering and Applied Sciences.}
+% 	\end{figure}	
+% \end{frame}
+
+
+
 \begin{frame}
 	\frametitle{Master's thesis}
 	\framesubtitle{Choosing a cut pattern}
-	\begin{itemize}
-		\item Kirigami design on macroscale.
-	\end{itemize}
-	\begin{figure}
-		\includegraphics[width=0.6\linewidth]{figures/kirigami_pattern_inspiration.png}
-		\caption{New pop-up strategy inspired by cuts, not folds - Leah Burrows, Harvard John A. Paulson School of Engineering and Applied Sciences.}
-	\end{figure}	
-\end{frame}
-
-
-
-\begin{frame}
-	\frametitle{Master's thesis}
-	\framesubtitle{Translating patterns to MD}
+	% \framesubtitle{Investigating 3D buckling}
+	% \framesubtitle{Translating patterns to MD}
 	\begin{figure}
 		\centering    
 		\movie[open]{\includegraphics[width=\textheight, keepaspectratio]{figures/vacuum_stretch.png}}{figures/vacuum_stretch.mov}
@@ -436,7 +441,7 @@
 
 \begin{frame}
 	\frametitle{Master's thesis}
-	\framesubtitle{Friction stretch dependency}
+	\framesubtitle{Contact stretch dependency}
 	\begin{figure}
 		\includegraphics[width=\linewidth]{figures/multi_3.pdf}
 		\caption{Relative number of bonds between sheet and substrate as a function of stretch of the sheet with and without cuts.}
@@ -445,7 +450,7 @@
 
 \begin{frame}
 	\frametitle{Master's thesis}
-	\framesubtitle{Friction stretch dependency}
+	\framesubtitle{Mean friction stretch dependency}
 	\begin{figure}
 		\includegraphics[width=\linewidth]{figures/multi_2.pdf}
 		\caption{Mean friction force $F_{\parallel}$ parallel to drag direction as a function of stretch of the sheet with and without cuts.}
@@ -453,14 +458,14 @@
 \end{frame}
 
 
-\begin{frame}
-	\frametitle{Master's thesis}
-	\framesubtitle{Friction stretch dependency}
-	\begin{figure}
-		\includegraphics[width=\linewidth]{figures/multi_1.pdf}
-		\caption{Max friction force $F_{\parallel}$ parallel to drag direction as a function of stretch of the sheet with and without cuts.}
-	\end{figure}	
-\end{frame}
+% \begin{frame}
+% 	\frametitle{Master's thesis}
+% 	\framesubtitle{Max friction stretch dependency}
+% 	\begin{figure}
+% 		\includegraphics[width=\linewidth]{figures/multi_1.pdf}
+% 		\caption{Max friction force $F_{\parallel}$ parallel to drag direction as a function of stretch of the sheet with and without cuts.}
+% 	\end{figure}	
+% \end{frame}
 
 
 
