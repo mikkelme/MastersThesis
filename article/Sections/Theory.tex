@@ -440,49 +440,54 @@ The parameters used to model the graphene C-C bonds is summarized in table \ref{
 
 \subsubsection{LAMMPS}
 \subsubsection{Integration}
+
+Integration of newtons equations of motion (just like, Euler, Euler cromer and so on) and specify the verlet algorithm which is used in Lammps 
+
+
 \subsubsection{Thermostats}
+This section is based on \cite{PhysRevB.17.1302}, \cite{Hunenberger2005}(pp. 115, 120-121) and \cite{docs_lammps_langevin}
 
-In order to control the temperature in the simulation we apply what is called a thermostat. There exist a variety of such including Nosé-Hoover, Gaussian, Berendsen, Langevin thermostat and many other. We will use the ladder. \\
+In order to simulate the canonical ensemble, that is the ensemble defined by a constant amount of particles $N$, constant temperature $T$ and constant volume $V$, hence often denoted $NVT$, we apply a so-called thermostat. There exist a variety of such including Nosé-Hoover, Gaussian, Berendsen, Langevin thermostat and many other (give example of how they modify) We will use the ladder. \\
+The connical ensemble is an ensemble of systems by the assumption that the system of interests is connected to an infitely large heat bath of temperature $T$. The Langevin thermostat assumes that the particles collides with much smaller lighter particles representing the heat bath as a sea of small particles. The collisions is described by a friction force $f_f = -\gamma \vec{p}$, where $\gamma$ is positiv friction coefficient and $\vec{p}$ the momentum vector, and a random force $f_r = \vec{R}_i(t)$. By denoting the conservative force arising from the usual inter-particle interactions $\vec{f}_i$ on particle $i$ we get the Langevin equations of motion describing the total force $\vec{F}_i$ on particle $i$ as
 
-% https://levich.ccny.cuny.edu/koplik/molecular_simulation/AT2.pdf
-The Langevin equaiton is a stochastic differential equaiton, describing the brownian motion of particles in a liquid, as well as a number of other physical systems. 
+\begin{align}
+  \vec{F}_i &= \vec{f}_{i} + \vec{f}_{f,i} + \vec{f}_{r,i} \nonumber \\
+  m_i \ddot{\vec{r}}_i &= \vec{f}_{i} - \gamma_i \vec{p}_i + \vec{R}_i(t)
+  \label{eq:Langevin}
+\end{align}
 
-% Not really a legit source, but we start from here:
-% https://home.gwu.edu/~yxzhao/ResearchNotes/ResearchNote007Thermostat.pdf
-%  it accelerates particles with a random force, and imposes a friction/damping on the velocities of the particles. The strength of the random force is proportional to the damping: more damping, more forcing. The random force transfers kinetic energy to the simulation, and the friction takes kinetic energy out of the simulation.
+where $m_i$ is the mass of particle $i$ $\vec{r}_i$ the position vector. The random force $\vec{R}_i(t)$ is described as gaussian white noise and have the following properties. 
 
-% We take the Langevin equaiton into account when considering the motion of large particles through a sea of smaller ones.
+\begin{enumerate}
+  \item It is uncorrelated with the velocities $\dot{\vec{r}}(t)$ and deterministic forces $\vec{f}_i(t')$ at previous times $t' < t$.
+  \item The time average is zero: $\langle \vec{R}(t) \rangle = \vec{0}$.
+  \item The mean-square components evaluate to $2m_i\gamma_i k_B T$.
+  \item The force component of particle $i$ $R_{i,\mu}$ along cartesian axis $\mu$ is uncorrelated with any component of particle $j$ $R_{i,\nu}$ along cartesian axis $\nu$, unless $i=j$, $\mu=\nu$ and $t=t'$.
+\end{enumerate}
 
-% \begin{align*}
-%   \ddot{x} = \nabla \phi - \gamma \dot{x} + \sigma \xi
-% \end{align*}
-% or
-% \begin{align*}
-%   \frac{d \vec{q}_i}{d t} = \frac{\vec{p}_i}{m_i}, \quad \frac{d \vec{p}_i}{d t}=-\frac{\partial \phi(\vec{q})}{\partial \vec{q}_i}-\gamma \vec{p}_i+\sigma \xi_i
-% \end{align*}
-% $\vec{p}_i$ is the momentum of particle $i$ (I guess) and $\vec{q}_i$ is the position.
+The ladder two conditions can be formulated as
 
-
-% The smaller particles creates a damping force
-
-
-%%%%%%%%%%%%%%%%%%%%%%
-
-% https://www.sciencedirect.com/science/article/pii/S0378437119312828
-
-Langevin equation (following better source)
 \begin{align*}
-  m\ddot{r} = f - \alpha \dot{r} + \beta(t)
-\end{align*}
-which is essentially newtons 2. under the action of a deterministic force $f$ and two additional forces representing the interaction with a heatbath: a friction froce $-\alpha \dot{r}$ where $\alpha > 0$ is a friction coefficient and Gaussian white noise with zero mean and delta-finction auto-correlation:
-\begin{align*}
-  \langle \beta(t) \rangle &= 0 \\
-  \langle \beta(t) \beta(t') = 2k_B T \alpha \delta(t-t')
+  \langle R_{i,\mu}(t) R_{j,\nu}(t') \rangle = 2m_i \gamma_i k_B T  \delta_{ij} \delta_{\mu\nu}\delta(t'-t),  
 \end{align*}
 
-%%%%%%%%%%%%%%%%%%
-%% Working here %%
-%%%%%%%%%%%%%%%%%%
+where $\delta_{\cdot\cdot}$ is the Kronecker Delta function and $\delta(\cdot)$ is the Dirac Delta function. It can be shown that a trajectory generated by integrating the Langevin equations of motion (eq.~\eqref{eq:Langevin}) maps a cononical distribution of microstates at temperature $T$. \cite{Hunenberger2005}(p.121). \\
+
+In practice the implementation of the thermostat is implemented discretely by updating the force on each particle by the addition of the described forces $f_f$ and $f_r$ for each particle. In LAMMPS this is controlled by the user defined damping factor ``damp'' = $\gamma^{-1}$ in units of time whih control how fast we are going to reach the temperature equlibrium. Thus the documentation (\cite{docs_lammps_langevin}) defines the added forces as
+
+\begin{align*}
+  f_f &= -\frac{m}{\text{damp}}, \qquad 
+  f_r \propto \sqrt{\frac{m k_B T}{dt \ \text{damp}}}
+\end{align*}
+
+where $v = \dot[r]$ is the velocity. The definition of $f_f$ falls straight out of the definition above in eq.~\eqref{eq:Langevin} while the proportionality of $f_r$ comes from
+
+\begin{align*}
+  \sqrt{\langle R(t)^2 \rangle} = \sqrt{2m\gamma k_B T} \propto \sqrt{\frac{m k_B T}{\text{damp}}} 
+\end{align*}
+
+Thus we have $f_r \propto \sqrt{\langle R(t)^2 \rangle / dt}$ which I do not quite understand. It is mentioned in \url{https://pubs.acs.org/doi/full/10.1021/ct8002173} when talkikng about residual forces, as it is natural when taking a step length of $dt$... Probably simply, but check this later.
+
 
 \subsection{Defining the system}
 Include figure of system to point out thermo layers and freeze layers.
@@ -507,11 +512,6 @@ Include figure of system to point out thermo layers and freeze layers.
      \caption{System. 27456 atoms in total: 7272 with thermostat (orange), 7272 is locked (light blue) and the remaing 12912 just with NVE. (Get better colors)}
      \label{fig:system}
 \end{figure}
-
-% 1440 atoms in PB. 6360 atoms in inner sheet. 7800 in full sheet. 6552 in substrate freeze. 6552 atoms in group substrate_NVT. 20904 atoms in group NVE_atoms.
-% 7272 atoms in group NVT_atoms. 12912 atoms in group pure_NVE.
-% 7272 atoms in group locked
-
 
 
 
