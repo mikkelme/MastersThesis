@@ -440,8 +440,61 @@ The parameters used to model the graphene C-C bonds is summarized in table \ref{
 
 \subsubsection{LAMMPS}
 \subsubsection{Integration}
+% https://www.eng.uc.edu/~beaucag/Classes/AdvancedMaterialsThermodynamics/Books/%5BComputational%20science%20(San%20Diego,%20Calif.)%5D%20Daan%20Frenkel_%20Berend%20Smit%20-%20Understanding%20molecular%20simulation%20_%20from%20algorithms%20to%20applications%20(2002,%20Academic%20Press%20)%20-%20libgen.lc.pdf
 
-Integration of newtons equations of motion (just like, Euler, Euler cromer and so on) and specify the verlet algorithm which is used in Lammps 
+Solving newtons equations of motion 
+
+\begin{align*}
+  \ddot{x}(t) = \frac{F(x)}{m} \quad \rightarrow \quad 
+  \dot{x} = v(t), \ \ \dot{v}(t) = \frac{F(x(t))}{m}
+\end{align*}
+
+Integration of newtons equations of motion (just like, Euler, Euler cromer and so on) and specify the verlet algorithm which is used in Lammps.
+
+The forces (form the potential) is conservative so the energy should be conserved before applying the thermostat.
+
+However small erros applied by the discrete integraiton algorithm we end up having an energy error. This is sensitive to time step. 
+
+
+\paragraph*{Velocity Verlet}
+% http://www.physics.drexel.edu/~valliere/PHYS305/Diff_Eq_Integrators/Verlet_Methods/Diffrntleqn3.pdf
+The velocity verlet algorithm can be derived by taken a number of taylor expansion. We begin by expanding the next step position vector $\vec{x}(t + \Delta t)$ around time $t$
+\begin{align}
+  \vec{x}(t + \Delta t) &= \vec{x}(t) + \dot{\vec{x}} \Delta t + \frac{\ddot{\vec{x}}}{2} (\Delta t)^2 + \mathcal{O}((\Delta t)^3) \label{eq:vv_comp1} 
+\end{align}
+
+Similar we take the expansions of the next step velocity vector $\vec{v}(t+\Delta t)$ at time $t$ 
+
+\begin{align}
+  \vec{v}(t+\Delta t) = \vec{v}(t) + \dot{\vec{v}}(t) \Delta t + \frac{\ddot{\vec{v}}(t)}{2}(\Delta t)^2 + \mathcal{O}((\Delta t)^3)
+  \label{eq:tay_v1}
+\end{align}
+
+By also taking the taylor expansion of $\dot{\vec{v}}(t+\Delta t)$ we can eliminate the $\ddot{vec{v}}$ term in eq.~\eqref{eq:tay_v1} as done in the following.
+
+\begin{align}
+  \dot{\vec{v}}(t+\Delta t) &= \dot{\vec{v}}(t) + \ddot{\vec{v}}(t) \Delta t + \mathcal{O}((\Delta t)^2) \nonumber \\
+  \frac{\ddot{\vec{v}}(t)}{2}(\Delta t)^2 &= \frac{\Delta t}{2}\Big( \dot{\vec{v}}(t+\Delta t) - \dot{\vec{v}}(t)\Big) + \mathcal{O}((\Delta t)^3) \nonumber \\
+  &\Downarrow \nonumber \\
+  \vec{v}(t+\Delta t) &= \vec{v}(t) + \dot{\vec{v}}(t) \Delta t + \frac{\Delta t}{2}\Big( \dot{\vec{v}}(t+\Delta t) - \dot{\vec{v}}(t)\Big) + \mathcal{O}((\Delta t)^3) \nonumber \\
+  &=  \vec{v}(t) + \frac{\Delta t}{2}\Big( \dot{\vec{v}}(t) +  \dot{\vec{v}}(t+\Delta t)\Big) + \mathcal{O}((\Delta t)^3)
+  \label{eq:vv_comp2}
+\end{align}
+
+By combining eq.~\eqref{eq:vv_comp1} and eq.~\eqref{eq:vv_comp2} while cleaning up the notation using $\vec{v} = \dot{\vec{x}}$ and $\vec{a} = \dot{\vec{v}} $we get the final scheme
+
+\begin{align*}
+  \vec{x}(t + \Delta t) &= \vec{x}(t) + \vec{v}(t) \Delta t + \frac{\vec{a}(t)}{2}(\Delta t)^2 + \mathcal{O}((\Delta t)^3), \\
+  \vec{v}(t+\Delta t)  &= \vec{v}(t) + \frac{\vec{a}(t) + \vec{a}(t+\Delta t)}{2}  \Delta t + \mathcal{O}((\Delta t)^3).
+\end{align*}
+
+The scheme will give a local error of order $(\Delta t)^3$ corresponding to a global error of $(\Delta t)^2$. Lets descritize the time as $t_k = k * \Delta t$ with position $\vec{x}_k$ and velocity $\vec{v}_k$. At time $t_k$ the acceleration is given $\vec{a}_k = F(\vec{x}_k)/m$. We get the implementation steps as follows
+\begin{enumerate}
+  \item Calculate $\vec{x}_{k+1} = \vec{x}_k + \vec{v}_k \Delta t + \frac{F(\vec{x}_k)}{2m}$
+  \item Evaluate $F(\vec{x}_{k+1})$
+  \item Calculate $\vec{v}_{k+1} = \vec{v}_k + \frac{F(\vec{x}_k) + F(\vec{x}_{k+1})}{2m} \Delta t$
+\end{enumerate}
+
 
 
 \subsubsection{Thermostats}
