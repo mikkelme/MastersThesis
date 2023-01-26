@@ -774,6 +774,187 @@ def unique_fignum():
 
 
 
+def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.2, stretch_lim = [None, None],  FN_lim = [None, None]):
+    """ Read multi folder
+    
+    Expected data structure:
+    
+    Header_name
+        info_file.txt
+        (rupture_test.txt)
+        |--> stretch_{TimeStep}_folder
+                      : 
+        |--> stretch_{TimeStep}_folder   
+            |--> job0
+                :
+            |--> jobN
+                |--> info_file.txt
+                |--> system_drag_Ff.txt
+
+    Args:
+        folder (_type_): _description_
+        mean_pct (float, optional): _description_. Defaults to 0.5.
+        std_pct (float, optional): _description_. Defaults to 0.2.
+        stretch_lim (list, optional): _description_. Defaults to [None, None].
+        FN_lim (list, optional): _description_. Defaults to [None, None].
+
+    Returns:
+        _type_: _description_
+    """    
+    
+    
+    # Settings
+    info_file = 'info_file.txt'
+    rupture_file = 'rupture_test.txt'
+    friction_ext = 'Ff.txt'
+    
+    
+    
+    if rupture_file in os.listdir(folder):
+        rupture_info = read_info_file(os.path.join(folder, rupture_file))
+        rupture_stretch = rupture_info['rupture_stretch']
+    else:
+        rupture_stretch = None
+
+    # Make list for data 
+    data = [] # Measurements
+    rupture = [] # Ruptures
+    
+    # Loop through stretch folders, format: stretch_{TimeStep}_folder
+    for i, stretch_folder in enumerate(get_dirs_in_path(folder, sort = True)): 
+        num_stretch = len(get_dirs_in_path(folder))
+        
+        # Loop through F_N folders, format: job{j}
+        for j, job_dir in enumerate(get_dirs_in_path(stretch_folder, sort = True)):
+            num_FN = len(get_dirs_in_path(stretch_folder))
+            
+            # Estimate progress
+            progress = i * num_FN + j
+            total = num_stretch * num_FN
+            print(f"\r ({progress+1}/{total}) | {job_dir} ", end = " ")
+            
+            
+            try: # If info file exist
+                info_dict = read_info_file(os.path.join(job_dir,info_file))
+                
+                
+                if 'is_ruptured' in info_dict:
+                    is_ruptured = info_dict['is_ruptured']
+                    
+                else:
+                    print("Sim not done")
+                    continue
+                
+                
+                
+                
+                
+                # try:
+                #     is_ruptured = info_dict['is_ruptured']
+                # except KeyError: # is_ruptred not yet added to file
+                #     print("Sim not done")
+                #     continue
+                    
+                
+                
+
+                stretch_pct = info_dict['SMAX']
+                F_N = metal_to_SI(info_dict['F_N'], 'F')*1e9
+                
+                
+                # if False:
+                #     plt.figure(num = unique_fignum())
+                #     plt.subplot(3,1,1)
+                #     plt.title(f'{job_dir}\nstretch = {stretch_pct},  F_N = {F_N}')
+                #     read_vel(os.path.join(job_dir,'vel.txt'), create_fig = False)
+                    
+                #     plt.subplot(3,1,2)
+                #     read_MSD(os.path.join(job_dir,'MSD.txt'), create_fig = False)
+                #     # read_CN(os.path.join(job_dir,'CN.txt'), create_fig = False)
+                    
+                #     plt.subplot(3,1,3)
+                #     read_ystress(os.path.join(job_dir,'YS.txt'), create_fig = False)
+                    
+                    
+                #     # plt.title(f'{job_dir}\nstretch = {stretch_pct},  F_N = {F_N}')
+                #     # dat = read_ave_time(os.path.join(job_dir,'YS.txt'))
+                #     # runmax = cum_max(dat['c_YS'])
+                #     # YStol = 0.95*runmax
+                #     # plt.plot(dat['TimeStep'], dat['c_YS'])
+                #     # plt.plot(dat['TimeStep'], YStol, linestyle = '--', color = 'black')
+                #     # plt.ylabel("YS")
+
+                #     # plt.subplot(2,1,2)
+                #     # dat = read_ave_time(os.path.join(job_dir,'CN.txt'))
+                #     # runmax = cum_max(dat['c_CN_ave'])
+                #     # CNtol = (1-2/4090)*runmax
+                #     # plt.plot(dat['TimeStep'], dat['c_CN_ave'])
+                #     # plt.plot(dat['TimeStep'], CNtol, linestyle = '--', color = 'black')
+                #     # plt.ylabel("CN")
+                #     # plt.xlabel("Timestep")
+                    
+                rupture.append((stretch_pct, F_N, is_ruptured, job_dir))  
+                
+                if not is_ruptured:
+                    # Get data
+                    friction_file = find_single_file(job_dir, ext = friction_ext)     
+                    _, fricData = analyse_friction_file(friction_file, mean_pct, std_pct)
+                    data.append((stretch_pct, F_N, fricData['Ff'], fricData['Ff_std'], fricData['contact_mean'], fricData['contact_std']))  
+                else:
+                    data.append((stretch_pct, F_N, np.nan, np.nan, np.nan, np.nan))  
+                    
+            
+            except FileNotFoundError:
+                print(f"<-- Missing file")
+    print()
+    
+    # Organize data
+    data = np.array(data, dtype = 'object')
+    rupture = np.array(rupture, dtype = 'object')
+    stretch_pct, F_N, Ff, Ff_std, contact_mean, contact_std = organize_data(data, stretch_lim, FN_lim)
+    rup_stretch_pct, rup_F_N, rup, filenames = organize_data(rupture, stretch_lim, FN_lim) # XXX 
+    
+    
+    
+    
+    # --- Rupture detection --- #
+    if rup.any():
+        # Print information
+        detections = [["stretch %", "F_N", "Filenames"]]
+        map = np.argwhere(rup == 1)
+        for (i,j) in map:
+            # print(filenames[i,j], folder)
+            detections.append([rup_stretch_pct[i], rup_F_N[j], filenames[i,j].removeprefix(folder)])
+           
+        detections = np.array(detections)
+        practical_rupture_stretch = np.min(detections[1:,0].astype('float'))
+        print(f"{len(detections)-1} Ruptures detected in \'{folder}\':")
+        print(detections)                
+    else:
+        practical_rupture_stretch = None
+        print("No rupture detected")
+        
+        
+    output = {
+        'stretch_pct': stretch_pct,
+        'F_N': F_N,
+        'Ff': Ff,
+        'Ff_std': Ff_std,
+        'contact_mean': contact_mean,
+        'contact_std': contact_std,
+        'rup_stretch_pct': rup_stretch_pct,
+        'rup_F_N': rup_F_N,
+        'rup': rup,
+        'filenames': filenames,
+        'rupture_stretch': rupture_stretch,
+        'practical_rupture_stretch': practical_rupture_stretch
+    }    
+        
+    return output
+    
+    # return  (stretch_pct, F_N, Ff, Ff_std, contact_mean, contact_std), (rup_stretch_pct, rup_F_N, rup, filenames)
+
+
     
 
 

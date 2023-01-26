@@ -39,6 +39,19 @@ def vline(ax, x, **kwargs):
     ylim = ax.get_ylim()
     ax.vlines(x, ylim[0], ylim[1], **kwargs)
     ax.set_ylim(ylim)
+
+def yfill(ax, x, **kwargs):
+    """ Make vertical fill spanning whole yrange
+        without changing xlim or ylim of axes """
+        
+    xlim = ax.get_xlim()
+    ylim = ax.get_ylim()
+    ax.fill_between(x, ylim[0], ylim[1], **kwargs)
+    
+    ax.set_xlim(xlim)
+    ax.set_ylim(ylim)
+    
+
         
         
 

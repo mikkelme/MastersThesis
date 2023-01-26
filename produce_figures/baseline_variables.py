@@ -3,8 +3,8 @@ sys.path.append('../') # parent folder: MastersThesis
 import matplotlib.pyplot as plt
 import numpy as np
 from plot_set import *
-from analysis.analysis_utils import *
 
+from analysis.analysis_utils import *
 
 
 def temp(path, save = False):
@@ -97,11 +97,7 @@ def variable_dependency(folders, names, variable_key, xlabel, convert = None, er
     fig_max = plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
     ax_max = plt.gca()
     
-    linestyle = '-'
-    marker = 'o'
-    
-    line_and_marker = {'linestyle': '-', 
-                    'marker': 'o'}
+    line_and_marker = {'linestyle': '-', 'marker': 'o'}
     
     for i, folder in enumerate(folders):
         files = get_files_in_folder(folder, ext = '_Ff.txt')
@@ -138,7 +134,6 @@ def variable_dependency(folders, names, variable_key, xlabel, convert = None, er
         
         
         colors = [color_cycle(0), color_cycle(1), color_cycle(3)]
-        
         color_and_label = {'color': colors[i], 'label': names[i]}
         
         
@@ -187,9 +182,97 @@ def tmp(path, save = False):
                os.path.join(path, 'honeycomb', common_folder)]
     names = ['nocut', 'popup', 'honeycomb']
     
-    print(folders)
-    print(names)
+    # print(folders)
+    # print(names)
+    
+    # TODO: Make vairable for deciding what to plot...
+    
+    axis_labels = [r'Stretch', r'$\langle F_\parallel \rangle$ [nN]', r'$F_N$ [nN]']
+    multi_plot_compare(folders, names, axis_labels)
+    
+    
+def multi_plot_compare(folders, names, axis_labels):
+    mean_window_pct = 0.5 # relative length of the mean window [% of total duration]
+    std_window_pct = 0.2  # relative length of the std windoe [% of mean window]
+    
+    
+    grid = (1, len(folders)+1)
+    width_ratios = [1 for i in range(len(folders))] + [0.1] # Small width for colorbar
+    line_and_marker = {'linestyle': '-', 
+                       'marker': 'o',
+                       'linewidth': 1.5,
+                       'markersize': 2.5}
+    
+    colorbar_scale = 'log'
+    cmap = matplotlib.cm.viridis
+    equal_axes = [False, True] # x, y
+    
+    
+    rupture_stretch = np.full((len(folders), 2), np.nan) # 
+    
+    
+    fig, axes = plt.subplots(grid[0], grid[1],  figsize = (10,5), 
+                                                gridspec_kw ={'width_ratios': width_ratios})
 
+    
+    # Loop through data folders
+    for f, folder in enumerate(folders):
+            axes[f].set_title(names[f])
+            data = read_multi_folder(folder, mean_window_pct, std_window_pct)
+
+            x = data['stretch_pct']
+            y = data['Ff'][:, :, 0, 1]
+            z = data['F_N']
+            
+    
+            for k in range(len(z)):
+                color = get_color_value(z[k], np.min(z), np.max(z), scale = colorbar_scale, cmap = cmap)
+                axes[f].plot(x, y[:,k], **line_and_marker, color = color)
+    
+            rupture_stretch[f] = (data['rupture_stretch'], data['practical_rupture_stretch'])
+           
+                
+    
+    # Colorbar
+    if colorbar_scale == 'linear':
+        norm = matplotlib.colors.BoundaryNorm(z, cmap.N)
+    elif colorbar_scale == 'log':
+        norm = matplotlib.colors.LogNorm(z[0], z[-1])
+    else:
+        exit(f'scale = \'{colorbar_scale}\' is not defined.')
+        
+    axes[-1].grid(False)
+    axes[-1].set_aspect(10)
+    fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax=axes[-1], label=axis_labels[2])
+        
+    
+    # Layout refinement
+    if np.any(equal_axes):
+        
+        xlim = [ax.get_xlim() for ax in axes[:-1]]
+        ylim = [ax.get_ylim() for ax in axes[:-1]]
+        
+        xlim = [np.min(xlim), np.max(xlim)]
+        ylim = [np.min(ylim), np.max(ylim)]
+        for ax in axes[:-1]:
+            if equal_axes[0]: ax.set_xlim(xlim)
+            if equal_axes[1]: ax.set_ylim(ylim)
+     
+    
+    
+    # Rupture stretch 
+    if True:
+        for a, ax in enumerate(axes[:-1]):    
+            vline(ax, rupture_stretch[a, 0], linestyle = '--', color = 'black', linewidth = 1, zorder = 0)
+            yfill(ax, [rupture_stretch[a, 1], 10], color = 'red', alpha = 0.1, zorder = 0)
+
+            
+    fig.supxlabel(axis_labels[0], fontsize = 14)
+    fig.supylabel(axis_labels[1], fontsize = 14)
+    fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    # if save:
+    #     fig.savefig(f".pdf", bbox_inches="tight")
+        
 
 if __name__ == "__main__":
     
@@ -197,6 +280,7 @@ if __name__ == "__main__":
     # temp(path, save = False)
     
     path = '../Data/Baseline_fixmove'
+    # path = '../Data/Baseline'
     # temp(path, save = False)
     # vel(path, save = False)
     # spring(path, save = False)
