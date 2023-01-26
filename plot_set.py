@@ -32,6 +32,16 @@ def color_cycle(num_color):
     color = plt.rcParams['axes.prop_cycle'].by_key()['color']
     return color[num_color]
 
+def vline(ax, x, **kwargs):
+    """ Make vertical line spanning whole y range
+        without changing ylim of axes """
+        
+    ylim = ax.get_ylim()
+    ax.vlines(x, ylim[0], ylim[1], **kwargs)
+    ax.set_ylim(ylim)
+        
+        
+
 
 #--- Plot commands ---#
 # plt.figure(num=0, dpi=80, facecolor='w', edgecolor='k')
