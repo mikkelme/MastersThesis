@@ -310,6 +310,6 @@ if __name__ == "__main__":
     # dt(path, save = False)
     
     
-    multi_stretch(path, save = True)
+    multi_stretch(path, save = False)
     
     plt.show()

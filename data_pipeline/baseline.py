@@ -1,4 +1,3 @@
-
 from data_generator import *
 
 def baseline(files):
@@ -27,7 +26,23 @@ def baseline_multi_stretch(names, files):
         
         
 def baseline_multi_FN(names, files):
-    pass
+    """ Vary F_N for 5 different stretch (relative to rupture stretch) """
+    
+    SMAX = [1.0, 0.33, 0.16]
+    for i in range(len(files)):
+        name, file = names[i], files[i]
+        gen = Data_generator(file, header = f'egil:Baseline_fixmove/{name}', simname = 'multi_FN', config_ext = name)
+        variables = {'num_stretch_files': 5, 
+                     'RNSEED'           : -1,
+                     'run_rupture_test' : 0,
+                     'stretch_max_pct'  : SMAX[i],
+                     'root'             : '.',
+                     'dump_freq'        : 10000}
+
+        
+        F_N = np.logspace(-1, 2, 30)*1e-9
+        gen.run_multi(F_N, variables, num_procs = 16)
+        
 
 def baseline_temp(names, files):
     """ Vary temperature """
@@ -96,5 +111,6 @@ if __name__ == '__main__':
     # baseline_dt(names, files)
     
     # baseline_multi_stretch(names, files)
+    baseline_multi_FN(names, files)
     
     pass

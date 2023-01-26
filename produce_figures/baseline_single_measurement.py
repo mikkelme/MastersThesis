@@ -55,8 +55,21 @@ def baseline1(filename, save = False):
     if save:
         plt.savefig('../article/figures/baseline/drag_Ff_100Å.pdf', bbox_inches='tight')
     
+    
     # --- Figure 3-6 --- #
     # Fourier transform 
+    # Ff = Ff_savgol
+    
+    Ff = 0.5*np.sin(2*np.pi*0.0135*VA_pos)*np.sin(2*np.pi*0.385*VA_pos)
+    
+    
+    #
+    #
+    #
+    # TODO: See ff_test.py for solution !
+    #
+    #
+    
     Ff_fourier = np.fft.fft(Ff)/len(Ff)  # Normalize
     Ff_fourier = Ff_fourier[range(int(len(Ff)/2))] # Exclude sampling frequency
     
@@ -73,7 +86,7 @@ def baseline1(filename, save = False):
     
     # Zoom and pick out interestingfrequencies
     zoom = len(freq)//15
-    peaks = [11, 158, 305, 453] 
+    peaks = [48, 147, 158, 169, 316] 
     
     
     plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
@@ -81,19 +94,23 @@ def baseline1(filename, save = False):
     plt.xlabel(r'Frequency [1/Å]', fontsize=14)
     plt.ylabel(r'Amplitude', fontsize=14)
     
-    for idx in peaks:
-        plt.plot(freq[idx], amplitude[idx], 'ko')
-        plt.text(freq[idx] + 0.005, amplitude[idx], f'$({freq[idx]:.3f})$', fontsize = 14)
+    vline(plt.gca(), 0.0135)
+    vline(plt.gca(), 0.385)
+    
+    # for idx in peaks:
+    #     plt.plot(freq[idx], amplitude[idx], 'ko')
+    #     plt.text(freq[idx] + 0.005, amplitude[idx], f'$({freq[idx]:.3f})$', fontsize = 14)
+    plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
     if save:
         plt.savefig('../article/figures/baseline/ft_zoom.pdf', bbox_inches='tight')
     
-    plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    return
  
     # Apply frequencis to orginal plot
     map = [VA_pos <= 10][0]
     plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
     plt.plot(VA_pos[map], Ff[map], label = "Raw data")
-    plt.plot(VA_pos[map], 0.7*np.sin(2*np.pi*freq[peaks[1]]*VA_pos[map]), label = f'freq. = {freq[peaks[1]]:.3f}/Å', color = color_cycle(3))
+    plt.plot(VA_pos[map], 0.7*np.sin(2*np.pi*freq[peaks[2]]*VA_pos[map]), label = f'freq. = {freq[peaks[2]]:.3f}/Å', color = color_cycle(3))
     
     plt.xlabel(r'Drag length [Å]', fontsize=14)
     plt.ylabel(r'Friction force $F_\parallel$ [nN]', fontsize=14)
@@ -102,11 +119,19 @@ def baseline1(filename, save = False):
     if save:
         plt.savefig('../article/figures/baseline/ft_sine_zoom.pdf', bbox_inches='tight')
     
+    
+    
+    
     map = [VA_pos <= 100][0]
     plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
     plt.plot(VA_pos[map], Ff[map], label = "Raw data")
     # plt.plot(VA_pos[map], 1.25 + 0.4*np.sin(2*np.pi*freq[peaks[0]]*VA_pos[map] - 0.5*np.pi), label = f'freq. = {freq[peaks[0]]:.3f}', color = color_cycle(4))
-    plt.plot(VA_pos[map],  0.7*np.sin(2*np.pi*freq[peaks[0]]*VA_pos[map] - 0.5*np.pi), label = f'freq. = {freq[peaks[0]]:.3f}/Å', color = color_cycle(4))
+    # plt.plot(VA_pos[map],  0.7*np.sin(2*np.pi*freq[peaks[0]]*VA_pos[map] - 0.5*np.pi), label = f'freq. = {freq[peaks[0]]:.3f}/Å', color = color_cycle(4))
+    # plt.plot(VA_pos[map],  0.7*np.sin(2*np.pi*0.0135*VA_pos[map]), label = f'freq. = {0.0135:.3f}/Å', color = color_cycle(4))
+    
+    test = 0.5*np.sin(2*np.pi*0.0135*VA_pos[map])*np.sin(2*np.pi*0.385*VA_pos[map])
+    plt.plot(VA_pos[map], test)
+    # plt.plot(VA_pos[map],  0.7*np.sin(2*np.pi*0.0135*VA_pos[map]), label = f'freq. = {0.0135:.3f}/Å', color = color_cycle(4))
     
     plt.xlabel(r'Drag length [Å]', fontsize=14)
     plt.ylabel(r'Friction force $F_\parallel$ [nN]', fontsize=14)
@@ -115,7 +140,7 @@ def baseline1(filename, save = False):
     if save:
         plt.savefig('../article/figures/baseline/ft_sine.pdf', bbox_inches='tight')
     
-
+    return
     
     # # --- Figure 7 --- #
     # # Friction and move force 
@@ -290,9 +315,13 @@ def baseline2(filename, save = False):
 
 
 if __name__ == '__main__':
-    path = '../Data/Baseline'
-    # baseline1(os.path.join(path,'nocut/temp/T300/system_2023-01-17_Ff.txt'), save = True)
-    baseline2(os.path.join(path,'nocut/temp/T300/system_2023-01-17_Ff.txt'), save = False) # Get some more ill bhaving data here. 
+    # path = '../Data/Baseline'
+    # baseline1(os.path.join(path,'nocut/temp/T300/system_2023-01-17_Ff.txt'), save = False)
+    # baseline2(os.path.join(path,'nocut/temp/T300/system_2023-01-17_Ff.txt'), save = False) # Get some more ill bhaving data here. 
+   
+    path = '../Data/Baseline_fixmove'
+    baseline1(os.path.join(path,'nocut/temp/T300/system_T300_Ff.txt'), save = False)
+    # baseline2(os.path.join(path,'nocut/temp/T300/system_T300_Ff.txt'), save = False) # Get some more ill bhaving data here. 
     
     plt.show()
 
