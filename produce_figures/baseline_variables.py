@@ -175,30 +175,36 @@ def variable_dependency(folders, names, variable_key, xlabel, convert = None, er
 
 
 
-def tmp(path, save = False):
+def multi_stretch(path, save = False):
     common_folder = 'multi_stretch' 
     folders = [os.path.join(path, 'nocut', common_folder), 
                os.path.join(path, 'popup', common_folder),
                os.path.join(path, 'honeycomb', common_folder)]
     names = ['nocut', 'popup', 'honeycomb']
     
-    # print(folders)
-    # print(names)
-    
-    # TODO: Make vairable for deciding what to plot...
-    
+    # Mean
+    vars = ['data[\'stretch_pct\']', 'data[\'Ff\'][:, :, 0, 1]', 'data[\'F_N\']']
     axis_labels = [r'Stretch', r'$\langle F_\parallel \rangle$ [nN]', r'$F_N$ [nN]']
-    multi_plot_compare(folders, names, axis_labels)
+    # yerr = 'data[\'Ff_std\'][:,:,0]*data[\'Ff\'][:,:,0, 1]'
+    yerr = None
+    fig_mean = multi_plot_compare(folders, names, vars, axis_labels, yerr)
     
     
-def multi_plot_compare(folders, names, axis_labels):
+    # Max
+    vars = ['data[\'stretch_pct\']', 'data[\'Ff\'][:, :, 0, 0]', 'data[\'F_N\']']
+    axis_labels = [r'Stretch', r'$\max \ F_\parallel$ [nN]', r'$F_N$ [nN]']
+    fig_max = multi_plot_compare(folders, names, vars, axis_labels)
+    
+    if save:
+        fig_mean.savefig("../article/figures/baseline/multi_stretch_mean_compare.pdf", bbox_inches="tight")
+        fig_max.savefig("../article/figures/baseline/multi_stretch_max_compare.pdf", bbox_inches="tight")
+
+    
+def multi_plot_compare(folders, names, vars, axis_labels, yerr = None):
+    # Settings
     mean_window_pct = 0.5 # relative length of the mean window [% of total duration]
     std_window_pct = 0.2  # relative length of the std windoe [% of mean window]
-    
-    
-    grid = (1, len(folders)+1)
-    width_ratios = [1 for i in range(len(folders))] + [0.1] # Small width for colorbar
-    line_and_marker = {'linestyle': '-', 
+    line_and_marker = {'linestyle': '', 
                        'marker': 'o',
                        'linewidth': 1.5,
                        'markersize': 2.5}
@@ -208,27 +214,41 @@ def multi_plot_compare(folders, names, axis_labels):
     equal_axes = [False, True] # x, y
     
     
-    rupture_stretch = np.full((len(folders), 2), np.nan) # 
+    
+    grid = (1, len(folders)+1)
+    width_ratios = [1 for i in range(len(folders))] + [0.1] # Small width for colorbar
     
     
-    fig, axes = plt.subplots(grid[0], grid[1],  figsize = (10,5), 
-                                                gridspec_kw ={'width_ratios': width_ratios})
-
+    
+    
+    rupture_stretch = np.full((len(folders), 2), np.nan) 
+    fig, axes = plt.subplots(grid[0], grid[1],  figsize = (10,5), gridspec_kw ={'width_ratios': width_ratios})
     
     # Loop through data folders
     for f, folder in enumerate(folders):
             axes[f].set_title(names[f])
             data = read_multi_folder(folder, mean_window_pct, std_window_pct)
-
-            x = data['stretch_pct']
-            y = data['Ff'][:, :, 0, 1]
-            z = data['F_N']
             
-    
+            # Get variables of interest
+            locs = locals()
+            x, y, z = [eval(v, locs) for v in vars]
+            
+            # Plot
+            if yerr is not None:
+                f_yerr = eval(yerr)
+                
             for k in range(len(z)):
                 color = get_color_value(z[k], np.min(z), np.max(z), scale = colorbar_scale, cmap = cmap)
                 axes[f].plot(x, y[:,k], **line_and_marker, color = color)
+                
+                if yerr is not None:
+                    # xlim, ylim = axes[f].get_xlim(), axes[f].get_ylim()
+                    # axes[f].errorbar(x, y[:,k], yerr = f_yerr[:,k], **line_and_marker, color = color, capsize=6) 
+                    axes[f].fill_between(x, y[:,k] + f_yerr[:,k], y[:,k] - f_yerr[:,k], alpha = 0.1, color = color)
+                    # axes[f].set_xlim(xlim); axes[f].set_ylim(ylim)              
+  
     
+            # Get rupture strecth information
             rupture_stretch[f] = (data['rupture_stretch'], data['practical_rupture_stretch'])
            
                 
@@ -243,10 +263,10 @@ def multi_plot_compare(folders, names, axis_labels):
         
     axes[-1].grid(False)
     axes[-1].set_aspect(10)
-    fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax=axes[-1], label=axis_labels[2])
-        
+    cb = fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax=axes[-1])
+    cb.set_label(label = axis_labels[2], fontsize=14)
     
-    # Layout refinement
+    # Axis limits
     if np.any(equal_axes):
         
         xlim = [ax.get_xlim() for ax in axes[:-1]]
@@ -259,20 +279,23 @@ def multi_plot_compare(folders, names, axis_labels):
             if equal_axes[1]: ax.set_ylim(ylim)
      
     
-    
     # Rupture stretch 
     if True:
         for a, ax in enumerate(axes[:-1]):    
-            vline(ax, rupture_stretch[a, 0], linestyle = '--', color = 'black', linewidth = 1, zorder = 0)
-            yfill(ax, [rupture_stretch[a, 1], 10], color = 'red', alpha = 0.1, zorder = 0)
+            vline(ax, rupture_stretch[a, 0], linestyle = '--', color = 'black', linewidth = 1, zorder = 0, label = "Rupture stretch" )
+            yfill(ax, [rupture_stretch[a, 1], 10], color = 'red', alpha = 0.1, zorder = 0, label = "Rupture drag")
 
-            
+         
+    # labels and legends
     fig.supxlabel(axis_labels[0], fontsize = 14)
     fig.supylabel(axis_labels[1], fontsize = 14)
+    handles, labels = axes[-2].get_legend_handles_labels()
+    fig.legend(handles, labels, loc = 'lower right', bbox_to_anchor = (0.0, 0.0, 1, 1),
+           bbox_transform = plt.gcf().transFigure, ncols = 2, fontsize = 13)
+    
+    
     fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
-    # if save:
-    #     fig.savefig(f".pdf", bbox_inches="tight")
-        
+    return fig        
 
 if __name__ == "__main__":
     
@@ -287,6 +310,6 @@ if __name__ == "__main__":
     # dt(path, save = False)
     
     
-    tmp(path)
+    multi_stretch(path, save = True)
     
     plt.show()
