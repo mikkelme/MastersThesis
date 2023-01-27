@@ -286,7 +286,7 @@ def analyse_friction_file(filename, mean_window_pct = 0.5, std_window_pct = None
         Ff_std      = np.array([std_full_sheet          , std_sheet         , std_PB])
         contact_std = np.array([contact_std_full_sheet  , contact_std_sheet])
         
-        
+    
     
     # Gather mean and max friction
     Ff = np.array([ [max_full_sheet , mean_full_sheet],
@@ -300,7 +300,8 @@ def analyse_friction_file(filename, mean_window_pct = 0.5, std_window_pct = None
     # Relative std: std/mean
     Ff_std /= np.abs(Ff[:,1])   
     contact_std /= np.abs(contact_mean)
-    
+
+   
     
     # --- Output dictionary --- #
     # Variables to include in dictionary
@@ -340,6 +341,7 @@ def mean_cut_and_std(arr, mean_window, std_window):
     # Output
     mean = running_mean[0]
     std = np.std(running_mean[:std_window])
+    # std /= np.mean(running_mean[:std_window])
     return mean, std
         
     

@@ -105,7 +105,7 @@ with
   &= 0.014 \pm 0.003 \text{Å}^{-1},& 
 \end{align*}
 
-where the ladder frequency is denoted with respect to drag length. This makes us recognize the fast osccilation frequency as $a$ and the slower frequency as $b$. We also take note of the longest period in the data $T_b = 1/b \sim 357$ ps $\sim 71$ which will be relevant for the evaluation of measurement incertainty.
+where the latter frequency is denoted with respect to drag length. This makes us recognize the fast osccilation frequency as $a$ and the slower frequency as $b$. We also take note of the longest period in the data $T_b = 1/b \sim 357$ ps $\sim 71$ Å$^{-1}$ which will be relevant for the evaluation of measurement incertainty.
 
 
 
@@ -197,40 +197,72 @@ From the previous observations we already have evidence of a stick slip behaviou
 
 
 
-\subsubsection{Defining single metrics with uncertainty}
+\subsubsection{Defining metrics for dynamic and static friction}
+We are interested taking the comprehensive friction force time series dataset
+and reducing it into single metrics describing the dynamic and static friciton
+respectively. The natural choice is to use the mean and max values. 
 
+\paragraph*{Dynamic friction} For the dynamic friction measurement we take the mean of the latter half of the data to ensure that the system has
+stabilished itself before taking the mean. For a full drag simulation of 400 Å
+we would thus base our mean value on the latter 200 Å drag. In figure
+\ref{fig:runmean} we have shown the friction force of the first 10 Å of drag
+together with a running mean with window length 50\% of the corresponding data
+length. The final mean value estimate is indicated with red point at the end and
+we clearly observe that the length of sampling is insufficient since we ger a
+negative friction force.  Nonetheless, one approach to quanity the uncertainy of
+the final mean estimate is to consider the running mean. The more the running
+mean fluctuates the more uncertainty is associated with the final estimate. 
 
-We are interested in defining single metrics that describe the frictional properties of the sheet. A naturall reference point is the dynamic and static friction coefficient. We can represent these as the mean and max friction force value respectively, but we leave the division by normal force for now as it is only a factor. 
+% That is, if the running mean is constant it doesn't really matter whether we
+% stop early or drag a bit longer. However, any fluctuations of this line means
+% that out mean measurement is still sensitive to the drag length and any
+% changes in the simulation inducing a phase shift of this oscillations will
+% effect the final mean value in unaccountable manner. 
+
+We should not care for flucations in the initial part of the running mean curve
+as this is still including data from the beginning, where it might transistion
+from static to dynamic friction. Only the running mean ``close'' to the ending
+should be considered for our uncertainty. From the Fourier analyse we concluded
+that longest period of any dominant oscialltions is $\sim 71$ Å$^{-1}$
+corresponding to $\sim 35 \%$ of the running mean window of 200 Å drag. Hence we use use standard deviation of the final 35\% of the running mean curve to approximate the uncertainty of the final mean value. By dividing with the final running mean we effectively calculate the relative error as shown in figure \ref{fig:runstd}. Naturally, we get a relative error of $\sim 257\%$ which corresponds with the mean value taking an unexpected negative value.
 
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\linewidth]{figures/baseline/Ff_running_mean.pdf}
+  \begin{subfigure}[b]{0.49\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/baseline/Ff_runmean.pdf}
+    \caption{Running mean}
+    \label{fig:runmean}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/baseline/Ff_runstd.pdf}
+      \caption{Running std}
+      \label{fig:runstd}
+  \end{subfigure}
+  \caption{Running std}
+  \label{fig:running}
+\end{figure}
+
+When we include the full 400 Å drag, such that std window actually matches with the longest period of oscillations expected from the data, we get a final relative. error of $\sim 12 \%$ as shown in fig \ref{fig:runstd_long}. This is just at the limit for an acceptable error, but as we shall see later (refer to figure or something) this high error is mainly connected to the cases of low friction. When changing the simulation parameters, such that the mean friction evaluate to considerable higher values, the relative error drops to around (put in numbers). One explanation is that the osccilations in the running mean does not increase linearly with the magnitude of the friction, and hence the relative error might spike especially for the low friction cases. 
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\linewidth]{figures/baseline/Ff_runstd_long.pdf}
   \caption{...}
-  \label{fig:Ff_runmean}
+  \label{fig:runstd_long}
 \end{figure}
 
 
-A way to quanity the uncertainy of the mean friction evaluation is by looking at the running mean score shown in figure \ref{fig:Ff_runmean}. If the running mean is constant we know that it doesn't really matter whether we stop now to measure or if we drag it a bit longer. However, any fluctuations of this line means that out mean measurement is still sensitive to the drag length. We should not care for flucations in the beginning of the running mean curve as this is essentially including data from the rough beginning transistioning from static to dynamic friction. Only the running mean close to the ending should be considered for our uncertainty. One way is to take then standard deviation in the final 20\% of the running mean curve as a way of approximation the unceetainty of the final mean value. This is shown in figure \ref{fig:Ff_runstd}. 
+\paragraph*{Static friction} The max value is the most obvious choice for adressing the static friction, even though that the definition of the static friction is a bit vague. At least when judging from the raw data in figure \ref{fig:drag_Ff} we not see a textbook example of the static friction precourser  (maybe include a classic static friction curve in the theory... I'm not completely sure what to expect here). Additionally the global max value does not always lie in the initial part of the simulation. \\
+For a proper static friction evaluation we should increase force slowly and wait for the slip response. Here we drag quite fast making it diffucult to assess the static response. 
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.7\linewidth]{figures/baseline/Ff_running_std.pdf}
-  \caption{Running std (window 20\%) on runmean from figure \ref{fig:Ff_runmean} divided by mean of each window. }
-  \label{fig:Ff_runstd}
-\end{figure}
+\newpage
+\subsubsection{Varying temperature, drag speed, spring constant and dt}
 
-From figure \ref{fig:Ff_runstd} we can see that the this provides us with an uncertainty at 8\% relative error when stopping at drag length 10 Å. We also notice that stopping a bit earlier seemed to give better results which reflects the more stable looking part of the running mean roughly between drag length 8 Å and 9 Å. By dragging it for a total of 400 Å we get a final uncertainty of about 3.5 \%. The choice of window size for these running evaluations is somewhat abitrary and thus we should not really trust the exact numric value of the uncertainty, but it serves as an indication of the fluctuations that we are going to pick up in our metrics which we eventually are going to pass on to neural network as true labels. \\
-
-For the max value we do not really have a good way to determine the uncertainty...
-
-
-\subsubsection{Varying normal force and stretch}
-
-Show multi plot results with uncertainty bars. 
-
-
-\subsubsection(Varying temperature, drag speed, spring constant and dt)
 
 \begin{figure}[H]
   \centering
@@ -312,8 +344,12 @@ Show multi plot results with uncertainty bars.
      \label{fig:var_dt}
 \end{figure}
 
-Multi stretch 
 
+
+
+\newpage
+\subsubsection{Varying normal force and stretch}
+\paragraph*{Multi stretch} 
 
 
 \begin{figure}[H]
@@ -331,13 +367,6 @@ Multi stretch
   \label{fig:}
 \end{figure}
 
+\paragraph*{Multi normal force}
 
 
-\newpage
-\subsection*{Observations}
-
-
-
-\begin{itemize}
-  \item stretch $= 0$ \% and $F_N = 188$ eV/Å yielded a very small amount of wear (two atoms visually out of place), for which the sheet dug into the substrate when passing by the second time. For the same normal force but 0.25 \% this problem did not occour. We need to stay out of the friction wear regime. Amorphic substrate is even more prone to this problem of wear.
-\end{itemize}

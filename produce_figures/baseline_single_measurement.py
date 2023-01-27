@@ -5,13 +5,14 @@ import numpy as np
 from plot_set import *
 from analysis.analysis_utils import *
 
+from scipy.signal import argrelextrema
 
 
 def raw_data(filename, save = False):
     """ Raw data """
     
     mean_window_pct = 0.5 # relative length of the mean window [% of total duration]
-    std_window_pct = 0.2  # relative length of the std windoe [% of mean window]
+    std_window_pct = 0.35  # relative length of the std windoe [% of mean window]
     
     
     info, data = analyse_friction_file(filename, mean_window_pct, std_window_pct)    
@@ -62,7 +63,7 @@ def raw_data(filename, save = False):
 def ft(filename, save = False):
     """ Fourier transform """
     mean_window_pct = 0.5 # relative length of the mean window [% of total duration]
-    std_window_pct = 0.2  # relative length of the std windoe [% of mean window]
+    std_window_pct = 0.35  # relative length of the std windoe [% of mean window]
     
     info, data = analyse_friction_file(filename, mean_window_pct, std_window_pct)    
     time = data['time'] - data['time'][0]
@@ -135,7 +136,7 @@ def ft(filename, save = False):
     
 def decomp(filename, save = False):
     mean_window_pct = 0.5 # relative length of the mean window [% of total duration]
-    std_window_pct = 0.2  # relative length of the std windoe [% of mean window]
+    std_window_pct = 0.35  # relative length of the std windoe [% of mean window]
     
     info, data = analyse_friction_file(filename, mean_window_pct, std_window_pct)    
     time = data['time'] - data['time'][0]
@@ -222,7 +223,7 @@ def decomp(filename, save = False):
 
 def COM(filename, save = False):
     mean_window_pct = 0.5 # relative length of the mean window [% of total duration]
-    std_window_pct = 0.2  # relative length of the std windoe [% of mean window]
+    std_window_pct = 0.35  # relative length of the std windoe [% of mean window]
 
     info, data = analyse_friction_file(filename, mean_window_pct, std_window_pct)    
     time = data['time'] - data['time'][0]
@@ -275,12 +276,10 @@ def COM(filename, save = False):
    
 
 
-def baseline2(filename, save = False):
-    """ Analyse a single friction measurement """
-    
+def mean_values(filename, save = False):
     # Parameters 
     mean_window_pct = 0.5 # relative length of the mean window [% of total duration]
-    std_window_pct = 0.2  # relative length of the std windoe [% of mean window]
+    std_window_pct = 0.35  # relative length of the std windoe [% of mean window]
     
     
     info, data = analyse_friction_file(filename, mean_window_pct, std_window_pct)    
@@ -288,7 +287,6 @@ def baseline2(filename, save = False):
     VA_pos = time * info['drag_speed']  # virtual atom position
     
     
-    # --- Uncertainty --- #
     Ff = data[f'Ff_full_sheet'][:,0]
     map = [VA_pos <= 10][0]
     mean_window = int(mean_window_pct*len(time[map]))
@@ -296,12 +294,14 @@ def baseline2(filename, save = False):
     
     
     
-    # Running mean 
+    # --- 10 Å --- #
+    # Running mean
     runmean, _ = running_mean(Ff[map], mean_window)
 
     plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
-    plt.plot(VA_pos[map], Ff[map], label = "Raw data")
-    plt.plot(VA_pos[map], runmean, label = f"Running mean ({int(mean_window_pct*100)}% window)")
+    plt.plot(VA_pos[map], Ff[map], label = "Raw data", color = color_cycle(0))
+    plt.plot(VA_pos[map], runmean, label = f"Running mean ({int(mean_window_pct*100)}% window)", color = color_cycle(1))
+    plt.plot(VA_pos[map][-1], runmean[-1], 'o', label = f'Final mean = {runmean[-1]:0.4f}', color = color_cycle(1))
   
     plt.xlabel(r'Drag length [Å]', fontsize=14)
     plt.ylabel(r'Friction force $F_\parallel$ [nN]', fontsize=14)
@@ -310,43 +310,138 @@ def baseline2(filename, save = False):
     add_xaxis(plt.gca(), x = VA_pos[map], xnew = time[map], xlabel = 'Time [ps]', decimals = 0, fontsize = 14)
     plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
     if save:
-        plt.savefig('../article/figures/baseline/Ff_running_mean.pdf', bbox_inches='tight')
+        plt.savefig('../article/figures/baseline/Ff_runmean.pdf', bbox_inches='tight')
     
     
-    # Runing std
-    runmean_mean, runmean_std = running_mean(runmean, std_window)
-    runmean_std /= np.abs(runmean_mean)
+    # Running std
+    _, runmean_std = running_mean(runmean, std_window)
+    runmean_std /= np.abs(runmean[-1])
+    
     
     plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
-    plt.plot(VA_pos[map], runmean_std, label = "Running std")
+    plt.plot(VA_pos[map], runmean_std, label = "Running std", color = color_cycle(2))
+    plt.plot(VA_pos[map][-1], runmean_std[-1], 'o', label = f'Final std = {runmean_std[-1]:.3f}', color = color_cycle(2))
   
     plt.xlabel(r'Drag length [Å]', fontsize=14)
-    plt.ylabel(r'Running relative std [nN]$ [nN]', fontsize=14)
+    plt.ylabel(r'Running std / final running mean', fontsize=14)
     plt.legend(fontsize = 13)
     
     add_xaxis(plt.gca(), x = VA_pos[map], xnew = time[map], xlabel = 'Time [ps]', decimals = 0, fontsize = 14)
     plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
     if save:
-        plt.savefig('../article/figures/baseline/Ff_running_std.pdf', bbox_inches='tight')
+        plt.savefig('../article/figures/baseline/Ff_runstd.pdf', bbox_inches='tight')
     
+    
+    # --- 400 Å --- #
+    # Running std
+    mean_window = int(mean_window_pct*len(time))
+    std_window = int(std_window_pct*mean_window)
+    
+    runmean, _ = running_mean(Ff, mean_window)
+    _, runmean_std = running_mean(runmean, std_window)
+    runmean_std /= np.abs(runmean[-1])
+    
+    
+    plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
+    plt.plot(VA_pos, runmean_std, label = "Running std", color = color_cycle(2))
+    plt.plot(VA_pos[-1], runmean_std[-1], 'o', label = f'final std = {runmean_std[-1]:.3f}', color = color_cycle(2))
+  
+    plt.xlabel(r'Drag length [Å]', fontsize=14)
+    plt.ylabel(r'Running std / final running mean', fontsize=14)
+    plt.legend(fontsize = 13)
+    
+    add_xaxis(plt.gca(), x = VA_pos, xnew = time, xlabel = 'Time [ps]', decimals = 0, fontsize = 14)
+    plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    if save:
+        plt.savefig('../article/figures/baseline/Ff_runstd_long.pdf', bbox_inches='tight')
+    
+    
+    print(data['Ff_std'])
+
+def max_values(folder, save = False):
+    """ Raw data """
+    mean_window_pct = 0.5 # relative length of the mean window [% of total duration]
+    std_window_pct = 0.35  # relative length of the std windoe [% of mean window]
+    
+    for job_dir in get_dirs_in_path(folder, sort = True):
+        print(job_dir)
+        
+        # TODO: plot top 10 max values for different normal force to show how unstable it is
+        # WORKING HERE
+        # WORKING HERE
+        # WORKING HERE
+        # WORKING HERE
+        # WORKING HERE
+        # WORKING HERE
+        # WORKING HERE
+        # WORKING HERE
+        # WORKING HERE
+        # WORKING HERE
+        # WORKING HERE
+        
+    exit()
+    for filename in filenames:
+        info, data = analyse_friction_file(filename, mean_window_pct, std_window_pct)    
+        time = data['time'] - data['time'][0]
+        VA_pos = time * info['drag_speed']  # virtual atom position
+        Ff = data[f'Ff_full_sheet'][:,0]
+        
+ 
+        print(filename)
+    
+    exit()
+        
+        
+   
  
    
-    print(data['Ff_std'])
-   
+    # sort = np.argsort(Ff)
+ 
+    # test = Ff[sort][-10:]
+    # argmax = np.flip(VA_pos[sort])[:10]
+    # print(argmax)
+    # exit()
+    # top_filter = [Ff > 0.9*data['Ff'][0,0]][0]
+    # local_extrema = argrelextrema(Ff[top_filter], np.greater)
+ 
+    # --- Figure 1 --- #
+    
+    plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
+    plt.plot(VA_pos, Ff, label = "Raw data")
+    # # plt.plot(VA_pos[local_extrema], Ff[local_extrema], 'o', label = "Local extrema")
+    # plt.plot(VA_pos[top_filter], Ff[top_filter], 'o', label = "Local extrema")
+    # plt.plot(VA_pos[top_filter][local_extrema], Ff[top_filter][local_extrema], 'o', label = "Local extrema")
+    plt.xlabel(r'Drag length [Å]', fontsize=14)
+    plt.ylabel(r'Friction force $F_\parallel$ [nN]', fontsize=14)
+    plt.legend(loc = 'lower left', fontsize = 13)
+    
+    add_xaxis(plt.gca(), x = VA_pos, xnew = time, xlabel = 'Time [ps]', decimals = 0, fontsize = 14)
+    plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    # if save:
+    #     plt.savefig('../article/figures/baseline/drag_Ff_10Å.pdf', bbox_inches='tight')
+    
+
 
 
 if __name__ == '__main__':
     # path = '../Data/Baseline'
-    # baseline1(os.path.join(path,'nocut/temp/T300/system_2023-01-17_Ff.txt'), save = False)
-    # baseline2(os.path.join(path,'nocut/temp/T300/system_2023-01-17_Ff.txt'), save = False) # Get some more ill bhaving data here. 
+    # filename = os.path.join(path,'nocut/temp/T300/system_2023-01-17_Ff.txt')
    
     path = '../Data/Baseline_fixmove'
     filename = os.path.join(path,'nocut/temp/T300/system_T300_Ff.txt')
     # raw_data(filename, save = False)
     # ft(filename, save = False)
     # decomp(filename, save = False)
-    COM(filename, save = True)
-    # baseline2(os.path.join(path,'nocut/temp/T300/system_T300_Ff.txt'), save = False) # Get some more ill bhaving data here. 
+    # COM(filename, save = False)
+    # mean_values(filename, save = False)
+    
+    
+    
+    # filenames = [os.path.join(path,f'nocut/multi_stretch/stretch_15001_folder/job{i}/system_drag_Ff.txt') for i in range(3)]
+    folder = os.path.join(path,'nocut/multi_stretch/stretch_15001_folder')
+    max_values(folder, save = False)
+    
+    
     
     plt.show()
 
