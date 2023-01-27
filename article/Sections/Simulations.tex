@@ -59,113 +59,146 @@ We need to define some ranges for the ML input paramters. $F_N$, stretch ranges 
 \newpage
 \subsection{Baseline}
 
-\subsubsection{Looking at the friction data}
+\subsubsection{Single measurement}
+\paragraph*{Force oscillations}
 
-
-We first assess the raw data for the friction force $F_{\parallel}$ parallel to the drag direction as seen in figure \ref{fig:drag_Ff}. We sample every 1/10th ps by taking the mean value of the previous timestemp. We observe that the data carriers oscillations on different time scales. By applying a savgol filter to data with a polyorder of 5 and window length corresponding to a drag length of 3.0 Å or time interval 15.0 ps we qualitatively point out at least two different frequencies of osccilation. That is, on figure \ref{fig:drag_Ff_10} we see roughly three waves on the savgol filter, while on \ref{fig:drag_Ff_100} the same savgol filter reveals a slower frequency making an wavepack looking pattern.
+We first assess the raw data for the friction force $F_{\parallel}$ parallel to the drag direction as seen in figure \ref{fig:drag_Ff}. The sample rate is 10 ps$^{-1}$ for which we sample the the mean of all previous timesteps. We observe that the data carriers oscillations on different time scales. By applying a savgol filter to data with a polyorder of 5 and window length corresponding to a drag length of 3.0 Å (or time interval 15.0 ps) we can qualitatively point out at least two different frequencies of osccilation. On figure \ref{fig:drag_Ff_10} we see roughly three waves on the savgol filter corresponding to one frequency, while on \ref{fig:drag_Ff_100} the same savgol filter reveals an even slower frequency on top of the first creating a visual patterns of a wavepacket.
 
 \begin{figure}[H]
   \centering
   \begin{subfigure}[b]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/drag_Ff_10Å.pdf}
-      \caption{Drag length of 10 Å}
+      \caption{Drag length of 10 Å.}
       \label{fig:drag_Ff_10}
   \end{subfigure}
   \hfill
   \begin{subfigure}[b]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/drag_Ff_100Å.pdf}
-      \caption{Drag length of 100 Å}
+      \caption{Drag length of 100 Å.}
       \label{fig:drag_Ff_100}
   \end{subfigure}
   \hfill
-     \caption{Friction force $F_\parallel$ between (full) sheet and substrate with respect to the drag direction vs drag length. Drag length is measured by the constant movement of the virtual atom and not the COM of the sheet. The red line represents a savgol filter with window length 150 (corresponding to a drag length of 3 Å or a time window of 15 ps) and polyorder 5. }
+     \caption{Friction force $F_\parallel$ between (full) sheet and substrate with respect to the drag direction vs. drag length. The drag length is measured by the constant movement of the virtual atom and not the COM of the sheet. The red line represents a savgol filter with window polyorder 5 and windoew length 150 (corresponding to a drag length of 3 Å or a time window of 15 ps)}
      \label{fig:drag_Ff}
 \end{figure}
 
-By performing a fourier transform of the data we can quantitavely idendity some of the leading frequencies as seen in figure \ref{fig:ft}. 
+By performing a Forward Fourier Transform of the data (using FFT) we can quantitavely idendity some of the leading frequencies as seen in figure \ref{fig:ft_a}. By plotting the two most dominant frequencies $f_1 = 0.0074$ ps $^{-1}$ and $f_2 = 0.0079$ ps $^{-1}$ as $\sin{(2\pi f_1)} + \sin{(2\pi f_2)}$ we find a convincing fit to the observed wavepacket shape as seen in figure \ref{fig:ft_b}. By using the trigonometric identity
 
+\begin{align*}
+\sin (\alpha+\beta) &= \sin (\alpha) \cos (\beta) + \cos (\alpha) \sin (\beta), \\
+\sin (\alpha-\beta) &= \sin (\alpha) \cos (\beta) - \cos (\alpha) \sin (\beta),
+\end{align*}
+and decomposing $f_1 = a - b$, $f_2 = a + b$ we can rewrite the sine sum as the sinusoidal product
+\begin{align*}
+  \sin(2\pi f_1) \sin(2\pi f_2) &= \sin(2\pi (a - b)) \sin(2\pi (a + b)) \\
+  &= \sin(a)\cos(b) + \cancel{\cos(2\pi a)\sin(2\pi b)} + \sin(2\pi a)\cos(2\pi b) - \cancel{\cos(2\pi a)\sin(2\pi b)} \\
+  &= 2 \sin(2\pi a) \cos(2\pi b),
+\end{align*} 
 
-We can clearly see how the frequencies of $0.0395$/Å and $0.028$/Å fits well with some of the slower oscillations in the data. The faster oscialltions is more changelling to idendity and we did not attempt to match with any sine wave here. 
+with 
+\begin{align*}
+  a = \frac{f_1 + f_2}{2} &= 0.0763 \pm 0.0005 \text{ps}^{-1},& 
+  b = \frac{f_2 - f_1}{2} &= 0.0028 \pm 0.0005 \text{ps}^{-1},& \\
+  &= 0.381 \pm 0.003 \text{Å}^{-1},& 
+  &= 0.014 \pm 0.003 \text{Å}^{-1},& 
+\end{align*}
+
+where the ladder frequency is denoted with respect to drag length. This makes us recognize the fast osccilation frequency as $a$ and the slower frequency as $b$. We also take note of the longest period in the data $T_b = 1/b \sim 357$ ps $\sim 71$ which will be relevant for the evaluation of measurement incertainty.
+
 
 
 \begin{figure}[H]
   \centering
   \begin{subfigure}[b]{0.49\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/baseline/ft.pdf}
-      \caption{Full frequency range.}
-      \label{fig:ft_a}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[b]{0.49\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/baseline/ft_zoom.pdf}
-      \caption{Reduced frequency range.}
-      \label{fig:ft_b}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[b]{0.49\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/baseline/ft_sine_zoom.pdf}
-      \caption{Selected frequencies applied to data from figure \ref{fig:drag_Ff_10}}
-      \label{fig:ft_c}
+    \centering
+    \includegraphics[width=\textwidth]{figures/baseline/ft_zoom.pdf}
+    \caption{Reduced frequency range.}
+    \label{fig:ft_a}
   \end{subfigure}
   \hfill
   \begin{subfigure}[b]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/ft_sine.pdf}
       \caption{Selected frequencies applied to data from figure \ref{fig:drag_Ff_100}}
-      \label{fig:ft_d}
+      \label{fig:ft_b}
   \end{subfigure}
-  \hfill
-     \caption{Fourier transform on data shown in figure \ref{fig:drag_Ff}.}
-     \label{fig:ft}
+  \caption{Fourier transform on data shown in figure \ref{fig:drag_Ff}.}
+  \label{fig:ft}
 \end{figure}
 
 
-Decompositions. \\
-It is tempting to only look at the friction force on the sheet since this is where we apply cuts. Any desired effect taking place here in contrast to the untouched Pull blocks can be scaled by simply increasing the size of the sheet. However as we see (in some of the figures hopefully) the distribution of force acting on the pull block and the sheet vary back and forth. Thus we cannot ignore effects of force distribution which can be induced by certain cut patterns. 
+\paragraph*{Decompositions}
 
-What about the full sheet vs norm discussion. Are we better of just taking the full norm?
-
-I guess the conclusion is that the para/perp decomposition show that these are easily seperateable + it gives a plus minus axis instead of having a friction norm. When the sheet moves backwards this should count negatively I think. For the sheet/PB decomposition we see that the pattern is not as clean when we seperate them and thus we are better off keeping the full sheet measurement.
+In the previous analysis we have looked only as the friction force for the full
+sheet, including the pullblocks which is locked off during the drag, and with
+respect to the drag direction. \par
+Since we are only applying cuts to the inner sheet (excluding the pull blocks),
+it might seem more natural to only consider the friction on that part. If the
+desired frictional properties can be observed from the inner sheet we can always
+scale the relative size between inner sheet and pull block. However, when
+looking at the time series of friction force decomposed onto inner sheet and
+pull block (figure \ref{fig:decomp_group}) we observe the friction force arrising
+from those parts is seemingly antisymmetric. That is, the fricitonal pull on the
+substrate is oscillating between the inner sheet and the pullblock. Remembering
+that the normal forc eis only applied to the pull block we might take this as an
+integrated feature of the system. An interesting nonlinear friction coefficient
+might depend on this internal distribution of forces. Hence we hedge our bets an
+use the full sheet friction force. \par
+Similar we might question the decision of
+only considering the frictional force projected on the direction of the drag as
+we are neglecting the ``side shift'' induced during the drag phase. In figure \ref{fig:decomp_direc} we see the decomposition into force components parallel $F_{\parallel}$ and perpendicular $F_{\perp}$ to the drag direction respectively. We see that the most dominant trends is projected into the parallel component. If we want to include the perpendicular component as well we would have to evaluate the friction as the length of the vector for which we loose the sign of direction. Hence we would only get positive contributions, meaning a resisting force, which is not faithfully capturing the sheet oscillaitons that make the friction forces act both against in with the direction of drag. By this argument we decide to use only the parallel component going forward. 
 
 \begin{figure}[H]
   \centering
+  \begin{subfigure}[b]{0.49\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/baseline/decomp_group.pdf}
+    \caption{Decomposition into group inner sheet (sheet) and pull blocks (PB).}
+    \label{fig:decomp_group}
+  \end{subfigure}
+  \hfill
   \begin{subfigure}[b]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/decomp_direc.pdf}
-      \caption{Decomposition into parallel ($\parallel$) and perpendicular $(\perp)$ to drag direction}
+      \caption{Decomposition into parallel ($\parallel$) and perpendicular $(\perp)$ to drag direction.}
       \label{fig:decomp_direc}
   \end{subfigure}
-  \hfill
-  \begin{subfigure}[b]{0.49\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/baseline/decomp_group.pdf}
-      \caption{Decomposition into group inner sheet (sheet) and pull blocks (PB).}
-      \label{fig:decomp_group}
-  \end{subfigure}
-  \hfill
-     \caption{Decompostion of friction force.}
-     \label{fig:decomp}
+  \caption{Decomposition into parallel ($\parallel$) and perpendicular $(\perp)$ to drag direction showing the savgol filter applied}
+  \label{fig:decomp}
 \end{figure}
 
 
-Look at the COM path.
+\paragraph*{Center of mass path}
+
+From the previous observations we already have evidence of a stick slip behaviour, judging from the friction oscillations in figure \ref{fig:drag_Ff}, and motion partial motion perpendicular to the drag direction, judging from the perpendicular force component in figure \ref{fig:decomp_direc}. By looking at the $x,y$-position for the center of mass (COM) we can see the stick slip motion manifested as a variation in COM speed combinned with a side to side motion as shown in figure $\ref{fig:COM_path_K0}$. To increase this effect we also show the same plot with a spring ... move with spring constant 30 N/m in figure \ref{fig:COM_path_K30}. While the max speed is on the same scale the side to side motion is increased (notice that the axis scale is different between figure \ref{fig:COM_path_K0} and \ref{fig:COM_path_K0}).
+
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth]{figures/baseline/COM_path.pdf}
-  \caption{...}
+  \begin{subfigure}[b]{0.85\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/baseline/COM_path_K0.pdf}
+    \caption{Fix move}
+    \label{fig:COM_path_K0}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.85\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/baseline/COM_path_K30.pdf}
+      \caption{K = 30}
+      \label{fig:COM_path_K30}
+  \end{subfigure}
+  \caption{Center of mass relative position from start of drag phase in terms of axis parallel to drag direction $\Delta COM_{\parallel}$ and axis perpendicular to drag direction $\Delta COM_{\perp}$. The colorbar denotes the absolute speed of the COM.}
   \label{fig:COM_path}
 \end{figure}
 
 
-Should we plot some contact graphs here also? They are really not interesting until we get to the stretch part. I thik we should include there as a tool for measuring the change of the sheet when stretching.
+
 
 \subsubsection{Defining single metrics with uncertainty}
+
 
 We are interested in defining single metrics that describe the frictional properties of the sheet. A naturall reference point is the dynamic and static friction coefficient. We can represent these as the mean and max friction force value respectively, but we leave the division by normal force for now as it is only a factor. 
 

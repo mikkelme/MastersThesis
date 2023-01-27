@@ -6,8 +6,9 @@ from plot_set import *
 from analysis.analysis_utils import *
 
 
-def baseline1(filename, save = False):
-    """ Analyse a single friction measurement """
+
+def raw_data(filename, save = False):
+    """ Raw data """
     
     mean_window_pct = 0.5 # relative length of the mean window [% of total duration]
     std_window_pct = 0.2  # relative length of the std windoe [% of mean window]
@@ -16,12 +17,11 @@ def baseline1(filename, save = False):
     info, data = analyse_friction_file(filename, mean_window_pct, std_window_pct)    
     time = data['time'] - data['time'][0]
     VA_pos = time * info['drag_speed']  # virtual atom position
+    Ff = data[f'Ff_full_sheet'][:,0]
     
  
     # --- Figure 1 --- #
     # (VA_pos, Ff full sheet parallel) | drag length = 10 Å
-    Ff = data[f'Ff_full_sheet'][:,0]
-    
     map = [VA_pos <= 10][0]
     window_length = 150; polyorder = 5
     print(f'window length = {window_length}, corresponding to drag distance {VA_pos[window_length]} Å and time {time[window_length]} ps')
@@ -56,169 +56,114 @@ def baseline1(filename, save = False):
         plt.savefig('../article/figures/baseline/drag_Ff_100Å.pdf', bbox_inches='tight')
     
     
-    # --- Figure 3-6 --- #
-    # Fourier transform 
-    # Ff = Ff_savgol
+
+
+
+def ft(filename, save = False):
+    """ Fourier transform """
+    mean_window_pct = 0.5 # relative length of the mean window [% of total duration]
+    std_window_pct = 0.2  # relative length of the std windoe [% of mean window]
     
-    Ff = 0.5*np.sin(2*np.pi*0.0135*VA_pos)*np.sin(2*np.pi*0.385*VA_pos)
+    info, data = analyse_friction_file(filename, mean_window_pct, std_window_pct)    
+    time = data['time'] - data['time'][0]
+    VA_pos = time * info['drag_speed']  # virtual atom position
+    Ff = data[f'Ff_full_sheet'][:,0]
     
-    
-    #
-    #
-    #
-    # TODO: See ff_test.py for solution !
-    #
-    #
-    
+    # Fourier transform
+    half_range = range(int(len(Ff)/2))
     Ff_fourier = np.fft.fft(Ff)/len(Ff)  # Normalize
-    Ff_fourier = Ff_fourier[range(int(len(Ff)/2))] # Exclude sampling frequency
+    Ff_fourier = Ff_fourier[half_range] # Exclude sampling frequency
     
-    freq = np.arange(int(len(VA_pos)/2))/VA_pos[-1]
+    freq = half_range/time[-1]
     amplitude = abs(Ff_fourier)
+    phase = np.imag(np.log(Ff_fourier))
     
+    
+    # --- figure 1 --- #
+    # Full frequency range
     plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
     plt.plot(freq, amplitude)
-    plt.xlabel(r'Frequency [1/Å]', fontsize=14)
+    plt.xlabel(r'Frequency [ps$^{-1}$]', fontsize=14)
     plt.ylabel(r'Amplitude', fontsize=14)
     plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
     if save:
         plt.savefig('../article/figures/baseline/ft.pdf', bbox_inches='tight')
     
-    # Zoom and pick out interestingfrequencies
+    # --- figure 2 --- #
+    # Reduced frequency range with annotated peaks
     zoom = len(freq)//15
-    peaks = [48, 147, 158, 169, 316] 
-    
+    peaks = [147, 158] 
     
     plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
     plt.plot(freq[:zoom], amplitude[:zoom])
-    plt.xlabel(r'Frequency [1/Å]', fontsize=14)
+    plt.xlabel(r'Frequency [ps$^{-1}$]', fontsize=14)
     plt.ylabel(r'Amplitude', fontsize=14)
     
-    vline(plt.gca(), 0.0135)
-    vline(plt.gca(), 0.385)
     
-    # for idx in peaks:
-    #     plt.plot(freq[idx], amplitude[idx], 'ko')
-    #     plt.text(freq[idx] + 0.005, amplitude[idx], f'$({freq[idx]:.3f})$', fontsize = 14)
+    for idx in peaks:
+        plt.plot(freq[idx], amplitude[idx], 'ko')
+        plt.text(freq[idx] - 0.045, amplitude[idx], f'$({freq[idx]:.3f})$', fontsize = 14)
     plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
     if save:
         plt.savefig('../article/figures/baseline/ft_zoom.pdf', bbox_inches='tight')
     
-    return
- 
-    # Apply frequencis to orginal plot
-    map = [VA_pos <= 10][0]
-    plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
-    plt.plot(VA_pos[map], Ff[map], label = "Raw data")
-    plt.plot(VA_pos[map], 0.7*np.sin(2*np.pi*freq[peaks[2]]*VA_pos[map]), label = f'freq. = {freq[peaks[2]]:.3f}/Å', color = color_cycle(3))
-    
-    plt.xlabel(r'Drag length [Å]', fontsize=14)
-    plt.ylabel(r'Friction force $F_\parallel$ [nN]', fontsize=14)
-    plt.legend(loc = 'lower left', fontsize = 13)
-    plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
-    if save:
-        plt.savefig('../article/figures/baseline/ft_sine_zoom.pdf', bbox_inches='tight')
-    
-    
-    
-    
+
+    # --- figure 3 --- #
+    # Plot dominating frequencies on top of raw data
     map = [VA_pos <= 100][0]
     plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
     plt.plot(VA_pos[map], Ff[map], label = "Raw data")
-    # plt.plot(VA_pos[map], 1.25 + 0.4*np.sin(2*np.pi*freq[peaks[0]]*VA_pos[map] - 0.5*np.pi), label = f'freq. = {freq[peaks[0]]:.3f}', color = color_cycle(4))
-    # plt.plot(VA_pos[map],  0.7*np.sin(2*np.pi*freq[peaks[0]]*VA_pos[map] - 0.5*np.pi), label = f'freq. = {freq[peaks[0]]:.3f}/Å', color = color_cycle(4))
-    # plt.plot(VA_pos[map],  0.7*np.sin(2*np.pi*0.0135*VA_pos[map]), label = f'freq. = {0.0135:.3f}/Å', color = color_cycle(4))
+    yf = 1/2*(np.sin(2*np.pi*freq[peaks[0]]*time[map] + phase[peaks[0]]) + np.sin(2*np.pi*freq[peaks[1]]*time[map] + phase[peaks[1]]))
+    plt.plot(VA_pos[map], yf, label = rf'$ F_{{\parallel}} \propto \sin(2\pi \ {freq[peaks[0]]:.3f} $ ps$^{{-1}}) +  \sin(2\pi  \ {freq[peaks[1]]:.3f} $ ps$^{{-1}}) $')
     
-    test = 0.5*np.sin(2*np.pi*0.0135*VA_pos[map])*np.sin(2*np.pi*0.385*VA_pos[map])
-    plt.plot(VA_pos[map], test)
-    # plt.plot(VA_pos[map],  0.7*np.sin(2*np.pi*0.0135*VA_pos[map]), label = f'freq. = {0.0135:.3f}/Å', color = color_cycle(4))
-    
-    plt.xlabel(r'Drag length [Å]', fontsize=14)
-    plt.ylabel(r'Friction force $F_\parallel$ [nN]', fontsize=14)
-    plt.legend(loc = 'lower left', fontsize = 13)
-    plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
-    if save:
-        plt.savefig('../article/figures/baseline/ft_sine.pdf', bbox_inches='tight')
-    
-    return
-    
-    # # --- Figure 7 --- #
-    # # Friction and move force 
-    # move = data['move_force'][:, 0]
-    # move_perp = data['move_force'][:, 0]
-    # move_savgol, move_perp_savgol = savgol_filter(window_length, polyorder, move, move_perp)
-    # Ff_perp = data[f'Ff_full_sheet'][:,1]
-    # Ff_perp_savgol = savgol_filter(window_length, polyorder, Ff_perp)[0]
-
-    # plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
-    # plt.plot(VA_pos[map], Ff_savgol[map], label = "Ff")
-    # plt.plot(VA_pos[map], move_savgol[map], label = "move force")
-    # plt.xlabel(r'Drag length [Å]', fontsize=14)
-    # plt.ylabel(r'---', fontsize=14)
-    # plt.legend(fontsize = 13)
-    # plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
-    
-
-    # plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
-    # plt.plot(VA_pos[map], Ff_perp_savgol[map], label = "Ff perp")
-    # plt.plot(VA_pos[map], move_perp_savgol[map], label = "move perp force")
-    # plt.xlabel(r'Drag length [Å]', fontsize=14)
-    # plt.ylabel(r'---', fontsize=14)
-    # plt.legend(fontsize = 13)
-    # plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
-    
-    
-    # --- Figure 7-8 --- #
-    # Force decomposition: Parallel and perpendicular
-    Ff_perp = data[f'Ff_full_sheet'][:,1]
-    Ff_perp_savgol = savgol_filter(window_length, polyorder, Ff_perp)[0]
-    
-    # Para and perp
-    plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
-    plt.plot(VA_pos[map], Ff_savgol[map], label = "$F_\parallel$", color = color_cycle(0))
-    plt.plot(VA_pos[map], Ff_perp_savgol[map], label = "$F_\perp$", color = color_cycle(1))
+    a = (freq[peaks[0]] + freq[peaks[1]])/2
+    b = (freq[peaks[1]] - freq[peaks[0]])/2
+    print(f'Wavepacket freq.: a = {a}, b = {b}, +- {freq[1]-freq[0]}')
+    # yf = np.sin(2*np.pi*a*VA_pos[map])*np.cos(2*np.pi*b*VA_pos[map])
+    # plt.plot(VA_pos[map], yf)
     
     plt.xlabel(r'Drag length [Å]', fontsize=14)
+    # plt.xlabel(r'Time [ps]', fontsize=14)
     plt.ylabel(r'Friction force $F_\parallel$ [nN]', fontsize=14)
     plt.legend(loc = 'lower left', fontsize = 13)
     
     add_xaxis(plt.gca(), x = VA_pos[map], xnew = time[map], xlabel = 'Time [ps]', decimals = 0, fontsize = 14)
     plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
-    
-
     if save:
-        plt.savefig('../article/figures/baseline/decomp_direc.pdf', bbox_inches='tight')
-        
-    # # Norm
-    # Ff_norm_savgol =  np.sqrt(Ff_savgol**2 + Ff_perp_savgol**2) # calculating the norm after savgol makes the curve a lot closer to expected trend
+        plt.savefig('../article/figures/baseline/ft_sine.pdf', bbox_inches='tight')
     
-    # plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
-    # plt.plot(VA_pos[map], Ff_norm_savgol[map], label = "$Norm ||F||$", color = color_cycle(2))
     
-    # plt.xlabel(r'Drag length [Å]', fontsize=14)
-    # plt.ylabel(r'Friction force $F_\parallel$ [nN]', fontsize=14)
-    # plt.legend(loc = 'lower left', fontsize = 13)
+def decomp(filename, save = False):
+    mean_window_pct = 0.5 # relative length of the mean window [% of total duration]
+    std_window_pct = 0.2  # relative length of the std windoe [% of mean window]
     
-    # add_xaxis(plt.gca(), x = VA_pos[map], xnew = time[map], xlabel = 'Time [ps]', decimals = 0, fontsize = 14)
-    # plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
-    # if save:
-    #     plt.savefig('../article/figures/baseline/decomp_direc_norm.pdf', bbox_inches='tight')
-        
-
-
-    # --- Figure 9 --- #
-    # Force decomposition: Full sheet = sheet + PB
+    info, data = analyse_friction_file(filename, mean_window_pct, std_window_pct)    
+    time = data['time'] - data['time'][0]
+    VA_pos = time * info['drag_speed']  # virtual atom position
+    window_length = 150; polyorder = 5
     
+    # --- Data --- #
+    # Full para
+    Ff = data[f'Ff_full_sheet'][:,0]
+    
+    # Full Perp
+    Ff_perp = data[f'Ff_full_sheet'][:,1]
+    
+    # Sheet and PB para
     Ff_sheet =  data[f'Ff_sheet'][:,1]
     Ff_PB =  data[f'Ff_PB'][:,1]
-    Ff_full = Ff_sheet + Ff_PB
-    Ff_sheet_savgol, Ff_PB_savgol, Ff_full_savgol = savgol_filter(window_length, polyorder, Ff_sheet, Ff_PB, Ff_full)
     
-    # Ff_full_savgol = Ff_sheet_savgol + Ff_PB_savgol
+    # Savgol
+    Ff_savgol, Ff_perp_savgol, Ff_sheet_savgol, Ff_PB_savgol = savgol_filter(window_length, polyorder, Ff, Ff_perp, Ff_sheet, Ff_PB)
+    
+    # Map
+    map = [VA_pos <= 100][0]
+    
+    # --- Figure 1 --- #
+    # Force decomposition: Full sheet = sheet + PB
     plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
     plt.plot(VA_pos[map], Ff_sheet_savgol[map], label = "Sheet")
     plt.plot(VA_pos[map], Ff_PB_savgol[map], label = "PB")
-    # plt.plot(VA_pos[map], Ff_full_savgol[map], label = "Ff full")
     
     plt.xlabel(r'Drag length [Å]', fontsize=14)
     plt.ylabel(r'Friction force $F_\parallel$ [nN]', fontsize=14)
@@ -229,12 +174,82 @@ def baseline1(filename, save = False):
     if save:
          plt.savefig('../article/figures/baseline/decomp_group.pdf', bbox_inches='tight')
    
+    
+    # --- Figure 1 --- #
+    # Force decomposition: Parallel and perpendicular
+    plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
+    plt.plot(VA_pos[map], Ff_savgol[map], label = "$F_\parallel$", color = color_cycle(0))
+    plt.plot(VA_pos[map], Ff_perp_savgol[map], label = "$F_\perp$", color = color_cycle(1))
+        
+    plt.xlabel(r'Drag length [Å]', fontsize=14)
+    plt.ylabel(r'Friction force $F_\parallel$ [nN]', fontsize=14)
+    plt.legend(loc = 'lower left', fontsize = 13)
+    
+    add_xaxis(plt.gca(), x = VA_pos[map], xnew = time[map], xlabel = 'Time [ps]', decimals = 0, fontsize = 14)
+    plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    
+    if save:
+        plt.savefig('../article/figures/baseline/decomp_direc.pdf', bbox_inches='tight')
+        
 
+    
+    # # Friction and move force 
+    # move = data['move_force'][:, 0]
+    # move_perp = data['move_force'][:, 0]
+    # move_savgol, move_perp_savgol = savgol_filter(window_length, polyorder, move, move_perp)
+    # Ff_perp = data[f'Ff_full_sheet'][:,1]
+    # Ff_perp_savgol = savgol_filter(window_length, polyorder, Ff_perp)[0]
 
+    # plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
+    # # plt.plot(VA_pos[map], Ff[map], label = "Ff")
+    # # plt.plot(VA_pos[map], move[map], label = "move force")
+    # plt.plot(VA_pos[map], Ff_savgol[map], label = "Ff")
+    # plt.plot(VA_pos[map], move_savgol[map], label = "move force")
+    # plt.xlabel(r'Drag length [Å]', fontsize=14)
+    # plt.ylabel(r'---', fontsize=14)
+    # plt.legend(fontsize = 13)
+    # plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    
+
+    # # plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
+    # # plt.plot(VA_pos[map], Ff_perp_savgol[map], label = "Ff perp")
+    # # plt.plot(VA_pos[map], move_perp_savgol[map], label = "move perp force")
+    # # plt.xlabel(r'Drag length [Å]', fontsize=14)
+    # # plt.ylabel(r'---', fontsize=14)
+    # # plt.legend(fontsize = 13)
+    # # plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    
+
+def COM(filename, save = False):
+    mean_window_pct = 0.5 # relative length of the mean window [% of total duration]
+    std_window_pct = 0.2  # relative length of the std windoe [% of mean window]
+
+    info, data = analyse_friction_file(filename, mean_window_pct, std_window_pct)    
+    time = data['time'] - data['time'][0]
+    VA_pos = time * info['drag_speed']  # virtual atom position
+    # window_length = 150; polyorder = 5
+    window_length = 20; polyorder = 5
+
+    # --- Data --- #
+    # Full para
+    Ff = data[f'Ff_full_sheet'][:,0]
+
+    # Full Perp
+    Ff_perp = data[f'Ff_full_sheet'][:,1]
+
+    # Sheet and PB para
+    Ff_sheet =  data[f'Ff_sheet'][:,1]
+    Ff_PB =  data[f'Ff_PB'][:,1]
+
+    # Savgol
+    Ff_savgol, Ff_perp_savgol, Ff_sheet_savgol, Ff_PB_savgol = savgol_filter(window_length, polyorder, Ff, Ff_perp, Ff_sheet, Ff_PB)
+
+    # Map
+    
     # --- Figure 10 --- #
     # COM oath
     
-    map = [VA_pos <= 10][0]
+    map = [VA_pos <= 2][0]
     # fig = plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
     fig = plt.figure(num = unique_fignum(), figsize = (10,3), dpi = 80, facecolor='w', edgecolor='k')
     ax = plt.gca()
@@ -250,7 +265,13 @@ def baseline1(filename, save = False):
     plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
     
     if save:
-        plt.savefig('../article/figures/baseline/COM_path.pdf', bbox_inches='tight')
+        plt.savefig('../article/figures/baseline/COM_path_K0.pdf', bbox_inches='tight')
+        
+    
+    # fig = plt.figure(num = unique_fignum(), figsize = (10,3), dpi = 80, facecolor='w', edgecolor='k')
+    # plt.plot(VA_pos[map], Ff_savgol[map], label = "$F_\parallel$", color = color_cycle(0))
+    # plt.plot(VA_pos[map], Ff_perp_savgol[map], label = "$F_\perp$", color = color_cycle(1))
+    
    
 
 
@@ -320,7 +341,11 @@ if __name__ == '__main__':
     # baseline2(os.path.join(path,'nocut/temp/T300/system_2023-01-17_Ff.txt'), save = False) # Get some more ill bhaving data here. 
    
     path = '../Data/Baseline_fixmove'
-    baseline1(os.path.join(path,'nocut/temp/T300/system_T300_Ff.txt'), save = False)
+    filename = os.path.join(path,'nocut/temp/T300/system_T300_Ff.txt')
+    # raw_data(filename, save = False)
+    # ft(filename, save = False)
+    # decomp(filename, save = False)
+    COM(filename, save = True)
     # baseline2(os.path.join(path,'nocut/temp/T300/system_T300_Ff.txt'), save = False) # Get some more ill bhaving data here. 
     
     plt.show()
