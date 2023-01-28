@@ -47,11 +47,12 @@
 %\addtokomafont{subsubsection}{\large}
 %\sectionfont{\fontsize{20}{20}\selectfont}
 %\subsectionfont{\fontsize{10}{15}\selectfont}
-\sectionfont{\centering \color{black}} %centering and color
+% \sectionfont{\centering \color{black}} %centering and color
+\sectionfont{\color{black}} %centering and color
 \subsectionfont{\color{black}}  % sets color of subsections
 \subsubsectionfont{\color{black}}
-\usepackage{lipsum}
-\usepackage{ntheorem}
+% \usepackage{lipsum}
+% \usepackage{ntheorem}
 
 
 %---------- figure & tables ---------------
@@ -62,7 +63,7 @@
 \usepackage{array}
 \usepackage[format=hang,font=small,labelfont=bf]{caption} % figure & table caption
 %\captionsetup{labelfont={normal, bf}, font={sl}}  
-\usepackage{chngcntr}
+% \usepackage{chngcntr}
 
 \usepackage{caption}
 \usepackage{subcaption}
@@ -77,12 +78,12 @@
 \usepackage{amssymb}
 \usepackage{amsfonts}
 \usepackage{mathtools}  % also loads amsmath
-\usepackage{braket}
-\usepackage{xfrac}      % provides \sfrac
-\usepackage{bm} 
-\usepackage{bbm}
-\usepackage{slashed}
-\usepackage{physics}
+% \usepackage{braket}
+% \usepackage{xfrac}      % provides \sfrac
+% \usepackage{bm} 
+% \usepackage{bbm}
+% \usepackage{slashed}
+% \usepackage{physics}
 
 \usepackage{cancel}
 \renewcommand{\vec}[1]{\mathbf{#1}} % bold text instead of arrow
@@ -108,26 +109,30 @@
 %\usetikzlibrary{shapes.geometric, arrows}
 %\usepackage{tikz-feynman}
 %\usepackage[com pat=1.1.0]{tikz-feynman} 
-%------------- physics++ -----------------
-\usepackage{xparse}
-\usepackage{physics}
-\usepackage{chemformula} % Formula subscripts using \ch{}
-\usepackage{chemfig}
-\usepackage{feynmp-auto}
-%------------ frames -------------------
-\usepackage[framemethod=TikZ]{mdframed}
-\mdfsetup{skipabove=4pt,skipbelow=1pt}
-\mdfdefinestyle{MyFrame}{%
-    linecolor=black,
-    outerlinewidth=1pt,
-    roundcorner=10pt,
-    innertopmargin=\baselineskip,
-    innerbottommargin=\baselineskip,
-    innerrightmargin=10pt,
-    innerleftmargin=10pt,
-    backgroundcolor=gray!10!white}
 
-\usepackage{tikz}
+
+
+%------------- physics++ -----------------
+% \usepackage{xparse}
+% \usepackage{physics}
+% \usepackage{chemformula} % Formula subscripts using \ch{}
+% \usepackage{chemfig}
+% \usepackage{feynmp-auto}
+%------------ frames -------------------
+% \usepackage[framemethod=TikZ]{mdframed}
+% \mdfsetup{skipabove=4pt,skipbelow=1pt}
+% \mdfdefinestyle{MyFrame}{%
+%     linecolor=black,
+%     outerlinewidth=1pt,
+%     roundcorner=10pt,
+%     innertopmargin=\baselineskip,
+%     innerbottommargin=\baselineskip,
+%     innerrightmargin=10pt,
+%     innerleftmargin=10pt,
+%     backgroundcolor=gray!10!white}
+
+% \usepackage{tikz}
+
 %\usepackage[listings,theorems,skins,breakable]{tcolorbox}
 %\tcbset{highlight math style={enhanced,
 %  colframe=red,colback=white,arc=0pt,boxrule=2pt}}
@@ -158,9 +163,9 @@
 %}
 
 %--------- New Commands ----------------
-\newcommand{\ar}[1]{\textbf{\color{red}RMR: #1}}
-\newcommand{\are}[1]{\textbf{\color{pink}Are: #1}}
-\newcommand{\Me}{\tilde}
+% \newcommand{\ar}[1]{\textbf{\color{red}RMR: #1}}
+% \newcommand{\are}[1]{\textbf{\color{pink}Are: #1}}
+% \newcommand{\Me}{\tilde}
 %---------------- algorithm -------------------
 \usepackage{algorithm}
 \usepackage{algpseudocode}

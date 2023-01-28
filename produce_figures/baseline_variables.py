@@ -237,7 +237,6 @@ def multi_plot_compare(folders, names, vars, axis_labels, yerr = None, axis_scal
                        'linewidth': 1.5,
                        'markersize': 2.5}
     
-    # colorbar_scale = 'log'
     cmap = matplotlib.cm.viridis
     
     
@@ -262,11 +261,7 @@ def multi_plot_compare(folders, names, vars, axis_labels, yerr = None, axis_scal
             print([f'{mu_mean[0][i]:0.{decimals(mu_mean[1][i])}f} +- {mu_mean[1][i]:1.0e}' for i in range(len(mu_mean[0])) if ~np.isnan(mu_mean[1][i])])
             print("mu max")
             print([f'{mu_max[0][i]:0.{decimals(mu_max[1][i])}f} +- {mu_max[1][i]:1.0e}' for i in range(len(mu_max[0])) if ~np.isnan(mu_max[1][i])])
-            # print(mu_mean[1])
             
-            
-            # mu_mean = [f'{mu_mean[0][i]:0.{decimals(mu_mean[1][i])}f} +- {mu_mean[1][i]:1.0e}' for i in range(len(mu_mean[0])) if ~np.isnan(mu_mean[1][i])]
-            # mu_max = [f'{mu_max[0][i]:0.{decimals(mu_max[1][i])}f} +- {mu_max[1][i]:1.0e}' for i in range(len(mu_max[0])) if ~np.isnan(mu_max[1][i])]
             
             # Get variables of interest
             locs = locals()

@@ -363,62 +363,105 @@ def max_values(folder, save = False):
     mean_window_pct = 0.5 # relative length of the mean window [% of total duration]
     std_window_pct = 0.35  # relative length of the std windoe [% of mean window]
     
-    for job_dir in get_dirs_in_path(folder, sort = True):
-        print(job_dir)
-        
-        # TODO: plot top 10 max values for different normal force to show how unstable it is
-        # WORKING HERE
-        # WORKING HERE
-        # WORKING HERE
-        # WORKING HERE
-        # WORKING HERE
-        # WORKING HERE
-        # WORKING HERE
-        # WORKING HERE
-        # WORKING HERE
-        # WORKING HERE
-        # WORKING HERE
-        
-    exit()
-    for filename in filenames:
-        info, data = analyse_friction_file(filename, mean_window_pct, std_window_pct)    
-        time = data['time'] - data['time'][0]
-        VA_pos = time * info['drag_speed']  # virtual atom position
-        Ff = data[f'Ff_full_sheet'][:,0]
-        
- 
-        print(filename)
+    topn = 3
     
-    exit()
-        
-        
-   
- 
-   
-    # sort = np.argsort(Ff)
- 
-    # test = Ff[sort][-10:]
-    # argmax = np.flip(VA_pos[sort])[:10]
-    # print(argmax)
-    # exit()
-    # top_filter = [Ff > 0.9*data['Ff'][0,0]][0]
-    # local_extrema = argrelextrema(Ff[top_filter], np.greater)
- 
-    # --- Figure 1 --- #
+    maxsize = 200
+    minsize = 50
+    cmap = matplotlib.cm.viridis
+    colorbar_scale = 'log'
+    
+    
+    F_N = []
+    argtop = []
+    Ffmax = []
+    
+    for i, job_dir in enumerate(get_dirs_in_path(folder, sort = True)):
+        try: # If info file exist
+            info_dict = read_info_file(os.path.join(job_dir,'info_file.txt'))
+            
+            
+            if 'is_ruptured' in info_dict:
+                is_ruptured = info_dict['is_ruptured']
+                
+            else:
+                print("Sim not done")
+                continue
+            
+            
+            F_N.append(metal_to_SI(info_dict['F_N'], 'F')*1e9)
+            
+            if not is_ruptured:
+                # Get data
+                friction_file = find_single_file(job_dir, ext = 'Ff.txt')     
+                _, fricData = analyse_friction_file(friction_file, mean_window_pct, std_window_pct)
+                
+                
+                time = fricData['time'] - fricData['time'][0]
+                VA_pos = time * info_dict['drag_speed']  # virtual atom position
+    
+                
+                
+                
+                Ff = fricData['Ff_full_sheet'][:,0]
+                sort = np.flip(np.argsort(Ff))[:topn]
+                # argtop = VA_pos[sort]
+                
+                argtop.append(VA_pos[sort])
+                Ffmax.append(Ff[sort])
+                
+                # color = get_color_value(z[k], np.min(z), np.max(z), scale = colorbar_scale, cmap = cmap)
+                # for n in range(len(sort)):
+                #     size = minsize + (topn-n)*(maxsize-minsize)/topn
+                #     plt.scatter(VA_pos[sort][n], Ff[sort][n], marker=f'${n+1}$', s = size, color = color_cycle(i) )
+
+            else:
+                continue
+                    
+        except FileNotFoundError:
+            print(f"<-- Missing file")
+    
+    F_N = np.array(F_N)
+    argtop = np.array(argtop)
+    Ffmax = np.array(Ffmax)
+    
+    argsort = np.argsort(argtop, axis = 1)
+    
+    # Relative to max
+    Ffmax = Ffmax / Ffmax[:, 0][:, np.newaxis]
+    
     
     plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
-    plt.plot(VA_pos, Ff, label = "Raw data")
-    # # plt.plot(VA_pos[local_extrema], Ff[local_extrema], 'o', label = "Local extrema")
-    # plt.plot(VA_pos[top_filter], Ff[top_filter], 'o', label = "Local extrema")
-    # plt.plot(VA_pos[top_filter][local_extrema], Ff[top_filter][local_extrema], 'o', label = "Local extrema")
-    plt.xlabel(r'Drag length [Å]', fontsize=14)
-    plt.ylabel(r'Friction force $F_\parallel$ [nN]', fontsize=14)
-    plt.legend(loc = 'lower left', fontsize = 13)
+    for i in range(len(F_N)):
+        color = get_color_value(F_N[i], np.min(F_N), np.max(F_N), scale = colorbar_scale, cmap = cmap)  
+               
+        for n in range(len(argtop[i])):
+            size = minsize + (topn-n)*(maxsize-minsize)/topn
+            plt.scatter(argtop[i ,n], Ffmax[i ,n], marker=f'${n+1}$', s = size, color = color)
+            plt.plot()
+            # plt.scatter(argtop[i ,n], Ffmax[i ,n], marker=f'${n+1}$', s = size, color = color)
+            # plt.scatter(argtop[i ,n], topn-n, marker=f'${n+1}$', s = size, color = color)
+        
+        # Plot connections
+        plt.plot(argtop[i][argsort[i]], Ffmax[i][argsort[i]], '--', linewidth = 0.5, alpha = 0.2, color = color, zorder = 0)
     
-    add_xaxis(plt.gca(), x = VA_pos, xnew = time, xlabel = 'Time [ps]', decimals = 0, fontsize = 14)
+    
+    if colorbar_scale == 'linear':
+        norm = matplotlib.colors.BoundaryNorm(F_N, cmap.N)
+    elif colorbar_scale == 'log':
+        norm = matplotlib.colors.LogNorm(F_N[0], F_N[-1])
+    else:
+        exit(f'scale = \'{colorbar_scale}\' is not defined.')
+   
+   
+    cb = plt.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap))
+    cb.set_label(label = '$F_N$ [nN]', fontsize=14)
+    plt.xlabel('Drag length [Å]', fontsize = 14)
+    plt.ylabel(r'Rel. $\max \ F_\parallel$ [nN]', fontsize = 14)    
     plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
-    # if save:
-    #     plt.savefig('../article/figures/baseline/drag_Ff_10Å.pdf', bbox_inches='tight')
+    if save:
+        plt.savefig('../article/figures/baseline/max_dist.pdf', bbox_inches='tight')
+   
+    
     
 
 
@@ -437,9 +480,9 @@ if __name__ == '__main__':
     
     
     
-    # filenames = [os.path.join(path,f'nocut/multi_stretch/stretch_15001_folder/job{i}/system_drag_Ff.txt') for i in range(3)]
-    folder = os.path.join(path,'nocut/multi_stretch/stretch_15001_folder')
-    max_values(folder, save = False)
+    # folder = os.path.join(path,'nocut/multi_stretch/stretch_15001_folder')
+    folder = os.path.join(path,'nocut/multi_FN/stretch_15001_folder')
+    max_values(folder, save = True)
     
     
     
