@@ -260,6 +260,9 @@ When we include the full 400 Å drag, such that std window actually matches with
 \paragraph*{Static friction} The max value is the most obvious choice for adressing the static friction, even though that the definition of the static friction is a bit vague. At least when judging from the raw data in figure \ref{fig:drag_Ff} we not see a textbook example of the static friction precourser  (maybe include a classic static friction curve in the theory... I'm not completely sure what to expect here). Additionally the global max value does not always lie in the initial part of the simulation. \\
 For a proper static friction evaluation we should increase force slowly and wait for the slip response. Here we drag quite fast making it diffucult to assess the static response. 
 
+
+
+
 \newpage
 \subsubsection{Varying temperature, drag speed, spring constant and dt}
 
@@ -350,7 +353,7 @@ For a proper static friction evaluation we should increase force slowly and wait
 \newpage
 \subsubsection{Varying normal force and stretch}
 \paragraph*{Multi stretch} 
-
+text
 
 \begin{figure}[H]
   \centering
@@ -369,4 +372,70 @@ For a proper static friction evaluation we should increase force slowly and wait
 
 \paragraph*{Multi normal force}
 
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{figures/baseline/multi_FN_mean_compare.pdf}
+  \caption{...}
+  \label{fig:}
+\end{figure}
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{figures/baseline/multi_FN_max_compare.pdf}
+  \caption{Colorbar is only fitted for the right plot (honeycomb)... this should be fixed. Should I have run a linear distribtion of FN so I could plot it linear here also...?}
+  \label{fig:}
+\end{figure}
+
+
+
+\begin{table}[H]
+  \begin{center}
+  \caption{Mean friction coeff}
+  \label{tab:fric_coeff}
+  \begin{tabular}{| c | c | c | c | c | c |} \hline
+    nocut & 0.00009 $\pm\num{1e-05}$ & 0.00005 $\pm\num{1e-05}$ & 0.00004 $\pm\num{1e-05}$ & 0.00005 $\pm\num{2e-05}$ & \\ \hline
+    popup & 0.00005 $\pm\num{3e-05}$ & 0.00024 $\pm\num{5e-05}$ & 0.0002 $\pm\num{2e-04}$ & 0.0005 $\pm\num{1e-04}$ & 0.0003 $\pm\num{2e-04}$ \\ \hline
+    honeycomb & 0.00013 $\pm\num{6e-05}$ & 0.0006 $\pm\num{3e-04}$ & 0.0004 $\pm\num{6e-04}$ & 0.0007 $\pm\num{6e-04}$ & 0.0009 $\pm\num{3e-04}$ \\ \hline
+  \end{tabular}
+  \end{center}
+\end{table}
+
+\begin{table}[H]
+  \begin{center}
+  \caption{Max friciton coeff}
+  \label{tab:fric_coeff}
+  \begin{tabular}{| c | c | c | c | c | c |} \hline
+    nocut & $0.0139 \pm \num{9e-04}$& $0.0083 \pm \num{7e-04}$& $0.010 \pm \num{1e-03}$& $0.0105 \pm \num{9e-04}$ &  \\ \hline
+    popup & $0.007 \pm \num{2e-03}$& $0.010 \pm \num{2e-03}$& $0.007 \pm \num{2e-03}$& $0.009 \pm \num{3e-03}$& $0.006 \pm \num{2e-03}$ \\ \hline
+    honeycomb & $0.010 \pm \num{1e-03}$& $0.007 \pm \num{2e-03}$& $0.007 \pm \num{3e-03}$& $0.000 \pm \num{3e-03}$& $0.004 \pm \num{3e-03}$ \\ \hline
+  \end{tabular}
+  \end{center}
+\end{table}
+
+
+% 1 Ruptures detected in '../Data/Baseline_fixmove/nocut/multi_FN':
+% [['stretch %' 'F_N' 'Filenames']
+%  ['0.330021533758644' '0.1' '/stretch_47997_folder/job0']]
+% 0 ../Data/Baseline_fixmove/nocut/multi_FN
+% mu mean
+% ['0.00009 +- 1e-05', '0.00005 +- 1e-05', '0.00004 +- 1e-05', '0.00005 +- 2e-05']
+% mu max
+% ['0.0139 +- 9e-04', '0.0083 +- 7e-04', '0.010 +- 1e-03', '0.0105 +- 9e-04']
+%  (150/150) | ../Data/Baseline_fixmove/popup/multi_FN/stretch_30997_folder/job9   
+% No rupture detected
+% 1 ../Data/Baseline_fixmove/popup/multi_FN
+% mu mean
+% ['0.00005 +- 3e-05', '0.00024 +- 5e-05', '0.0002 +- 2e-04', '0.0005 +- 1e-04', '0.0003 +- 2e-04']
+% mu max
+% ['0.007 +- 2e-03', '0.010 +- 2e-03', '0.007 +- 2e-03', '0.009 +- 3e-03', '0.006 +- 2e-03']
+%  (150/150) | ../Data/Baseline_fixmove/honeycomb/multi_FN/stretch_89998_folder/job9   
+% No rupture detected
+% 2 ../Data/Baseline_fixmove/honeycomb/multi_FN
+% mu mean
+% ['0.00013 +- 6e-05', '0.0006 +- 3e-04', '0.0004 +- 6e-04', '0.0007 +- 6e-04', '0.0009 +- 3e-04']
+% mu max
+% ['0.010 +- 1e-03', '0.007 +- 2e-03', '0.007 +- 3e-03', '-0.000 +- 3e-03', '0.004 +- 3e-03']
 

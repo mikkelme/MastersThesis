@@ -918,6 +918,9 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.2, stretch_lim = [None
     
     
     
+    mu_max = get_friction_coef(Ff[:, :, 0, 0], F_N)
+    mu_mean = get_friction_coef(Ff[:, :, 0, 1], F_N)
+    
     
     # --- Rupture detection --- #
     if rup.any():
@@ -949,7 +952,9 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.2, stretch_lim = [None
         'rup': rup,
         'filenames': filenames,
         'rupture_stretch': rupture_stretch,
-        'practical_rupture_stretch': practical_rupture_stretch
+        'practical_rupture_stretch': practical_rupture_stretch,
+        'mu_max': mu_max,
+        'mu_mean': mu_mean
     }    
         
     return output
@@ -957,11 +962,20 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.2, stretch_lim = [None
     # return  (stretch_pct, F_N, Ff, Ff_std, contact_mean, contact_std), (rup_stretch_pct, rup_F_N, rup, filenames)
 
 
+def get_friction_coef(Ff, F_N):
+    
+    mu = np.zeros(Ff.shape[0])
+    mu_err = np.zeros(Ff.shape[0])
+    for i in range(Ff.shape[0]):
+        mu[i], b, mu_err[i], b_err = lin_fit(F_N, Ff[i])
+        
+        # mu[i] = 
+    return mu, mu_err
     
 
 
 if __name__ == "__main__":
+   pass
    
-    filename = '../Data/Baseline/drag_length_size/108x113/system_108x113_Ff.txt'
-     
-    data = analyse_friction_file(filename)   
+    # filename = '../Data/Baseline/drag_length_size/108x113/system_108x113_Ff.txt'  
+    # data = analyse_friction_file(filename)   
