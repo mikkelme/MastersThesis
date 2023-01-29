@@ -537,80 +537,110 @@ Make sure to check this out.
 \subsubsection*{Langevin thermostat}
 % Based on https://www.uio.no/studier/emner/matnat/fys/FYS4130/v19/pensumliste/stat-phys_2019.pdf
 
-The Langevin equation is Newtons second law for a Brownian particle where the forces include a viscous drag force from surrounding fluid and a random force fluctuation form collisions with the fluid molecules.
+When solving newtons equations of motion as in REF we are modelling the microcanonical ensemble defined by the constants: number of particles $N$, system volume $V$ and internal energy $E$. Hence the microcanonical ensemble is often denoted NVE. The canonical ensemble is achieved by keeping temperature $T$ constant in exchange for the energy being free to change. This is theoretically defined as a finite system in contact with an infinte heat bath of temperature $T$. In equilibrium the finite system of interest will have reached the same temperature. In order to specify the temperature of our system we introduce a so-called thermostat transistioning from NVE to NVT. By doing so we essentially modidy newtons equations of motion such that the equilibrium solution is a part of the canonical ensemble
 
-We describe the statistical nature of the collisions by the central limit theorem. The total momentum change $\Delta P$ can be described by the sum of individual momentum transfer $\delta P$ to the brownian particle from the molecular collision. 
+The Langevin equation is the modified version of Newtons second law for a Brownian particle. A brownian particle is a small particle suspendend in liquid, e.g. pollen or dust, named after Robert brown (1773–1858) which was the first to observe its jittery motion. The langevin equation describes these dynamics by the combination of viscous drag force $ -\gamma \vec{v}$, where $\gamma$ is a positive friction coefficient and $\vec{v}$ the velocity vector, and a random fluctuation force $\vec{R}$. The langevin equation reads
+
+\begin{align}
+  m \frac{d \vec{v}}{dt} = -\gamma \vec{v} + \vec{R}
+  \label{eq:Langevin}
+\end{align}
+
+where $m$ is the particle mass. This effectively describes the particle of interest, the brownian particle, as being suspendend in a sea of smaller particles. The collision with these smaller particles is modelled by the drag force and the fluctuation force. We notice that if the fluctuation force is excluded eq.~\eqref{eq:Langevin} becomes 
+\begin{align*}
+  m \frac{d \vec{v}}{dt} = -\gamma \vec{v} \quad \Rightarrow \quad 
+  \vec{v}(t) = v(0)e^{- \frac{\gamma t}{m}},
+\end{align*}
+
+where the solution predicts that brownian particle will come to a complete stop after a long time ${\vec{v}(t\to\infty) \to \vec{0}}$. This is in violation with the equipartion theorem
+
+\begin{align*}
+  \frac{1}{2}m\langle v^2 \rangle_{eq} = \frac{k_B T}{2}.
+\end{align*}
+
+The fluctuation force is hence nessecary to obtain the correct equilibrium. 
+
+We do the following calculations in one dimension in order to simplify the notation. We describe the statistical nature of the collisions as a sum of independent momentum transfers
 
 \begin{align*}
   \Delta P = \sum_i^N \delta p_i
 \end{align*}
 
-where $\langle \delta p \rangle = 0$ and $\langle \delta p^2 \rangle = \sigma^2$. When $N$ is large the central limit theorem yields that the random variable $\Delta P$ has a gaussian distirbution with  $\langle P \rangle = 0$ and $\langle \Delta P^2 \rangle = N\sigma^2$. If $\Delta P$ is the momentum change over a discrete time $\Delta t$ such that $N \propto \Delta t$ the corresponding force $\Delta P / \Delta t$ will have a variance 
+where $\Delta P$ denotes the change of momentum after $N$ momentum momentum transfers $\delta p_i$ to the brownian particle. We assume the first and second moments $\langle \delta p \rangle = 0$ and  $\langle \delta p \rangle = \sigma^2$. When $N$ is large the central limit theorem states that the random variable $\Delta P$ has a gaussian distribution with  $\langle P \rangle = 0$ and $\langle \Delta P^2 \rangle = N\sigma^2$. If $\Delta P$ is the momentum change over a discrete time $\Delta t$, where the number of collisiosn is proportional to time $N \propto \Delta t$, the corresponding fluctuation force $\Delta R = \Delta P / \Delta t$ will have a variance 
 
 \begin{align*}
-  \langle \tilde{F} \rangle = \frac{\langle \Delta P^2 \rangle}{\Delta t^2} \propto \frac{1}{\Delta t}.
+  \langle R^2 \rangle = \frac{\langle \Delta P^2 \rangle}{\Delta t^2} = \frac{N \sigma^2}{\Delta t^2}  \propto \frac{1}{\Delta t}.
 \end{align*}
 
-In a computer simulation we need to pick a random force $\tilde{F}(t)$ from a Gaussian distribution every time-step $\Delta t$. These forces will not be correlated since we assume that $\Delta t$ is larger than the correlation time for the molecular forces (or do we just neglect them?). We may thus write the correlation function as 
-
+In a computer simulation we need to pick a random force $R(t)$ from a Gaussian distribution every time-step $\Delta t$. These forces will not be correlated as long as $\Delta t$ is larger than the correlation time of the forces from the molecules which we will assume for this model (I think there exist corrections for this to refer to here). With this assumption we can write the correlation function as 
 \begin{align*}
-  \langle \tilde{F}(t) \tilde{F}(0) \rangle = 
+  \langle R(t) R(0) \rangle = 
   \begin{cases}
     \frac{a}{\Delta t}, & |\Delta t| < \Delta t/2 \\
-    0, & |\Delta t| > \Delta t/2 
+    0, & |\Delta t| > \Delta t/2,
   \end{cases}
 \end{align*}
 
-In the limit $\Delta t \to 0$ the correlation function becomes
+where $a$ is some strength of (...?). In the limit $\Delta t \to 0$ the correlation function becomes
 
 \begin{align}
-  \langle \tilde{F}(t) \tilde{F}(0) \rangle = a \delta(t - 0)
+  \langle R(t)R(0) \rangle = a \delta(t),
   \label{eq:F_corr}
 \end{align}
 
-This is valid for all spatial components (maybe make a point out of this). Since $\langle \tilde{F} \rangle = 0$ the random force (fluctuating force) will not conribute with a average decay (change) to the velocity. The macroscopic decay comes from the friction force (dissipitative force)  $-ma =\alpha v$ (give variable explanation). 
+where $\delta$ denotes the dirac delta function. This is valid for all spatial coordinates which will all be independent of each other. Since both the drag force and the fluctuation force originate from the molecular fluid, where the drag force $-\alpha \vec{v}$ is velocity dependent it is reasonible to assume that fluctuation force is independent of velocity $\langle R_i v_j \rangle$ for all cartesian indices $i$ and $j$.
 
-A version of newtons 2. law that combines these fluctuation forces and drag forces is the Langevin equation 
+
+% Since $\langle \tilde{F} \rangle = 0$ the random force (fluctuating force) will not conribute with a average decay (change) to the velocity. The macroscopic decay comes from the friction force (dissipitative force)  $-ma =\alpha v$ (give variable explanation). 
+
+% A version of newtons 2. law that combines these fluctuation forces and drag forces is the Langevin equation 
+
+% \begin{align*}
+%   m \dot{v} = -\alpha v + \tilde{F}
+% \end{align*}
+
+% Both forces arises from the molecular fluid where the drag force represents the velocity dependence while the random force is taken to be velocity independent, i.e. $\langle F_i v_j \rangle = 0$ where $i$ and $j$ are cartesian indices. 
+
+From the Langevin equation eq.~\eqref{eq:Langevin} we can compute the velocity autocorrelation function. We do this in one dimension for simplicity. We multiply by $(e^{\gamma t /m})/m$
 
 \begin{align*}
-  m \dot{v} = -\alpha v + \tilde{F}
-\end{align*}
-
-Both forces arises from the molecular fluid where the drag force represents the velocity dependence while the random force is taken to be velocity independent, i.e. $\langle F_i v_j \rangle = 0$ where $i$ and $j$ are cartesian indices. From the langevin equations we can compute the velocity (auto)correlation function. We do this in one dimension for simplicity. We multiply by $(e^{\alpha t /m})/m$
-
-\begin{align*}
-  \dot{\vec{v}}(t)e^{\alpha t /m} + \frac{\alpha}{m}\vec{v}(t)e^{\frac{\alpha t}{m}}  = \frac{\vec{F}}{m}e^{\frac{\alpha t}{m}},
+  \dot{ v}(t)e^{\gamma t /m} + \frac{\gamma}{m} v(t)e^{\frac{\gamma t}{m}}  = \frac{ F}{m}e^{\frac{\gamma t}{m}},
 \end{align*}
 
 and integrate from $t = -\infty$. By the use of integration by parts on latter term in the left hand side we calculate the velocity 
 
 \begin{align*}
-  \int_{-\infty}^t dt' \ \dot{\vec{v}}(t')e^{\frac{\alpha t'}{m}} + \frac{\alpha}{m}\vec{v}(t)e^{\frac{\alpha t'}{m}} &=  \int_{-\infty}^t dt' \ e^{\frac{\alpha t'}{m}} \frac{\vec{F}(t')}{m}  \\
-  \int_{-\infty}^t dt' \ \dot{\vec{v}}(t')e^{\frac{\alpha t'}{m}} + \left(\Big[\vec{v}(t')e^{\frac{\alpha t'}{m}}\Big]_{-\infty}^t - \int_{-\infty}^t dt' \ \dot{\vec{v}}(t')e^{\frac{\alpha t'}{m}}\right) &= \int_{-\infty}^t dt' \ e^{\frac{\alpha t'}{m}} \frac{\vec{F}(t')}{m}  \\
-  \vec{v}(t) &= \int_{-\infty}^t dt' \ e^{\frac{-\alpha(t - t')}{m}} \frac{\vec{F}(t')}{m},
+  \int_{-\infty}^t dt' \ \dot{ v}(t')e^{\frac{\gamma t'}{m}} + \frac{\gamma}{m} v(t)e^{\frac{\gamma t'}{m}} &=  \int_{-\infty}^t dt' \ e^{\frac{\gamma t'}{m}} \frac{ F(t')}{m}  \\
+  \int_{-\infty}^t dt' \ \dot{ v}(t')e^{\frac{\gamma t'}{m}} + \left(\Big[ v(t')e^{\frac{\gamma t'}{m}}\Big]_{-\infty}^t - \int_{-\infty}^t dt' \ \dot{ v}(t')e^{\frac{\gamma t'}{m}}\right) &= \int_{-\infty}^t dt' \ e^{\frac{\gamma t'}{m}} \frac{ F(t')}{m}  \\
+   v(t) &= \int_{-\infty}^t dt' \ e^{\frac{-\gamma(t - t')}{m}} \frac{ F(t')}{m},
 \end{align*}
 
-where $e^{\frac{-\alpha t}{m}}$ plays the role of a response function (?). We can then calculate the autocorrelation 
+where $e^{\frac{-\gamma t}{m}}$ plays the role of a response function (?). We can then calculate the autocorrelation 
 
 
 \begin{align*}
-  \big\langle \vec{v}(t)\vec{v}(0) \big\rangle &= \int_{-\infty}^t dt_1 \ \int_{-\infty}^0 dt_2 \ e^{\frac{t - t_1 - t_2}{m}} \frac{\langle \vec{F}(t_1) \vec{F}(t_2) \rangle}{m^2} \\
+  \big\langle  v(t) v(0) \big\rangle &= \int_{-\infty}^t dt_1 \ \int_{-\infty}^0 dt_2 \ e^{\frac{t - t_1 - t_2}{m}} \frac{\langle  F(t_1)  F(t_2) \rangle}{m^2} \\
   &= \int_{-\infty}^t dt_1 \ \int_{-\infty}^0 dt_2 \ e^{\frac{t - t_1 - t_2}{m}} \frac{a \delta(t_1 - t_2)}{m^2} \\
-  &= \int_{-\infty}^0 dt_2 \ e^{\frac{t - 2t_2}{m}} \frac{a}{m^2} = \frac{a}{2m\alpha}e^{-\frac{\alpha t}{m}}
+  &= \int_{-\infty}^0 dt_2 \ e^{\frac{t - 2t_2}{m}} \frac{a}{m^2} = \frac{a}{2m\gamma}e^{-\frac{\gamma t}{m}}
 \end{align*}
 
 where we used eq.~\eqref{eq:F_corr} and that the integration commutes with the average (we can change the order of integration). By comparing this with the equipartition theorem we get 
 \begin{align*}
-  \frac{1}{2}m\langle \vec{v}^2 \rangle &= \frac{k_BT}{2} \\
-  \frac{1}{2}m\langle \vec{v}(0)\vec{v}(0) \rangle &= \frac{k_BT}{2} \\
-  \frac{a}{4\alpha} &= \frac{k_BT}{2} \\
-  a &=  2\alpha k_B T \\
+  \frac{1}{2}m\langle  v^2 \rangle &= \frac{k_BT}{2} \\
+  \frac{1}{2}m\langle  v(0) v(0) \rangle &= \frac{k_BT}{2} \\
+  \frac{a}{4\gamma} &= \frac{k_BT}{2} \\
+  a &=  2\gamma k_B T \\
 \end{align*}
 
-We notice that $\alpha$ appears that the magnitude of the fluctuations increase both with friction and temperature.
+We notice the appereance of $\gamma$ meaning that the magnitude of the fluctuations increase both with friction and temperature.
 
 
-
+%
+%
+% WORKING HERE
+% Check if stuff below can be written into stuf above
+%
+%
 
 
 
@@ -637,7 +667,7 @@ The connical ensemble is an ensemble of systems by the assumption that the syste
 \begin{align}
   \vec{F}_i &= \vec{f}_{i} + \vec{f}_{f,i} + \vec{f}_{r,i} \nonumber \\
   m_i \ddot{\vec{r}}_i &= \vec{f}_{i} - \gamma_i \vec{p}_i + \vec{R}_i(t)
-  \label{eq:Langevin}
+  \label{eq:langevin_old}
 \end{align}
 
 where $m_i$ is the mass of particle $i$ $\vec{r}_i$ the position vector. The random force $\vec{R}_i(t)$ is described as gaussian white noise and have the following properties. 
@@ -655,7 +685,7 @@ The ladder two conditions can be formulated as
   \langle R_{i,\mu}(t) R_{j,\nu}(t') \rangle = 2m_i \gamma_i k_B T  \delta_{ij} \delta_{\mu\nu}\delta(t'-t),  
 \end{align*}
 
-where $\delta_{\cdot\cdot}$ is the Kronecker Delta function and $\delta(\cdot)$ is the Dirac Delta function. It can be shown that a trajectory generated by integrating the Langevin equations of motion (eq.~\eqref{eq:Langevin}) maps a cononical distribution of microstates at temperature $T$. \cite{Hunenberger2005}(p.121). (Can I say something more about the relationship between the friction froce and the random force - How to the balance to give NVT. Is the proof complicated?)\\
+where $\delta_{\cdot\cdot}$ is the Kronecker Delta function and $\delta(\cdot)$ is the Dirac Delta function. It can be shown that a trajectory generated by integrating the Langevin equations of motion (eq.~\eqref{eq:langevin_old}) maps a cononical distribution of microstates at temperature $T$. \cite{Hunenberger2005}(p.121). (Can I say something more about the relationship between the friction froce and the random force - How to the balance to give NVT. Is the proof complicated?)\\
 
 In practice the implementation of the thermostat is implemented discretely by updating the force on each particle by the addition of the described forces $f_f$ and $f_r$ for each particle. In LAMMPS this is controlled by the user defined damping factor ``damp'' = $\gamma^{-1}$ in units of time whih control how fast we are going to reach the temperature equlibrium. Thus the documentation (\cite{docs_lammps_langevin}) defines the added forces as
 
