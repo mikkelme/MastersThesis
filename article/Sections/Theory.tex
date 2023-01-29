@@ -468,6 +468,10 @@ However small erros applied by the discrete integraiton algorithm we end up havi
 
 
 \subsubsection{Velocity Verlet}
+
+
+Make it explicit that $\Delta t^2 = (\Delta t)^2$ and relax notation on this point.
+
 % http://www.physics.drexel.edu/~valliere/PHYS305/Diff_Eq_Integrators/Verlet_Methods/Diffrntleqn3.pdf
 The velocity verlet algorithm can be derived by taken a number of taylor expansion. We begin by expanding the next step position vector $\vec{x}(t + \Delta t)$ around time $t$
 \begin{align}
@@ -501,15 +505,131 @@ By combining eq.~\eqref{eq:vv_comp1} and eq.~\eqref{eq:vv_comp2} while cleaning 
 
 The scheme will give a local error of order $(\Delta t)^3$ corresponding to a global error of $(\Delta t)^2$. Lets descritize the time as $t_k = k * \Delta t$ with position $\vec{x}_k$ and velocity $\vec{v}_k$. At time $t_k$ the acceleration is given $\vec{a}_k = F(\vec{x}_k)/m$. We get the implementation steps as follows
 \begin{enumerate}
-  \item Calculate $\vec{x}_{k+1} = \vec{x}_k + \vec{v}_k \Delta t + \frac{F(\vec{x}_k)}{2m}$
+  \item Calculate $\vec{x}_{k+1} = \vec{x}_k + \vec{v}_k \Delta t + \frac{F(\vec{x}_k)}{2m}(\Delta t)^2$
   \item Evaluate $F(\vec{x}_{k+1})$
   \item Calculate $\vec{v}_{k+1} = \vec{v}_k + \frac{F(\vec{x}_k) + F(\vec{x}_{k+1})}{2m} \Delta t$
 \end{enumerate}
 
 
+It is sometimes expressed as the following. This is mathematically the same, but is it computaitonally more efficient?
+
+
+\begin{align*}
+  \mathbf{r}_i(t+\delta t) & =\mathbf{r}_i(t)+\mathbf{v}_i(t) \delta t+\frac{\mathbf{f}_i(t)}{2 m_i} \delta t^2 \\
+  \mathbf{v}_i(t+\delta t / 2) & =\mathbf{v}_i(t)+\frac{\delta t}{2} \frac{\mathbf{f}_i(t)}{m_i} \\
+  \mathbf{f}_i(t+\delta t) & =\mathbf{f}_i\left(\mathbf{r}_i(t+\delta t)\right) \\
+  \mathbf{v}_i(t+\delta t) & =\mathbf{v}_i(t+\delta t / 2)+\frac{\delta t}{2} \frac{\mathbf{f}_i(t+\delta t)}{m_i}
+  \end{align*}
+
+  % https://www2.ph.ed.ac.uk/~dmarendu/MVP/MVP03.pdf
+  Further they suggest this to be the most used algorithm
+
+  \begin{align*}
+    \mathbf{v}_i(t+\delta t / 2) & =\mathbf{v}_i(t)+\frac{\delta t}{2} \frac{\mathbf{f}_i(t)}{m_i} \\
+    \mathbf{r}_i(t+\delta t) & =\mathbf{r}_i(t)+\mathbf{v}_i(t+\delta t / 2) \delta t \\
+    \vec{f}_i(t + \delta t) &= \vec{f}_i(\vec{r}_i(t+ \delta t)) \\
+    \mathbf{v}_i(t+\delta t) & =\mathbf{v}_i(t+\delta t / 2)+\frac{\delta t}{2} \frac{\mathbf{f}_i(t+\delta t)}{m_i}
+  \end{align*}
+Make sure to check this out. 
 
 \subsection{Thermostats}
+
+\subsubsection*{Langevin thermostat}
+% Based on https://www.uio.no/studier/emner/matnat/fys/FYS4130/v19/pensumliste/stat-phys_2019.pdf
+
+The Langevin equation is Newtons second law for a Brownian particle where the forces include a viscous drag force from surrounding fluid and a random force fluctuation form collisions with the fluid molecules.
+
+We describe the statistical nature of the collisions by the central limit theorem. The total momentum change $\Delta P$ can be described by the sum of individual momentum transfer $\delta P$ to the brownian particle from the molecular collision. 
+
+\begin{align*}
+  \Delta P = \sum_i^N \delta p_i
+\end{align*}
+
+where $\langle \delta p \rangle = 0$ and $\langle \delta p^2 \rangle = \sigma^2$. When $N$ is large the central limit theorem yields that the random variable $\Delta P$ has a gaussian distirbution with  $\langle P \rangle = 0$ and $\langle \Delta P^2 \rangle = N\sigma^2$. If $\Delta P$ is the momentum change over a discrete time $\Delta t$ such that $N \propto \Delta t$ the corresponding force $\Delta P / \Delta t$ will have a variance 
+
+\begin{align*}
+  \langle \tilde{F} \rangle = \frac{\langle \Delta P^2 \rangle}{\Delta t^2} \propto \frac{1}{\Delta t}.
+\end{align*}
+
+In a computer simulation we need to pick a random force $\tilde{F}(t)$ from a Gaussian distribution every time-step $\Delta t$. These forces will not be correlated since we assume that $\Delta t$ is larger than the correlation time for the molecular forces (or do we just neglect them?). We may thus write the correlation function as 
+
+\begin{align*}
+  \langle \tilde{F}(t) \tilde{F}(0) \rangle = 
+  \begin{cases}
+    \frac{a}{\Delta t}, & |\Delta t| < \Delta t/2 \\
+    0, & |\Delta t| > \Delta t/2 
+  \end{cases}
+\end{align*}
+
+In the limit $\Delta t \to 0$ the correlation function becomes
+
+\begin{align}
+  \langle \tilde{F}(t) \tilde{F}(0) \rangle = a \delta(t - 0)
+  \label{eq:F_corr}
+\end{align}
+
+This is valid for all spatial components (maybe make a point out of this). Since $\langle \tilde{F} \rangle = 0$ the random force (fluctuating force) will not conribute with a average decay (change) to the velocity. The macroscopic decay comes from the friction force (dissipitative force)  $-ma =\alpha v$ (give variable explanation). 
+
+A version of newtons 2. law that combines these fluctuation forces and drag forces is the Langevin equation 
+
+\begin{align*}
+  m \dot{v} = -\alpha v + \tilde{F}
+\end{align*}
+
+Both forces arises from the molecular fluid where the drag force represents the velocity dependence while the random force is taken to be velocity independent, i.e. $\langle F_i v_j \rangle = 0$ where $i$ and $j$ are cartesian indices. From the langevin equations we can compute the velocity (auto)correlation function. We do this in one dimension for simplicity. We multiply by $(e^{\alpha t /m})/m$
+
+\begin{align*}
+  \dot{\vec{v}}(t)e^{\alpha t /m} + \frac{\alpha}{m}\vec{v}(t)e^{\frac{\alpha t}{m}}  = \frac{\vec{F}}{m}e^{\frac{\alpha t}{m}},
+\end{align*}
+
+and integrate from $t = -\infty$. By the use of integration by parts on latter term in the left hand side we calculate the velocity 
+
+\begin{align*}
+  \int_{-\infty}^t dt' \ \dot{\vec{v}}(t')e^{\frac{\alpha t'}{m}} + \frac{\alpha}{m}\vec{v}(t)e^{\frac{\alpha t'}{m}} &=  \int_{-\infty}^t dt' \ e^{\frac{\alpha t'}{m}} \frac{\vec{F}(t')}{m}  \\
+  \int_{-\infty}^t dt' \ \dot{\vec{v}}(t')e^{\frac{\alpha t'}{m}} + \left(\Big[\vec{v}(t')e^{\frac{\alpha t'}{m}}\Big]_{-\infty}^t - \int_{-\infty}^t dt' \ \dot{\vec{v}}(t')e^{\frac{\alpha t'}{m}}\right) &= \int_{-\infty}^t dt' \ e^{\frac{\alpha t'}{m}} \frac{\vec{F}(t')}{m}  \\
+  \vec{v}(t) &= \int_{-\infty}^t dt' \ e^{\frac{-\alpha(t - t')}{m}} \frac{\vec{F}(t')}{m},
+\end{align*}
+
+where $e^{\frac{-\alpha t}{m}}$ plays the role of a response function (?). We can then calculate the autocorrelation 
+
+
+\begin{align*}
+  \big\langle \vec{v}(t)\vec{v}(0) \big\rangle &= \int_{-\infty}^t dt_1 \ \int_{-\infty}^0 dt_2 \ e^{\frac{t - t_1 - t_2}{m}} \frac{\langle \vec{F}(t_1) \vec{F}(t_2) \rangle}{m^2} \\
+  &= \int_{-\infty}^t dt_1 \ \int_{-\infty}^0 dt_2 \ e^{\frac{t - t_1 - t_2}{m}} \frac{a \delta(t_1 - t_2)}{m^2} \\
+  &= \int_{-\infty}^0 dt_2 \ e^{\frac{t - 2t_2}{m}} \frac{a}{m^2} = \frac{a}{2m\alpha}e^{-\frac{\alpha t}{m}}
+\end{align*}
+
+where we used eq.~\eqref{eq:F_corr} and that the integration commutes with the average (we can change the order of integration). By comparing this with the equipartition theorem we get 
+\begin{align*}
+  \frac{1}{2}m\langle \vec{v}^2 \rangle &= \frac{k_BT}{2} \\
+  \frac{1}{2}m\langle \vec{v}(0)\vec{v}(0) \rangle &= \frac{k_BT}{2} \\
+  \frac{a}{4\alpha} &= \frac{k_BT}{2} \\
+  a &=  2\alpha k_B T \\
+\end{align*}
+
+We notice that $\alpha$ appears that the magnitude of the fluctuations increase both with friction and temperature.
+
+
+
+
+
+
+\newpage
 This section is based on \cite{PhysRevB.17.1302}, \cite{Hunenberger2005}(pp. 115, 120-121) and \cite{docs_lammps_langevin}
+
+
+
+% https://www.uio.no/studier/emner/matnat/fys/FYS4130/v19/pensumliste/stat-phys_2019.pdf
+
+``The Langevin equation is Newtons second law for a Brownian particle, where the forces include both the viscous drag due to the surrounding fluid and the fluctuations caused by the individual collisions with the fluid molecules.''
+
+
+% http://physics.gu.se/~frtbm/joomla/media/mydocs/LennartSjogren/kap6.pdf
+
+% https://www2.ph.ed.ac.uk/~dmarendu/MVP/MVP03.pdf
+``Another option to simulate a system in the NVT ensemble is to use a stochastic thermostat, as opposed to the deterministic thermostat defined through the Nose-Hoover equations.''
+
+``The equations of mo- tion of a system with a stochastic thermostat are known as Brownian dynamic equations''
 
 In order to simulate the canonical ensemble, that is the ensemble defined by a constant amount of particles $N$, constant temperature $T$ and constant volume $V$, hence often denoted $NVT$, we apply a so-called thermostat. There exist a variety of such including Nosé-Hoover, Gaussian, Berendsen, Langevin thermostat and many other (give example of how they modify) We will use the ladder. \\
 The connical ensemble is an ensemble of systems by the assumption that the system of interests is connected to an infitely large heat bath of temperature $T$. The Langevin thermostat assumes that the particles collides with much smaller lighter particles representing the heat bath as a sea of small particles. The collisions is described by a friction force $f_f = -\gamma \vec{p}$, where $\gamma$ is positiv friction coefficient and $\vec{p}$ the momentum vector, and a random force $f_r = \vec{R}_i(t)$. By denoting the conservative force arising from the usual inter-particle interactions $\vec{f}_i$ on particle $i$ we get the Langevin equations of motion describing the total force $\vec{F}_i$ on particle $i$ as
@@ -550,7 +670,8 @@ where $v = \dot[r]$ is the velocity. The definition of $f_f$ falls straight out 
   \sqrt{\langle R(t)^2 \rangle} = \sqrt{2m\gamma k_B T} \propto \sqrt{\frac{m k_B T}{\text{damp}}} 
 \end{align*}
 
-Thus we have $f_r \propto \sqrt{\langle R(t)^2 \rangle / dt}$ which I do not quite understand. It is mentioned in \url{https://pubs.acs.org/doi/full/10.1021/ct8002173} when talkikng about residual forces, as it is natural when taking a step length of $dt$... Probably simply, but check this later.
+Thus we have $f_r \propto \sqrt{\langle R(t)^2 \rangle / dt}$ which I do not quite understand. It is mentioned in \url{https://pubs.acs.org/doi/full/10.1021/ct8002173} when talkikng about residual forces, as it is natural when taking a step length of $dt$... Probably simply, but check this later. 
+% see https://www2.ph.ed.ac.uk/~dmarendu/MVP/MVP03.pdf p. 4
 
 
 \section{Defining the system}
