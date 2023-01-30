@@ -453,84 +453,112 @@ The parameters used to model the graphene C-C bonds is summarized in table \ref{
 \subsection{Integration}
 % https://www.eng.uc.edu/~beaucag/Classes/AdvancedMaterialsThermodynamics/Books/%5BComputational%20science%20(San%20Diego,%20Calif.)%5D%20Daan%20Frenkel_%20Berend%20Smit%20-%20Understanding%20molecular%20simulation%20_%20from%20algorithms%20to%20applications%20(2002,%20Academic%20Press%20)%20-%20libgen.lc.pdf
 
-Solving newtons equations of motion 
+Having defined a system of particles governed by interartomic potentials we need to move the system forward in time. By solving newtons equations of motion we sample the microcanonical ensemble characterized by a constant number of particles $N$, volume $V$ and energy $E$, hence denoted NVE.  Newtons equaiton of motion read
 
-\begin{align*}
-  \ddot{x}(t) = \frac{F(x)}{m} \quad \rightarrow \quad 
-  \dot{x} = v(t), \ \ \dot{v}(t) = \frac{F(x(t))}{m}
-\end{align*}
+\begin{align}
+  m_i \frac{d^2 \vec{r}_i}{dt^2} = \vec{F}_i = -\nabla U_i % = - \sum_{j\ne i} \nabla U_i,
+  \label{eq:NE}
+\end{align}
+where $i$ is the particle index and $m_i$ its mass, $\vec{r}_i = (x_i, y_i, z_i)$ the position, $t$ is time,  $\nabla_i = (\frac{\partial}{\partial x_i}, \frac{\partial}{\partial y_i}, \frac{\partial}{\partial z_i})$ and $U_i$ the potential energy. In our case the potential energy is a function of the particle positional configuration of nearby particles depending on the specefic potential in use. Since the forces defined by the potentials is conservative the energy should be conserved when solving the equations defined by eq.~\eqref{eq:NE}. We recognize that the second order partial differential equations can be split into two coupled first order differential equations as 
 
-Integration of newtons equations of motion (just like, Euler, Euler cromer and so on) and specify the verlet algorithm which is used in Lammps.
+\begin{align}
+  \dot{\vec{v}}_i(t) = \frac{\vec{F}}{m_i}, \qquad \dot{\vec{r}}_i(t) = \vec{v}_i(t),
+  \label{eq:NE_2}
+\end{align}
 
-The forces (form the potential) is conservative so the energy should be conserved before applying the thermostat.
+where $\dot{x} = dx/dt$ (Newton's notation) and $\vec{v} = (v_x, v_y, v_z)$ is velocity. 
 
-However small erros applied by the discrete integraiton algorithm we end up having an energy error. This is sensitive to time step. 
+Numerically we can solve the coupled equations (eq.\eqref{eq:NE_2}) by integrating a temporal discretization of the problem. That is, we discretize the time $t_k = t_0 + k\cdot \Delta t$ with timestep $\Delta t$ and integrate to compute $t_{k+1}$.
+
+% \begin{align*}
+%   \ddot{x}(t) = \frac{F(x)}{m} \quad \rightarrow \quad 
+%   \dot{x} = v(t), \ \ \dot{v}(t) = \frac{F(x(t))}{m}
+% \end{align*}
+
+% Integration of newtons equations of motion (just like, Euler, Euler cromer and so on) and specify the verlet algorithm which is used in Lammps.
+
+% The forces (form the potential) is conservative so the energy should be conserved before applying the thermostat.
+
+% However small erros applied by the discrete integraiton algorithm we end up having an energy error. This is sensitive to time step. 
 
 
 \subsubsection{Velocity Verlet}
 
 
-Make it explicit that $\Delta t^2 = (\Delta t)^2$ and relax notation on this point.
+% Make it explicit that $\Delta t^2 = (\Delta t)^2$ and relax notation on this point.
 
 % http://www.physics.drexel.edu/~valliere/PHYS305/Diff_Eq_Integrators/Verlet_Methods/Diffrntleqn3.pdf
-The velocity verlet algorithm can be derived by taken a number of taylor expansion. We begin by expanding the next step position vector $\vec{x}(t + \Delta t)$ around time $t$
+
+
+A common algorithm to integrate Newtons equation of motion (eq.\eqref{eq:NE_2}) is the velocity verlet. We can derive the algorithm by the use of Taylor exopansions. We begin by expanding the next-step position vector $\vec{r}_i(t + \Delta t)$ at time $t$
 \begin{align}
-  \vec{x}(t + \Delta t) &= \vec{x}(t) + \dot{\vec{x}} \Delta t + \frac{\ddot{\vec{x}}}{2} (\Delta t)^2 + \mathcal{O}((\Delta t)^3) \label{eq:vv_comp1} 
+  \vec{r}_i(t + \Delta t) &= \vec{r}_i(t) + \dot{\vec{r}}_i(t) \Delta t + \frac{\ddot{\vec{r}}_i(t)}{2} \Delta t^2 + \mathcal{O}(\Delta t^3) \label{eq:vv_comp1},
 \end{align}
-
-Similar we take the expansions of the next step velocity vector $\vec{v}(t+\Delta t)$ at time $t$ 
-
+where $\ddot{\vec{r}} = d^2\vec{r}/dt^2$ and $\Delta t^n$ is just the relaxed notation for to $(\Delta t)^n$. Similar we take the expansions of the next-step velocity vector $\vec{v}_i(t+\Delta t)$ at time $t$ 
 \begin{align}
-  \vec{v}(t+\Delta t) = \vec{v}(t) + \dot{\vec{v}}(t) \Delta t + \frac{\ddot{\vec{v}}(t)}{2}(\Delta t)^2 + \mathcal{O}((\Delta t)^3)
+  \vec{v}_i(t+\Delta t) = \vec{v}_i(t) + \dot{\vec{v}}_i(t) \Delta t + \frac{\ddot{\vec{v}}_i(t)}{2}\Delta t^2 + \mathcal{O}(\Delta t^3).
   \label{eq:tay_v1}
 \end{align}
-
-By also taking the taylor expansion of $\dot{\vec{v}}(t+\Delta t)$ we can eliminate the $\ddot{vec{v}}$ term in eq.~\eqref{eq:tay_v1} as done in the following.
-
+By taking the expansion of $\dot{\vec{v}}_i(t+\Delta t)$ we can eliminate the $\ddot{\vec{v}}_i$ term in eq.~\eqref{eq:tay_v1} as done in the following.
 \begin{align}
-  \dot{\vec{v}}(t+\Delta t) &= \dot{\vec{v}}(t) + \ddot{\vec{v}}(t) \Delta t + \mathcal{O}((\Delta t)^2) \nonumber \\
-  \frac{\ddot{\vec{v}}(t)}{2}(\Delta t)^2 &= \frac{\Delta t}{2}\Big( \dot{\vec{v}}(t+\Delta t) - \dot{\vec{v}}(t)\Big) + \mathcal{O}((\Delta t)^3) \nonumber \\
+  \dot{\vec{v}}_i(t+\Delta t) &= \dot{\vec{v}}_i(t) + \ddot{\vec{v}}_i(t) \Delta t + \mathcal{O}(\Delta t^2) \nonumber \\
+  \frac{\ddot{\vec{v}}_i(t)}{2}\Delta t^2 &= \frac{\Delta t}{2}\Big( \dot{\vec{v}}(t+\Delta t) - \dot{\vec{v}}_i(t)\Big) + \mathcal{O}(\Delta t^3) \nonumber \\
   &\Downarrow \nonumber \\
-  \vec{v}(t+\Delta t) &= \vec{v}(t) + \dot{\vec{v}}(t) \Delta t + \frac{\Delta t}{2}\Big( \dot{\vec{v}}(t+\Delta t) - \dot{\vec{v}}(t)\Big) + \mathcal{O}((\Delta t)^3) \nonumber \\
-  &=  \vec{v}(t) + \frac{\Delta t}{2}\Big( \dot{\vec{v}}(t) +  \dot{\vec{v}}(t+\Delta t)\Big) + \mathcal{O}((\Delta t)^3)
+  \vec{v}_i(t+\Delta t) &= \vec{v}_i(t) + \dot{\vec{v}}_i(t) \Delta t + \frac{\Delta t}{2}\Big( \dot{\vec{v}}_i(t+\Delta t) - \dot{\vec{v}}_i(t)\Big) + \mathcal{O}(\Delta t^3) \nonumber \\
+  &=  \vec{v}_i(t) + \frac{\Delta t}{2}\Big( \dot{\vec{v}}_i(t) +  \dot{\vec{v}}_i(t+\Delta t)\Big) + \mathcal{O}(\Delta t^3).
   \label{eq:vv_comp2}
 \end{align}
+By combining eq.~\eqref{eq:vv_comp1} and eq.~\eqref{eq:vv_comp2} and using Newton's second equation $\dot{\vec{v}} = \vec{F}_i(t)/m_i = $ and $\vec{v} = \dot{\vec{r}}$ we arrive at the final scheme. One of the most popular ways to implement the scheme numerially is as stated in the following steps.
 
-By combining eq.~\eqref{eq:vv_comp1} and eq.~\eqref{eq:vv_comp2} while cleaning up the notation using $\vec{v} = \dot{\vec{x}}$ and $\vec{a} = \dot{\vec{v}} $we get the final scheme
-
-\begin{align*}
-  \vec{x}(t + \Delta t) &= \vec{x}(t) + \vec{v}(t) \Delta t + \frac{\vec{a}(t)}{2}(\Delta t)^2 + \mathcal{O}((\Delta t)^3), \\
-  \vec{v}(t+\Delta t)  &= \vec{v}(t) + \frac{\vec{a}(t) + \vec{a}(t+\Delta t)}{2}  \Delta t + \mathcal{O}((\Delta t)^3).
-\end{align*}
-
-The scheme will give a local error of order $(\Delta t)^3$ corresponding to a global error of $(\Delta t)^2$. Lets descritize the time as $t_k = k * \Delta t$ with position $\vec{x}_k$ and velocity $\vec{v}_k$. At time $t_k$ the acceleration is given $\vec{a}_k = F(\vec{x}_k)/m$. We get the implementation steps as follows
 \begin{enumerate}
-  \item Calculate $\vec{x}_{k+1} = \vec{x}_k + \vec{v}_k \Delta t + \frac{F(\vec{x}_k)}{2m}(\Delta t)^2$
-  \item Evaluate $F(\vec{x}_{k+1})$
-  \item Calculate $\vec{v}_{k+1} = \vec{v}_k + \frac{F(\vec{x}_k) + F(\vec{x}_{k+1})}{2m} \Delta t$
+  \item Calculate $v_{k+\frac{1}{2}} = v_k + \frac{F_k}{2m} \Delta t$.
+  \item Calculate $r_{k+1} = r_k + v_{k+\frac{1}{2}} \Delta t$.
+  \item Evaluate the force $F_{k+1} = F(r_{k+1})$.
+  \item Calculate $v_{k+1} = v_{k+\frac{1}{2}} + \frac{F_{k+1}}{2m} \Delta t$  
 \end{enumerate}
 
 
-It is sometimes expressed as the following. This is mathematically the same, but is it computaitonally more efficient?
 
 
-\begin{align*}
-  \mathbf{r}_i(t+\delta t) & =\mathbf{r}_i(t)+\mathbf{v}_i(t) \delta t+\frac{\mathbf{f}_i(t)}{2 m_i} \delta t^2 \\
-  \mathbf{v}_i(t+\delta t / 2) & =\mathbf{v}_i(t)+\frac{\delta t}{2} \frac{\mathbf{f}_i(t)}{m_i} \\
-  \mathbf{f}_i(t+\delta t) & =\mathbf{f}_i\left(\mathbf{r}_i(t+\delta t)\right) \\
-  \mathbf{v}_i(t+\delta t) & =\mathbf{v}_i(t+\delta t / 2)+\frac{\delta t}{2} \frac{\mathbf{f}_i(t+\delta t)}{m_i}
-  \end{align*}
 
-  % https://www2.ph.ed.ac.uk/~dmarendu/MVP/MVP03.pdf
-  Further they suggest this to be the most used algorithm
+% \begin{align*}
+%   \vec{r}_i(t + \Delta t) &= \vec{r}_i(t) + \vec{v}_i(t) \Delta t + \frac{\vec{a}(t)}{2}(\Delta t)^2 + \mathcal{O}((\Delta t)^3), \\
+%   \vec{v}_i(t+\Delta t)  &= \vec{v}_i(t) + \frac{\vec{a}(t) + \vec{a}(t+\Delta t)}{2}  \Delta t + \mathcal{O}((\Delta t)^3).
+% \end{align*}
+% \begin{align*}
+%   \vec{r}_i(t + \Delta t) &= \vec{r}_i(t) + \vec{v}_i(t) \Delta t + \frac{\vec{F}_i(t)}{2m_i}\Delta t^2 + \mathcal{O}(\Delta t^3), \\
+%   \vec{v}_i(t+\Delta t)  &= \vec{v}_i(t) + \frac{\vec{F}_i(t) + \vec{F}_i(t+\Delta t)}{2m_i}  \Delta t + \mathcal{O}(\Delta t^3).
+% \end{align*}
+% This scheme will give a local error of order $\Delta t^3$ corresponding to a global error of $\Delta t^2$. 
 
-  \begin{align*}
-    \mathbf{v}_i(t+\delta t / 2) & =\mathbf{v}_i(t)+\frac{\delta t}{2} \frac{\mathbf{f}_i(t)}{m_i} \\
-    \mathbf{r}_i(t+\delta t) & =\mathbf{r}_i(t)+\mathbf{v}_i(t+\delta t / 2) \delta t \\
-    \vec{f}_i(t + \delta t) &= \vec{f}_i(\vec{r}_i(t+ \delta t)) \\
-    \mathbf{v}_i(t+\delta t) & =\mathbf{v}_i(t+\delta t / 2)+\frac{\delta t}{2} \frac{\mathbf{f}_i(t+\delta t)}{m_i}
-  \end{align*}
-Make sure to check this out. 
+% Lets descritize the time as $t_k = k * \Delta t$ with position $\vec{r}_k$ and velocity $\vec{v}_k$. At time $t_k$ the acceleration is given $\vec{a}_k = F(\vec{r}_k)/m$. We get the implementation steps as follows
+% \begin{enumerate}
+%   \item Calculate $\vec{r}_{k+1} = \vec{r}_k + \vec{v}_k \Delta t + \frac{F(\vec{r}_k)}{2m}(\Delta t)^2$
+%   \item Evaluate $F(\vec{r}_{k+1})$
+%   \item Calculate $\vec{v}_{k+1} = \vec{v}_k + \frac{F(\vec{r}_k) + F(\vec{r}_{k+1})}{2m} \Delta t$
+% \end{enumerate}
+
+
+% It is sometimes expressed as the following. This is mathematically the same, but is it computaitonally more efficient?
+
+
+% \begin{align*}
+%   \mathbf{r}_i(t+\delta t) & =\mathbf{r}_i(t)+\mathbf{v}_i(t) \delta t+\frac{\mathbf{f}_i(t)}{2 m_i} \delta t^2 \\
+%   \mathbf{v}_i(t+\delta t / 2) & =\mathbf{v}_i(t)+\frac{\delta t}{2} \frac{\mathbf{f}_i(t)}{m_i} \\
+%   \mathbf{f}_i(t+\delta t) & =\mathbf{f}_i\left(\mathbf{r}_i(t+\delta t)\right) \\
+%   \mathbf{v}_i(t+\delta t) & =\mathbf{v}_i(t+\delta t / 2)+\frac{\delta t}{2} \frac{\mathbf{f}_i(t+\delta t)}{m_i}
+%   \end{align*}
+
+%   % https://www2.ph.ed.ac.uk/~dmarendu/MVP/MVP03.pdf
+%   Further they suggest this to be the most used algorithm
+
+%   \begin{align*}
+%     \mathbf{v}_i(t+\delta t / 2) & =\mathbf{v}_i(t)+\frac{\delta t}{2} \frac{\mathbf{f}_i(t)}{m_i} \\
+%     \mathbf{r}_i(t+\delta t) & =\mathbf{r}_i(t)+\mathbf{v}_i(t+\delta t / 2) \delta t \\
+%     \vec{f}_i(t + \delta t) &= \vec{f}_i(\vec{r}_i(t+ \delta t)) \\
+%     \mathbf{v}_i(t+\delta t) & =\mathbf{v}_i(t+\delta t / 2)+\frac{\delta t}{2} \frac{\mathbf{f}_i(t+\delta t)}{m_i}
+%   \end{align*}
+% Make sure to check this out. 
 
 \subsection{Thermostats}
 
@@ -538,6 +566,8 @@ Make sure to check this out.
 % Based on https://www.uio.no/studier/emner/matnat/fys/FYS4130/v19/pensumliste/stat-phys_2019.pdf
 
 When solving newtons equations of motion as in REF we are modelling the microcanonical ensemble defined by the constants: number of particles $N$, system volume $V$ and internal energy $E$. Hence the microcanonical ensemble is often denoted NVE. The canonical ensemble is achieved by keeping temperature $T$ constant in exchange for the energy being free to change. This is theoretically defined as a finite system in contact with an infinte heat bath of temperature $T$. In equilibrium the finite system of interest will have reached the same temperature. In order to specify the temperature of our system we introduce a so-called thermostat transistioning from NVE to NVT. By doing so we essentially modidy newtons equations of motion such that the equilibrium solution is a part of the canonical ensemble
+
+The NVT ensemble is equivalent to sampling a system en theromodynamic equilibrium where the weight of each microscopic state is given by the boltzmann factor $\exp[-E/(k_B T)]$.
 
 The Langevin equation is the modified version of Newtons second law for a Brownian particle. A brownian particle is a small particle suspendend in liquid, e.g. pollen or dust, named after Robert brown (1773–1858) which was the first to observe its jittery motion. The langevin equation describes these dynamics by the combination of viscous drag force $ -\gamma \vec{v}$, where $\gamma$ is a positive friction coefficient and $\vec{v}$ the velocity vector, and a random fluctuation force $\vec{R}$. The langevin equation reads
 
@@ -549,10 +579,10 @@ The Langevin equation is the modified version of Newtons second law for a Browni
 where $m$ is the particle mass. This effectively describes the particle of interest, the brownian particle, as being suspendend in a sea of smaller particles. The collision with these smaller particles is modelled by the drag force and the fluctuation force. We notice that if the fluctuation force is excluded eq.~\eqref{eq:Langevin} becomes 
 \begin{align*}
   m \frac{d \vec{v}}{dt} = -\gamma \vec{v} \quad \Rightarrow \quad 
-  \vec{v}(t) = v(0)e^{- \frac{\gamma t}{m}},
+  \vec{v}_i(t) = v(0)e^{- \frac{\gamma t}{m}},
 \end{align*}
 
-where the solution predicts that brownian particle will come to a complete stop after a long time ${\vec{v}(t\to\infty) \to \vec{0}}$. This is in violation with the equipartion theorem
+where the solution predicts that brownian particle will come to a complete stop after a long time ${\vec{v}_i(t\to\infty) \to \vec{0}}$. This is in violation with the equipartion theorem
 
 \begin{align*}
   \frac{1}{2}m\langle v^2 \rangle_{eq} = \frac{k_B T}{2}.
@@ -632,16 +662,11 @@ where we used eq.~\eqref{eq:F_corr} and that the integration commutes with the a
   a &=  2\gamma k_B T \\
 \end{align*}
 
-We notice the appereance of $\gamma$ meaning that the magnitude of the fluctuations increase both with friction and temperature.
-
-
-%
-%
-% WORKING HERE
-% Check if stuff below can be written into stuf above
-%
-%
-
+We notice the appereance of $\gamma$ meaning that the magnitude of the fluctuations increase both with friction and temperature. Further we can integrate the velocity over time to get displacement $x(t)$ and show that the variance 
+\begin{align*}
+  \langle x^2(t) \rangle = \frac{2 kT}{\gamma } t
+\end{align*}
+which represents the einstein relation with $D = kT/\gamma$ where $\gamma = 1/\mu$
 
 
 \newpage

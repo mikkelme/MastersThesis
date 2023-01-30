@@ -345,10 +345,10 @@ if __name__ == "__main__":
     # temp(path, save = False)
     # vel(path, save = False)
     # spring(path, save = False)
-    # dt(path, save = False)
+    dt(path, save = False)
     
     
     # multi_stretch(path, save = False)
-    multi_FN(path, save = True)
+    # multi_FN(path, save = False)
     
     plt.show()
