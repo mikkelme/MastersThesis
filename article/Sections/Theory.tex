@@ -453,22 +453,17 @@ The parameters used to model the graphene C-C bonds is summarized in table \ref{
 \subsection{Integration}
 % https://www.eng.uc.edu/~beaucag/Classes/AdvancedMaterialsThermodynamics/Books/%5BComputational%20science%20(San%20Diego,%20Calif.)%5D%20Daan%20Frenkel_%20Berend%20Smit%20-%20Understanding%20molecular%20simulation%20_%20from%20algorithms%20to%20applications%20(2002,%20Academic%20Press%20)%20-%20libgen.lc.pdf
 
-Having defined a system of particles governed by interartomic potentials we need to move the system forward in time. By solving newtons equations of motion we sample the microcanonical ensemble characterized by a constant number of particles $N$, volume $V$ and energy $E$, hence denoted NVE.  Newtons equaiton of motion read
-
+Having defined a system of particles governed by interartomic potentials we need to move the system forward in time. By solving Newtons equations of motion we effectively do so by sampling the microcanonical ensemble characterized by a constant number of particles $N$, volume $V$ and energy $E$, hence denoted NVE.  Newtons equaitons of motion read
 \begin{align}
-  m_i \frac{d^2 \vec{r}_i}{dt^2} = \vec{F}_i = -\nabla U_i % = - \sum_{j\ne i} \nabla U_i,
+  m_i \frac{d^2 \vec{r}_i}{dt^2} = \vec{F}_i = -\nabla U_i
   \label{eq:NE}
 \end{align}
-where $i$ is the particle index and $m_i$ its mass, $\vec{r}_i = (x_i, y_i, z_i)$ the position, $t$ is time,  $\nabla_i = (\frac{\partial}{\partial x_i}, \frac{\partial}{\partial y_i}, \frac{\partial}{\partial z_i})$ and $U_i$ the potential energy. In our case the potential energy is a function of the particle positional configuration of nearby particles depending on the specefic potential in use. Since the forces defined by the potentials is conservative the energy should be conserved when solving the equations defined by eq.~\eqref{eq:NE}. We recognize that the second order partial differential equations can be split into two coupled first order differential equations as 
-
+where $i$ is the particle index and $m_i$ its mass, $\vec{r}_i = (x_i, y_i, z_i)$ the position, $t$ is time,  $\nabla_i = (\frac{\partial}{\partial x_i}, \frac{\partial}{\partial y_i}, \frac{\partial}{\partial z_i})$ and $U_i$ the potential energy. In system the potential energy is a function of the particle positions of nearby particles depending on the specefic potential in use. Since the forces defined by the potentials is conservative we expect the energy of the solution to be conserved. We redefine eq.\eqref{eq:NE} in terms of two coupled first order differential equations 
 \begin{align}
   \dot{\vec{v}}_i(t) = \frac{\vec{F}}{m_i}, \qquad \dot{\vec{r}}_i(t) = \vec{v}_i(t),
   \label{eq:NE_2}
 \end{align}
-
-where $\dot{x} = dx/dt$ (Newton's notation) and $\vec{v} = (v_x, v_y, v_z)$ is velocity. 
-
-Numerically we can solve the coupled equations (eq.\eqref{eq:NE_2}) by integrating a temporal discretization of the problem. That is, we discretize the time $t_k = t_0 + k\cdot \Delta t$ with timestep $\Delta t$ and integrate to compute $t_{k+1}$.
+where $\dot{x} = dx/dt$ (Newton's notation) and $\vec{v} = (v_x, v_y, v_z)$ is velocity. Numerically we can solve the coupled equations (eq.\eqref{eq:NE_2}) by integrating over discrete timnesteps. That is, we discretize the solution into temporal steps $t_k = t_0 + k\cdot \Delta t$ with time-step $\Delta t$. 
 
 % \begin{align*}
 %   \ddot{x}(t) = \frac{F(x)}{m} \quad \rightarrow \quad 
@@ -483,23 +478,19 @@ Numerically we can solve the coupled equations (eq.\eqref{eq:NE_2}) by integrati
 
 
 \subsubsection{Velocity Verlet}
-
-
-% Make it explicit that $\Delta t^2 = (\Delta t)^2$ and relax notation on this point.
-
 % http://www.physics.drexel.edu/~valliere/PHYS305/Diff_Eq_Integrators/Verlet_Methods/Diffrntleqn3.pdf
+% ttps://www2.ph.ed.ac.uk/~dmarendu/MVP/MVP03.pdf
 
-
-A common algorithm to integrate Newtons equation of motion (eq.\eqref{eq:NE_2}) is the velocity verlet. We can derive the algorithm by the use of Taylor exopansions. We begin by expanding the next-step position vector $\vec{r}_i(t + \Delta t)$ at time $t$
+A common algorithm to integrate Newtons equation of motion (as formulated in eq.\eqref{eq:NE_2}) is the \textit{velocity verlet}. We can derive the algorithm by the use of Taylor expansions. We begin by expanding the next-step position vector $\vec{r}_i(t + \Delta t)$ at time $t$
 \begin{align}
   \vec{r}_i(t + \Delta t) &= \vec{r}_i(t) + \dot{\vec{r}}_i(t) \Delta t + \frac{\ddot{\vec{r}}_i(t)}{2} \Delta t^2 + \mathcal{O}(\Delta t^3) \label{eq:vv_comp1},
 \end{align}
-where $\ddot{\vec{r}} = d^2\vec{r}/dt^2$ and $\Delta t^n$ is just the relaxed notation for to $(\Delta t)^n$. Similar we take the expansions of the next-step velocity vector $\vec{v}_i(t+\Delta t)$ at time $t$ 
+where $\ddot{\vec{r}} = d^2\vec{r}/dt^2$ and $\Delta t^n$ is simply the relaxed notation for $(\Delta t)^n$. Similar we take the expansions of the next-step velocity vector $\vec{v}_i(t+\Delta t)$ at time $t$ 
 \begin{align}
   \vec{v}_i(t+\Delta t) = \vec{v}_i(t) + \dot{\vec{v}}_i(t) \Delta t + \frac{\ddot{\vec{v}}_i(t)}{2}\Delta t^2 + \mathcal{O}(\Delta t^3).
   \label{eq:tay_v1}
 \end{align}
-By taking the expansion of $\dot{\vec{v}}_i(t+\Delta t)$ we can eliminate the $\ddot{\vec{v}}_i$ term in eq.~\eqref{eq:tay_v1} as done in the following.
+Finnally, by taking the expansion of $\dot{\vec{v}}_i(t+\Delta t)$ we can eliminate the $\ddot{\vec{v}}_i$-term in eq.~\eqref{eq:tay_v1} and simplify it as shown in the following.
 \begin{align}
   \dot{\vec{v}}_i(t+\Delta t) &= \dot{\vec{v}}_i(t) + \ddot{\vec{v}}_i(t) \Delta t + \mathcal{O}(\Delta t^2) \nonumber \\
   \frac{\ddot{\vec{v}}_i(t)}{2}\Delta t^2 &= \frac{\Delta t}{2}\Big( \dot{\vec{v}}(t+\Delta t) - \dot{\vec{v}}_i(t)\Big) + \mathcal{O}(\Delta t^3) \nonumber \\
@@ -508,9 +499,14 @@ By taking the expansion of $\dot{\vec{v}}_i(t+\Delta t)$ we can eliminate the $\
   &=  \vec{v}_i(t) + \frac{\Delta t}{2}\Big( \dot{\vec{v}}_i(t) +  \dot{\vec{v}}_i(t+\Delta t)\Big) + \mathcal{O}(\Delta t^3).
   \label{eq:vv_comp2}
 \end{align}
-By combining eq.~\eqref{eq:vv_comp1} and eq.~\eqref{eq:vv_comp2} and using Newton's second equation $\dot{\vec{v}} = \vec{F}_i(t)/m_i = $ and $\vec{v} = \dot{\vec{r}}$ we arrive at the final scheme. One of the most popular ways to implement the scheme numerially is as stated in the following steps.
-
+By combining eq.~\eqref{eq:vv_comp1} and eq.~\eqref{eq:vv_comp2} and using Newton's second equation $\dot{\vec{v}} = \vec{F}_i(t)/m_i = $ and $\vec{v} = \dot{\vec{r}}$ we arrive at the final scheme
+\begin{align*}
+  \vec{r}_i(t + \Delta t) &= \vec{r}_i(t) + \vec{v}_i(t) \Delta t + \frac{\vec{F}_i(t)}{2m_i}\Delta t^2 + \mathcal{O}(\Delta t^3), \\
+  \vec{v}_i(t+\Delta t)  &= \vec{v}_i(t) + \frac{\vec{F}_i(t) + \vec{F}_i(t+\Delta t)}{2m_i}  \Delta t + \mathcal{O}(\Delta t^3).
+\end{align*}
+The scheme will give a local error of order $\Delta t^3$ corresponding to a global error of $\Delta t^2$. One of the most popular ways to implement this numerically is as stated in the following steps.
 \begin{enumerate}
+  \centering
   \item Calculate $v_{k+\frac{1}{2}} = v_k + \frac{F_k}{2m} \Delta t$.
   \item Calculate $r_{k+1} = r_k + v_{k+\frac{1}{2}} \Delta t$.
   \item Evaluate the force $F_{k+1} = F(r_{k+1})$.
@@ -521,10 +517,6 @@ By combining eq.~\eqref{eq:vv_comp1} and eq.~\eqref{eq:vv_comp2} and using Newto
 
 
 
-% \begin{align*}
-%   \vec{r}_i(t + \Delta t) &= \vec{r}_i(t) + \vec{v}_i(t) \Delta t + \frac{\vec{a}(t)}{2}(\Delta t)^2 + \mathcal{O}((\Delta t)^3), \\
-%   \vec{v}_i(t+\Delta t)  &= \vec{v}_i(t) + \frac{\vec{a}(t) + \vec{a}(t+\Delta t)}{2}  \Delta t + \mathcal{O}((\Delta t)^3).
-% \end{align*}
 % \begin{align*}
 %   \vec{r}_i(t + \Delta t) &= \vec{r}_i(t) + \vec{v}_i(t) \Delta t + \frac{\vec{F}_i(t)}{2m_i}\Delta t^2 + \mathcal{O}(\Delta t^3), \\
 %   \vec{v}_i(t+\Delta t)  &= \vec{v}_i(t) + \frac{\vec{F}_i(t) + \vec{F}_i(t+\Delta t)}{2m_i}  \Delta t + \mathcal{O}(\Delta t^3).
@@ -565,39 +557,37 @@ By combining eq.~\eqref{eq:vv_comp1} and eq.~\eqref{eq:vv_comp2} and using Newto
 \subsubsection*{Langevin thermostat}
 % Based on https://www.uio.no/studier/emner/matnat/fys/FYS4130/v19/pensumliste/stat-phys_2019.pdf
 
-When solving newtons equations of motion as in REF we are modelling the microcanonical ensemble defined by the constants: number of particles $N$, system volume $V$ and internal energy $E$. Hence the microcanonical ensemble is often denoted NVE. The canonical ensemble is achieved by keeping temperature $T$ constant in exchange for the energy being free to change. This is theoretically defined as a finite system in contact with an infinte heat bath of temperature $T$. In equilibrium the finite system of interest will have reached the same temperature. In order to specify the temperature of our system we introduce a so-called thermostat transistioning from NVE to NVT. By doing so we essentially modidy newtons equations of motion such that the equilibrium solution is a part of the canonical ensemble
 
-The NVT ensemble is equivalent to sampling a system en theromodynamic equilibrium where the weight of each microscopic state is given by the boltzmann factor $\exp[-E/(k_B T)]$.
+In order to control the temperature of the system we introduce the so-called Langevin thermostat. This is stochastic thermostat that modifies Newtons equation of motion such that equilibrium solution falls within the canonical ensemble characterized by a constant number of particles $N$, constant volume $V$ and constant temperature $T$, hence denoted NVT. The canonical ensemble system is represented by the finite system of interest being in contact with an infinte heat bath of temperature $T$. The NVT ensemble is equivalent to sampling a system in theromodynamic equilibrium where the weight of each microscopic state is given by the boltzmann factor $\exp[-E/(k_B T)]$.
 
-The Langevin equation is the modified version of Newtons second law for a Brownian particle. A brownian particle is a small particle suspendend in liquid, e.g. pollen or dust, named after Robert brown (1773–1858) which was the first to observe its jittery motion. The langevin equation describes these dynamics by the combination of viscous drag force $ -\gamma \vec{v}$, where $\gamma$ is a positive friction coefficient and $\vec{v}$ the velocity vector, and a random fluctuation force $\vec{R}$. The langevin equation reads
-
+The Langevin equation is the modified version of Newtons second law for a Brownian particle. A brownian particle is a small particle suspendend in liquid, e.g. pollen or dust, named after Robert brown (1773–1858) who was the first to observe this seemingly random jittery motion. The langevin equation describes these dynamics as the combination of viscous drag force $ -\gamma \vec{v}$, where $\gamma$ is a positive friction coefficient and $\vec{v}$ the velocity vector, and a random fluctuation force $\vec{R}$. The langevin equation reads
 \begin{align}
   m \frac{d \vec{v}}{dt} = -\gamma \vec{v} + \vec{R}
   \label{eq:Langevin}
 \end{align}
-
 where $m$ is the particle mass. This effectively describes the particle of interest, the brownian particle, as being suspendend in a sea of smaller particles. The collision with these smaller particles is modelled by the drag force and the fluctuation force. We notice that if the fluctuation force is excluded eq.~\eqref{eq:Langevin} becomes 
 \begin{align*}
   m \frac{d \vec{v}}{dt} = -\gamma \vec{v} \quad \Rightarrow \quad 
   \vec{v}_i(t) = v(0)e^{- \frac{\gamma t}{m}},
 \end{align*}
-
 where the solution predicts that brownian particle will come to a complete stop after a long time ${\vec{v}_i(t\to\infty) \to \vec{0}}$. This is in violation with the equipartion theorem
-
 \begin{align*}
-  \frac{1}{2}m\langle v^2 \rangle_{eq} = \frac{k_B T}{2}.
+  \frac{1}{2}m\langle v^2 \rangle_{eq} = \frac{k_B T}{2},
 \end{align*}
+and hence the fluctuation force is nessecary to obtain the correct equilibrium. 
 
-The fluctuation force is hence nessecary to obtain the correct equilibrium. 
-
-We do the following calculations in one dimension in order to simplify the notation. We describe the statistical nature of the collisions as a sum of independent momentum transfers
-
+The following calculations is done in one dimension in order to simplify the notation. We describe the statistical nature of the collisions as a sum of independent momentum transfers
 \begin{align*}
   \Delta P = \sum_i^N \delta p_i
 \end{align*}
 
 where $\Delta P$ denotes the change of momentum after $N$ momentum momentum transfers $\delta p_i$ to the brownian particle. We assume the first and second moments $\langle \delta p \rangle = 0$ and  $\langle \delta p \rangle = \sigma^2$. When $N$ is large the central limit theorem states that the random variable $\Delta P$ has a gaussian distribution with  $\langle P \rangle = 0$ and $\langle \Delta P^2 \rangle = N\sigma^2$. If $\Delta P$ is the momentum change over a discrete time $\Delta t$, where the number of collisiosn is proportional to time $N \propto \Delta t$, the corresponding fluctuation force $\Delta R = \Delta P / \Delta t$ will have a variance 
-
+%
+%
+% WORKING HERE
+%
+%
+%
 \begin{align*}
   \langle R^2 \rangle = \frac{\langle \Delta P^2 \rangle}{\Delta t^2} = \frac{N \sigma^2}{\Delta t^2}  \propto \frac{1}{\Delta t}.
 \end{align*}
@@ -669,25 +659,31 @@ We notice the appereance of $\gamma$ meaning that the magnitude of the fluctuati
 which represents the einstein relation with $D = kT/\gamma$ where $\gamma = 1/\mu$
 
 
+\subsubsection{Implementing Langevin}
+
+% (Notice that we only introduce the thermostat for We do so in non important parts of the simulations as this might have some Side effects.. says Henrik.) By doing so we will sample the 
+
+
+
+The implementation of the Langevin equation into LAMMPS is done by updating the force vector as 
+
+\begin{align*}
+  \vec{F}_i &= -f_{c,i} + \vec{f}_{f,i} + \vec{f}_{r,i} \nonumber \\
+  &= -\nabla U_i - \gamma m \vec{v} + \sqrt{\frac{}{}}\vec{h}_i(t)
+\end{align*}
+% (why is $m$ in here).
+where $f_{c,i}$ is the conservative force computed via the usual inter-particle interactions described by the potential $U_i$, $f_{f,i}$ is the drag force and $f_{r,i}$ is the random fluctuation force where $\vec{h}$ is the random vector drawn from a normal distribution with zero mean and unit variance. 
+
+\begin{align*}
+  \vec{v}_i(t + \Delta t/2)  &= \vec{v}_i(t) - \frac{\Delta t}{2}\left(\frac{\nabla_i U(t)}{m_i} + \gamma \vec{v}_i \right) + \sqrt{\frac{\Delta t k_B T \gamma }{m_i}} \vec{R}_i \\ 
+  \vec{r}_i(t + \Delta t) &= \vec{r}_i(t) + \vec{v}_i(t + \Delta t /2) \Delta t \\
+  \vec{v}_i(t + \Delta t) &= \vec{v}_i(t+ \Delta t/2) - \frac{\Delta t}{2}\left(\frac{\nabla_i U(t + \Delta t)}{m_i} + \gamma \vec{v}_i(t + \Delta t/2) \right) + \sqrt{\frac{\Delta t k_B T \gamma }{m_i}} \vec{R}_i
+\end{align*}
+
+with new random vector $\vec{R}$ for each particle and each update. 
+
+
 \newpage
-This section is based on \cite{PhysRevB.17.1302}, \cite{Hunenberger2005}(pp. 115, 120-121) and \cite{docs_lammps_langevin}
-
-
-
-% https://www.uio.no/studier/emner/matnat/fys/FYS4130/v19/pensumliste/stat-phys_2019.pdf
-
-``The Langevin equation is Newtons second law for a Brownian particle, where the forces include both the viscous drag due to the surrounding fluid and the fluctuations caused by the individual collisions with the fluid molecules.''
-
-
-% http://physics.gu.se/~frtbm/joomla/media/mydocs/LennartSjogren/kap6.pdf
-
-% https://www2.ph.ed.ac.uk/~dmarendu/MVP/MVP03.pdf
-``Another option to simulate a system in the NVT ensemble is to use a stochastic thermostat, as opposed to the deterministic thermostat defined through the Nose-Hoover equations.''
-
-``The equations of mo- tion of a system with a stochastic thermostat are known as Brownian dynamic equations''
-
-In order to simulate the canonical ensemble, that is the ensemble defined by a constant amount of particles $N$, constant temperature $T$ and constant volume $V$, hence often denoted $NVT$, we apply a so-called thermostat. There exist a variety of such including Nosé-Hoover, Gaussian, Berendsen, Langevin thermostat and many other (give example of how they modify) We will use the ladder. \\
-The connical ensemble is an ensemble of systems by the assumption that the system of interests is connected to an infitely large heat bath of temperature $T$. The Langevin thermostat assumes that the particles collides with much smaller lighter particles representing the heat bath as a sea of small particles. The collisions is described by a friction force $f_f = -\gamma \vec{p}$, where $\gamma$ is positiv friction coefficient and $\vec{p}$ the momentum vector, and a random force $f_r = \vec{R}_i(t)$. By denoting the conservative force arising from the usual inter-particle interactions $\vec{f}_i$ on particle $i$ we get the Langevin equations of motion describing the total force $\vec{F}_i$ on particle $i$ as
 
 \begin{align}
   \vec{F}_i &= \vec{f}_{i} + \vec{f}_{f,i} + \vec{f}_{r,i} \nonumber \\
@@ -726,6 +722,39 @@ where $v = \dot[r]$ is the velocity. The definition of $f_f$ falls straight out 
 \end{align*}
 
 Thus we have $f_r \propto \sqrt{\langle R(t)^2 \rangle / dt}$ which I do not quite understand. It is mentioned in \url{https://pubs.acs.org/doi/full/10.1021/ct8002173} when talkikng about residual forces, as it is natural when taking a step length of $dt$... Probably simply, but check this later. 
+
+
+% https://www2.ph.ed.ac.uk/~dmarendu/MVP/MVP03.pdf
+
+
+
+% \begin{align*}
+%   \vec{r}_i(t + \Delta t) &= \vec{r}_i(t) + \vec{v}_i(t) \Delta t + \frac{\vec{F}_i(t)}{2m_i}\Delta t^2 + \mathcal{O}(\Delta t^3), \\
+%   \vec{v}_i(t+\Delta t)  &= \vec{v}_i(t) + \frac{\vec{F}_i(t) + \vec{F}_i(t+\Delta t)}{2m_i}  \Delta t + \mathcal{O}(\Delta t^3).
+% \end{align*}
+
+
+
+% \newpage
+% This section is based on \cite{PhysRevB.17.1302}, \cite{Hunenberger2005}(pp. 115, 120-121) and \cite{docs_lammps_langevin}
+
+
+
+% % https://www.uio.no/studier/emner/matnat/fys/FYS4130/v19/pensumliste/stat-phys_2019.pdf
+
+% ``The Langevin equation is Newtons second law for a Brownian particle, where the forces include both the viscous drag due to the surrounding fluid and the fluctuations caused by the individual collisions with the fluid molecules.''
+
+
+% % http://physics.gu.se/~frtbm/joomla/media/mydocs/LennartSjogren/kap6.pdf
+
+% % https://www2.ph.ed.ac.uk/~dmarendu/MVP/MVP03.pdf
+% ``Another option to simulate a system in the NVT ensemble is to use a stochastic thermostat, as opposed to the deterministic thermostat defined through the Nose-Hoover equations.''
+
+% ``The equations of mo- tion of a system with a stochastic thermostat are known as Brownian dynamic equations''
+
+% In order to simulate the canonical ensemble, that is the ensemble defined by a constant amount of particles $N$, constant temperature $T$ and constant volume $V$, hence often denoted $NVT$, we apply a so-called thermostat. There exist a variety of such including Nosé-Hoover, Gaussian, Berendsen, Langevin thermostat and many other (give example of how they modify) We will use the ladder. \\
+% The connical ensemble is an ensemble of systems by the assumption that the system of interests is connected to an infitely large heat bath of temperature $T$. The Langevin thermostat assumes that the particles collides with much smaller lighter particles representing the heat bath as a sea of small particles. The collisions is described by a friction force $f_f = -\gamma \vec{p}$, where $\gamma$ is positiv friction coefficient and $\vec{p}$ the momentum vector, and a random force $f_r = \vec{R}_i(t)$. By denoting the conservative force arising from the usual inter-particle interactions $\vec{f}_i$ on particle $i$ we get the Langevin equations of motion describing the total force $\vec{F}_i$ on particle $i$ as
+
 % see https://www2.ph.ed.ac.uk/~dmarendu/MVP/MVP03.pdf p. 4
 
 
