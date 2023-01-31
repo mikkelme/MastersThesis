@@ -101,68 +101,109 @@ Small introtext to motivate this chapter. What am I going to go over here.
 % magnitude of the surface force may be comparable to the frictional force. {kim_nano-scale_2009}.
 
 % The first well known studies of friction concerns itself is based on a macroscopic level. That is, the scale of visible everyday objects.
-\subsection{Friction on a macroscopic scale - macroscale theories}
-\subsubsection {Amontons’ law. }
- The work of Leonardo da Vinci (1452–1519), Guillaume Amontons (1663-705) and Charles de Coulomb (1736-1806) all contributed to what is
- commonly known as Amontons’ law describing the frictional force accuring when starting and keeping a solid block sliding against a solid
- surface. This emperical law states that the frictional force tangential to the sliding direction is entirely independent of contact area
- and sliding velocity (at ordinary sliding velocities). Instead it relies only on the normal force $F_N$ acting from the surface on the
- block and the material specific friction coefficient $\mu$ as
-\begin{align*}
-  F_f = \mu F_N.
-\end{align*}
 
-Further it distinguish between \textit{static} and \textit{kinetic} friction as the cases of stationary and sliding contact resepectively.
-Each type of friction comes with its own friction coefficient, $\mu_s$ for static and $\mu_k$ for kinetic friction, usually with values
+
+Friction is a part of the wider field tribology which includes the study of friction, wear and lubrication between two surfaces in relative motion 
+\cite{gnecco_meyer_2015}[p. 1]. In this thesis we will only concern ourselves with friction in cases without wear and without the use of lubrication. Dry friction (definition?)
+
+
+Something about different scales of friction for the following sections.
+% \cite{bhushan_2013}[p. 1]
+
+
+
+\subsection{Friction on a macroscopic scale - macroscale theories}
+\subsubsection {Amontons’ law}
+% \cite{gnecco_meyer_2015}
+
+ The work of Leonardo da Vinci (1452–1519), Guillaume Amontons (1663-705) and Charles de Coulomb (1736-1806) all contributed to what is
+ commonly known as Amontons’ law. In order to start and keep a solid block moving against a solid surface we most overcome certain frictional forces $F_{text{fric}}$. The static friction force $F_s$ corresponds to the minimum tangential force required to iniziate the sliding while the kintec friciton force $F_k$ corresponds to the tangential force needed to sustain a steady sliding speed from that point on. This empirical law states that this frictional force, tangential to the sliding direction, is entirely independent of contact area and sliding velocity (at ordinary sliding velocities). Instead, it relies only on the normal force $F_N$ acting perpendicular to the surface and the material specific friction coefficient $\mu$ as
+\begin{align*}
+  F_{\text{fric}} = \mu F_N.
+\end{align*}
+The friction coeffcient is typically different for the cases of static $\mu_s$ and kinetic $\mu_k$ friction, usually with values
 lower than one and $\mu_s \ge \mu_k$ in all cases. \cite{gnecco_meyer_2015}[p. 6]. \\
 
-This simple law is a natural starting point for the
 
-Allthough this model is a common base for understanding friction on a macroscopic level is has its limitations. It turns out that static
-friction is not constant, but depends on the so-called contact history with increasing friction as the logarithm of time of stationary
+Statistical mechanics gives an simple overall explanation for this: A system at equilibrium has its kinetic energy uniformly distributed among all its degrees of freedom. When a macroscale object is sliding in a given direction it is clearly not in equilibrium since one of its degrees of freedom carriers considerable more kinetic energy. Thus, the system will have a tendency to transfer the kinetic energy to the remaining degrees of freedom as heat while slowing down as a result. Hence friction is really the tendency of systems toward equilibrium energy equipartitioning among many interacting degrees of freedom. When friction occours under an external force energy is reversed into the system in the form of frictional heat which will dissipate. \cite{Manini_2016}
+
+
+Allthough Amontons’ law is a common base for understanding friction on a macroscopic it has its limitations. For instance, it turns out that static
+friction is not time independent, but depends on the so-called contact history with increasing friction as the logarithm of time of stationary
 contact \cite{dieterich_1972}. For the kinetic friction the independency of sliding velocity dissapears at low velocities as thermal effects
-becomes important and for high velocities due to intertial effetcs. \cite{gnecco_meyer_2015}[pp. 5-6]. \\
-
-It fails to explain the mechanisms behind fritction.
- 
-
-In order to understand what is causing friction between moving objects and how this might result in a linear relationship between friction
-and normal force we must take the study to a smaller scale... Having an emperical law that seems to predict the friction in many cases leads
-to the next natural desire for deriving these from fundamental atomic or molecular principles.
-
-\subsection{Friction on a microscopic scale - Nanotribology}
-It is generally accepted that friction is caused by two mechanism: mechanical friction and chemical friction. The mechanical friction is the
-plowing of the surface by hard particles or asperities. The chemical mechanism is adhesion between contacting surfaces.
-\cite{kim_nano-scale_2009}.
+becomes important and for high velocities due to intertial effetcs. \cite{gnecco_meyer_2015}[pp. 5-6]. Additionally, this simple macroscale perspective disguises (better word) the underlying mechanism behind the friciton phenonema arising from a more complicated contact interface. This includes taking the microsopic roughness into account together with surface chemistry. This more complex perspective introduces new (...() as real contact area, contact stresses, surface adhesion which makes frictional properties dependent on sliding speed, temperature and environment in general \cite{kim_nano-scale_2009}. In addition, the tribological systems take place across a broad range of time and length scales, from geological stratum layers involved in earthquakes \cite{kim_nano-scale_2009} to microscopic atomistic processes, as in the gliding motion of nanocluster of a nanomotor \cite{Manini_2016}.
 
 
-Sources in general: \cite{mo_friction_2009}, \cite{kim_nano-scale_2009} \\
+Friction phenomena take place across a broad range of time and length scales, from microscopic atomistic processes, as in the gliding motion of a nanocluster or a nanomotor [1]
+
+
+The conclusion is that the friction coefficient is not an intrinsic physical property \cite{Szlufarska_2008}.
+
+% The basic difficulty of friction is intrinsic, involving the dissipative dynamics of large systems, often across ill-characterized interfaces, and generally violent and nonlinear \cite{Manini_2016}
+
+
+% The severity of the task is also related to the experimental difficulty to probe systems with many degrees of freedom under a forced spatial confinement, that leaves very limited access to probing the buried sliding interface. Thanks to remarkable developments in nanotechnology, new inroads are being pursued and new discoveries are being made. \cite{Manini_2016}
+
+
+% Bridging the gap among the different length scales in tribological systems still remains an open challenge. \cite{Manini_2016}
+
+% The phenomenological descriptions that apply to macroscopic friction cannot yet be derived from the fundamental atomic principles and the interplay of processes occurring at the molecular level. \cite{Manini_2016}
+
+
+\subsection{Microscopic scale}
+% \subsection{Friction on a microscopic scale - Nanotribology}
+% \cite{kim_nano-scale_2009}.
+
+Going beyond a macroscopic perspective to the microscopic scale we realise that most surfaces is in fact rough. The contact between two surfaces consist of numerous smaller contact point, so-called asperities, for which the friction between two such opposing surfaces involves interlocking of those asperities. Additionally, the adhesion between surfaces is taken to be a dominiant factor, for which the chemical state of the surfaces has to be considered.
+
+% It is generally accepted that friction is caused by two mechanism: mechanical friction and chemical friction. The mechanical friction is the
+% plowing of the surface by hard particles or asperities. The chemical mechanism is adhesion between contacting surfaces.
+% \cite{kim_nano-scale_2009}.
+
+
 
 \subsubsection{Surface roughness - Asperity theories}
+% Sources in general: \cite{mo_friction_2009}, \cite{kim_nano-scale_2009} \\
 
-Going beyond a macroscopic perspective we realise that most surfaces is in fact rough. The contact between two surfaces consist of numerous
-smaller contact point, so-called asperities, each with a contact area of $A_{\text{asp}}$. The true contact area $\sum A_{\text{asp}}$ is
-found to be much smaller than the apperent macroscopic area $A_{\text{macro}}$. The friction force is shown to be proportional (extra source
-on this) to this true contact area as 
-
+Asperity theories is based on the observation that microscopic rough surfaces
+with contacting asperities, each with a contact area of $A_{\text{asp}}$, will
+have a true contact area $\sum A_{\text{asp}}$ which is found to be much smaller
+than the apperent macroscopic area $A_{\text{macro}}$. The friction force was
+shown to be proportional (extra source on this) to this true contact area as 
 \begin{align*}
-  F_f = \vec{\tau} \sum A_{\text{asp}},
+  F_\text{fric} = \vec{\tau} \sum A_{\text{asp}},
 \end{align*}
+where $\vec{\tau}$ is an effective shear strength of the contacting bodies. This
+is still compatible with Amontons’ law for the cases where the real contact area
+dependt linearly on the applied normal force $F_N$.
 
-where $\vec{\tau}$ is an effective shear strength of the contacting bodies. This is still compatible with Amontons’ law as long as we
-differenciate between the macroscopic macroscopic and true area and by having the true contact area dependt linearly on applied normal
-force. \\
 
-Thus many studies have focused individual asperities to reveal the relationship between the contact area and normal force  (13-15 from
-\cite{mo_friction_2009}). By assuming perfectly smooth asperities with radii of curvature from nanometers to micrometres in size continuum
-mechanics can be used to predict the deformation of asperities as normal force is applied. A model for non-adhesive contact between
-homogenous, isotropic, linear elastic spheres was first developed by Hertz (17 \cite{mo_friction_2009}), which predicted $A_{\text{asp}}
-\propto F_N^{2/3}$. Later adhesion effects were included in a number of subsequent models, including Maugis-Dugdale theory (18 from
-\cite{mo_friction_2009}), which also predicts a sublinear relatinship between $A_{\text{asp}}$ and $f_N$ leading to a similar sublinear
-relationship for $F_f$ and $F_N$.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.5\linewidth]{figures/theory/asperities.png}
+  \caption{Example figure shwoing asperity deformation as the load is incread from top to bottom. Source: \url{https://en.wikipedia.org/wiki/Asperity\_(materials\_science)} \hl{Put in reference list? Find better picture?}}
+  \label{fig:asperity_contact}
+\end{figure}
 
-% Picture of asperities from wiki: https://en.wikipedia.org/wiki/Asperity_%28materials_science%29#/media/File:Asperities.svg
-\cite{mo_friction_2009}.
+
+Thus, many studies have focused on the individual single asperity contact to
+reveal the relationship between the contact area and $F_N$ (13-15 from
+\cite{mo_friction_2009}). By assuming perfectly smooth asperities with radii of
+curvature from nanometers to micrometres continuum mechanics can be used
+to predict the deformation of asperities as normal force is applied. A model for
+non-adhesive contact between homogenous, isotropic, linear elastic spheres was
+first developed by Hertz (17 \cite{mo_friction_2009}), which predicted
+$A_{\text{asp}} \propto F_N^{2/3}$. Later adhesion effects were included in a
+number of subsequent models, including Maugis-Dugdale theory (18 from
+\cite{mo_friction_2009}), which also predicts a sublinear relatinship between
+$A_{\text{asp}}$ and $f_N$, leading to a similar sublinear relationship for $F_\text{fric}(F_N)$. (Adress that this deviates with the macroscale). 
+
+\hl{What about multi asperity theory?}
+
+However, even though the successes of continuum mechanics there is no reasion to believe that it will be capable of reproducing tribological behaviour at the nanometre length scale where the discreteness of atoms often has a direct effect on physical properties \cite{Szlufarska_2008}.
+
+
+
 
 % However, practical single- and multiplecontact conditions are characterized by complex interaction profiles plus nontrivial internal
 % dynamics. As a result, the interplay of thermal drifts, contact ageing, contact-contact interactions, and macroscopic elastic deformations
@@ -170,14 +211,66 @@ relationship for $F_f$ and $F_N$.
 % \cite{Manini_2017}[p. 2]. 
 
 
+% Rate and state models?
 
-\subsubsection{Atomic level friction }
-On the smallest possible scale, atomic scale, the surfaces does not have structural asperities. Instead atomic level friction is being model
-as a consequencse of the rough potential of the atomic landscape. 
+\subsection{Nanotribology - Atomic scale}
 
-\subsubsection{Frenkel-Kontorova-Tomlinson (FKT)}
-Describes atomic scale friction (not fully accurately though) and gives insight in stick slip motion. 
+% Together with the current experimental possibility to perform well-defined measurements on well-characterized materials at the fundamental microscopic level of investigation of the sliding contacts, advances in the computer modeling of interatomic interactions in materials science and complex systems encompass molecular-dynamics (MD) simulations of medium to large scale for the exploration of the tribo-dynamics with atomic resolution [4, 5].
 
+
+On the smallest possible scale, atomic scale, the surfaces does not have structural asperities. Instead, atomic level friction is being modelled
+as a consequencse of the rough potential of the atomic landscape and real contact area defined in terms of atomic bonding. 
+
+\subsubsection{Frenkel-Kontorova (FK)}
+
+% Based on \cite{Manini_2016}.
+% One model for the description of atomic scale fricion is the Frnkel-Kontorova-Tomlinson (FKT) model, named after its main contributers, which considers ...
+
+
+The FK (before FKT) model builds upon the time-honered PT model describing a point-like tip sliding over a space-periodic crystalline surface. The FK model extents this description to hat of two 1D crystaline surfaces sliding on top of eahc other. The standard FK model consists of a 1D chain of N classical particles, representing atoms, interacting via a hamornic forces and movig in a sinusoidal potential as sketched in figure \ref{fig:FK_model}. The hamiltonian is 
+\begin{align}
+  H = \sum_{i=1}^N \left[\frac{p_i^2}{2m} + \frac{1}{2}K(x_{i+1} - x_i - a_c)^2 + \frac{1}{2}U_0 \cos{\left(\frac{2\pi x_i}{a_b}\right)}\right]
+  \label{eq:H_FK}
+\end{align}
+
+where the first $p_i^2/2m$ represents the kinetic energy with momentum $p$ and mass $m$. The next term describes the harmonic interaction with elastic constant $K$, nearest neighbour distance $\Delta x = x_{i+1} - x_i$ with a correspnding equilibrium distance $a_c$. The final term represents the periodic potential with amplitude $U_0$ and period $a_b$. By applying an external force to the chain one can use the model to investigate static friction. 
+
+\begin{enumerate}
+  \item Properties depending on $\Theta = N/M = a_b/a_c$
+  \item Elastic constant $K$
+  \item Kinks anti kinks travelling
+  \item Importance of commensurability between lattice and potential 
+  \item Aubry transition
+  \item Pinning and unpinning, stick slip
+  \item superlubricity (no stick slip, but still kinetic friction)
+  \item Adding a Langevin thermostat on top of this introduces temperature. 
+  \item Phase transistion?
+\end{enumerate}
+
+The model can be used to investigate static friction by increasing 
+
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\linewidth]{figures/theory/FK_model.png}
+  \caption{\hl{Temporary} figure from \cite{Manini_2016}}
+  \label{fig:FK_model}
+\end{figure}
+
+
+
+\subsubsection{FK extension: Frenkel-Kontorova-Tomlinson (FKT)}
+
+Several extensions has been provided for the FK model with modifications of the interactions or system dimensionality. Anharmonicity of the chain 
+
+
+% The Frenkel-Kontorova-Tomlinson (FKT) model [61, 62] introduces an harmonic coupling of the sliding atomic chain to a driving support, thus making it possible to investigate stick-slip features in a 1D extended simplified contact. The FKT framework provided the ideal platform to investigate the tribological consequences of combined interface incommensurability, finite-size effects, mechanical stiffness of the contacting materials, and normal-load variations \cite{Manini_2016}.
+
+
+% Important generalizations involving increased dimensionality compared to the regular FK model bear significant implications for tribological properties such as critical exponents, size-scaling of the friction force, depinning mechanisms, and others. \cite{Manini_2016}
+
+% Maybe check this out: An interesting example of such a transient is the depinning of an atomic monolayer driven across a 2D periodic substrate profile of hexagonal symmetry [83].  \cite{Manini_2016}
 
 
 \subsubsection{Commensurate and incommensurate}
@@ -555,6 +648,9 @@ The scheme will give a local error of order $\Delta t^3$ corresponding to a glob
 \subsection{Thermostats}
 
 \subsubsection*{Langevin thermostat}
+
+% Check out \cite{Manini_2016} for a good theory section on this that I had completely missed when writing this!
+
 % Based on https://www.uio.no/studier/emner/matnat/fys/FYS4130/v19/pensumliste/stat-phys_2019.pdf
 
 % http://physics.gu.se/~frtbm/joomla/media/mydocs/LennartSjogren/kap6.pdf
@@ -661,7 +757,7 @@ which follows from the equipartition theorem. The finite correlation time $\gamm
 Introduce the fluctuation-dissipation theorem concept earlier since this is a motivaiton for the Langeivn equation. 
 
 
-
+% Of course, this approach is not rigorous, since the relevant particles colliding with each given simulated atom are already all included in the conservative and deterministic forces explicitly accounted for by the “force field”. The Langevin approach is quite accurate to describe small perturbations away from equilibrium, but it may fail quite badly in the strongly out-of-equilibrium nonlinear phenomena which are the target of the present paper.  \cite{Manini_2016}
 
 \subsubsection{Implementing Langevin}
 % https://docs.lammps.org/fix_langevin.html
