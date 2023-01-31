@@ -194,7 +194,20 @@
 - Did more testing of bonds rupture test (successfull) and fixed a few bugs in the new friction simulation.
 - Made baseline runner using npy files and submitted a test with varying temperature for all three baseline configs: nocut, pop-up sp1(7,5) and honeycomb 3215.
 - Produced a lot of figures for single measurement baseline in artice
-- Put on simulations for baselin varying variables: temperature, drag speed, dt and K. 
+- Put on simulations for baseline varying variables: temperature, drag speed, dt and K. 
+
+
+
+#### Week 3 (23/01/2023 - 29/01/2023) - Working from Pisa
+- Working on integration, equations of motion and Langevin thermostat theory
+- Forget to update log the dates is the logging is not completely accurate. 
+
+#### Week 4 (/01/2023 - 30/01/2023) - Working from Pisa
+- Discovered that fixmove (no spring) is way more stable and got good results on variable stability for drag speed, T and dt.
+- Got very promising result for mean friction vs stretch with significnat effects on pop up and honeycomb.
+- The normal force load is not really important at the 0.1 to 10 nN scale (which is relatively big load at around 1-10 GPA). This is especially not important for the cut configurations.
+- Working on friction theory.
+- Talked to Henrik that I should check out the possibility of the negative friction coefficient in a simulation due to the promising results. this could first be tested by manually dictiating a normal load to stretch coupling and then make the nanomachine afterwards if succesfull. 
 
 ## Things to remember 
 
