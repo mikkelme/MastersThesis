@@ -557,10 +557,12 @@ The scheme will give a local error of order $\Delta t^3$ corresponding to a glob
 \subsubsection*{Langevin thermostat}
 % Based on https://www.uio.no/studier/emner/matnat/fys/FYS4130/v19/pensumliste/stat-phys_2019.pdf
 
+% http://physics.gu.se/~frtbm/joomla/media/mydocs/LennartSjogren/kap6.pdf
 
-In order to control the temperature of the system we introduce the so-called Langevin thermostat. This is stochastic thermostat that modifies Newtons equation of motion such that equilibrium solution falls within the canonical ensemble characterized by a constant number of particles $N$, constant volume $V$ and constant temperature $T$, hence denoted NVT. The canonical ensemble system is represented by the finite system of interest being in contact with an infinte heat bath of temperature $T$. The NVT ensemble is equivalent to sampling a system in theromodynamic equilibrium where the weight of each microscopic state is given by the boltzmann factor $\exp[-E/(k_B T)]$.
 
-The Langevin equation is the modified version of Newtons second law for a Brownian particle. A brownian particle is a small particle suspendend in liquid, e.g. pollen or dust, named after Robert brown (1773–1858) who was the first to observe this seemingly random jittery motion. The langevin equation describes these dynamics as the combination of viscous drag force $ -\gamma \vec{v}$, where $\gamma$ is a positive friction coefficient and $\vec{v}$ the velocity vector, and a random fluctuation force $\vec{R}$. The langevin equation reads
+In order to control the temperature of the system we introduce the so-called Langevin thermostat. This is a stochastic thermostat that modifies Newtons equation of motion such that solution lies in the canonical ensemble characterized by a constant number of particles $N$, constant volume $V$ and constant temperature $T$, hence denoted NVT. The canonical ensemble system is represented by the finite system being in contact with an infinte heat bath of temperature $T$. The NVT ensemble is equivalent to sampling a system in theromodynamic equilibrium where the weight of each microscopic state is given by the boltzmann factor $\exp[-E/(k_B T)]$.
+
+The Langevin equation is the modified version of Newtons second law for a Brownian particle. A brownian particle is a small particle suspendend in liquid, e.g. pollen or dust, named after Robert brown (1773–1858) who was the first to observe its jittery motion. The Langevin equation describes this motion as the combination of viscous drag force $ -\gamma \vec{v}$, where $\gamma$ is a positive friction coefficient and $\vec{v}$ the velocity vector, and a random fluctuation force $\vec{R}$. The langevin equation reads
 \begin{align}
   m \frac{d \vec{v}}{dt} = -\gamma \vec{v} + \vec{R}
   \label{eq:Langevin}
@@ -570,36 +572,33 @@ where $m$ is the particle mass. This effectively describes the particle of inter
   m \frac{d \vec{v}}{dt} = -\gamma \vec{v} \quad \Rightarrow \quad 
   \vec{v}_i(t) = v(0)e^{- \frac{\gamma t}{m}},
 \end{align*}
-where the solution predicts that brownian particle will come to a complete stop after a long time ${\vec{v}_i(t\to\infty) \to \vec{0}}$. This is in violation with the equipartion theorem
+where the solution shows that the brownian particle will come to a complete stop after a long time ${\vec{v}_i(t\to\infty) \to \vec{0}}$. This is in violation with the equipartion theorem
 \begin{align*}
   \frac{1}{2}m\langle v^2 \rangle_{eq} = \frac{k_B T}{2},
 \end{align*}
 and hence the fluctuation force is nessecary to obtain the correct equilibrium. 
 
-The following calculations is done in one dimension in order to simplify the notation. We describe the statistical nature of the collisions as a sum of independent momentum transfers
+The following calculations are done in one dimension in order to simplify the notation. We describe the statistical nature of the collisions as a sum of independent momentum transfers
 \begin{align*}
   \Delta P = \sum_i^N \delta p_i
 \end{align*}
 
-where $\Delta P$ denotes the change of momentum after $N$ momentum momentum transfers $\delta p_i$ to the brownian particle. We assume the first and second moments $\langle \delta p \rangle = 0$ and  $\langle \delta p \rangle = \sigma^2$. When $N$ is large the central limit theorem states that the random variable $\Delta P$ has a gaussian distribution with  $\langle P \rangle = 0$ and $\langle \Delta P^2 \rangle = N\sigma^2$. If $\Delta P$ is the momentum change over a discrete time $\Delta t$, where the number of collisiosn is proportional to time $N \propto \Delta t$, the corresponding fluctuation force $\Delta R = \Delta P / \Delta t$ will have a variance 
-%
-%
-% WORKING HERE
-%
-%
-%
+where $\Delta P$ denotes the change of momentum after $N$ momentum transfers $\delta p_i$ from the environment to the brownian particle. We assume the first and second moments $\langle \delta p \rangle = 0$ and  $\langle \delta p \rangle = \sigma^2$. When $N$ is large the central limit theorem states that the random variable $\Delta P$ has a gaussian distribution with  $\langle P \rangle = 0$ and $\langle \Delta P^2 \rangle = N\sigma^2$. If we consider the momentum change  $\Delta P$  over a discrete time $\Delta t$, where the number of collisiosn is proportional to time $N \propto \Delta t$, the corresponding fluctuation force $R = \Delta P / \Delta t$ will have a variance 
+
+
 \begin{align*}
   \langle R^2 \rangle = \frac{\langle \Delta P^2 \rangle}{\Delta t^2} = \frac{N \sigma^2}{\Delta t^2}  \propto \frac{1}{\Delta t}.
 \end{align*}
 
 In a computer simulation we need to pick a random force $R(t)$ from a Gaussian distribution every time-step $\Delta t$. These forces will not be correlated as long as $\Delta t$ is larger than the correlation time of the forces from the molecules which we will assume for this model (I think there exist corrections for this to refer to here). With this assumption we can write the correlation function as 
-\begin{align*}
+\begin{align}
   \langle R(t) R(0) \rangle = 
   \begin{cases}
     \frac{a}{\Delta t}, & |\Delta t| < \Delta t/2 \\
     0, & |\Delta t| > \Delta t/2,
+    \label{eq:disc_corr}
   \end{cases}
-\end{align*}
+\end{align}
 
 where $a$ is some strength of (...?). In the limit $\Delta t \to 0$ the correlation function becomes
 
@@ -608,120 +607,132 @@ where $a$ is some strength of (...?). In the limit $\Delta t \to 0$ the correlat
   \label{eq:F_corr}
 \end{align}
 
-where $\delta$ denotes the dirac delta function. This is valid for all spatial coordinates which will all be independent of each other. Since both the drag force and the fluctuation force originate from the molecular fluid, where the drag force $-\alpha \vec{v}$ is velocity dependent it is reasonible to assume that fluctuation force is independent of velocity $\langle R_i v_j \rangle$ for all cartesian indices $i$ and $j$.
+where $\delta$ denotes the dirac delta function. This is valid for all spatial coordinates which will all be independent of each other. Since both the drag force and the fluctuation force originate from the molecular fluid, where the drag force $-\alpha \vec{v}$ is velocity dependent it is reasonible to assume that fluctuation force is independent of velocity, i.e. $\langle R_i v_j \rangle = 0$ for all cartesian indices $i$ and $j$.
 
 
 % Since $\langle \tilde{F} \rangle = 0$ the random force (fluctuating force) will not conribute with a average decay (change) to the velocity. The macroscopic decay comes from the friction force (dissipitative force)  $-ma =\alpha v$ (give variable explanation). 
 
-% A version of newtons 2. law that combines these fluctuation forces and drag forces is the Langevin equation 
+In the following we will attempt justify the Langevin equaiton (why it is like it is) and determine the relationship between the drag coefficient $\gamma$ and the random force $R$.
 
-% \begin{align*}
-%   m \dot{v} = -\alpha v + \tilde{F}
-% \end{align*}
 
-% Both forces arises from the molecular fluid where the drag force represents the velocity dependence while the random force is taken to be velocity independent, i.e. $\langle F_i v_j \rangle = 0$ where $i$ and $j$ are cartesian indices. 
-
-From the Langevin equation eq.~\eqref{eq:Langevin} we can compute the velocity autocorrelation function. We do this in one dimension for simplicity. We multiply by $(e^{\gamma t /m})/m$
+From the Langevin equation eq.~\eqref{eq:Langevin} we can compute the velocity autocorrelation function (Move to appendix?). We do this in one dimension for simplicity. We begin by multiplying by $(e^{\gamma t /m})/m$
 
 \begin{align*}
   \dot{ v}(t)e^{\gamma t /m} + \frac{\gamma}{m} v(t)e^{\frac{\gamma t}{m}}  = \frac{ F}{m}e^{\frac{\gamma t}{m}},
 \end{align*}
-
-and integrate from $t = -\infty$. By the use of integration by parts on latter term in the left hand side we calculate the velocity 
-
+and integrate from $t = -\infty$. By the use of integration by parts on the latter term on the left hand side we calculate the velocity 
 \begin{align*}
   \int_{-\infty}^t dt' \ \dot{ v}(t')e^{\frac{\gamma t'}{m}} + \frac{\gamma}{m} v(t)e^{\frac{\gamma t'}{m}} &=  \int_{-\infty}^t dt' \ e^{\frac{\gamma t'}{m}} \frac{ F(t')}{m}  \\
   \int_{-\infty}^t dt' \ \dot{ v}(t')e^{\frac{\gamma t'}{m}} + \left(\Big[ v(t')e^{\frac{\gamma t'}{m}}\Big]_{-\infty}^t - \int_{-\infty}^t dt' \ \dot{ v}(t')e^{\frac{\gamma t'}{m}}\right) &= \int_{-\infty}^t dt' \ e^{\frac{\gamma t'}{m}} \frac{ F(t')}{m}  \\
    v(t) &= \int_{-\infty}^t dt' \ e^{\frac{-\gamma(t - t')}{m}} \frac{ F(t')}{m},
 \end{align*}
-
-where $e^{\frac{-\gamma t}{m}}$ plays the role of a response function (?). We can then calculate the autocorrelation 
-
-
+where $e^{\frac{-\gamma t}{m}}$ plays the role of a response function. We can then calculate the autocorrelation 
 \begin{align*}
   \big\langle  v(t) v(0) \big\rangle &= \int_{-\infty}^t dt_1 \ \int_{-\infty}^0 dt_2 \ e^{\frac{t - t_1 - t_2}{m}} \frac{\langle  F(t_1)  F(t_2) \rangle}{m^2} \\
   &= \int_{-\infty}^t dt_1 \ \int_{-\infty}^0 dt_2 \ e^{\frac{t - t_1 - t_2}{m}} \frac{a \delta(t_1 - t_2)}{m^2} \\
-  &= \int_{-\infty}^0 dt_2 \ e^{\frac{t - 2t_2}{m}} \frac{a}{m^2} = \frac{a}{2m\gamma}e^{-\frac{\gamma t}{m}}
+  &= \int_{-\infty}^0 dt_2 \ e^{\frac{t - 2t_2}{m}} \frac{a}{m^2} = \frac{a}{2m\gamma}e^{-\frac{\gamma t}{m}},
 \end{align*}
-
-where we used eq.~\eqref{eq:F_corr} and that the integration commutes with the average (we can change the order of integration). By comparing this with the equipartition theorem we get 
+where we used eq.~\eqref{eq:F_corr} and the fact that the integration commutes with the average (we are allowed to flip the order). By comparing this with the equipartition theorem we get 
 \begin{align*}
   \frac{1}{2}m\langle  v^2 \rangle &= \frac{k_BT}{2} \\
-  \frac{1}{2}m\langle  v(0) v(0) \rangle &= \frac{k_BT}{2} \\
-  \frac{a}{4\gamma} &= \frac{k_BT}{2} \\
+  \frac{1}{2}m\langle  v(0) v(0) \rangle = \frac{a}{4\gamma} &= \frac{k_BT}{2} \\
   a &=  2\gamma k_B T \\
 \end{align*}
-
-We notice the appereance of $\gamma$ meaning that the magnitude of the fluctuations increase both with friction and temperature. Further we can integrate the velocity over time to get displacement $x(t)$ and show that the variance 
+We notice the appereance of $\gamma$ meaning that the magnitude of the fluctuations increase both with friction and temperature. Further we can integrate the velocity over time to get displacement $x(t)$ and show that the variance (show this? In appendix maybe?) is 
 \begin{align*}
-  \langle x^2(t) \rangle = \frac{2 kT}{\gamma } t
+  \big\langle x^2(t) \big\rangle = \frac{2 k_B T}{\gamma} \left(t - \frac{m}{\gamma}\left(1 - e^{-\gamma t/m} \right) \right),
 \end{align*}
-which represents the einstein relation with $D = kT/\gamma$ where $\gamma = 1/\mu$
+where for $t \gg m/\gamma$ only the $t$-term survies yielding
+\begin{align*}
+  \langle x^2(t) \rangle = 2 k_BTt/\gamma.
+\end{align*}
+In 1D, the diffusion constant $D$ is related to the variance as $\langle x^2 \rangle = 2Dt$, meaning that this represents the einstein relation $D = \mu k_B T$ with the mobility $\mu = 1/\gamma$.
+
+when $t \ll m/\gamma$ we use the Taylor expansion $1 - e^{-x} \approx x - x^2/2$ for $x\ll 1$ to get 
+\begin{align*}
+  \big\langle x^2(t) \big\rangle = \frac{k_B T}{m} t^2
+\end{align*}
+which exactly mathces the thermal velocity
+\begin{align*}
+  v_{\text{th}} \frac{\big\langle x^2(t) \big\rangle}{t^2} = \frac{k_B T}{m}
+\end{align*}
+which follows from the equipartition theorem. The finite correlation time $\gamma/m$ hence describe the crossover from the ballistic regime $\sqrt{\langle x^2(t) \rangle} \propto t$ to the diffusive regime $\sqrt{\langle x^2(t) \rangle} \propto \sqrt{t}$.
+
+Introduce the fluctuation-dissipation theorem concept earlier since this is a motivaiton for the Langeivn equation. 
+
+
 
 
 \subsubsection{Implementing Langevin}
+% https://docs.lammps.org/fix_langevin.html
 
-% (Notice that we only introduce the thermostat for We do so in non important parts of the simulations as this might have some Side effects.. says Henrik.) By doing so we will sample the 
+% https://www2.ph.ed.ac.uk/~dmarendu/MVP/MVP03.pdf
 
+% https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Non-Equilibrium_Statistical_Mechanics_(Cao)/01%3A_Stochastic_Processes_and_Brownian_Motion/1.04%3A_The_Langevin_Equation
 
+% \cite{Hunenberger2005}(pp. 115, 120-121) 
+% \cite{docs_lammps_langevin}
 
-The implementation of the Langevin equation into LAMMPS is done by updating the force vector as 
-
-\begin{align*}
-  \vec{F}_i &= -f_{c,i} + \vec{f}_{f,i} + \vec{f}_{r,i} \nonumber \\
-  &= -\nabla U_i - \gamma m \vec{v} + \sqrt{\frac{}{}}\vec{h}_i(t)
-\end{align*}
-% (why is $m$ in here).
-where $f_{c,i}$ is the conservative force computed via the usual inter-particle interactions described by the potential $U_i$, $f_{f,i}$ is the drag force and $f_{r,i}$ is the random fluctuation force where $\vec{h}$ is the random vector drawn from a normal distribution with zero mean and unit variance. 
-
-\begin{align*}
-  \vec{v}_i(t + \Delta t/2)  &= \vec{v}_i(t) - \frac{\Delta t}{2}\left(\frac{\nabla_i U(t)}{m_i} + \gamma \vec{v}_i \right) + \sqrt{\frac{\Delta t k_B T \gamma }{m_i}} \vec{R}_i \\ 
-  \vec{r}_i(t + \Delta t) &= \vec{r}_i(t) + \vec{v}_i(t + \Delta t /2) \Delta t \\
-  \vec{v}_i(t + \Delta t) &= \vec{v}_i(t+ \Delta t/2) - \frac{\Delta t}{2}\left(\frac{\nabla_i U(t + \Delta t)}{m_i} + \gamma \vec{v}_i(t + \Delta t/2) \right) + \sqrt{\frac{\Delta t k_B T \gamma }{m_i}} \vec{R}_i
-\end{align*}
-
-with new random vector $\vec{R}$ for each particle and each update. 
+% Make a note: We only introduce the thermostat to the edges of the parts of interest as the thermostat might disrupt important properties of the simulation (accoridng to Henrik, get a source/example on this).
 
 
-\newpage
+The implementation of the Langevin equation into LAMMPS follows \cite{PhysRevB.17.1302} and updates the force vector for each particle as 
 
 \begin{align}
-  \vec{F}_i &= \vec{f}_{i} + \vec{f}_{f,i} + \vec{f}_{r,i} \nonumber \\
-  m_i \ddot{\vec{r}}_i &= \vec{f}_{i} - \gamma_i \vec{p}_i + \vec{R}_i(t)
-  \label{eq:langevin_old}
+  \vec{F} &= \vec{F_c} + \vec{F}_{f} + \vec{F}_{r} \nonumber \\
+  &= -\nabla U - \gamma m \vec{v} + \sqrt{\frac{2 k_B T m \gamma}{\Delta t}}\vec{h}(t)
+  \label{eq:Langevin_generalized}
 \end{align}
+where $\vec{F_c}$ is the conservative force computed via the usual inter-particle interactions described by the potential $U$, $\vec{F}_f$ is the drag force and $\vec{F}_r$ is the random fluctuation force where $\vec{h}$ is a random vector drawn from a normal distribution with zero mean and unit variance. Notice that this generalized description of the Langevin equation deviates from the presentation in eq.~\eqref{eq:Langevin} since we have added the conservative force $\vec{F_c}$, but also by the appearance of the mass in both the drag force and the fluctuation force due to the introduction of damping. It is beyond out scope to comprehend this. However, the fact that $\Delta t$ now appears in the denomiator for the random force variance $2k_B T m \gamma / \Delta t$ is due to the fact that we have discretized time. This in agreement with the formulation in eq.~\eqref{eq:disc_corr}. By applying eq.~\eqref{eq:Langevin_generalized} we get the refined velocity verlet scheme
 
-where $m_i$ is the mass of particle $i$ $\vec{r}_i$ the position vector. The random force $\vec{R}_i(t)$ is described as gaussian white noise and have the following properties. 
-
-\begin{enumerate}
-  \item It is uncorrelated with the velocities $\dot{\vec{r}}(t)$ and deterministic forces $\vec{f}_i(t')$ at previous times $t' < t$.
-  \item The time average is zero: $\langle \vec{R}(t) \rangle = \vec{0}$.
-  \item The mean-square components evaluate to $2m_i\gamma_i k_B T$.
-  \item The force component of particle $i$ $R_{i,\mu}$ along cartesian axis $\mu$ is uncorrelated with any component of particle $j$ $R_{i,\nu}$ along cartesian axis $\nu$, unless $i=j$, $\mu=\nu$ and $t=t'$.
-\end{enumerate}
-
-The ladder two conditions can be formulated as
 
 \begin{align*}
-  \langle R_{i,\mu}(t) R_{j,\nu}(t') \rangle = 2m_i \gamma_i k_B T  \delta_{ij} \delta_{\mu\nu}\delta(t'-t),  
+  \vec{v}_i(t + \Delta t/2)  &= \vec{v}_i(t) - \frac{\Delta t}{2}\left(\frac{\nabla_i U(t)}{m_i} + \gamma \vec{v}_i \right) + \sqrt{\frac{k_B T \gamma \Delta t}{2m_i}} \vec{h}_i \\ 
+  \vec{r}_i(t + \Delta t) &= \vec{r}_i(t) + \vec{v}_i(t + \Delta t/2) \Delta t \\
+  \vec{v}_i(t + \Delta t) &= \vec{v}_i(t+ \Delta t/2) - \frac{\Delta t}{2}\left(\frac{\nabla_i U(t + \Delta t)}{m_i} + \gamma \vec{v}_i(t + \Delta t/2) \right) + \sqrt{\frac{k_B T \gamma \Delta t}{2m_i}} \vec{h}_i
 \end{align*}
+% A little unsure whether the factor 2 in the denominator in the random force is correct.
+with new random vector $\vec{h}_i$ for each particle and each update. Notice however, that LAMMPS only apply this scheme to the particle groups with the thermostat on. 
 
-where $\delta_{\cdot\cdot}$ is the Kronecker Delta function and $\delta(\cdot)$ is the Dirac Delta function. It can be shown that a trajectory generated by integrating the Langevin equations of motion (eq.~\eqref{eq:langevin_old}) maps a cononical distribution of microstates at temperature $T$. \cite{Hunenberger2005}(p.121). (Can I say something more about the relationship between the friction froce and the random force - How to the balance to give NVT. Is the proof complicated?)\\
+% \newpage
 
-In practice the implementation of the thermostat is implemented discretely by updating the force on each particle by the addition of the described forces $f_f$ and $f_r$ for each particle. In LAMMPS this is controlled by the user defined damping factor ``damp'' = $\gamma^{-1}$ in units of time whih control how fast we are going to reach the temperature equlibrium. Thus the documentation (\cite{docs_lammps_langevin}) defines the added forces as
+% \begin{align}
+%   \vec{F}_i &= \vec{f}_{i} + \vec{f}_{f,i} + \vec{f}_{r,i} \nonumber \\
+%   m_i \ddot{\vec{r}}_i &= \vec{f}_{i} - \gamma_i \vec{p}_i + \vec{R}_i(t)
+%   \label{eq:langevin_old}
+% \end{align}
 
-\begin{align*}
-  f_f &= -\frac{m}{\text{damp}}, \qquad 
-  f_r \propto \sqrt{\frac{m k_B T}{dt \ \text{damp}}}
-\end{align*}
+% where $m_i$ is the mass of particle $i$ $\vec{r}_i$ the position vector. The random force $\vec{R}_i(t)$ is described as gaussian white noise and have the following properties. 
 
-where $v = \dot[r]$ is the velocity. The definition of $f_f$ falls straight out of the definition above in eq.~\eqref{eq:Langevin} while the proportionality of $f_r$ comes from
+% \begin{enumerate}
+%   \item It is uncorrelated with the velocities $\dot{\vec{r}}(t)$ and deterministic forces $\vec{f}_i(t')$ at previous times $t' < t$.
+%   \item The time average is zero: $\langle \vec{R}(t) \rangle = \vec{0}$.
+%   \item The mean-square components evaluate to $2m_i\gamma_i k_B T$.
+%   \item The force component of particle $i$ $R_{i,\mu}$ along cartesian axis $\mu$ is uncorrelated with any component of particle $j$ $R_{i,\nu}$ along cartesian axis $\nu$, unless $i=j$, $\mu=\nu$ and $t=t'$.
+% \end{enumerate}
 
-\begin{align*}
-  \sqrt{\langle R(t)^2 \rangle} = \sqrt{2m\gamma k_B T} \propto \sqrt{\frac{m k_B T}{\text{damp}}} 
-\end{align*}
+% The ladder two conditions can be formulated as
 
-Thus we have $f_r \propto \sqrt{\langle R(t)^2 \rangle / dt}$ which I do not quite understand. It is mentioned in \url{https://pubs.acs.org/doi/full/10.1021/ct8002173} when talkikng about residual forces, as it is natural when taking a step length of $dt$... Probably simply, but check this later. 
+% \begin{align*}
+%   \langle R_{i,\mu}(t) R_{j,\nu}(t') \rangle = 2m_i \gamma_i k_B T  \delta_{ij} \delta_{\mu\nu}\delta(t'-t),  
+% \end{align*}
+
+% where $\delta_{\cdot\cdot}$ is the Kronecker Delta function and $\delta(\cdot)$ is the Dirac Delta function. It can be shown that a trajectory generated by integrating the Langevin equations of motion (eq.~\eqref{eq:langevin_old}) maps a cononical distribution of microstates at temperature $T$. \cite{Hunenberger2005}(p.121). (Can I say something more about the relationship between the friction froce and the random force - How to the balance to give NVT. Is the proof complicated?)\\
+
+% In practice the implementation of the thermostat is implemented discretely by updating the force on each particle by the addition of the described forces $f_f$ and $f_r$ for each particle. In LAMMPS this is controlled by the user defined damping factor ``damp'' = $\gamma^{-1}$ in units of time whih control how fast we are going to reach the temperature equlibrium. Thus the documentation (\cite{docs_lammps_langevin}) defines the added forces as
+
+% \begin{align*}
+%   f_f &= -\frac{m}{\text{damp}}, \qquad 
+%   f_r \propto \sqrt{\frac{m k_B T}{dt \ \text{damp}}}
+% \end{align*}
+
+% where $v = \dot[r]$ is the velocity. The definition of $f_f$ falls straight out of the definition above in eq.~\eqref{eq:Langevin} while the proportionality of $f_r$ comes from
+
+% \begin{align*}
+%   \sqrt{\langle R(t)^2 \rangle} = \sqrt{2m\gamma k_B T} \propto \sqrt{\frac{m k_B T}{\text{damp}}} 
+% \end{align*}
+
+% Thus we have $f_r \propto \sqrt{\langle R(t)^2 \rangle / dt}$ which I do not quite understand. It is mentioned in \url{https://pubs.acs.org/doi/full/10.1021/ct8002173} when talkikng about residual forces, as it is natural when taking a step length of $dt$... Probably simply, but check this later. 
 
 
 % https://www2.ph.ed.ac.uk/~dmarendu/MVP/MVP03.pdf
@@ -802,6 +813,44 @@ Include figure of system to point out thermo layers and freeze layers.
   \end{center}
 \end{table}
 
+
+The sheet dimensions is 
+\begin{table}[H]
+  \begin{center}
+  \caption{Sheet dimensions}
+  \label{tab:}
+  \begin{tabular}{ | l | r@{}l | r@{}l | c |} \hline
+    \textbf{Group} & \multicolumn{2}{c|}{$x,y$-dim} & \multicolumn{2}{c|}{dim [Å]} & Area [Å$^2$]\\ \hline
+  Full sheet & $x_S \: \times \: $ & $y_S$ &  $130.029 \: \times \:$ & $163.219$ Å & $\phantom{2\times} 21,223.203$ \\ \hline
+  Inner sheet & $x_S \: \times \:$ & $81.40 \ \%_{y_s}$ &  $130.029  \: \times \:$ & $132.853$ Å & $\phantom{2\times} 17,274.743$\\ \hline
+  Pull blocks & $2 \times x_S \: \times \:$ & $ \phantom{0}9.30 \ \%_{y_s}$ & $2 \times 130.029  \: \times \: $ & $\phantom{0}15.183$ Å  & $2 \times \phantom{0}1,974.230$ \\ \hline  
+  \end{tabular}
+  \end{center}
+\end{table}
+
+
+\subsubsection{Pressure reference}
+\text{Find place to put this.}
+
+% source 1: stiletto heeled shoes with less than 1cm diameter: https://www.researchgate.net/publication/342223559_How_the_stiletto_heeled_shoes_which_are_popularly_preferred_by_many_women_affect_balance_and_functional_skills
+
+In order to relate the magntidue of the normal force in our friciton measurement we will use the pressure as a reference. We will use the pressure underneath a stiletto shoe as a worst case for human pressure execuation underneath the shoes. From (source 1) it is reported that the diameter of a stiletto heeled shoe can be less than 1 cm. Hence a 80 kg man\footnote{Yes, a man can certainly wear stilleto heals.} standing on one stiletto heels (with all the weight on the heel) will result in a pressure
+
+corresponding diameter of 
+\begin{align*}
+  P = \frac{F}{A} = \frac{mg}{r^2\pi} = \frac{\SI{80}{kg} \cdot \SI{9.8}{\frac{m}{s^2}}}{(\frac{\SI{1e-2}{m}}{2})^2 \pi} = \SI{9.98}{MPa} \\
+\end{align*} 
+
+% source 1: https://www.schoolphysics.co.uk/age16-19/Mechanics/Statics/text/Pressure_/index.html
+While this is in itself a spectacular realization that is often used in introduction physics courses (source 2) to demonstrate the rather extreme pressure under a stiletto heel (greater than the foot of an elephant) (how many Atmos) this serves as a reasonible upperbound for human executed pressure. With a full sheet area of $\sim\SI{21e3}{Å^2}$ we can achieve a similar pressure of $\sim \SI{10}{MPA}$ with a normal force 
+\begin{align*}
+  F_N = \SI{10}{MPa} \cdot \SI{21e-17}{m^2} = \SI{2.10}{nN}  
+\end{align*}
+
+Of course this pressure might be insufficient for various industrial purposes, but with no specific procedure in mind this serves as a decent reference point. Notice that if we consider a human foot with ares $\SI{113}{cm^2}$ the pressure drops to a mere $\SI{70}{kPa}$ corresponding to $\sim \SI{0.01}{nN}$.
+
+% source 3: foot area ≈ 113 cm^2: https://www.footbionics.com/Patients/Foot+Facts.html
+% source 4: https://hypertextbook.com/facts/2003/JackGreen.shtml
 
 
 \subsection{Creating sheets}

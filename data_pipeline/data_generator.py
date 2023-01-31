@@ -68,7 +68,7 @@ class Data_generator:
         return Lx, Ly
         
         
-    def run_single(self, variables = {}, num_procs = 16, copy = True): # TODO 
+    def run_single(self, variables = {}, num_procs = 16, copy = True): 
         # Intialize simulation runner
         proc = Simulation_runner(variables)
         

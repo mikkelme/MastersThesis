@@ -56,9 +56,17 @@ def baseline_temp(names, files):
 def baseline_vel(names, files):
     """ Vary drag velocity """
     variable_key = 'drag_speed'
-    test_name = 'vel'
-    vel_range = [1, 5, 10, 20, 30, 50, 100]
-    sim_names = ['v1', 'v5', 'v10', 'v20', 'v30', 'v50', 'v100']
+    test_name = 'vel2'
+    # vel_range = [1, 5, 10, 20, 30, 50, 100]
+    # sim_names = ['v1', 'v5', 'v10', 'v20', 'v30', 'v50', 'v100']
+    vel_range = np.arange(2, 100+1).astype('int')
+    sim_names = [f'v{v}' for v in vel_range]
+    
+    # files = [files[2]]
+    # names = [names[2]]
+    # print(files)
+    # print(names)
+    # exit()
     vary_variable(names, files, test_name, sim_names, variable_key, vel_range)
     
     
@@ -89,13 +97,14 @@ def vary_variable(names, files, test_name, simnames, variable_key, variable_rang
     
     for i in range(len(files)):
         name, file = names[i], files[i]
-        for i, val in enumerate(variable_range):    
-            gen = Data_generator(file, header = f'egil:Baseline_fixmove/{name}/{test_name}', simname = simnames[i], config_ext = name)
+        for j, val in enumerate(variable_range):    
+            gen = Data_generator(file, header = f'egil:Baseline_fixmove/{name}/{test_name}', simname = simnames[j], config_ext = name)
             variables = {variable_key       : val,
-                         'dump_freq'        : 10000,
+                         'dump_freq'        : 0,
                          'stretch_max_pct'  : stretch}
 
-            gen.run_single(variables, num_procs = num_procs, copy = i==0)
+            gen.run_single(variables, num_procs = num_procs, copy = j==0)
+            # gen.run_single(variables, num_procs = num_procs, copy = False)
  
 
 
@@ -111,6 +120,6 @@ if __name__ == '__main__':
     # baseline_dt(names, files)
     
     # baseline_multi_stretch(names, files)
-    baseline_multi_FN(names, files)
+    # baseline_multi_FN(names, files)
     
     pass
