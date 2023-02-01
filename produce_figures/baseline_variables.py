@@ -22,16 +22,17 @@ def temp(path, save = False):
     
     
 def vel(path, save = False):
-    common_folder = 'vel' 
+    common_folder = 'vel2' 
+    # common_folder = 'vel' 
     folders = [os.path.join(path, 'nocut', common_folder), 
                os.path.join(path, 'popup', common_folder),
                os.path.join(path, 'honeycomb', common_folder)]
     names = ['nocut', 'popup', 'honeycomb']
     convert = metal_to_SI(1, 's')/metal_to_SI(1,'t')
-    fig_max, fig_mean = variable_dependency(folders, names, 'drag_speed', 'Drag speed [m/s]', convert = convert, default = 20)
+    fig_max, fig_mean = variable_dependency(folders, names, 'drag_speed', 'Drag speed [m/s]', convert = convert, default = 20, error = 'shade')
     if save:
-        fig_max.savefig("../article/figures/baseline/variables_vel_max.pdf", bbox_inches="tight")
-        fig_mean.savefig("../article/figures/baseline/variables_vel_mean.pdf", bbox_inches="tight")
+        fig_max.savefig("../article/figures/baseline/variables_vel_max_fixmove.pdf", bbox_inches="tight")
+        fig_mean.savefig("../article/figures/baseline/variables_vel_mean_fixmove.pdf", bbox_inches="tight")
 
     
     
@@ -97,7 +98,7 @@ def variable_dependency(folders, names, variable_key, xlabel, convert = None, er
     fig_max = plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
     ax_max = plt.gca()
     
-    line_and_marker = {'linestyle': '-', 'marker': 'o'}
+    line_and_marker = {'linestyle': '', 'marker': 'o', 'markersize': 2}
     
     for i, folder in enumerate(folders):
         files = get_files_in_folder(folder, ext = '_Ff.txt')
@@ -200,6 +201,27 @@ def multi_stretch(path, save = False):
         fig_max.savefig("../article/figures/baseline/multi_stretch_max_compare.pdf", bbox_inches="tight")
         
         
+def multi_area(path, save = False):
+    common_folder = 'multi_stretch' 
+    folders = [os.path.join(path, 'nocut', common_folder), 
+               os.path.join(path, 'popup', common_folder),
+               os.path.join(path, 'honeycomb', common_folder)]
+    names = ['nocut', 'popup', 'honeycomb']
+    
+    # Mean
+    # vars = ['data[\'stretch_pct\']', 'data[\'Ff\'][:, :, 0, 1]', 'data[\'F_N\']']
+    vars = ['data[\'stretch_pct\']', 'data[\'contact_mean\'][:, :, 0]', 'data[\'F_N\']']
+    axis_labels = [r'Stretch', r'Rel. $\langle$Bond$\rangle$', r'$F_N$ [nN]']
+    # yerr = 'data[\'Ff_std\'][:,:,0]*data[\'Ff\'][:,:,0, 1]'
+    # yerr = 'data[\'contact_std\'][:, :, 0]'
+    yerr = None
+    fig_mean = multi_plot_compare(folders, names, vars, axis_labels, yerr, rupplot = True)
+    
+
+    if save:
+        fig_mean.savefig("../article/figures/baseline/multi_stretch_area_compare.pdf", bbox_inches="tight")
+        
+        
         
 def multi_FN(path, save = False):
     common_folder = 'multi_FN' 
@@ -253,14 +275,16 @@ def multi_plot_compare(folders, names, vars, axis_labels, yerr = None, axis_scal
             axes[f].set_title(names[f])
             data = read_multi_folder(folder, mean_window_pct, std_window_pct)
             
-            print(f, folder)
-            mu_mean = data['mu_mean']
-            mu_max = data['mu_max']
             
-            print("mu mean")
-            print([f'{mu_mean[0][i]:0.{decimals(mu_mean[1][i])}f} +- {mu_mean[1][i]:1.0e}' for i in range(len(mu_mean[0])) if ~np.isnan(mu_mean[1][i])])
-            print("mu max")
-            print([f'{mu_max[0][i]:0.{decimals(mu_max[1][i])}f} +- {mu_max[1][i]:1.0e}' for i in range(len(mu_max[0])) if ~np.isnan(mu_max[1][i])])
+            if False:
+                print(f, folder)
+                mu_mean = data['mu_mean']
+                mu_max = data['mu_max']
+                
+                print("mu mean")
+                print([f'{mu_mean[0][i]:0.{decimals(mu_mean[1][i])}f} +- {mu_mean[1][i]:1.0e}' for i in range(len(mu_mean[0])) if ~np.isnan(mu_mean[1][i])])
+                print("mu max")
+                print([f'{mu_max[0][i]:0.{decimals(mu_max[1][i])}f} +- {mu_max[1][i]:1.0e}' for i in range(len(mu_max[0])) if ~np.isnan(mu_max[1][i])])
             
             
             # Get variables of interest
@@ -350,5 +374,6 @@ if __name__ == "__main__":
     
     # multi_stretch(path, save = False)
     # multi_FN(path, save = False)
+    # multi_area(path, save = True)
     
     plt.show()

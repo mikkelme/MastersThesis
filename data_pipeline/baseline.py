@@ -47,9 +47,12 @@ def baseline_multi_FN(names, files):
 def baseline_temp(names, files):
     """ Vary temperature """
     variable_key = 'T'
-    test_name = 'temp'
-    temp_range = [5, 50, 100, 200, 300, 400, 500]
-    sim_names = ['T5', 'T50', 'T100', 'T200', 'T300', 'T400', 'T500']
+    test_name = 'temp2'
+    # temp_range = [5, 50, 100, 200, 300, 400, 500]
+    # sim_names = ['T5', 'T50', 'T100', 'T200', 'T300', 'T400', 'T500']
+    
+    temp_range = np.linspace(10, 500, 50).astype('int')
+    sim_names = [f'T{T}' for T in temp_range]
     vary_variable(names, files, test_name, sim_names, variable_key, temp_range)
 
 
