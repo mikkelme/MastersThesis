@@ -208,6 +208,9 @@
 - The normal force load is not really important at the 0.1 to 10 nN scale (which is relatively big load at around 1-10 GPA). This is especially not important for the cut configurations.
 - Working on friction theory.
 - Talked to Henrik that I should check out the possibility of the negative friction coefficient in a simulation due to the promising results. this could first be tested by manually dictiating a normal load to stretch coupling and then make the nanomachine afterwards if succesfull. 
+- Looked at better data for multiple drag speeds and did not see clear reasons to go to lower drag speeds. 
+- Put on a temperature variable test with drag speed of 10 m/s to test if this is significantly different. Otherwise I will just go with 20 m/s for efficiency.
+- Written theory on FK model (commensurability).
 
 ## Things to remember 
 
