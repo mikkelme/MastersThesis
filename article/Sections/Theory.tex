@@ -227,13 +227,68 @@ as a consequencse of the rough potential of the atomic landscape and real contac
 % One model for the description of atomic scale fricion is the Frnkel-Kontorova-Tomlinson (FKT) model, named after its main contributers, which considers ...
 
 
-The FK (before FKT) model builds upon the time-honered PT model describing a point-like tip sliding over a space-periodic crystalline surface. The FK model extents this description to hat of two 1D crystaline surfaces sliding on top of eahc other. The standard FK model consists of a 1D chain of N classical particles, representing atoms, interacting via a hamornic forces and movig in a sinusoidal potential as sketched in figure \ref{fig:FK_model}. The hamiltonian is 
+The FK (before FKT) model builds upon the time-honered PT model describing a point-like tip sliding over a space-periodic crystalline surface. The FK model extents this description to hat of two 1D crystaline surfaces sliding on top of eahc other. The standard FK model consists of a 1D chain of $N$ classical particles, representing atoms, interacting via a hamornic forces and movig in a sinusoidal potential as sketched in figure \ref{fig:FK_model}. The hamiltonian is 
 \begin{align}
-  H = \sum_{i=1}^N \left[\frac{p_i^2}{2m} + \frac{1}{2}K(x_{i+1} - x_i - a_c)^2 + \frac{1}{2}U_0 \cos{\left(\frac{2\pi x_i}{a_b}\right)}\right]
+  H = \sum_{i=1}^N \left[\frac{p_i^2}{2m} + \frac{1}{2}K(x_{i+1} - x_i - a_c)^2 + \frac{1}{2}U_0 \cos{\left(\frac{2\pi x_i}{a_b}\right)}\right],
   \label{eq:H_FK}
 \end{align}
+where the first term $p_i^2/2m$ represents the kinetic energy with momentum $p$ and mass $m$. The next term describes the harmonic interaction with elastic constant $K$, nearest neighbour distance $\Delta x = x_{i+1} - x_i$ with a correspnding equilibrium distance $a_c$. The final term represents the periodic substrate potential with amplitude $U_0$ and period $a_b$. 
 
-where the first $p_i^2/2m$ represents the kinetic energy with momentum $p$ and mass $m$. The next term describes the harmonic interaction with elastic constant $K$, nearest neighbour distance $\Delta x = x_{i+1} - x_i$ with a correspnding equilibrium distance $a_c$. The final term represents the periodic potential with amplitude $U_0$ and period $a_b$. By applying an external force to the chain one can use the model to investigate static friction. 
+% What about Boundary conditions???
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\linewidth]{figures/theory/FK_model.png}
+  \caption{\hl{Temporary} figure from \cite{Manini_2016}}
+  \label{fig:FK_model}
+\end{figure}
+
+By applying an external force to the chain one can use the FK model to investigate static friction. The sliding properties are entirely governed by its topological excitations referred to as so-called kinks and anti-kinks
+
+\paragraph*{Commensurability} We can describe the interactions of the model in a
+commensurate or incommensurate case. Let us begin with the commensurate case
+where the spacing of the atoms matches perfectly the substrate potential periodicity, i.e.
+$a_c = a_b$. The ground state (GS) is the configuration where each atom fits in
+one of the $M$ minema in the substrate potential such that the coverage, $\Theta
+= N / M = a_b / a_c$, equals 1. By adding an atom we would excite the system
+with a so-called kink excitation (two atoms share the same potential well) while subtracting an atom results in an
+antikink excitation (one potential well becomes atomless). In order to reach a local minimum the kink (antikink)
+will expand in space over a finite length such that the chain is imposed a local
+compression (expansion). When applying a tangential force to the chain it is
+much easier for a kink to move along the chain than it is for atoms since the
+activation energy $\epsilon_{PN}$ for a kink displacement is systematically
+smaller (often much smaller) than the potential barrier $U_0$. Thus the motion
+of kinks (anti kinks), i.e. the displacement of extra atoms or vacancies, is represententing the fundamental mechanism for mass transport. In the ideal zero temperature case with addibatically (right term?) increase in force all atoms would be put into an accelerating motion as soon as the energy $NU_0$ is present. However, in reality any thermal excitation would excite the system with the creation of kink-antikink pairs that would travel down the chain. For a chain of finite length these often accour at the end of the chain running in opposite direction. As the kinks travels by the atoms is advanced by one atom spacing $a_b$ along the force direction. This cascade of kink-antikink exications is shown in figure \ref{fig:kink_antikink}
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\linewidth]{figures/theory/kink_antikink.png}
+  \caption{\hl{Temporary} figure from \cite{Manini_2016}}
+  \label{fig:kink_antikink}
+\end{figure}
+
+For the 2D case where an island is deposited on a surface, in our case the graphene sheet on the Si substrate, we generally expect the sliding to be initated by kink-antikink pairs at the boundary. 
+
+For the case of incommensurability, i.e. $\theta = a_b/a_c$ is irrational, the GS is characterized by a sort of ´´staircase'' deformation. That is, the chain will exhibit regular periods of regions where the chain is slightly compressed (expanded) to match the substrate potential, seperated by kinks (antikinks), where the increased stress is eventually realised through a localized expansion (compression) as illustrated in figure \ref{fig:incommensurable_example}.
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.5\linewidth]{figures/theory/incommensurable_example.png}
+  \caption{\hl{Temporary} figure from url{http://www.iop.kiev.ua/~obraun/myreprints/surveyfk.pdf} p. 14. Incommensurable case ($\theta = ?$) where atoms sits slightly closer than otherwise dictated by the substrate potential for which this regularly result in a kink here seen as the presence of two atoms closeæy together in on of the potential wells.}
+  \label{fig:incommensurable_example}
+\end{figure}
+
+The incommensurable FK model contains a critical elastic constant $K_c$, such that for $K > K_c$ (infinite chain, right?) the static friction $F_s$ drop to zero, making the chain able to slide at no energy cost. This can be explained by the fact that the displacement accouring in the incommensurable will yield one atom climbing up a corrugation (introduce this word earlier) for every atom clibing down on. In turns out that this will exactly balance the energy making it non-resistant to sliding. Generally, for the non temperature case, the energy of the chain becomes independt of relative position to the potential. However, when sliding freely a single atom will eventually occupy a maximum of the potential. When decreasing the elastic constant or increasing the potential magnitude this is no longer possible (why did they mention probability here when $T = 0$?), which is described by the Aubry transition.
+
+
+
+
+
+
+
+
 
 \begin{enumerate}
   \item Properties depending on $\Theta = N/M = a_b/a_c$
@@ -247,16 +302,9 @@ where the first $p_i^2/2m$ represents the kinetic energy with momentum $p$ and m
   \item Phase transistion?
 \end{enumerate}
 
-The model can be used to investigate static friction by increasing 
 
 
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.8\linewidth]{figures/theory/FK_model.png}
-  \caption{\hl{Temporary} figure from \cite{Manini_2016}}
-  \label{fig:FK_model}
-\end{figure}
 
 
 
