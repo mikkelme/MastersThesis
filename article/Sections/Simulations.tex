@@ -56,17 +56,17 @@ We should try to set the physcis and measurement parameters in such a way that w
 
 We need to define some ranges for the ML input paramters. $F_N$, stretch ranges where it is not prone to ruptures. The configuration it self does not have clear rules but is also being regulated by the no rupture requirement. 
 
-Retardation effects due to the finiteness of the speed of sound are usually irrelevant in slow-speed experiments (v < 1 mm/s) \cite{Manini_2016}
+% Retardation effects due to the finiteness of the speed of sound are usually irrelevant in slow-speed experiments (v < 1 mm/s) \cite{Manini_2016}
 
-In macroscopic tribology experiments, sliding speeds often range in the 0.1 − 10 m/s region \cite{Manini_2016}
+% In macroscopic tribology experiments, sliding speeds often range in the 0.1 − 10 m/s region \cite{Manini_2016}
 
-By contrast, in nanoscale AFM experiments the tip usually advances at much lower speeds ≃ 1 μm/s: over a typical run it is possible to simulate a tiny ∼ 1 pm displacement, far too small to explore even a single atomic-scale event, let alone averaging over a steady state.\cite{Manini_2016}
-
-
-However, MD simulations can provide so much physical insight that they make sense even if carried out at much higher speeds than in real-life AFM or surface force apparatus (SFA) experiments: in practice, currently the sliding speeds of most atomistic tribology simulations are in the ∼ 1 m/s region.\cite{Manini_2016}
+% By contrast, in nanoscale AFM experiments the tip usually advances at much lower speeds $\sim$ 1 $\mu$m/s: over a typical run it is possible to simulate a tiny ∼ 1 pm displacement, far too small to explore even a single atomic-scale event, let alone averaging over a steady state.\cite{Manini_2016}
 
 
-Besides the limitations of system size and simulation times that are obvious and will be discussed later, there is another limitation concerning temperature, that is rarely mentioned. All classical frictional simulations, atomistic or otherwise, are only valid at sufficiently high temperature. They become in principle invalid at low temperatures where the mechanical degrees of freedom of solids progressively undergo ”quantum freezing”, and both mechanics and thermodynamics deviate from classical. \cite{Manini_2016}.
+% However, MD simulations can provide so much physical insight that they make sense even if carried out at much higher speeds than in real-life AFM or surface force apparatus (SFA) experiments: in practice, currently the sliding speeds of most atomistic tribology simulations are in the $\sim$ 1 m/s region.\cite{Manini_2016}
+
+
+% Besides the limitations of system size and simulation times that are obvious and will be discussed later, there is another limitation concerning temperature, that is rarely mentioned. All classical frictional simulations, atomistic or otherwise, are only valid at sufficiently high temperature. They become in principle invalid at low temperatures where the mechanical degrees of freedom of solids progressively undergo ”quantum freezing”, and both mechanics and thermodynamics deviate from classical. \cite{Manini_2016}.
 
 \newpage
 \subsection{Baseline}
@@ -117,7 +117,7 @@ with
   &= 0.014 \pm 0.003 \text{Å}^{-1},& 
 \end{align*}
 
-where the latter frequency is denoted with respect to drag length. This makes us recognize the fast osccilation frequency as $a$ and the slower frequency as $b$. We also take note of the longest period in the data $T_b = 1/b \sim 357$ ps $\sim 71$ Å$^{-1}$ which will be relevant for the evaluation of measurement incertainty.
+where the latter frequency is denoted with respect to drag length. This makes us recognize the fast osccilation frequency as $a$ and the slower frequency as $b$. The faster one has a period of $T_a = 1/a = 2.62 \pm 0.02$ Å\footnote{The uncertainty $\Delta y$ is calculated as $\Delta y = \left|\frac{\partial y}{\partial x} \Delta x \right|$ for uncertainty $\Delta x$ and $y(x)$}. This corresponds well with the magnitude of the lattice spacing and especialy that of graphene $a = 2.46$ Å (as predictet theoretically: make reference to self or other). We also take note of the longest period in the data $T_b = 71 \pm 15$ Å$^{-1}$ which will be relevant for the evaluation of measurement uncertainty.
 
 
 

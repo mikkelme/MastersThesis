@@ -7,9 +7,6 @@ Small introtext to motivate this chapter. What am I going to go over here.
 
 \section{Tribology - friction}
 
-% (from wikipedia so far: https://en.wikipedia.org/wiki/Friction)
-
-% the elementary processes of dry, wearless surface sliding 
 
 % Terms: mesoscale: Of medium size or extent; between microscale and macroscale
 
@@ -18,16 +15,7 @@ Small introtext to motivate this chapter. What am I going to go over here.
 % environment. (Nanotribology and Nanomechanics, p. 329)
 
 
-% For monolayers sliding along atomically uniform substrates, however, there is
-% essentially no static friction. Indeed, the friction in these systems can be
-% up to 105 times less than that for macroscopic lubricants such as graphite.
-% This raises questions about the fundamental dissipation mechanisms that are at
-% work in systems at different scales.
-% (\url{https://physicsworld.com/a/friction-at-the-nano-scale/})
 
-% The trouble is that the coefficients of friction measured in nanotribological
-% experiments and in macroscopic “tribotests” routinely differ by orders of
-% magnitude. (\url{https://physicsworld.com/a/friction-at-the-nano-scale/})
 
 % We were astonished to discover that molecules that could flex or slide even
 % just a little in response to the oscillatory motion of the microbalance were
@@ -37,16 +25,7 @@ Small introtext to motivate this chapter. What am I going to go over here.
 % (\url{https://physicsworld.com/a/friction-at-the-nano-scale/})
 
 
-% At face value, the transition from a static strained configuration to full
-% sliding is conceptually as simple as overcoming an energy barrier. However,
-% practical single- and multiple- contact conditions are characterized by
-% complex interaction profiles plus nontrivial internal dynamics. As a result,
-% the interplay of thermal drifts, contact ageing, contact-contact in-
-% teractions, and macroscopic elastic deformations introduce significant
-% complications, and make the depinning transition from static to kinetic
-% friction an active field of research. The depinning dynamics affects in
-% particular the transition between stick-slip and smooth slid- ing for sliding
-% friction. (Current trends in the physics of nanoscale friction)
+
 
 % In Atomic Force Microscopy (AFM) experiments, when the tip scans over the
 % monolayers at low speeds, friction force is reported to increase with the
@@ -159,6 +138,9 @@ Something about different scales of friction for the following sections.
 
 
 
+We will go through some of the most relevant theories based on scale (not nessecary chronological order).
+
+
 \subsection{Friction on a macroscopic scale - macroscale theories}
 \subsubsection {Amontons’ law}
 % \cite{gnecco_meyer_2015}
@@ -249,7 +231,7 @@ property \cite{Szlufarska_2008}.
 % \cite{kim_nano-scale_2009}.
 
 Going beyond a macroscopic perspective to the microscopic scale we realise that
-most surfaces is in fact rough. The contact between two surfaces consist of
+most surfaces is in fact rough (Bowden, F. P. \& Tabor, D. The Friction and Lubrication of Solids (Clarendon, 1950).). The contact between two surfaces consist of
 numerous smaller contact point, so-called asperities, for which the friction
 between two such opposing surfaces involves interlocking of those asperities.
 Additionally, the adhesion between surfaces is taken to be a dominiant factor,
@@ -262,6 +244,13 @@ for which the chemical state of the surfaces has to be considered.
 
 
 
+% Quite some years after the FKT model was presented, Bowden and Tabor (1954) proposed the adhesion model that is illustrated in Fig 3 as the major mechanism of friction. They suggested that small junctions of asperities are formed due to contact pressure and adhesion. The combined area of all the junctions essentially represents the real contact area. According to the model, frictional force, Fr, is proportional to the real contact area \cite{kim_nano-scale_2009}
+
+% In the model, the adhering asperities are formed as normal load is applied and friction is caused during relative motion by loss of energy due to plastic deformation of the asperities. \cite{kim_nano-scale_2009}
+
+
+
+% Concurrently with single-asperity studies, roughness contact theories are being developed8–10,16 to bridge the gap between the mechanics of single asperities and that of macroscopic contacts.\cite{mo_friction_2009}
 \subsubsection{Surface roughness - Asperity theories}
 % Sources in general: \cite{mo_friction_2009}, \cite{kim_nano-scale_2009} \\
 
@@ -289,6 +278,15 @@ dependt linearly on the applied normal force $F_N$.
 \end{figure}
 
 
+% The common feature of all the single-asperity theories is that Aasp is a sublinear function of L. \cite{mo_friction_2009}
+
+% Our results confirm the conclusions of other authors that single-asperity theories break down at the nanoscale1,5. \cite{mo_friction_2009}
+
+% Other authors proposed an empirical model in which mechanics of a nanoscale non-adhesive contact is controlled by load, that is, $F_f = \mu L$ and the contact area is undefined and unnecessary5,29 \cite{mo_friction_2009}
+
+% \cite{mo_friction_2009} agues that the break-down of single-asperity theories of friction is due to the asperity (circumfereance defined) area is not proportional to the real one. By obtaining the real area (contacting bond) he arrives at the macroscale relationship... Quote: As shown in Table 1, friction force is now proportional to contact area at all length scales as long as the contact area is correctly defined at each length scale. When adhesion is added they arrive at the sublinear trend again. 
+
+
 Thus, many studies have focused on the individual single asperity contact to
 reveal the relationship between the contact area and $F_N$ (13-15 from
 \cite{mo_friction_2009}). By assuming perfectly smooth asperities with radii of
@@ -303,6 +301,8 @@ $A_{\text{asp}}$ and $f_N$, leading to a similar sublinear relationship for
 $F_\text{fric}(F_N)$. (Adress that this deviates with the macroscale). 
 
 \hl{What about multi asperity theory?}
+
+% Our model predicts that as the adhesion between the contacting surfaces is reduced, a transition takes place from nonlinear to linear dependence of friction force on load. \cite{mo_friction_2009}
 
 However, even though the successes of continuum mechanics there is no reasion to
 believe that it will be capable of reproducing tribological behaviour at the
@@ -337,6 +337,21 @@ structural asperities. Instead, atomic level friction is being modelled as a
 consequencse of the rough potential of the atomic landscape and real contact
 area defined in terms of atomic bonding. 
 
+
+\subsubsection{Tomlinson model}
+% \cite{kim_nano-scale_2009}
+
+One of the first atomic scale models. Here we have no asperities but it is based on the assumptions that the atomic surface is not completely smooth. Since atoms was modelled as spheres the surface topography would not be completely flat. The idea is shown in figure \ref{fig:tomlinson_model} where the moving body is connected the atom with springs.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.5\linewidth]{figures/theory/tomlinson_model.png}
+  \caption{\hl{Temporary} figure from \cite{kim_nano-scale_2009}}
+  \label{fig:tomlinson_model}
+\end{figure}
+
+
+This model gives an explanation to the stick-slip behaviour. This layed the foundation for the Frenkel-Kontorova model so maybe go straight to that?
+
 \subsubsection{Frenkel-Kontorova (FK)}
 
 % Based on \cite{Manini_2016}. One model for the description of atomic scale
@@ -344,7 +359,7 @@ area defined in terms of atomic bonding.
 % contributers, which considers ...
 
 
-The FK (before FKT) model builds upon the time-honered PT model describing a
+The FK model builds upon the time-honered PT model describing a
 point-like tip sliding over a space-periodic crystalline surface. The FK model
 extents this description to hat of two 1D crystaline surfaces sliding on top of
 eahc other. The standard FK model consists of a 1D chain of $N$ classical
@@ -463,23 +478,32 @@ By applying a finite driving force it is known that a pinned configuration will 
 
 
 
+% At face value, the transition from a static strained configuration to full
+% sliding is conceptually as simple as overcoming an energy barrier. However,
+% practical single- and multiple- contact conditions are characterized by
+% complex interaction profiles plus nontrivial internal dynamics. As a result,
+% the interplay of thermal drifts, contact ageing, contact-contact in-
+% teractions, and macroscopic elastic deformations introduce significant
+% complications, and make the depinning transition from static to kinetic
+% friction an active field of research. The depinning dynamics affects in
+% particular the transition between stick-slip and smooth slid- ing for sliding
+% friction. (Current trends in the physics of nanoscale friction)
 
 
 
 
 
-
-\begin{enumerate}
-  \item Properties depending on $\Theta = N/M = a_b/a_c$
-  \item Elastic constant $K$
-  \item Kinks anti kinks travelling
-  \item Importance of commensurability between lattice and potential 
-  \item Aubry transition
-  \item Pinning and unpinning, stick slip
-  \item superlubricity (no stick slip, but still kinetic friction)
-  \item Adding a Langevin thermostat on top of this introduces temperature. 
-  \item Phase transistion?
-\end{enumerate}
+% \begin{enumerate}
+%   \item Properties depending on $\Theta = N/M = a_b/a_c$
+%   \item Elastic constant $K$
+%   \item Kinks anti kinks travelling
+%   \item Importance of commensurability between lattice and potential 
+%   \item Aubry transition
+%   \item Pinning and unpinning, stick slip
+%   \item superlubricity (no stick slip, but still kinetic friction)
+%   \item Adding a Langevin thermostat on top of this introduces temperature. 
+%   \item Phase transistion?
+% \end{enumerate}
 
 
 
@@ -491,6 +515,9 @@ By applying a finite driving force it is known that a pinned configuration will 
 
 Several extensions has been provided for the FK model with modifications of the
 interactions or system dimensionality. Anharmonicity of the chain 
+
+
+However, Weiss and Elmer (1995) proposed that the model had a deficiency. They suggested that in the FK model, there was no connection between the atoms and the sliding body. Therefore, Frenkel-Kontorova-Tomlinson (FKT) model that combines the FK model with the Tomlinson model was proposed. \cite{kim_nano-scale_2009}
 
 
 % The Frenkel-Kontorova-Tomlinson (FKT) model [61, 62] introduces an harmonic
@@ -587,37 +614,82 @@ sliding is characterized by slip fronts propagating along the interface.
 \cite{Manini_2016} p. 24.
 
 \subsection{Summary of expected frictional properties}
+
+
 \begin{enumerate}
-  \item Friction should decrease by increasing temperature.
-  \item We expect stick slip motion
-  \item What about dependence on normal force?
-  \item Dependence on contact area?
-  \item Dependense on speed? 
+  \item Smooth kinetic friction generally increase with speed  \cite{Manini_2016}.
+  \item Friction coeffients on the scale 0.01 to 0.03. 
+  % Ruan and Bhushan (1994) used an AFM to investigate the effect of surface roughness on the tribological characteristics of graphite using a Si3N4 tip. It was found that friction coefficient varied with respect to roughness of the substrate. The friction coefficient was below 0.01 and 0.03 for RMS roughness of about 10 nm and 140 nm, respectively. This outcome was attributed to the loss of orientation of the substrate with increasing roughness.33 \cite{kim_nano-scale_2009}
+  \item Occurrence of stick slip (also in MD) \cite{kim_nano-scale_2009} (p. 146)
 \end{enumerate}
 
-\begin{itemize}
-  \item Different friction models on macro-and microscopic scale
-\end{itemize}
+
+% For monolayers sliding along atomically uniform substrates, however, there is
+% essentially no static friction. Indeed, the friction in these systems can be
+% up to 105 times less than that for macroscopic lubricants such as graphite.
+% This raises questions about the fundamental dissipation mechanisms that are at
+% work in systems at different scales.
+% (\url{https://physicsworld.com/a/friction-at-the-nano-scale/})
 
 
-Smooth kinetic friction generally increases with speed (velocity strengthening), but sometimes decreases with increasing speed in certain intervals \cite{Manini_2016}.
-
-the smallest force needed to set a slider in motion – is also dependent on the simulation time (a longer wait may lead to depinning when a short wait might not), and generally dependent on system size, often increasing with sub-linear scaling with the slider’s contact area. To address this kind of behavior in MD simulations, it is often necessary to resort to scaling arguments in order to extrapolate the large-area static friction from small-size MD simulations [131, 140] \cite{Manini_2016}.
+% Look for source on affect on friction when stretching. Since we control the area through that there might be a stretch effect that is even stronger. 
 
 
-In AFM and SFA experiments, stickslip and its associated characteristically high friction and mechanical hysteresis tend to transition into smooth sliding when the speed exceeds $\sim$ 1 $\mu$m/s; in contrast, in MD modeling the same transition is observed in the $\sim$ 1 m/s region.  This 6-order-ofmagnitude discrepancy in speed between experiments and simulations is well known and has been largely discussed [141–144] in connection with the effective mass distributions and spring-force constants, that are vastly different, and highly simplified in simulations. \cite{Manini_2016}
+% The works of Bhushan and Kulkarni (1996)36 and Tambe and Bhusan (2004)9 showed the difference in frictional behavior with respect to scale. They reported that friction coefficient decreased with decrease in scale. \cite{kim_nano-scale_2009}
+% This drastic change in friction coefficient was due to the change in the mechanism of friction as the contact condition was altered even for the same pair of material system. \cite{kim_nano-scale_2009}
 
 
 
-Concerning stick-slip friction, another problem is that, unlike simulations, real experiments contain mesoscale or macroscale component intrinsically involved in the mechanical instabilities of which stick-slip consists. Here the comforting observation is that stick-slip is nearly independent of speed, so that so long as a simulation is long enough to realize a sufficient number of slip events, the results may already be good enough [148]  \cite{Manini_2016}.
+% Hint for explaining increase with stretch: Both micro-tribotester and AFM were used to investigate the micro/nano frictional behavior. It was reported that contact angle between the groove and the pin affected the frictional characteristics significantly. High contact angle led to a sudden increase in the frictional force due to interlocking mechanism. \cite{kim_nano-scale_2009}
+% These works suggest that frictional behavior at micro/nano scale is very much dependent on the surface structure and topography. Furthermore, the contact geometry between the tip and the surface such as area and orientation of the contacting angle affect the frictional force significantly. \cite{kim_nano-scale_2009}
 
 
-A serious aspect of stick-slip friction which MD simulation is unable to attack is ageing. The slip is a fast event, well described by MD, but sticking is a long waiting time, during which the frictional contact settles very slowly. The longer the sticking time, the larger the static friction force necessary to cause the slip. Typicall experiments show a logarithmic increase of static friction with time [150] \cite{Manini_2016}.
 
-Rate and state friction approaches, widely used in geophysics [151], describe phenomenologically frictional ageing, but a quantitative microscopic description is still lacking. Mechanisms invoked to account for contact ageing include chemical strengthening at the interface in nanoscale systems [152], and plastic creep phenomena in macroscopic systems [153]. \cite{Manini_2016}.
+Should period macth the lattice spacing as described in \cite{kim_nano-scale_2009}[p. 144]
 
 
-See ``Selected Results of MD Simulations'' in \cite{Manini_2016} p. 24.
+
+Maybe talk about the slip line as shown in figure \ref{fig:slip_line}
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.5\linewidth]{figures/theory/slip_line.png}
+  \caption{\hl{Temporary} figure from \cite{kim_nano-scale_2009}[p. 144]}
+  \label{fig:slip_line}
+\end{figure}
+
+% \begin{enumerate}
+%   \item Friction should decrease by increasing temperature.
+%   \item We expect stick slip motion
+%   \item What about dependence on normal force?
+%   \item Dependence on contact area?
+%   \item Dependense on speed? 
+% \end{enumerate}
+
+% \begin{itemize}
+%   \item Different friction models on macro-and microscopic scale
+% \end{itemize}
+
+
+% Smooth kinetic friction generally increases with speed (velocity strengthening), but sometimes decreases with increasing speed in certain intervals \cite{Manini_2016}.
+
+% the smallest force needed to set a slider in motion – is also dependent on the simulation time (a longer wait may lead to depinning when a short wait might not), and generally dependent on system size, often increasing with sub-linear scaling with the slider’s contact area. To address this kind of behavior in MD simulations, it is often necessary to resort to scaling arguments in order to extrapolate the large-area static friction from small-size MD simulations [131, 140] \cite{Manini_2016}.
+
+
+% In AFM and SFA experiments, stickslip and its associated characteristically high friction and mechanical hysteresis tend to transition into smooth sliding when the speed exceeds $\sim$ 1 $\mu$m/s; in contrast, in MD modeling the same transition is observed in the $\sim$ 1 m/s region.  This 6-order-ofmagnitude discrepancy in speed between experiments and simulations is well known and has been largely discussed [141–144] in connection with the effective mass distributions and spring-force constants, that are vastly different, and highly simplified in simulations. \cite{Manini_2016}
+
+
+
+% Concerning stick-slip friction, another problem is that, unlike simulations, real experiments contain mesoscale or macroscale component intrinsically involved in the mechanical instabilities of which stick-slip consists. Here the comforting observation is that stick-slip is nearly independent of speed, so that so long as a simulation is long enough to realize a sufficient number of slip events, the results may already be good enough [148]  \cite{Manini_2016}.
+
+
+% A serious aspect of stick-slip friction which MD simulation is unable to attack is ageing. The slip is a fast event, well described by MD, but sticking is a long waiting time, during which the frictional contact settles very slowly. The longer the sticking time, the larger the static friction force necessary to cause the slip. Typicall experiments show a logarithmic increase of static friction with time [150] \cite{Manini_2016}.
+
+% Rate and state friction approaches, widely used in geophysics [151], describe phenomenologically frictional ageing, but a quantitative microscopic description is still lacking. Mechanisms invoked to account for contact ageing include chemical strengthening at the interface in nanoscale systems [152], and plastic creep phenomena in macroscopic systems [153]. \cite{Manini_2016}.
+
+
+% See ``Selected Results of MD Simulations'' in \cite{Manini_2016} p. 24.
 
 \subsection{Graphene friction}
 Theory of friction experiment involving graphene.
@@ -634,7 +706,16 @@ and then it approaches graphite values [97, 99, 101, 107, 108]. (Current trends
 in the physics of nanoscale friction)
 
 
+\subsubsection{Experimental procedures}
 
+\begin{itemize}
+  \item Atomic Force Microscope (AFM)
+\end{itemize}
+
+
+% The trouble is that the coefficients of friction measured in nanotribological
+% experiments and in macroscopic “tribotests” routinely differ by orders of
+% magnitude. (\url{https://physicsworld.com/a/friction-at-the-nano-scale/})
 
 
 
@@ -1399,6 +1480,10 @@ thermostat on.
 
 % see https://www2.ph.ed.ac.uk/~dmarendu/MVP/MVP03.pdf p. 4
 
+
+\subsubsection{MD limitations}
+
+% One of the limitations of concern is in regard to the simulation scale. Despite relatively fast processor speed and efficient algorithm the number of atoms that can be handled realistically is still insufficient for complex system simulation \cite{kim_nano-scale_2009}.
 
 \section{Defining the system}
 
