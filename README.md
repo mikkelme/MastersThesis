@@ -211,6 +211,7 @@
 - Looked at better data for multiple drag speeds and did not see clear reasons to go to lower drag speeds. 
 - Put on a temperature variable test with drag speed of 10 m/s to test if this is significantly different. Otherwise I will just go with 20 m/s for efficiency.
 - Written theory on FK model (commensurability).
+- Writing friction theory in general.
 
 ## Things to remember 
 
