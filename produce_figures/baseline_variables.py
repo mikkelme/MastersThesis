@@ -8,15 +8,16 @@ from analysis.analysis_utils import *
 
 
 def temp(path, save = False):
-    common_folder = 'temp' 
+    common_folder = 'temp2' 
+    # common_folder = 'temp' 
     folders = [os.path.join(path, 'nocut', common_folder), 
                os.path.join(path, 'popup', common_folder),
                os.path.join(path, 'honeycomb', common_folder)]
     names = ['nocut', 'popup', 'honeycomb']
-    fig_max, fig_mean = variable_dependency(folders, names, 'T', '$T$ [K]', default = 300)
+    fig_max, fig_mean = variable_dependency(folders, names, 'T', '$T$ [K]', default = 300, error = 'shade')
     if save:
-        fig_max.savefig("../article/figures/baseline/variables_temp_max.pdf", bbox_inches="tight")
-        fig_mean.savefig("../article/figures/baseline/variables_temp_mean.pdf", bbox_inches="tight")
+        fig_max.savefig("../article/figures/baseline/variables_temp_max_fixmove.pdf", bbox_inches="tight")
+        fig_mean.savefig("../article/figures/baseline/variables_temp_mean_fixmove.pdf", bbox_inches="tight")
 
     
     
@@ -117,7 +118,7 @@ def variable_dependency(folders, names, variable_key, xlabel, convert = None, er
             var[j] = float(info[variable_key])
             Ff_max[j] = data['Ff'][0, 0]
             Ff_mean[j] = data['Ff'][0, 1]
-            Ff_mean_std[j] = data['Ff_std'][0]*data['Ff'][0, 1] # rel. error -> abs. error
+            Ff_mean_std[j] = data['Ff_std'][0]*np.abs(data['Ff'][0, 1]) # rel. error -> abs. error
             
             if map is not None:
                 if var[j] in map:
@@ -366,8 +367,8 @@ if __name__ == "__main__":
     
     path = '../Data/Baseline_fixmove'
     # path = '../Data/Baseline'
-    # temp(path, save = False)
-    vel(path, save = False)
+    temp(path, save = False)
+    # vel(path, save = False)
     # spring(path, save = False)
     # dt(path, save = False)
     

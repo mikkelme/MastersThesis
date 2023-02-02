@@ -26,7 +26,7 @@ class Simulation_runner:
             "num_stretch_files": 0,
             "RNSEED": -1,
             "drag_length": 400,
-            "drag_speed": 10, # [m/s]
+            "drag_speed": 20, # [m/s]
             "K": 0,
             "drag_dir_x": 0,
             "drag_dir_y": 1,

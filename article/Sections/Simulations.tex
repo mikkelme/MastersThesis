@@ -56,6 +56,18 @@ We should try to set the physcis and measurement parameters in such a way that w
 
 We need to define some ranges for the ML input paramters. $F_N$, stretch ranges where it is not prone to ruptures. The configuration it self does not have clear rules but is also being regulated by the no rupture requirement. 
 
+Retardation effects due to the finiteness of the speed of sound are usually irrelevant in slow-speed experiments (v < 1 mm/s) \cite{Manini_2016}
+
+In macroscopic tribology experiments, sliding speeds often range in the 0.1 − 10 m/s region \cite{Manini_2016}
+
+By contrast, in nanoscale AFM experiments the tip usually advances at much lower speeds ≃ 1 μm/s: over a typical run it is possible to simulate a tiny ∼ 1 pm displacement, far too small to explore even a single atomic-scale event, let alone averaging over a steady state.\cite{Manini_2016}
+
+
+However, MD simulations can provide so much physical insight that they make sense even if carried out at much higher speeds than in real-life AFM or surface force apparatus (SFA) experiments: in practice, currently the sliding speeds of most atomistic tribology simulations are in the ∼ 1 m/s region.\cite{Manini_2016}
+
+
+Besides the limitations of system size and simulation times that are obvious and will be discussed later, there is another limitation concerning temperature, that is rarely mentioned. All classical frictional simulations, atomistic or otherwise, are only valid at sufficiently high temperature. They become in principle invalid at low temperatures where the mechanical degrees of freedom of solids progressively undergo ”quantum freezing”, and both mechanics and thermodynamics deviate from classical. \cite{Manini_2016}.
+
 \newpage
 \subsection{Baseline}
 
@@ -271,6 +283,37 @@ We investigate the placement of the max values, i.e. the drag length for which w
 \end{figure}
 
 
+Look into static friction when having a spring connected to the drag force with
+rather low spring constant. Maybe compare to critical sitffness in FK model.
+Some rough calculations follow here (make a note about this being a very naive
+approach to determine a suitable stiffness for static friction scenarious. In
+reality one should increase force slowly to observe this probably). When
+dragging the sheet in the y-direction we effectively have a lattice spacing
+\begin{align*}
+  a_c = a_{2,x} + B_x = a_G\frac{\sqrt{3}}{2} + \frac{a_G}{2\sqrt{3}} = \frac{2a_G}{\sqrt{3}}
+\end{align*}
+for graphene lattice constant $a_G = 2.46$ Å. For the diamond silicon structure
+this is essentially equal to the lattice constant $a_D = 5.4210$ Å. This gives 
+\begin{align*}
+  \theta = \frac{a_c}{a_b} = \frac{2}{\sqrt{3}}\frac{a_G}{a_D} \approx 0.5230.
+\end{align*}
+Since we have the factor $2/\sqrt{3}$ it is safe to assume that this is a
+irrational number leadning to incommensurability. The worst case scnario of
+incommensurability (where $\theta$ equals the golden-mean, Can we get the exact
+number?) gives the minimal critical stiffness $K_c \sim 2U_0
+(\frac{\pi}{a_b})^2$, where $U_0$ is the substrate potentiual magnitude and
+$a_b$ the lattice spacing of the substrate. The potential barrier $U_0$ can be
+approximated by the work done when resisting the normal force as $\sim F_N
+a_D/2$ such that the critical stiffness can be approximated to 
+\begin{align*}
+  K_c \sim 2 F_N \frac{a_D}{2} \left(\frac{\pi}{a_D}\right)^2 = \frac{F_N}{a_D}\pi^2
+\end{align*}
+With a normal force of 1 nN we get $K_c \sim 18$ N/m. Hence, we should try a
+spring constant lower than that as qualified way of determining if this is the
+reason why we do not really see static friciton in the simulation. 
+
+
+
 \newpage
 \subsubsection{Varying temperature, drag speed, spring constant and dt}
 
@@ -279,14 +322,14 @@ We investigate the placement of the max values, i.e. the drag length for which w
   \centering
   \begin{subfigure}[b]{0.49\textwidth}
       \centering
-      \includegraphics[width=\textwidth]{figures/baseline/variables_temp_mean_K30.pdf}
+      \includegraphics[width=\textwidth]{figures/baseline/variables_temp_mean_fixmove.pdf}
       \caption{mean friction}
       \label{fig:var_temp_mean}
   \end{subfigure}
   \hfill
   \begin{subfigure}[b]{0.49\textwidth}
       \centering
-      \includegraphics[width=\textwidth]{figures/baseline/variables_temp_max_K30.pdf}
+      \includegraphics[width=\textwidth]{figures/baseline/variables_temp_max_fixmove.pdf}
       \caption{max friction}
       \label{fig:var_temp_max}
   \end{subfigure}
@@ -314,6 +357,10 @@ We investigate the placement of the max values, i.e. the drag length for which w
      \caption{Drag speed}
      \label{fig:var_vel}
 \end{figure}
+
+
+Simulations of concentric nanotubes in relative motion (telescopic sliding), have revealed the occurrence of well-defined velocities at which friction is enhanced, corresponding to a washboard frequency resonating with longitudinal [172] or circular [173] phonon modes, leading to enhanced energy dissipation. The frictional response becomes highly non-linear while approaching the critical velocity and, contrary to macroscopic systems, washboard resonances can arise at multiple velocities, especially for incommensurate interfaces where more than one length scale may be in common to the contacting surfaces [172] \cite{Manini_2016}.
+
 
 \begin{figure}[H]
   \centering
