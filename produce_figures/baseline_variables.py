@@ -8,18 +8,16 @@ from analysis.analysis_utils import *
 
 
 def temp(path, save = False):
-    common_folder = 'temp2' 
-    # common_folder = 'temp' 
+    common_folder = 'temp3' 
     folders = [os.path.join(path, 'nocut', common_folder), 
                os.path.join(path, 'popup', common_folder),
                os.path.join(path, 'honeycomb', common_folder)]
     names = ['nocut', 'popup', 'honeycomb']
     fig_max, fig_mean = variable_dependency(folders, names, 'T', '$T$ [K]', default = 300, error = 'shade')
     if save:
-        fig_max.savefig("../article/figures/baseline/variables_temp_max_fixmove.pdf", bbox_inches="tight")
-        fig_mean.savefig("../article/figures/baseline/variables_temp_mean_fixmove.pdf", bbox_inches="tight")
+        fig_max.savefig("../article/figures/baseline/variables_temp_max_fixmove_v20.pdf", bbox_inches="tight")
+        fig_mean.savefig("../article/figures/baseline/variables_temp_mean_fixmove_v20.pdf", bbox_inches="tight")
 
-    
     
     
 def vel(path, save = False):
@@ -35,8 +33,7 @@ def vel(path, save = False):
         fig_max.savefig("../article/figures/baseline/variables_vel_max_fixmove.pdf", bbox_inches="tight")
         fig_mean.savefig("../article/figures/baseline/variables_vel_mean_fixmove.pdf", bbox_inches="tight")
 
-    
-    
+       
     
 def spring(path, save = False):
     common_folder = 'spring' 
@@ -69,8 +66,7 @@ def spring(path, save = False):
         fig_max.savefig("../article/figures/baseline/variables_spring_max.pdf", bbox_inches="tight")
         fig_mean.savefig("../article/figures/baseline/variables_spring_mean.pdf", bbox_inches="tight")
 
-    
-    
+      
     
 def dt(path, save = False):
     common_folder = 'dt' 
@@ -81,13 +77,12 @@ def dt(path, save = False):
     convert = 1e3 # ps -> fs
     fig_max, fig_mean = variable_dependency(folders, names, 'dt', '$dt$ [fs]', convert = convert, default = 1)
     if save:
-        fig_max.savefig("../article/figures/baseline/variables_dt_max.pdf", bbox_inches="tight")
-        fig_mean.savefig("../article/figures/baseline/variables_dt_mean.pdf", bbox_inches="tight")
+        fig_max.savefig("../article/figures/baseline/variables_dt_max_fixmove.pdf", bbox_inches="tight")
+        fig_mean.savefig("../article/figures/baseline/variables_dt_mean_fixmove.pdf", bbox_inches="tight")
 
     
     
-
-def variable_dependency(folders, names, variable_key, xlabel, convert = None, error = 'both', map = None, default = None):
+def variable_dependency(folders, names, variable_key, xlabel, convert = None, error = 'shade', map = None, default = None):
     mean_window_pct = 0.5 # relative length of the mean window [% of total duration]
     std_window_pct = 0.2  # relative length of the std windoe [% of mean window]
     
@@ -95,11 +90,12 @@ def variable_dependency(folders, names, variable_key, xlabel, convert = None, er
     fig_mean = plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
     ax_mean = plt.gca()
     
-
     fig_max = plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
     ax_max = plt.gca()
     
-    line_and_marker = {'linestyle': '', 'marker': 'o', 'markersize': 2}
+    markers = ['o', '^', 'D']
+    colors = [color_cycle(0), color_cycle(1), color_cycle(3)]
+
     
     for i, folder in enumerate(folders):
         files = get_files_in_folder(folder, ext = '_Ff.txt')
@@ -135,8 +131,8 @@ def variable_dependency(folders, names, variable_key, xlabel, convert = None, er
     
         
         
-        colors = [color_cycle(0), color_cycle(1), color_cycle(3)]
         color_and_label = {'color': colors[i], 'label': names[i]}
+        line_and_marker = {'linestyle': '', 'marker': markers[i], 'markersize': 4}
         
         
         # Max friction 
@@ -174,7 +170,6 @@ def variable_dependency(folders, names, variable_key, xlabel, convert = None, er
     fig_max.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
     
     return fig_max, fig_mean
-
 
 
 def multi_stretch(path, save = False):
@@ -222,8 +217,7 @@ def multi_area(path, save = False):
     if save:
         fig_mean.savefig("../article/figures/baseline/multi_stretch_area_compare.pdf", bbox_inches="tight")
         
-        
-        
+             
 def multi_FN(path, save = False):
     common_folder = 'multi_FN' 
     folders = [os.path.join(path, 'nocut', common_folder), 
@@ -367,10 +361,10 @@ if __name__ == "__main__":
     
     path = '../Data/Baseline_fixmove'
     # path = '../Data/Baseline'
-    temp(path, save = False)
+    # temp(path, save = False)
     # vel(path, save = False)
     # spring(path, save = False)
-    # dt(path, save = False)
+    dt(path, save = False)
     
     
     # multi_stretch(path, save = False)

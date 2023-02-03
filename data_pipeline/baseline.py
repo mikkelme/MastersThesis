@@ -65,31 +65,29 @@ def baseline_vel(names, files):
     vel_range = np.arange(2, 100+1).astype('int')
     sim_names = [f'v{v}' for v in vel_range]
     
-    # files = [files[2]]
-    # names = [names[2]]
-    # print(files)
-    # print(names)
-    # exit()
     vary_variable(names, files, test_name, sim_names, variable_key, vel_range)
     
     
 def baseline_dt(names, files):
     """ Vary dt """
     variable_key = 'dt'
-    test_name = 'dt'
-    dt_range = [0.0001, 0.00025, 0.0005, 0.001, 0.0015, 0.002]
-    sim_names = ['dt01', 'dt025', 'dt05', 'dt10', 'dt15', 'dt20' ]
+    test_name = 'dt2'
+    # dt_range = [0.0001, 0.00025, 0.0005, 0.001, 0.0015, 0.002]
+    # sim_names = ['dt01', 'dt025', 'dt05', 'dt10', 'dt15', 'dt20' ]
+    dt_range = np.linspace(0.0001, 0.002, 39)
+    sim_names = [f'dt{dt*10**5:03.0f}' for dt in dt_range]
+    
     vary_variable(names, files, test_name, sim_names, variable_key, dt_range)
 
 def baseline_K(names, files):
     """ Vary spring constant """
     variable_key = 'K'
     test_name = 'spring'
-    # files.pop(0); names.pop(0)
-    # print(files)
-    # print(names)
-    K_range = [0, 1, 5, 20, 30, 50, 100]
-    sim_names = ['K0', 'K1', 'K5', 'K20', 'K30', 'K50', 'K100']
+    # K_range = [0, 1, 5, 20, 30, 50, 100]
+    # sim_names = ['K0', 'K1', 'K5', 'K20', 'K30', 'K50', 'K100']
+    K_range = np.linspace(0, 200, 41).astype('int')
+    sim_names = [f'K{K}' for K in K_range]
+    
     vary_variable(names, files, test_name, sim_names, variable_key, K_range)
     
     

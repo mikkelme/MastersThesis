@@ -776,7 +776,7 @@ def unique_fignum():
 
 
 
-def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.2, stretch_lim = [None, None],  FN_lim = [None, None]):
+def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.35, stretch_lim = [None, None],  FN_lim = [None, None]):
     """ Read multi folder
     
     Expected data structure:
@@ -969,9 +969,11 @@ def get_friction_coef(Ff, F_N):
     for i in range(Ff.shape[0]):
         mu[i], b, mu_err[i], b_err = lin_fit(F_N, Ff[i])
         
-        # mu[i] = 
     return mu, mu_err
     
+
+
+
 
 
 if __name__ == "__main__":

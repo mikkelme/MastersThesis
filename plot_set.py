@@ -39,7 +39,18 @@ def vline(ax, x, **kwargs):
     ylim = ax.get_ylim()
     ax.vlines(x, ylim[0], ylim[1], **kwargs)
     ax.set_ylim(ylim)
+    
+def hline(ax, y, **kwargs):
+    """ Make horisontal line spanning whole x range
+        without changing xlim of axes """
+        
+    xlim = ax.get_xlim()
+    ax.hlines(y, xlim[0], xlim[1], **kwargs)
+    ax.set_xlim(xlim)
+    
 
+
+    
 def yfill(ax, x, **kwargs):
     """ Make vertical fill spanning whole yrange
         without changing xlim or ylim of axes """

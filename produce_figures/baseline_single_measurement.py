@@ -463,7 +463,55 @@ def max_values(folder, save = False):
    
     
     
+def maxarg_vs_K(dirs, save = False):
+    mean_window_pct = 0.5 # relative length of the mean window [% of total duration]
+    std_window_pct = 0.35  # relative length of the std windoe [% of mean window]
+    
+    K = np.zeros(len(dirs))
+    argmax = np.zeros(len(dirs))
+    
+    for i, dir in enumerate(dirs):
+        friction_file = find_single_file(dir, ext = 'Ff.txt')     
+        info, data = analyse_friction_file(friction_file, mean_window_pct, std_window_pct)
+        
+        time = data['time'] - data['time'][0]
+        VA_pos = time * info['drag_speed']  # virtual atom position
 
+        
+        K[i] = info['K']*metal_to_SI(1, 'F')/metal_to_SI(1, 's')
+        
+        if K[i] == 0:
+            K[i] = 200
+        
+          
+        Ffmax = data['Ff_full_sheet'][:,0] # max
+        argmax[i] = VA_pos[np.argmax(Ffmax)]
+        
+    
+    
+    plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
+    plt.plot(K, argmax, 'o')
+    hline(plt.gca(), 71, linestyle = '--', color = 'black', linewidth = 1, zorder = 0, label = "Slow period $= 71 \pm 15$ Å")
+    
+    ax = plt.gca()
+    xlim = ax.get_xlim()
+    ylim = ax.get_ylim()
+    plt.fill_between([K.min() - 20, K.max() + 20], [71-15, 71-15], [71+15, 71+15], color = 'black', alpha = 0.1, zorder = 0)
+    ax.set_xlim(xlim)
+    ax.set_ylim(ylim)
+    
+    
+    
+    # xfill(plt.gca(), 71-15, 71+15, color = 'black', alpha = 0.2, linewidth = 1, zorder = 0)
+    
+    
+    plt.xlabel(r'Spring constant $K$ [N/m]', fontsize=14)
+    plt.ylabel(r'$\arg \min{F_{\parallel}}$ [Å]', fontsize=14)
+    plt.legend(fontsize = 13)
+    plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    if save:
+        plt.savefig('../article/figures/baseline/max_vs_K', bbox_inches='tight')
+    
 
 
 if __name__ == '__main__':
@@ -479,10 +527,16 @@ if __name__ == '__main__':
     # mean_values(filename, save = False)
     
     
+    #############################################
     
     # folder = os.path.join(path,'nocut/multi_stretch/stretch_15001_folder')
-    folder = os.path.join(path,'nocut/multi_FN/stretch_15001_folder')
-    max_values(folder, save = True)
+    # folder = os.path.join(path,'nocut/multi_FN/stretch_15001_folder')
+    # max_values(folder, save = False)
+    
+    
+    path = '../Data/Baseline'
+    files = get_dirs_in_path(os.path.join(path, 'nocut/spring'))
+    maxarg_vs_K(files, save = True)
     
     
     

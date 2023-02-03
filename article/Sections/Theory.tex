@@ -9,20 +9,24 @@ Small introtext to motivate this chapter. What am I going to go over here.
 
 
 Friction is a part of the wider field tribology which includes the study of
-friction, wear and lubrication between two surfaces in relative motion \cite[p. 1]{gnecco_meyer_2015}. In this thesis we will only concern ourselves with dry friction (no lubrication) without any wear. Tribological systems take place across a broad range of time and length scales, ranging from geological stratum layers involved in earthquakes \cite{kim_nano-scale_2009} to microscopic atomistic processes, as in the gliding motion of nanocluster of a
-nanomotor \cite{Manini_2016}. 
+friction, wear and lubrication between two surfaces in relative motion \cite[p.
+1]{gnecco_meyer_2015}. In this thesis we will only concern ourselves with the
+first, wearless dry friction. Tribological systems take place across a broad
+range of time and length scales, ranging from geological stratum layers involved
+in earthquakes \cite{kim_nano-scale_2009} to microscopic atomistic processes, as
+in the gliding motion of nanocluster of a nanomotor \cite{Manini_2016}. This
+vast difference in scale gives rises to different frictional mechanism being
+dominating at different scales. On a macro scale the system is usally inflicted
+to relatively high large loads and speeds leading to high contact stresses and
+wear. The micro-/nanoscale regime occupies the opposite domain operating under
+relatviely small loads and speeds with negligible wear
+\cite{kim_nano-scale_2009} \cite[p. 5]{bhushan_2013}. 
 
-This vast difference in scale gives rises to different frictional mechanism being dominating at different scale. On a macro scale the system is usally (tested) under large loads and speeds leading to high contact stresses and wear, while the micro/nano-scale systems on the other hand operate under relatviely low loads and speeds with negligible wear \cite{kim_nano-scale_2009} \cite[p. 5]{bhushan_2013}. While macroscale friction
-is often reduced into a few variables such as normal load, material type, speed and surface roughness it is clear that micro/nanoscale friction cannot be
-generalized under this simple representation. On a micro/nano scale the surface properties domniate the tribological propteries and the systems will additionally be sensitive to temperature, humidity and even sliding history. The works of Bhushan and Kulkarni (1996)\cite{BHUSHAN199649} showed that the friction coefficient decreased with scale, revealing the change in the mechanism of friction as the contact condition was altered, even for the same type of materisl used. 
+While macroscale friction is often reduced into a few variables such as normal load, material type, speed
+and surface roughness it is clear that micro-/nanoscale friction cannot be
+generalized under such a simple representation. On the micro-/nanoscale the tribological propteries is dominated by surface properties which will introduce additional sensitivity to more variables such as temperature, humidity and even sliding history. The works of Bhushan and Kulkarni (1996)\cite{BHUSHAN199649} showed that the friction coefficient decreased with scale, revealing the change in the mechanism of friction as the contact condition was altered, even though the materials used was unchanged.
 
-
-The phenomenological descriptions of macroscale friction cannot yet be derived from the fundamental atomic principles and bridging the gap between different length scales in tribological systems remains an open challenge \cite{Manini_2016}. Hence, the following sections will be devided into macro, micro and nanoscale representing the different theories at each scale governing the understanding of friction. Our study is going to take place at the nanoscale, but since any application will eventually take action on a macroscopic level, the multi scale understanding serves as usefull way to bridge expectations into real life (does this make sense?)
-
-
-
-
-
+The phenomenological descriptions of macroscale friction cannot yet be derived from the fundamental atomic principles, and bridging the gap between different length scales in tribological systems remains an open challenge \cite{Manini_2016}. Hence, the following sections will be organized into macro-, micro- and nanoscale representing the different theoretical understanding governing each scale. While our study of the graphene sheet is based on a nanoscale perspective the hypothesizing about application possibilities will eventually link back to the macroscale perspective. Thus spanning all three major scales in a brief becomes usefull for a more complete interpreation of the findings of this thesis. 
 
 
 % Tribological systems pose a wide range of dimensional scale. At the largest
@@ -97,7 +101,7 @@ The phenomenological descriptions of macroscale friction cannot yet be derived f
 
 \subsection{Macroscale}
 
-Our working definition of macroscale is everything on the scale of visible everyday objects. We want to make a distinction to microscopic where the prefix indicates the size of micrometers $m^{-6}$ and hence essentially assign everything larger than that into the term macroscale\footnote{The width of a human hair is on the length scale $10^{-5}$ to $10^{-4}$ m which constitute a reasonable boundary between macro- and microscale as this is at the lower boundary of what we can percept.}.
+Our working definition of the \textit{macroscale} is everything on the scale of visible everyday objects, which is usually denoted to milimeters $10^{-3}$ m and above. Most importantly, we want to make a distinction to the microscale, where the prefix indicates the size of micrometers $m^{-6}$, and hence we essentially assign everything larger than micro into the term macroscale\footnote{The width of a human hair is on the length scale $10^{-5}$ to $10^{-4}$ m which constitute a reasonable boundary between macro- and microscale which fit well with a lower bound of our perception capabilities.}.
 
 \subsubsection{Amontons’ law}
 % Based on \cite{gnecco_meyer_2015}
@@ -106,59 +110,38 @@ Our working definition of macroscale is everything on the scale of visible every
  surface we most overcome certain frictional forces $F_{\text{fric}}$ \cite{gnecco_meyer_2015}. The static friction force $F_s$ corresponds to the minimum tangential force required to
  iniziate the sliding while the kintec friciton force $F_k$ corresponds to the
  tangential force needed to sustain such a sliding at steady speed. The work of Leonardo da Vinci (1452–1519), Guillaume Amontons (1663-705) and
- Charles de Coulomb (1736-1806) all contributed to the empirical law, commonly known Amontons’ law, which states these fricitonal forces is entirely independent of contact area and sliding velocity (at ordinary sliding velocities). Instead, it relies only on the normal force $F_N$, acting perpendicular to the surface, and the material specific friction coefficient $\mu$ as
+ Charles de Coulomb (1736-1806) all contributed to the empirical law, commonly known Amontons’ law, which is a common baseline for an introduction to friction. Amontons’ law states the fricitonal forces is entirely independent of contact area and sliding velocity (at ordinary sliding velocities). Instead, it relies only on the normal force\footnote{This is often used interchangeably with the term \textit{load} or \textit{normal load}.} $F_N$, acting perpendicular to the surface, and the material specific friction coefficient $\mu$ as
 \begin{align*}
   F_{\text{fric}} = \mu F_N.
 \end{align*}
-The friction coeffcient is most often different for the cases of static $\mu_s$
-and kinetic $\mu_k$ friction, usually with values lower than one and $\mu_s \ge
-\mu_k$ in all cases [p. 6]\cite{gnecco_meyer_2015}. \\
+The friction coeffcient is typically different for the cases of static ($\mu_s$)
+and kinetic ($\mu_k$) friction, usually with values lower than one and $\mu_s \ge
+\mu_k$ in all cases \cite[p. 6]{gnecco_meyer_2015}. 
 
-
-Statistical mechanics provides a general explanation for the phenomena of friction \cite{Manini_2016}: A system in equilibrium has its kinetic energy uniformly distributed among all its degrees
-of freedom (equipartition of energy). 
-
-When a macroscale object is sliding in a given direction it is
-clearly not in equilibrium since one of its degrees of freedom carriers
-considerable more kinetic energy. Thus, the system will have a tendency to
-transfer the kinetic energy to the remaining degrees of freedom as heat while
-slowing down as a result. Hence friction is really the tendency of systems
-toward equilibrium energy equipartitioning among many interacting degrees of
-freedom. When friction occours under an external force energy is reversed into
-the system in the form of frictional heat which will dissipate.
-\cite{Manini_2016}
-
-
-%
-%
-% Working here
-%
-%
-
-Allthough Amontons’ law is a common base for understanding friction on a
-macroscopic it has its limitations. For instance, it turns out that static
-friction is not time independent, but depends on the so-called contact history
-with increasing friction as the logarithm of time of stationary contact
+Allthough Amontons’ law has been succesfull in the modelling of macroscale friction it has its limitations. For instance, it was later discovered that the staitc friction is not independent of time. It depends on the so-called contact history with increasing friction as the logarithm of time of stationary contact
 \cite{dieterich_1972}. For the kinetic friction the independency of sliding
 velocity dissapears at low velocities as thermal effects becomes important and
-for high velocities due to intertial effetcs. \cite{gnecco_meyer_2015}[pp. 5-6].
-Additionally, this simple macroscale perspective disguises (better word) the
-underlying mechanism behind the friciton phenonema arising from a more
-complicated contact interface. This includes taking the microsopic roughness
-into account together with surface chemistry. This more complex perspective
-introduces new (...() as real contact area, contact stresses, surface adhesion
-which makes frictional properties dependent on sliding speed, temperature and
-environment in general \cite{kim_nano-scale_2009}. 
+for high velocities due to intertial effetcs. \cite[pp. 5-6]{gnecco_meyer_2015}. 
+
+While Amontons’ law lacks any attempt to explain the phenomena of friction statistical mechanics provides an overall explanation by the concept of \textit{equipartition of energy} \cite{Manini_2016}. A system in equilibrium has its kinetic energy uniformly distributed among all its degrees of freedom. When a macroscale object is sliding in a given direction it is
+clearly not in equilibrium since one of its degrees of freedom carriers
+considerable more kinetic energy. Thus, the system will have a tendency to
+transfer the kinetic energy to the remaining degrees of freedom as heat. This heat will dissipate to the sourroundings and the object will slow down as a final result. Hence, friction is really just the tendency of going toward equilibrium energy equipartitioning among many interacting degrees of freedom. \cite{Manini_2016}
+
+When including \textit{statistical mechanics} we have already taken a peek into lower scales as this aim to explain macroscale behaviour by microscopic interactions. In fact, this marks the limiting view of most macroscale theories:  They lack fundamental explanations. 
+
+% Amontons’ law disguises the importance of a more complicated contact interface. 
+
+% This includes taking the microsopic roughness
+% into account together with surface chemistry. This more complex perspective
+% introduces new (...() as real contact area, contact stresses, surface adhesion
+% which makes frictional properties dependent on sliding speed, temperature and
+% environment in general \cite{kim_nano-scale_2009}. 
 
 
 
-Friction phenomena take place across a broad range of time and length scales,
-from microscopic atomistic processes, as in the gliding motion of a nanocluster
-or a nanomotor [1]
-
-
-The conclusion is that the friction coefficient is not an intrinsic physical
-property \cite{Szlufarska_2008}.
+% The conclusion is that the friction coefficient is not an intrinsic physical
+% property \cite{Szlufarska_2008}.
 
 % The basic difficulty of friction is intrinsic, involving the dissipative
 % dynamics of large systems, often across ill-characterized interfaces, and
@@ -175,6 +158,14 @@ property \cite{Szlufarska_2008}.
 
 
 \subsection{Microscopic scale}
+
+%
+%
+% Working here 
+%
+%
+
+
 % \subsection{Friction on a microscopic scale - Nanotribology}
 % \cite{kim_nano-scale_2009}.
 

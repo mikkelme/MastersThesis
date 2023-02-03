@@ -7,7 +7,10 @@
 
 % Reconsider later if some if this is better placed in methods section
 % or under different title
-\section*{Frictional properties of the intact graphene sheet}
+\section{Baseline study}
+
+\subsection{Variables}
+
 The friction measurment simulation is governed by the following parameters, which is divided into three sub categories for the purpose of this thesis as shown in table \ref{tab:param}.
 
 
@@ -69,11 +72,8 @@ We need to define some ranges for the ML input paramters. $F_N$, stretch ranges 
 % Besides the limitations of system size and simulation times that are obvious and will be discussed later, there is another limitation concerning temperature, that is rarely mentioned. All classical frictional simulations, atomistic or otherwise, are only valid at sufficiently high temperature. They become in principle invalid at low temperatures where the mechanical degrees of freedom of solids progressively undergo ”quantum freezing”, and both mechanics and thermodynamics deviate from classical. \cite{Manini_2016}.
 
 \newpage
-\subsection{Baseline}
-
-\subsubsection{Single measurement}
-\paragraph*{Force oscillations}
-
+\subsection{Single measurement}
+\subsubsection{Force oscillations}
 We first assess the raw data for the friction force $F_{\parallel}$ parallel to the drag direction as seen in figure \ref{fig:drag_Ff}. The sample rate is 10 ps$^{-1}$ for which we sample the the mean of all previous timesteps. We observe that the data carriers oscillations on different time scales. By applying a savgol filter to data with a polyorder of 5 and window length corresponding to a drag length of 3.0 Å (or time interval 15.0 ps) we can qualitatively point out at least two different frequencies of osccilation. On figure \ref{fig:drag_Ff_10} we see roughly three waves on the savgol filter corresponding to one frequency, while on \ref{fig:drag_Ff_100} the same savgol filter reveals an even slower frequency on top of the first creating a visual patterns of a wavepacket.
 
 \begin{figure}[H]
@@ -141,8 +141,7 @@ where the latter frequency is denoted with respect to drag length. This makes us
 \end{figure}
 
 
-\paragraph*{Decompositions}
-
+\subsubsection{Decompositions}
 In the previous analysis we have looked only as the friction force for the full
 sheet, including the pullblocks which is locked off during the drag, and with
 respect to the drag direction. \par
@@ -184,8 +183,7 @@ we are neglecting the ``side shift'' induced during the drag phase. In figure \r
 \end{figure}
 
 
-\paragraph*{Center of mass path}
-
+\subsubsection{Center of mass path}
 From the previous observations we already have evidence of a stick slip behaviour, judging from the friction oscillations in figure \ref{fig:drag_Ff}, and motion partial motion perpendicular to the drag direction, judging from the perpendicular force component in figure \ref{fig:decomp_direc}. By looking at the $x,y$-position for the center of mass (COM) we can see the stick slip motion manifested as a variation in COM speed combinned with a side to side motion as shown in figure $\ref{fig:COM_path_K0}$. To increase this effect we also show the same plot with a spring ... move with spring constant 30 N/m in figure \ref{fig:COM_path_K30}. While the max speed is on the same scale the side to side motion is increased (notice that the axis scale is different between figure \ref{fig:COM_path_K0} and \ref{fig:COM_path_K0}).
 
 
@@ -216,7 +214,8 @@ We are interested taking the comprehensive friction force time series dataset
 and reducing it into single metrics describing the dynamic and static friciton
 respectively. The natural choice is to use the mean and max values. 
 
-\paragraph*{Dynamic friction} For the dynamic friction measurement we take the mean of the latter half of the data to ensure that the system has
+\subsubsection{Dynamic friction} 
+For the dynamic friction measurement we take the mean of the latter half of the data to ensure that the system has
 stabilished itself before taking the mean. For a full drag simulation of 400 Å
 we would thus base our mean value on the latter 200 Å drag. In figure
 \ref{fig:runmean} we have shown the friction force of the first 10 Å of drag
@@ -271,7 +270,8 @@ When we include the full 400 Å drag, such that std window actually matches with
 \end{figure}
 
 
-\paragraph*{Static friction} The max value is the most obvious choice for adressing the static friction, even though that the definition of the static friction is a bit vague. At least when judging from the raw data in figure \ref{fig:drag_Ff} we not see a textbook example of the static friction precourser  (maybe include a classic static friction curve in the theory... I'm not completely sure what to expect here). Additionally the global max value does not always lie in the initial part of the simulation. \\
+\subsubsection{Static friction} 
+The max value is the most obvious choice for adressing the static friction, even though that the definition of the static friction is a bit vague. At least when judging from the raw data in figure \ref{fig:drag_Ff} we not see a textbook example of the static friction precourser  (maybe include a classic static friction curve in the theory... I'm not completely sure what to expect here). Additionally the global max value does not always lie in the initial part of the simulation. \\
 For a proper static friction evaluation we should increase force slowly and wait for the slip response. Here we drag quite fast making it diffucult to assess the static response. \\
 We investigate the placement of the max values, i.e. the drag length for which we measure the max friction force. We show the placement of the top three max values for different simulatiosn with varying normal force in figure \ref{fig:max_dist}. We observe immediately that only a few top three max values is measured within a full slow period of $\sim$ 71 Å. In fact many max values is measured just before the end of the simulation. This indicates that the naive approach of using the overall max value to describe the static friction coefficient might be a to naive approach. Another approach is to use the max value within a single period, but we do not really know if this period will be similar for alle cut patterns and thus this might be limiting. 
 
@@ -310,9 +310,14 @@ a_D/2$ such that the critical stiffness can be approximated to
 \end{align*}
 With a normal force of 1 nN we get $K_c \sim 18$ N/m. Hence, we should try a
 spring constant lower than that as qualified way of determining if this is the
-reason why we do not really see static friciton in the simulation. 
+reason why we do not really see static friciton in the simulation. By plotting the max position (in terms of drag length) as a function of spring constant as seen in figure \ref{fig:max_vs_K} we can investigate if the concept of a critical spring constant is governing this simulation. However, as I'm writing this I'm realizing that the spring constant in the model applies to the interatomic forces and not the one dragging the system.....
 
-
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\linewidth]{figures/baseline/max_vs_K}
+  \caption{Displacement for the max peak in friction to appear as a function of spring constant dragging the sheet. Fixmove is tmp mapped to K = 200 here.}
+  \label{fig:max_vs_K}
+\end{figure}
 
 \newpage
 \subsubsection{Varying temperature, drag speed, spring constant and dt}
@@ -322,34 +327,37 @@ reason why we do not really see static friciton in the simulation.
   \centering
   \begin{subfigure}[b]{0.49\textwidth}
       \centering
-      \includegraphics[width=\textwidth]{figures/baseline/variables_temp_mean_fixmove.pdf}
+      \includegraphics[width=\textwidth]{figures/baseline/variables_temp_mean_fixmove_v20.pdf}
       \caption{mean friction}
       \label{fig:var_temp_mean}
   \end{subfigure}
   \hfill
   \begin{subfigure}[b]{0.49\textwidth}
       \centering
-      \includegraphics[width=\textwidth]{figures/baseline/variables_temp_max_fixmove.pdf}
+      \includegraphics[width=\textwidth]{figures/baseline/variables_temp_max_fixmove_v20.pdf}
       \caption{max friction}
       \label{fig:var_temp_max}
   \end{subfigure}
   \hfill
-     \caption{Temperature}
+     \caption{Temperature. $v = 20$ m/s and fixmove.}
      \label{fig:var_temp}
 \end{figure}
+
+
+
 
 \begin{figure}[H]
   \centering
   \begin{subfigure}[b]{0.49\textwidth}
       \centering
-      \includegraphics[width=\textwidth]{figures/baseline/variables_vel_mean_K30.pdf}
+      \includegraphics[width=\textwidth]{figures/baseline/variables_vel_mean_fixmove.pdf}
       \caption{mean friction}
       \label{fig:var_vel_mean}
   \end{subfigure}
   \hfill
   \begin{subfigure}[b]{0.49\textwidth}
       \centering
-      \includegraphics[width=\textwidth]{figures/baseline/variables_vel_max_K30.pdf}
+      \includegraphics[width=\textwidth]{figures/baseline/variables_vel_max_fixmove.pdf}
       \caption{max friction}
       \label{fig:var_vel_max}
   \end{subfigure}
@@ -386,14 +394,14 @@ Simulations of concentric nanotubes in relative motion (telescopic sliding), hav
   \centering
   \begin{subfigure}[b]{0.49\textwidth}
       \centering
-      \includegraphics[width=\textwidth]{figures/baseline/variables_dt_mean_K30.pdf}
+      \includegraphics[width=\textwidth]{figures/baseline/variables_dt_mean_fixmove.pdf}
       \caption{mean friction}
       \label{fig:var_dt_mean}
   \end{subfigure}
   \hfill
   \begin{subfigure}[b]{0.49\textwidth}
       \centering
-      \includegraphics[width=\textwidth]{figures/baseline/variables_dt_max_K30.pdf}
+      \includegraphics[width=\textwidth]{figures/baseline/variables_dt_max_fixmove.pdf}
       \caption{max friction}
       \label{fig:var_dt_max}
   \end{subfigure}
@@ -485,3 +493,8 @@ Show plots of contact area vs stretch and discuss the fact that friction actuall
   \caption{}
   \label{fig:}
 \end{figure}
+
+
+\subsubsection{Computational cost}
+
+Talk about dependence on drag speed, $dt$ and maybe $T$ and $K$ as well. Show how the number of cores per simulation scale to argue that running on just one core is smart for the next step of many simulations. 
