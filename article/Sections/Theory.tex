@@ -110,10 +110,11 @@ Our working definition of the \textit{macroscale} is everything on the scale of 
  surface we most overcome certain frictional forces $F_{\text{fric}}$ \cite{gnecco_meyer_2015}. The static friction force $F_s$ corresponds to the minimum tangential force required to
  iniziate the sliding while the kintec friciton force $F_k$ corresponds to the
  tangential force needed to sustain such a sliding at steady speed. The work of Leonardo da Vinci (1452–1519), Guillaume Amontons (1663-705) and
- Charles de Coulomb (1736-1806) all contributed to the empirical law, commonly known Amontons’ law, which is a common baseline for an introduction to friction. Amontons’ law states the fricitonal forces is entirely independent of contact area and sliding velocity (at ordinary sliding velocities). Instead, it relies only on the normal force\footnote{This is often used interchangeably with the term \textit{load} or \textit{normal load}.} $F_N$, acting perpendicular to the surface, and the material specific friction coefficient $\mu$ as
-\begin{align*}
+ Charles de Coulomb (1736-1806) all contributed to the empirical law, commonly known Amontons’ law, which is a common baseline for an introduction to friction. Amontons’ law states the fricitonal forces is entirely independent of contact area and sliding velocity (at ordinary sliding velocities). Instead, it relies only on the normal force\footnote{\textit{Normal force} is often used interchangeably with the terms \textit{load} and \textit{normal load}.} $F_N$, acting perpendicular to the surface, and the material specific friction coefficient $\mu$ as
+\begin{align}
   F_{\text{fric}} = \mu F_N.
-\end{align*}
+  \label{eq:amonton}
+\end{align}
 The friction coeffcient is typically different for the cases of static ($\mu_s$)
 and kinetic ($\mu_k$) friction, usually with values lower than one and $\mu_s \ge
 \mu_k$ in all cases \cite[p. 6]{gnecco_meyer_2015}. 
@@ -128,7 +129,7 @@ clearly not in equilibrium since one of its degrees of freedom carriers
 considerable more kinetic energy. Thus, the system will have a tendency to
 transfer the kinetic energy to the remaining degrees of freedom as heat. This heat will dissipate to the sourroundings and the object will slow down as a final result. Hence, friction is really just the tendency of going toward equilibrium energy equipartitioning among many interacting degrees of freedom. \cite{Manini_2016}
 
-When including \textit{statistical mechanics} we have already taken a peek into lower scales as this aim to explain macroscale behaviour by microscopic interactions. In fact, this marks the limiting view of most macroscale theories:  They lack fundamental explanations. 
+By including \textit{statistical mechanics} into the discussion we have already taken a peek into lower scales as this field of science explain macroscale behaviour by microscopic interactions. In fact, this marks the limiting view of most macroscale theories:  They lack fundamental explanations. 
 
 % Amontons’ law disguises the importance of a more complicated contact interface. 
 
@@ -137,7 +138,6 @@ When including \textit{statistical mechanics} we have already taken a peek into 
 % introduces new (...() as real contact area, contact stresses, surface adhesion
 % which makes frictional properties dependent on sliding speed, temperature and
 % environment in general \cite{kim_nano-scale_2009}. 
-
 
 
 % The conclusion is that the friction coefficient is not an intrinsic physical
@@ -159,17 +159,9 @@ When including \textit{statistical mechanics} we have already taken a peek into 
 
 \subsection{Microscopic scale}
 
-%
-%
-% Working here 
-%
-%
-
 
 % \subsection{Friction on a microscopic scale - Nanotribology}
 % \cite{kim_nano-scale_2009}.
-
-
 
 % Da Vinci-Amontons law – friction independent of area – is not confirmed at the
 % microscopic scale. In most nanoscale investigations the friction of a single
@@ -182,17 +174,14 @@ When including \textit{statistical mechanics} we have already taken a peek into 
 % commensurate interfaces [30, 31] (Current trends in the physics of nanoscale
 % friction)
 
-Going beyond a macroscopic perspective to the microscopic scale we realise that
-most surfaces is in fact rough (Bowden, F. P. \& Tabor, D. The Friction and Lubrication of Solids (Clarendon, 1950).). The contact between two surfaces consist of
+Going from a macro- to microscale perspective, a length scale of order $10^{-6} m$, it was realized that most surfaces is in fact rough \cite{mo_friction_2009}. The contact between two surfaces consist of
 numerous smaller contact point, so-called asperities, for which the friction
-between two such opposing surfaces involves interlocking of those asperities.
-Additionally, the adhesion between surfaces is taken to be a dominiant factor,
-for which the chemical state of the surfaces has to be considered.
+between two such opposing surfaces involves interlocking of those asperities as visualized in figure \ref{fig:asperity_contact}. It is generally accepted that friction is caused by two mechanism: mechanical friction and chemical friction \cite{kim_nano-scale_2009}. The mechanical friction is the ``plowing'' of the surface by hard particles or said asperities with an energy loss \hl{contribted} to plastic deformations (allthough this assumption of plastic deformations has been critizised \cite{CARBONE20082555}). The chemical friction arrises from adhesion between microscopic contacting surfaces, (with energy loss \hl{contribted} breaking and forming of bonds?).
 
-% It is generally accepted that friction is caused by two mechanism: mechanical
-% friction and chemical friction. The mechanical friction is the plowing of the
-% surface by hard particles or asperities. The chemical mechanism is adhesion
-% between contacting surfaces. \cite{kim_nano-scale_2009}.
+
+
+
+
 
 
 
@@ -201,69 +190,71 @@ for which the chemical state of the surfaces has to be considered.
 % In the model, the adhering asperities are formed as normal load is applied and friction is caused during relative motion by loss of energy due to plastic deformation of the asperities. \cite{kim_nano-scale_2009}
 
 
-
 % Concurrently with single-asperity studies, roughness contact theories are being developed8–10,16 to bridge the gap between the mechanics of single asperities and that of macroscopic contacts.\cite{mo_friction_2009}
+
 \subsubsection{Surface roughness - Asperity theories}
 % Sources in general: \cite{mo_friction_2009}, \cite{kim_nano-scale_2009} \\
 
-Asperity theories is based on the observation that microscopic rough surfaces
+Asperity theories are based on the observation that microscopic rough surfaces
 with contacting asperities, each with a contact area of $A_{\text{asp}}$, will
 have a true contact area $\sum A_{\text{asp}}$ which is found to be much smaller
-than the apperent macroscopic area $A_{\text{macro}}$. The friction force was
-shown to be proportional (extra source on this) to this true contact area as 
+than the apperent macroscopic area $A_{\text{macro}}$ \cite{kim_nano-scale_2009}. The friction force was shown to be proportional to the true contact area as 
 \begin{align*}
   F_\text{fric} = \vec{\tau} \sum A_{\text{asp}},
 \end{align*}
-where $\vec{\tau}$ is an effective shear strength of the contacting bodies. This
-is still compatible with Amontons’ law for the cases where the real contact area
-dependt linearly on the applied normal force $F_N$.
-
+where $\vec{\tau}$ is an effective shear strength of the contacting bodies. This is in principle still compatible with Amontons’ law (eq.~\eqref{eq:amonton}) \textit{if} we find a linear relatioship between the real contact area and the applied normal force $F_N$. In figure \ref{fig:asperity_contact} we see a visualization on how the contact area might intuitively increase with normal force as the asperity tips is deformed into broader contact points.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.5\linewidth]{figures/theory/asperities.png}
-  \caption{Example figure shwoing asperity deformation as the load is incread
-  from top to bottom. Source:
-  \url{https://en.wikipedia.org/wiki/Asperity\_(materials\_science)} \hl{Put in
-  reference list? Find better picture?}}
-  \label{fig:asperity_contact}
+  \begin{subfigure}[b]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/theory/asperities_top.png}
+      \caption{Low load.}
+      \label{fig:asp_left}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/theory/asperities_bottom.png}
+      \caption{High load.}
+      \label{fig:asp_right}
+  \end{subfigure}
+  \hfill
+     \caption{Qualitatively illustration of the microscopic asperity deformation under increasing load from frame a to b \cite{wiki:asperities}.}
+     \label{fig:asperity_contact}
 \end{figure}
 
 
-% The common feature of all the single-asperity theories is that Aasp is a sublinear function of L. \cite{mo_friction_2009}
+Many studies have focused on the individual single asperity contact to
+reveal the relationship between the contact area and $F_N$ (13-15 from
+\cite{mo_friction_2009}). By assuming perfectly smooth asperities with radii of
+curvature from micrometers all the way down to nanometers continuum mechanics can be used to predict the deformation of asperities as normal force is applied. A model for non-adhesive contact between homogenous, isotropic, linear elastic spheres was
+first developed by Hertz (17 \cite{mo_friction_2009}), which predicted
+$A_{\text{asp}} \propto F_N^{2/3}$. Later adhesion effects were included in a
+number of subsequent models, including Maugis-Dugdale theory (18 from
+\cite{mo_friction_2009}), which also predicts a sublinear relatinship between
+$A_{\text{asp}}$ and $f_N$. Thus, the common feature of all single-asperiry theories is that $A_{\text{asp}}$ is a sublinear function of $F_N$, leading to a similar sublinear relationship for $F_\text{fric}(F_N)$, which fails to align with the macroscale observations modellend by Amontons’ law (eq. \eqref{eq:amonton}).
 
-% Our results confirm the conclusions of other authors that single-asperity theories break down at the nanoscale1,5. \cite{mo_friction_2009}
+A variety of multiasperity theories has attempted to combine single asperity mechanics by statistical modelling of the asperity height and spatial distributions \cite{CARBONE20082555}. This has led to (in certain domains) a linear relationship between contact area and normal force. Unfortunately, these results are restricted in terms of the magnitude of the load and contact area, where multiasperity contact models based on the original ideas of Greenwood and Williamson \cite{GW} only predicts linearity at vanhising low loads, or Persson \cite{Persson} which works for more reasonable loads but only up to 10-15 \% of the macroscale contact area. However, as the load is furhter increased all multiasperity models predict the contact area to fall into the sublinear dependency of normal force as seen for single aperity theories \cite{CARBONE20082555}.
+
+
+
 
 % Other authors proposed an empirical model in which mechanics of a nanoscale non-adhesive contact is controlled by load, that is, $F_f = \mu L$ and the contact area is undefined and unnecessary5,29 \cite{mo_friction_2009}
 
 % \cite{mo_friction_2009} agues that the break-down of single-asperity theories of friction is due to the asperity (circumfereance defined) area is not proportional to the real one. By obtaining the real area (contacting bond) he arrives at the macroscale relationship... Quote: As shown in Table 1, friction force is now proportional to contact area at all length scales as long as the contact area is correctly defined at each length scale. When adhesion is added they arrive at the sublinear trend again. 
 
 
-Thus, many studies have focused on the individual single asperity contact to
-reveal the relationship between the contact area and $F_N$ (13-15 from
-\cite{mo_friction_2009}). By assuming perfectly smooth asperities with radii of
-curvature from nanometers to micrometres continuum mechanics can be used to
-predict the deformation of asperities as normal force is applied. A model for
-non-adhesive contact between homogenous, isotropic, linear elastic spheres was
-first developed by Hertz (17 \cite{mo_friction_2009}), which predicted
-$A_{\text{asp}} \propto F_N^{2/3}$. Later adhesion effects were included in a
-number of subsequent models, including Maugis-Dugdale theory (18 from
-\cite{mo_friction_2009}), which also predicts a sublinear relatinship between
-$A_{\text{asp}}$ and $f_N$, leading to a similar sublinear relationship for
-$F_\text{fric}(F_N)$. (Adress that this deviates with the macroscale). 
-
-\hl{What about multi asperity theory?}
+% \hl{What about multi asperity theory?}
 
 % Our model predicts that as the adhesion between the contacting surfaces is reduced, a transition takes place from nonlinear to linear dependence of friction force on load. \cite{mo_friction_2009}
 
-However, even though the successes of continuum mechanics there is no reasion to
-believe that it will be capable of reproducing tribological behaviour at the
-nanometre length scale where the discreteness of atoms often has a direct effect
-on physical properties \cite{Szlufarska_2008}.
 
 
 
-This approach enables the bottom-up derivation of the linear scaling laws of macroscopic friction with size, and their transition to the sublinear ones for incommensurate nanosized contacts. We can now understand that such transition takes place when the contact roughness becomes large compared to the range of interfacial interactions [162] \cite{Manini_2016}.
+% This approach enables the bottom-up derivation of the linear scaling laws of macroscopic friction with size, and their transition to the sublinear ones for incommensurate nanosized contacts. We can now understand that such transition takes place when the contact roughness becomes large compared to the range of interfacial interactions [162] \cite{Manini_2016}.
+
+
 % However, practical single- and multiplecontact conditions are characterized by
 % complex interaction profiles plus nontrivial internal dynamics. As a result,
 % the interplay of thermal drifts, contact ageing, contact-contact interactions,
@@ -272,9 +263,53 @@ This approach enables the bottom-up derivation of the linear scaling laws of mac
 % of research. \cite{Manini_2017}[p. 2]. 
 
 
-% Rate and state models?
 
-\subsection{Nanotribology - Atomic scale}
+% However, even though the successes of continuum mechanics there is no reasion to
+% believe that it will be capable of reproducing tribological behaviour at the
+% nanometre length scale where the discreteness of atoms often has a direct effect
+% on physical properties \cite{Szlufarska_2008}.
+
+\subsection{Nanoscale - Atomic scale}
+
+
+As we zoom in yet another time, going from microscale to nanoscale on the order
+of $10^{-9}$ meter, it has been predicted that continnum mechanics will break
+down \cite{luan_breakdown_2005} due to atomic-scale surface roughness. In a
+numerical study by Mo et al. \cite{mo_friction_2009} it has been showed that the
+asperity area $A_{\text{asp}}$ is in fact sublinear with $F_N$ but explains this
+by the fact that not all atoms within the circumfereance of the asperity contact
+phase is actually in contact. By modelling the real area $A_{\text{real}} = N
+A_{\text{atom}}$, where $N$ is the amount of atoms within the range of chemical
+interactions and $A_{\text{atom}}$ is the atom surface area, they found a
+consistent linear relationship between friction and real contact area. Without
+adhesive forces this lead to a similar linear relationship $F_{\text{fric}}
+\propto F_N$, while adding van der Waals adhesion to the simulation gave a
+sublinear relatinship, even though the $F_{\text{fric}} \propto A_{\text{real}}$
+was maintained.
+
+However, considering the simulation setup of our nmerical study, a flat sheet on a flat substrate, it is (adjective) to rely on asperity theories even though they might somewhat successfull at the nanoscale. 
+
+Are there some nanoflake, island experiments to refer to here? Otherwise go straight to the FK models.
+
+%
+%
+%
+% Working here
+%
+%
+%
+
+
+
+
+% First no adhesion (passivated by hydrogen) gives $A_{\text{asp}} = F_N^{2/3}$ as predicted by hertz theory but $F_f \propto F_N$ yielding $F_f \ne \tau A_{\text{asp}}$. 
+
+
+% Include the part of \cite{mo_friction_2009} that talks about single asperity theories working for nanoscale.
+
+
+% Our results confirm the conclusions of other authors that single-asperity theories break down at the nanoscale1,5. \cite{mo_friction_2009}
+
 
 % Experimental research to examine the frictional characteristics at the
 % atomic-scale has been conducted for the past two decades. It is well known
