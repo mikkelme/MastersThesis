@@ -117,7 +117,7 @@ class Data_generator:
             os.remove(lammps_file_info)    
                 
     
-    def run_multi(self, F_N, variables = {}, num_procs = 16):
+    def run_multi(self, F_N = None, variables = {}, num_procs = 16):
         
         # Intialize simulation runner
         proc = Simulation_runner(variables)
@@ -134,17 +134,18 @@ class Data_generator:
         proc.config_path = self.config_path
         
         # Multi run settings 
-        # num_stretch_files = 1
-        # F_N = np.array([5])*1e-9
-        # # F_N = np.sort(np.random.uniform(0.1, 10, 10))*1e-9
+        num_stretch_files = 3
+        
+        if F_N is None:
+            F_N = np.sort(np.random.uniform(0.1, 10, 3))*1e-9
         
         
-        # proc.add_variables(num_stretch_files = num_stretch_files, 
-        #                    RNSEED = '$RANDOM',
-        #                    run_rupture_test = 1,
-        #                    stretch_max_pct = 2.0,
-        #                    root = '.',
-        #                    dump_freq = 10000)
+        proc.add_variables(num_stretch_files = num_stretch_files, 
+                           RNSEED = '$RANDOM',
+                           run_rupture_test = 1,
+                           stretch_max_pct = 2.0,
+                           root = '.',
+                           dump_freq = 0)
         
         
         # Start multi run
@@ -162,13 +163,14 @@ class Data_generator:
 
 def run_files(filenames, header, simname):
     for file in filenames:
-        gen = data_generator(file, header, simname)
+        gen = Data_generator(file, header, simname)
         gen.run_multi()
         
 
 
 if __name__ == "__main__":
-    # run_files(get_files_in_folder('../config_builder/nocut_sizes/', exclude = 'DS_Store'), header =  'egil:CONFIGS/nocut_sizes')
+    filenames = get_files_in_folder('../config_builder/baseline/', ext = 'npy')
+    run_files(filenames, header =  'egil:CONFIGS/TEST', simname = 'test')
     
     # files = get_files_in_folder('../config_builder/honeycomb/', ext = '.npy')
     # files = files[20:]

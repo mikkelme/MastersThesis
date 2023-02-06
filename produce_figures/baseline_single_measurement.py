@@ -481,7 +481,7 @@ def maxarg_vs_K(dirs, save = False):
         K[i] = info['K']*metal_to_SI(1, 'F')/metal_to_SI(1, 's')
         
         if K[i] == 0:
-            K[i] = 200
+            K[i] = 250
         
           
         Ffmax = data['Ff_full_sheet'][:,0] # max
@@ -507,7 +507,7 @@ def maxarg_vs_K(dirs, save = False):
     
     plt.xlabel(r'Spring constant $K$ [N/m]', fontsize=14)
     plt.ylabel(r'$\arg \min{F_{\parallel}}$ [Å]', fontsize=14)
-    plt.legend(fontsize = 13)
+    plt.legend(loc = 'upper right', fontsize = 13)
     plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
     if save:
         plt.savefig('../article/figures/baseline/max_vs_K', bbox_inches='tight')
@@ -534,7 +534,7 @@ if __name__ == '__main__':
     # max_values(folder, save = False)
     
     
-    path = '../Data/Baseline'
+    path = '../Data/Baseline_fixmove'
     files = get_dirs_in_path(os.path.join(path, 'nocut/spring'))
     maxarg_vs_K(files, save = True)
     

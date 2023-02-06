@@ -1,5 +1,5 @@
 #!/bin/bash
-# Bash script for fetching newest data to a folder custer using rsync
+# Bash script for fetching newest data to a folder from cluster using rsync
 
 ssh=egil
 # FLAGS=(--include '*/' --include '*.txt' --include '*.npy' --include '*.png')

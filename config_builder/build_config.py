@@ -382,7 +382,7 @@ def baseline_dataset(shape = (62, 106)):
     ref = None
     
     # Nocut
-    names =    ['nocut', 'sp1(7,5)', '3215']
+    names =    ['nocut', 'pop1_7_5', 'hon3215']
     matrices = [np.ones((shape[0], shape[1])).astype('int'),
                 pop_up(shape, (7,5), 1, ref),
                 honeycomb(shape, 3, 2, 1, 5, ref)]
@@ -411,6 +411,7 @@ if __name__ == "__main__":
     # pop_up_dataset(shape = (62, 106), min_sp = 1, max_sp = 4, max_cut = (9,13))
     # honeycomb_dataset(shape = (62, 106), min_val = (2, 1, 1, 1), max_val = (3, 5, 5, 5))
     # baseline_dataset()
+    exit()
     
     pass
     
