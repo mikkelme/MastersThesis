@@ -202,7 +202,7 @@
 - Working on integration, equations of motion and Langevin thermostat theory
 - Forget to update log the dates is the logging is not completely accurate. 
 
-#### Week 4 (/01/2023 - 30/01/2023) - Working from Pisa
+#### Week 4 (30/01/2023 - 05/02/2023) - Working from Pisa
 - Discovered that fixmove (no spring) is way more stable and got good results on variable stability for drag speed, T and dt.
 - Got very promising result for mean friction vs stretch with significnat effects on pop up and honeycomb.
 - The normal force load is not really important at the 0.1 to 10 nN scale (which is relatively big load at around 1-10 GPA). This is especially not important for the cut configurations.
@@ -212,6 +212,11 @@
 - Put on a temperature variable test with drag speed of 10 m/s to test if this is significantly different. Otherwise I will just go with 20 m/s for efficiency.
 - Written theory on FK model (commensurability).
 - Writing friction theory in general.
+
+
+#### Week 5 (06/02/2023 - 12/02/2023) - Working from Pisa
+- Submitted 45 honeycomb with #stretch x #F_N = 15 x 3 yielding 2024 data points. 
+- Working on theory section 
 
 ## Things to remember 
 
