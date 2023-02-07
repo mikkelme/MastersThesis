@@ -665,21 +665,107 @@ Further model extensions. Important?
 % \cite{Manini_2016} p. 24.
 
 
-\subsubsection{Expected frictional properties}
+\subsubsection{Graphene friction}
+Theory of friction experiment involving graphene.
+
+
+% Because of this frictional reduction, many studies indicate graphene as the
+% thinnest solid-state lubricant and anti-wear coating [104–106]. (Current trends
+% in the physics of nanoscale friction)
+
+
+% Accurate FFM measurements on few-layer graphene systems show that friction
+% decreases by increasing graphene thickness from a single layer up to 4-5 layers,
+% and then it approaches graphite values [97, 99, 101, 107, 108]. (Current trends
+% in the physics of nanoscale friction)
+
+
+\subsubsection{Experimental procedures / Results?}
+
+% In this chapter we introduce the methods conventionally used to explore friction on the nanoscale. The leading position among the instrumental setups is held by the atomic force microscope. Here we will briefly illustrate the type of forces sensed by this instrument and its basic modes of application. Other experimental techniques in nanotribology are the surface force apparatus, the quartz crystal microbalance and also, to some extent, scanning tunneling microscopy and transmission elec- tron microscopy. \cite{gnecco_meyer_2015}
+
+\begin{itemize}
+  \item Atomic Force Microscope (AFM)
+\end{itemize}
+
+
+% The trouble is that the coefficients of friction measured in nanotribological
+% experiments and in macroscopic “tribotests” routinely differ by orders of
+% magnitude. (\url{https://physicsworld.com/a/friction-at-the-nano-scale/})
+
+
+
+
+\subsubsection{Summary of expected frictional properties}
 % Articles to compare with
 % https://www.mdpi.com/1996-1944/12/9/1425
 % https://pubs.acs.org/doi/10.1021/nn305722d
 
 
+What frictional properties to we expect to see at a nonescale. Numerical and experimental. Refer to theory for each element. Perhaps try to seperate MD and experimental results from each other 
 
+It might not be easy to find experiments of graphene flakes on silicon substrate. 
 
-
+\paragraph*{Qualitatively}
 \begin{enumerate}
-  \item Smooth kinetic friction generally increase with speed  \cite{Manini_2016}. so-called velocity strengthening.  Logaritmic with speed % Gnecco E, Bennewitz R, Gyalog T, Loppacher C, Bam- merlin M, Meyer E, Güntherodt H-J (2000) Velocity dependence of atomic friction. Phys Rev Lett 84:1172–1175. Maybe crosscheck with macroscale to ensure that this is valid for higher velocities. 
-  \item Friction coeffients on the scale 0.01 to 0.03. 
-  % Ruan and Bhushan (1994) used an AFM to investigate the effect of surface roughness on the tribological characteristics of graphite using a Si3N4 tip. It was found that friction coefficient varied with respect to roughness of the substrate. The friction coefficient was below 0.01 and 0.03 for RMS roughness of about 10 nm and 140 nm, respectively. This outcome was attributed to the loss of orientation of the substrate with increasing roughness.33 \cite{kim_nano-scale_2009}
-  \item Occurrence of stick slip (also in MD) \cite{kim_nano-scale_2009} (p. 146)
+  \item Stick slip: We expect to see periodic stick-slip motion with period mathing the lattice constant(s) \cite{mo_friction_2009}. In AFM and SFA experiemnts, the stic-slip motion ten to transistion into smooth sloding when the speed exceeds $\sim 1 \mu$ m/s while in MD modelling the same transistion is observed in the $\sim 1 m/s$ region \cite{Manini_2016}. This 6 order of magnitude discrepancy has been largely discussed in [141-144 \cite{Manini_2016}] in connection with the simplifications in MD simulations. 
+  %Not in agreement: Firstly, our calculations recover the stick-slip behavior of the lat- eral forces, characteristic of FFM sliding experiments. In particular, we find the correct qualitative dependence of stick-slip on the springs stiffness characterizing the cantilever-tip-flake coupling: soft springs allow for clean stick-slip behavior, while hard springs inhibit it. (Atomistic simulations of the sliding friction of graphene flakes)
+
+  \item Static friction: Theoretically static friction is expected... 
+  % For monolayers sliding along atomically uniform substrates, however, there is
+  % essentially no static friction. Indeed, the friction in these systems can be
+  % up to 105 times less than that for macroscopic lubricants such as graphite.
+  % This raises questions about the fundamental dissipation mechanisms that are at
+  % work in systems at different scales.
+  % (\url{https://physicsworld.com/a/friction-at-the-nano-scale/})
+
+  \item Oritentation. Due to commensurability it is expected that the friction will vary along different orientations. In a numerical study by Zhu et al. \cite{zhu_study_2018} they found that a graphene flake sliding on a gold substrate exhibit the highest friction when sliding along the armchair direction. (We chose to slide aliong the zigzag directio more or less by random choice)
+  
+  
 \end{enumerate}
+  
+  
+  \paragraph*{Variable dependence}
+  
+  \begin{enumerate}
+  \item Normal force: The general trend observed in AFM nanoscale friction is that friction force increase with normal load \cite{gnecco_meyer_2015}. 
+  \item Velocity: Smooth kinetic friction generally increase with speed (velocity strengthening) \cite{Manini_2016}. E. Gnecco et al. \cite{PhysRevLett.84.1172} showed a logaritmic increase in mean friction with velocity (the tip of a friction force microscope and NaCl(100) at low velocity ($10^-9$ - $10^-6$ m/s)).  If the scan velocity increases thermally activated processes becomes less important and beyond a critical value the friction forces becomes independent of velocity \cite[p. 202]{gnecco_meyer_2015}
+  \item Temperature: A decrease in friction as $1/T$ was observed by Zhao et al. in a series of AFM measurements on graphite in a wide temperature range (140-750 K) \cite[source 351]{gnecco_meyer_2015}
+  % Zhao et al. (2007) observed that friction on graphite decreases as 1/T over a wide temperature range (140–750 K), supporting the hypothesis of thermal activation of the stick–slip process. However, it was only recently that group of Schirmeisen reported atomic-scale FFM mea- surements in UHV at different temperatures (Jan- sen et al. 2010). When silicon, SiC, ionic crystals and graphite surfaces were cooled down from room temperature to cryogenic conditions, a good agreement with the thermally activated PT model was found down to a peak or a plateau, appearing between 50 and 200 K. Below these values, the friction was found to decrease with temperature, which the authors attributed to the competition between thermally activated rupture and formation of chemical bonds (Barel et al. 2010). \cite{BHUSHAN20051507}
+  \item Ruan and Bhushan (1994) (source) found in an AFM study on graphite that the friction coefficient was around $\sim 0.01 - 0.03$
+  % Ruan and Bhushan (1994) used an AFM to investigate the effect of surface roughness on the tribological characteristics of graphite using a Si3N4 tip. It was found that friction coefficient varied with respect to roughness of the substrate. The friction coefficient was below 0.01 and 0.03 for RMS roughness of about 10 nm and 140 nm, respectively. This outcome was attributed to the loss of orientation of the substrate with increasing roughness.33 \cite{kim_nano-scale_2009}
+  \item Contact area
+\end{enumerate}
+
+
+
+
+\begin{table}[H]
+  \begin{center}
+  \caption{Quantitative nano friction dependence on various variables.}
+  \label{tab:var_dep}
+  \begin{tabular}{ | c | m{5cm}| m{5cm}| m{5cm}|} \hline
+  \textbf{Variable} & \textbf{Dependency} & \textbf{Numerical studies} & \textbf{Experimental} \\ \hline 
+  Normal force $F_N$ 
+  &  $F_f$ increasing $F_N$
+  & MD simulations of amorphous carbon asperity on diamond substrate suggest a linear relatioship to $F_f\propto F_N$ for nonadhesive contact and sublinear with van der waals adhesive forces \cite{mo_friction_2009}. Graphene flake?
+  & The general trend observed in AFM nanoscale friction is that friction force increase with normal load \cite[p.200]{gnecco_meyer_2015}. Various trends have been observed from linear to power trends. 
+  \\ \hline
+  Velocity $v$& $F_f \propto \ln{v}$ & & \\ \hline
+  Temperature $T$& $F_f \propto 1/T$ & & \\ \hline
+  Real contact area $A$ & $F_f \propto A$ & & \\ \hline
+  \end{tabular}
+  \end{center}
+\end{table}
+
+
+
+
+% \begin{enumerate}
+%   \item Smooth kinetic friction generally increase with speed  \cite{Manini_2016}. so-called velocity strengthening.  Logaritmic with speed % Gnecco E, Bennewitz R, Gyalog T, Loppacher C, Bam- merlin M, Meyer E, Güntherodt H-J (2000) Velocity dependence of atomic friction. Phys Rev Lett 84:1172–1175. Maybe crosscheck with macroscale to ensure that this is valid for higher velocities. 
+ 
+%   \item Occurrence of stick slip (also in MD) \cite{kim_nano-scale_2009} (p. 146)
+% \end{enumerate}
 
 % Thus, it is commonly expected that the
 % friction of a dry nanocontact should classically decrease with increasing
@@ -690,15 +776,10 @@ Further model extensions. Important?
 % Thus far we have used thermal activation to explain the velocity dependence of friction. The same mechanism also predicts that friction should change with temperature. \cite{BHUSHAN20051507}
 
 
-% Zhao et al. (2007) observed that friction on graphite decreases as 1/T over a wide temperature range (140–750 K), supporting the hypothesis of thermal activation of the stick–slip process. However, it was only recently that group of Schirmeisen reported atomic-scale FFM mea- surements in UHV at different temperatures (Jan- sen et al. 2010). When silicon, SiC, ionic crystals and graphite surfaces were cooled down from room temperature to cryogenic conditions, a good agreement with the thermally activated PT model was found down to a peak or a plateau, appearing between 50 and 200 K. Below these values, the friction was found to decrease with temperature, which the authors attributed to the competition between thermally activated rupture and formation of chemical bonds (Barel et al. 2010). \cite{BHUSHAN20051507}
 
 
-% For monolayers sliding along atomically uniform substrates, however, there is
-% essentially no static friction. Indeed, the friction in these systems can be
-% up to 105 times less than that for macroscopic lubricants such as graphite.
-% This raises questions about the fundamental dissipation mechanisms that are at
-% work in systems at different scales.
-% (\url{https://physicsworld.com/a/friction-at-the-nano-scale/})
+
+
 
 
 % Look for source on affect on friction when stretching. Since we control the area through that there might be a stretch effect that is even stronger. 
@@ -707,24 +788,26 @@ Further model extensions. Important?
 
 
 
+% 
+
 % Hint for explaining increase with stretch: Both micro-tribotester and AFM were used to investigate the micro/nano frictional behavior. It was reported that contact angle between the groove and the pin affected the frictional characteristics significantly. High contact angle led to a sudden increase in the frictional force due to interlocking mechanism. \cite{kim_nano-scale_2009}
 % These works suggest that frictional behavior at micro/nano scale is very much dependent on the surface structure and topography. Furthermore, the contact geometry between the tip and the surface such as area and orientation of the contacting angle affect the frictional force significantly. \cite{kim_nano-scale_2009}
 
 
 
-Should period macth the lattice spacing as described in \cite{kim_nano-scale_2009}[p. 144]
+% Should period macth the lattice spacing as described in \cite{kim_nano-scale_2009}[p. 144]
 
 
 
-Maybe talk about the slip line as shown in figure \ref{fig:slip_line}
+% Maybe talk about the slip line as shown in figure \ref{fig:slip_line}
 
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.5\linewidth]{figures/theory/slip_line.png}
-  \caption{\hl{Temporary} figure from \cite{kim_nano-scale_2009}[p. 144]}
-  \label{fig:slip_line}
-\end{figure}
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.5\linewidth]{figures/theory/slip_line.png}
+%   \caption{\hl{Temporary} figure from \cite{kim_nano-scale_2009}[p. 144]}
+%   \label{fig:slip_line}
+% \end{figure}
 
 % \begin{enumerate}
 %   \item Friction should decrease by increasing temperature.
@@ -744,7 +827,10 @@ Maybe talk about the slip line as shown in figure \ref{fig:slip_line}
 % the smallest force needed to set a slider in motion – is also dependent on the simulation time (a longer wait may lead to depinning when a short wait might not), and generally dependent on system size, often increasing with sub-linear scaling with the slider’s contact area. To address this kind of behavior in MD simulations, it is often necessary to resort to scaling arguments in order to extrapolate the large-area static friction from small-size MD simulations [131, 140] \cite{Manini_2016}.
 
 
-% In AFM and SFA experiments, stickslip and its associated characteristically high friction and mechanical hysteresis tend to transition into smooth sliding when the speed exceeds $\sim$ 1 $\mu$m/s; in contrast, in MD modeling the same transition is observed in the $\sim$ 1 m/s region.  This 6-order-ofmagnitude discrepancy in speed between experiments and simulations is well known and has been largely discussed [141–144] in connection with the effective mass distributions and spring-force constants, that are vastly different, and highly simplified in simulations. \cite{Manini_2016}
+% Section 15.3. As shown in Section 15.1, the maximum value of the static friction and the slope of the turning points of the F(x) curves can be used to determine the corrugation U0 of the tip–surface interaction potential and the effective lat- eral stiffness k of the system. From Fig. 18.1(b) we estimate U0 ≈ 0.22 eV and k ≈1N/m. \cite{gnecco_meyer_2015} p. 197
+
+
+
 
 
 
@@ -757,32 +843,6 @@ Maybe talk about the slip line as shown in figure \ref{fig:slip_line}
 
 
 % See ``Selected Results of MD Simulations'' in \cite{Manini_2016} p. 24.
-
-\subsection{Graphene friction}
-Theory of friction experiment involving graphene.
-
-
-Because of this frictional reduction, many studies indicate graphene as the
-thinnest solid-state lubricant and anti-wear coating [104–106]. (Current trends
-in the physics of nanoscale friction)
-
-
-Accurate FFM measurements on few-layer graphene systems show that friction
-decreases by increasing graphene thickness from a single layer up to 4-5 layers,
-and then it approaches graphite values [97, 99, 101, 107, 108]. (Current trends
-in the physics of nanoscale friction)
-
-
-\subsubsection{Experimental procedures}
-
-\begin{itemize}
-  \item Atomic Force Microscope (AFM)
-\end{itemize}
-
-
-% The trouble is that the coefficients of friction measured in nanotribological
-% experiments and in macroscopic “tribotests” routinely differ by orders of
-% magnitude. (\url{https://physicsworld.com/a/friction-at-the-nano-scale/})
 
 
 
