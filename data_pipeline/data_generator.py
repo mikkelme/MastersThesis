@@ -8,7 +8,7 @@ from simulation_manager.multi_runner import *
 from analysis.analysis_utils import get_files_in_folder
 
 class Data_generator:
-    def __init__(self, filename, header =  'egil:CONFIGS/honeycomb', simname = 'test', config_ext = None):
+    def __init__(self, filename, header =  'egil:CONFIGS/TEST', simname = 'test', config_ext = None):
         
         try:
             self.mat = np.load(filename)
@@ -117,7 +117,7 @@ class Data_generator:
             os.remove(lammps_file_info)    
                 
     
-    def run_multi(self, F_N = None, variables = {}, num_procs = 16):
+    def run_multi(self, F_N = None, variables = {}, num_procs = 1):
         
         # Intialize simulation runner
         proc = Simulation_runner(variables)
@@ -134,7 +134,7 @@ class Data_generator:
         proc.config_path = self.config_path
         
         # Multi run settings 
-        num_stretch_files = 3
+        num_stretch_files = 15
         
         if F_N is None:
             F_N = np.sort(np.random.uniform(0.1, 10, 3))*1e-9
@@ -169,14 +169,14 @@ def run_files(filenames, header, simname):
 
 
 if __name__ == "__main__":
-    filenames = get_files_in_folder('../config_builder/baseline/', ext = 'npy')
-    run_files(filenames, header =  'egil:CONFIGS/TEST', simname = 'test')
+    filenames = get_files_in_folder('../config_builder/honeycomb/', ext = 'npy')
     
-    # files = get_files_in_folder('../config_builder/honeycomb/', ext = '.npy')
-    # files = files[20:]
-    # print(files)
-    # run_files(files, header =  'egil:CONFIGS/honeycomb', simname = 'single_run')
-    
+    filenames = filenames[40:]
+    print(filenames)
+    exit()
+    run_files(filenames, header =  'egil:CONFIGS/honeycomb', simname = 'hon')
+   
+   
     pass
     
     

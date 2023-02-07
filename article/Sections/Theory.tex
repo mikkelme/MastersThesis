@@ -339,9 +339,7 @@ This result show that the relationship between contact area and friction is expe
 
 \subsubsection{Frenkel-Kontorova}
 
-% Based on \cite{Manini_2016}. One model for the description of atomic scale
-% fricion is the Frnkel-Kontorova-Tomlinson (FKT) model, named after its main
-% contributers, which considers ...
+% Based on \cite{Manini_2016} and \cite{FK2D}.
 
 The Frenkel-Kontorova (FK) model builds upon the time-honered PT model describing a
 point-like tip sliding over a space-periodic crystalline surface. The FK model
@@ -366,7 +364,10 @@ is
 where the first term $p_i^2/2m$ represents the kinetic energy with momentum $p$
 and mass $m$. The next term describes the harmonic interaction with elastic
 constant $K$, nearest neighbour distance $\Delta x = x_{i+1} - x_i$ and 
-corresponding nearest neighbour equilibrium distance $a_c$. The final term represents the periodic substrate potential with amplitude $U_0$ and period $a_b$. Different boundary choices can be made, but the most natural one is the free ends choice (rigt?). 
+corresponding nearest neighbour equilibrium distance $a_c$. The final term represents the periodic substrate potential (external potential on site) with amplitude $U_0$ and period $a_b$. Different boundary choices can be made, with both free ends or periodic conditions being reasonable. For fixed ends the chain will never be able to slide off. 
+
+
+% Often, the effects of inertia are neglected, and this is referred to as the static FK model. Inclusion of kinetic energy instead results in what is known as the dynamic FK model. \cite{FK2D}
 
 
 \begin{figure}[H]
@@ -379,7 +380,7 @@ corresponding nearest neighbour equilibrium distance $a_c$. The final term repre
 By applying an external force to the chain one can use the FK model to
 investigate static friction. It turns out that the sliding properties are entirely governed by its topological excitations referred to as so-called \textit{kinks} and \textit{antikinks}
 
-\paragraph*{Commensurability} We can describe the frictional behvaiour in terms of commensurability, that is, how well thus the spacing of the atomns match the periodic substrate potential. We describe this by the coverage $\theta = N / M = a_b / a_c$ where $M$ denotes the number of minemas in the potential (in the range of the chain). A rational number for $\theta$ means that atoms align with minemas corresponding to a \textit{commensurate} case. If $\theta$ is irrational the chain and substrate cannot fully align, and we denote this as an \textit{incommensurability} case.
+\paragraph*{Commensurability} We can describe the frictional behvaiour in terms of commensurability, that is, how well thus the spacing of the atomns match the periodic substrate potential. We describe this by the winding number/coverage/length ratio $\theta = N / M = a_b / a_c$ where $M$ denotes the number of minemas in the potential (in the range of the chain). A rational number for $\theta$ means that atoms align with minemas corresponding to a \textit{commensurate} case. If $\theta$ is irrational the chain and substrate cannot fully align, and we denote this as an \textit{incommensurability} case.
 
 
 Let us begin with the simplest commensurate case of $\theta = 1$ where the
@@ -397,7 +398,7 @@ Thus, the motion of kinks (antikinks), i.e. the displacement of extra atoms
 the ideal zero temperature case with a quasistatically increase in
 force all atoms would be put into an accelerating motion as soon as the energy
 $NU_0$ is present. However, in reality any thermal excitation would excite the
-system beofre this point is reached by the creation of kink-antikink pairs that would travel down the chain. For a chain of finite length these often accour at the end of the chain running in opposite direction. As a kink travels down the chain the atoms is advanced one atom spacing $a_b$ along the substrate potential.  This cascade of kink-antikink exications is shown in figure \ref{fig:kink_antikink}
+system before this point is reached by the creation of kink-antikink pairs that would travel down the chain. For a chain of finite length these often accour at the end of the chain running in opposite direction. As a kink travels down the chain the atoms is advanced one atom spacing $a_b$ along the substrate potential.  This cascade of kink-antikink exications is shown in figure \ref{fig:kink_antikink}
 
 
 \begin{figure}[H]
@@ -430,32 +431,103 @@ where the increased stress is eventually released through a localized expansion
   \label{fig:incommensurable_example}
 \end{figure}
 
+% Maybe use the strength $\lambda = U_0 / (K a_b^2)$ with critical strength $\lambda_c$ instead of critical $K$?
+
 The incommensurable FK model contains a critical elastic constant $K_c$, such
-that for $K > K_c$ in an infinte chain the static friction $F_s$ drops to
-zero making the chain able to slide at no energy cost. This can be
-explained by the fact that the displacement accouring in the incommensurable
-case will yield just as many atoms climbing up a corrugation as there are atoms climbing down. For an infinite chain this will exactly balance the interatomic forces making it non-resistant to sliding. Generally, incommensurability
-guarantees that the total energy (for $T=0$) is independent of the relative
-position to the potential. However, when sliding freely a single atom will
-eventually occupy a maximum of the potential. When increasing the potential
-magnitude $U_0$ of softning the chain stiffness, lowering $K$, the possibility to occupy such a maximum is no longer present. This marks the so-called \text{Aubry transition} at the critical elasric constant $K = K_c(U_0, \theta)$ where the chain goes from a free sliding to a \textit{pinned state} with a nonzero static friction. $K_c$ is a discontinuous function of the ratio $\theta$, due to the reliance on irrational numbers for incommensurability (?, get plot of this?). The minimal value $K_c \simeq 1.0291926 $ in units $[2 U_0 (\pi / a_b)^2]$ is achieved for the golden-mean
-ratio $\theta = (1+\sqrt{5}/2)$. Notice that the pinning is provided despite translational invariance due to the inaccessibility to move past the energy barrier which act as dynamical constraint. The Aubry transistion can be invistigated as first-order phase transistion for which power laws can be defined for the order parameter. This is beyond the scope of this thesis as we merely are going to point to the FK model for the understanding of stick-slip behvaiour and the concept of commensurability.
+that for $K > K_c$ (in an infinte chain?) the static friction $F_s$ drops to zero
+making the chain able to slide at no energy cost. This can be explained by the
+fact that the displacement accouring in the incommensurable case will yield just
+as many atoms climbing up a corrugation as there are atoms climbing down. For an
+infinite chain this will exactly balance the interatomic forces making it
+non-resistant to sliding. Generally, incommensurability guarantees that the
+total energy (for $T=0$) is independent of the relative position to the
+potential. However, when sliding freely a single atom will eventually occupy a
+maximum of the potential. When increasing the potential magnitude $U_0$ of
+softning the chain stiffness, lowering $K$, the possibility to occupy such a
+maximum is no longer present. This marks the so-called \text{Aubry transition}
+at the critical elasric constant $K = K_c(U_0, \theta)$ where the chain goes
+from a free sliding to a \textit{pinned state} with a nonzero static friction.
+$K_c$ is a discontinuous function of the ratio $\theta$, due to the reliance on
+irrational numbers for incommensurability (?, get plot of this?). The minimal
+value $K_c \simeq 1.0291926 $ in units $[2 U_0 (\pi / a_b)^2]$ is achieved for
+the golden-mean ratio $\theta = (1+\sqrt{5}/2)$. Notice that the pinning is
+provided despite translational invariance due to the inaccessibility to move
+past the energy barrier which act as dynamical constraint. The Aubry transistion
+can be invistigated as first-order phase transistion for which power laws can be
+defined for the order parameter. This is beyond the scope of this thesis as we
+merely are going to point to the FK model for the understanding of stick-slip
+behvaiour and the concept of commensurability.
 
-The phenonema of non-pinned configurations is named \textit{superlubricity} in trobological context. Despite the misleadning name this referes to the case where the static friction is zero while the kinetic friction is nonzero but reduced. For the case of a 2D sheet it is possible to alter the commensurability by changing the orientation of the sheet relative to the substrate. This has been shown for a graphene flake (single layer) sliding over a graphite surface (multiple layers) [\cite{Manini_2016} 45-47]. For incommensurability orientations the friction force was extremely weak (order 50 pN), compared to ELSE. 
+The phenonema of non-pinned configurations is named \textit{superlubricity} in
+trobological context. Despite the misleadning name this referes to the case
+where the static friction is zero while the kinetic friction is nonzero but
+reduced. For the case of a 2D sheet it is possible to alter the commensurability
+by changing the orientation of the sheet relative to the substrate. This has
+been shown for a graphene flake (single layer) sliding over a graphite surface
+(multiple layers) [\cite{Manini_2016} 45-47]. For incommensurability
+orientations the friction force was extremely weak (order 50 pN), compared to
+\hl{ELSE}. 
 
-%
-%
-% Working here
-%
-%
-%
+
+% One way to reduce friction is through incommensurability, i.e. structural incompatibility between the sliding surfaces on the atomic level. This effect, often called structural superlubricity [3–5], has been observed experimentally in nanoscale contacts, for example in graphite [6].\cite{FK2D}
 
 
-When considering the nonzero temperature case for the FK model one would have to add a thermostat such as the Langevin thermostat (see theory section ?). Thermal fluctuations can then overcome pinning effects even in fully commensurate cases. This also give rise to a damping force proportional to sliding velcoty as a mean of modelling the dissapitve force accouring.
 
-By applying a finite driving force it is known that a pinned configuration will go through several first-order dynamical pahse transistions as the system transfers from a pinned to a sliding state. 
 
-% Talk about kinetic friction in the FK or FKT model ?!?!?
+
+\paragraph*{Kinetic friction}
+% Maybe check out for more info on the 1D model: Y. S. Kivshar O. M. Braun. The Frenkel-Kontorova Model. Springer, 1st edition, 2004.
+
+%Based on \cite{FK2D}
+
+
+% The FK model can also describe phonons and heat in the lattices, which absorb the kinetic energy of the sliding[4]. \cite{FK2D}
+
+% Consequently, the FK model is the simplest model in which dynamic friction is emergent, while in other models some form of heuristic damping must be included.\cite{FK2D}
+
+In the FK model the kinetic friction is primarily caused by resonance between
+the sliding induced vibrations and phonon modes in the chain \cite{FK2D}. We
+can consider the case where all particels slide uniformly over the potential
+with velocity $v^+$ such that a so-called washboard frequency is induced with angular frequency $\Omega = 2\pi v^+ / a_b$. (The following is a bit shaky and should be double checked). The periodicity of the potential corresponds to a wavenumber of $q = 2\pi \theta$ (?)for phonons in the chain. The phonon dispersion relation for a 1D chain of atom is given (source)
+\begin{align*}
+  \omega =\sqrt{\frac{4 K}{M}} \sin{\left(\frac{k a_b}{2}\right)}
+\end{align*}
+for wavenumber $k$. Resonances will accour when the washboard frequency matches the phonon dispersion relation for $k = q$ or any of the harmonics $k = nq$, $n = 1, 2, 3, \cdots$ yielding
+\begin{align*}
+  n_1 \Omega(v^+) &= n_2 \omega(k=nq) \\
+  n_1 \frac{2\pi v^+}{a_b} &= n_2 \sqrt{\frac{4 K}{M}} \sin{(n\pi \theta a_b)} \\
+  n_1 v^+ &= n_2 \sqrt{\frac{K}{M}} a_b\frac{\sin{(n\pi a_c)}}{\pi} \\
+  v^+ &\sim (?) \sqrt{\frac{K}{M}} a_b\frac{\sin{(n\pi a_c)}}{n\pi}
+\end{align*}
+for additional integers $n_1$ and $n_2$ (Doesn't really make sense to combine the intergers like that, so go back and check \cite{FK2D}). Thus when the chain slides with a velocity around resonance, the washboard frequency can excite acoustic phonons which will dissipate to other phonon modes as well.
+At zero temperature the energy will transform back and forth between internal
+degrees of freedom and center of mass movement of the chain. Hence, at zero
+temperature this will speed up the translation decay (decay is synonymous
+for translational movement right?). However, for the more realistic case of non-zero temperature the substrate serves as a thermostat for which energy will
+dissipate from the chain to the substrate degrees of freedom giving rise to
+kintetic friction. A common way to model the non-zero temperature case is by the
+use of a Langevin thermostat, which simulates dissipation by adding a viscous
+damping force and thermal fluctuations by the addition of Gaussian random forces
+with variance proportional to the temperature (This is covered in more details
+in section \ref{sec:langevin}). In combinatio, this gives rise to a kinetic friction that is both velocity and temperature dependent. 
+
+By extending the FK model into 2D \cite{FK2D} it can be shown numerically that the friction coefficient generally increases with increasing velocity and temperature resepctively. 
+
+
+
+
+% Static friciton behvaiour is robust and remains similar in 2D but dynamical friction is strongly influenced. 
+
+
+
+
+% When considering the nonzero temperature thermal fluctuations can then overcome pinning effects even in fully commensurate cases.
+
+
+
+% By applying a finite driving force it is known that a pinned configuration will go through several first-order dynamical pahse transistions as the system transfers from a pinned to a sliding state. 
+
+
 
 % At face value, the transition from a static strained configuration to full
 % sliding is conceptually as simple as overcoming an energy barrier. However,
@@ -499,11 +571,12 @@ By applying a finite driving force it is known that a pinned configuration will 
 
 \subsubsection{FK extension: Frenkel-Kontorova-Tomlinson (FKT)}
 
-Several extensions has been provided for the FK model with modifications of the
-interactions or system dimensionality. Anharmonicity of the chain 
+Further model extensions. Important? 
+% Several extensions has been provided for the FK model with modifications of the
+% interactions or system dimensionality. Anharmonicity of the chain 
 
 
-However, Weiss and Elmer (1995) proposed that the model had a deficiency. They suggested that in the FK model, there was no connection between the atoms and the sliding body. Therefore, Frenkel-Kontorova-Tomlinson (FKT) model that combines the FK model with the Tomlinson model was proposed. \cite{kim_nano-scale_2009}
+% However, Weiss and Elmer (1995) proposed that the model had a deficiency. They suggested that in the FK model, there was no connection between the atoms and the sliding body. Therefore, Frenkel-Kontorova-Tomlinson (FKT) model that combines the FK model with the Tomlinson model was proposed. \cite{kim_nano-scale_2009}
 
 
 % The Frenkel-Kontorova-Tomlinson (FKT) model [61, 62] introduces an harmonic
@@ -525,24 +598,22 @@ However, Weiss and Elmer (1995) proposed that the model had a deficiency. They s
 % of hexagonal symmetry [83].  \cite{Manini_2016}
 
 
-\subsubsection{Other stuff}
+% \subsubsection{Other stuff}
 
 
-At nanoscales things get a bit more unclear. SFM (explain) experiments have
-reported (copy sources 5, 6, 21 from \cite{mo_friction_2009}) where $F_f \propto
-F_N$ or even with these quantities being nearly independent of each other.
+% At nanoscales things get a bit more unclear. SFM (explain) experiments have
+% reported (copy sources 5, 6, 21 from \cite{mo_friction_2009}) where $F_f \propto
+% F_N$ or even with these quantities being nearly independent of each other.
 
 % \cite{physicsworld_2005}
 
-Physically relevant quantities, including the average friction force, the slider and the lubricant mean velocities, several correlation functions, and the heat flow can be evaluated numerically by carrying out suitable averages over the model dynamics of a sliding interface, as long as it is followed for a sufficiently long time. The modeling of friction must first of all address correctly ordinary equilibrium and near-equilibrium phenomena, where the fluctuation-dissipation theorem (Sec. 2) governs the smooth conversion of mechanical energy into heat, but most importantly it must also deal with inherently nonlinear dissipative phenomena such as instabilities, stick-slip, and all kinds of hysteretic response to external driving forces, characteristic of non-equilibrium dynamics. 
-\cite{Manini_2016}
+% Physically relevant quantities, including the average friction force, the slider and the lubricant mean velocities, several correlation functions, and the heat flow can be evaluated numerically by carrying out suitable averages over the model dynamics of a sliding interface, as long as it is followed for a sufficiently long time. The modeling of friction must first of all address correctly ordinary equilibrium and near-equilibrium phenomena, where the fluctuation-dissipation theorem (Sec. 2) governs the smooth conversion of mechanical energy into heat, but most importantly it must also deal with inherently nonlinear dissipative phenomena such as instabilities, stick-slip, and all kinds of hysteretic response to external driving forces, characteristic of non-equilibrium dynamics. 
+% \cite{Manini_2016}
 
 
-
-
-In several works by J. Fineberg’s group [2–4] the transition from sticking to
-sliding is characterized by slip fronts propagating along the interface.
-\cite{Manini_2017}[p. 2]. 
+% In several works by J. Fineberg’s group [2–4] the transition from sticking to
+% sliding is characterized by slip fronts propagating along the interface.
+% \cite{Manini_2017}[p. 2]. 
 
 
 
@@ -590,15 +661,16 @@ sliding is characterized by slip fronts propagating along the interface.
 
 
 
+% \subsection{Multi scale models?}
+% \cite{Manini_2016} p. 24.
 
-\subsection{Multi scale models?}
-\cite{Manini_2016} p. 24.
 
-\subsection{Summary of expected frictional properties}
-
+\subsubsection{Expected frictional properties}
 % Articles to compare with
 % https://www.mdpi.com/1996-1944/12/9/1425
 % https://pubs.acs.org/doi/10.1021/nn305722d
+
+
 
 
 
@@ -1138,7 +1210,7 @@ As we already mentioned above in Sec. 2, any kind of sliding friction involves m
 Likewise all excitations generated in the simulations should be allowed to propagate in the system and disperese in the bulk of both sheet and substrate. Due to small simulation size theese is likely to relfect back and ´´pile up'' unphysically Thus in order to avoid continuous heating and attain a steady state the (Joule) heat must be removed at a steady state. This is very the viscous damping of the langevin equations enter the picture. It can be difficulut to set the value $\gamma$ for the magnitude of this damping. The unphysical introduction of heat sink can be mittigated by some modifictions he mention, which is kind of next level I guess. 
 
 
-\subsubsection*{Langevin thermostat}
+\subsubsection{Langevin thermostat} \label{sec:langevin}
 
 % Check out \cite{Manini_2016} for a good theory section on this that I had
 % completely missed when writing this!
