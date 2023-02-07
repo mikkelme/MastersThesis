@@ -37,7 +37,7 @@ def vline(ax, x, **kwargs):
         without changing ylim of axes """
         
     ylim = ax.get_ylim()
-    if hasattr(ylim, '__len__'):
+    if hasattr(ylim[0], '__len__'):
         ylim = ylim[0]
         
     ax.vlines(x, ylim[0], ylim[1], **kwargs)

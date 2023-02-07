@@ -317,7 +317,7 @@ def pop_up_dataset(shape = (62, 106), min_sp = 1, max_sp = 4, max_cut = (9,13)):
                     if (np.abs(i - j) - 2)%4 == 0:
                         count += 1  
                         mat = pop_up(shape, size = (i,j), sp = sp, ref = ref)
-                        name = f'sp{sp}({i},{j})'
+                        name = f'pop{sp}_{i}_{j}'
                         if store:
                             print(f'\rStoring ({count:03d})| overwrite = {overwrite} | sp = {sp}/{max_sp}, size = ({i:02d},{j:02d})/({max_cut[0]},{max_cut[1]}) ', end = "")
                             builder = config_builder(mat)
@@ -354,7 +354,7 @@ def honeycomb_dataset(shape = (62, 106), min_val = (2, 1, 1, 1), max_val = (3, 5
                 for bridge_len in (x for x in range(min_val[3], max_val[3]+1) if x%2 == 1):
                         count += 1  
                         mat = honeycomb(shape, xwidth, ywidth, bridge_thickness, bridge_len, ref = ref)
-                        name = f'{xwidth}{ywidth}{bridge_thickness}{bridge_len}'
+                        name = f'hon{xwidth}{ywidth}{bridge_thickness}{bridge_len}'
                         
                         if store:
                             print(f'\rStoring ({count:03d})| overwrite = {overwrite} | ({xwidth}, {ywidth}, {bridge_thickness}, {bridge_len})/({max_val[0]}, {max_val[1]}, {max_val[2]}, {max_val[3]})', end = "")
@@ -418,7 +418,7 @@ if __name__ == "__main__":
     
     # mat = honeycomb((60, 106), 3, 2, 1, 5)
     # mat = pop_up((60, 106), (5,7), 1)
-    mat = honeycomb((60, 106), 3, 2, 1, 5)
+    # mat = honeycomb((60, 106), 3, 2, 1, 5)
     # mat[:] = 1
     # mat[mat == 1] = 2
     # mat[mat == 0] = 1

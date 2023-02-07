@@ -32,8 +32,9 @@ def get_data_points(multi_dirs):
     info_file = 'info_file.txt'
     friction_ext = 'Ff.txt'
     mean_pct = 0.5
-    std_pct = 0.2
+    std_pct = 0.35
     
+
     count = 0
     os.mkdir("tmp_data")
     for dir in multi_dirs:
@@ -83,7 +84,7 @@ def get_data_points(multi_dirs):
             # Analyse friction file
             if not info_dict['is_ruptured']:
                 friction_file = find_single_file(root, ext = friction_ext)     
-                fricData = analyse_friction_file(friction_file, mean_pct, std_pct)
+                _, fricData = analyse_friction_file(friction_file, mean_pct, std_pct)
                 
                 data['Ff_max'] = fricData['Ff'][0, 0]
                 data['Ff_mean'] = fricData['Ff'][0, 1]
@@ -118,7 +119,6 @@ def get_data_points(multi_dirs):
 
 
 if __name__ == "__main__":
-    dir = '../Data/CONFIGS/cut_sizes'
+    dir = '../Data/CONFIGS/TEST'
     multi_dirs = locate_multi_dir(dir)
     get_data_points(multi_dirs)
-    # get_data_points(folder)
