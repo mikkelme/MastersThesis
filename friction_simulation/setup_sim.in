@@ -254,7 +254,7 @@ variable contact_cut_off equal 4.0
 timestep $(v_dt)
 variable damp equal 1.0 # ps                        
 fix nve NVE_atoms nve # (microcanonical) 
-fix nvt NVT_atoms langevin ${T} ${T} ${damp} 48279 # (canonical) # RN SEED instead?
+fix nvt NVT_atoms langevin ${T} ${T} ${damp} 48279 # (canonical)
 
 fix 2 all balance 1000 1.05 shift xy 10 1.05 # balance number of particles computed on each processor 
 fix PB_ave PB_tot_rigid aveforce NULL NULL 0 # Average z-force
@@ -381,8 +381,6 @@ label skip_dump
 # dump view1 NVT_atoms custom $(v_dump_freq) NVT_atoms.data id type x y z                                 #
 # dump view2 pure_NVE custom $(v_dump_freq) pure_NVE.data id type x y z                                   #
 # dump view3 locked custom $(v_dump_freq) locked.data id type x y z                                       #
-# dump PB_ylow_rigid PB_ylow_rigid custom $(v_dump_freq) PB_ylow_rigid.data id type x y z    
-# dump PB_yhigh_rigid PB_yhigh_rigid custom $(v_dump_freq) PB_yhigh_rigid.data id type x y z    
 # run 1
 # quit
 #########################################################################################################

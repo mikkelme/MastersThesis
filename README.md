@@ -217,6 +217,7 @@
 #### Week 5 (06/02/2023 - 12/02/2023) - Working from Pisa
 - Submitted 45 honeycomb with #stretch x #F_N = 15 x 3 yielding 2024 data points. 
 - Working on theory section 
+- Found problems of running with single core on Egil. Issue it not resolved but 4 cores per job seems to be stable and reasonable.
 
 ## Things to remember 
 
