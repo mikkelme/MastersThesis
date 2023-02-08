@@ -54,8 +54,8 @@ rupture_detection ${rupture_detection} &
 # Add spring to restrict rotation or movement of sheet COM:
 #  - Hold PB COM in initial x-position
 #  - Hold sheet COM in initial position
-fix PB_ylow_x_hold PB_ylow_rigid spring tether 1e5 $(c_sheet_COM[1]) NULL NULL 0.0
-fix PB_high_x_hold PB_yhigh_rigid spring tether 1e5 $(c_sheet_COM[1]) NULL NULL 0.0
+fix PB_ylow_x_hold PB_ylow_rigid spring tether 1e5 $(c_PB_tot_COM[1]) NULL NULL 0.0
+fix PB_high_x_hold PB_yhigh_rigid spring tether 1e5 $(c_PB_tot_COM[1]) NULL NULL 0.0
 fix sheet_COM_hold full_sheet spring tether 1e5 $(c_sheet_COM[1]) $(c_sheet_COM[2]) NULL 0.0
 
 print "--> Relax: $(v_relax_steps) timesteps, $(v_relax_steps*dt) ps"

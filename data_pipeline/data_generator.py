@@ -117,7 +117,7 @@ class Data_generator:
             os.remove(lammps_file_info)    
                 
     
-    def run_multi(self, F_N = None, variables = {}, num_procs = 1):
+    def run_multi(self, F_N = None, variables = {}, num_procs_initial = None, num_procs = 16):
         
         # Intialize simulation runner
         proc = Simulation_runner(variables)
@@ -149,7 +149,7 @@ class Data_generator:
         
         
         # Start multi run
-        root_path = proc.multi_run(self.header, self.dir, F_N, num_procs = num_procs, jobname = self.config_ext)
+        root_path = proc.multi_run(self.header, self.dir, F_N, num_procs_initial, num_procs = num_procs, jobname = self.config_ext)
         
         # Transfer config npy- and png-file 
         proc.move_files_to_dest([self.npy_file, png_file], root_path)
@@ -161,20 +161,19 @@ class Data_generator:
         
 
 
-def run_files(filenames, header, simname):
+def run_files(filenames, header, simname, num_procs_initial = None, num_procs = 16):
     for file in filenames:
         gen = Data_generator(file, header, simname)
-        gen.run_multi()
+        gen.run_multi(num_procs_initial = num_procs_initial, num_procs = num_procs)
         
 
 
 if __name__ == "__main__":
     filenames = get_files_in_folder('../config_builder/honeycomb/', ext = 'npy')
     
-    filenames = filenames[40:]
-    print(filenames)
-    exit()
-    run_files(filenames, header =  'egil:CONFIGS/honeycomb', simname = 'hon')
+    filenames = filenames[5:10]
+    run_files(filenames, header =  'egil:CONFIGS/honeycomb', simname = 'hon', num_procs_initial = 16, num_procs = 1)
+    # run_files(filenames, header =  'egil:CONFIGS/TEST', simname = 'hon3351', num_procs = 1)
    
    
     pass

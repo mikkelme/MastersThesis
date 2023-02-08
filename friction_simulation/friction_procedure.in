@@ -1,23 +1,23 @@
-variable dt index 0.001 #0.0025
-variable T index 200.0
-variable relax_time index 5
-variable stretch_speed_pct index 0.05 #0.05 #0.01
-variable pause_time1 index 5
-variable pause_time2 index 5 
-variable drag_speed index 2 # Twice the normal amount (this is not converted to metal units)
-variable drag_length index 400
-variable K index 1.8724527210000002 
-variable root index ..
-variable out_ext index test
-variable config_data index sheet_nocut
-# variable stretch_max_pct index 2.0
-variable stretch_max_pct index 0.18 # Try and se if this (1.32 gives rupture in the drag phase)
-variable drag_dir_x index 0 
-variable drag_dir_y index 1 
-variable F_N index 62.41 
+# variable dt index 0.001 #0.0025
+# variable T index 200.0
+# variable relax_time index 5
+# variable stretch_speed_pct index 0.05 #0.05 #0.01
+# variable pause_time1 index 5
+# variable pause_time2 index 5 
+# variable drag_speed index 2 # Twice the normal amount (this is not converted to metal units)
+# variable drag_length index 400
+# variable K index 1.8724527210000002 
+# variable root index ..
+# variable out_ext index test
+# variable config_data index sheet_nocut
+# # variable stretch_max_pct index 2.0
+# variable stretch_max_pct index 0.18 # Try and se if this (1.32 gives rupture in the drag phase)
+# variable drag_dir_x index 0 
+# variable drag_dir_y index 1 
+# variable F_N index 62.41 
 
-variable num_stretch_files index 0
-variable run_rupture_test index 0
+# variable num_stretch_files index 0
+# variable run_rupture_test index 0
 
 include ${root}/stretch.in
 include ${root}/drag.in 
@@ -35,4 +35,10 @@ include ${root}/drag.in
 
 # Start from restart file
 # mpirun -n 4 lmp_mpi -in ../drag.in -var dt 0.001 -var T 100.0 -var relax_time 1 -var pause_time1 5 -var pause_time2 5 -var stretch_speed_pct 0.05 -var drag_speed 0.01 -var drag_length 1.0 -var K 1.8724527210000002 -var root .. -var out_ext test -var config_data sheet_substrate_nocuts -var stretch_max_pct 0.1 -var drag_dir_x 0 -var drag_dir_y 1 -var F_N 6.24150907 -var restart_file ./stretch_2000_restart
+
+
+
+########
+
+mpirun -n 16 lmp_mpi -in ../stretch.in -var dt 0.001 -var T 300 -var relax_time 15 -var pause_time1 5 -var pause_time2 5 -var stretch_speed_pct 0.01 -var stretch_max_pct 2.0 -var run_rupture_test 1 -var num_stretch_files 15 -var RNSEED $RANDOM -var drag_length 400 -var drag_speed 0.2 -var K 0.0 -var drag_dir_x 0 -var drag_dir_y 1 -var F_N 0.6241509070000001 -var config_data sheet_hon3351 -var root .. -var out_ext 2023-02-07 -var dump_freq 1000
 

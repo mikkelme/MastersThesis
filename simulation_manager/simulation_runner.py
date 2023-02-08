@@ -104,7 +104,7 @@ class Simulation_runner:
             
     
         
-    def multi_run(self, header, dir, F_N, num_procs = 16, jobname = 'MULTI'):
+    def multi_run(self, header, dir, F_N, num_procs_initial = None, num_procs = 16, jobname = 'MULTI'):
         print_info = True # Print ({stretch}, {F_N}) sets
         
         # Abbreviation (avoid calling self.variables a lot)
@@ -162,14 +162,17 @@ class Simulation_runner:
     
         
         # Set input script and slurm arguments
+        if num_procs_initial is None:
+            num_procs_initial = num_procs
         sim.set_input_script("../friction_simulation/stretch.in", **self.variables)    
-        slurm_args = {'job-name':jobname, 'partition':'normal', 'ntasks':num_procs, 'nodes':1}
+        slurm_args = {'job-name':jobname, 'partition':'normal', 'ntasks':num_procs_initial, 'nodes':1}
         
         
         # --- Jobscript for multi run --- #
-        sim.pre_generate_jobscript(num_procs=num_procs, lmp_exec="lmp", slurm_args = slurm_args)    
+        sim.pre_generate_jobscript(num_procs=num_procs_initial, lmp_exec="lmp", slurm_args = slurm_args)    
 
         # Set parameters for stretch 
+        slurm_args = {'job-name':jobname, 'partition':'normal', 'ntasks':num_procs, 'nodes':1}
         self.variables['root'] += '/../..'
         job_array = 'job_array=('
         for i in range(len(F_N)):

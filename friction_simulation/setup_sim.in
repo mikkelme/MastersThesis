@@ -254,12 +254,10 @@ variable contact_cut_off equal 4.0
 timestep $(v_dt)
 variable damp equal 1.0 # ps                        
 fix nve NVE_atoms nve # (microcanonical) 
-fix nvt NVT_atoms langevin ${T} ${T} ${damp} 48279 # (canonical)
-
+fix nvt NVT_atoms langevin ${T} ${T} ${damp} 48279 # (canonical) # RN SEED instead?
 
 fix 2 all balance 1000 1.05 shift xy 10 1.05 # balance number of particles computed on each processor 
 fix PB_ave PB_tot_rigid aveforce NULL NULL 0 # Average z-force
-
 
 # --- Convertion: SI to metal --- #
 variable N_to_eV_over_ang equal 6.24150907e8    # force: N -> eV/Å
@@ -306,6 +304,8 @@ variable sheet_bond_pct equal f_sheet_bond_hist[2][3]
 ## - Pullblocks - ##
 compute PB_ylow_rigid_ymax PB_ylow_rigid reduce max y   # Lower y-limit for sheet
 compute PB_yhigh_rigid_ymin PB_yhigh_rigid reduce min y # Upper y-limit for sheet
+compute PB_tot_COM PB_tot com                           # Center of mass
+
 
 ## -- Substrate -- ##
 compute substrate_zhigh substrate reduce max z # Max z-val of substrate
@@ -321,7 +321,7 @@ compute subtopTemp substrate_top temp
 
 
 ## - Activate computes - ## 
-thermo_style custom c_PB_yhigh_rigid_ymin c_PB_ylow_rigid_ymax c_sheet_COM[1] 
+thermo_style custom c_PB_yhigh_rigid_ymin c_PB_ylow_rigid_ymax c_sheet_COM[1] c_PB_tot_COM[1]
 run 0 # activate compute
 
 
@@ -381,10 +381,11 @@ label skip_dump
 # dump view1 NVT_atoms custom $(v_dump_freq) NVT_atoms.data id type x y z                                 #
 # dump view2 pure_NVE custom $(v_dump_freq) pure_NVE.data id type x y z                                   #
 # dump view3 locked custom $(v_dump_freq) locked.data id type x y z                                       #
-# # dump view4 substrate_freeze_and_NVT custom $(v_dump_freq)  substrate_freeze_and_NVT.data id type x y z #
+# dump PB_ylow_rigid PB_ylow_rigid custom $(v_dump_freq) PB_ylow_rigid.data id type x y z    
+# dump PB_yhigh_rigid PB_yhigh_rigid custom $(v_dump_freq) PB_yhigh_rigid.data id type x y z    
 # run 1
 # quit
-# #########################################################################################################
+#########################################################################################################
 
 
 # ---------- Print procedure schedule ---------- #
