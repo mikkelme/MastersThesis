@@ -6,27 +6,18 @@ Small introtext to motivate this chapter. What am I going to go over here.
 
 
 \section{Tribology - friction}
-
-
 Friction is a part of the wider field tribology which includes the study of
 friction, wear and lubrication between two surfaces in relative motion \cite[p.
-1]{gnecco_meyer_2015}. In this thesis we will only concern ourselves with the
-first, wearless dry friction. Tribological systems take place across a broad
+1]{gnecco_meyer_2015}. In this thesis we will only concern ourselves with so-called wearless dry friction. That is, without any use of lubrication and without any resulting wear of the contacting surfaces. Tribological systems take place across a broad
 range of time and length scales, ranging from geological stratum layers involved
 in earthquakes \cite{kim_nano-scale_2009} to microscopic atomistic processes, as
-in the gliding motion of nanocluster of a nanomotor \cite{Manini_2016}. This
+in the gliding motion of a nanocluster of a nanomotor \cite{Manini_2016}. This
 vast difference in scale gives rises to different frictional mechanism being
-dominating at different scales. On a macro scale the system is usally inflicted
-to relatively high large loads and speeds leading to high contact stresses and
-wear. The micro-/nanoscale regime occupies the opposite domain operating under
-relatviely small loads and speeds with negligible wear
-\cite{kim_nano-scale_2009} \cite[p. 5]{bhushan_2013}. 
+dominating at different scales. On a macro scale the system is usally subject
+to relatively high loads and speeds leading to high contact stresses and
+wear. On the other hand, the micro-/nanoscale regime occupies the opposite domain operating under relatviely small loads and speeds with negligible wear \cite{kim_nano-scale_2009} \cite[p. 5]{bhushan_2013}. While macroscale friction is often reduced into a few variables such as load, material type, speed and surface roughness it is clear that the micro-/nanoscale friction cannot be generalized under such a simple representation. On the micro-/nanoscale the tribological propteries dominated by surface properties which will introduce an additional sensitivity variables such as temperature, humidity and even sliding history. The works of Bhushan and Kulkarni \cite[(1996)]{BHUSHAN199649} showed that the friction coefficient decreased with scale even though the materials used was unchanged. This reveals an intrinsic relationship between friction and scale as the contact condition is altered.
 
-While macroscale friction is often reduced into a few variables such as normal load, material type, speed
-and surface roughness it is clear that micro-/nanoscale friction cannot be
-generalized under such a simple representation. On the micro-/nanoscale the tribological propteries is dominated by surface properties which will introduce additional sensitivity to more variables such as temperature, humidity and even sliding history. The works of Bhushan and Kulkarni (1996)\cite{BHUSHAN199649} showed that the friction coefficient decreased with scale, revealing the change in the mechanism of friction as the contact condition was altered, even though the materials used was unchanged.
-
-The phenomenological descriptions of macroscale friction cannot yet be derived from the fundamental atomic principles, and bridging the gap between different length scales in tribological systems remains an open challenge \cite{Manini_2016}. Hence, the following sections will be organized into macro-, micro- and nanoscale representing the different theoretical understanding governing each scale. While our study of the graphene sheet is based on a nanoscale perspective the hypothesizing about application possibilities will eventually link back to the macroscale perspective. Thus spanning all three major scales in a brief becomes usefull for a more complete interpreation of the findings of this thesis. 
+The phenomenological descriptions of macroscale friction cannot yet be derived from the fundamental atomic principles, and bridging the gap between different length scales in tribological systems remains an open challenge \cite{Manini_2016}. Hence, the following sections will be organized into macro-, micro- and nanoscale representing the theoretical understanding governing each scale regime. While our study of the graphene sheet is based on a nanoscale perspective the hypothesizing about application possibilities will eventually draw upon a macroscale perspective as well. Thus, we argue that a brief theoretical introduction to all three major scales is of high interest for a more complete interpreation of the findings in this thesis. 
 
 
 % Tribological systems pose a wide range of dimensional scale. At the largest
@@ -101,35 +92,48 @@ The phenomenological descriptions of macroscale friction cannot yet be derived f
 
 \subsection{Macroscale}
 
-Our working definition of the \textit{macroscale} is everything on the scale of visible everyday objects, which is usually denoted to milimeters $10^{-3}$ m and above. Most importantly, we want to make a distinction to the microscale, where the prefix indicates the size of micrometers $m^{-6}$, and hence we essentially assign everything larger than micro into the term macroscale\footnote{The width of a human hair is on the length scale $10^{-5}$ to $10^{-4}$ m which constitute a reasonable boundary between macro- and microscale which fit well with a lower bound of our perception capabilities.}.
+Our working definition of the \textit{macroscale} is everything on the scale of visible everyday objects, which is usually denoted to the size of milimeters $10^{-3}$ m and above. Most importantly, we want to make a distinction to the microscale, where the prefix indicates the size of micrometers $m^{-6}$, and hence we essentially assign everything larger than \textit{micro} to the term macroscale\footnote{The width of a human hair is on the length scale $10^{-5}$ to $10^{-4}$ m which constitute a reasonable boundary between macro- and microscale which fit well with a lower bound of human perception capabilities.}.
 
 \subsubsection{Amontons’ law}
 % Based on \cite{gnecco_meyer_2015}
  
  In order to start and keep a solid block moving against a solid
- surface we most overcome certain frictional forces $F_{\text{fric}}$ \cite{gnecco_meyer_2015}. The static friction force $F_s$ corresponds to the minimum tangential force required to
- iniziate the sliding while the kintec friciton force $F_k$ corresponds to the
+ surface we must overcome certain frictional forces $F_{\text{fric}}$ \cite{gnecco_meyer_2015}. The static friction force $F_s$ corresponds to the minimum tangential force required to
+ initiate the sliding while the kintec friciton force $F_k$ corresponds to the
  tangential force needed to sustain such a sliding at steady speed. The work of Leonardo da Vinci (1452–1519), Guillaume Amontons (1663-705) and
- Charles de Coulomb (1736-1806) all contributed to the empirical law, commonly known Amontons’ law, which is a common baseline for an introduction to friction. Amontons’ law states the fricitonal forces is entirely independent of contact area and sliding velocity (at ordinary sliding velocities). Instead, it relies only on the normal force\footnote{\textit{Normal force} is often used interchangeably with the terms \textit{load} and \textit{normal load}.} $F_N$, acting perpendicular to the surface, and the material specific friction coefficient $\mu$ as
+ Charles de Coulomb (1736-1806) all contributed to the empirical law, commonly known as Amontons’ law, which is a common friction model for the macroscale regime. Amontons’ law states that the fricitonal forces is entirely independent of contact area and sliding velocity (at ordinary sliding velocities). Instead, it relies only on the normal force\footnote{\textit{Normal force} is often used interchangeably with the terms \textit{load} and \textit{normal load}.} $F_N$, acting perpendicular to the surface, and the material specific friction coefficient $\mu$ as
 \begin{align}
   F_{\text{fric}} = \mu F_N.
   \label{eq:amonton}
 \end{align}
 The friction coeffcient is typically different for the cases of static ($\mu_s$)
 and kinetic ($\mu_k$) friction, usually with values lower than one and $\mu_s \ge
-\mu_k$ in all cases \cite[p. 6]{gnecco_meyer_2015}. 
-
-Allthough Amontons’ law has been succesfull in the modelling of macroscale friction it has its limitations. For instance, it was later discovered that the staitc friction is not independent of time. It depends on the so-called contact history with increasing friction as the logarithm of time of stationary contact
+\mu_k$ in all cases \cite[p. 6]{gnecco_meyer_2015}.
+\\
+\\
+Allthough Amontons’ law has been succesfull in the modelling of macroscale friction it has its limitations. For instance, it was later discovered that the static friction is not independent of time. It depends on the so-called contact history with increasing friction as the logarithm of time of stationary contact
 \cite{dieterich_1972}. For the kinetic friction the independency of sliding
 velocity dissapears at low velocities as thermal effects becomes important and
 for high velocities due to intertial effetcs. \cite[pp. 5-6]{gnecco_meyer_2015}. 
 
-While Amontons’ law lacks any attempt to explain the phenomena of friction statistical mechanics provides an overall explanation by the concept of \textit{equipartition of energy} \cite{Manini_2016}. A system in equilibrium has its kinetic energy uniformly distributed among all its degrees of freedom. When a macroscale object is sliding in a given direction it is
-clearly not in equilibrium since one of its degrees of freedom carriers
-considerable more kinetic energy. Thus, the system will have a tendency to
-transfer the kinetic energy to the remaining degrees of freedom as heat. This heat will dissipate to the sourroundings and the object will slow down as a final result. Hence, friction is really just the tendency of going toward equilibrium energy equipartitioning among many interacting degrees of freedom. \cite{Manini_2016}
+Additionally, due to the emperical foundation, Amontons’ law does not
+provide a physical insight into the underlying mechanisms of friction. However, as we will
+later discuss in more detail, we can understand the overall phenomena
+of friction through statistical mechanics by the concept of
+\textit{equipartition of energy} \cite{Manini_2016}. A system in equilibrium has
+its kinetic energy uniformly distributed among all its degrees of freedom. When
+a macroscale object is sliding in a given direction it is clearly not in
+equilibrium since one of its degrees of freedom carriers considerable more
+kinetic energy. Thus, the system will have a tendency to transfer that kinetic
+energy to the remaining degrees of freedom as heat. This heat will dissipate to
+the sourroundings and the object will slow down as a result. Hence, friction is
+really just the tendency of going toward equilibrium energy equipartitioning
+among many interacting degrees of freedom \cite{Manini_2016}. From this point of view it is clear that friction is an inevitable part of contact physics, but even though friction can be removed alltogether, we are still capable of manipulating it in usefull ways. 
+\\
+\\
+The attentive reader might point out that we have already moved the discussion partly into the microscopic regime as \textit{statistical mechanics} generally aim to explain macroscale behaviour by microscopic interactions. In fact this highlight the nessecity to consider smaller scales in order to achieve a more in depth understadning of friction.
 
-By including \textit{statistical mechanics} into the discussion we have already taken a peek into lower scales as this field of science explain macroscale behaviour by microscopic interactions. In fact, this marks the limiting view of most macroscale theories:  They lack fundamental explanations. 
+
 
 % Amontons’ law disguises the importance of a more complicated contact interface. 
 
@@ -158,10 +162,29 @@ By including \textit{statistical mechanics} into the discussion we have already 
 
 
 \subsection{Microscopic scale}
+Going from a macro- to microscale perspective, a length scale of order $10^{-6}$
+m, it was realized that most surfaces is in fact rough \cite{mo_friction_2009}.
+The contact between two surfaces consist of numerous smaller contact point,
+so-called asperities, for which the friction between two opposing surfaces
+involves interlocking of those asperities as visualized in figure
+\ref{fig:asperity_contact}. It is generally accepted that friction is caused by
+two mechanism: mechanical friction and chemical friction
+\cite{kim_nano-scale_2009}. The mechanical friction is the ``plowing'' of the
+surface by hard particles or said asperities with an energy loss associated
+attributed deformations of the asperity. While plastic deformations,
+corresponding to wear, is obviouslly expected to act as an energy sink, elastic
+deformations is also sufficient in explaining energy loss due to phonon
+excitations The chemical friction arrises from adhesion between microscopic
+contacting surfaces, with an energy loss assigned to breaking and forming of
+bonds. 
 
 
-% \subsection{Friction on a microscopic scale - Nanotribology}
-% \cite{kim_nano-scale_2009}.
+
+
+% plastic deformations (allthough this assumption of plastic deformations has been critizised \cite{CARBONE20082555}). The chemical friction arrises from adhesion between microscopic contacting surfaces, (with energy loss \hl{contribted} breaking and forming of bonds?).
+
+
+
 
 % Da Vinci-Amontons law – friction independent of area – is not confirmed at the
 % microscopic scale. In most nanoscale investigations the friction of a single
@@ -173,15 +196,6 @@ By including \textit{statistical mechanics} into the discussion we have already 
 % if the interface, or of surface contaminants leading to effectively pseudo-
 % commensurate interfaces [30, 31] (Current trends in the physics of nanoscale
 % friction)
-
-Going from a macro- to microscale perspective, a length scale of order $10^{-6} m$, it was realized that most surfaces is in fact rough \cite{mo_friction_2009}. The contact between two surfaces consist of
-numerous smaller contact point, so-called asperities, for which the friction
-between two such opposing surfaces involves interlocking of those asperities as visualized in figure \ref{fig:asperity_contact}. It is generally accepted that friction is caused by two mechanism: mechanical friction and chemical friction \cite{kim_nano-scale_2009}. The mechanical friction is the ``plowing'' of the surface by hard particles or said asperities with an energy loss \hl{contribted} to plastic deformations (allthough this assumption of plastic deformations has been critizised \cite{CARBONE20082555}). The chemical friction arrises from adhesion between microscopic contacting surfaces, (with energy loss \hl{contribted} breaking and forming of bonds?).
-
-
-
-
-
 
 
 
@@ -195,14 +209,14 @@ between two such opposing surfaces involves interlocking of those asperities as 
 \subsubsection{Surface roughness - Asperity theories}
 % Sources in general: \cite{mo_friction_2009}, \cite{kim_nano-scale_2009} \\
 
-Asperity theories are based on the observation that microscopic rough surfaces
-with contacting asperities, each with a contact area of $A_{\text{asp}}$, will
-have a true contact area $\sum A_{\text{asp}}$ which is found to be much smaller
+Asperity theories are based on the observation that microscopic rough surfaces,
+with contacting asperities each with a contact area of $A_{\text{asp}}$, will
+have a true contact area $\sum A_{\text{asp}}$ much smaller
 than the apperent macroscopic area $A_{\text{macro}}$ \cite{kim_nano-scale_2009}. The friction force was shown to be proportional to the true contact area as 
 \begin{align*}
   F_\text{fric} = \vec{\tau} \sum A_{\text{asp}},
 \end{align*}
-where $\vec{\tau}$ is an effective shear strength of the contacting bodies. This is in principle still compatible with Amontons’ law (eq.~\eqref{eq:amonton}) \textit{if} we find a linear relatioship between the real contact area and the applied normal force $F_N$. In figure \ref{fig:asperity_contact} we see a visualization on how the contact area might intuitively increase with normal force as the asperity tips is deformed into broader contact points.
+where $\vec{\tau}$ is an effective shear strength of the contacting bodies. Note that this is still compatible with Amontons’ law in eq.~\eqref{eq:amonton} \textit{if} we find a linear relatioship between the real contact area and the applied normal force $F_N$. In figure \ref{fig:asperity_contact} we see a visualization on how the contact area might intuitively increase with normal force as the asperity tips is deformed into broader contact points.
 
 \begin{figure}[H]
   \centering
@@ -223,19 +237,17 @@ where $\vec{\tau}$ is an effective shear strength of the contacting bodies. This
      \caption{Qualitatively illustration of the microscopic asperity deformation under increasing load from frame a to b \cite{wiki:asperities}.}
      \label{fig:asperity_contact}
 \end{figure}
-
-
-Many studies have focused on the individual single asperity contact to
+Many studies have focused on single asperity contacts to
 reveal the relationship between the contact area and $F_N$ (13-15 from
-\cite{mo_friction_2009}). By assuming perfectly smooth asperities with radii of
-curvature from micrometers all the way down to nanometers continuum mechanics can be used to predict the deformation of asperities as normal force is applied. A model for non-adhesive contact between homogenous, isotropic, linear elastic spheres was
-first developed by Hertz (17 \cite{mo_friction_2009}), which predicted
+\cite{mo_friction_2009}). By assuming perfectly smooth asperities, with radii of
+curvature from micrometers all the way down to nanometers, continuum mechanics can be used to predict the deformation of asperities as normal force is applied. A model for non-adhesive contact between homogenous, isotropic, linear elastic spheres was
+first developed by Hertz (17 from \cite{mo_friction_2009}), which predicted
 $A_{\text{asp}} \propto F_N^{2/3}$. Later adhesion effects were included in a
 number of subsequent models, including Maugis-Dugdale theory (18 from
 \cite{mo_friction_2009}), which also predicts a sublinear relatinship between
-$A_{\text{asp}}$ and $f_N$. Thus, the common feature of all single-asperiry theories is that $A_{\text{asp}}$ is a sublinear function of $F_N$, leading to a similar sublinear relationship for $F_\text{fric}(F_N)$, which fails to align with the macroscale observations modellend by Amontons’ law (eq. \eqref{eq:amonton}).
+$A_{\text{asp}}$ and $F_N$. Thus, the common feature of all single-asperity theories is that $A_{\text{asp}}$ is a sublinear function of $F_N$, leading to a similar sublinear relationship for $F_\text{fric}(F_N)$, which fails to align with the macroscale observations modelled by Amontons’ law (eq. \eqref{eq:amonton}).
 
-A variety of multiasperity theories has attempted to combine single asperity mechanics by statistical modelling of the asperity height and spatial distributions \cite{CARBONE20082555}. This has led to (in certain domains) a linear relationship between contact area and normal force. Unfortunately, these results are restricted in terms of the magnitude of the load and contact area, where multiasperity contact models based on the original ideas of Greenwood and Williamson \cite{GW} only predicts linearity at vanhising low loads, or Persson \cite{Persson} which works for more reasonable loads but only up to 10-15 \% of the macroscale contact area. However, as the load is furhter increased all multiasperity models predict the contact area to fall into the sublinear dependency of normal force as seen for single aperity theories \cite{CARBONE20082555}.
+A variety of multiasperity theories has attempted to combine single asperity mechanics by statistical modelling of the asperity height and spatial distributions \cite{CARBONE20082555}. This has led to ... a linear relationship between $A_{\text{asp}}$ and $F_N$. Unfortunately, these results are restricted in terms of the magnitude of the load and contact area, where multiasperity contact models based on the original ideas of Greenwood and Williamson \cite{GW} only predicts linearity at vanhising low loads, or Persson \cite{Persson} which works for more reasonable loads but only up to 10-15 \% of the macroscale contact area. However, as the load is furhter increased all multiasperity models predict the contact area to fall into the sublinear dependency of normal force as seen for single aperity theories \cite{CARBONE20082555}.
 
 
 
@@ -270,24 +282,41 @@ A variety of multiasperity theories has attempted to combine single asperity mec
 % on physical properties \cite{Szlufarska_2008}.
 
 \subsection{Nanoscale - Atomic scale}
-
-
-Going from microscale to nanoscale on the order
-of $10^{-9}$ meter, it has been predicted that continnum mechanics will break
-down \cite{luan_breakdown_2005} due to atomic-scale surface roughness. In a
-numerical study by Mo et al. \cite{mo_friction_2009} it has been showed that the
-asperity area $A_{\text{asp}}$ is in fact sublinear with $F_N$, but this is explained by the fact that not all atoms within the circumfereance of the asperity make contact with the substrate. By modelling the real area $A_{\text{real}} = N
+Going from microscale to nanoscale, on the order of $10^{-9}$ meter, it has been
+predicted that continnum mechanics will break down \cite{luan_breakdown_2005}
+due to the discreteness of atomic-scale\footnote{\hl{Should I be more consistent with using eigher ``Nanoscale'' or ``Atomic scale'' or make a note clarifying that this is synonyms in practice?}} surfaces. In a numerical study by Mo et
+al. \cite{mo_friction_2009} (considering asperity radii of 5-30 nm) it has been shown that the asperity area
+$A_{\text{asp}}$ is in fact sublinear with $F_N$, which is explained by observation that not all atoms within the circumfereance of the asperity make contact with the substrate. By modelling the real area $A_{\text{real}} = N
 A_{\text{atom}}$, where $N$ is the amount of atoms within the range of chemical
-interaction range and $A_{\text{atom}}$ is the associated atom surface area, they found a consistent linear relationship between friction and real contact area. Without
-adhesive forces this lead to a similar linear relationship $F_{\text{fric}}
-\propto F_N$, while adding van der Waals adhesion to the simulation gave a
-sublinear relatinship, even though the $F_{\text{fric}} \propto A_{\text{real}}$
-was maintained.
+interaction range and $A_{\text{atom}}$ is the associated atom surface area,
+they found a consistent linear relationship between friction and real contact
+area. Without adhesive forces this lead to a similar linear relationship
+$F_{\text{fric}} \propto F_N$, while adding van der Waals adhesion to the
+simulation gave a sublinear relatinship, even though the $F_{\text{fric}}
+\propto A_{\text{real}}$ was maintained. 
 
-This result show that the relationship between contact area and friction is expected to be a dominant factor even at the atomic scale. However, considering the simulation setup of our nmerical study, a flat sheet on a flat substrate, it is clear that we cannot rely directly on asperity theories even though they might be somewhat successfull at the nanoscale. On the smallest possible scale, atomic scale, the surfaces does not have structural asperities. Instead, atomic level friction is being modelled as a consequencse of the rough potential of the atomic landscape and real contact area defined in terms of atomic bonding. 
+This result emphasizes that the contact area is still expected to be play a major role on regarding nanoscale asperities, but it is simply the definition of contact area that undergoes a change when transistioning from micro- to nanoscale. However, considering the simulation setup of our numerical study, a flat sheet on a flat substrate, we cannot rely on asperity theories. With no asperities present it is unknown (I could not find anay articles on contact area for nanoflakes) whether the real contact area will be a dominant parameter. On the side, we might be able to create such a dependency by creating asperities through a strategic combination of kirigami inspired cuts and stretching of the sheet. Hence, we might hypothesize that such a transsition will contribute to significant change in the goverening mechanism of friction in the system.
+\\
+\\
+Due to the general idea that the surfaces does not have structural asperities on an atomic scale, the friction can instead be modelled as a consequencse of the rough potential of the atomic landscape.
+
+%
+%
+% Working here
+%
+%
 
 
-\hl{Search for experimental and numerical studies of nanoflakes (ideally with graphene) to talk about expectations here.} 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.4\linewidth]{figures/theory/PT_FK_FKT.png}
+  \caption{\hl{Temporary} figure from \url{https://www.researchgate.net/figure/llustrations-of-the-1D-PT-FK-and-FKT-models-Large-solid-spheres-represent-tip-atoms_fig1_257670317}}
+  \label{fig:PT_FK_FKT}
+\end{figure}
+
+
+
+% \hl{Search for experimental and numerical studies of nanoflakes (ideally with graphene) to talk about expectations here.} 
 
 
 
@@ -345,12 +374,12 @@ The Frenkel-Kontorova (FK) model builds upon the time-honered PT model describin
 point-like tip sliding over a space-periodic crystalline surface. The FK model
 extents this description to that of a 1D crystalline chain sliding on 1D crystaline surface as illustrated in \ref{fig:PT_FK_FKT}.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.4\linewidth]{figures/theory/PT_FK_FKT.png}
-  \caption{\hl{Temporary} figure from \url{https://www.researchgate.net/figure/llustrations-of-the-1D-PT-FK-and-FKT-models-Large-solid-spheres-represent-tip-atoms_fig1_257670317}}
-  \label{fig:PT_FK_FKT}
-\end{figure}
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.4\linewidth]{figures/theory/PT_FK_FKT.png}
+%   \caption{\hl{Temporary} figure from \url{https://www.researchgate.net/figure/llustrations-of-the-1D-PT-FK-and-FKT-models-Large-solid-spheres-represent-tip-atoms_fig1_257670317}}
+%   \label{fig:PT_FK_FKT}
+% \end{figure}
 
 
 The standard FK model consists of a 1D chain of $N$ classical
@@ -669,6 +698,8 @@ Further model extensions. Important?
 Theory of friction experiment involving graphene.
 
 
+% Read Rare-gas islands and metal clusters \cite{Manini_2016} for theory of effects on surface area scaling
+
 % Because of this frictional reduction, many studies indicate graphene as the
 % thinnest solid-state lubricant and anti-wear coating [104–106]. (Current trends
 % in the physics of nanoscale friction)
@@ -726,7 +757,7 @@ It might not be easy to find experiments of graphene flakes on silicon substrate
   
   
   \paragraph*{Variable dependence}
-  
+
   \begin{enumerate}
   \item Normal force: The general trend observed in AFM nanoscale friction is that friction force increase with normal load \cite{gnecco_meyer_2015}. 
   \item Velocity: Smooth kinetic friction generally increase with speed (velocity strengthening) \cite{Manini_2016}. E. Gnecco et al. \cite{PhysRevLett.84.1172} showed a logaritmic increase in mean friction with velocity (the tip of a friction force microscope and NaCl(100) at low velocity ($10^-9$ - $10^-6$ m/s)).  If the scan velocity increases thermally activated processes becomes less important and beyond a critical value the friction forces becomes independent of velocity \cite[p. 202]{gnecco_meyer_2015}
@@ -744,7 +775,7 @@ It might not be easy to find experiments of graphene flakes on silicon substrate
   \begin{center}
   \caption{Quantitative nano friction dependence on various variables.}
   \label{tab:var_dep}
-  \begin{tabular}{ | c | m{5cm}| m{5cm}| m{5cm}|} \hline
+  \begin{tabular}{ | c | m{3cm}| m{5cm}| m{5cm}|} \hline
   \textbf{Variable} & \textbf{Dependency} & \textbf{Numerical studies} & \textbf{Experimental} \\ \hline 
   Normal force $F_N$ 
   &  $F_f$ increasing $F_N$
@@ -844,6 +875,13 @@ It might not be easy to find experiments of graphene flakes on silicon substrate
 
 % See ``Selected Results of MD Simulations'' in \cite{Manini_2016} p. 24.
 
+% \subsection{Real life experimental procedures}
+% From Introduction to Tribology, Second Edition, p. 526: \par The surface force
+% apparatus (SFA), the scanning tunneling microscopes (STM), and atomic force and
+% friction force microscopes (AFM and FFM) are widely used in nanotribological and
+% nanomechanics studies.
+
+
 
 
 \section{Molecular Dynamics}
@@ -886,7 +924,7 @@ Tersoff and Stillinger–Weber potentials, respectively. A typical 12-6
 Lennard–Jones potential is used to describe the van der Waals adhesive
 interaction between graphene and the substrate. \\
 
-\subsubsection{General formulation of potentials...?}
+\subsubsection{General formulation of potentials (?)}
 
 On a general note we can generalize the n-body potential as the expansion in
 orders of participating atoms as 
@@ -911,7 +949,7 @@ the sheet and the substrate we can nøjes med a Lennard Jones pair potential
 describing the non-bonded van der Waals interaction.
 
 
-\subsection{Lennard Jones}
+\subsubsection{Lennard Jones}
 % TODO: Add potential curve figure
 This sections is based on [\cite{docs_lammps_LJ}, \cite{C9CP05445F},
 \cite{chem_libretexts_LJ}].
@@ -942,7 +980,7 @@ and substrate) in friction studies [\cite{li_evolving_2016}, \cite{ZHANG201585},
 \cite{kim_nano-scale_2009}].
 
 
-\subsection{Stillinger weber}
+\subsubsection{Stillinger weber}
 % Todo: Add some potential curve figure? or figure of three body angles?
 This section is based on [\cite{docs_lammps_sw}, \cite{PhysRevB.31.5262}]
 
@@ -1017,7 +1055,7 @@ The parameters used for the Si-Si bond modeling is displayed in table
 
 
 
-\subsection{Tersoff}
+\subsubsection{Tersoff}
 % Add figure similar to:
 % https://en.wikipedia.org/wiki/Bond_order_potential#/media/File:Bond-order_interatomic_potential.png,
 % showing bond order curves.
@@ -1126,7 +1164,6 @@ The parameters used to model the graphene C-C bonds is summarized in table
 
 
 
-\subsection{LAMMPS}
 \subsection{Integration}
 % https://www.eng.uc.edu/~beaucag/Classes/AdvancedMaterialsThermodynamics/Books/%5BComputational%20science%20(San%20Diego,%20Calif.)%5D%20Daan%20Frenkel_%20Berend%20Smit%20-%20Understanding%20molecular%20simulation%20_%20from%20algorithms%20to%20applications%20(2002,%20Academic%20Press%20)%20-%20libgen.lc.pdf
 
@@ -1612,13 +1649,17 @@ thermostat on.
 % see https://www2.ph.ed.ac.uk/~dmarendu/MVP/MVP03.pdf p. 4
 
 
-\subsubsection{MD limitations}
+\subsection{MD limitations (?)}
 
 % One of the limitations of concern is in regard to the simulation scale. Despite relatively fast processor speed and efficient algorithm the number of atoms that can be handled realistically is still insufficient for complex system simulation \cite{kim_nano-scale_2009}.
 
+\subsection{LAMMPS}
+
+
+
 \section{Defining the system}
 
-\subsection{Groups: Sheet, pullblocks and substrate}
+\subsection{Region definitions (Sheet, pullblocks and substrate)}
 Include figure of system to point out thermo layers and freeze layers.
 
 
@@ -1684,48 +1725,17 @@ The sheet dimensions is
 \end{table}
 
 
-\subsubsection{Pressure reference}
-\text{Find place to put this.}
+\subsection{Numerical procedure}
+\begin{enumerate}
+  \item Relax (15 ps)
+  \item Stretch 
+  \item Pause 1 (5 ps) 
+  \item Apply normal force (with damper to avoid hard impact)
+  \item Pause 2 (5 ps)
+  \item Drag 
+\end{enumerate}
 
-% source 1: stiletto heeled shoes with less than 1cm diameter:
-% https://www.researchgate.net/publication/342223559_How_the_stiletto_heeled_shoes_which_are_popularly_preferred_by_many_women_affect_balance_and_functional_skills
-
-In order to relate the magntidue of the normal force in our friciton measurement
-we will use the pressure as a reference. We will use the pressure underneath a
-stiletto shoe as a worst case for human pressure execuation underneath the
-shoes. From (source 1) it is reported that the diameter of a stiletto heeled
-shoe can be less than 1 cm. Hence a 80 kg man\footnote{Yes, a man can certainly
-wear stilleto heals.} standing on one stiletto heels (with all the weight on the
-heel) will result in a pressure
-
-corresponding diameter of 
-\begin{align*}
-  P = \frac{F}{A} = \frac{mg}{r^2\pi} = \frac{\SI{80}{kg} \cdot \SI{9.8}{\frac{m}{s^2}}}{(\frac{\SI{1e-2}{m}}{2})^2 \pi} = \SI{9.98}{MPa} \\
-\end{align*} 
-
-% source 1:
-% https://www.schoolphysics.co.uk/age16-19/Mechanics/Statics/text/Pressure_/index.html
-While this is in itself a spectacular realization that is often used in
-introduction physics courses (source 2) to demonstrate the rather extreme
-pressure under a stiletto heel (greater than the foot of an elephant) (how many
-Atmos) this serves as a reasonible upperbound for human executed pressure. With
-a full sheet area of $\sim\SI{21e3}{Å^2}$ we can achieve a similar pressure of
-$\sim \SI{10}{MPA}$ with a normal force 
-\begin{align*}
-  F_N = \SI{10}{MPa} \cdot \SI{21e-17}{m^2} = \SI{2.10}{nN}  
-\end{align*}
-
-Of course this pressure might be insufficient for various industrial purposes,
-but with no specific procedure in mind this serves as a decent reference point.
-Notice that if we consider a human foot with ares $\SI{113}{cm^2}$ the pressure
-drops to a mere $\SI{70}{kPa}$ corresponding to $\sim \SI{0.01}{nN}$.
-
-% source 3: foot area ≈ 113 cm^2:
-% https://www.footbionics.com/Patients/Foot+Facts.html source 4:
-% https://hypertextbook.com/facts/2003/JackGreen.shtml
-
-
-\subsection{Creating sheets}
+\subsection{Creating the sheet}
 
 We are going to create a 2D sheet graphene sheet. 
 
@@ -1861,14 +1871,53 @@ Illustrate some delete path?
 
 
 
-
-\subsection{Pull blocks}
-
-\subsection{Kirigami inspired cut out patterns}
-\subsubsection{Pop-up pattern}
+\subsection{Kirigami patterns}
+\subsubsection{Pop-up}
 \subsubsection{Honeycomb}
 \subsubsection{Random walk}
 
+
+
+
+\section{Pressure reference}
+\text{Find place to put this.}
+
+% source 1: stiletto heeled shoes with less than 1cm diameter:
+% https://www.researchgate.net/publication/342223559_How_the_stiletto_heeled_shoes_which_are_popularly_preferred_by_many_women_affect_balance_and_functional_skills
+
+In order to relate the magntidue of the normal force in our friciton measurement
+we will use the pressure as a reference. We will use the pressure underneath a
+stiletto shoe as a worst case for human pressure execuation underneath the
+shoes. From (source 1) it is reported that the diameter of a stiletto heeled
+shoe can be less than 1 cm. Hence a 80 kg man\footnote{Yes, a man can certainly
+wear stilleto heals.} standing on one stiletto heels (with all the weight on the
+heel) will result in a pressure
+
+corresponding diameter of 
+\begin{align*}
+  P = \frac{F}{A} = \frac{mg}{r^2\pi} = \frac{\SI{80}{kg} \cdot \SI{9.8}{\frac{m}{s^2}}}{(\frac{\SI{1e-2}{m}}{2})^2 \pi} = \SI{9.98}{MPa} \\
+\end{align*} 
+
+% source 1:
+% https://www.schoolphysics.co.uk/age16-19/Mechanics/Statics/text/Pressure_/index.html
+While this is in itself a spectacular realization that is often used in
+introduction physics courses (source 2) to demonstrate the rather extreme
+pressure under a stiletto heel (greater than the foot of an elephant) (how many
+Atmos) this serves as a reasonible upperbound for human executed pressure. With
+a full sheet area of $\sim\SI{21e3}{Å^2}$ we can achieve a similar pressure of
+$\sim \SI{10}{MPA}$ with a normal force 
+\begin{align*}
+  F_N = \SI{10}{MPa} \cdot \SI{21e-17}{m^2} = \SI{2.10}{nN}  
+\end{align*}
+
+Of course this pressure might be insufficient for various industrial purposes,
+but with no specific procedure in mind this serves as a decent reference point.
+Notice that if we consider a human foot with ares $\SI{113}{cm^2}$ the pressure
+drops to a mere $\SI{70}{kPa}$ corresponding to $\sim \SI{0.01}{nN}$.
+
+% source 3: foot area ≈ 113 cm^2:
+% https://www.footbionics.com/Patients/Foot+Facts.html source 4:
+% https://hypertextbook.com/facts/2003/JackGreen.shtml
 
 
 
@@ -1902,13 +1951,6 @@ determine the amplitude and phase as a function of freqeuncy as
 
 
 
-
-
-\subsection{Real life experimental procedures}
-From Introduction to Tribology, Second Edition, p. 526: \par The surface force
-apparatus (SFA), the scanning tunneling microscopes (STM), and atomic force and
-friction force microscopes (AFM and FFM) are widely used in nanotribological and
-nanomechanics studies.
 
 
 

@@ -9,11 +9,13 @@
 % or under different title
 \section{Baseline study}
 
-\subsection{Variables}
+\subsection{Variable overview}
 
 The friction measurment simulation is governed by the following parameters, which is divided into three sub categories for the purpose of this thesis as shown in table \ref{tab:param}.
 
 
+
+% The sliding velocity is 20 m/s, which is comparable to the operating conditions in micromechanical systems (MEMS), but which is much larger than the typical velocity in scanning force microscopy (SFM) experiments. \cite{mo_friction_2009} Supplementary materials.
 
 \begin{table}[H]
   \begin{center}
@@ -72,7 +74,7 @@ We need to define some ranges for the ML input paramters. $F_N$, stretch ranges 
 % Besides the limitations of system size and simulation times that are obvious and will be discussed later, there is another limitation concerning temperature, that is rarely mentioned. All classical frictional simulations, atomistic or otherwise, are only valid at sufficiently high temperature. They become in principle invalid at low temperatures where the mechanical degrees of freedom of solids progressively undergo ”quantum freezing”, and both mechanics and thermodynamics deviate from classical. \cite{Manini_2016}.
 
 \newpage
-\subsection{Single measurement}
+\subsection{Raw data analysis}
 \subsubsection{Force oscillations}
 We first assess the raw data for the friction force $F_{\parallel}$ parallel to the drag direction as seen in figure \ref{fig:drag_Ff}. The sample rate is 10 ps$^{-1}$ for which we sample the the mean of all previous timesteps. We observe that the data carriers oscillations on different time scales. By applying a savgol filter to data with a polyorder of 5 and window length corresponding to a drag length of 3.0 Å (or time interval 15.0 ps) we can qualitatively point out at least two different frequencies of osccilation. On figure \ref{fig:drag_Ff_10} we see roughly three waves on the savgol filter corresponding to one frequency, while on \ref{fig:drag_Ff_100} the same savgol filter reveals an even slower frequency on top of the first creating a visual patterns of a wavepacket.
 
@@ -209,7 +211,7 @@ From the previous observations we already have evidence of a stick slip behaviou
 
 
 
-\subsubsection{Defining metrics for dynamic and static friction}
+\subsection{Defining metrics for dynamic and static friction}
 We are interested taking the comprehensive friction force time series dataset
 and reducing it into single metrics describing the dynamic and static friciton
 respectively. The natural choice is to use the mean and max values. 
@@ -320,7 +322,8 @@ reason why we do not really see static friciton in the simulation. By plotting t
 \end{figure}
 
 \newpage
-\subsubsection{Varying temperature, drag speed, spring constant and dt}
+\subsection{Investigating selected parmeters}
+Investigate effects of temperature, drag speed, spring constant and dt.
 
 
 \begin{figure}[H]
@@ -417,8 +420,9 @@ Simulations of concentric nanotubes in relative motion (telescopic sliding), hav
 
 
 \newpage
-\subsubsection{Varying normal force and stretch}
-\paragraph*{Multi stretch} 
+\subsection{Normal force and stretch dependencies}
+% \subsection{Varying normal force and stretch}
+\subsubsection{Multi stretch} 
 text
 
 \begin{figure}[H]
@@ -436,8 +440,7 @@ text
   \label{fig:}
 \end{figure}
 
-\paragraph*{Multi normal force}
-
+\subsubsection{Multi normal force}
 
 
 \begin{figure}[H]
@@ -498,6 +501,37 @@ Show plots of contact area vs stretch and discuss the fact that friction actuall
 \end{figure}
 
 
-\subsubsection{Computational cost}
+\subsection{Computational cost}
 
-Talk about dependence on drag speed, $dt$ and maybe $T$ and $K$ as well. Show how the number of cores per simulation scale to argue that running on just one core is smart for the next step of many simulations. 
+Talk about the computatonal cost of different choices. How does comutation time scale with drag speed, $dt$ and maybe $T$ and $K$ as well. One could also mention scaling with system size.
+
+Show how the number of cores per simulation scale to argue that running on just one core (maybe 4) is smart for the next step of many simulations. 
+
+Mention the trouble with GPU to show that this was considered. 
+
+
+
+\section{Generating data}
+
+Present the configuration and variable choices for the generated dataset. Perhaps include appendix with all the configurations shown in a grid or something similar.
+
+
+\section{Training forward network}
+
+\section{Inverse design}
+
+\section{Negative friction coefficient}
+\subsection{Simulated coupling of normal force and stretch}
+\subsection{Nanomachine coupling}
+Attempt to couple normal force and stretch by crossed carbon nanotube (CNT) contraption \ref{fig:nanomachine}. 
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.5\linewidth]{figures/negative_coefficient/nanomachine.pdf}
+  \caption{Working sketch for nanomachine}
+  \label{fig:nanomachine}
+\end{figure}
+
+
+
