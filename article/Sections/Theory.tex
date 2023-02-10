@@ -181,7 +181,7 @@ bonds.
 
 
 
-% plastic deformations (allthough this assumption of plastic deformations has been critizised \cite{CARBONE20082555}). The chemical friction arrises from adhesion between microscopic contacting surfaces, (with energy loss \hl{contribted} breaking and forming of bonds?).
+% plastic deformations (although this assumption of plastic deformations has been critizised \cite{CARBONE20082555}). The chemical friction arrises from adhesion between microscopic contacting surfaces, (with energy loss \hl{contribted} breaking and forming of bonds?).
 
 
 
@@ -500,7 +500,7 @@ where $omega_k$ is the phonon frequency and $k = 2\pi i / N$ the wavenumber with
     n \frac{2\pi v_{\text{CM}}}{a_b} &\sim 2 \sqrt{\frac{K}{m}} \left| \sin{\left(\frac{2n \pi \theta^{-1}}{2}\right)}\right| \\
     v_{\text{CM}} &\sim \frac{\sin{(n\pi \theta^{-1})}}{n \pi} \sqrt{\frac{Ka_b^2}{m}}.
 \end{align*}
-When the chain slides with a velocity around resonance speed, the washboard frequency can excite acoustic phonons which will dissipate to other phonon modes as well. At zero temperature the energy will transform back and forth between internal degrees of freedom and center of mass movement of the chain. Hence, at zero temperature this will infact speed up the translation decay (decay is synonymous for translational movement right?). However, for the more realistic case of non-zero temperature the substrate serves as a thermostat for which energy will dissipate from the chain to the substrate degrees of freedom giving rise to kintetic friction. On the other hand, this predicts that certain sliding speed, which does not induce phonon resossance, will be subject to extremely low kinetic friction. This is strongly connected to the superlubricity term allthough ths phonon dynamics is simplified in this 1D model. 
+When the chain slides with a velocity around resonance speed, the washboard frequency can excite acoustic phonons which will dissipate to other phonon modes as well. At zero temperature the energy will transform back and forth between internal degrees of freedom and center of mass movement of the chain. Hence, at zero temperature this will infact speed up the translation decay (decay is synonymous for translational movement right?). However, for the more realistic case of non-zero temperature the substrate serves as a thermostat for which energy will dissipate from the chain to the substrate degrees of freedom giving rise to kintetic friction. On the other hand, this predicts that certain sliding speed, which does not induce phonon resossance, will be subject to extremely low kinetic friction. This is strongly connected to the superlubricity term although ths phonon dynamics is simplified in this 1D model. 
 
 A common way to model the non-zero temperature case is by the
 use of a Langevin thermostat, which simulates the dissipation by adding a viscous
@@ -666,13 +666,57 @@ By extending the FK model into 2D \cite{FK2D} it can be shown numerically that t
 % \cite{Manini_2016} p. 24.
 
 
-\subsubsection{Experimental insight}
+\paragraph*{Smooth sliding}
 
-% In this chapter we introduce the methods conventionally used to explore friction on the nanoscale. The leading position among the instrumental setups is held by the atomic force microscope. Here we will briefly illustrate the type of forces sensed by this instrument and its basic modes of application. Other experimental techniques in nanotribology are the surface force apparatus, the quartz crystal microbalance and also, to some extent, scanning tunneling microscopy and transmission elec- tron microscopy. \cite{gnecco_meyer_2015}
+Find a suitable place to introduce smooth sliding. Above certain velocities the stick-slip motion dissapear. \cite[p. 142-ish]{gnecco_meyer_2015}
 
-\begin{itemize}
-  \item Atomic Force Microscope (AFM)
-\end{itemize}
+\subsubsection{Experimental procedures}
+\cite{gnecco_meyer_2015}
+
+
+Experimentally nanoscale friction is challenging to approach as the forces, on the scale of nano-newtons as well, is extremely small. Additionally surface topography is not easily viewed. On the other side simulations provide full transparency regarding information of the physical structure of the sample among with forces, velocities and temperature. However, in order to compare numerical results the experimental procedures is most often mirrored in simulations. Thus it is beneficial to adress the most common experimental techniques when designing a simulation. 
+
+%  Not may nanoflake studies. 
+
+\paragraph*{Scanning Probe Microscopy}
+
+Scanning probe microscopy (SPM) includes a variety of experimental methods which
+is used to examine surfaces with atomic resolution \cite[p.
+6-]{BHUSHAN20051507}. This was orginally developed for surface topography
+imaging, but today it plays a crucial role in nanoscale science as it is used
+for probe-sampling regarding tribological, electronic, magnetic, biological and
+chemical character. The famility of methods involving the measurement of forces
+is generally referred to as \textit{scanning force microscopies} (SFM).
+
+One such method arose from the \textit{atomic force micrpscope}, which consist
+of a sharp micro-fabricated tip attacthed to a contilever force sensor, usually
+with a sensitivy below 1 nN. The force is measured by recording the bending of
+the cantilever, either as a change in electrical conduction or more commonly, by
+a light beam reflected from the back of the cantilever into a photodetector
+\cite{gnecco_meyer_2015}. By adjusting the tip-sample height to keep a constant
+normal force while scanning accross the surface this can be used to produce a
+surface topography map. By tapping the material (dynamic force microscopy) with sinusoidally vibrated tip the effects from friction and other disturbing forces can be minimized in order to produce a clear image (include example, preferable of graphene). However, when scanning perpendicularly to the cantilever
+axis one is also able to measure the frictional force as torsion of the
+cantilever. By having four quadrants in the photodetector (as shown in figure
+\ref{fig:AFM}), one can simultaneously measure the normal force and friction
+force as the probes scans accross the surface. 
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\linewidth]{figures/theory/AFM.png}
+  \caption{\hl{Temporary} figure from \cite[p. 184]{gnecco_meyer_2015}}
+  \label{fig:AFM}
+\end{figure}
+
+
+This can also be used to drag a nanoflake as done by Dienwiebel et al. \cite{DIENWIEBEL2005197} (earlier referrenced), where a graphene flake was attahced to a FFM tip and dragged accross graphite.
+
+
+
+
+\paragraph*{Surface Force Apparatus (SFA)}
+
+Is this the one where to surfaces slides in opposite direction (at least that is the commen MD way I see it.)
 
 
 % The trouble is that the coefficients of friction measured in nanotribological
@@ -702,22 +746,34 @@ By extending the FK model into 2D \cite{FK2D} it can be shown numerically that t
 
 
 
-\subsubsection{Summary of expected frictional properties}
+\subsubsection{(summary of) Expected frictional properties}
 % Articles to compare with
 % https://www.mdpi.com/1996-1944/12/9/1425
 % https://pubs.acs.org/doi/10.1021/nn305722d
 
 
-What frictional properties to we expect to see at a nonescale. Numerical and experimental. Refer to theory for each element. Perhaps try to seperate MD and experimental results from each other 
 
-It might not be easy to find experiments of graphene flakes on silicon substrate. 
+The setup of our simulation is most reminiscent of a graphene flake sliding on a substrate. This has been studied numerically in molecular dynamic simulations by Zhu and Li \cite[2018]{zhu_study_2018} for a graphene flake on a gold substrate and by Zhang et al. \cite{ma12091425}(2019) on a diamond substrate, and in a tight-binding simulation by Bonelli et al. \cite{bonelli_atomistic_2009}(2009) for graphene on graphite. Experimental studies of a graphene flake attatched to a AFM is done by Dienwiebel et al. \cite[2005]{DIENWIEBEL2005197} and Feng et al. \cite[2013]{feng_superlubric_2013} sliding on graphite, but these are mainly concerned with superlubricity as a function of flake oreientation commensurability. 
+
+
+In our study we simmulate a graphene flake on a silicon substrate which deviates slightly from the above-mentioned reference. Additionally, the normal force is only applied to the ends of the sheet. Obviously stretching and cutting the sheet will seperate our study dramatically from the references, but we aim to compare the frictional properties to the reference before applying stretch or cuts. 
+
+Qualitatively we have the following expectations for the unstretched and non-cut graphene sheet. 
+
+
 
 \paragraph*{Qualitatively}
 \begin{enumerate}
-  \item Stick slip: We expect to see periodic stick-slip motion with period mathing the lattice constant(s) \cite{mo_friction_2009}. In AFM and SFA experiemnts, the stic-slip motion ten to transistion into smooth sloding when the speed exceeds $\sim 1 \mu$ m/s while in MD modelling the same transistion is observed in the $\sim 1 m/s$ region \cite{Manini_2016}. This 6 order of magnitude discrepancy has been largely discussed in [141-144 \cite{Manini_2016}] in connection with the simplifications in MD simulations. 
-  %Not in agreement: Firstly, our calculations recover the stick-slip behavior of the lat- eral forces, characteristic of FFM sliding experiments. In particular, we find the correct qualitative dependence of stick-slip on the springs stiffness characterizing the cantilever-tip-flake coupling: soft springs allow for clean stick-slip behavior, while hard springs inhibit it. (Atomistic simulations of the sliding friction of graphene flakes)
+  \item Stick slip: Generally expect to see periodic stick-slip motion with a period mathing the lattice constant(s) involved \cite{mo_friction_2009}. This was both present in the MD simulations \cite{zhu_study_2018}, \cite{ma12091425} and in the experiment by \cite{DIENWIEBEL2005197}. In AFM and SFA experiemnts, the stick-slip motion tend to transistion into smooth sliding when the speed exceeds $\sim 1 \mu$ m/s while in MD modelling the same transistion is observed in the $\sim 1 m/s$ region \cite{Manini_2016}. This 6 order of magnitude discrepancy has been largely discussed in connection to simplifying assumptions in MD simulations.Bonelli et al. \cite{bonelli_atomistic_2009} found that the stick-slip behaviour was present when the cantilever-tip-flake coupling was done with a relatively soft springs in contrast to hard springs which inhibited it.   
 
-  \item Static friction: Theoretically static friction is expected... 
+  \item Static friction: As highlighted in the FK model static friction will be sensitive to commensurability, which will additionally be affected by flake size. Reguzzoni and Righi \cite{PhysRevB.85.201412} have shown that the effective commensurability will increase drastically below a critical flake radius on the order of $10$ Å. Macroscopically we expect to see a logarithmic increase in friction with time \cite{dieterich_1972}, and hence due to the short time-span of the static contact before dragging, it is not easy to estimate whether a significant static friction peak will be found. 
+  
+
+  % Concerning stick-slip friction, another problem is that, unlike simulations, real experiments contain mesoscale or macroscale component intrinsically involved in the mechanical instabilities of which stick-slip consists. Here the comforting observation is that stick-slip is nearly independent of speed, so that so long as a simulation is long enough to realize a sufficient number of slip events, the results may already be good enough [148]  \cite{Manini_2016}.
+
+
+  % A serious aspect of stick-slip friction which MD simulation is unable to attack is ageing. The slip is a fast event, well described by MD, but sticking is a long waiting time, during which the frictional contact settles very slowly. The longer the sticking time, the larger the static friction force necessary to cause the slip. Typicall experiments show a logarithmic increase of static friction with time [150] \cite{Manini_2016}.
+  
   % For monolayers sliding along atomically uniform substrates, however, there is
   % essentially no static friction. Indeed, the friction in these systems can be
   % up to 105 times less than that for macroscopic lubricants such as graphite.
@@ -725,23 +781,47 @@ It might not be easy to find experiments of graphene flakes on silicon substrate
   % work in systems at different scales.
   % (\url{https://physicsworld.com/a/friction-at-the-nano-scale/})
 
-  \item Oritentation. Due to commensurability it is expected that the friction will vary along different orientations. In a numerical study by Zhu et al. \cite{zhu_study_2018} they found that a graphene flake sliding on a gold substrate exhibit the highest friction when sliding along the armchair direction. (We chose to slide aliong the zigzag directio more or less by random choice)
-  
-  
+  \item Oritentation: As predicted by the FK model and confirmed both numerically \cite{zhu_study_2018}, \cite{ma12091425} and experimentally \cite{DIENWIEBEL2005197}, \cite{feng_superlubric_2013} we expect to see a dependence from orientation on the friction force due to changing commensurability. Zhu and Li \cite{zhu_study_2018} (gold substrate) reported the highest friction when sliding along the armchair direction, while Zhang et al. \cite{ma12091425} (diamond substrate) found the zigzag-direction to give the highest friction force along the zigzag direction (also the most evident stick-slip behvaiour). 
 \end{enumerate}
   
-  
-  \paragraph*{Variable dependence}
 
-  \begin{enumerate}
-  \item Normal force: The general trend observed in AFM nanoscale friction is that friction force increase with normal load \cite{gnecco_meyer_2015}. 
-  \item Velocity: Smooth kinetic friction generally increase with speed (velocity strengthening) \cite{Manini_2016}. E. Gnecco et al. \cite{PhysRevLett.84.1172} showed a logaritmic increase in mean friction with velocity (the tip of a friction force microscope and NaCl(100) at low velocity ($10^-9$ - $10^-6$ m/s)).  If the scan velocity increases thermally activated processes becomes less important and beyond a critical value the friction forces becomes independent of velocity \cite[p. 202]{gnecco_meyer_2015}
-  \item Temperature: A decrease in friction as $1/T$ was observed by Zhao et al. in a series of AFM measurements on graphite in a wide temperature range (140-750 K) \cite[source 351]{gnecco_meyer_2015}
-  % Zhao et al. (2007) observed that friction on graphite decreases as 1/T over a wide temperature range (140–750 K), supporting the hypothesis of thermal activation of the stick–slip process. However, it was only recently that group of Schirmeisen reported atomic-scale FFM mea- surements in UHV at different temperatures (Jan- sen et al. 2010). When silicon, SiC, ionic crystals and graphite surfaces were cooled down from room temperature to cryogenic conditions, a good agreement with the thermally activated PT model was found down to a peak or a plateau, appearing between 50 and 200 K. Below these values, the friction was found to decrease with temperature, which the authors attributed to the competition between thermally activated rupture and formation of chemical bonds (Barel et al. 2010). \cite{BHUSHAN20051507}
-  \item Ruan and Bhushan (1994) (source) found in an AFM study on graphite that the friction coefficient was around $\sim 0.01 - 0.03$
-  % Ruan and Bhushan (1994) used an AFM to investigate the effect of surface roughness on the tribological characteristics of graphite using a Si3N4 tip. It was found that friction coefficient varied with respect to roughness of the substrate. The friction coefficient was below 0.01 and 0.03 for RMS roughness of about 10 nm and 140 nm, respectively. This outcome was attributed to the loss of orientation of the substrate with increasing roughness.33 \cite{kim_nano-scale_2009}
-  \item Contact area
-\end{enumerate}
+
+
+
+\begin{table}[H]
+  \begin{center}
+  \caption{Quantitative nano friction dependence on various variables.}
+  \label{tab:var_dep}
+  \begin{tabular}{ | c | m{3cm}| m{5cm}| m{5cm}|} \hline
+  \textbf{Variable} & \textbf{Dependency} & \textbf{Numerical studies} & \textbf{Experimental} \\ \hline 
+  Normal force $F_N$ 
+  &  $F_f$ increasing $F_N$
+  & MD simulations of amorphous carbon asperity on diamond substrate suggest a linear relatioship to $F_f\propto F_N$ for nonadhesive contact and sublinear with van der waals adhesive forces \cite{mo_friction_2009}. Graphene flake?
+  & The general trend observed in AFM nanoscale friction is that friction force increase with normal load \cite[p.200]{gnecco_meyer_2015}. Various trends have been observed from linear to power trends. 
+  \\ \hline
+  Velocity $v$& $F_f \propto \ln{v}$ & & \\ \hline
+  Temperature $T$& $F_f \propto 1/T$ & & \\ \hline
+  Real contact area $A$ & $F_f \propto A$ & & \\ \hline
+  \end{tabular}
+  \end{center}
+\end{table}
+
+
+
+
+% the stick-slip motion was more evident when changing the sliding direction from armchair to zigzag direction \cite{ma12091425}
+  
+%   \paragraph*{Variable dependence}
+
+%   \begin{enumerate}
+%   \item Normal force: The general trend observed in AFM nanoscale friction is that friction force increase with normal load \cite{gnecco_meyer_2015}. 
+%   \item Velocity: Smooth kinetic friction generally increase with speed (velocity strengthening) \cite{Manini_2016}. E. Gnecco et al. \cite{PhysRevLett.84.1172} showed a logaritmic increase in mean friction with velocity (the tip of a friction force microscope and NaCl(100) at low velocity ($10^-9$ - $10^-6$ m/s)).  If the scan velocity increases thermally activated processes becomes less important and beyond a critical value the friction forces becomes independent of velocity \cite[p. 202]{gnecco_meyer_2015}
+%   \item Temperature: A decrease in friction as $1/T$ was observed by Zhao et al. in a series of AFM measurements on graphite in a wide temperature range (140-750 K) \cite[source 351]{gnecco_meyer_2015}
+%   % Zhao et al. (2007) observed that friction on graphite decreases as 1/T over a wide temperature range (140–750 K), supporting the hypothesis of thermal activation of the stick–slip process. However, it was only recently that group of Schirmeisen reported atomic-scale FFM mea- surements in UHV at different temperatures (Jan- sen et al. 2010). When silicon, SiC, ionic crystals and graphite surfaces were cooled down from room temperature to cryogenic conditions, a good agreement with the thermally activated PT model was found down to a peak or a plateau, appearing between 50 and 200 K. Below these values, the friction was found to decrease with temperature, which the authors attributed to the competition between thermally activated rupture and formation of chemical bonds (Barel et al. 2010). \cite{BHUSHAN20051507}
+%   \item Ruan and Bhushan (1994) (source) found in an AFM study on graphite that the friction coefficient was around $\sim 0.01 - 0.03$
+%   % Ruan and Bhushan (1994) used an AFM to investigate the effect of surface roughness on the tribological characteristics of graphite using a Si3N4 tip. It was found that friction coefficient varied with respect to roughness of the substrate. The friction coefficient was below 0.01 and 0.03 for RMS roughness of about 10 nm and 140 nm, respectively. This outcome was attributed to the loss of orientation of the substrate with increasing roughness.33 \cite{kim_nano-scale_2009}
+%   \item Contact area
+% \end{enumerate}
 
 
 
@@ -1376,6 +1456,8 @@ correlation function becomes
   \label{eq:F_corr}
 \end{align}
 
+% Note that the delta function is justified by the fact that the characteristic frequencies of the phonon and electron excitations are much shorter than the hopping rate of the tip between the minima of the interaction potential \cite{gnecco_meyer_2015}
+
 where $\delta$ denotes the dirac delta function. This is valid for all spatial
 coordinates which will all be independent of each other. Since both the drag
 force and the fluctuation force originate from the molecular fluid, where the
@@ -1627,6 +1709,20 @@ thermostat on.
 \subsection{MD limitations (?)}
 
 % One of the limitations of concern is in regard to the simulation scale. Despite relatively fast processor speed and efficient algorithm the number of atoms that can be handled realistically is still insufficient for complex system simulation \cite{kim_nano-scale_2009}.
+
+
+
+% The main problem when studying the velocity dependence of friction by MD
+% simulations is the fact that speeds below few m/s are not accessible. These
+% values are well above typical speeds at which atomic stick–slip is resolved by
+% AFM (nm/s to μm/s). The reason for that is the typical time scales in MD, which
+% are of the order of 1 fs. Furthermore, phenomena such as thermally activated
+% hopping are not effective at high speeds, which makes any attempts to
+% extrapolate the model predictions on the velocity dependence of friction quite
+% doubtful. A possible solu- tion consists of accelerating the simulations during
+% the long stick phases separating rapid slip events. \cite[p.
+% 207]{gnecco_meyer_2015}
+
 
 \subsection{LAMMPS}
 
