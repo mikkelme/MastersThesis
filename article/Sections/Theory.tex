@@ -490,34 +490,31 @@ been shown for a graphene flake (single layer) sliding over a graphite surface
 % Consequently, the FK model is the simplest model in which dynamic friction is emergent, while in other models some form of heuristic damping must be included.\cite{FK2D}
 
 In the FK model the kinetic friction is primarily caused by resonance between
-the sliding induced vibrations and phonon modes in the chain \cite{FK2D}. We
-can consider the case where all particels slide uniformly over the potential
-with velocity $v^+$ such that a so-called washboard frequency is induced with angular frequency $\Omega = 2\pi v^+ / a_b$. (The following is a bit shaky and should be double checked). The periodicity of the potential corresponds to a wavenumber of $q = 2\pi \theta$ (?)for phonons in the chain. The phonon dispersion relation for a 1D chain of atom is given (source)
+the sliding induced vibrations and phonon modes in the chain \cite{FK2D}. When all atoms are sliding rigidly width center of mass velocity $v_{{\text{CM}}}$ the atoms will pass the potential maxima with the so-called \textit{washboard frequency} $\Omega = 2\pi v_{{\text{CM}}} / a_b$. For a weak coupling between the chain and the potential we can use the zero potential case as an approximation for which the known dispersion relation for the 1D harmonic chain is given [Kittel]
 \begin{align*}
-  \omega =\sqrt{\frac{4 K}{m}} \sin{\left(\frac{|k a_b|}{2}\right)}
+  \omega_k = \sqrt{\frac{4 K}{m}} \left|\sin{\left(\frac{k}{2}\right)}\right|,
 \end{align*}
-for wavenumber $k$ and particle mass $m$. Resonances will accour when the washboard frequency matches the phonon dispersion relation for $k = q$ or any of the harmonics $k = nq$, $n = 1, 2, 3, \cdots$ yielding
+where $omega_k$ is the phonon frequency and $k = 2\pi i / N$ the wavenumber with $i\in [N/2, N/2)$. Strong resonance will accour if $\Omega$ is close to the frequency of the phonon modes $\omega_q$ in the chain with wavenumber $q = 2\pi a_c / a_b = 2\pi \theta^{-1}$ or its harmonics $nq$ for $n = 1, 2, 3, \hdots$ \cite{van_den_Ende_2012}. Thus, we can approximate the resoancne speed as s
 \begin{align*}
-  n \Omega(v^+) &= \omega(k=nq) \\
-  \frac{2\pi v^+}{a_b} &= \sqrt{\frac{4 K}{m}} \sin{(n\pi \theta a_b)} \\
-  v^+ &= \sqrt{\frac{K}{m}} a_b\frac{\sin{(n\pi a_c)}}{\pi} \\
-  v^+ &= \sqrt{\frac{K}{m}} a_b\frac{\sin{(n\pi a_c)}}{n\pi}
+    n \Omega &\sim \omega_{nq} \\
+    n \frac{2\pi v_{\text{CM}}}{a_b} &\sim 2 \sqrt{\frac{K}{m}} \left| \sin{\left(\frac{2n \pi \theta^{-1}}{2}\right)}\right| \\
+    v_{\text{CM}} &\sim \frac{\sin{(n\pi \theta^{-1})}}{n \pi} \sqrt{\frac{Ka_b^2}{m}}.
 \end{align*}
-(Make sense? Remember to deal with the absolute sign...) Thus when the chain slides with a velocity around resonance, the washboard frequency can excite acoustic phonons which will dissipate to other phonon modes as well.
-At zero temperature the energy will transform back and forth between internal
-degrees of freedom and center of mass movement of the chain. Hence, at zero
-temperature this will speed up the translation decay (decay is synonymous
-for translational movement right?). However, for the more realistic case of non-zero temperature the substrate serves as a thermostat for which energy will
-dissipate from the chain to the substrate degrees of freedom giving rise to
-kintetic friction. A common way to model the non-zero temperature case is by the
-use of a Langevin thermostat, which simulates dissipation by adding a viscous
+When the chain slides with a velocity around resonance speed, the washboard frequency can excite acoustic phonons which will dissipate to other phonon modes as well. At zero temperature the energy will transform back and forth between internal degrees of freedom and center of mass movement of the chain. Hence, at zero temperature this will infact speed up the translation decay (decay is synonymous for translational movement right?). However, for the more realistic case of non-zero temperature the substrate serves as a thermostat for which energy will dissipate from the chain to the substrate degrees of freedom giving rise to kintetic friction. On the other hand, this predicts that certain sliding speed, which does not induce phonon resossance, will be subject to extremely low kinetic friction. This is strongly connected to the superlubricity term allthough ths phonon dynamics is simplified in this 1D model. 
+
+A common way to model the non-zero temperature case is by the
+use of a Langevin thermostat, which simulates the dissipation by adding a viscous
 damping force and thermal fluctuations by the addition of Gaussian random forces
 with variance proportional to the temperature (This is covered in more details
 in section \ref{sec:langevin}). In combinatio, this gives rise to a kinetic friction that is both velocity and temperature dependent. 
 
-By extending the FK model into 2D \cite{FK2D} it can be shown numerically that the friction coefficient generally increases with increasing velocity and temperature resepctively. 
+By extending the FK model into 2D \cite{FK2D} it can be shown numerically that the friction coefficient generally increases with increasing velocity and temperature resepectively. 
 
 
+% As the system is Hamiltonian (no heuristic damping) the total energy is conserved. Nevertheless, energy can be transferred from the centre of mass to the internal degrees of freedom, leading to the arrest of the chain in time. This effect can be interpreted as an effective friction. \cite{van_den_Ende_2012}
+
+
+% The majority [6–12] examines the steady state of the dynamical FK model in the presence of dissipation, rep- resenting the coupling of phonons to other, undescribed degrees of freedom. \cite{PhysRevLett.85.302}
 
 
 % Static friciton behvaiour is robust and remains similar in 2D but dynamical friction is strongly influenced. 
@@ -573,9 +570,9 @@ By extending the FK model into 2D \cite{FK2D} it can be shown numerically that t
 
 
 
-\subsubsection{FK extension: Frenkel-Kontorova-Tomlinson (FKT)}
+% \subsubsection{FK extension: Frenkel-Kontorova-Tomlinson (FKT)}
 
-Further model extensions. Important? 
+% Further model extensions. Important? 
 % Several extensions has been provided for the FK model with modifications of the
 % interactions or system dimensionality. Anharmonicity of the chain 
 
@@ -669,8 +666,25 @@ Further model extensions. Important?
 % \cite{Manini_2016} p. 24.
 
 
-\subsubsection{Graphene friction}
-Theory of friction experiment involving graphene.
+\subsubsection{Experimental insight}
+
+% In this chapter we introduce the methods conventionally used to explore friction on the nanoscale. The leading position among the instrumental setups is held by the atomic force microscope. Here we will briefly illustrate the type of forces sensed by this instrument and its basic modes of application. Other experimental techniques in nanotribology are the surface force apparatus, the quartz crystal microbalance and also, to some extent, scanning tunneling microscopy and transmission elec- tron microscopy. \cite{gnecco_meyer_2015}
+
+\begin{itemize}
+  \item Atomic Force Microscope (AFM)
+\end{itemize}
+
+
+% The trouble is that the coefficients of friction measured in nanotribological
+% experiments and in macroscopic “tribotests” routinely differ by orders of
+% magnitude. (\url{https://physicsworld.com/a/friction-at-the-nano-scale/})
+
+
+
+
+
+% \subsubsection{Graphene friction}
+% Theory of friction experiment involving graphene.
 
 
 % Read Rare-gas islands and metal clusters \cite{Manini_2016} for theory of effects on surface area scaling
@@ -684,20 +698,6 @@ Theory of friction experiment involving graphene.
 % decreases by increasing graphene thickness from a single layer up to 4-5 layers,
 % and then it approaches graphite values [97, 99, 101, 107, 108]. (Current trends
 % in the physics of nanoscale friction)
-
-
-\subsubsection{Experimental procedures / Results?}
-
-% In this chapter we introduce the methods conventionally used to explore friction on the nanoscale. The leading position among the instrumental setups is held by the atomic force microscope. Here we will briefly illustrate the type of forces sensed by this instrument and its basic modes of application. Other experimental techniques in nanotribology are the surface force apparatus, the quartz crystal microbalance and also, to some extent, scanning tunneling microscopy and transmission elec- tron microscopy. \cite{gnecco_meyer_2015}
-
-\begin{itemize}
-  \item Atomic Force Microscope (AFM)
-\end{itemize}
-
-
-% The trouble is that the coefficients of friction measured in nanotribological
-% experiments and in macroscopic “tribotests” routinely differ by orders of
-% magnitude. (\url{https://physicsworld.com/a/friction-at-the-nano-scale/})
 
 
 

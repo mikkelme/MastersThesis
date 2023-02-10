@@ -171,8 +171,8 @@ def run_files(filenames, header, simname, num_procs_initial = None, num_procs = 
 if __name__ == "__main__":
     filenames = get_files_in_folder('../config_builder/honeycomb/', ext = 'npy')
     
-    filenames = filenames[20:] # Ready for the remaining
-    run_files(filenames, header =  'egil:CONFIGS/honeycomb', simname = 'hon', num_procs_initial = None, num_procs = 4)
+    # filenames = filenames[20:] 
+    # run_files(filenames, header =  'egil:CONFIGS/honeycomb', simname = 'hon', num_procs_initial = None, num_procs = 4)
     # run_files(filenames, header =  'egil:CONFIGS/TEST', simname = 'hon3351', num_procs = 1)
    
    
