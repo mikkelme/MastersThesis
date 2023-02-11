@@ -13,6 +13,7 @@ def temp(path, save = False):
                os.path.join(path, 'popup', common_folder),
                os.path.join(path, 'honeycomb', common_folder)]
     names = ['nocut', 'popup', 'honeycomb']
+    # fig_max, fig_mean = variable_dependency(folders, names, 'T', '$T$ [K]', default = 300, error = 'shade')
     fig_max, fig_mean = variable_dependency(folders, names, 'T', '$T$ [K]', default = 300, error = 'shade')
     if save:
         fig_max.savefig("../article/figures/baseline/variables_temp_max_fixmove_v20.pdf", bbox_inches="tight")
@@ -376,8 +377,8 @@ if __name__ == "__main__":
     
     path = '../Data/Baseline_fixmove'
     # path = '../Data/Baseline'
-    # temp(path, save = False)
-    vel(path, save = False)
+    temp(path, save = False)
+    # vel(path, save = False)
     # spring(path, save = False)
     # dt(path, save = True)
     

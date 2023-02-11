@@ -5,6 +5,14 @@
 Small introtext to motivate this chapter. What am I going to go over here.
 
 
+
+
+% The friction force is not an independent external force that acts on a body but an internal force that opposes the externally applied force. Thus, it may be thought of as a reaction force rather than an action force. In this sense, it is similar to the adhesion force between two bodies, which appears only when one tries to separate the bodies from contact. \cite{gao_frictional_2004}
+
+
+
+% Read \cite{gao_frictional_2004} to fill in some gaps in the history below
+
 \section{Tribology - friction}
 Friction is a part of the wider field tribology which includes the study of
 friction, wear and lubrication between two surfaces in relative motion \cite[p.
@@ -132,6 +140,12 @@ among many interacting degrees of freedom \cite{Manini_2016}. From this point of
 \\
 \\
 The attentive reader might point out that we have already moved the discussion partly into the microscopic regime as \textit{statistical mechanics} generally aim to explain macroscale behaviour by microscopic interactions. In fact this highlight the nessecity to consider smaller scales in order to achieve a more in depth understadning of friction.
+
+
+% While we now know that eq 2 (Amontos law) is not valid over large ranges of loads and/or sliding velocities5,6 and that it completely breaks down for atomically smooth surfaces in strongly adhesive contact,7 it remains surprisingly good at describing the majority of rubbing surfaces involving both dry and lubricated contacts, both ductile and brittle, both rough and smooth surfaces (so long as they are not adhesive), and both macroscopic and microscopic contacts.8,9 \cite{gao_frictional_2004}
+
+
+% All the terms in Amontons’ law refer to macroscopic, i.e., space- and time-averaged or “mean-field”, values. Thus, the contact area is the “apparent” or projected geometric area rather than the “real” contact area at the molecular level. And V is the mean relative velocity of the sliding bodies even though the shearing microjunctions may be moving with large fluctuations or in a stick-slip fashion.10 \cite{gao_frictional_2004}
 
 
 
@@ -665,6 +679,10 @@ By extending the FK model into 2D \cite{FK2D} it can be shown numerically that t
 % \subsection{Multi scale models?}
 % \cite{Manini_2016} p. 24.
 
+\paragraph*{Temperature depence}
+
+Might find something interesting here \cite{zhao_thermally_2007} or \cite{PhysRevE.71.065101}.
+
 
 \paragraph*{Smooth sliding}
 
@@ -781,9 +799,10 @@ Qualitatively we have the following expectations for the unstretched and non-cut
   % work in systems at different scales.
   % (\url{https://physicsworld.com/a/friction-at-the-nano-scale/})
 
-  \item Oritentation: As predicted by the FK model and confirmed both numerically \cite{zhu_study_2018}, \cite{ma12091425} and experimentally \cite{DIENWIEBEL2005197}, \cite{feng_superlubric_2013} we expect to see a dependence from orientation on the friction force due to changing commensurability. Zhu and Li \cite{zhu_study_2018} (gold substrate) reported the highest friction when sliding along the armchair direction, while Zhang et al. \cite{ma12091425} (diamond substrate) found the zigzag-direction to give the highest friction force along the zigzag direction (also the most evident stick-slip behvaiour). 
+  \item Oritentation (friction anisotropy): As predicted by the FK model and confirmed both numerically \cite{zhu_study_2018}, \cite{ma12091425} and experimentally \cite{DIENWIEBEL2005197}, \cite{feng_superlubric_2013} we expect to see a dependence of friction force on orientation due to changing commensurability. Zhu and Li \cite{zhu_study_2018} (gold substrate) reported the highest friction when sliding along the armchair direction, while Zhang et al. \cite{ma12091425} (diamond substrate) found the zigzag-direction to give the highest friction force along the zigzag direction (also the most evident stick-slip behvaiour). 
 \end{enumerate}
   
+
 
 
 
@@ -792,16 +811,27 @@ Qualitatively we have the following expectations for the unstretched and non-cut
   \begin{center}
   \caption{Quantitative nano friction dependence on various variables.}
   \label{tab:var_dep}
-  \begin{tabular}{ | c | m{3cm}| m{5cm}| m{5cm}|} \hline
+  \begin{tabular}{ | c | C{3cm}| m{5cm}| m{5cm}|} \hline
   \textbf{Variable} & \textbf{Dependency} & \textbf{Numerical studies} & \textbf{Experimental} \\ \hline 
   Normal force $F_N$ 
-  &  $F_f$ increasing $F_N$
+  &  
+  % $F_{\text{fric}}$ increasing with $F_N$. 
+  $F_{\text{fric}} \propto F_N^{\alpha}$ \newline $\alpha \le 1$
   & Zhang et al. \cite{ma12091425} finds a seemingly linear relationship $F_{\text{fric}} \propto F_N$ while Bonelli et al. \cite{bonelli_atomistic_2009} reports a sublinear relationship. The latter corresponds with that of nanosasperity simulations where \cite{mo_friction_2009} (amorphous carbon tip and a diamond sample) also found sublinear relationship when including adhesion.
-  & Dienwiebel et al. \cite{DIENWIEBEL2005197} found a non-dependent relationship while Feng et al. \cite{feng_superlubric_2013} does not report?
+  & Experimentally different trends have been observed \cite[p. 200]{gnecco_meyer_2015}. For the graphebne flake Dienwiebel et al. \cite{DIENWIEBEL2005197} found a non-dependent relationship while Feng et al. \cite{feng_superlubric_2013} did report on this. FFM analog to the single asperity setup have yielded both linear relationship \cite{gao_frictional_2004} (silicon tip on gold) while Schwarz et al. \cite{PhysRevB.56.6987} found that FFM with well-defined spherical tips mathed with theoretical results(DMT, elastic spheres pressed together \cite[p. 200]{gnecco_meyer_2015}), yielding a power law $F_{\text{fric}} = F_N^{2/3}$. 
   \\ \hline
-  Velocity $v$& $F_f \propto \ln{v}$ & & \\ \hline
-  Temperature $T$& $F_f \propto 1/T$ & & \\ \hline
-  Real contact area $A$ & $F_f \propto A$ & & \\ \hline
+  Velocity $v$& $F_{\text{fric}} \propto \ln{v}$ 
+  &  
+  & Logaritmic velocity dependence of friction has been measured for nanotip friction \cite[p. 201]{gnecco_meyer_2015} associated to thermal activation and possibly the time availble to form bond between the tip and the substrate. At higher velocities thermally activated processes are less important and friction becomes independent of velocity. This has been observed for Si tips and diamond, graphite and amorphous carbon surfaces with scan velocities above 1 $\mu$m/s.
+  \\ \hline
+  Temperature $T$
+  & Either increase (MD) or decrease as $F_{\text{fric}} \propto \exp{(1/T)}$  (experimental)
+  &  Zhang et al. \cite{ma12091425} found tha friction increased with temperature. 
+  & Zhao et al. \cite{zhao_thermally_2007} found $F_{\text{fric}} \propto \exp({1/T})$ \\ \hline
+  Real contact area $A$ 
+  & $F_{\text{fric}} \propto A$ 
+  & Mo et al. \cite{mo_friction_2009} found that $F_{\text{fric}} \propto A$ where $A$ is the real contact area defined by atoms within chemical range. This is not studied for the case of a nanoflake where the contact area is presumingly rather constant.
+  & \\ \hline
   \end{tabular}
   \end{center}
 \end{table}
@@ -942,7 +972,7 @@ Qualitatively we have the following expectations for the unstretched and non-cut
 \section{Molecular Dynamics}
 
 
-Maybe also ´´Computer Simulations 7 of Nanometer-Scale Indentation
+Maybe read ``Computer Simulations 7 of Nanometer-Scale Indentation
 and Friction'' from \cite{BHUSHAN20051507}
 
 Read \cite{Manini_2016}[p. 18]
@@ -1727,42 +1757,66 @@ thermostat on.
 \subsection{LAMMPS}
 
 
-
 \section{Defining the system}
 
-\subsection{Region definitions (Sheet, pullblocks and substrate)}
-Include figure of system to point out thermo layers and freeze layers.
+The simmulated system consist of two major parts: A 2D graphene sheet and a 3D Silicon ``bulk'' substrate. These parts interact with a van der Waals force (modelled by the LJ potential). We apply a normal load to the sheet inducing a normal force response between the sheet and substrate. By dragging the sheet along the substrate we measure the responding frictional forces.
 
+
+\subsection{Region definitions (Sheet, pullblocks and substrate)}
+
+The system, sheet and substrate, is further subdivided according to
+functionality in the MD simmulations. The sheet ends is reserved for so-called
+\textit{pull blocks}, which is used application of normal load, stretching and
+dragging the sheet, and as a thermostat, while the remaining \textit{inner
+sheet} is left as an untouched (NVE) canvas for kirigami cuts. The pull blocks
+are equal split between a thermostat part and a rigid part which is locked into
+a single rigid body after an initial relaxtion period. Note that the rigid part
+of the pull blocks on both side is considered a single rigid object even though
+they are physically seperated. This means that all force interactions on these
+parts will be applied as a common average making the move in total
+synchronization. The substrate is equally divided into three parts: The
+\textit{upper layers} (NVE) responsible for the sheet-substrate interaction, the
+\textit{middle layers} being a thermostat (NVT), and the \textit{bottom layers}
+is frozen (rigid and fixed) in the initial lattice structure to ensure that the
+substrate stays in place. In figure \ref{fig:system} the system is displayed
+with colors matching the three distinct roles:
+\begin{enumerate}
+  \item Red: NVE parts which is governing the frictional behaviour of interest.
+  \item Green: Thermostats (NVT) sourrounding the NVE parts in order to modify the temperature without making disturbing changes to the interaction of the sheet and substrate.
+  \item Blue: Parts that is initially or eventually turned in to rigid objects. For the substrate this is additionally locked off and immobile. 
+\end{enumerate}
+
+The total system size in terms of atom count is given in table \ref{tab:system_count} while the sheet length dimension is given in table \ref{tab}
+
+The total system size (without cuts in the sheet) is 27456 atoms, and the distribution into the various regions is shown in table \ref{tab:system_count}. The length dimensions of the sheet is given in table \ref{tab:sheet_dim}.
 
 \begin{figure}[H]
   \centering
   \begin{subfigure}[b]{0.80\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/system_sideview.png}
-      \caption{Side view}
+      \caption{Side view showing sheet on top of the substrate.}
       \label{fig:sideview}
   \end{subfigure}
   \hfill
   \begin{subfigure}[b]{0.80\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/system_topview.png}
-      \caption{Top view}
+      \caption{Top view showing only the sheet.}
       \label{fig:topview}
   \end{subfigure}
   \hfill
-     \caption{System. 27456 atoms in total: 7272 with thermostat (orange), 7272 is locked (light blue) and the remaing 12912 just with NVE. (Get better colors)}
+     \caption{System configuration colorized to indicate NVE parts (red), thermostat parts (green) and rigid parts (blue).}
      \label{fig:system}
 \end{figure}
 
-
-
 \begin{table}[H]
   \begin{center}
-  \caption{System atom count and region division.}
+  \caption{Amount of atoms in the various system regions in the case of no cutting applied to the sheet.}
   \label{tab:system_count}
   \begin{tabular}{ |c|| c | c | c | c | c | c |} \hline
     \textbf{Region} & \textbf{Total}  & Sub region & Sub total & \textbf{NVE} &
-    \textbf{NVT} & \textbf{Locked} \\ \hline   
+    \textbf{NVT} & \textbf{Rigid} \\ \hline   
     \multirow{2}{*}{Sheet} & \multirow{2}{*}{7800} & Inner sheet & 6360 & 6360 &
     0 & 0 \\ %\hline
     & & Pull blocks & 1440 & 0 & 720 & 720 \\ \hline   
@@ -1776,11 +1830,10 @@ Include figure of system to point out thermo layers and freeze layers.
 \end{table}
 
 
-The sheet dimensions is 
 \begin{table}[H]
   \begin{center}
-  \caption{Sheet dimensions}
-  \label{tab:}
+  \caption{Sheet dimensions comparing the full sheet to its subdivisions: inner sheet and pull blocks.}
+  \label{tab:sheet_dim}
   \begin{tabular}{ | l | r@{}l | r@{}l | c |} \hline
     \textbf{Group} & \multicolumn{2}{c|}{$x,y$-dim} & \multicolumn{2}{c|}{dim
     [Å]} & Area [Å$^2$]\\ \hline
@@ -1797,14 +1850,39 @@ The sheet dimensions is
 
 
 \subsection{Numerical procedure}
+
+The numerical procedure for the friction simulations can be arranged as the following.
+
 \begin{enumerate}
-  \item Relax (15 ps)
-  \item Stretch 
-  \item Pause 1 (5 ps) 
-  \item Apply normal force (with damper to avoid hard impact)
-  \item Pause 2 (5 ps)
-  \item Drag 
+  \item Relax (15 ps): The sheet and substrate is relaxed for 15 ps. They are
+  both initially added in their crystaline form. The sheet is constrained under
+  three hard spring forces (spring constant $10^5$ eV/Å$^2$ $\sim$ \num{1.6e6} N/m): One spring
+  attathes the sheet center of mass (CM) to its orginal postion preventing
+  drift, while the remaining two is attatched to the CM for the pull blocks to
+  their initial position respectively to prevent rotation. These spring forces
+  are immediately terminated after the relax phase. In this phase the pull
+  blocks is only rigid with respect to the z-direction (perpendicular to the
+  sheet). That is, all the forces in the z-direction is summed up and
+  distributed on the pull blocks while it is free to expand and contract in the
+  x-y-plane. This is mainly to ensure that is achieves the correct lattive
+  spacing according to the temperature of the system. For the remaining phases
+  the rigid parts of the pull block is in fact rigid with respect to all
+  directions. 
+  \item Stretch: The sheet is stretched by seperating to opposing rigid parts of
+  the pullblock at constant velocity until the desired stretch amount is met. 
+  \item Pause 1 (5 ps): The sheet is relaxed for 5 ps after the stretch
+  procedure.
+  \item Pause 2 (Normal load): The normal load is applied to the rigid parts of
+  the pull blocks together with a damping force to prevent hard impact between
+  sheet and substrate as the seperating distance is now reduced depending on the
+  strength of the normal load. The damper is terminated after 0.5 ps, as this
+  was suitable for the extreme load cases of our force range, and the system is
+  relaxed until a total of 5 ps has passed.
+  \item Drag: A virtuel atom is introduced into the simulation which exclusively
+  interacts with the rigid parts of the pull through a spring force with variable spring constant $K$ in the x-y-plane. The z-direction is not affected by the spring force and is governed by the balance between normal load and the normal force response from the sheet-substrate interaction. The virtual atom is immediately given a constant velocity corresponding to a variable \textit{drag speed} parameter
 \end{enumerate}
+
+At the initial timestep the three nearest neighbours (at distance 1.42 Å) of all graphene atoms is recorded. If these nearest neighbours exceed a threshold of 4 Å this is raises a rupture flag which halt the simulation early. Thus, we effectively prevent any kind of wear on the sheet. For the substrate we do not perform such an analysis but only visually confirms that no wear is accouring under the most extreme simulation parameters. 
 
 \subsection{Creating the sheet}
 
