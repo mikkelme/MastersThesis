@@ -416,9 +416,8 @@ if __name__ == "__main__":
     pass
     
     
-    # mat = honeycomb((60, 106), 3, 2, 1, 5)
-    # mat = pop_up((60, 106), (5,7), 1)
-    # mat = honeycomb((60, 106), 3, 2, 1, 5)
+    mat = honeycomb((60, 106), 3, 2, 1, 5)
+    # mat = pop_up((60, 106), (7,5), 1)
     # mat[:] = 1
     # mat[mat == 1] = 2
     # mat[mat == 0] = 1
@@ -426,9 +425,9 @@ if __name__ == "__main__":
     builder = config_builder(mat)
     builder.add_pullblocks()
     builder.build()
-    # builder.view()
-    print(builder)
-    # builder.save_lammps("sheet", ext = f"nocut", path = '../friction_simulation')
+    builder.view()
+    # print(builder)
+    builder.save_lammps("sheet", ext = f"hon3215", path = '../friction_simulation')
     
     
   

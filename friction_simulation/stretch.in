@@ -19,7 +19,7 @@ else &
 # --- Setup system --- #
 include ${root}/setup_sim.in
 variable info_file string info_file.txt
-# delete_atoms group substrate  # XXXXXXXX
+# delete_atoms group substrate  # VACUUM 
 
 
 

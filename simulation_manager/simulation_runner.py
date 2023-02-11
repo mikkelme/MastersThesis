@@ -20,7 +20,7 @@ class Simulation_runner:
             "relax_time": 15,
             "pause_time1": 5,
             "pause_time2": 5,
-            "stretch_speed_pct": 0.01, #0.005,
+            "stretch_speed_pct": 0.01,
             "stretch_max_pct": 0.2,
             "run_rupture_test": 0,
             "num_stretch_files": 0,

@@ -377,10 +377,10 @@ if __name__ == "__main__":
     
     path = '../Data/Baseline_fixmove'
     # path = '../Data/Baseline'
-    temp(path, save = False)
+    # temp(path, save = False)
     # vel(path, save = False)
     # spring(path, save = False)
-    # dt(path, save = True)
+    # dt(path, save = False)
     
     
     # multi_stretch(path, save = False)
