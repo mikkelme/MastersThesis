@@ -125,19 +125,18 @@ if __name__ == '__main__':
     
     
     filenames = get_files_in_folder('../config_builder/baseline/', ext = 'npy')
-    variables = {'dump_freq': 1000,
-                 'F_N': 1e-9,
+    variables = {'dump_freq': 10000,
                  'stretch_speed_pct': 0.001,
-                 'T': 5}
+                 'T': 300}
     
-    exit()
+    
     # Honeycomb
     file = filenames[0]
-    variables['stretch_max_pct'] = 1.35
+    variables['stretch_max_pct'] = 1.40
     gen = Data_generator(file, header = f'bigfacet:Baseline_fixmove/honeycomb/contact', simname = 'hon_contact', config_ext = 'contact')
     gen.run_single(variables, num_procs = 16, copy = True)
     
-    Popup
+    #Popup
     file = filenames[1]
     variables['stretch_max_pct'] = 0.25
     gen = Data_generator(file, header = f'bigfacet:Baseline_fixmove/popup/contact', simname = 'pop_contact', config_ext = 'contact')

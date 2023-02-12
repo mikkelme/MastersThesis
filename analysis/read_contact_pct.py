@@ -58,23 +58,7 @@ def read_contact_pct(filename):
     plt.savefig("../Interview_presentation/figures/contact_pct.pdf", bbox_inches="tight")
 
 
-# dt 0.001
-# temp 100
-# relax_time 15
-# pause_time1 5
-# pause_time2 5
-# stretch_speed_pct 0.01
-# drag_speed 1
-# drag_length 20
-# K 1.872452721
-# root ..
-# out_ext test
-# config_data sheet_substrate
-# stretch_max_pct 0.2
-# drag_dir_x 0
-# drag_dir_y 1
-# F_N 62.41
-# restart_file: None
+
 
 
 if __name__ == "__main__":

@@ -370,6 +370,34 @@ def multi_plot_compare(folders, names, vars, axis_labels, yerr = None, axis_scal
     fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
     return fig        
 
+
+def contact_vs_time(path):
+    bond_file = 'bond_pct.txt'
+    info_file = 'info_file.txt'
+    
+    dirs = ['honeycomb/contact/hon_contact',
+                'popup/contact/pop_contact',
+                'nocut/contact/nocut_contact']
+    names = ['honeycomb', 'popup', 'nocur']
+    
+    for i, dir in enumerate(dirs):
+            
+        timestep, contact_full_sheet, contact_inner_sheet = np.loadtxt(os.path.join(path, dir, bond_file), unpack=True)
+        info = read_info_file(os.path.join(path, dir, info_file))
+        time = timestep * info['dt']
+        stretch_start = time >= info['relax_time']
+        
+        contact = contact_full_sheet[stretch_start]
+        stretch = (time[stretch_start] - time[stretch_start][0]) * info['stretch_speed_pct']
+        
+        
+        plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
+        plt.title(names[i])
+        plt.plot(stretch, contact)
+        if info['is_ruptured']:
+            vline(plt.gca(), info['rupture_stretch'], linestyle = "--", alpha = 1, linewidth = 1)
+        
+
 if __name__ == "__main__":
     
     # path = '../Data/Baseline'
@@ -382,9 +410,11 @@ if __name__ == "__main__":
     # spring(path, save = False)
     # dt(path, save = False)
     
-    
     # multi_stretch(path, save = False)
     # multi_FN(path, save = False)
     # multi_area(path, save = True)
+    
+    contact_vs_time(path)
+    
     
     plt.show()
