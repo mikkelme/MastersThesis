@@ -20,7 +20,7 @@
 # variable run_rupture_test index 0
 
 include ${root}/stretch.in
-# include ${root}/drag.in 
+include ${root}/drag.in 
 
 
 # Repeat drag rupture used in LAMMPS forum (conf_1)

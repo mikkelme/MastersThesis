@@ -56,7 +56,6 @@ def read_info_file(filename):
     return dict
     
 
-
 def metal_to_SI(input, key):
     # --- Convertion factors: SI -> metal --- #
     eV_over_ang_to_N = 1/6.24150907e8   # force: eV/Å -> N 
@@ -537,6 +536,91 @@ def read_ave_time_vector(filename):
     return timestep, data
    
  
+
+def get_normal_buckling(sheet_dump, quartiles = [0.01, 0.05, 0.1, 0.25, 0.50]):
+    # --- Get data --- #
+    
+    sheet_infile = open(sheet_dump, "r")
+    timestep = []
+    zpos = []
+    
+    print("# --- Processing normal buckling --- # ")
+    print(f"Dump file = \"{sheet_dump}\"")
+    
+    
+    while True: # Timestep loop
+        try: 
+            # --- Sheet positions --- #
+            info = [sheet_infile.readline() for i in range(9)]
+            if info[0] == '': break
+            vars = info[-1].split('ITEM: ATOMS ')[-1].split(' ')
+            zidx = vars.index('z')
+            
+            sheet_timestep = int(info[1].strip("\n"))
+            # if sheet_timestep == 100000:  break
+    
+
+            sheet_num_atoms = int(info[3].strip("\n"))
+            local_zpos = np.zeros((sheet_num_atoms))
+            # sheet_atom_pos = np.zeros((sheet_num_atoms, 3))
+            print(f"\rTimestep = {sheet_timestep}", end = "")
+
+            for i in range(sheet_num_atoms): # sheet atom loop
+                line = sheet_infile.readline() # id type x y z [...]
+                words = np.array(line.split(), dtype = float)
+                local_zpos[i] = words[zidx] 
+           
+        except KeyboardInterrupt: break
+
+
+        timestep.append(sheet_timestep)
+        zpos.append(local_zpos)
+    sheet_infile.close() # Done reading
+    timestep = np.array(timestep)
+    zpos = np.array(zpos)
+ 
+ 
+    # --- Prepare data preocessing --- #
+    z0 = np.mean(zpos[0])
+    zpos -= z0
+    
+
+    # Ensure valid quartiles order and values
+    quartiles = np.sort(quartiles) # Sort
+    quartiles = quartiles[quartiles <= 0.5] # Remove values higher than 0.5
+
+    # Create matrix
+    Q_len = 2*len(quartiles) + 2 # Quartiles + min, max
+    if quartiles[-1] == 0.5: Q_len -= 1 # Avoid dublicates of median 
+    Q = np.zeros((Q_len, zpos.shape[0]))
+
+    # --- Calculate min, max and quartiles --- #
+    # Max
+    Q_var = ["Max"] 
+    Q[0] = np.max(zpos, axis=-1)
+
+    # Upper quartiles
+    for i in range((Q_len-2)//2):
+        Q_var.append("Q = " + str(1-quartiles[i]))
+        Q[i+1] = np.quantile(zpos, 1-quartiles[i], axis = -1)
+
+    # Median
+    if (Q_len-2)%2: 
+        # Q_var.append(str(quartiles[-1]))
+        Q_var.append("Median")
+        Q[i+2] = np.quantile(zpos, 1-quartiles[i+1], axis = -1)
+
+    # Lower quartiles
+    for i in reversed(range((Q_len-2)//2)):
+        Q_var.append("Q = " + str(quartiles[i]))
+        Q[-i-2] = np.quantile(zpos, quartiles[i], axis = -1)
+
+    # Min
+    Q[-1] = np.min(zpos, axis=-1)
+    Q_var.append("Min")
+    print()
+    return timestep, Q_var, Q    
+    
 
 
     

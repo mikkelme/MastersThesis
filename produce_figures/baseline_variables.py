@@ -375,11 +375,17 @@ def contact_vs_time(path):
     bond_file = 'bond_pct.txt'
     info_file = 'info_file.txt'
     
-    dirs = ['honeycomb/contact/hon_contact',
-                'popup/contact/pop_contact',
-                'nocut/contact/nocut_contact']
-    names = ['honeycomb', 'popup', 'nocur']
+    dirs = ['nocut/contact/nocut_contact',  
+            'popup/contact/pop_contact', 
+            'honeycomb/contact/hon_contact']
+         
+    names = ['nocut', 'popup', 'honeycomb']
     
+    colors = [color_cycle(0), color_cycle(1), color_cycle(3)]
+    
+    
+    
+    plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
     for i, dir in enumerate(dirs):
             
         timestep, contact_full_sheet, contact_inner_sheet = np.loadtxt(os.path.join(path, dir, bond_file), unpack=True)
@@ -391,12 +397,73 @@ def contact_vs_time(path):
         stretch = (time[stretch_start] - time[stretch_start][0]) * info['stretch_speed_pct']
         
         
-        plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
-        plt.title(names[i])
-        plt.plot(stretch, contact)
         if info['is_ruptured']:
-            vline(plt.gca(), info['rupture_stretch'], linestyle = "--", alpha = 1, linewidth = 1)
+            # plt.plot(stretch[-1], contact[-1], 'o', color = color_cycle(i))
+            rup = info['rupture_stretch']
+            vline(plt.gca(), rup, linestyle = "--", alpha = 1, linewidth = 1, color = color_cycle(i))
+            names[i] += f', rupture = {rup:0.2f}'
+
+
         
+        plt.plot(stretch, contact, color = colors[i], label = names[i])
+        plt.xlabel('Stretch', fontsize=14)
+        plt.ylabel('Rel. Bond', fontsize=14)
+        plt.legend(fontsize = 13)
+        plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+        plt.savefig("../article/figures/baseline/contact_vs_stretch", bbox_inches="tight")
+
+
+def vaccum_normal_buckling(path):
+    info_file = 'info_file.txt'
+    
+    
+    dump_file = ['full_sheet_nocut_vacuum.data',
+                 'full_sheet_pop_vacuum.data',
+                 'full_sheet_hon_vacuum.data']
+    
+    
+    dirs = ['nocut/vacuum/nocut_vacuum',
+            'popup/vacuum/pop_vacuum',
+            'honeycomb/vacuum/hon_vacuum']
+    
+    names = ['nocut', 'popup', 'honeycomb']
+    
+    colors = [color_cycle(0), color_cycle(1), color_cycle(3)]
+    
+    
+    
+    
+    
+    
+    
+    plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
+    for i, dir in enumerate(dirs):
+        info = read_info_file(os.path.join(path, dir, info_file))
+        timestep, Q_var, Q = get_normal_buckling(os.path.join(path, dir, dump_file[i]))
+
+        time = timestep * info['dt']
+        stretch_start = time >= info['relax_time']
+        
+        Q = Q[:, stretch_start]
+        stretch = (time[stretch_start] - time[stretch_start][0]) * info['stretch_speed_pct']
+        
+        #
+        #
+        # Working here
+        #
+        #
+    
+        for j in range(Q.shape[0]):
+            plt.plot(stretch, Q[j], color = colors[i])
+        
+        # plt.plot(, contact, color = colors[i], label = names[i])
+        # plt.xlabel('Stretch', fontsize=14)
+        # plt.ylabel('Rel. Bond', fontsize=14)
+        # plt.legend(fontsize = 13)
+        # plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+        # plt.savefig("../article/figures/baseline/contact_vs_stretch", bbox_inches="tight")
+        break
+    
 
 if __name__ == "__main__":
     
@@ -414,7 +481,8 @@ if __name__ == "__main__":
     # multi_FN(path, save = False)
     # multi_area(path, save = True)
     
-    contact_vs_time(path)
+    # contact_vs_time(path)
+    vaccum_normal_buckling(path)
     
     
     plt.show()
