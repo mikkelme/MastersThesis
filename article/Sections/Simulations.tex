@@ -4,21 +4,14 @@
 
 
 
-
-% Reconsider later if some if this is better placed in methods section
-% or under different title
-\section{Baseline study}
+\section{Baseline study (find better name)}
 
 \hl{Consider relabeling drag length to sliding distance instead.}
 
-\subsection{Variable overview}
+\subsection{Friction simulation parameters}
 
-The friction measurment simulation is governed by the following parameters, which is divided into three sub categories for the purpose of this thesis as shown in table \ref{tab:param}.
+The friction simulation is governed by a set of parameters where some is kept constant while other is varied to gain insight in the frictional properties. These parameters can be categorised into three main categories of different purpose as described in table \ref{tab:param}. 
 
-% Which articles is used as a reference for choosing these variables?
-
-
-% The sliding velocity is 20 m/s, which is comparable to the operating conditions in micromechanical systems (MEMS), but which is much larger than the typical velocity in scanning force microscopy (SFM) experiments. \cite{mo_friction_2009} Supplementary materials.
 
 \begin{table}[H]
   \begin{center}
@@ -30,10 +23,12 @@ The friction measurment simulation is governed by the following parameters, whic
     \hline
     Physical & 
     \begin{itemize}
-      \item[-] T: Temperature for the Langevin thermostat.
-      \item[-] $v_{drag}$: Drag speed for the sheet translation.
+      \item[-] $T$: Temperature for the Langevin thermostat.
+      \item[-] $v_{\text{slide}}$ : Sliding speed for the sheet translation.
+      \item[-] $K$: Spring constant for the spring force between the virtual atom and the pull blocks responsible for translating the sheet along the substarte. An infinte spring constant is achieved by moving the pull blocks as a rigid body (Lammps: fix move).
+      \item[-] Scan angle: The direction for which we translate the sheet.
     \end{itemize} &
-    Parameters that we expect to have an inevitably effect on the system friction properties, for which the choice will be a baseline for our studies.
+    Parameters expected to have a physical effect on the friction properties, which is kept fixed and thus not included in the machine learning input set. 
     \\ \hline
     Measurement & 
     \begin{itemize}
@@ -41,28 +36,78 @@ The friction measurment simulation is governed by the following parameters, whic
       \item[-] $t_R$: Relaxtion time before strething.
       \item[-] Pauses between stretch and adding normal force and between dragging the sheet.  
       \item[-] Stretch Speed: How fast to stretch the sheet.
-      \item[-] $K$: Spring constant for the spring responsible of translating the sheet. An infinte spring constant is achieved by moving the end blocks as a rigid body (Lammps: fix move).
-      \item[-] Drag Length: How far to translate the sheet.
+      \item[-] Slide distance: How far to translate the sheet.
       \item[-] Sheet size: Spatial size of the 2D sheet.  
+      \item[-] Pull block size.  
     \end{itemize} &
-    Paramters that effects the simulation dynamics and the 'experimental procedure' that we a mimicking. We aim to choose to these paramters such that the friction properties is stable for small perturbations.  \\ \hline
+    Paramters influecing the simulation dynamics and being representative of the experimental procedure that we are mimicking. These parameters is chosen with the aim of getting stable parameters under small perturbations of the given parameter. 
+     \\ \hline
     ML input & 
     \begin{itemize}
-      \item[-] Sheet configuration: A binary matrix containing information of which atoms is removed (0) and which is still present (1) in the graphene structure.
-      \item[-] Scan angle: The direction for which we translate the sheet.
+      \item[-] Sheet configuration: A binary matrix containing information of which atoms are removed (0) and which is still present (1) in the graphene sheet. 
       \item[-] Stretch amount: The relative sheet stretch in percentage.
-      \item[-] $F_N$: Applied normal force to the end blocks.
+      \item[-] $F_N$: Applied normal force to the pull blocks.
     \end{itemize} &
-    The ramaining paramters that serve as the governing variables in the optimization process for certain friction properties and is thus the input variables for the ML part. 
+    The remaining paramters serves as input variables for optimization process and is thus given as input variables for the machine learning (ML). 
+    \\ \hline
+  \end{tabular}
+  \end{center}
+\end{table}
+
+Due to the great number of parameters, and corresponding range of reasonable numerical values they can take, it is ... to parameter search including all of these. Thus, we will to a great extent rely on a reverse engineering in order to establish a set of parameters for the \textit{physical} and \textit{measurement} categories along with numerical ranges for the $\textit{ML input}$ category which gives stable and promising results. By doing so we effectively narrow down the parameter regime for which the investigated frictional properties belong. We aim to chose the parameters in order to accomodate a balance between generlizable and stable result which is simmutaneously a suting candidate as a proof of concept for the control of friction properties using kirigami inspired cuts. 
+
+In the following we present the results of the friction simulations in parallel to the procedure of investigating the choice of different parameters. 
+
+In the following subsections (X to Y) we are going to present the friction simulation results in parallel to the presentation of the reasoning behind the parameter choices. For this we will refer to the default parameter choice showcased in table \ref{tab:final_param} which is representative of the final parameter choices. 
+
+
+
+
+\begin{table}[H]
+  \begin{center}
+  \caption{Final parameters for the friction simmulations \hl{Probably not the neatest way format for this...}}
+  \label{tab:final_param}
+  \begin{tabular}{ | m{3cm} | m{3cm}| m{3cm} |} \hline
+    Physical & Measurements & ML input \\ \hline
+    {\begin{align*}
+      T &= \SI{300}{K}  \\
+      v_{\text{slide}} &= \SI{20}{m/s}  \\
+      K &= \inf \text{(LAMMPS: \textit{fix move})}  \\
+      \text{Scan angle} &:  (x,y) = (0,1)  
+    \end{align*}} &
+    {\begin{align*}
+      dt &= \SI{1}{fs} \\
+      t_R &= \SI{15}{ps} \\
+      \text{Pauses} &= \SI{5}{ps} \\
+      \text{Stretch speed} &= \SI{0.01}{ps^{-1}} \\
+      \text{Slide distance} &= \SI{400}{Å} \\
+      \text{Sheet size} &= 130.029 \times \SI{163.219}{Å} \\
+      \text{Pull block size} &= 2 \times 130.029 \times \SI{15.183}{Å}
+    \end{align*}} &
+    {\begin{align*}
+      \text{Sheet configuration} &= \text{Contiguous} \\
+      \text{Stretch amount} &= \text{Below rupture} \\
+      F_N &= [0.1, 10] \ \text{nN}
+    \end{align*}}
     \\ \hline
   \end{tabular}
   \end{center}
 \end{table}
 
 
-We should try to set the physcis and measurement parameters in such a way that we reduce computation speed where it is doesn't infer with the frictional properties study.
 
-We need to define some ranges for the ML input paramters. $F_N$, stretch ranges where it is not prone to ruptures. The configuration it self does not have clear rules but is also being regulated by the no rupture requirement. 
+Say someting about how these parameters is chosen. Reference to articles for which these was mirrored from. 
+
+
+% Which articles is used as a reference for choosing these variables?
+
+
+% The sliding velocity is 20 m/s, which is comparable to the operating conditions in micromechanical systems (MEMS), but which is much larger than the typical velocity in scanning force microscopy (SFM) experiments. \cite{mo_friction_2009} Supplementary materials.
+
+
+% We should try to set the physcis and measurement parameters in such a way that we reduce computation speed where it is doesn't infer with the frictional properties study.
+
+% We need to define some ranges for the ML input paramters. $F_N$, stretch ranges where it is not prone to ruptures. The configuration it self does not have clear rules but is also being regulated by the no rupture requirement. 
 
 % Retardation effects due to the finiteness of the speed of sound are usually irrelevant in slow-speed experiments (v < 1 mm/s) \cite{Manini_2016}
 
@@ -77,7 +122,7 @@ We need to define some ranges for the ML input paramters. $F_N$, stretch ranges 
 % Besides the limitations of system size and simulation times that are obvious and will be discussed later, there is another limitation concerning temperature, that is rarely mentioned. All classical frictional simulations, atomistic or otherwise, are only valid at sufficiently high temperature. They become in principle invalid at low temperatures where the mechanical degrees of freedom of solids progressively undergo ”quantum freezing”, and both mechanics and thermodynamics deviate from classical. \cite{Manini_2016}.
 
 
-\subsection{Pressure reference for normal load domain}
+\subsubsection{Pressure reference for normal load domain}
 \text{Find place to put this.}
 
 % source 1: stiletto heeled shoes with less than 1cm diameter:
@@ -88,10 +133,8 @@ we will use the pressure as a reference. We will use the pressure underneath a
 stiletto shoe as a worst case for human pressure execuation underneath the
 shoes. From (source 1) it is reported that the diameter of a stiletto heeled
 shoe can be less than 1 cm. Hence a 80 kg man\footnote{Yes, a man can certainly
-wear stilleto heals.} standing on one stiletto heels (with all the weight on the
+wear stilleto heels.} standing on one stiletto heel (with all the weight on the
 heel) will result in a pressure
-
-corresponding diameter of 
 \begin{align*}
   P = \frac{F}{A} = \frac{mg}{r^2\pi} = \frac{\SI{80}{kg} \cdot \SI{9.8}{\frac{m}{s^2}}}{(\frac{\SI{1e-2}{m}}{2})^2 \pi} = \SI{9.98}{MPa} \\
 \end{align*} 
@@ -99,11 +142,11 @@ corresponding diameter of
 % source 1:
 % https://www.schoolphysics.co.uk/age16-19/Mechanics/Statics/text/Pressure_/index.html
 While this is in itself a spectacular realization that is often used in
-introduction physics courses (source 2) to demonstrate the rather extreme
+introductory physics courses (source 2) to demonstrate the rather extreme
 pressure under a stiletto heel (greater than the foot of an elephant) (how many
-Atmos) this serves as a reasonible upperbound for human executed pressure. With
+Atmos?) this serves as a reasonible upperbound for human executed pressure. With
 a full sheet area of $\sim\SI{21e3}{Å^2}$ we can achieve a similar pressure of
-$\sim \SI{10}{MPA}$ with a normal force 
+$\sim \SI{10}{MPA}$ with a normal force of
 \begin{align*}
   F_N = \SI{10}{MPa} \cdot \SI{21e-17}{m^2} = \SI{2.10}{nN}  
 \end{align*}
@@ -121,9 +164,12 @@ drops to a mere $\SI{70}{kPa}$ corresponding to $\sim \SI{0.01}{nN}$.
 
 
 \newpage
-\subsection{Raw data analysis}
+\subsection{Single friction simulation analysis}
+We begin by assessing the raw data for a single friction simulation run with the default parameters shown in table \ref{tab:final_param} for a non-cut sheet, no stretch and an applied normal force of $\SI{1}{nN}$.
+
+
 \subsubsection{Force oscillations}
-We first assess the raw data for the friction force $F_{\parallel}$ parallel to the drag direction as seen in figure \ref{fig:drag_Ff}. The sample rate is 10 ps$^{-1}$ for which we sample the the mean of all previous timesteps. We observe that the data carriers oscillations on different time scales. By applying a savgol filter to data with a polyorder of 5 and window length corresponding to a drag length of 3.0 Å (or time interval 15.0 ps) we can qualitatively point out at least two different frequencies of osccilation. On figure \ref{fig:drag_Ff_10} we see roughly three waves on the savgol filter corresponding to one frequency, while on \ref{fig:drag_Ff_100} the same savgol filter reveals an even slower frequency on top of the first creating a visual patterns of a wavepacket.
+We first assess the raw data for the friction force $F_{\parallel}$ parallel to the drag direction as seen in figure \ref{fig:drag_Ff}. The sample rate is 10 ps$^{-1}$ = 100 timesteps$^{-1}$ for which each sample is the mean value of the 100 timesteps preceding the given sample interval. We observe immediately that the data carriers oscillations on different time scales. By applying a savgol filter to the data with a polyorder of 5 and window length of 150 timesteps, corresponding to a sliding distance of 3 Å or a time window of 15 ps, we can qualitatively point out at least two different frequencies of osccilation. On figure \ref{fig:drag_Ff_10} we see roughly three waves on the savgol filter corresponding to a relative high frequency, while on \ref{fig:drag_Ff_100} the same savgol filter reveals a lower frequency on top of the first, creating the visual pattern of a wavepacket.
 
 \begin{figure}[H]
   \centering
@@ -141,76 +187,74 @@ We first assess the raw data for the friction force $F_{\parallel}$ parallel to 
       \label{fig:drag_Ff_100}
   \end{subfigure}
   \hfill
-     \caption{Friction force $F_\parallel$ between (full) sheet and substrate with respect to the drag direction vs. drag length. The drag length is measured by the constant movement of the virtual atom and not the COM of the sheet. The red line represents a savgol filter with window polyorder 5 and windoew length 150 (corresponding to a drag length of 3 Å or a time window of 15 ps)}
+     \caption{Friction force $F_\parallel$ with respect to the drag direction between (full) sheet and substrate versus sliding distance. The sliding distance is measured by the constant movement of the virtual atom and not the COM of the sheet. However, we expect these measures to be fairly identical due the fact that the pull blocks is rigidly coupled to the virtual atom. The red line represents a savgol filter with window polyorder 5 and window length of 150 timesteps (corresponding to a sliding distance of 3 Å or a time window of 15 ps).}
      \label{fig:drag_Ff}
 \end{figure}
 
-By performing a Forward Fourier Transform of the data (using FFT) we can quantitavely idendity some of the leading frequencies as seen in figure \ref{fig:ft_a}. By plotting the two most dominant frequencies $f_1 = 0.0074$ ps $^{-1}$ and $f_2 = 0.0079$ ps $^{-1}$ as $\sin{(2\pi f_1)} + \sin{(2\pi f_2)}$ we find a convincing fit to the observed wavepacket shape as seen in figure \ref{fig:ft_b}. By using the trigonometric identity
-
+By performing a Fourier Transform (FT) on the data we can quantify the leading frequencies as seen in figure \ref{fig:ft_a}. By plotting the two most dominant frequencies $f_1 = 0.0074$ ps$^{-1}$ and $f_2 = 0.0079$ ps$^{-1}$ as $\sin{(2\pi f_1)} + \sin{(2\pi f_2)}$ we find a qualitatively convincing fit to the observed wavepacket shape as seen in figure \ref{fig:ft_b}. By using the trigonometric identity
 \begin{align*}
 \sin (\alpha+\beta) &= \sin (\alpha) \cos (\beta) + \cos (\alpha) \sin (\beta), \\
 \sin (\alpha-\beta) &= \sin (\alpha) \cos (\beta) - \cos (\alpha) \sin (\beta),
 \end{align*}
 and decomposing $f_1 = a - b$, $f_2 = a + b$ we can rewrite the sine sum as the sinusoidal product
 \begin{align*}
-  \sin(2\pi f_1) \sin(2\pi f_2) &= \sin(2\pi (a - b)) \sin(2\pi (a + b)) \\
+  \sin(2\pi f_1) \sin(2\pi f_2) &= \sin\big(2\pi (a - b)\big) \sin\big(2\pi (a + b)\big) \\
   &= \sin(a)\cos(b) + \cancel{\cos(2\pi a)\sin(2\pi b)} + \sin(2\pi a)\cos(2\pi b) - \cancel{\cos(2\pi a)\sin(2\pi b)} \\
   &= 2 \sin(2\pi a) \cos(2\pi b),
 \end{align*} 
 
 with 
 \begin{align*}
-  a = \frac{f_1 + f_2}{2} &= 0.0763 \pm 0.0005 \text{ps}^{-1},& 
-  b = \frac{f_2 - f_1}{2} &= 0.0028 \pm 0.0005 \text{ps}^{-1},& \\
-  &= 0.381 \pm 0.003 \text{Å}^{-1},& 
-  &= 0.014 \pm 0.003 \text{Å}^{-1},& 
+  a = \frac{f_1 + f_2}{2} &= 0.0763 \pm \SI{0.0005}{ps^{-1}},& 
+  b = \frac{f_2 - f_1}{2} &= 0.0028 \pm \SI{0.0005}{ps^{-1}},& \\
+  &= 0.381 \pm \SI{0.003}{Å^{-1}},& 
+  &= 0.014 \pm \SI{0.003}{Å^{-1}},& 
 \end{align*}
-
-where the latter frequency is denoted with respect to drag length. This makes us recognize the fast osccilation frequency as $a$ and the slower frequency as $b$. The faster one has a period of $T_a = 1/a = 2.62 \pm 0.02$ Å\footnote{The uncertainty $\Delta y$ is calculated as $\Delta y = \left|\frac{\partial y}{\partial x} \Delta x \right|$ for uncertainty $\Delta x$ and $y(x)$}. This corresponds well with the magnitude of the lattice spacing and especialy that of graphene $a = 2.46$ Å (as predictet theoretically: make reference to self or other). We also take note of the longest period in the data $T_b = 71 \pm 15$ Å$^{-1}$ which will be relevant for the evaluation of measurement uncertainty.
-
-
+where the latter frequency is denoted with respect to the sliding distance. This makes us recognize the high osccilation frequency as $a$ and the low frequency as $b$. The faster one has a period of $T_a = 2.62 \pm 0.02$ Å\footnote{The uncertainty $\Delta y$ is calculated as $\Delta y = \left|\frac{\partial y}{\partial x} \Delta x \right|$ for uncertainty $\Delta x$ and $y(x)$}. This corresponds well with the magnitude of the lattice spacing and especialy that of graphene at 2.46 Å as expected theoretically (make reference to theory section?). We also take note of the longest period $T_b = 71 \pm 15$ Å$^{-1}$ which will be relevant for the evaluation of measurement uncertainty in section \ref{sec:def_dyn_and_stat}.
 
 \begin{figure}[H]
   \centering
   \begin{subfigure}[b]{0.49\textwidth}
     \centering
     \includegraphics[width=\textwidth]{figures/baseline/ft_zoom.pdf}
-    \caption{Reduced frequency range.}
+    \caption{FT result shown for a reduced frequency range.}
     \label{fig:ft_a}
   \end{subfigure}
   \hfill
   \begin{subfigure}[b]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/ft_sine.pdf}
-      \caption{Selected frequencies applied to data from figure \ref{fig:drag_Ff_100}}
+      \caption{Two most dominant frequencies applied to the data from figure \ref{fig:drag_Ff_100}}
       \label{fig:ft_b}
   \end{subfigure}
-  \caption{Fourier transform on data shown in figure \ref{fig:drag_Ff}.}
+  \caption{Fourier transform (FT) analysis of the full friction force data (all 400 Å sliding distance) shown in figure \ref{fig:drag_Ff}. (a) shows the two most dominant frequency peaks. Note that no significant peaks was found in a higher frequency than included here. (b) shows a comparison between the raw data and the wavefunction corresponding to the two peaks in figure (a).}
   \label{fig:ft}
 \end{figure}
 
 
 \subsubsection{Decompositions}
-In the previous analysis we have looked only as the friction force for the full
-sheet, including the pullblocks which is locked off during the drag, and with
-respect to the drag direction. \par
-Since we are only applying cuts to the inner sheet (excluding the pull blocks),
-it might seem more natural to only consider the friction on that part. If the
-desired frictional properties can be observed from the inner sheet we can always
-scale the relative size between inner sheet and pull block. However, when
-looking at the time series of friction force decomposed onto inner sheet and
-pull block (figure \ref{fig:decomp_group}) we observe the friction force arrising
-from those parts is seemingly antisymmetric. That is, the fricitonal pull on the
-substrate is oscillating between the inner sheet and the pullblock. Remembering
-that the normal forc eis only applied to the pull block we might take this as an
-integrated feature of the system. An interesting nonlinear friction coefficient
-might depend on this internal distribution of forces. Hence, we hedge our bets and
-use the full sheet friction force as hollistic approach to the measurement problem.
+In the previous analysis we have looked only at the friction force for the full
+sheet, including the pull blocks which is locked off during sliding, and with
+respect to the drag direction. This represents our choice measurement which we will adress in the following.
 
-\par
+Due to the fact that we are only applying cuts to the inner sheet (excluding the
+pull blocks), it might seem more natural to only consider the friction on that
+part. If the desired frictional properties can be achieved by altering the inner
+sheet one can argue that any opposing effects from the pull blocks can be
+mitigated by scaling the relative size between the inner sheet and the pull
+blocks. However, when looking at the time series of the friction force
+decomposed with respect to the inner sheet and pull block region (see figure
+\ref{fig:decomp_group}), we observe the friction force arrising from those parts
+are seemingly antisymmetric. That is, the distribution of the fricitonal pull from the substrate on the sheet is
+oscillating between the inner sheet and the pull block. Keeping in mind that 
+normal force is only applied to the pull blocks we might take this as an
+integrated feature of the system which does not nessecary dissapear when changing the spatial ratio between inner sheet and pull block. Any interesting friciton properties might depend on this internal distribution of forces. Hence, we hedge our bets
+and use the full sheet friction force as a hollistic approach to this measurement
+problem.
+
 Similar we might question the decision of
-only considering the frictional force projected on the direction of the drag as
-we are neglecting the ``side shift'' induced during the drag phase. In figure \ref{fig:decomp_direc} we see the decomposition into force components parallel $F_{\parallel}$ and perpendicular $F_{\perp}$ to the drag direction respectively. We see that the most dominant trends is projected into the parallel component. If we want to include the perpendicular component as well we would have to evaluate the friction as the length of the vector for which we loose the sign of direction. Hence we would only get positive contributions, meaning a resisting force, which is not faithfully capturing the sheet oscillaitons that make the friction forces act both against in with the direction of drag. By this argument we decide to use only the parallel component going forward. 
+only considering the frictional force projected onto the sliding direction as
+we are neglecting the ``side shift'' induced during the slide phase. In figure \ref{fig:decomp_direc} we see the decomposition into force components parallel $F_{\parallel}$ and perpendicular $F_{\perp}$ to the slide direction respectively. We see that the most dominant trends is projected into the parallel component. If we want to include the perpendicular component as well we would have to evaluate the friction as the length of the force vector for which we would lose the sign of the force direction. Hence, we would only get a positive contributin which would not be able to capture the change between resisting and assisting the sliding during stick-slip motion. One option to accommodate this is by using the vector length but keeping the sign from the projection parallel to the sliding direction. However, we omit such compromises as this might make analysis interpration more difficult, and we use only the parallel component going forward. 
 
 \begin{figure}[H]
   \centering
@@ -224,14 +268,19 @@ we are neglecting the ``side shift'' induced during the drag phase. In figure \r
   \begin{subfigure}[b]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/decomp_direc.pdf}
-      \caption{Decomposition into parallel ($\parallel$) and perpendicular $(\perp)$ to drag direction.}
+      \caption{Decomposition into parallel ($F_{\parallel}$) and perpendicular ($F_{\perp})$ to drag sliding direction.}
       \label{fig:decomp_direc}
   \end{subfigure}
-  \caption{Decomposition into parallel ($\parallel$) and perpendicular $(\perp)$ to drag direction showing the savgol filter applied}
+  \caption{Friction force decomposition on the data shown in figure \ref{fig:drag_Ff} with applied savgol filters similar to that of figure \ref{fig:drag_Ff_100} with window polyorder 5 and window length of 150 timesteps (corresponding to a sliding distance of 3 Å or a time window of 15 ps).}
   \label{fig:decomp}
 \end{figure}
 
-
+%
+%
+%
+% Working here
+%
+%
 \subsubsection{Center of mass path}
 From the previous observations we already have evidence of a stick slip behaviour, judging from the friction oscillations in figure \ref{fig:drag_Ff}, and motion partial motion perpendicular to the drag direction, judging from the perpendicular force component in figure \ref{fig:decomp_direc}. By looking at the $x,y$-position for the center of mass (COM) we can see the stick slip motion manifested as a variation in COM speed combinned with a side to side motion as shown in figure $\ref{fig:COM_path_K0}$. To increase this effect we also show the same plot with a spring ... move with spring constant 30 N/m in figure \ref{fig:COM_path_K30}. While the max speed is on the same scale the side to side motion is increased (notice that the axis scale is different between figure \ref{fig:COM_path_K0} and \ref{fig:COM_path_K0}).
 
@@ -258,7 +307,7 @@ From the previous observations we already have evidence of a stick slip behaviou
 
 
 
-\subsection{Defining metrics for dynamic and static friction}
+\subsection{Defining metrics for dynamic and static friction}\label{sec:def_dyn_and_stat}
 We are interested taking the comprehensive friction force time series dataset
 and reducing it into single metrics describing the dynamic and static friciton
 respectively. The natural choice is to use the mean and max values. 

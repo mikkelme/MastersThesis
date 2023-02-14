@@ -31,7 +31,7 @@ def raw_data(filename, save = False):
     plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
     plt.plot(VA_pos[map], Ff[map], label = "Raw data")
     plt.plot(VA_pos[map], Ff_savgol[map], label = f"Savgol filter")
-    plt.xlabel(r'Drag length [Å]', fontsize=14)
+    plt.xlabel(r'Sliding distance [Å]', fontsize=14)
     plt.ylabel(r'Friction force $F_\parallel$ [nN]', fontsize=14)
     plt.legend(loc = 'lower left', fontsize = 13)
     
@@ -47,7 +47,7 @@ def raw_data(filename, save = False):
     plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
     plt.plot(VA_pos[map], Ff[map], label = "Raw data")
     plt.plot(VA_pos[map], Ff_savgol[map], label = f"Savgol filter")
-    plt.xlabel(r'Drag length [Å]', fontsize=14)
+    plt.xlabel(r'Sliding distance [Å]', fontsize=14)
     plt.ylabel(r'Friction force $F_\parallel$ [nN]', fontsize=14)
     plt.legend(loc = 'lower left', fontsize = 13)
     
@@ -123,7 +123,7 @@ def ft(filename, save = False):
     # yf = np.sin(2*np.pi*a*VA_pos[map])*np.cos(2*np.pi*b*VA_pos[map])
     # plt.plot(VA_pos[map], yf)
     
-    plt.xlabel(r'Drag length [Å]', fontsize=14)
+    plt.xlabel(r'Sliding distance [Å]', fontsize=14)
     # plt.xlabel(r'Time [ps]', fontsize=14)
     plt.ylabel(r'Friction force $F_\parallel$ [nN]', fontsize=14)
     plt.legend(loc = 'lower left', fontsize = 13)
@@ -166,7 +166,7 @@ def decomp(filename, save = False):
     plt.plot(VA_pos[map], Ff_sheet_savgol[map], label = "Sheet")
     plt.plot(VA_pos[map], Ff_PB_savgol[map], label = "PB")
     
-    plt.xlabel(r'Drag length [Å]', fontsize=14)
+    plt.xlabel(r'Sliding distance [Å]', fontsize=14)
     plt.ylabel(r'Friction force $F_\parallel$ [nN]', fontsize=14)
     plt.legend(loc = 'lower left', fontsize = 13)
     
@@ -182,7 +182,7 @@ def decomp(filename, save = False):
     plt.plot(VA_pos[map], Ff_savgol[map], label = "$F_\parallel$", color = color_cycle(0))
     plt.plot(VA_pos[map], Ff_perp_savgol[map], label = "$F_\perp$", color = color_cycle(1))
         
-    plt.xlabel(r'Drag length [Å]', fontsize=14)
+    plt.xlabel(r'Sliding distance [Å]', fontsize=14)
     plt.ylabel(r'Friction force $F_\parallel$ [nN]', fontsize=14)
     plt.legend(loc = 'lower left', fontsize = 13)
     
@@ -206,7 +206,7 @@ def decomp(filename, save = False):
     # # plt.plot(VA_pos[map], move[map], label = "move force")
     # plt.plot(VA_pos[map], Ff_savgol[map], label = "Ff")
     # plt.plot(VA_pos[map], move_savgol[map], label = "move force")
-    # plt.xlabel(r'Drag length [Å]', fontsize=14)
+    # plt.xlabel(r'Sliding distance [Å]', fontsize=14)
     # plt.ylabel(r'---', fontsize=14)
     # plt.legend(fontsize = 13)
     # plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
@@ -215,7 +215,7 @@ def decomp(filename, save = False):
     # # plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
     # # plt.plot(VA_pos[map], Ff_perp_savgol[map], label = "Ff perp")
     # # plt.plot(VA_pos[map], move_perp_savgol[map], label = "move perp force")
-    # # plt.xlabel(r'Drag length [Å]', fontsize=14)
+    # # plt.xlabel(r'Sliding distance [Å]', fontsize=14)
     # # plt.ylabel(r'---', fontsize=14)
     # # plt.legend(fontsize = 13)
     # # plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
@@ -303,7 +303,7 @@ def mean_values(filename, save = False):
     plt.plot(VA_pos[map], runmean, label = f"Running mean ({int(mean_window_pct*100)}% window)", color = color_cycle(1))
     plt.plot(VA_pos[map][-1], runmean[-1], 'o', label = f'Final mean = {runmean[-1]:0.4f}', color = color_cycle(1))
   
-    plt.xlabel(r'Drag length [Å]', fontsize=14)
+    plt.xlabel(r'Sliding distance [Å]', fontsize=14)
     plt.ylabel(r'Friction force $F_\parallel$ [nN]', fontsize=14)
     plt.legend(loc = 'lower left', fontsize = 13)
     
@@ -322,7 +322,7 @@ def mean_values(filename, save = False):
     plt.plot(VA_pos[map], runmean_std, label = "Running std", color = color_cycle(2))
     plt.plot(VA_pos[map][-1], runmean_std[-1], 'o', label = f'Final std = {runmean_std[-1]:.3f}', color = color_cycle(2))
   
-    plt.xlabel(r'Drag length [Å]', fontsize=14)
+    plt.xlabel(r'Sliding distance [Å]', fontsize=14)
     plt.ylabel(r'Running std / final running mean', fontsize=14)
     plt.legend(fontsize = 13)
     
@@ -346,7 +346,7 @@ def mean_values(filename, save = False):
     plt.plot(VA_pos, runmean_std, label = "Running std", color = color_cycle(2))
     plt.plot(VA_pos[-1], runmean_std[-1], 'o', label = f'final std = {runmean_std[-1]:.3f}', color = color_cycle(2))
   
-    plt.xlabel(r'Drag length [Å]', fontsize=14)
+    plt.xlabel(r'Sliding distance [Å]', fontsize=14)
     plt.ylabel(r'Running std / final running mean', fontsize=14)
     plt.legend(fontsize = 13)
     
@@ -455,7 +455,7 @@ def max_values(folder, save = False):
    
     cb = plt.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap))
     cb.set_label(label = '$F_N$ [nN]', fontsize=14)
-    plt.xlabel('Drag length [Å]', fontsize = 14)
+    plt.xlabel('Sliding distance [Å]', fontsize = 14)
     plt.ylabel(r'Rel. $\max \ F_\parallel$ [nN]', fontsize = 14)    
     plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
     if save:
@@ -536,7 +536,7 @@ if __name__ == '__main__':
     
     path = '../Data/Baseline_fixmove'
     files = get_dirs_in_path(os.path.join(path, 'nocut/spring'))
-    maxarg_vs_K(files, save = True)
+    # maxarg_vs_K(files, save = False)
     
     
     
