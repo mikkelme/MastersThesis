@@ -558,18 +558,17 @@ def get_normal_buckling(sheet_dump, quartiles = [0.01, 0.05, 0.1, 0.25, 0.50]):
             
             sheet_timestep = int(info[1].strip("\n"))
             # if sheet_timestep == 100000:  break
-    
+
 
             sheet_num_atoms = int(info[3].strip("\n"))
             local_zpos = np.zeros((sheet_num_atoms))
-            # sheet_atom_pos = np.zeros((sheet_num_atoms, 3))
             print(f"\rTimestep = {sheet_timestep}", end = "")
 
             for i in range(sheet_num_atoms): # sheet atom loop
                 line = sheet_infile.readline() # id type x y z [...]
                 words = np.array(line.split(), dtype = float)
                 local_zpos[i] = words[zidx] 
-           
+        
         except KeyboardInterrupt: break
 
 
@@ -596,28 +595,28 @@ def get_normal_buckling(sheet_dump, quartiles = [0.01, 0.05, 0.1, 0.25, 0.50]):
 
     # --- Calculate min, max and quartiles --- #
     # Max
-    Q_var = ["Max"] 
+    Q_var = [1] 
     Q[0] = np.max(zpos, axis=-1)
 
     # Upper quartiles
     for i in range((Q_len-2)//2):
-        Q_var.append("Q = " + str(1-quartiles[i]))
+        Q_var.append(1-quartiles[i])
         Q[i+1] = np.quantile(zpos, 1-quartiles[i], axis = -1)
 
     # Median
     if (Q_len-2)%2: 
         # Q_var.append(str(quartiles[-1]))
-        Q_var.append("Median")
+        Q_var.append(0.5)
         Q[i+2] = np.quantile(zpos, 1-quartiles[i+1], axis = -1)
 
     # Lower quartiles
     for i in reversed(range((Q_len-2)//2)):
-        Q_var.append("Q = " + str(quartiles[i]))
+        Q_var.append(quartiles[i])
         Q[-i-2] = np.quantile(zpos, quartiles[i], axis = -1)
 
     # Min
     Q[-1] = np.min(zpos, axis=-1)
-    Q_var.append("Min")
+    Q_var.append(0)
     print()
     return timestep, Q_var, Q    
     

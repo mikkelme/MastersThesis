@@ -371,7 +371,7 @@ def multi_plot_compare(folders, names, vars, axis_labels, yerr = None, axis_scal
     return fig        
 
 
-def contact_vs_time(path):
+def contact_vs_time(path, save = False):
     bond_file = 'bond_pct.txt'
     info_file = 'info_file.txt'
     
@@ -410,14 +410,15 @@ def contact_vs_time(path):
         plt.ylabel('Rel. Bond', fontsize=14)
         plt.legend(fontsize = 13)
         plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
-        plt.savefig("../article/figures/baseline/contact_vs_stretch", bbox_inches="tight")
+        if save:
+            plt.savefig("../article/figures/baseline/contact_vs_stretch", bbox_inches="tight")
 
 
-def vaccum_normal_buckling(path):
+def vaccum_normal_buckling(path, save = False):
     info_file = 'info_file.txt'
     
     
-    dump_file = ['full_sheet_nocut_vacuum.data',
+    dump_files = ['full_sheet_nocut_vacuum.data',
                  'full_sheet_pop_vacuum.data',
                  'full_sheet_hon_vacuum.data']
     
@@ -431,39 +432,59 @@ def vaccum_normal_buckling(path):
     colors = [color_cycle(0), color_cycle(1), color_cycle(3)]
     
     
+
     
+    # dump_files.pop(0)
+    # dirs.pop(0)
+    # names.pop(0)
+    # colors.pop(0)
     
+    grid = (1, len(dump_files))
+    fig, axes = plt.subplots(grid[0], grid[1],  figsize = (10,5))
     
-    
-    
-    plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
+
+    # plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
     for i, dir in enumerate(dirs):
         info = read_info_file(os.path.join(path, dir, info_file))
-        timestep, Q_var, Q = get_normal_buckling(os.path.join(path, dir, dump_file[i]))
+        timestep, Q_var, Q = get_normal_buckling(os.path.join(path, dir, dump_files[i]), quartiles = [0.01, 0.1, 0.25, 0.50])
 
+        print(f'Rupture stretch = {info["rupture_stretch"]}')
         time = timestep * info['dt']
         stretch_start = time >= info['relax_time']
         
         Q = Q[:, stretch_start]
         stretch = (time[stretch_start] - time[stretch_start][0]) * info['stretch_speed_pct']
+
+
+        axes[i].set_title(names[i])
+        for j in range(Q.shape[0]//2):
+            label = f"Q = {Q_var[-j-1]*100:2.0f}%, {Q_var[j]*100:2.0f}%"
+            if Q_var[j] == 1:
+                label = 'Q = Min, Max'
+            axes[i].plot(stretch, Q[j], color = color_cycle(j), label = label)
+            axes[i].plot(stretch, Q[-j-1], color = color_cycle(j))
         
-        #
-        #
-        # Working here
-        #
-        #
-    
-        for j in range(Q.shape[0]):
-            plt.plot(stretch, Q[j], color = colors[i])
+        if Q.shape[0]%2 == 1:
+            j += 1
+            axes[i].plot(stretch, Q[j], color = color_cycle(j), label = f"Q = Median")
+            
+            
         
         # plt.plot(, contact, color = colors[i], label = names[i])
         # plt.xlabel('Stretch', fontsize=14)
         # plt.ylabel('Rel. Bond', fontsize=14)
         # plt.legend(fontsize = 13)
         # plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
-        # plt.savefig("../article/figures/baseline/contact_vs_stretch", bbox_inches="tight")
-        break
+
+    fig.supxlabel('Stretch', fontsize = 14)
+    fig.supylabel('z-position [Å]', fontsize = 14)
     
+    handles, labels = axes[0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc = 'right', bbox_to_anchor = (0.0, 0.0, 1, 1), bbox_transform = plt.gcf().transFigure, ncols = 1, fontsize = 13)
+    fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    plt.subplots_adjust(right=0.8)
+    if save:
+        plt.savefig("../article/figures/baseline/vacuum_normal_buckling", bbox_inches="tight")
 
 if __name__ == "__main__":
     
@@ -479,10 +500,10 @@ if __name__ == "__main__":
     
     # multi_stretch(path, save = False)
     # multi_FN(path, save = False)
-    # multi_area(path, save = True)
+    # multi_area(path, save = False)
     
-    # contact_vs_time(path)
-    vaccum_normal_buckling(path)
+    # contact_vs_time(path, save = False)
+    vaccum_normal_buckling(path, save = False)
     
     
     plt.show()
