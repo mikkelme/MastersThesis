@@ -669,18 +669,16 @@ results showcase a strong coupling between stretch and friction force, also for
 the max friction force, which is beyond the expectations at this stage of the
 study. The non-cut configuration does not show significant dependency on the stretch which reveal that this effect is only present when combining cut and stretch and not purely by strecthing the sheet. 
 
-By considering the increase in dynamic friction towards the first peak we get a friction
-force over stretch ratio of $\sim 10$ and $\sim 2$ for the honeycomb pattern
-resepctively as shown in table \ref{tab:first_peak_stretch_ratio}. While the honeycomb force increase towards the first peak is approximately linear the popup exhibits seemingly exponential growth which yield a ratio (slope) on the order $\sim \SI{30}{nN}$. 
+By considering the increase in dynamic friction towards the first peak we get a relative friction increase and increase vs. stretch ratios as described in table \ref{tab:first_peak_stretch}. While the honeycomb force increase towards the first peak is approximately linear the popup exhibits seemingly exponential growth which yield a slope on the order $\sim \SI{30}{nN}$. 
 
 \begin{table}[H]
   \begin{center}
-  \caption{(stretch, dynamic friction) coordinates from figure \ref{fig:multi_stretch_mean_fric} at start and the first peak respectively used to approximate the friction force over stretch ratio for said range. In practive this ratio denotes the slope of a forced linear trend. }
-  \label{tab:first_peak_stretch_ratio}
-  \begin{tabular}{ | c | c | c | c |} \hline
-  Configuration & Start & First peak & Friction force vs. stretch ratio [nN]  \\ \hline
-  Popup & $\sim (0, 0.03)$ & $\sim(0.082, 0.83)$ & 9.76 \\ \hline
-  Honeycomb & $\sim (0, 0.07)$ &  $\sim (0.728, 1.57)$ & 2.06 \\ \hline
+  \caption{(stretch, dynamic friction) coordinates from figure \ref{fig:multi_stretch_mean_fric} at start and the first peak respectively used to approximate the relative increase in friction force and the ratio for friction increaese vs. stretch for sait range. In practice  the latter ratio denotes the slope of a forced linear trend. }
+  \label{tab:first_peak_stretch}
+  \begin{tabular}{ | c | c | c | c | c |} \hline
+  Configuration & Start & First peak & Relative increase & Friction force vs. stretch ratio [nN]  \\ \hline
+  Popup & $\sim (0, 0.03)$ & $\sim(0.082, 0.83)$ & 27.7 & 9.76  \\ \hline
+  Honeycomb & $\sim (0, 0.07)$ &  $\sim (0.728, 1.57)$ & 22.4 & 2.06 \\ \hline
   \end{tabular}
   \end{center}
 \end{table}
@@ -690,6 +688,7 @@ Additionally, we notice that booth the popup and honeycomb also exhibits stretch
 
 \subsubsection{Normal force}
 
+\hl{Main take away from this section should be that the normal force does not really change the friction much; The friciton coefficient is extremely low, but I'm not sure how well the linear fits are (whether they are linear or sublinear). Not sure if I should do a linearly increasing normal force for better linear plots?}
 
 \begin{figure}[H]
   \centering
@@ -733,25 +732,25 @@ Additionally, we notice that booth the popup and honeycomb also exhibits stretch
 \end{table}
 
 
-The friction probably does not increase with normal force at an expected rate due to the fact the normal force is only applied on the pull blocks. Especially with the cutted sheet the tension drops such that the effecive normal force on the inner sheet is not changing so much. By this theory the friction force vs. normal force on the pull graph look a bit more like expected.
+\hl{One theory for the low friction coefficient might dependent on the fact that the normal force is only applied on the pull blocks. Especially with the cutted sheet the tension drops such that the effecive normal force on the inner sheet is not changing very much. By this theory the friction force vs. normal force on the pull blocks should look a bit more like expected and we might make some plots of thoose to check}
 
-When looking at the graphs for the PB the max friction is visually textbook linear, while the mean friction is a bit more linear but also with negativ coefficients.
+\hl{When looking at the graphs for the PB the max friction is visually textbook linear, while the mean friction is a bit more linear but also with negativ coefficients...}
 
 
 
 \subsection{Computational cost}
 
-Talk about the computatonal cost of different choices. How does comutation time scale with drag speed, $dt$ and maybe $T$ and $K$ as well. One could also mention scaling with system size.
+Talk about the computatonal cost of different choices. How does computation time scale with drag speed, $dt$ and maybe $T$ and $K$ as well. One could also mention scaling with system size.
 
 Show how the number of cores per simulation scale to argue that running on just one core (maybe 4) is smart for the next step of many simulations. 
 
-Mention the trouble with GPU to show that this was considered. 
+Mention the trouble with GPU to show that this was considered, and in fact this was the reason for choosing the Tersoff potential over the AIREBO which is perhaps more common these days...
 
 
 
 \section{Generating data}
 
-Present the configuration and variable choices for the generated dataset. Perhaps include appendix with all the configurations shown in a grid or something similar.
+Present the configuration and variable choices for the generated dataset. Perhaps include appendix with all the configurations shown in a grid
 
 
 \section{Training forward network}
