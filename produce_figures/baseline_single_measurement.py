@@ -427,7 +427,7 @@ def max_values(folder, save = False):
     argsort = np.argsort(argtop, axis = 1)
     
     # Relative to max
-    Ffmax = Ffmax / Ffmax[:, 0][:, np.newaxis]
+    # Ffmax = Ffmax / Ffmax[:, 0][:, np.newaxis]
     
     
     plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
@@ -453,10 +453,23 @@ def max_values(folder, save = False):
         exit(f'scale = \'{colorbar_scale}\' is not defined.')
    
    
+    print(np.shape(argtop))
+   
+    vline(plt.gca(), 71, linestyle = '--', color = 'black', linewidth = 1, zorder = 0, label = "Slow period $= 71 \pm 15$ Å")
+    
+    ax = plt.gca()
+    xlim = ax.get_xlim()
+    ylim = ax.get_ylim()
+    plt.fill_betweenx([Ffmax.min() - 20, Ffmax.max() + 20], [71-15, 71-15], [71+15, 71+15], color = 'black', alpha = 0.1, zorder = 0)
+    ax.set_xlim(xlim)
+    ax.set_ylim(ylim)
+   
+   
     cb = plt.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap))
     cb.set_label(label = '$F_N$ [nN]', fontsize=14)
     plt.xlabel('Sliding distance [Å]', fontsize = 14)
-    plt.ylabel(r'Rel. $\max \ F_\parallel$ [nN]', fontsize = 14)    
+    plt.ylabel(r'$\max \ F_\parallel$ [nN]', fontsize = 14)    
+    plt.legend(fontsize = 13)
     plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
     if save:
         plt.savefig('../article/figures/baseline/max_dist.pdf', bbox_inches='tight')
@@ -501,7 +514,6 @@ def maxarg_vs_K(dirs, save = False):
     ax.set_ylim(ylim)
     
     
-    
     # xfill(plt.gca(), 71-15, 71+15, color = 'black', alpha = 0.2, linewidth = 1, zorder = 0)
     
     
@@ -530,8 +542,8 @@ if __name__ == '__main__':
     #############################################
     
     # folder = os.path.join(path,'nocut/multi_stretch/stretch_15001_folder')
-    # folder = os.path.join(path,'nocut/multi_FN/stretch_15001_folder')
-    # max_values(folder, save = False)
+    folder = os.path.join(path,'nocut/multi_FN/stretch_15001_folder')
+    max_values(folder, save = True)
     
     
     path = '../Data/Baseline_fixmove'

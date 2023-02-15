@@ -81,8 +81,8 @@ In the following subsections (X to Y) we are going to present the friction simul
       \text{Pauses} &= \SI{5}{ps} \\
       \text{Stretch speed} &= \SI{0.01}{ps^{-1}} \\
       \text{Slide distance} &= \SI{400}{Å} \\
-      \text{Sheet size} &= 130.029 \times \SI{163.219}{Å} \\
-      \text{Pull block size} &= 2 \times 130.029 \times \SI{15.183}{Å}
+      \text{Sheet size} &= 130.029 \times \SI{163.219}{\text{Å}} \\
+      \text{Pull block size} &= 2 \times 130.029 \times \SI{15.183}{\text{Å}}
     \end{align*}} &
     {\begin{align*}
       \text{Sheet configuration} &= \text{Contiguous} \\
@@ -145,7 +145,7 @@ While this is in itself a spectacular realization that is often used in
 introductory physics courses (source 2) to demonstrate the rather extreme
 pressure under a stiletto heel (greater than the foot of an elephant) (how many
 Atmos?) this serves as a reasonible upperbound for human executed pressure. With
-a full sheet area of $\sim\SI{21e3}{Å^2}$ we can achieve a similar pressure of
+a full sheet area of $\sim\SI{21e3}{{\text{Å}}^2}$ we can achieve a similar pressure of
 $\sim \SI{10}{MPA}$ with a normal force of
 \begin{align*}
   F_N = \SI{10}{MPa} \cdot \SI{21e-17}{m^2} = \SI{2.10}{nN}  
@@ -164,23 +164,23 @@ drops to a mere $\SI{70}{kPa}$ corresponding to $\sim \SI{0.01}{nN}$.
 
 
 \newpage
-\subsection{Single friction simulation analysis}
+\subsection{Single friction simulation analysis}\label{sec:single_analysis}
 We begin by assessing the raw data for a single friction simulation run with the default parameters shown in table \ref{tab:final_param} for a non-cut sheet, no stretch and an applied normal force of $\SI{1}{nN}$.
 
 
-\subsubsection{Force oscillations}
+\subsubsection{Force oscillations}\label{sec:force_oscillations}
 We first assess the raw data for the friction force $F_{\parallel}$ parallel to the drag direction as seen in figure \ref{fig:drag_Ff}. The sample rate is 10 ps$^{-1}$ = 100 timesteps$^{-1}$ for which each sample is the mean value of the 100 timesteps preceding the given sample interval. We observe immediately that the data carriers oscillations on different time scales. By applying a savgol filter to the data with a polyorder of 5 and window length of 150 timesteps, corresponding to a sliding distance of 3 Å or a time window of 15 ps, we can qualitatively point out at least two different frequencies of osccilation. On figure \ref{fig:drag_Ff_10} we see roughly three waves on the savgol filter corresponding to a relative high frequency, while on \ref{fig:drag_Ff_100} the same savgol filter reveals a lower frequency on top of the first, creating the visual pattern of a wavepacket.
 
 \begin{figure}[H]
   \centering
-  \begin{subfigure}[b]{0.49\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/drag_Ff_10Å.pdf}
       \caption{Drag length of 10 Å.}
       \label{fig:drag_Ff_10}
   \end{subfigure}
   \hfill
-  \begin{subfigure}[b]{0.49\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/drag_Ff_100Å.pdf}
       \caption{Drag length of 100 Å.}
@@ -207,21 +207,21 @@ with
 \begin{align*}
   a = \frac{f_1 + f_2}{2} &= 0.0763 \pm \SI{0.0005}{ps^{-1}},& 
   b = \frac{f_2 - f_1}{2} &= 0.0028 \pm \SI{0.0005}{ps^{-1}},& \\
-  &= 0.381 \pm \SI{0.003}{Å^{-1}},& 
-  &= 0.014 \pm \SI{0.003}{Å^{-1}},& 
+  &= 0.381 \pm \SI{0.003}{{\text{Å}}^{-1}},& 
+  &= 0.014 \pm \SI{0.003}{{\text{Å}}^{-1}},& 
 \end{align*}
 where the latter frequency is denoted with respect to the sliding distance. This makes us recognize the high osccilation frequency as $a$ and the low frequency as $b$. The faster one has a period of $T_a = 2.62 \pm 0.02$ Å\footnote{The uncertainty $\Delta y$ is calculated as $\Delta y = \left|\frac{\partial y}{\partial x} \Delta x \right|$ for uncertainty $\Delta x$ and $y(x)$}. This corresponds well with the magnitude of the lattice spacing and especialy that of graphene at 2.46 Å as expected theoretically (make reference to theory section?). We also take note of the longest period $T_b = 71 \pm 15$ Å$^{-1}$ which will be relevant for the evaluation of measurement uncertainty in section \ref{sec:def_dyn_and_stat}.
 
 \begin{figure}[H]
   \centering
-  \begin{subfigure}[b]{0.49\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
     \centering
     \includegraphics[width=\textwidth]{figures/baseline/ft_zoom.pdf}
     \caption{FT result shown for a reduced frequency range.}
     \label{fig:ft_a}
   \end{subfigure}
   \hfill
-  \begin{subfigure}[b]{0.49\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/ft_sine.pdf}
       \caption{Two most dominant frequencies applied to the data from figure \ref{fig:drag_Ff_100}}
@@ -258,14 +258,14 @@ we are neglecting the ``side shift'' induced during the slide phase. In figure \
 
 \begin{figure}[H]
   \centering
-  \begin{subfigure}[b]{0.49\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
     \centering
     \includegraphics[width=\textwidth]{figures/baseline/decomp_group.pdf}
     \caption{Decomposition into group inner sheet (sheet) and pull blocks (PB).}
     \label{fig:decomp_group}
   \end{subfigure}
   \hfill
-  \begin{subfigure}[b]{0.49\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/decomp_direc.pdf}
       \caption{Decomposition into parallel ($F_{\parallel}$) and perpendicular ($F_{\perp})$ to drag sliding direction.}
@@ -275,152 +275,195 @@ we are neglecting the ``side shift'' induced during the slide phase. In figure \
   \label{fig:decomp}
 \end{figure}
 
-%
-%
-%
-% Working here
-%
-%
+
 \subsubsection{Center of mass path}
-From the previous observations we already have evidence of a stick slip behaviour, judging from the friction oscillations in figure \ref{fig:drag_Ff}, and motion partial motion perpendicular to the drag direction, judging from the perpendicular force component in figure \ref{fig:decomp_direc}. By looking at the $x,y$-position for the center of mass (COM) we can see the stick slip motion manifested as a variation in COM speed combinned with a side to side motion as shown in figure $\ref{fig:COM_path_K0}$. To increase this effect we also show the same plot with a spring ... move with spring constant 30 N/m in figure \ref{fig:COM_path_K30}. While the max speed is on the same scale the side to side motion is increased (notice that the axis scale is different between figure \ref{fig:COM_path_K0} and \ref{fig:COM_path_K0}).
+From the previous observations of the friction force time series we see evidence
+of a stick-slip behvaiour. Specially, we see in figure \ref{fig:decomp_direc}
+that this might be the case both parallel and perpendicular to the sliding
+direction. By looking at the $x,y$-position for the sheet center of mass (COM)
+we observe the stick-slip motion manifested as a variation in COM speed combinned
+with a side to side motion as shown in figure $\ref{fig:COM_path_K0}$. In an attempt to increase the magnitude of the slips we evaluate a similar simulation with spring contant $K = \SI{30}{N/m}$ (see figure
+\ref{fig:COM_path_K30}) in contrast to that of an infinte spring constant. While
+the maximum slip speed stays within a similar order of magnitude the slip length
+in the sliding direction is increased along with the side to side motion. Note
+that the axis scale is different between figure \ref{fig:COM_path_K0} and
+\ref{fig:COM_path_K0}. However, in both cases we observe that the side to side
+motion is associated with a low speed, meaning that is more reminiscent of a ``slow'' creep alignment with the substrate than a slip. 
 
 
 \begin{figure}[H]
   \centering
-  \begin{subfigure}[b]{0.85\textwidth}
+  \begin{subfigure}[t]{0.85\textwidth}
     \centering
     \includegraphics[width=\textwidth]{figures/baseline/COM_path_K0.pdf}
-    \caption{Fix move}
+    \caption{$K=\inf$ (Fix move)}
     \label{fig:COM_path_K0}
   \end{subfigure}
   \hfill
-  \begin{subfigure}[b]{0.85\textwidth}
+  \begin{subfigure}[t]{0.85\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/COM_path_K30.pdf}
-      \caption{K = 30}
+      \caption{$\SI{30}{N/m}$}
       \label{fig:COM_path_K30}
   \end{subfigure}
-  \caption{Center of mass relative position from start of drag phase in terms of axis parallel to drag direction $\Delta COM_{\parallel}$ and axis perpendicular to drag direction $\Delta COM_{\perp}$. The colorbar denotes the absolute speed of the COM.}
+  \caption{Center of mass posotion relative to the start of the sliding phase in terms of the direction parallel to the sliding direction $\Delta COM_{\parallel}$ and the axis perpendicular to the sliding direction $\Delta COM_{\perp}$. The colorbar denotes the absolute speed of the COM.}
   \label{fig:COM_path}
 \end{figure}
 
 
-
-
 \subsection{Defining metrics for dynamic and static friction}\label{sec:def_dyn_and_stat}
-We are interested taking the comprehensive friction force time series dataset
-and reducing it into single metrics describing the dynamic and static friciton
-respectively. The natural choice is to use the mean and max values. 
+
+In order to evaluate the frictional properties of the sheet we reduce the comprehensive friction force time series adressed in section \ref{sec:single_analysis} into single metrics describing the dynamic and static friciton. The natural choice is to use the mean and max values of the time series. 
 
 \subsubsection{Dynamic friction} 
-For the dynamic friction measurement we take the mean of the latter half of the data to ensure that the system has
-stabilished itself before taking the mean. For a full drag simulation of 400 Å
-we would thus base our mean value on the latter 200 Å drag. In figure
-\ref{fig:runmean} we have shown the friction force of the first 10 Å of drag
-together with a running mean with window length 50\% of the corresponding data
-length. The final mean value estimate is indicated with red point at the end and
-we clearly observe that the length of sampling is insufficient since we ger a
-negative friction force.  Nonetheless, one approach to quanity the uncertainy of
-the final mean estimate is to consider the running mean. The more the running
-mean fluctuates the more uncertainty is associated with the final estimate. 
-
-% That is, if the running mean is constant it doesn't really matter whether we
-% stop early or drag a bit longer. However, any fluctuations of this line means
-% that out mean measurement is still sensitive to the drag length and any
-% changes in the simulation inducing a phase shift of this oscillations will
-% effect the final mean value in unaccountable manner. 
-
-We should not care for flucations in the initial part of the running mean curve
-as this is still including data from the beginning, where it might transistion
-from static to dynamic friction. Only the running mean ``close'' to the ending
-should be considered for our uncertainty. From the Fourier analyse we concluded
-that longest period of any dominant oscialltions is $\sim 71$ Å$^{-1}$
-corresponding to $\sim 35 \%$ of the running mean window of 200 Å drag. Hence we use use standard deviation of the final 35\% of the running mean curve to approximate the uncertainty of the final mean value. By dividing with the final running mean we effectively calculate the relative error as shown in figure \ref{fig:runstd}. Naturally, we get a relative error of $\sim 257\%$ which corresponds with the mean value taking an unexpected negative value.
+For the dynamic friction measurement we take the mean value of the latter half
+of the dataset to ensure that we are sample from a stable system. For a full
+sliding simulation of 400 Å we thus base our mean value on the latter 200 Å of
+sliding. In figure \ref{fig:runmean} we have shown the friction force of the
+first 10 Å of sliding together with a running mean with window length of 5 Å
+corresponding to 50\% the data length. This is merely done to illustrate the
+samplig procedure and by only using a 10 Å sliding distance the final mean
+estimate (indicated with a dot) takes a negative value due to the specific cut-off of the
+few oscialltion captured here. Nonetheless, one approach to quanity the
+uncertainy of the final mean estimate is to consider the variation of the
+running mean preceeding the final mean value. The more the running mean
+fluctuates the more uncertainty associated with the final estimate. However, only the
+running mean ``close'' to the ending should be considered, since the first part
+will rely on data from the beginning of the simulation. From the Fourier analyse
+in section \ref{sec:force_oscillations} we found the longest significant
+oscillation period to be $\sim 71$ Å$^{-1}$ corresponding to $\sim 35 \%$ of the
+running mean window consisting of 200 Å of slifing when including all the data.  Hence, we use the standard deviation of the final 35\% of the running mean to approximate the
+uncertainty of the final mean value, and we estimate the relative error by
+dividing the standard deviation by the final mean value. In figure \ref{fig:runstd} we showcase a running standard deviation of a window length $35 \%$ the running mean window in figure \ref{fig:runmean} for the illustrative case of a total 10 Å slide. The final uncertainty value is marked by a dot, and we see as expected that we get a high relative error of $\sim 257\%$ which corresponds well with the short sampling period and the mean value taking an unphysical negative value. 
 
 
 \begin{figure}[H]
   \centering
-  \begin{subfigure}[b]{0.49\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
     \centering
     \includegraphics[width=\textwidth]{figures/baseline/Ff_runmean.pdf}
-    \caption{Running mean}
+    \caption{Running mean with window length $\SI{5}{\text{Å}}$ (50\% the data length).}
     \label{fig:runmean}
   \end{subfigure}
   \hfill
-  \begin{subfigure}[b]{0.49\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/Ff_runstd.pdf}
-      \caption{Running std}
+      \caption{Running std with window length $\SI{1.75}{\text{Å}}$ (35\% the mean window length.)}
       \label{fig:runstd}
   \end{subfigure}
-  \caption{Running std}
+  \caption{Running mean and running standard deviation (std) on the friction force data from a $\SI{10}{{\text{Å}}}$ of sliding simulation. The running mean window is 50\% the data length while the running std window is 35\% the running mean window length.}
   \label{fig:running}
 \end{figure}
 
-When we include the full 400 Å drag, such that std window actually matches with the longest period of oscillations expected from the data, we get a final relative. error of $\sim 12 \%$ as shown in fig \ref{fig:runstd_long}. This is just at the limit for an acceptable error, but as we shall see later (refer to figure or something) this high error is mainly connected to the cases of low friction. When changing the simulation parameters, such that the mean friction evaluate to considerable higher values, the relative error drops to around (put in numbers). One explanation is that the osccilations in the running mean does not increase linearly with the magnitude of the friction, and hence the relative error might spike especially for the low friction cases. 
+
+When including the full dataset of 400 Å of sliding, such that std window actually matches with the longest period of oscillations expected from the data, we get a final relative error of $\sim 12 \%$ as shown in fig \ref{fig:runstd_long}. This is arguable just at the limit for an acceptable error, but as we shall see later (\hl{Make a reference to fig or sec}) this high relative error is mainly connected to the cases of low friction. When changing the simulation parameters, such that the mean friction evaluates to considerable higher values, the relative error drops to the order (\hl{put in numbers}). One interpration of this finding is simply that the oscialltiosn in the running mean is somewhat independent of the magnitude of the friction. In that case, the relative error will spike for the low friction cases. 
 
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.6\linewidth]{figures/baseline/Ff_runstd_long.pdf}
-  \caption{...}
+  \caption{Running standard deviation (std) for a full \SI{400}{{\text{Å}}} sliding simulation. The running std window is 70 Å (35\% the running mean window of 50\% the data length).}
   \label{fig:runstd_long}
 \end{figure}
 
 
 \subsubsection{Static friction} 
-The max value is the most obvious choice for adressing the static friction, even though that the definition of the static friction is a bit vague. At least when judging from the raw data in figure \ref{fig:drag_Ff} we not see a textbook example of the static friction precourser  (maybe include a classic static friction curve in the theory... I'm not completely sure what to expect here). Additionally the global max value does not always lie in the initial part of the simulation. \\
-For a proper static friction evaluation we should increase force slowly and wait for the slip response. Here we drag quite fast making it diffucult to assess the static response. \\
-We investigate the placement of the max values, i.e. the drag length for which we measure the max friction force. We show the placement of the top three max values for different simulatiosn with varying normal force in figure \ref{fig:max_dist}. We observe immediately that only a few top three max values is measured within a full slow period of $\sim$ 71 Å. In fact many max values is measured just before the end of the simulation. This indicates that the naive approach of using the overall max value to describe the static friction coefficient might be a to naive approach. Another approach is to use the max value within a single period, but we do not really know if this period will be similar for alle cut patterns and thus this might be limiting. 
+The max value is the most obvious choice for adressing the static friction, even
+though that the definition of the static friction is a bit vague. When
+considering the friction force time series in figure \ref{fig:drag_Ff} we
+observe that the stick-slip oscillations increase in magnitude toward a global
+peak at $\sim \SI{20}{\text{Å}}$. Thus, we could identify this peak as the
+static friction force, but the global max does in fact rarely fall within the
+first part of the sliding. In figure \ref{fig:max_dist} we investigate the top
+three max value, at which sliding distance they accour and at what magnitude,
+for 30 uniformly sampled normal forces in the interval $[0.1, 10]$ nN. It is
+immediately clear that only few of the peaks falls within the ``beginning'' of
+the simulation defined by the slowest significant oscialltion period of $71\pm
+\SI{15}{\text{Å}}$. In fact only 2/30 global values and 4/90 top three values
+can be associated to the start of the sliding by this definition. Thus, this
+result suggest that the max value cannot be used as a reliable measure for the
+static friction either due to its lack of presence or due to the simulation
+setup procedure. For a more typycal evaluation of the static friction force one
+would increase force slowly until the first slip significant slip is recorded (a
+series of precursors is expected to precede this). In our simulations we drag
+the sheet relatively fast in a rigid matnner which made ..remove... the statuic
+friction phenonema. \hl{Find reference stating that static friction might
+dissapear when increasing the spring constant of the probe to stiff}. By
+changing the spring constant we investigate possibility to observe a static
+friction response within the framework of our simulation procedure as shown in
+figure \ref{fig:max_vs_K}. However, the results do not indicate any implications
+that a recognizable domain exist for which the static friction response would be
+reliable. Hence, we will base the final assesment on frictional properties
+purely on the dynamic friction force. 
 
-\begin{figure}[H]
+
+\begin{figure}
   \centering
-  \includegraphics[width=0.6\linewidth]{figures/baseline/max_dist.pdf}
-  \caption{Distribution of top 3 max values for different normal force}
-  \label{fig:max_dist}
-\end{figure}
+  \begin{minipage}[t]{.47\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/baseline/max_dist.pdf}
+    \captionof{figure}{Distribution of top three max friction force peaks for 30 uniformly sampled normal forces $F_N \in [0.1, 10]$ nN. The dotted line and the grey area marks the slowest significant oscialltion period found in the data and thus marking a dividing line for whether a peak falls within the ``beginning'' of the sliding simulation.}
+    \label{fig:max_dist}
+  \end{minipage}%
+  \hspace{0.2cm}
+  \begin{minipage}[t]{.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/baseline/max_vs_K}
+    \captionof{figure}{Sliding displacement for the max friction peak to appear as a function of spring constant. \hl{Fixmove is tmp mapped to K = 200 here without any discontinuous lines.}}
+    \label{fig:max_vs_K}
+  \end{minipage}
+  \end{figure}
 
 
-Look into static friction when having a spring connected to the drag force with
-rather low spring constant. Maybe compare to critical sitffness in FK model.
-Some rough calculations follow here (make a note about this being a very naive
-approach to determine a suitable stiffness for static friction scenarious. In
-reality one should increase force slowly to observe this probably). When
-dragging the sheet in the y-direction we effectively have a lattice spacing
-\begin{align*}
-  a_c = a_{2,x} + B_x = a_G\frac{\sqrt{3}}{2} + \frac{a_G}{2\sqrt{3}} = \frac{2a_G}{\sqrt{3}}
-\end{align*}
-for graphene lattice constant $a_G = 2.46$ Å. For the diamond silicon structure
-this is essentially equal to the lattice constant $a_D = 5.4210$ Å. This gives 
-\begin{align*}
-  \theta = \frac{a_c}{a_b} = \frac{2}{\sqrt{3}}\frac{a_G}{a_D} \approx 0.5230.
-\end{align*}
-Since we have the factor $2/\sqrt{3}$ it is safe to assume that this is a
-irrational number leadning to incommensurability. The worst case scnario of
-incommensurability (where $\theta$ equals the golden-mean, Can we get the exact
-number?) gives the minimal critical stiffness $K_c \sim 2U_0
-(\frac{\pi}{a_b})^2$, where $U_0$ is the substrate potentiual magnitude and
-$a_b$ the lattice spacing of the substrate. The potential barrier $U_0$ can be
-approximated by the work done when resisting the normal force as $\sim F_N
-a_D/2$ such that the critical stiffness can be approximated to 
-\begin{align*}
-  K_c \sim 2 F_N \frac{a_D}{2} \left(\frac{\pi}{a_D}\right)^2 = \frac{F_N}{a_D}\pi^2
-\end{align*}
-With a normal force of 1 nN we get $K_c \sim 18$ N/m. Hence, we should try a
-spring constant lower than that as qualified way of determining if this is the
-reason why we do not really see static friciton in the simulation. By plotting the max position (in terms of drag length) as a function of spring constant as seen in figure \ref{fig:max_vs_K} we can investigate if the concept of a critical spring constant is governing this simulation. However, as I'm writing this I'm realizing that the spring constant in the model applies to the interatomic forces and not the one dragging the system.....
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.6\linewidth]{figures/baseline/max_vs_K}
-  \caption{Displacement for the max peak in friction to appear as a function of spring constant dragging the sheet. Fixmove is tmp mapped to K = 200 here.}
-  \label{fig:max_vs_K}
-\end{figure}
 
 
-\newpage
+% We investigate the placement of the max values, i.e. the sliding distance length for which we measure the max friction force. We show the placement of the top three max values for different simulatiosn with varying normal force in figure \ref{fig:max_dist}. We observe immediately that only a few top three max values is measured within a full slow period of $\sim$ 71 Å. In fact many max values is measured just before the end of the simulation. This indicates that the naive approach of using the overall max value to describe the static friction coefficient might be a to naive approach. Another approach is to use the max value within a single period, but we do not really know if this period will be similar for alle cut patterns and thus this might be limiting. 
+
+
+
+% Look into static friction when having a spring connected to the drag force with
+% rather low spring constant. Maybe compare to critical sitffness in FK model.
+% Some rough calculations follow here (make a note about this being a very naive
+% approach to determine a suitable stiffness for static friction scenarious. In
+% reality one should increase force slowly to observe this probably). When
+% dragging the sheet in the y-direction we effectively have a lattice spacing
+% \begin{align*}
+%   a_c = a_{2,x} + B_x = a_G\frac{\sqrt{3}}{2} + \frac{a_G}{2\sqrt{3}} = \frac{2a_G}{\sqrt{3}}
+% \end{align*}
+% for graphene lattice constant $a_G = 2.46$ Å. For the diamond silicon structure
+% this is essentially equal to the lattice constant $a_D = 5.4210$ Å. This gives 
+% \begin{align*}
+%   \theta = \frac{a_c}{a_b} = \frac{2}{\sqrt{3}}\frac{a_G}{a_D} \approx 0.5230.
+% \end{align*}
+% Since we have the factor $2/\sqrt{3}$ it is safe to assume that this is a
+% irrational number leadning to incommensurability. The worst case scnario of
+% incommensurability (where $\theta$ equals the golden-mean, Can we get the exact
+% number?) gives the minimal critical stiffness $K_c \sim 2U_0
+% (\frac{\pi}{a_b})^2$, where $U_0$ is the substrate potentiual magnitude and
+% $a_b$ the lattice spacing of the substrate. The potential barrier $U_0$ can be
+% approximated by the work done when resisting the normal force as $\sim F_N
+% a_D/2$ such that the critical stiffness can be approximated to 
+% \begin{align*}
+%   K_c \sim 2 F_N \frac{a_D}{2} \left(\frac{\pi}{a_D}\right)^2 = \frac{F_N}{a_D}\pi^2
+% \end{align*}
+% With a normal force of 1 nN we get $K_c \sim 18$ N/m. Hence, we should try a
+% spring constant lower than that as qualified way of determining if this is the
+% reason why we do not really see static friciton in the simulation. By plotting the max position (in terms of drag length) as a function of spring constant as seen in figure \ref{fig:max_vs_K} we can investigate if the concept of a critical spring constant is governing this simulation. However, as I'm writing this I'm realizing that the spring constant in the model applies to the interatomic forces and not the one dragging the system.....
+
+
+
+
+%
+%
+% Working here
+%
+%
 
 \subsection{Out of plane buckling}
+
+
+The thesis builds on the idea that the kirigami configurations will buckle out of plane when stretched. Hence, we should verify this.
 
 
 Vacuum test at $T = 5$K. We see that the popup and honeycomb pattern buckles considerable out of plane during the stretch while the noncut sheet only experiences minor buckling of $\sim 2$ Å which is on the same scale as the atomic spacing in the sheet. We also notice that the popup pattern experiences buckles more in consideration to the min and max peaks while the 1\%, 99\% quartiles is on the same scale as the honeycomb. By looking at the visualization (include this somewhere) we can conclude that this is mainly due to the fringes of the sheet ``flapping'' around. 
@@ -452,14 +495,14 @@ Investigate effects of temperature, drag speed, spring constant and dt.
 
 \begin{figure}[H]
   \centering
-  \begin{subfigure}[b]{0.49\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/variables_temp_mean_fixmove_v20.pdf}
       \caption{mean friction}
       \label{fig:var_temp_mean}
   \end{subfigure}
   \hfill
-  \begin{subfigure}[b]{0.49\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/variables_temp_max_fixmove_v20.pdf}
       \caption{max friction}
@@ -475,14 +518,14 @@ Investigate effects of temperature, drag speed, spring constant and dt.
 
 \begin{figure}[H]
   \centering
-  \begin{subfigure}[b]{0.49\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/variables_vel_mean_fixmove.pdf}
       \caption{mean friction}
       \label{fig:var_vel_mean}
   \end{subfigure}
   \hfill
-  \begin{subfigure}[b]{0.49\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/variables_vel_max_fixmove.pdf}
       \caption{max friction}
@@ -499,14 +542,14 @@ Simulations of concentric nanotubes in relative motion (telescopic sliding), hav
 
 \begin{figure}[H]
   \centering
-  \begin{subfigure}[b]{0.49\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/variables_spring_mean_fixmove.pdf}
       \caption{mean friction}
       \label{fig:var_K_mean}
   \end{subfigure}
   \hfill
-  \begin{subfigure}[b]{0.49\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/variables_spring_max_fixmove.pdf}
       \caption{max friction}
@@ -522,14 +565,14 @@ Simulations of concentric nanotubes in relative motion (telescopic sliding), hav
 
 \begin{figure}[H]
   \centering
-  \begin{subfigure}[b]{0.49\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/variables_dt_mean_fixmove.pdf}
       \caption{mean friction}
       \label{fig:var_dt_mean}
   \end{subfigure}
   \hfill
-  \begin{subfigure}[b]{0.49\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/variables_dt_max_fixmove.pdf}
       \caption{max friction}
