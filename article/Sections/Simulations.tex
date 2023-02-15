@@ -454,29 +454,47 @@ purely on the dynamic friction force.
 
 
 
-%
-%
-% Working here
-%
-%
-
 \subsection{Out of plane buckling}
 
+The out of plane buckling is the main motivation for applying the kirigami
+inspired cuts to the sheet. Thus, we perform a stretch simulation in a low
+temperature $T = \SI{5}{K}$ vacuum in order to verify that the chosen cut
+configurations do in fact contribute to a significant out of plane buckling when
+stretched. For the non-cut, popup and honeycomb configuration we assess the
+movement in the z-direction (perpendicular to the plane) during the stretch,
+which we visualize by the min and max z-value along with the atom count
+quartiles 1\%, 10\%, 25\%, 50\% (median), 75\%, 90\% and 99\% as shown in figure
+\ref{fig:buckling_quartiles}. We observe that the popup and honeycomb pattern
+buckles considerable out of plane during the stretch in comparison to the non-cut sheet which only exhibit minor buckling of $\sim 2$ Å which is on the same order as the
+atomic spacing in the sheet. We also notice that the popup pattern
+buckles more in consideration to the min and max peaks while the 1\%, 99\%
+quartiles is on the same magnitude as the honeycomb. By looking at the simulation visualization
+(include OVITO figures somewhere) we can conclude that this is mainly due to the fringes
+of the sheet ``flapping'' around. 
 
-The thesis builds on the idea that the kirigami configurations will buckle out of plane when stretched. Hence, we should verify this.
-
-
-Vacuum test at $T = 5$K. We see that the popup and honeycomb pattern buckles considerable out of plane during the stretch while the noncut sheet only experiences minor buckling of $\sim 2$ Å which is on the same scale as the atomic spacing in the sheet. We also notice that the popup pattern experiences buckles more in consideration to the min and max peaks while the 1\%, 99\% quartiles is on the same scale as the honeycomb. By looking at the visualization (include this somewhere) we can conclude that this is mainly due to the fringes of the sheet ``flapping'' around. 
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{figures/baseline/vacuum_normal_buckling}
-  \caption{Out of plane buckling during stretch of sheets in vacuum at $T = 5$ K. Reading from left to right the vacuum rupture stretch are 0.38, 0.22 and 1.37.}
-  \label{fig:}
+  \caption{Out of plane buckling during stretch of sheets in vacuum at $T = 5$ K. Reading from left to right the vacuum rupture stretch are 0.38, 0.22 and 1.37. \hl{perhaps use a colorscale instead of the standard color cycles here.}}
+  \label{fig:buckling_quartiles}
 \end{figure}
 
 
-Similar test is performaned in the presence of the substrate under a higher temperature $T = 300$ K. We assess the contact area by the relative amount of atoms in the sheet within chemical range of the substrate. The cut-off for this interaction is 4 Å corresponding to $\sim 120$\% the LJ equilibrium distance. Since the contact area is usually calculated as the amout of atoms in contact multiplied with an associated area for each contact this feature is proportional to that. 
+The next step is to verify that the buckling will lead to a significant altering
+of the contact area when the sheet is in put in contact with the substrate. We
+investigate this by simulating the stretch at the default temperature $T =
+\SI{300}{K}$ with the presence of contact forces between the sheet and
+substrate. Note that no normal load is applied as the sheet and substrate is
+sufficiently attracted by the LJ potential. We assess the contact area by the
+relative amount of atoms in the sheet within chemical range of the substrate.
+The cut-off for this interaction is 4 Å corresponding to $\sim 120$\% the LJ
+equilibrium distance. Since the contact area is usually calculated as the amount
+of atoms in contact multiplied with an associated area for each contact this
+feature is taken to be proportional to the contact area. The relative amount of
+bonds as a function of stretch for the various configurations is shown in figure
+\ref{fig:contact_vs_stretch} which clearly indicates a drop in contact area as
+the cutted sheets are stretched. 
 
 \begin{figure}[H]
   \centering
@@ -485,6 +503,14 @@ Similar test is performaned in the presence of the substrate under a higher temp
   \label{fig:contact_vs_stretch}
 \end{figure}
 
+From figure 
+
+
+%
+%
+% Working here. 
+%
+%
 
 
 
