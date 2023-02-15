@@ -38,7 +38,7 @@ The friction simulation is governed by a set of parameters where some is kept co
       \item[-] Stretch Speed: How fast to stretch the sheet.
       \item[-] Slide distance: How far to translate the sheet.
       \item[-] Sheet size: Spatial size of the 2D sheet.  
-      \item[-] Pull block size.  
+      \item[-] Pull block size: spatial size of the pull blocks.
     \end{itemize} &
     Paramters influecing the simulation dynamics and being representative of the experimental procedure that we are mimicking. These parameters is chosen with the aim of getting stable parameters under small perturbations of the given parameter. 
      \\ \hline
@@ -65,7 +65,7 @@ In the following subsections (X to Y) we are going to present the friction simul
 
 \begin{table}[H]
   \begin{center}
-  \caption{Final parameters for the friction simmulations \hl{Probably not the neatest way format for this...}}
+  \caption{Final parameters for the friction simmulations \hl{Probably not the neatest format for this...}}
   \label{tab:final_param}
   \begin{tabular}{ | m{3cm} | m{3cm}| m{3cm} |} \hline
     Physical & Measurements & ML input \\ \hline
@@ -469,14 +469,14 @@ buckles considerable out of plane during the stretch in comparison to the non-cu
 atomic spacing in the sheet. We also notice that the popup pattern
 buckles more in consideration to the min and max peaks while the 1\%, 99\%
 quartiles is on the same magnitude as the honeycomb. By looking at the simulation visualization
-(include OVITO figures somewhere) we can conclude that this is mainly due to the fringes
+(\hl{include OVITO figures for vacuum stretch as well?}) we can conclude that this is mainly due to the fringes
 of the sheet ``flapping'' around. 
 
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{figures/baseline/vacuum_normal_buckling}
-  \caption{Out of plane buckling during stretch of sheets in vacuum at $T = 5$ K. Reading from left to right the vacuum rupture stretch are 0.38, 0.22 and 1.37. \hl{perhaps use a colorscale instead of the standard color cycles here.}}
+  \caption{Out of plane buckling during stretch of sheets in vacuum at $T = 5$ K. Reading from left to right the vacuum rupture stretch are 0.38, 0.22 and 1.37. \hl{perhaps use a color scale instead of the standard color cycles here.}}
   \label{fig:buckling_quartiles}
 \end{figure}
 
@@ -486,7 +486,7 @@ of the contact area when the sheet is in put in contact with the substrate. We
 investigate this by simulating the stretch at the default temperature $T =
 \SI{300}{K}$ with the presence of contact forces between the sheet and
 substrate. Note that no normal load is applied as the sheet and substrate is
-sufficiently attracted by the LJ potential. We assess the contact area by the
+sufficiently attracted by the LJ potential. Selected frames from the simulation is shown in appendix \ref{sec:sheet_stretch}. We assess the contact area by the
 relative amount of atoms in the sheet within chemical range of the substrate.
 The cut-off for this interaction is 4 Å corresponding to $\sim 120$\% the LJ
 equilibrium distance. Since the contact area is usually calculated as the amount
@@ -503,20 +503,12 @@ the cutted sheets are stretched.
   \label{fig:contact_vs_stretch}
 \end{figure}
 
-From figure 
+\hl{Compare figure} \ref{fig:contact_vs_stretch} \hl{to that of figure} \ref{fig:multi_stretch_contact} \hl{where multiple simulations constitute the stretch-contact curve.}
 
 
-%
-%
-% Working here. 
-%
-%
-
-
-
-\newpage
 \subsection{Investigating selected parmeters}
-Investigate effects of temperature, drag speed, spring constant and dt.
+
+We investigate the importance of the physical variables $T$, $v_{\text{slide}}$ and $K$ (\hl{make plots for scan angle as well?}) and the choice of timestep $dt$. This is done partly understand how the dependencies relate to theoretical, numerical and experimerimental results, and partly to understand how these parameter choices defines the regime for our multi configurational search. We use the default parameters in table \ref{tab:final_param} with exception of the single parameter of interest which is varied in a reasonable range of the default choice. In figure \ref{fig:var_temp}-\ref{fig:var_dt} the dynamic friction estimate and the max friction force is shown as a function of $T$, $v_{\text{slide}}$, $K$ and $dt$ respectively. For the dynamic friction estimate the absolute error is denoted by a shaded error which linearly connects the points.
 
 
 \begin{figure}[H]
@@ -524,21 +516,20 @@ Investigate effects of temperature, drag speed, spring constant and dt.
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/variables_temp_mean_fixmove_v20.pdf}
-      \caption{mean friction}
+      \caption{Dynamic friction force estimate.}
       \label{fig:var_temp_mean}
   \end{subfigure}
   \hfill
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/variables_temp_max_fixmove_v20.pdf}
-      \caption{max friction}
+      \caption{Max friction}
       \label{fig:var_temp_max}
   \end{subfigure}
   \hfill
-     \caption{Temperature. $v = 20$ m/s and fixmove.}
+     \caption{Temperature.}
      \label{fig:var_temp}
 \end{figure}
-
 
 
 
@@ -547,23 +538,21 @@ Investigate effects of temperature, drag speed, spring constant and dt.
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/variables_vel_mean_fixmove.pdf}
-      \caption{mean friction}
+      \caption{Dynamic friction force estimate.}
       \label{fig:var_vel_mean}
   \end{subfigure}
   \hfill
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/variables_vel_max_fixmove.pdf}
-      \caption{max friction}
+      \caption{Max friction}
       \label{fig:var_vel_max}
   \end{subfigure}
   \hfill
-     \caption{Drag speed}
+     \caption{Sliding speed}
      \label{fig:var_vel}
 \end{figure}
 
-
-Simulations of concentric nanotubes in relative motion (telescopic sliding), have revealed the occurrence of well-defined velocities at which friction is enhanced, corresponding to a washboard frequency resonating with longitudinal [172] or circular [173] phonon modes, leading to enhanced energy dissipation. The frictional response becomes highly non-linear while approaching the critical velocity and, contrary to macroscopic systems, washboard resonances can arise at multiple velocities, especially for incommensurate interfaces where more than one length scale may be in common to the contacting surfaces [172] \cite{Manini_2016}.
 
 
 \begin{figure}[H]
@@ -571,14 +560,14 @@ Simulations of concentric nanotubes in relative motion (telescopic sliding), hav
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/variables_spring_mean_fixmove.pdf}
-      \caption{mean friction}
+      \caption{Dynamic friction force estimate.}
       \label{fig:var_K_mean}
   \end{subfigure}
   \hfill
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/variables_spring_max_fixmove.pdf}
-      \caption{max friction}
+      \caption{Max friction}
       \label{fig:var_K_max}
   \end{subfigure}
   \hfill
@@ -588,20 +577,19 @@ Simulations of concentric nanotubes in relative motion (telescopic sliding), hav
 
 
 
-
 \begin{figure}[H]
   \centering
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/variables_dt_mean_fixmove.pdf}
-      \caption{mean friction}
+      \caption{Dynamic friction force estimate.}
       \label{fig:var_dt_mean}
   \end{subfigure}
   \hfill
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/variables_dt_max_fixmove.pdf}
-      \caption{max friction}
+      \caption{Max friction}
       \label{fig:var_dt_max}
   \end{subfigure}
   \hfill
@@ -610,32 +598,97 @@ Simulations of concentric nanotubes in relative motion (telescopic sliding), hav
 \end{figure}
 
 
+Quick thoughts:
+\begin{itemize}
+  \item Temperature: We do clearly not see the $1/T$ temperature decrease. The non cut sheet seems to showcase a lienar relationship which is also somewaht present for the honeycomb. For the popup we do see a local decrease at low temperatures which flip at around the default $T = \SI{300}{K}$ temperature. The max friction peaks seem to increase with temperatur as well indicating that the peaks might be associated with thermal fluctuations rather than actual stick-slip behaviour. This supports the finding that the static friction response is not significantly present in these simulations. 
+  \item Velcotiy: Considering the non-cut sheet first the velocity dependency is seemingly linear which deviates from the expected logaritmic trend. For the cutted configurations we find some peaks which might indicate the presence of resonance frequencies. The cutted sheet might be closer to a logaritmic trend, but this is not spot on either. The max friction seems to decrease slightly with small velcoties and then stay rather constant. This can probably be explained by the reduced time to stick between stick slip. 
+  \item Spring constant: On all three configurations the dynamic friction decreases with an increasing spring constant. The best explanations might be due to the lack of freedom to ``get stuck'' in incommensurable configurations. We also notice that the friction varies a lot at lower spring constants supporting the choice of having a stiff spring for stability reasons. Especially the non-cut sheet peaks at $K = \SI{40}{N/m}$. The max friction seem to be constant with $K$.
+  \item $dt$: The dynamic friction is relatively stable around the default choice of $dt = \SI{1}{fs}$. However, the fluctuations with respect to $dt$ is more significant for popup pattern and even more for the honeycomb pattern. This indicates that the more complex dynamics of the simulation is more sensitive to the timestep. We might interpret this information as an additional measure of uncertainty. The maximum friction decreases with increasing timestep which can be asserted a statistical interpretation: Higher peaks will be captured by the high resolution of a low $dt$ and vice versa. The high max values towards the point of $dt = \SI{2}{fs}$ is most likely due to the approach of unstability in the simulation as seen more clearly for the dynamic friction evaluation. 
+\end{itemize}
 
 
-
-
-\newpage
 \subsection{Normal force and stretch dependencies}
-% \subsection{Varying normal force and stretch}
-\subsubsection{Multi stretch} 
-text
+Till this point we have only changed variables one by one to investigate single dependencies. We now advance the sutdy to a simultaneous variation of stretch and normal force.
+
+\hl{Explain how the stretch is uniformly sampled within equally divided intervals and the normal force is actually uniformly sampled in a given range. Argue that the first might be approximately uniformly distributed for large numbers.}
+
+\hl{Talk about rupture test also. Maybe in the theory/method section under numerical procedure: Before simulating a rupture test is perform to determine under what stretch the sheet ruptures. This is a slightly higher threshold than when applied normal load and sliding along the substrate.}
+
+\subsubsection{Contact area}\ref{sec:contact_area}
+
+We reproduce the contact area investigation of figure \ref{fig:contact_vs_stretch} with the modificaiton that the contact count is measured as an average of the latter 50\% of the sliding simulation at a non-zero applied normal load. The results are shown in figure \ref{fig:multi_stretch_contact} with 30 attempted (some rupture) stretch (pseudo) uniformly distributed stretch between 0 and the rupture point and 3 uniform distributed normal loads in the interval $[0.1, 10]$ nN. 
+
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth]{figures/baseline/multi_stretch_mean_compare.pdf}
-  \caption{...}
-  \label{fig:}
+  \includegraphics[width=\linewidth]{figures/baseline/multi_stretch_area_compare.pdf}
+  \caption{Average relative amount of bonds beetwen the sheet and the substrate defined by the cut-off distance of 4 Å. The average is taken over the latter half of the sliding phase. The red shade denotes the stretch range where ruptures accour at certain normal loads under sliding while the black-dotted line represent the rupture point due to stretching (rupture test)}
+  \label{fig:multi_stretch_contact}
 \end{figure}
+
+From figure \ref{fig:contact_vs_stretch} we observe a significant decrease in the contact due to stretching of the cut configurations in contrast to the non-cut which stays roughly constant. This is reminiscent of the non-sliding stretch vs. contact curve shown in figure \ref{fig:contact_vs_stretch}. Given these results, theoretically one would expect the dynamic friction to decrease with stretch for the cut configurations.
+
+
+\subsubsection{Stretch} 
+
+We make a similar analysis as done in the previous section \ref{sec:contact_area} with the substitution of friction force instead of contact (The data is taken from the same simulaitons runs). The dynamic friction force (\hl{put uncertainty here even though that it is quite low?}) and the max friction is shown in figure \ref{fig:multi_stretch_mean_fric} and \ref{fig:multi_stretch_max_fric} respectively.
+
 
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth]{figures/baseline/multi_stretch_max_compare.pdf}
-  \caption{...}
-  \label{fig:}
+  \begin{subfigure}[t]{\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/baseline/multi_stretch_mean_compare.pdf}
+      \caption{Dynamic friction estimate. }
+      \label{fig:multi_stretch_mean_fric}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/baseline/multi_stretch_max_compare.pdf}
+      \caption{Max friction}
+      \label{fig:multi_stretch_max_fric}
+  \end{subfigure}
+  \hfill
+     \caption{\hl{CAPTION}}
+     \label{fig:multi_stretch_max_fric}
 \end{figure}
 
-\subsubsection{Multi normal force}
+
+From figure \ref{fig:multi_stretch_mean_fric} we find to our surprise that the
+dynamic friction increase with stretch for the cut configurations despite a
+simmutaneous decrease in contact area as shown in figure
+\ref{fig:multi_stretch_contact}. This suggests that the amount of chemical
+bonding atoms is not the dominant mechanism for the friction of this system.
+Instead, we might point to a mechanism more mechanical of nature associated to
+phonon exications. When the cut sheet is strecthed the stress (\hl{show stress
+maps somewhere or not nessecary?}) might induce a certain distribution and
+magnitude of point pressures to favor energy dissipation. Nonetheless, the
+results showcase a strong coupling between stretch and friction force, also for
+the max friction force, which is beyond the expectations at this stage of the
+study. The non-cut configuration does not show significant dependency on the stretch which reveal that this effect is only present when combining cut and stretch and not purely by strecthing the sheet. 
+
+By considering the increase in dynamic friction towards the first peak we get a friction
+force over stretch ratio of $\sim 10$ and $\sim 2$ for the honeycomb pattern
+resepctively as shown in table \ref{tab:first_peak_stretch_ratio}. While the honeycomb force increase towards the first peak is approximately linear the popup exhibits seemingly exponential growth which yield a ratio (slope) on the order $\sim \SI{30}{nN}$. 
+
+\begin{table}[H]
+  \begin{center}
+  \caption{(stretch, dynamic friction) coordinates from figure \ref{fig:multi_stretch_mean_fric} at start and the first peak respectively used to approximate the friction force over stretch ratio for said range. In practive this ratio denotes the slope of a forced linear trend. }
+  \label{tab:first_peak_stretch_ratio}
+  \begin{tabular}{ | c | c | c | c |} \hline
+  Configuration & Start & First peak & Friction force vs. stretch ratio [nN]  \\ \hline
+  Popup & $\sim (0, 0.03)$ & $\sim(0.082, 0.83)$ & 9.76 \\ \hline
+  Honeycomb & $\sim (0, 0.07)$ &  $\sim (0.728, 1.57)$ & 2.06 \\ \hline
+  \end{tabular}
+  \end{center}
+\end{table}
+
+Additionally, we notice that booth the popup and honeycomb also exhibits stretch ranges where the dynamic friction force decrease with increasing stretch. Qualitatively we assign the slope to be on the same order of magnitude as those towrds the first peak. This is useful for the prospect of taking advantage of this phenonama as we can essentially achieve booth higher and lower friction for increasing stretch for different starting points. 
+
+
+\subsubsection{Normal force}
 
 
 \begin{figure}[H]
@@ -684,16 +737,6 @@ The friction probably does not increase with normal force at an expected rate du
 
 When looking at the graphs for the PB the max friction is visually textbook linear, while the mean friction is a bit more linear but also with negativ coefficients.
 
-\subsubsection{Contact area}
-
-Show plots of contact area vs stretch and discuss the fact that friction actually increases while contact area drops. Is the conclusion that there might be another more dominant cause of the increasing friction. 
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{figures/baseline/multi_stretch_area_compare.pdf}
-  \caption{}
-  \label{fig:}
-\end{figure}
 
 
 \subsection{Computational cost}

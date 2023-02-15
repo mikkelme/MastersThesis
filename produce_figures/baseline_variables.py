@@ -29,7 +29,7 @@ def vel(path, save = False):
                os.path.join(path, 'honeycomb', common_folder)]
     names = ['nocut', 'popup', 'honeycomb']
     convert = metal_to_SI(1, 's')/metal_to_SI(1,'t')
-    fig_max, fig_mean = variable_dependency(folders, names, 'drag_speed', 'Drag speed [m/s]', convert = convert, default = 20, error = 'shade')
+    fig_max, fig_mean = variable_dependency(folders, names, 'drag_speed', 'Sliding speed [m/s]', convert = convert, default = 20, error = 'shade')
     if save:
         fig_max.savefig("../article/figures/baseline/variables_vel_max_fixmove.pdf", bbox_inches="tight")
         fig_mean.savefig("../article/figures/baseline/variables_vel_mean_fixmove.pdf", bbox_inches="tight")
@@ -498,12 +498,12 @@ if __name__ == "__main__":
     # spring(path, save = False)
     # dt(path, save = False)
     
-    # multi_stretch(path, save = False)
+    multi_stretch(path, save = False)
     # multi_FN(path, save = False)
     # multi_area(path, save = False)
     
     # contact_vs_time(path, save = False)
-    vaccum_normal_buckling(path, save = False)
+    # vaccum_normal_buckling(path, save = False)
     
     
     plt.show()
