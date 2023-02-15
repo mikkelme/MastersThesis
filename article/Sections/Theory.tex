@@ -774,6 +774,7 @@ Is this the one where to surfaces slides in opposite direction (at least that is
 % https://www.mdpi.com/1996-1944/12/9/1425
 % https://pubs.acs.org/doi/10.1021/nn305722d
 
+% Maybe read ``Tribology of Graphene: A Review'' (in zotero already).
 
 
 The setup of our simulation is most reminiscent of a graphene flake sliding on a substrate. This has been studied numerically in molecular dynamic simulations by Zhu and Li \cite[2018]{zhu_study_2018} for a graphene flake on a gold substrate and by Zhang et al. \cite{ma12091425}(2019) on a diamond substrate, and in a tight-binding simulation by Bonelli et al. \cite{bonelli_atomistic_2009}(2009) for graphene on graphite. Experimental studies of a graphene flake attatched to a AFM is done by Dienwiebel et al. \cite[2005]{DIENWIEBEL2005197} and Feng et al. \cite[2013]{feng_superlubric_2013} sliding on graphite, but these are mainly concerned with superlubricity as a function of flake oreientation commensurability. 
@@ -975,23 +976,26 @@ Qualitatively we have the following expectations for the unstretched and non-cut
 
 
 \section{Molecular Dynamics}
+% \cite[p. 18-]{Manini_2016}
+
+Thanks to advances in computing algorithms and hardware the recent years has witnessed a remarkable increase in our ability to simulate tribological processes in realistic nano-frictional system \cite{Manini_2016}. A Molecular dynamics (MD) simulation can be considered as computational ``experiment''. Given a set of inital conditions and a mathematically model for interatomic forces we can solve Newton's (or equivalent) equation of motion by numerical integration [p. 303]{BHUSHAN20051507}. The interatomic forces are derived from interparticle interaction potentials, which is the heart of MD simulations and the specific choice of potentials can often be quite challenging.
 
 
-Maybe read ``Computer Simulations 7 of Nanometer-Scale Indentation
-and Friction'' from \cite{BHUSHAN20051507}
-
-Read \cite{Manini_2016}[p. 18]
-
-A promising compromise could possibly be provided by the so-called reactive potentials [120–122], capable of describing some chemical reactions, including interface wear with satisfactory computational efficiency in large-scale atomic simulations, compared to semi-empirical and first-principles approaches. \cite{Manini_2016}
-
+Alternatives to the MD simulation like Ab inito methods calculate the interaction based on quantam mechanis (solving schrödinger) right?
 
 
 
-\begin{itemize}
-  \item MD simulation (classical or ab initio)
-  \item Basics of classical MD simulations: Integration and stuff
-  \item Ab initio simulation (quantum mechanics, solving schrödinger)
-\end{itemize}
+% \begin{itemize}
+%   \item MD simulation (classical or ab initio)
+%   \item Basics of classical MD simulations: Integration and stuff
+%   \item Ab initio simulation (quantum mechanics, solving schrödinger)
+% \end{itemize}
+
+
+
+% A promising compromise could possibly be provided by the so-called reactive potentials [120–122], capable of describing some chemical reactions, including interface wear with satisfactory computational efficiency in large-scale atomic simulations, compared to semi-empirical and first-principles approaches. \cite{Manini_2016}
+
+
 
 
 
@@ -1001,55 +1005,71 @@ A promising compromise could possibly be provided by the so-called reactive pote
 % interesting problems beyond the reach of ab initio approaches
 % \cite{PhysRevB.37.6991}.
 
+
+
+
+
+% The simplest approach to temperature control by adding the Langevin thermostat has been widely adopted, but more refinded methods has also been proposed and adopted (see \cite{Manini_2016} for more).
+
+% Physically relevant quantities like the average friction force can be evaluated by carrying out averages over the model dynamics. The modeling most first of all adress equlibrium and near-equlibrium behvaiour where the fluctuation-dissipation theorem governs the conversion of mechanical energy into heat. But it most also deal with nonlinear dissipative phenomena such as instabilities and stick-slip.\cite{Manini_2016}
+
+% Quantitative data can be obtained by analyzing the numerical output directly. [p. 303]{BHUSHAN20051507}
+
+
+% Weak- nesses include a lack of quantum effects in classical atomistic dynamics, and perhaps more importantly, the fact that meaningless results can be obtained if the simulation conditions are incorrectly chosen. \cite[p. 303]{BHUSHAN20051507}
+
+
+% Maybe read ``Computer Simulations 7 of Nanometer-Scale Indentation
+% and Friction'' from \cite{BHUSHAN20051507}
+
+
+
 \subsection{Potentials}
 % \cite{PhysRevB.37.6991}
 
-The choices of potentials used in the MD simulation is mainly based on the on
-\cite{li_evolving_2016} which have a somewhat similar MD friction simulation,
-the difference being that they impose a Si-tip on the graphene sheet supported
-by a Si-substrate where we impose drag the whole sheet upon the substrate.
-Nonetheless this serves as a good anchor for the methodology of the setup. The
+
+The potentials used in our MD simulation is mainly based on the of Li et al.
+\cite{li_evolving_2016} which have a somewhat similar MD friction simulation
+setup. Li et al.impose a Silicon tip on the graphene sheet supported by a
+Silicon substrate where we slide the whole sheet upon the substrate.
+Nonetheless, this serves as a good anchor for the methodology of the setup. The
 covalent bonds of C-C in graphene and Si-Si in the substrate is described by the
 Tersoff and Stillinger–Weber potentials, respectively. A typical 12-6
 Lennard–Jones potential is used to describe the van der Waals adhesive
-interaction between graphene and the substrate. \\
+interaction between graphene and the substrate. 
 
 \subsubsection{General formulation of potentials (?)}
-
 On a general note we can generalize the n-body potential as the expansion in
 orders of participating atoms as 
 \begin{align*}
   E = \sum_i V_1(\vec{r}_i) + 
       \sum_{\substack{i, j \\ i < j}} V_2(\vec{r}_i, \vec{r}_j) +  
-      \sum_{\substack{i,j,k \\ i < j < k}} V_3(\vec{r}_i, \vec{r}_j, \vec{r}_i) + \cdots.
+      \sum_{\substack{i,j,k \\ i < j < k}} V_3(\vec{r}_i, \vec{r}_j, \vec{r}_i) + \cdots,
 \end{align*} 
 where $\vec{r}_n$ is the position of the $n$th particle and $V_m$ is called an
 $m$-body potential  \cite{PhysRevB.37.6991}. The first one-body term corresponds
 to an external potential, followed by the two-body term, the three-body term and
-so on.The simplest model that includes parrticle interaction is the pair
+so on. The simplest model that includes particle interaction is the pair
 potential truncating the expansion after the two-body term. A general feature of
 the pair potentials is that they favor close-packed structures which is unsuited
 to describe covalent bonds that take more open structures. In particular, pair
-potentials are completely inapplicable to strongly co- valent systems such as
-semiconductors \cite{PhysRevB.37.6991}. In order to accomodate the description
+potentials are completely inapplicable to strongly covalent systems \cite{PhysRevB.37.6991}. In order to accomodate the description
 of covalent bonds the natural step is thus to include the next step of the
-expansion, the three-body terms, as we will see for the modeling of the graphene
-sheet C-C bonds and the Silicon sheet Si-Si bonds. For the interaction between
-the sheet and the substrate we can nøjes med a Lennard Jones pair potential
-describing the non-bonded van der Waals interaction.
+expansion, the three-body terms, as we will see for the modeling of the C-C bonds in the graphene sheet and the Si-Si bonds in Silicon substrate. For the interaction between
+the sheet and the substrate we use a Lennard Jones pair potential
+describing the non-bonded van der Waals interaction. This simple interaction model between the moving object and substrate has come to be the standard in friction simulations \cite{zhu_study_2018}, \cite{ZHANG201585}, \cite{Yoon2015MolecularDS}, \cite{kim_nano-scale_2009}. 
 
 
 \subsubsection{Lennard Jones}
+\hl{TODO: Add potential curve figure} \\
 % TODO: Add potential curve figure
-This sections is based on [\cite{docs_lammps_LJ}, \cite{C9CP05445F},
-\cite{chem_libretexts_LJ}].
+This sections is based on \cite{docs_lammps_LJ}, \cite{C9CP05445F}, \cite{chem_libretexts_LJ}.
 
 The Lennard-Jones (LJ) model is probably one of the most famous pair potentials
 used in MD simulations. LJ models the potential energy between two non-bonding
-atoms based solely on interatomc distance $r$. The model accounts for attractive
+atoms solely based on interatomc distance. The model accounts for attractive
 forces arising from dipole-dipole, dipole-induced dipole and London
-interactions, and repulsive forces that capture the hard core (is this safe to
-say?) of overlapping wave functions at small distances. Thus it is assummes
+interactions, and repulsive forces that capture the hard core of overlapping wave functions at small distances (\hl{double check this statement}). Thus, it assummes
 neutrally charged atoms and was orginally proposed for noble gases. The
 classical 12-6 version of the model (refering to the power law of the repulsive
 and attractive forces respectively) reads
@@ -1058,20 +1078,24 @@ and attractive forces respectively) reads
   \label{eq:LJ}
 \end{align}
 where $r$ is the interatomic distance with cut-off $r_c$, $\epsilon$ is the
-depth of the potential well and $\sigma$ the distance where the potential is
+depth of the potential well and $\sigma$ the interatomic distance where the potential is
 zero. By solving for the potential minimum ($dE/dr = 0$) we find the equilibrium
-distance to be $r_0 = \sigma 2^{1/6}$. This makes for an even cleary
+distance to be $r_0 = \sigma 2^{1/6}$. This makes for a slightly more intuitive
 interpration of $\sigma$ which effectively sets the equilirbium distance between
-atoms, i.e. the dividing line for which the net force is repulsive or
-attractive. While the LJ model in many ways is an oversimplified model that is
-insufficient in its description of ... (get source and concrete examples) it is
-commonly used as a model for intermaterial interactions (between moving object
-and substrate) in friction studies [\cite{li_evolving_2016}, \cite{ZHANG201585},
-\cite{kim_nano-scale_2009}].
+atoms, i.e.\ the dividing line for which the force is repulsive or
+attractive. 
+
+
+% While the LJ model in many ways is an oversimplified model that is
+% insufficient in its description of ... (\hl{get source and concrete examples}) it is
+% commonly used as a model for intermaterial interactions (between moving object
+% and substrate) in friction studies.
 
 
 \subsubsection{Stillinger weber}
 % Todo: Add some potential curve figure? or figure of three body angles?
+\hl{TODO: Add potential figure and or figure illustrating three body angles}.
+
 This section is based on [\cite{docs_lammps_sw}, \cite{PhysRevB.31.5262}]
 
 The stillinger weber potential takes the form of a three body potential
@@ -1259,7 +1283,7 @@ The parameters used to model the graphene C-C bonds is summarized in table
 
 Having defined a system of particles governed by interartomic potentials we need
 to move the system forward in time. By solving Newtons equations of motion we
-effectively do so by sampling the microcanonical ensemble characterized by a
+effectively sample the microcanonical ensemble characterized by a
 constant number of particles $N$, volume $V$ and energy $E$, hence denoted NVE.
 Newtons equaitons of motion read
 \begin{align}
@@ -1269,28 +1293,19 @@ Newtons equaitons of motion read
 where $i$ is the particle index and $m_i$ its mass, $\vec{r}_i = (x_i, y_i,
 z_i)$ the position, $t$ is time,  $\nabla_i = (\frac{\partial}{\partial x_i},
 \frac{\partial}{\partial y_i}, \frac{\partial}{\partial z_i})$ and $U_i$ the
-potential energy. In system the potential energy is a function of the particle
+potential energy. The potential energy is a function of the particle
 positions of nearby particles depending on the specefic potential in use. Since
 the forces defined by the potentials is conservative we expect the energy of the
-solution to be conserved. We redefine eq.~\eqref{eq:NE} in terms of two coupled
+solution to be conserved. We can redefine eq.~\eqref{eq:NE} in terms of two coupled
 first order differential equations 
 \begin{align}
   \dot{\vec{v}}_i(t) = \frac{\vec{F}}{m_i}, \qquad \dot{\vec{r}}_i(t) = \vec{v}_i(t),
   \label{eq:NE_2}
 \end{align}
 where $\dot{x} = dx/dt$ (Newton's notation) and $\vec{v} = (v_x, v_y, v_z)$ is
-velocity. Numerically we can solve the coupled equations (eq~.\eqref{eq:NE_2}) by
+velocity. Numerically we can solve the coupled equations by
 integrating over discrete timnesteps. That is, we discretize the solution into
-temporal steps $t_k = t_0 + k\cdot \Delta t$ with time-step $\Delta t$. 
-
-% \begin{align*} \ddot{x}(t) = \frac{F(x)}{m} \quad \rightarrow \quad \dot{x} =
-%   v(t), \ \ \dot{v}(t) = \frac{F(x(t))}{m} \end{align*}
-
-% Integration of newtons equations of motion (just like, Euler, Euler cromer and
-% so on) and specify the verlet algorithm which is used in Lammps.
-
-% The forces (form the potential) is conservative so the energy should be
-% conserved before applying the thermostat.
+temporal steps $t_k = t_0 + k\Delta t$ with start time $t_0$ and time-step $\Delta t$. 
 
 % However small erros applied by the discrete integraiton algorithm we end up
 % having an energy error. This is sensitive to time step. 
