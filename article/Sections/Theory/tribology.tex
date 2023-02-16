@@ -91,15 +91,26 @@ Our working definition of the \textit{macroscale} is everything on the scale of 
 % Based on \cite{gnecco_meyer_2015}
 % and \cite{gao_frictional_2004}
  
- In order to start and keep a solid block moving against a solid
- surface we must overcome certain frictional forces $F_{\text{fric}}$ \cite{gnecco_meyer_2015}. The static friction force $F_s$ corresponds to the minimum tangential force required to initiate the sliding while the kintec friciton force $F_k$ corresponds to the
- tangential force needed to sustain such a sliding at steady speed. The work of Leonardo da Vinci (1452–1519), Guillaume Amontons (1663-705) and
- Charles de Coulomb (1736-1806) all contributed to the empirical law, commonly known as Amontons’ law, which is a common base for our understanding of friction at macroscale level. Amontons’ law states that the fricitonal forces is entirely independent of contact area and sliding velocity. Instead, it relies only on the normal force\footnote{\textit{Normal force} is often used interchangeably with the terms \textit{load} and \textit{normal load} allthough the latter is an applied force while the latter is a reaction force of equal magnitude.} $F_N$, acting perpendicular to the surface, and the material specific friction coefficient $\mu$ as
+ In order to start and keep a solid block moving against a solid surface we must
+ overcome certain frictional forces $F_{\text{fric}}$ \cite{gnecco_meyer_2015}.
+ The static friction force $F_s$ corresponds to the minimum tangential force
+ required to initiate the sliding while the kintec friciton force $F_k$
+ corresponds to the tangential force needed to sustain such sliding at steady
+ speed. The work of Leonardo da Vinci (1452–1519), Guillaume Amontons (1663-705)
+ and Charles de Coulomb (1736-1806) all contributed to the empirical law,
+ commonly known as Amontons’ law, which serves as a common base for macroscale
+ friction. Amontons’ law states that the fricitonal forces is entirely
+ independent of contact area and sliding velocity. Instead, it relies only on
+ the normal force $F_N$, acting perpendicular to the surface, and the material specific friction coefficient $\mu$ as
 \begin{align}
   F_{\text{fric}} = \mu F_N.
   \label{eq:amonton}
 \end{align}
-The friction coeffcient is typically different for the cases of static ($\mu_s$)
+Notice that the term \textit{Normal force} is often used interchangeably
+with \textit{load} and \textit{normal load} allthough the latter terms refer to the applied force, pushing the object into the surface, while the first is the corresponding reaction force acting from the surface on the object. These forces are exactly equal in magnitude and hence we will not make a clear distinction in this thesis. On the same note, the frictional force is different from a conventional force which in the Newtonian definition acts on a body from the outside and make it accelerate \cite{gao_frictional_2004}. Rather than being an independent external force the friction force is an internal \textit{reaction} force opposing the externally applied ``sliding'' force. 
+
+
+The friction coeffcient $\mu$ is typically different for the cases of static ($\mu_s$)
 and kinetic ($\mu_k$) friction, usually both with values lower than one and $\mu_s \ge \mu_k$ in all cases \cite[p. 6]{gnecco_meyer_2015}. The friction coefficient is taken to be a constant defined by either \cite{gao_frictional_2004} \\
 \vspace{0.1cm}
 \begin{subequations}
@@ -129,54 +140,59 @@ and kinetic ($\mu_k$) friction, usually both with values lower than one and $\mu
 \end{subequations}
 \vspace{0.1cm}
 \\
-\noindent The first definition (\ref{eq:mu_def1}) requires zero friction at zero load, i.e.\ $F_{\text{fric}} = 0, F_N = 0$, while the second definition (\ref{eq:mu_def2}) allows for a finite friction force at zero load and the coefficient is instead giving by the slope of the $F_{\text{fric}}$ versus $F_N$ curve. However, in reality the friction coeffcient is often found to vary under different conditions such as humidity or smooth and rough morphologies of the sliding surfaces \cite{gao_frictional_2004}.
-
+\noindent The first definition (\ref{eq:mu_def1}) requires zero friction at zero load, i.e.\ $F_{\text{fric}} = 0 at F_N = 0$, while the second definition (\ref{eq:mu_def2}) allows for a finite friction force at zero load since the coefficient is instead given by the slope of the $F_{\text{fric}}$ versus $F_N$ curve. However, in reality the friction coeffcient is not truly a material specific constant as it is often found to vary under different conditions such as humidity or smooth and rough morphologies of the sliding surfaces \cite{gao_frictional_2004}. 
 
 %  \ref{eq:mu_def}
 
-
-% In addition, for adhesive suraces the friction force is usually not zero under zero load which makes the definition in eq.~\eqref{eq:mu_def2} the common choice. Especially, if the amontos break down and the linearity is not present we might talk about a changing COF and thus eq.~\eqref{eq:mu_def2} is the only reasonable choice.  
-
-%
-%
-% Working here. 
-%
-%
-
-Amontons' law has been surprisingly successful in is description of the majority of rubbing surfaces, involving both dry and lubricated, ductile and brittle and rough and smooth (as long as they are not adhesive) \cite{gao_frictional_2004}. However, it is known to that eq.\eqref{eq:amonton} is not valid over large ranges of loads and sliding velocity. The kinetic friction independency of sliding velocity dissapears at low velocities as thermal effects becomes important and for high velocities due to intertial effetcs. \cite[pp. 5-6]{gnecco_meyer_2015}. 
+% In addition, for adhesive suraces the friction force is usually not zero under
+% zero load which makes the definition in eq.~\eqref{eq:mu_def2} the common
+% choice. Especially, if the amontos break down and the linearity is not present
+% we might talk about a changing COF and thus eq.~\eqref{eq:mu_def2} is the only
+% reasonable choice.  
 
 
-Allthough Amontons’ law has been succesfull in the modelling of macroscale friction it has its limitations. For instance, it was later discovered that the static friction is not independent of time. It depends on the so-called contact history with increasing friction as the logarithm of time of stationary contact
-\cite{dieterich_1972}. For the kinetic friction the independency of sliding
-velocity dissapears at low velocities as thermal effects becomes important and
-for high velocities due to intertial effetcs. \cite[pp. 5-6]{gnecco_meyer_2015}. 
+Although Amontons' law has been successful in is description of the majority of
+rubbing surfaces, involving both dry and lubricated, ductile and brittle and
+rough and smooth (as long as they are not adhesive) surfaces \cite{gao_frictional_2004},
+it has its limitations. It is now known that eq.~\eqref{eq:amonton} is not valid
+over a large range of loads and sliding velocities and that it completely breaks
+down for atomically smooth surfaces in strongly adhesive contact
+\cite{gao_frictional_2004}. The independency of sliding velocity dissapears at
+low velocities as thermal effects becomes important and for high velocities due
+to intertial effetcs \cite[pp. 5-6]{gnecco_meyer_2015}. For the case of static
+friction, it was later discovered to be dependent on the so-called contact
+history with increasing friction as the logarithm of time of stationary contact.
 
-Additionally, due to the emperical foundation, Amontons’ law does not
-provide a physical insight into the underlying mechanisms of friction. However, as we will
-later discuss in more detail, we can understand the overall phenomena
-of friction through statistical mechanics by the concept of
-\textit{equipartition of energy} \cite{Manini_2016}. A system in equilibrium has
-its kinetic energy uniformly distributed among all its degrees of freedom. When
-a macroscale object is sliding in a given direction it is clearly not in
-equilibrium since one of its degrees of freedom carriers considerable more
-kinetic energy. Thus, the system will have a tendency to transfer that kinetic
-energy to the remaining degrees of freedom as heat. This heat will dissipate to
-the sourroundings and the object will slow down as a result. Hence, friction is
-really just the tendency of going toward equilibrium energy equipartitioning
-among many interacting degrees of freedom \cite{Manini_2016}. From this point of view it is clear that friction is an inevitable part of contact physics, but even though friction can be removed alltogether, we are still capable of manipulating it in usefull ways. 
+In cases where amontons' law breaks down we might still use the conceptual
+definition of the friction coefficient as defined by (\ref{eq:mu_def2}).
+Especially, in the context of achieving negative friction coefficients (in certain load ranges) we would refer to this definition, since (\ref{eq:mu_def1}) would imply a truly unphysical situation of the frictional force acting in the same direction as the sliding motion which would accelerate the object indefinitelly\footnote{You would most likely have a good shot at the Nobel Prize with that paper.}.
+
+Due to the emperical foundation of Amontons’ law it does not provide
+any physical insight into the underlying mechanisms of friction. However, as we
+will later discuss in more detail, we can understand the overall phenomena of
+friction through statistical mechanics by the concept of \textit{equipartition
+of energy} \cite{Manini_2016}. A system in equilibrium has its kinetic energy
+uniformly distributed among all its degrees of freedom. When a macroscale object
+is sliding in a given direction it is clearly not in equilibrium since one of
+its degrees of freedom carriers considerable more kinetic energy. Thus, the
+system will have a tendency to transfer that kinetic energy to the remaining
+degrees of freedom as heat. This heat will dissipate to the sourroundings and
+the object will slow down as a result. Hence, we can understand friction simply the tendency of going toward equilibrium energy equipartitioning among many
+interacting degrees of freedom \cite{Manini_2016}. From this point of view it is
+clear that friction is an inevitable part of contact physics, but even though
+friction cannot be removed alltogether, we are still capable of manipulating it in
+usefull ways. \\
 \\
-\\
-The attentive reader might point out that we have already moved the discussion partly into the microscopic regime as \textit{statistical mechanics} generally aim to explain macroscale behaviour by microscopic interactions. In fact this highlight the nessecity to consider smaller scales in order to achieve a more in depth understadning of friction.
-
-
-% While we now know that eq 2 (Amontos law) is not valid over large ranges of loads and/or sliding velocities5,6 and that it completely breaks down for atomically smooth surfaces in strongly adhesive contact,7 it remains surprisingly good at describing the majority of rubbing surfaces involving both dry and lubricated contacts, both ductile and brittle, both rough and smooth surfaces (so long as they are not adhesive), and both macroscopic and microscopic contacts.8,9 \cite{gao_frictional_2004}
+The attentive reader might point out that we have already moved the discussion
+partly into the microscopic regime as \textit{statistical mechanics} generally
+aim to explain macroscale behaviour by microscopic interactions. In fact, this 
+highlight the nessecity to consider smaller scales in order to achieve a more fundamental understadning of friction.
 
 
 % All the terms in Amontons’ law refer to macroscopic, i.e., space- and time-averaged or “mean-field”, values. Thus, the contact area is the “apparent” or projected geometric area rather than the “real” contact area at the molecular level. And V is the mean relative velocity of the sliding bodies even though the shearing microjunctions may be moving with large fluctuations or in a stick-slip fashion.10 \cite{gao_frictional_2004}
 
 
 
-% Amontons’ law disguises the importance of a more complicated contact interface. 
 
 % This includes taking the microsopic roughness
 % into account together with surface chemistry. This more complex perspective
@@ -201,67 +217,57 @@ The attentive reader might point out that we have already moved the discussion p
 
 
 \subsection{Microscopic scale}
+Going from a macro- to microscale perspective, a length scale of order
+\SI{e-6}{m}, it was realized that most surfaces is in fact rough
+\cite{mo_friction_2009}. The contact between two surfaces consist of numerous
+smaller contact point, so-called asperities, for which the friction between two
+opposing surfaces involves interlocking of those asperities as visualized in
+figure \ref{fig:asperity_contact}. Small junctions of asperities are formed due
+to contact pressure and adhesion \cite{kim_nano-scale_2009}
 
+In the macroscale perspective of Amonton's law we refer to time- and
+space-averaged values, i.e.\ the ``apparent'' contact area and the average
+sliding speed \cite{gao_frictional_2004}. However, microspocially we find the
+real contact area to be smaller than the macroscale apparent area and the
+shearing of local microjunctions can happen at large fluctuations or in a
+stick-slip fashion. 
 
-% All the terms in Amontons’ law refer to macroscopic, i.e., space- and time-averaged or “mean-field”, values. Thus, the contact area is the “apparent” or projected geometric area rather than the “real” contact area at the molecular level. And V is the mean relative velocity of the sliding bodies even though the shearing microjunctions may be moving with large fluctuations or in a stick-slip fashion.10 Early attempts to account for Amontons’ law, first by Amontons4 and later by Coulomb (1736-1806)11 and Euler (1707-1783),12 were based on analyses of how the microscopic surface asperities of one surface would have to climb over those of the other to allow for two surfaces to slide past each other... \cite{gao_frictional_2004}
-
-
-Going from a macro- to microscale perspective, a length scale of order $10^{-6}$
-m, it was realized that most surfaces is in fact rough \cite{mo_friction_2009}.
-The contact between two surfaces consist of numerous smaller contact point,
-so-called asperities, for which the friction between two opposing surfaces
-involves interlocking of those asperities as visualized in figure
-\ref{fig:asperity_contact}. It is generally accepted that friction is caused by
-two mechanism: mechanical friction and chemical friction
-\cite{kim_nano-scale_2009}. The mechanical friction is the ``plowing'' of the
-surface by hard particles or said asperities with an energy loss associated
-attributed deformations of the asperity. While plastic deformations,
-corresponding to wear, is obviouslly expected to act as an energy sink, elastic
-deformations is also sufficient in explaining energy loss due to phonon
-excitations The chemical friction arrises from adhesion between microscopic
-contacting surfaces, with an energy loss assigned to breaking and forming of
+It is generally accepted that friction is caused by two mechanism: mechanical
+friction and chemical friction \cite{kim_nano-scale_2009}. The mechanical
+friction is the ``plowing'' of the surface by hard particles or said asperities
+with an energy loss attributed to deformations of the asperity. While plastic
+deformations, corresponding to wear, gives rise to an obvious attribution for
+the energy loss, elastic deformations is also sufficient in explaining energy
+loss due to phonon excitations. In fact the assumption of plastic deformations
+has been critizised as this is theorized only to be present in the beginning of
+surface contact \cite{CARBONE20082555}. When machine parts slide against each
+other for millions of cycle the plastic deformation would only take place in the
+beginning until the system reaches a steady state with only elastic deformation
+taking place. The chemical friction arrises from adhesion between microscopic
+contacting surfaces, with an energy loss attributed to breaking and forming of
 bonds. 
 
 
 
 
-% plastic deformations (although this assumption of plastic deformations has been critizised \cite{CARBONE20082555}). The chemical friction arrises from adhesion between microscopic contacting surfaces, (with energy loss \hl{contribted} breaking and forming of bonds?).
 
 
-
-
-% Da Vinci-Amontons law – friction independent of area – is not confirmed at the
-% microscopic scale. In most nanoscale investigations the friction of a single
-% con- tact is found to increase linearly with the contact area [27–29]. In
-% contrast, structurally mismatched atomically flat and hard crystalline or
-% amorphous surfaces are expected to produce a sublinear increase of friction
-% with contact area. The frequent finding of friction proportional to area even
-% in some of these cases can be understood as a consequence of softness, either
-% if the interface, or of surface contaminants leading to effectively pseudo-
-% commensurate interfaces [30, 31] (Current trends in the physics of nanoscale
-% friction)
-
-
-
-% Quite some years after the FKT model was presented, Bowden and Tabor (1954) proposed the adhesion model that is illustrated in Fig 3 as the major mechanism of friction. They suggested that small junctions of asperities are formed due to contact pressure and adhesion. The combined area of all the junctions essentially represents the real contact area. According to the model, frictional force, Fr, is proportional to the real contact area \cite{kim_nano-scale_2009}
-
-% In the model, the adhering asperities are formed as normal load is applied and friction is caused during relative motion by loss of energy due to plastic deformation of the asperities. \cite{kim_nano-scale_2009}
-
-
-% Concurrently with single-asperity studies, roughness contact theories are being developed8–10,16 to bridge the gap between the mechanics of single asperities and that of macroscopic contacts.\cite{mo_friction_2009}
 
 \subsubsection{Surface roughness - Asperity theories}
 % Sources in general: \cite{mo_friction_2009}, \cite{kim_nano-scale_2009} \\
 
 Asperity theories are based on the observation that microscopic rough surfaces,
 with contacting asperities each with a contact area of $A_{\text{asp}}$, will
-have a true contact area $\sum A_{\text{asp}}$ much smaller
-than the apperent macroscopic area $A_{\text{macro}}$ \cite{kim_nano-scale_2009}. The friction force was shown to be proportional to the true contact area as 
+have a true contact area $\sum A_{\text{asp}}$ much smaller than the apperent
+macroscopic area \cite{kim_nano-scale_2009}. The friction
+force has been shown to be proportional to the true contact area as 
 \begin{align*}
   F_\text{fric} = \vec{\tau} \sum A_{\text{asp}},
 \end{align*}
-where $\vec{\tau}$ is an effective shear strength of the contacting bodies. Note that this is still compatible with Amontons’ law in eq.~\eqref{eq:amonton} \textit{if} we find a linear relatioship between the real contact area and the applied normal force $F_N$. In figure \ref{fig:asperity_contact} we see a visualization on how the contact area might intuitively increase with normal force as the asperity tips is deformed into broader contact points.
-
+where $\vec{\tau}$ is an effective shear strength of the contacting bodies. Note
+that this is compatible with Amontons’ law in eq.~\eqref{eq:amonton} by having a linear relatioship between the real contact area and the
+applied load. In figure \ref{fig:asperity_contact} we see a
+visualization on how the contact area might intuitively increase with load as the asperity tips is deformed (plastically or elastically) into broader contact points.
 \begin{figure}[H]
   \centering
   \begin{subfigure}[b]{0.49\textwidth}
@@ -278,22 +284,54 @@ where $\vec{\tau}$ is an effective shear strength of the contacting bodies. Note
       \label{fig:asp_right}
   \end{subfigure}
   \hfill
-     \caption{Qualitatively illustration of the microscopic asperity deformation under increasing load from frame a to b \cite{wiki:asperities}.}
+     \caption{Qualitatively illustration of the microscopic asperity deformation
+     under increasing load from frame (a) to (b) \cite{wiki:asperities}. While this figure evidently portrays plastic deformation the concept of increased contact area under increased load applies for elastic deformation as well.}
      \label{fig:asperity_contact}
 \end{figure}
-Many studies have focused on single asperity contacts to
-reveal the relationship between the contact area and $F_N$ (13-15 from
-\cite{mo_friction_2009}). By assuming perfectly smooth asperities, with radii of
-curvature from micrometers all the way down to nanometers, continuum mechanics can be used to predict the deformation of asperities as normal force is applied. A model for non-adhesive contact between homogenous, isotropic, linear elastic spheres was
-first developed by Hertz (17 from \cite{mo_friction_2009}), which predicted
+
+Many studies have focused on single asperity contacts to reveal the relationship
+between the contact area and $F_N$ (13-15 from \cite{mo_friction_2009}). By
+assuming perfectly smooth asperities, with radii of curvature from micrometers
+all the way down to nanometers, continuum mechanics can be used to predict the
+deformation of asperities as load is applied. A model for non-adhesive
+contact between homogenous, isotropic, linear elastic spheres was first
+developed by Hertz (17 from \cite{mo_friction_2009}), which predicted
 $A_{\text{asp}} \propto F_N^{2/3}$. Later adhesion effects were included in a
 number of subsequent models, including Maugis-Dugdale theory (18 from
 \cite{mo_friction_2009}), which also predicts a sublinear relatinship between
-$A_{\text{asp}}$ and $F_N$. Thus, the common feature of all single-asperity theories is that $A_{\text{asp}}$ is a sublinear function of $F_N$, leading to a similar sublinear relationship for $F_\text{fric}(F_N)$, which fails to align with the macroscale observations modelled by Amontons’ law (eq. \eqref{eq:amonton}).
+$A_{\text{asp}}$ and $F_N$. Thus, the common feature of all single-asperity
+theories is that $A_{\text{asp}}$ is a sublinear function of $F_N$, leading to a
+similar sublinear relationship for $F_\text{fric}(F_N)$, which fails to align
+with the macroscale observations modelled by Amontons’ law (eq.
+\eqref{eq:amonton}).
 
-A variety of multiasperity theories has attempted to combine single asperity mechanics by statistical modelling of the asperity height and spatial distributions \cite{CARBONE20082555}. This has led to ... a linear relationship between $A_{\text{asp}}$ and $F_N$. Unfortunately, these results are restricted in terms of the magnitude of the load and contact area, where multiasperity contact models based on the original ideas of Greenwood and Williamson \cite{GW} only predicts linearity at vanhising low loads, or Persson \cite{Persson} which works for more reasonable loads but only up to 10-15 \% of the macroscale contact area. However, as the load is furhter increased all multiasperity models predict the contact area to fall into the sublinear dependency of normal force as seen for single aperity theories \cite{CARBONE20082555}.
 
 
+% Concurrently with single-asperity studies, roughness contact theories are being developed8–10,16 to bridge the gap between the mechanics of single asperities and that of macroscopic contacts.\cite{mo_friction_2009}
+
+Concurrently wiht single-asperity studies, roughness contact theories are being developed \cite[8-10, 16 in ]{mo_friction_2009} to bridge the gap between single asperities and macroscopic contacts \cite{mo_friction_2009}. A variety of multi-asperity theories has attempted to combine single asperity
+mechanics by statistical modelling of the asperity height and spatial
+distributions \cite{CARBONE20082555}. This has led to a partially success in the establishment of a linear relationship between $A_{\text{asp}}$ and $F_N$. Unfortunately, these results are restricted
+in terms of the magnitude of the load and contact area, where multi-asperity
+contact models based on the original ideas of Greenwood and Williamson \cite{GW}
+only predicts linearity at vanhising low loads, or Persson \cite{Persson} which
+works for more reasonable loads but only up to 10-15 \% of the macroscale
+contact area. However, as the load is furhter increased all multi-asperity models
+predict the contact area to fall into the sublinear dependency of normal force
+as seen for single aperity theories as well \cite{CARBONE20082555}.
+
+
+
+% Da Vinci-Amontons law – friction independent of area – is not confirmed at the
+% microscopic scale. In most nanoscale investigations the friction of a single
+% con- tact is found to increase linearly with the contact area [27–29]. In
+% contrast, structurally mismatched atomically flat and hard crystalline or
+% amorphous surfaces are expected to produce a sublinear increase of friction
+% with contact area. The frequent finding of friction proportional to area even
+% in some of these cases can be understood as a consequence of softness, either
+% if the interface, or of surface contaminants leading to effectively pseudo-
+% commensurate interfaces [30, 31] (Current trends in the physics of nanoscale
+% friction)
 
 
 % Other authors proposed an empirical model in which mechanics of a nanoscale non-adhesive contact is controlled by load, that is, $F_f = \mu L$ and the contact area is undefined and unnecessary5,29 \cite{mo_friction_2009}
@@ -324,6 +362,7 @@ A variety of multiasperity theories has attempted to combine single asperity mec
 % believe that it will be capable of reproducing tribological behaviour at the
 % nanometre length scale where the discreteness of atoms often has a direct effect
 % on physical properties \cite{Szlufarska_2008}.
+
 
 \subsection{Nanoscale - Atomic scale}
 Going from a micro- to nanoscale, on the order of $10^{-9}$ meter, it has been
@@ -809,7 +848,7 @@ Is this the one where to surfaces slides in opposite direction (at least that is
 % https://pubs.acs.org/doi/10.1021/nn305722d
 
 % Maybe read ``Tribology of Graphene: A Review'' (in zotero already).
-
+% Also \cite{gao_frictional_2004} might be usefull to go through again
 
 The setup of our simulation is most reminiscent of a graphene flake sliding on a substrate. This has been studied numerically in molecular dynamic simulations by Zhu and Li \cite[2018]{zhu_study_2018} for a graphene flake on a gold substrate and by Zhang et al.\ \cite{ma12091425}(2019) on a diamond substrate, and in a tight-binding simulation by Bonelli et al.\ \cite{bonelli_atomistic_2009}(2009) for graphene on graphite. Experimental studies of a graphene flake attatched to a AFM is done by Dienwiebel et al.\ \cite[2005]{DIENWIEBEL2005197} and Feng et al.\ \cite[2013]{feng_superlubric_2013} sliding on graphite, but these are mainly concerned with superlubricity as a function of flake oreientation commensurability. 
 
