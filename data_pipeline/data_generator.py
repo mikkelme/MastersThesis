@@ -172,12 +172,12 @@ if __name__ == "__main__":
     # filenames = get_files_in_folder('../config_builder/honeycomb/', ext = 'npy')
     filenames = get_files_in_folder('../config_builder/popup/', ext = 'npy')
     
-    filenames = filenames[40:]
-    print('[40:]')
-    print(filenames)
+    # filenames = filenames[40:]
+    # print('[40:]')
+    # print(filenames)
     
     
-    run_files(filenames, header =  'egil:CONFIGS/popup', simname = 'pop', num_procs_initial = None, num_procs = 4)
+    # run_files(filenames, header =  'egil:CONFIGS/popup', simname = 'pop', num_procs_initial = None, num_procs = 4)
    
     pass
     
