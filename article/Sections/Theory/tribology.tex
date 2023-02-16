@@ -365,33 +365,43 @@ as seen for single aperity theories as well \cite{CARBONE20082555}.
 
 
 \subsection{Nanoscale - Atomic scale}
-Going from a micro- to nanoscale, on the order of $10^{-9}$ meter, it has been
+Going from a micro- to nanoscale, on the order of \SI{e-9}{m} meter, it has been
 predicted that continnum mechanics will break down \cite{luan_breakdown_2005}
 due to the discreteness of individual atoms. Note that atom spacing lies in the
-domain of a few ångströms Å ($10^{-10}$ m) and thus we take the so-called
-corresponding atomic-scale to be a part of the nanoscale regime. In a numerical
+domain of a few ångströms Å (\SI{e-10}{m}) and thus we take the so-called atomic-scale to be a part of the nanoscale regime. In a numerical
 study by Mo et al.\ \cite{mo_friction_2009} (considering asperity radii of 5-30
 nm) it has been shown that the asperity area $A_{\text{asp}}$, defined by the
 circumfereance of the apparent asperity contact zone, is in fact sublinear with
 $F_N$. This is accommodated by the observation that not all atoms within the
 circumfereance make chemical contact with the substrate. By
-modelling the real area $A_{\text{real}} = NA_{\text{atom}}$, where $N$ is the
-amount of atoms within the range of chemical interaction range and
-$A_{\text{atom}}$ is the associated atom surface area, they found a consistent
+modelling the real contact area $A_{\text{real}} = NA_{\text{atom}}$, where $N$ is the amount of atoms within the range of chemical interaction and
+$A_{\text{atom}}$ is the associated surface area, they found a consistent
 linear relationship between friction and the real contact area. Without adhesive
 forces this lead to a similar linear relationship $F_{\text{fric}} \propto F_N$,
 while adding van der Waals adhesion to the simulation gave a sublinear
 relatinship, even though the $F_{\text{fric}} \propto A_{\text{real}}$ was
-maintained. 
+maintained. This result emphasizes that the contact area is still expected to be play an important role in nanoscale asperity theory. It is simply the definition of the contact area that undergoes a change when transistioning from micro- to
+nanoscale. 
 
-This result emphasizes that contact area is still expected to be play a
-major role on the nanoscale for asperity theory. It is simply the definition of contact area that undergoes a change when transistioning from micro- to
-nanoscale. However, considering the simulation setup of our numerical study, a
-flat sheet on a flat substrate, it is unfounded to rely on asperity theories. With no asperities present it is unknown (I could not find anay articles on contact area
-for nanoflakes) whether the real contact area continue to be dominant part of the friction mechanism at play. Before diving into alternative theoretical approaches to adress this issue we point out that we might in fact be able to introduce an ensemble of asperities through a strategic combination of kirigami inspired cuts and stretching of the sheet. Hence, we might hypothesize that such a transsition will contribute to significant change in the goverening mechanism of friction in the system which we attempt to optimize for certain properties.
+However, considering the simulation setup of our numerical study, a flat sheet
+on a flat substrate, the lack of asperities make it unfounded to rely on
+asperity theories. Although both numerical and experimental research have been
+done for so-called nanoflakes sliding on a substrate, no investigation is
+reported on the dependence of friction force on contact area (\hl{to do best of
+my knowledge}). One reasonable explanation for this is the idea that the contact
+area is already maxed out for atomic smooth surfaces. Since a dependency on
+normal load is still reported in most nanoflake studies (see section
+\ref{sec:expected_prop} \hl{or give details on studies here?}), this suggests
+that some other mechanism is governing for friction at this level. Before diving
+into alternative theoretical approaches to adress this issue we point out that the transistion between nanoscale asperities and atomic smooth surfaces is of outermost importance for the objective of this thesis. By introducing kirigami cuts and stretching the sheet we expect to see an out of plane buckling which might induce an ensemble of asperities. Hence, we might hypothesize that such a transsition will contribute to a significant change in the goverening mechanism of friction bridgering two (poorly understood) theoretical domains 
 \\
 \\
-In the lack of noteworthy structural asperities on, the friction can instead be modelled as a consequencse of the rough potential of the atomic landscape. A series of models builds on this idea by considering different ways for the atoms to interact interatomic, with the moving body and the substrate surface. In figure \ref{fig:PT_FK_FKT} three major models 1D models is displayed. The time-honered  Prandtl-Tomlinson (PT) model describes a point-like tip sliding over a space-periodic fixed crystalline surface with a harmonic coupling to the \textit{moving body}. This is analog to that of an experimental cantilever (experimental name). Further extensions was added in the Frenkel-Kontorova (FK) model by substituting the tip with a chain of harmonic coupled atoms dragged from the end (I am not sure that the figure is correct here by drawing a spring), and finally combinned in the Frenkel-Kontorova-Tomlinson (FKT) with the addition of a harmonic coupling between the chain and the moving body.
+%
+%
+% Working here 
+%
+%
+In the lack of noteworthy structural asperities, friction can instead be modelled as a consequencse of the rough potential of the atomic landscape. A series of models builds on this idea by considering different ways for the atoms to interact interatomically, with moving body, and the substrate. In figure \ref{fig:PT_FK_FKT} three major models 1D models is displayed. The time-honered  Prandtl-Tomlinson (PT) model describes a point-like tip sliding over a space-periodic fixed crystalline surface with a harmonic coupling to the \textit{moving body}. This is analog to that of an experimental cantilever (experimental name). Further extensions was added in the Frenkel-Kontorova (FK) model by substituting the tip with a chain of harmonic coupled atoms dragged from the end (I am not sure that the figure is correct here by drawing a spring), and finally combinned in the Frenkel-Kontorova-Tomlinson (FKT) with the addition of a harmonic coupling between the chain and the moving body.
 
 \begin{figure}[H]
   \centering
@@ -513,7 +523,7 @@ where the increased stress is eventually released through a localized expansion
   url{http://www.iop.kiev.ua/~obraun/myreprints/surveyfk.pdf} p. 14.
   Incommensurable case ($\theta = ?$) where atoms sits slightly closer than
   otherwise dictated by the substrate potential for which this regularly result
-  in a kink here seen as the presence of two atoms closeæy together in on of the
+  in a kink here seen as the presence of two atoms closely together in on of the
   potential wells.}
   \label{fig:incommensurable_example}
 \end{figure}
@@ -842,7 +852,7 @@ Is this the one where to surfaces slides in opposite direction (at least that is
 
 
 
-\subsubsection{(summary of) Expected frictional properties}
+\subsubsection{(summary of) Expected frictional properties}\label{sec:expected_prop}
 % Articles to compare with
 % https://www.mdpi.com/1996-1944/12/9/1425
 % https://pubs.acs.org/doi/10.1021/nn305722d
