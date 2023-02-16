@@ -1,0 +1,110 @@
+# --- Basics --- # 
+units metal
+newton on #newtons 3rd law for pairs
+
+boundary m m m  
+
+atom_style atomic # coarse-grain liquids, solids, metals
+
+
+# --- Read files --- #
+read_data ../config_builder/config.txt  # read sheet and substrate
+include ../config_builder/config_info.in  # import variables
+
+# read_data ../substrate/crystal_Si_substrate.txt # For testing
+
+
+# --- Regions and groups --- #
+# Sheet 
+region sheet_region block INF INF ${pullblock_yhi} ${pullblock_ylo} ${pullblock_zlo} INF
+group sheet region sheet_region
+
+# Pullblocks
+region PB_ylow_region  block INF INF INF ${pullblock_yhi} ${pullblock_zlo} INF
+region PB_yhigh_region block INF INF ${pullblock_ylo} INF ${pullblock_zlo} INF
+group PB_ylow region PB_ylow_region
+group PB_yhigh region PB_yhigh_region
+
+# Substrate
+region substrate_freeze_region block INF INF INF INF INF ${substrate_freeze_zhi}
+region substrate_contact_region block INF INF INF INF ${substrate_contact_zlo} ${pullblock_zlo}
+group  substrate_freeze region substrate_freeze_region
+group  substrate_contact region substrate_contact_region
+
+# Moving atoms
+group moving_atoms subtract all PB_ylow PB_yhigh substrate_freeze 
+
+
+
+
+
+#--- Dynamics ---#
+variable temp equal 5.0 # Kelvin
+
+mass 1 12.0107 # C
+mass 2 28.0855 # Si
+
+# velocity sheet create ${te7mp} 5432373 dist gaussian
+velocity all create ${temp} 5432373 dist gaussian
+
+
+neighbor            0.5 bin
+neigh_modify        delay 0 every 1 one 10000
+
+
+
+
+# Is this right?
+# pair_style hybrid sw lj/cut 2.5 tersoff
+# pair_coeff * * tersoff ../potentials/SiC_1989.tersoff C NULL
+# pair_coeff 1 2 lj/cut 0.0096 3.0         # Interaction C-Si (Double check parameters)
+# pair_coeff * * sw ../potentials/si.sw NULL Si   # Substrate Si-Si
+
+# Airebo version
+pair_style hybrid sw lj/cut 2.5 airebo 6.4 1 1
+pair_coeff * * airebo ../potentials/CH.airebo C NULL
+pair_coeff 1 2 lj/cut 0.008909 3.26      # Interaction C-Si (Double check parameters)
+pair_coeff * * sw ../potentials/si.sw NULL Si   # Substrate Si-Si
+
+
+timestep            0.0005
+
+thermo              100
+thermo_style custom step time temp 
+fix                 nve1 all nve # (microcanonical)  #<--------- only apply on not froozen 
+
+# fix 2 all balance 1000 1.05 shift xy 10 1.05 # balance number of particles computed on each processor 
+
+dump 1 all custom 1 system.data id type x y z vx vy vz
+dump 2 sheet custom 100 sheet.data id x y z
+dump 3 substrate_contact custom 100 substrate_contact.data id x y z
+
+
+
+# ---  Relax inner part (pattern) of sheet --- #
+run  $(floor(5/dt)) # [t] = picoseconds
+unfix nve1
+
+
+# --- Stretch --- #
+# Parameters
+# variable strain_speed_pct equal 0.02 # [% of pattern ylen per picoseconds]
+variable strain_speed_pct equal 0.03 # [% of pattern ylen per picoseconds]
+variable strain_speed equal v_strain_speed_pct*(v_pullblock_ylo-v_pullblock_yhi) # Henrik used 1,25
+print "strain_speed: ${strain_speed}"
+
+# Move pulling block in opposite direction
+fix ylow_move  PB_ylow move linear 0 $(-v_strain_speed/2) 0 units box
+fix yhigh_move PB_yhigh move linear 0 $(v_strain_speed/2) 0 units box
+fix nve2 moving_atoms nve 
+# run  $(floor(4/dt)) # [t] = picoseconds
+run  $(floor(12/dt)) # [t] = picoseconds
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,271 @@
+\section{Defining the system}
+
+The simmulated system consist of two major parts: A 2D graphene sheet and a 3D Silicon ``bulk'' substrate. These parts interact with a van der Waals force (modelled by the LJ potential). We apply a normal load to the sheet inducing a normal force response between the sheet and substrate. By dragging the sheet along the substrate we measure the responding frictional forces.
+
+
+\subsection{Region definitions (Sheet, pullblocks and substrate)}
+
+The system, sheet and substrate, is further subdivided according to
+functionality in the MD simmulations. The sheet ends is reserved for so-called
+\textit{pull blocks}, which is used application of normal load, stretching and
+dragging the sheet, and as a thermostat, while the remaining \textit{inner
+sheet} is left as an untouched (NVE) canvas for kirigami cuts. The pull blocks
+are equal split between a thermostat part and a rigid part which is locked into
+a single rigid body after an initial relaxtion period. Note that the rigid part
+of the pull blocks on both side is considered a single rigid object even though
+they are physically seperated. This means that all force interactions on these
+parts will be applied as a common average making the move in total
+synchronization. The substrate is equally divided into three parts: The
+\textit{upper layers} (NVE) responsible for the sheet-substrate interaction, the
+\textit{middle layers} being a thermostat (NVT), and the \textit{bottom layers}
+is frozen (rigid and fixed) in the initial lattice structure to ensure that the
+substrate stays in place. In figure \ref{fig:system} the system is displayed
+with colors matching the three distinct roles:
+\begin{enumerate}
+  \item Red: NVE parts which is governing the frictional behaviour of interest.
+  \item Green: Thermostats (NVT) sourrounding the NVE parts in order to modify the temperature without making disturbing changes to the interaction of the sheet and substrate.
+  \item Blue: Parts that is initially or eventually turned in to rigid objects. For the substrate this is additionally locked off and immobile. 
+\end{enumerate}
+
+The total system size in terms of atom count is given in table \ref{tab:system_count} while the sheet length dimension is given in table \ref{tab}
+
+The total system size (without cuts in the sheet) is 27456 atoms, and the distribution into the various regions is shown in table \ref{tab:system_count}. The length dimensions of the sheet is given in table \ref{tab:sheet_dim}.
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[b]{0.80\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/system_sideview.png}
+      \caption{Side view showing sheet on top of the substrate.}
+      \label{fig:sideview}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.80\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/system_topview.png}
+      \caption{Top view showing only the sheet.}
+      \label{fig:topview}
+  \end{subfigure}
+  \hfill
+     \caption{System configuration colorized to indicate NVE parts (red), thermostat parts (green) and rigid parts (blue).}
+     \label{fig:system}
+\end{figure}
+
+\begin{table}[H]
+  \begin{center}
+  \caption{Amount of atoms in the various system regions in the case of no cutting applied to the sheet.}
+  \label{tab:system_count}
+  \begin{tabular}{ |c|| c | c | c | c | c | c |} \hline
+    \textbf{Region} & \textbf{Total}  & Sub region & Sub total & \textbf{NVE} &
+    \textbf{NVT} & \textbf{Rigid} \\ \hline   
+    \multirow{2}{*}{Sheet} & \multirow{2}{*}{7800} & Inner sheet & 6360 & 6360 &
+    0 & 0 \\ %\hline
+    & & Pull blocks & 1440 & 0 & 720 & 720 \\ \hline   
+    \multirow{2}{*}{Substrate} & \multirow{2}{*}{19656} & Upper & 6552 & 6552 &
+    0 & 0 \\ %\hline
+    & & Middle & 6552 & 0 & 6552 & 0 \\ %\hline
+    & & Bottom & 6552 & 0 & 0 & 6552 \\ \hline \hline   
+    All & 27456 & \multicolumn{2}{r|}{} & 12912 & 7272 & 7272 \\ \hline 
+  \end{tabular}
+  \end{center}
+\end{table}
+
+
+\begin{table}[H]
+  \begin{center}
+  \caption{Sheet dimensions comparing the full sheet to its subdivisions: inner sheet and pull blocks.}
+  \label{tab:sheet_dim}
+  \begin{tabular}{ | l | r@{}l | r@{}l | c |} \hline
+    \textbf{Group} & \multicolumn{2}{c|}{$x,y$-dim} & \multicolumn{2}{c|}{dim
+    [Å]} & Area [Å$^2$]\\ \hline
+  Full sheet & $x_S \: \times \: $ & $y_S$ &  $130.029 \: \times \:$ & $163.219$
+  Å & $\phantom{2\times} 21,223.203$ \\ \hline
+  Inner sheet & $x_S \: \times \:$ & $81.40 \ \%_{y_s}$ &  $130.029  \: \times
+  \:$ & $132.853$ Å & $\phantom{2\times} 17,274.743$\\ \hline
+  Pull blocks & $2 \times x_S \: \times \:$ & $ \phantom{0}9.30 \ \%_{y_s}$ & $2
+  \times 130.029  \: \times \: $ & $\phantom{0}15.183$ Å  & $2 \times
+  \phantom{0}1,974.230$ \\ \hline  
+  \end{tabular}
+  \end{center}
+\end{table}
+
+
+\subsection{Numerical procedure}
+
+The numerical procedure for the friction simulations can be arranged as the following.
+
+\begin{enumerate}
+  \item Relax (15 ps): The sheet and substrate is relaxed for 15 ps. They are
+  both initially added in their crystaline form. The sheet is constrained under
+  three hard spring forces (spring constant $10^5$ eV/Å$^2$ $\sim$ \num{1.6e6} N/m): One spring
+  attathes the sheet center of mass (CM) to its orginal postion preventing
+  drift, while the remaining two is attatched to the CM for the pull blocks to
+  their initial position respectively to prevent rotation. These spring forces
+  are immediately terminated after the relax phase. In this phase the pull
+  blocks is only rigid with respect to the z-direction (perpendicular to the
+  sheet). That is, all the forces in the z-direction is summed up and
+  distributed on the pull blocks while it is free to expand and contract in the
+  x-y-plane. This is mainly to ensure that is achieves the correct lattive
+  spacing according to the temperature of the system. For the remaining phases
+  the rigid parts of the pull block is in fact rigid with respect to all
+  directions. 
+  \item Stretch: The sheet is stretched by seperating to opposing rigid parts of
+  the pullblock at constant velocity until the desired stretch amount is met. 
+  \item Pause 1 (5 ps): The sheet is relaxed for 5 ps after the stretch
+  procedure.
+  \item Pause 2 (Normal load): The normal load is applied to the rigid parts of
+  the pull blocks together with a damping force to prevent hard impact between
+  sheet and substrate as the seperating distance is now reduced depending on the
+  strength of the normal load. The damper is terminated after 0.5 ps, as this
+  was suitable for the extreme load cases of our force range, and the system is
+  relaxed until a total of 5 ps has passed.
+  \item Drag: A virtuel atom is introduced into the simulation which exclusively
+  interacts with the rigid parts of the pull through a spring force with variable spring constant $K$ in the x-y-plane. The z-direction is not affected by the spring force and is governed by the balance between normal load and the normal force response from the sheet-substrate interaction. The virtual atom is immediately given a constant velocity corresponding to a variable \textit{drag speed} parameter
+\end{enumerate}
+
+At the initial timestep the three nearest neighbours (at distance 1.42 Å) of all graphene atoms is recorded. If these nearest neighbours exceed a threshold of 4 Å this is raises a rupture flag which halt the simulation early. Thus, we effectively prevent any kind of wear on the sheet. For the substrate we do not perform such an analysis but only visually confirms that no wear is accouring under the most extreme simulation parameters. 
+
+\subsection{Creating the sheet}
+
+We are going to create a 2D sheet graphene sheet. 
+
+\subsubsection{Graphene}
+% (https://community.wvu.edu/~miholcomb/graphene.pdf)
+% https://www.physics-in-a-nutshell.com/article/4/lattice-basis-and-crystal
+
+Graphene is a single layer of carbon atom, graphite is the bulk, arranged in a
+hexagonallattice structure. We can describe the 2D crystal structure in terms of
+its primitive lattice vector and a basis. That is we populate each lattice site
+by the given basis and translate it to fill the whole plane by any linear
+combination of the lattice vectors
+\begin{align*}
+  \vec{T}_{mn} = m\vec{a_1} + n\vec{a_2}, \qquad m,n \in \mathbb{N}.
+\end{align*}
+For graphene we have the primitive lattice vectors 
+\begin{align*}
+  \vec{a_1} = a \left(\frac{\sqrt{3}}{2}, -\frac{1}{2}\right), \qquad \vec{a_2} = a \left(\frac{\sqrt{3}}{2}, \frac{1}{2}\right), \qquad |\vec{a_1}| = |\vec{a_2} = 2.46 \ \text{Å}.
+\end{align*}
+Notice that we deliberately excluded the third coordinate as we only consider a
+single graphene layer on not the bulk graphite consisting of multiple layers
+stacked on top of each other. The basis is 
+\begin{align*}
+  \Big\{\Big(0,0\Big), \frac{a}{2}\Big(\frac{1}{\sqrt{3}}, 1 \Big) \Big\}
+\end{align*}
+It turns out that the spacing between atoms is equal for all paris with an
+interatomic distance 
+\begin{align*}
+  \left|\frac{a}{2}\Big(\frac{1}{\sqrt{3}}, 1 \Big)\right| \approx 1.42 \ \text{Å}.
+\end{align*}
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.3\linewidth]{figures/crystal.png}
+  \caption{Graphene crystal structure with basis.}
+  \label{fig:graphene_crystal}
+\end{figure}
+
+
+
+\subsubsection{Indexing}
+
+In order to define the cut patterns applied to the graphene sheet we must define
+an indexing system. We must ensure that this gives an unique description of the
+atoms as we eventually want to pass a binary matrix, containg 0 for removed atom
+and 1 for present atom, that uniquely describes the sheet. We do this by letting
+the x-coordinate point to zigzag chains and the y-coordinate to the position
+along that chain. This is illustrated in figure \ref{fig:atom_indexing}. Other
+solutions might naturally invole the lattice vectors, but as these only can be
+used to translate to similar basis atoms a unfortunate duality is introduced as
+ones need to include the basis atom of choice into the indexing system. With the
+current system we notice that locallity is somewhat preserved. That is, atom
+$(i, j)$ is in the proximity of $\{(i+1, j), (i-1, j), (i, j+1), (i, j-1)\}$,
+but only three of them is categorized as nearest neighbours due to the hexgonal
+structure of the lattice. While $(i, j\pm 1)$ is always nearest neighbours the
+neighbour in the x-direction flip sides with incrementing y-coordinate. That is
+the nearest neighbours (NN) is decided as
+\begin{align*}
+  j \ \text{is even} &\rightarrow \text{NN} = \{(i+1, j), (i, j+1), (i, j-1)\}, \\
+  j \ \text{is odd} &\rightarrow \text{NN} = \{(i-1, j), (i, j+1), (i, j-1)\}.
+\end{align*}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\linewidth]{figures/atom_indexing.pdf}
+  \caption{Graphene atom indexing}
+  \label{fig:atom_indexing}
+\end{figure}
+
+\subsubsection{Removing atoms}
+
+As a mean to ease the formulation of cut patterns we introduce pseudo center
+element in each gap of the hexagonal honeycombs, see figure
+\ref{fig:center_indexing}. 
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\linewidth]{figures/center_indexing.pdf}
+  \caption{Graphene center indexing}
+  \label{fig:center_indexing}
+\end{figure}
+
+
+
+
+Similar to the case of the indexing for the carbon atoms themself the nearest
+neighbour center elements alternate with position, this time along the
+x-coordinate. Each center element has six nearest neighbours, in clock wise
+direction we can denote them: ``up'', ``upper right'', ``lower right'',
+``down'', ``lower left'', ``upper left''. The ``up'' and ``down'' is always
+accesed as $(i,j\pm 1)$, but for even $i$ the $(i+1,j)$ index corresponds to the
+``lower right'' neighbour while for odd $i$ this corresponds to the ``upper
+right'' neighbour. This shifting applies for all left or right neighbours and
+the full neighbour list is illustrated in figure \ref{fig:center_directions}. 
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\linewidth]{figures/center_directions.pdf}
+  \caption{Graphene center elements directions}
+  \label{fig:center_directions}
+\end{figure}
+
+
+We define a cut pattern by connecting center elements into connected paths. As
+we walk element to element we remove atoms according to one of two rules 
+\begin{enumerate}
+  \item Remove intersection atoms: We remove the pair of atoms placed directly
+  in the path we are walking. That is, when jumnping to the ``up'' center
+  element we remove the two upper atoms located in the local hexagon of atoms.
+  This method is sensitive to the order of the center elements in the path. 
+  \item Remove all surrounding atoms: We simply remove all atoms in the local
+  hexagon surrounding each center element. This method is indepdent of the
+  ordering of center elements in the path.
+\end{enumerate}
+
+We notice that removing atoms using either of these rules will not garuantee an
+unique cut pattern. Rule 1 is the more sensitive to paths but we realize that,
+for an even $i$, we will remove the same five atoms following either of the
+following paths.
+\begin{align*}
+  (i, j) &\rightarrow \underbrace{(i+1,j+1)}_{\text{upper right}} \rightarrow \underbrace{(i, j+1)}_{\text{up}} \rightarrow \underbrace{(i+1, j+2)}_{\text{upperright + up}} \rightarrow \underbrace{(i+1, j+1)}_{\text{upper right}} \\
+  (i, j) &\rightarrow \underbrace{(i+1,j+1)}_{\text{upper right}} \rightarrow \underbrace{(i+1, j+2)}_{\text{upperright + up}} \rightarrow \underbrace{(i, j+1)}_{\text{up}}
+\end{align*}
+
+For rule 2 it is even more abovious that different paths can result in the same
+atoms being removed. This is the reason that we needed to define and indexing
+system for the atom position itself even though that all cuts generated manually
+will use the center element path as reference. \\
+
+Illustrate some delete path?
+
+
+
+\subsection{Kirigami patterns}
+\subsubsection{Pop-up}
+\subsubsection{Honeycomb}
+\subsubsection{Random walk}
+
+
+
+

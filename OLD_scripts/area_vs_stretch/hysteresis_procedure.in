@@ -1,0 +1,93 @@
+# --- Stretching procedure --- #
+# Assumes to have the groups:
+# PB_ylow, PB_yhigh, PB_tot
+
+# and variables:
+# variable relax_time equal 1             # [ps]
+# variable pause_between equal 1          # pause between stretch and contracting [ps]
+# variable pause_after equal 1            # pause after contracting [ps]
+# variable stretch_speed_pct equal 0.1    # [% of pattern ylen / ps]
+# variable stretch_max_pct equal 0.20   
+
+
+# --- Compute and variables--- #
+# Stretch pct
+variable stretch_speed equal v_stretch_speed_pct*(v_pullblock_ylo-v_pullblock_yhi) # Henrik used 1,25
+variable stretch_time equal $(floor(v_stretch_max_pct/v_stretch_speed_pct/dt))
+print "Stretch speed time: $(v_stretch_time) timesteps, $(v_stretch_time*dt) ps"
+
+# Set stretch pct
+variable stretch_pct equal 0.0
+
+# Stretch force
+compute ylow_force PB_ylow reduce sum fy
+compute yhigh_force PB_yhigh reduce sum fy
+
+# --- Output --- #
+fix stretch_output all ave/time 1 100 100 v_stretch_pct c_ylow_force c_yhigh_force file stretch.txt
+thermo_style custom step time temp v_stretch_pct c_ylow_force c_yhigh_force
+
+# ---  Relax inner part (pattern) of sheet --- #
+# Set PB conditions
+fix PB_xy_freeze PB_tot move linear 0 0 NULL # Zero out force in x-y-plane
+fix PB_z_ave PB_tot aveforce NULL NULL 0 # Average force in z-direction (every atom feels same z-force)
+
+print "Stretching, timesteps: $(v_relax_time)"
+run  $(floor(v_relax_time/dt)) # [t] = picoseconds
+
+# ---- Stretch sheet ---- #
+# Update PB conditions
+unfix PB_xy_freeze
+fix ylow_move  PB_ylow move linear 0 $(-v_stretch_speed/2) NULL units box
+fix yhigh_move PB_yhigh move linear 0 $(v_stretch_speed/2) NULL units box
+
+# Update stretch pct
+variable stretch_start equal $(step)
+variable stretch_pct equal v_stretch_speed_pct*(step-v_stretch_start)*dt
+
+print "Stretching, timesteps: $(v_stretch_time)"
+run ${stretch_time}
+ 
+# --- Pause ---- #
+# Update PB conditions
+unfix ylow_move
+unfix yhigh_move
+velocity PB_tot set 0 0 0
+fix PB_xy_freeze PB_tot move linear 0 0 NULL # Zero out force in x-y-plane
+
+# Update stretch pct
+variable actual_stretch_max equal $(v_stretch_pct)
+variable stretch_pct equal v_actual_stretch_max
+
+print "Pausing, timesteps: $(v_pause_between)"
+run  $(floor(v_pause_between/dt)) # [t] = picoseconds
+
+# ---- Contract sheet back --- #
+# Update PB conditions
+variable stretch_reverse equal $(step)
+variable stretch_pct equal v_stretch_max_pct-v_stretch_speed_pct*(step-v_stretch_reverse)*dt
+
+# Update stretch pct
+unfix PB_xy_freeze
+fix ylow_move  PB_ylow move linear 0 $(v_stretch_speed/2) NULL units box
+fix yhigh_move PB_yhigh move linear 0 $(-v_stretch_speed/2) NULL units box
+
+print "Reverse stretch, timesteps: $(v_stretch_time)"
+run ${stretch_time}
+
+
+# --- Pause ---- #
+# Update PB conditions
+unfix ylow_move
+unfix yhigh_move
+velocity PB_tot set 0 0 0
+fix PB_xy_freeze PB_tot move linear 0 0 NULL # Zero out force in x-y-plane
+
+# Update stretch pct
+variable actual_stretch_max equal $(v_stretch_pct)
+variable stretch_pct equal v_actual_stretch_max
+print "Reverse stretch, timesteps: $(v_pause_after)"
+run  $(floor(v_pause_after/dt)) # [t] = picoseconds
+
+
+

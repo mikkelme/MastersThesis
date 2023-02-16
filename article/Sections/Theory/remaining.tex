@@ -1,0 +1,64 @@
+\section{Fourier Transform (light)}
+% https://www.brown.edu/research/labs/mittleman/sites/brown.edu.research.labs.mittleman/files/uploads/lecture21_0.pdf
+% https://mathworld.wolfram.com/FourierTransform.html
+
+% https://lpsa.swarthmore.edu/Fourier/Xforms/FXformIntro.html
+\textbf{Find out where to put this if nessecary}. \\
+
+Fourier transform is a technique where we transform a function $f(t)$ of time to
+a function $F(k)$ of frequency. The Forward Fourier Transform is done as
+\begin{align*}
+  F(k) = \int_{-\infty}^\infty f(t) e^{-2\pi ikx} dx
+\end{align*}
+
+For any complex function $F(k)$ we can decompose it into magnitude $A(k)$ and
+phase $\phi(k)$
+\begin{align*}
+  F(k) = A(k) e^{i \phi(k)}
+\end{align*}
+
+Hence when performing a Forward Fourier transform on a time series we can
+determine the amplitude and phase as a function of freqeuncy as 
+\begin{align*}
+  A(k) = |F(k)|^2, \qquad \phi(k) = \Im{\ln{F(k)}}
+\end{align*}
+
+
+
+
+\begin{itemize}
+  \item Real life procedures to mimic in computation, for instance Atomic Force
+  Microscoopy (AFM) for friction measurements.
+  \item Available technology for test of my findings if successful
+  (possibilities for making the nano machine) 
+\end{itemize}
+
+
+\section{Machine Learning (ML)}
+\begin{itemize}
+  \item Feed forward fully connected
+  \item CNN
+  \item GAN (encoder + decoder)
+  \item Genetic algorithm
+  \item Using machine learning for inverse designs partly eliminate the black
+  box problem. When a design is produced we can test it, and if it works we not
+  rely on machine learning connections to verify it's relevance. 
+  \item However, using explanaitons techniques such as maybe t-SNE, Deep dream,
+  LRP, Shapley values and linearizations, we can try to understand why the AI
+  chose as it did. This can lead to an increased understanding of each design
+  feature. Again this is not dependent on the complex network of the network as
+  this can be tested and veriied independently of the network. 
+\end{itemize}
+
+\subsection{Feed forward network / Neural networks}
+\subsection{CNN for image recognition}
+\subsection{GAN (encoder + deoder)}
+\subsection{Inverse desing using machine learning}
+\subsection{Prediction explanation}
+\subsubsection{Shapley}
+\subsubsection{Lineariations}
+\subsubsection{LRP}
+\subsubsection{t-SNE}
+
+
+
