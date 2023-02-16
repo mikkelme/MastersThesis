@@ -8,97 +8,190 @@ Friction is a fundamental force that takes part in almost all interactions with
 physical matter. Even though the everyday person might not be familiar with the
 term ``friction'' we would undoubtedly notice its disappearing. Without
 friction, it would not be possible to walk across a flat surface, lean against
-the wall or secure an object by the use of nails or screws (Static friction allows us to join objects together using screws \cite{gnecco_meyer_2015}[p. 5]). Similarly, we expect
-a moving object to eventually come to a stop if not supplied with new energy,
-and we know intuitively that sliding down a snow covered hill is much more
-exciting than its grassy counterpart. It is probably safe to say that the
-concept of friction is well integrated in our everyday life to such an extent
-that most people take it for granted. However, the efforts to control friction
-dates back to the early civilization (3500 B.C.) with the use of the wheel and
-lubricants to reduce friction in translational motion \cite{bhushan_2013}. Friction is a part of the wider field tribology derived from the Greek word \textit{Tribos} meaning rubbing and includes the science of friction, wear and lubrication \cite{bhushan_2013}.
+the wall or secure an object by the use of nails or screws [p. 5]
+\cite{gnecco_meyer_2015}. Similarly, we expect a moving object to eventually
+come to a stop if not supplied with new energy, and we know intuitively that
+sliding down a snow covered hill is much more exciting than its grassy
+counterpart. It is probably safe to say that the concept of friction is well
+integrated in our everyday life to such an extent that most people take it for
+granted. However, the efforts to control friction dates back to the early
+civilization (3500 B.C.) with the use of the wheel and lubricants to reduce
+friction in translational motion \cite{bhushan_2013}. 
 
-The most important motivation to study tribology is ultimately to gain full control of frictional and wear for vairous technical applications. Especially, reducing friction is of great interest as this has tremendous advantages regarding
-energy effeciency. It has been reported that that monetary value of tribological problems has significant potential for economic and environmental improvements \cite{kim_nano-scale_2009}:
+Friction is a part of the wider field tribology derived from the Greek word
+\textit{Tribos} meaning rubbing and includes the science of friction, wear and
+lubrication \cite{bhushan_2013}. The most important motivation to study
+tribology is ultimately to gain full control of friction and wear for various
+technical applications. Especially, reducing friction is of great interest as
+this has tremendous advantages regarding energy effeciency. It has been reported
+that that monetary value of tribological problems has significant potential for
+economic and environmental improvements \cite{kim_nano-scale_2009}:
 \begin{quote}
-    ``On global scale, these savings would amount to 1.4\% of the GDP annually and 8.7\% of the total energy consumption in the long term.'' \cite{holmberg_influence_2017}. 
+    ``On global scale, these savings would amount to 1.4\% of the GDP annually
+    and 8.7\% of the total energy consumption in the long term.''
+    \cite{holmberg_influence_2017}. 
 \end{quote}
-The reduction of friction is not the only sensible application as a controlled increase in friction might be of interest in the development of grasping robots or perhaps breaking system (get some sourced examples maybe...). 
+On the other side, the reduction of friction is not the only sensible application for tribological studies. Increasing friction might be of interest in the development of grasping robots or perhaps breaking system (\hl{get some sourced examples maybe}), and ideally being able to turn friction up or down would be a groundbreaking step forward (\hl{to much?}).
+
+In the recent years an increasing amount of interest has gone into the understanding of the microscopic origin of friction, due to the increased possibilities in surface preperation and the development of nanoscale experimental methods such as the Friction Force Mircoscopy \cite{FK2D}. Nano-friction is also of great concern for the field of nano-machining where the frictional properties between the tool and the workpiece dictates machining charascteristics \cite{kim_nano-scale_2009}.
 
 
+% Electrostatic micromotors, for instance, might need complicated and costly
+% antistiction layers to prevent permanent adhesion and reduce drag forces
+% (Sundararajan and Bhushan, 2001). \cite{CARBONE20082555}
 
-% Electrostatic micromotors, for instance, might need complicated and costly antistiction layers to prevent permanent adhesion and reduce drag forces (Sundararajan and Bhushan, 2001). \cite{CARBONE20082555}
-
-
-% Recent years have witnessed a surge of interest in understanding the microscopic origin of friction, due to the increased control in surface preparation and the development of nanoscale experimental methods such as Quartz Crystal Microbalance [1] and Friction Force Microscopy [2]. A considerable amount of this effort is being directed towards reducing friction. \cite{FK2D}
-
-% Nano-friction is of great concern in the field of nano-machining since the frictional interaction between the tool and the workpiece dictates the machining characteristics. Belak and Stowers (1990) performed an MD simulation of orthogonal cutting process.49 The atomic interaction between the atoms of the tool and the workpiece could be better understood from the simulation results.\cite{kim_nano-scale_2009}
-
-
-To the best of my knowdelegde kirigami has not yet been implemented to alter the friction properties in a similar manner as done in this thesis. 
+% Nano-friction is of great concern in the field of nano-machining since the
+% frictional interaction between the tool and the workpiece dictates the
+% machining characteristics. Belak and Stowers (1990) performed an MD simulation
+% of orthogonal cutting process.49 The atomic interaction between the atoms of
+% the tool and the workpiece could be better understood from the simulation
+% results.\cite{kim_nano-scale_2009}
 
 \subsection{Thesis}
+In recent papers by Hanakata et al.\ \cite{PhysRevLett.121.255304}(2018),
+\cite{PhysRevResearch.2.042006}(2020) numerical investigations has showcased
+that the mehcanical properties of a graphene sheet, yield stress and yield
+strain, can be altered through the introduction of so-called kirigami inspired
+cuts into the sheet. By the use of machine learning through accelerated search
+\cite{PhysRevLett.121.255304} and inverse design
+\cite{PhysRevResearch.2.042006}, they are able to extract cut pattern proposals
+which optimizes the mechanical properties in certain ways, e.g.\ stretchability
+or resistance to yield. This kind of study shows how numerical modelling and
+machine learning can extremely usefull for the designing of metamaterials, i.e.\
+materials with properties not found in naturally occurring materials. Hanakate
+et al.\ assert the complexity of the mehcanical properties of the kirigami cut
+sheet to the out of plane buckling accouring when the sheet is stretched. 
 
-In this thesis we investigate the possibility to control the frictional properties of a graphene sheet by applying strategically positioned cuts to the sheet inspired by kirigami. Kirigami is a variation of origami where the paper is cut additionally to being folded. Hanakata et al. \cite{PhysRevResearch.2.042006} has shown that kirigami inspired cuts on a graphene sheet can be used to alter the yield strain and yield stress of the sheet. They observed that the stretching of the cutted sheet induced a out-of-plane buckling which serves as a key observation for the motivation of this thesis. It is currently well established/believed that the friction between two surfaces is proportional to the real microscopic contact area (source here?). Hence, one can hypothesize that the buckling of the sheet will affect the contact area and consequently the frictional properties. 
+Since it is generally accepted that the surface roughness is of great importance
+for fritional properties it can be hypothesized that the cut and stretch
+procedure can be exploited for the design of fricitonal metamaterials as well.
+If successfull, the link between stretch and friction properties might also rise
+to a metamaterial with tunable friction properties after the point of
+manufacturing. That is, a material which fricitonal properties will change
+during stretch and relaxtion. For such a material, coupling the normal load and
+stretch of the sheet through a nanomachine design would allow for an altered
+friction coefficient which in theory might take negative values in certain
+ranges of normal load. To the best of our knowledge kirigami has not yet been
+implemented to alter the frictional properties on a nanoscale. However, in a
+recent paper by Liefferink et al.\ \cite{LIEFFERINK2021101475}(2021) it is
+reported that macroscale kirigami can be used to dynamically control the macroscale roughness of a surface by stretching which can be used to change the frictional coeffcient by more than one order of magnitude.
+\\
+\\
+\hl{Something about machine learning and inverse design.}
 
 
 
-% Graphite is undoubtedly the most common so-
-% lid lubricant.Mainly used as flaky powder, it is
-% e.g. applied where liquid lubricants cannot be
-% used, especially in high-temperature applications,
-% or as friction reducing additive in oils and poly-
-% mers and as brushes in electrical motors.It is not
-% surprising that research on the tribological proper-
-% ties of graphite has a long history and it is well
-% established that the friction coefficient for many
-% materials against graphite in ambient conditions
-% is in the range of 0.08–0.18 \cite{DIENWIEBEL2005197}
+% In this thesis we investigate the possibility to control the frictional
+% properties of a graphene sheet by applying strategically positioned cuts to the
+% sheet inspired by kirigami patterns. Kirigami is a variation of origami where the paper is cut additionally to being folded. Hanakata et al.\
+% \cite{PhysRevResearch.2.042006} has shown that kirigami inspired cuts on a
+% graphene sheet can be used to alter the yield strain and yield stress of the
+% sheet. They observed that the stretching of the cutted sheet induced a
+% out-of-plane buckling which serves as a key observation for the motivation of
+% this thesis. It is currently well established/believed that the friction between
+% two surfaces is proportional to the real microscopic contact area (source
+% here?). Hence, one can hypothesize that the buckling of the sheet will affect
+% the contact area and consequently the frictional properties. 
 
 
 
-% Definition on frictional coefficient using the derivative: \cite{gao_frictional_2004}
+% Graphite is undoubtedly the most common so- lid lubricant.Mainly used as flaky
+% powder, it is e.g. applied where liquid lubricants cannot be used, especially
+% in high-temperature applications, or as friction reducing additive in oils and
+% poly- mers and as brushes in electrical motors.It is not surprising that
+% research on the tribological proper- ties of graphite has a long history and
+% it is well established that the friction coefficient for many materials
+% against graphite in ambient conditions is in the range of 0.08–0.18
+% \cite{DIENWIEBEL2005197}
+
+
+
+% Definition on frictional coefficient using the derivative:
+% \cite{gao_frictional_2004}
 
 \section{Approach}
 
-In the study by Hanakata et al. \cite{PhysRevResearch.2.042006} they used a machine learning (ML) approach to overcome the complexity of the nonlinear effects arrising from the out-of-plane buckling which made them succesfully map the cutting patterns to the mechanical properties of yield and stress. The dataset used for the ML training was generated by molecular dynamics (MD) simulations for a limited set of cut configuration. By training the network the MD simiulaitons could effectively be skipped all together making for an accelerated search through new cut configurations for certain mechanical properties. By setting up a MD simulation that qunatifies the frictional properties of the graphene sheet we aim to make an analog study regarding the search for certain frictional properties. 
-
-We will take this on step further by creating a GAN network that utilises the
-latter network for creating an inverse design framework. That is, a network that
-takes frictional properties as input and return the corresponding cut
-configuration. By having such a tool we can execute a targeted search for exotic
-frictional properties. Particularly, we are interested in nonlinear and possibly
-even negative friction coefficients. Friction is essentially observed to
-increase with increasing load on the frictional surface, and we often describe
-this as having a positive friction coefficient. However, if we are able to
-couple the stretching of the sheet with friction we might be able to break this barrier for the coefficient. By
-imagining some nanomachine which translates downward pressure into either
-compression of expansion of the altered graphene, we could have a coupling
-between downward pressure and stretch of the sheet. In that case, a friction
-force depending on stretch could effectively be made to decrease with increasing
-load which would correspond to a negative friciton coeffcient following this
-definition (formulate such that we do not imply free acceleration from nothing).
-
-One of the features from inverse design, seperating it from the general class of ML approaches, is that we do not depend on trusting the ML predictions. While a standard neural network might be extremely efficient on a certain prediciton task we have usually no information on how these predictions are based. We say that the internal workings of the network is a black box beyond our capacaity of interpretation. However, for the inverse design problem we are prompted with a few promising design propsals which can immediately be tested in the MD simulations which we will regard as the most reliable predictor in this setting. Hence, if arriving at a successful design in alignment our search prompt, we can disregard any uncertainty in the network. In that case the remaining gap to bridge is that of the MD simulation and real life implementations. 
+Explain my specific approach in more detail one this is settled in completely. 
 
 
 
+% In the study by Hanakata et al.\ \cite{PhysRevResearch.2.042006} they used a
+% machine learning (ML) approach to overcome the complexity of the nonlinear
+% effects arrising from the out-of-plane buckling which made them succesfully map
+% the cutting patterns to the mechanical properties of yield and stress. The
+% dataset used for the ML training was generated by molecular dynamics (MD)
+% simulations for a limited set of cut configuration. By training a neural network the MD simiulaitons could effectively be skipped all together making for an
+% accelerated search through new cut configurations for certain mechanical
+% properties. By setting up a MD simulation that quantifies the frictional
+% properties of the graphene sheet we aim to make an analog study regarding the
+% search for certain frictional properties. 
 
-% The good thing about the process of inverse design is that the uncertainty and missing information from the network (black box) is not important if we are able to locate a working design. Thus we can test the suggested design and remove the doubt of whether this is a good design or not. Thus we do not have to trust the network prediction at all. However, if the predictions is not accurate enough we will most liekely never get any usefull designs from the ML process, but at least we will be informed whether the designs are good or bad in the end with respect to the simulations. However the question is rather if we can trust the simulation results. In the ned we should test the designs in real life to be completely sure and thus the certainity of the quality of any proposed designs is determined by the simulation quality. 
+% We will take this on step further by creating a GAN network that utilises the
+% latter network for creating an inverse design framework. That is, a network that
+% takes frictional properties as input and return the corresponding cut
+% configuration. By having such a tool we can execute a targeted search for exotic
+% frictional properties. Particularly, we are interested in nonlinear and possibly
+% even negative friction coefficients. Friction is essentially observed to
+% increase with increasing load on the frictional surface, and we often describe
+% this as having a positive friction coefficient. However, if we are able to
+% couple the stretching of the sheet with friction we might be able to break this
+% barrier for the coefficient. By imagining some nanomachine which translates
+% downward pressure into either compression of expansion of the altered graphene,
+% we could have a coupling between downward pressure and stretch of the sheet. In
+% that case, a friction force depending on stretch could effectively be made to
+% decrease with increasing load which would correspond to a negative friciton
+% coeffcient following this definition (formulate such that we do not imply free
+% acceleration from nothing).
+
+% One of the features from inverse design, seperating it from the general class of
+% ML approaches, is that we do not depend on trusting the ML predictions. While a
+% standard neural network might be extremely efficient on a certain prediciton
+% task we have usually no information on how these predictions are based. We say
+% that the internal workings of the network is a black box beyond our capacaity of
+% interpretation. However, for the inverse design problem we are prompted with a
+% few promising design propsals which can immediately be tested in the MD
+% simulations which we will regard as the most reliable predictor in this setting.
+% Hence, if arriving at a successful design in alignment our search prompt, we can
+% disregard any uncertainty in the network. In that case the remaining gap to
+% bridge is that of the MD simulation and real life implementations. 
+
+
+
+
+% The good thing about the process of inverse design is that the uncertainty and
+% missing information from the network (black box) is not important if we are
+% able to locate a working design. Thus we can test the suggested design and
+% remove the doubt of whether this is a good design or not. Thus we do not have
+% to trust the network prediction at all. However, if the predictions is not
+% accurate enough we will most liekely never get any usefull designs from the ML
+% process, but at least we will be informed whether the designs are good or bad
+% in the end with respect to the simulations. However the question is rather if
+% we can trust the simulation results. In the ned we should test the designs in
+% real life to be completely sure and thus the certainity of the quality of any
+% proposed designs is determined by the simulation quality. 
 
 
 % \section{Applications}
 
 %
 \section{Objective of the study}
-% Defining the goal of the thesis and restrictions
-% Make bullet point objectives for the thesis and state which is completed, which is perhaps not conslusive and which I did not answer at all. Perhaps also make a list of problems/questions to answer (also state which one I actually answer here).
+% Defining the goal of the thesis and restrictions Make bullet point objectives
+% for the thesis and state which is completed, which is perhaps not conslusive
+% and which I did not answer at all. Perhaps also make a list of
+% problems/questions to answer (also state which one I actually answer here).
 
 \begin{enumerate}
-    \item Design a MD simulation to evaluate the frictional properties of the grpahene sheet under different variations of cut patterns, stretching and loading, among other physical variables.
-    \item Train a network to replace the MD simulation completely.
-    \item (Variation 1) Do an accelerated search using the ML network for exotic frictional properties such as low and friction coeffcients and a strong coupling between stretch and friction. 
-    \item (Variation 2) Make a GAN network using the first network and predict cut configurations for some of the above mentiond frictional properties.
-    \item (If I have time) Make a nanomachine that couples load and stretch (perhaps just artificially without any molecular mechanism) to test the hypothesize of a negativ friction coefficient. 
+    \item Design a MD simulation to evaluate the frictional properties of the
+    grapehene sheet under different variations of cut patterns, stretching and
+    loading, among other physical variables.
+    \item Find suitable kirigami patterns which exhibit out of plane buckling under tensile load.
+    \item Create a procedure for generating variaiton of the selected kirigami patterns along with random walk based cut patterns in order to create a dataset for ML training. 
+    \item Train a neural network to replace the MD simulation completely.
+    \item (Variation 1) Do an accelerated search using the ML network for exotic
+    frictional properties such as low and friction coeffcients and a strong
+    coupling between stretch and friction. 
+    \item (Variation 2) Make a GAN network using the forward network in order to extract cut configuration proposals for above frictional properties.
+    \item Make a nanomachine or artifical numerical setup which couples normal load and stretch with the intention of making a proof of concept for negative friction coefficients. 
 \end{enumerate}
 
 
@@ -113,28 +206,32 @@ How is the thesis structured.
 
 
 
-% \section{Introduction to friction and motivation}
-% friction a part of the (wider) field tribology.
+% \section{Introduction to friction and motivation} friction a part of the
+% (wider) field tribology.
 
-% \begin{itemize}
-%     \item Where is friction important (motivation)
-%     \item The economical interest in tribology (quote)
-%     \item The missing knowdelegde about friction.
-%     \item What possibilities do we have if we could control friction (friction coefficient).
-% \end{itemize}
+% \begin{itemize} \item Where is friction important (motivation) \item The
+%     economical interest in tribology (quote) \item The missing knowdelegde
+%     about friction. \item What possibilities do we have if we could control
+%     friction (friction coefficient). \end{itemize}
 
 
-% \begin{itemize}
-%     \item Nanotribology
-%     \item Quantitative Structure-Property Relationship
-%     \item Forward simulation using ML
-%     \item Inverse designs
-% \end{itemize}
+% \begin{itemize} \item Nanotribology \item Quantitative Structure-Property
+%     Relationship \item Forward simulation using ML \item Inverse designs
+%     \end{itemize}
 
 
-% Practically, systems achieving low values of dry sliding friction are of great technological interest to significantly reduce dissipation and wear in mechanical devices functioning at various scales. (Current trends in the physics of nanoscale friction)
+% Practically, systems achieving low values of dry sliding friction are of great
+% technological interest to significantly reduce dissipation and wear in
+% mechanical devices functioning at various scales. (Current trends in the
+% physics of nanoscale friction)
 
-% These experiments have demonstrated that the relationship between friction and surface roughness is not always simple or obvious. (Introduction to Tribology, p. 527).
+% These experiments have demonstrated that the relationship between friction and
+% surface roughness is not always simple or obvious. (Introduction to Tribology,
+% p. 527).
 
 
-% “In other words, it’s not just the material itself” that determines how it slides, but also its boundary condition — including whether it is loose and wrinkled or flat and stretched tight, he says. (https://news.mit.edu/2016/sliding-flexible-graphene-surfaces-1123).<-- Talking about quality of contact for friciton.
+% “In other words, it’s not just the material itself” that determines how it
+% slides, but also its boundary condition — including whether it is loose and
+% wrinkled or flat and stretched tight, he says.
+% (https://news.mit.edu/2016/sliding-flexible-graphene-surfaces-1123).<--
+% Talking about quality of contact for friciton.
