@@ -365,43 +365,50 @@ as seen for single aperity theories as well \cite{CARBONE20082555}.
 
 
 \subsection{Nanoscale - Atomic scale}
-Going from a micro- to nanoscale, on the order of \SI{e-9}{m} meter, it has been
+Going from a micro- to a nanoscale, on the order of \SI{e-9}{m}, it has been
 predicted that continnum mechanics will break down \cite{luan_breakdown_2005}
 due to the discreteness of individual atoms. Note that atom spacing lies in the
 domain of a few ångströms Å (\SI{e-10}{m}) and thus we take the so-called atomic-scale to be a part of the nanoscale regime. In a numerical
 study by Mo et al.\ \cite{mo_friction_2009} (considering asperity radii of 5-30
 nm) it has been shown that the asperity area $A_{\text{asp}}$, defined by the
-circumfereance of the apparent asperity contact zone, is in fact sublinear with
+circumfereance of the contact zone, is sublinear with
 $F_N$. This is accommodated by the observation that not all atoms within the
 circumfereance make chemical contact with the substrate. By
 modelling the real contact area $A_{\text{real}} = NA_{\text{atom}}$, where $N$ is the amount of atoms within the range of chemical interaction and
-$A_{\text{atom}}$ is the associated surface area, they found a consistent
+$A_{\text{atom}}$ the associated surface area for an atom, they found a consistent
 linear relationship between friction and the real contact area. Without adhesive
 forces this lead to a similar linear relationship $F_{\text{fric}} \propto F_N$,
 while adding van der Waals adhesion to the simulation gave a sublinear
 relatinship, even though the $F_{\text{fric}} \propto A_{\text{real}}$ was
-maintained. This result emphasizes that the contact area is still expected to be play an important role in nanoscale asperity theory. It is simply the definition of the contact area that undergoes a change when transistioning from micro- to
-nanoscale. 
+maintained. This result emphasizes that the contact area is still expected to be play an important role at the nanoscale for asperity theory. It is simply the definition of the contact area that undergoes a change when transistioning from micro- to nanoscale. 
 
 However, considering the simulation setup of our numerical study, a flat sheet
 on a flat substrate, the lack of asperities make it unfounded to rely on
 asperity theories. Although both numerical and experimental research have been
 done for so-called nanoflakes sliding on a substrate, no investigation is
-reported on the dependence of friction force on contact area (\hl{to do best of
-my knowledge}). One reasonable explanation for this is the idea that the contact
+reported on the dependence of friction force on contact area (\hl{to the best of
+my knowledge at least}). One reasonable explanation is that the contact
 area is already maxed out for atomic smooth surfaces. Since a dependency on
 normal load is still reported in most nanoflake studies (see section
 \ref{sec:expected_prop} \hl{or give details on studies here?}), this suggests
-that some other mechanism is governing for friction at this level. Before diving
-into alternative theoretical approaches to adress this issue we point out that the transistion between nanoscale asperities and atomic smooth surfaces is of outermost importance for the objective of this thesis. By introducing kirigami cuts and stretching the sheet we expect to see an out of plane buckling which might induce an ensemble of asperities. Hence, we might hypothesize that such a transsition will contribute to a significant change in the goverening mechanism of friction bridgering two (poorly understood) theoretical domains 
+that some other mechanisms are governing friction at this level. Before diving
+into alternative theoretical approaches to adress this issue we point out that exactly this transistion, between nanoscale asperities and atomic smooth surfaces, is of outermost importance for the objective of the thesis. By introducing kirigami cuts and stretching the sheet we expect to see an out of plane buckling which induce an ensemble of asperities on the sheet. Hence, we might hypothesize that such a transsition will contribute to a significant change in the goverening mechanism of friction bridgering two (poorly understood) theoretical domains 
 \\
 \\
-%
-%
-% Working here 
-%
-%
-In the lack of noteworthy structural asperities, friction can instead be modelled as a consequencse of the rough potential of the atomic landscape. A series of models builds on this idea by considering different ways for the atoms to interact interatomically, with moving body, and the substrate. In figure \ref{fig:PT_FK_FKT} three major models 1D models is displayed. The time-honered  Prandtl-Tomlinson (PT) model describes a point-like tip sliding over a space-periodic fixed crystalline surface with a harmonic coupling to the \textit{moving body}. This is analog to that of an experimental cantilever (experimental name). Further extensions was added in the Frenkel-Kontorova (FK) model by substituting the tip with a chain of harmonic coupled atoms dragged from the end (I am not sure that the figure is correct here by drawing a spring), and finally combinned in the Frenkel-Kontorova-Tomlinson (FKT) with the addition of a harmonic coupling between the chain and the moving body.
+In the lack of noteworthy structural asperities, friction can instead be
+modelled as a consequencse of the rough potential of the atomic landscape. A
+series of models builds on this idea by considering different ways for the atoms
+to interact interatomically, with the moving body, and the substrate. In figure
+\ref{fig:PT_FK_FKT} three of the most common 1D models is displayed. The
+time-honered Prandtl-Tomlinson (PT) model describes a point-like tip sliding
+over a space-periodic fixed crystalline surface with a harmonic coupling to the
+\textit{moving body}. This is analog to that of an experimental cantilever used
+for Atomic Force Microscopy (see section \ref{sec:SPM}). Further extensions was
+added in the Frenkel-Kontorova (FK) model by substituting the tip with a chain
+of harmonic coupled atoms dragged from the end (\hl{I am not sure that the
+figure is 100\% correct by drawing a spring like that}), and finally combinned
+in the Frenkel-Kontorova-Tomlinson (FKT) with the addition of a harmonic
+coupling between the chain and the moving body. In the following we will disucss the FK model as this gives provides a sufficient foundation for the understanding of smooth nanoscale friction.
 
 \begin{figure}[H]
   \centering
@@ -409,14 +416,6 @@ In the lack of noteworthy structural asperities, friction can instead be modelle
   \caption{\hl{Temporary} figure from \url{https://www.researchgate.net/figure/llustrations-of-the-1D-PT-FK-and-FKT-models-Large-solid-spheres-represent-tip-atoms_fig1_257670317}}
   \label{fig:PT_FK_FKT}
 \end{figure}
-
-
-
-% \hl{Search for experimental and numerical studies of nanoflakes (ideally with graphene) to talk about expectations here.} 
-
-
-
-
 
 
 
@@ -466,17 +465,15 @@ In the lack of noteworthy structural asperities, friction can instead be modelle
 % Based on \cite{Manini_2016} and \cite{FK2D}.
 
 The standard Frenkel-Kontorova (FK) model consists of a 1D chain of $N$ classical
-particles of equal mass, representing atoms, interacting via hamornic forces and moving in a sinusoidal potential as sketched in figure \ref{fig:FK_model}. The hamiltonian
-is 
+particles of equal mass, representing atoms, interacting via hamornic forces and moving in a sinusoidal potential as sketched in figure \ref{fig:FK_model} \cite{Manini_2016}. The hamiltonian is 
 \begin{align}
   H = \sum_{i=1}^N \left[\frac{p_i^2}{2m} + \frac{1}{2}K(x_{i+1} - x_i - a_c)^2 + \frac{1}{2}U_0 \cos{\left(\frac{2\pi x_i}{a_b}\right)}\right],
   \label{eq:H_FK}
 \end{align}
 where the atoms are labelled sequently $i = 1, \hdots, N$. The first term $p_i^2/2m$ represents the kinetic energy with momentum $p_i$
-and mass $m$. Often the effetcs of inertia are neglected, reffered to as the static FK model, while the inclusion, as shown in eq.~\eqref{eq:H_FK}, is known as the dynamic FK model \cite{FK2D}. The next term describes the harmonic interaction with elastic
+and mass $m$. Often the effetcs of inertia are neglected, reffered to as the static FK model, while the inclusion, as shown here in eq.~\eqref{eq:H_FK}, is known as the dynamic FK model \cite{FK2D}. The next term describes the harmonic interaction with elastic
 constant $K$, nearest neighbour distance $\Delta x = x_{i+1} - x_i$ and 
-corresponding nearest neighbour equilibrium distance $a_c$. The final term represents the periodic substrate potential (external potential on site) with amplitude $U_0$ and period $a_b$. Different boundary choices can be made where both free ends nad periodic conditions gives reasonable results. The choice of fixed ends however makes the chain incapable of sliding.
-
+corresponding nearest neighbour equilibrium distance $a_c$. The final term represents the periodic substrate potential (external potential on site) with amplitude $U_0$ and period $a_b$. Different boundary choices can be made where both free ends and periodic conditions gives similar results. The choice of fixed ends however makes the chain incapable of sliding.
 
 \begin{figure}[H]
   \centering
@@ -485,20 +482,31 @@ corresponding nearest neighbour equilibrium distance $a_c$. The final term repre
   \label{fig:FK_model}
 \end{figure}
 
-To probe static friction one can apply an external force which increases adiabatically until sliding accours. This corresponds to the static FK model and it turns out that the sliding properties are entirely governed by its topological excitations referred to as so-called \textit{kinks} and \textit{antikinks}
+To probe static friction one can apply an external adiabatically increasing force until sliding accours. This corresponds to the static FK model, and it turns out that the sliding properties are entirely governed by its topological excitations referred to as so-called \textit{kinks} and \textit{antikinks}
 
-\paragraph*{Commensurability} We can describe the frictional behvaiour in terms of commensurability, that is, how well the spacing of the atoms match the periodic substrate potential. We describe this by the length ratio $\theta = a_b / a_c = N / M$ where $M$ denotes the number of minemas in the potential (within the length of the chain). A rational number for $\theta$ means that we can align the atoms in the chain perfectly with the minemas, without stretching the chain, corresponding to a \textit{commensurate} case. If $\theta$ is irrational the chain and substrate cannot fully align, and we denote this as being \textit{incommensurate}.
+\paragraph*{Commensurability} We can subdivide the frictional behaviour in terms of commensurability, that is, how well the spacing of the atoms match the periodic substrate potential. We describe this by the length ratio $\theta = a_b / a_c = N / M$ where $M$ denotes the number of minemas in the potential (within the length of the chain). A rational number for $\theta$ means that we can align the atoms in the chain perfectly with the minemas, without stretching the chain, corresponding to a \textit{commensurate} case. If $\theta$ is irrational the chain and substrate cannot fully align without stretching of the chain, and we denote this as being \textit{incommensurate}.
 
-We begin with the simplest commensurate case of $\theta = 1$ where the
-spacing of the atoms matches perfectly the substrate potential periodicity, i.e.
+We begin with the simplest commensurate case of $\theta = 1$ where the spacing
+of the atoms matches perfectly with the substrate potential periodicity, i.e.\
 $a_c = a_b$, $N = M$. The ground state (GS) is the configuration where each atom
-fits in one of the substrate minema. By adding an extra atom we would effectively
-shift over some atoms, away from these ideal state, giving rise to a kink excitation, i.e. two atoms will have to share the same potential corrugation as
-sketched in figure \ref{fig:incommensurable_example}.  On the other hand, removing an atom from the chain results in a antikink excitation where one potential corrugation will be left ``atomless''. In order to reach a local minimum the kink
-(antikink) will expand in space over a finite length such that the chain undertakes a local compression (expansion). When applying a tangential force to the
-chain it is much easier for a kink to move along the chain than it is for the non-exicted atoms since the activation energy $\epsilon_{PN}$ for a kink displacement is systematically smaller (often much smaller) than the potential barrier $U_0$. Thus, the motion of kinks (antikinks), i.e. the displacement of extra atoms (atom vacancies), is represententing the fundamental mechanism for mass transport. These displacements is responsible for the mobility, diffusivity and conductivity within this model. 
+fits in one of the substrate minema. By adding an extra atom we would
+effectively shift over some atoms, away from this ideal state, giving rise to a
+kink excitation, i.e.\ two atoms will have to ``share'' the same potential
+corrugation as sketched in figure \ref{fig:incommensurable_example}.  On the
+other hand, removing an atom from the chain results in an antikink excitation
+where one potential corrugation will be left ``atomless''. In order to reach a
+local minimum the kink (antikink) will expand in space over a finite length such
+that the chain undertakes a local compression (expansion). When applying a
+tangential force to the chain it is much easier for an excitation to move along
+the chain than it is for the non-exicted atoms since the activation energy
+$\epsilon_{PN}$ for a kink/antikink displacement is systematically smaller
+(often much smaller) than the potential barrier $U_0$. Thus, the motion of kinks
+(antikinks), i.e.\ the displacement of extra atoms (atom vacancies), is
+represententing the fundamental mechanism for mass transport. These
+displacements are responsible for the mobility, diffusivity and conductivity
+within this model. 
 
-In the ideal zero temperature commensurable case with an adiabatical increase in force, all atoms would be put into an accelerating motion as soon the lowest energy $NU_0$ is present. However, in reality any thermal excitation would excite the system before this point is reached by the creation of kink-antikink pairs that would travel down the chain. For a chain of finite length these often accour at the end of the chain running in opposite direction. As a kink travels down the chain the atoms is advanced by one atom spacing $a_b$ along the substrate potential. This cascade of kink-antikink exications is shown in figure \ref{fig:kink_antikink}
+In the ideal zero temperature commensurable case with an adiabatical increase in force, all atoms would be put into an accelerating motion as soon as the potential barrier energy is present ($\sim NU_0$ for sufficiently stiff springs). However, in reality any thermal excitation would excite the system before this point is reached resulting in kink-antikink pairs traveling down the chain. For a chain of finite length these often accour at the end of the chain running in opposite direction. As a kink travels down the chain the atoms is advanced by one lattice spacing $a_b$ along the substrate potential. This cascade of kink-antikink exications is shown in figure \ref{fig:kink_antikink}
 
 \begin{figure}[H]
   \centering
@@ -507,14 +515,14 @@ In the ideal zero temperature commensurable case with an adiabatical increase in
   \label{fig:kink_antikink}
 \end{figure}
 
-For the 2D case where an island is deposited on a surface, in our case the graphene sheet on the Si substrate, we generally also expect the sliding to be initated by kink-antikink pairs at the boundary. 
+For the 2D case where an island (or flake) is deposited on a surface, in our case the graphene sheet on the Si substrate, we generally also expect the sliding to be initated by kink-antikink pairs at the boundary. 
 
-For the case of incommensurability, i.e. $\theta = a_b/a_c$ is irrational, the
+For the case of incommensurability, i.e.\ $\theta = a_b/a_c$ is irrational, the
 GS is characterized by a sort of ´´staircase'' deformation. That is, the chain
 will exhibit regular periods of regions where the chain is slightly compressed
 (expanded) to match the substrate potential, seperated by kinks (antikinks),
 where the increased stress is eventually released through a localized expansion
-(compression) as illustrated in figure \ref{fig:incommensurable_example} \hl{Go though this again and make sure that I got the compression expansion directions rihgt...}.
+(compression) as illustrated in figure \ref{fig:incommensurable_example} \hl{Go through this last part  again. Even though this is what the source says I'm not quite sure I understand why it is not opposite ``...released through a localized compression (expansion)''?}.
 
 \begin{figure}[H]
   \centering
@@ -524,7 +532,7 @@ where the increased stress is eventually released through a localized expansion
   Incommensurable case ($\theta = ?$) where atoms sits slightly closer than
   otherwise dictated by the substrate potential for which this regularly result
   in a kink here seen as the presence of two atoms closely together in on of the
-  potential wells.}
+  potential corrugations.}
   \label{fig:incommensurable_example}
 \end{figure}
 
@@ -533,14 +541,13 @@ where the increased stress is eventually released through a localized expansion
 The incommensurable FK model contains a critical elastic constant $K_c$, such
 that for $K > K_c$ the static friction $F_s$ drops to zero, making the chain able to initiate a slide at no energy cost, while the low-velocity kinetic friction is dramatically reduced. This can be explained by the
 fact that the displacement accouring in the incommensurable case will yield just
-as many atoms climbing up a corrugation as there are atoms climbing down. For an
-infinite chain this will exactly balance the forces making it
+as many atoms climbing up a corrugation as there are atoms climbing down. For a big (infinite) chain this will exactly balance the forces making it
 non-resistant to sliding. Generally, incommensurability guarantees that the
-total energy (for $T=0$) is independent of the relative position to the
+total energy (at $T=0$) is independent of the relative position to the
 potential. However, when sliding freely a single atom will eventually occupy a
 maximum of the potential. When increasing the potential magnitude $U_0$ or
 softning the chain stiffness, lowering $K$, the possibility to occupy such a
-maximum is no longer present. This marks the so-called \text{Aubry transition}
+maximum dissapears. This marks the so-called \text{Aubry transition}
 at the critical elasric constant $K = K_c(U_0, \theta)$ where the chain goes
 from a free sliding to a \textit{pinned state} with a nonzero static friction.
 $K_c$ is a discontinuous function of the ratio $\theta$, due to the reliance on
@@ -548,7 +555,7 @@ irrational numbers for incommensurability. The minimal
 value $K_c \simeq 1.0291926 $ in units $[2 U_0 (\pi / a_b)^2]$ is achieved for
 the golden-mean ratio $\theta = (1+\sqrt{5}/2)$. Notice that the pinning is
 provided despite translational invariance due to the inaccessibility to move
-past the energy barrier which act as dynamical constraint. The Aubry transistion
+past the energy barrier which act as a dynamical constraint. The Aubry transistion
 can be invistigated as a first-order phase transistion for which power laws can be
 defined for the order parameter. This is beyond the scope of this thesis as we
 merely are going to point to the FK model for the understanding of stick-slip
@@ -559,8 +566,8 @@ tribological context. Despite the misleadning name this referes to the case
 where the static friction is zero while the kinetic friction is nonzero but
 reduced. For the case of a 2D sheet it is possible to alter the commensurability
 by changing the orientation of the sheet relative to the substrate. This has
-been shown for a graphene flake (single layer) sliding over a graphite surface
-(multiple layers) \cite{DIENWIEBEL2005197}. In figure \ref{fig:graphene_rot} we see how the friction depends on the relative orientatin between the sheet and substrate.
+been shown for a graphene flake sliding over a graphite surface
+(multiple layers of graphene) \cite{DIENWIEBEL2005197} as shown in figure \ref{fig:graphene_rot}. We clearly see that friction changes as a function of orientation angles with only two spikes of considerable friction force.
 
 
 \begin{figure}[H]
@@ -583,25 +590,49 @@ been shown for a graphene flake (single layer) sliding over a graphite surface
 % Consequently, the FK model is the simplest model in which dynamic friction is emergent, while in other models some form of heuristic damping must be included.\cite{FK2D}
 
 In the FK model the kinetic friction is primarily caused by resonance between
-the sliding induced vibrations and phonon modes in the chain \cite{FK2D}. When all atoms are sliding rigidly width center of mass velocity $v_{{\text{CM}}}$ the atoms will pass the potential maxima with the so-called \textit{washboard frequency} $\Omega = 2\pi v_{{\text{CM}}} / a_b$. For a weak coupling between the chain and the potential we can use the zero potential case as an approximation for which the known dispersion relation for the 1D harmonic chain is given [Kittel]
+the sliding induced vibrations and phonon modes in the chain \cite{FK2D}. The specific dynamics is found to be highly model and dimension specific, and even for the 1D case this is rather complex. However, we make a simplified analysis of the 1D case to showcase the reasoning behind the phenomena.
+
+When all atoms are sliding rigidly width center of mass velocity $v_{{\text{CM}}}$ the atoms will pass the potential maxima with the so-called \textit{washboard frequency} $\Omega = 2\pi v_{{\text{CM}}} / a_b$. For a weak coupling between the chain and the potential we can use the zero potential case as an approximation for which the known dispersion relation for the 1D harmonic chain is given [Kittel (\hl{add to bibliography})]
 \begin{align*}
   \omega_k = \sqrt{\frac{4 K}{m}} \left|\sin{\left(\frac{k}{2}\right)}\right|,
 \end{align*}
-where $omega_k$ is the phonon frequency and $k = 2\pi i / N$ the wavenumber with $i\in [N/2, N/2)$. Strong resonance will accour if $\Omega$ is close to the frequency of the phonon modes $\omega_q$ in the chain with wavenumber $q = 2\pi a_c / a_b = 2\pi \theta^{-1}$ or its harmonics $nq$ for $n = 1, 2, 3, \hdots$ \cite{van_den_Ende_2012}. Thus, we can approximate the resoancne speed as s
+where $\omega_k$ is the phonon frequency and $k = 2\pi i / N$ the wavenumber with $i\in [N/2, N/2)$. Resonance will accour when the washboard frequency $\Omega$ is close to the frequency of the phonon modes $\omega_q$ in the chain with wavenumber $q = 2\pi a_c / a_b = 2\pi \theta^{-1}$ or its harmonics $nq$ for $n = 1, 2, 3, \hdots$ \cite{van_den_Ende_2012}. Thus, we can approximate the resonance COM speed as
 \begin{align*}
     n \Omega &\sim \omega_{nq} \\
-    n \frac{2\pi v_{\text{CM}}}{a_b} &\sim 2 \sqrt{\frac{K}{m}} \left| \sin{\left(\frac{2n \pi \theta^{-1}}{2}\right)}\right| \\
+    n \frac{2\pi v_{\text{CM}}}{a_b} &\sim \sqrt{\frac{4K}{m}} \left| \sin{\left(\frac{2n \pi \theta^{-1}}{2}\right)}\right| \\
     v_{\text{CM}} &\sim \frac{\sin{(n\pi \theta^{-1})}}{n \pi} \sqrt{\frac{Ka_b^2}{m}}.
 \end{align*}
-When the chain slides with a velocity around resonance speed, the washboard frequency can excite acoustic phonons which will dissipate to other phonon modes as well. At zero temperature the energy will transform back and forth between internal degrees of freedom and center of mass movement of the chain. Hence, at zero temperature this will infact speed up the translation decay (decay is synonymous for translational movement right?). However, for the more realistic case of non-zero temperature the substrate serves as a thermostat for which energy will dissipate from the chain to the substrate degrees of freedom giving rise to kintetic friction. On the other hand, this predicts that certain sliding speed, which does not induce phonon resossance, will be subject to extremely low kinetic friction. This is strongly connected to the superlubricity term although ths phonon dynamics is simplified in this 1D model. 
+When the chain slides with a velocity around resonance speed, the washboard
+frequency can excite acoustic phonons which will dissipate to other phonon modes
+as well. At zero temperature the energy will transform back and forth between
+internal degrees of freedom and center of mass movement of the chain. Hence, at
+zero temperature this is in fact theorized to speed up the translational decay.
+However, for the more realistic case of a non-zero temperature the substrate
+serves as a thermostat, for which energy will dissipate from the chain to the
+substrate degrees of freedom, giving rise to kintetic friction. This suggets
+that certain sliding speeds will exhibit relatively big kinetic friction while
+others will be subject to extremely low kinetic friction. Simulations of
+concentric nanotubes in relative motion (telescopic sliding) have revealed the
+occurence of certain velocities at which the friction is enhanced, corresponding
+to the washboard frequency of the system \cite{Manini_2016}. The friction
+response was observed to be highly non-linear as the resonance velocities were
+approached. 
 
-A common way to model the non-zero temperature case is by the
-use of a Langevin thermostat, which simulates the dissipation by adding a viscous
-damping force and thermal fluctuations by the addition of Gaussian random forces
-with variance proportional to the temperature (This is covered in more details
-in section \ref{sec:langevin}). In combinatio, this gives rise to a kinetic friction that is both velocity and temperature dependent. 
+% This is strongly connected to the superlubricity term, although the phonon
+% dynamics in this analysis is overly simplified, and additionaly we expect more
+% complex resonance dynamics for higher dimensions. 
 
-By extending the FK model into 2D \cite{FK2D} it can be shown numerically that the friction coefficient generally increases with increasing velocity and temperature resepectively. 
+A common way to model the non-zero temperature case is by the use of a Langevin
+thermostat, which models the dissipation of heat by adding a viscous damping
+force and thermal fluctuations by the addition of Gaussian random forces with
+variance proportional to the temperature (This is covered in more details in
+section \ref{sec:langevin}). In combination, this gives rise to a kinetic
+friction that is both velocity and temperature dependent. 
+
+By extending the FK model into 2D \cite{FK2D} it can be shown numerically that
+the friction coefficient generally increases with increasing velocity and
+temperature resepectively, although the specific of the trend is highly
+sensitive to model parameters. 
 
 
 % Simulations of concentric nanotubes in relative motion (telescopic sliding), have revealed the occurrence of well-defined velocities at which friction is enhanced, corresponding to a washboard frequency resonating with longitudinal [172] or circular [173] phonon modes, leading to enhanced energy dissipation. The frictional response becomes highly non-linear while approaching the critical velocity and, contrary to macroscopic systems, washboard resonances can arise at multiple velocities, especially for incommensurate interfaces where more than one length scale may be in common to the contacting surfaces [172] \cite{Manini_2016}.
@@ -780,7 +811,7 @@ Experimentally nanoscale friction is challenging to approach as the forces, on t
 
 %  Not may nanoflake studies. 
 
-\paragraph*{Scanning Probe Microscopy}
+\paragraph*{Scanning Probe Microscopy}\label{sec:SPM}
 
 Scanning probe microscopy (SPM) includes a variety of experimental methods which
 is used to examine surfaces with atomic resolution \cite[p.
