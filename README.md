@@ -198,11 +198,11 @@
 
 
 
-#### Week 3 (23/01/2023 - 29/01/2023) - Working from Pisa
+#### Week 4 (23/01/2023 - 29/01/2023) - Working from Pisa
 - Working on integration, equations of motion and Langevin thermostat theory
 - Forget to update log the dates is the logging is not completely accurate. 
 
-#### Week 4 (30/01/2023 - 05/02/2023) - Working from Pisa
+#### Week 5 (30/01/2023 - 05/02/2023) - Working from Pisa
 - Discovered that fixmove (no spring) is way more stable and got good results on variable stability for drag speed, T and dt.
 - Got very promising result for mean friction vs stretch with significnat effects on pop up and honeycomb.
 - The normal force load is not really important at the 0.1 to 10 nN scale (which is relatively big load at around 1-10 GPA). This is especially not important for the cut configurations.
@@ -214,10 +214,18 @@
 - Writing friction theory in general.
 
 
-#### Week 5 (06/02/2023 - 12/02/2023) - Working from Pisa
+#### Week 6 (06/02/2023 - 12/02/2023) - Working from Pisa
 - Submitted 45 honeycomb with #stretch x #F_N = 15 x 3 yielding 2024 data points. 
 - Working on theory section 
 - Found problems of running with single core on Egil. Issue it not resolved but 4 cores per job seems to be stable and reasonable.
+
+
+#### Week 7 (13/02/2023 - 19/02/2023) - Working from Pisa
+- Mostly writing
+- and getting a PhD position :) 
+- Submitted draft for revision by Henrik
+
+
 
 ## Things to remember 
 
