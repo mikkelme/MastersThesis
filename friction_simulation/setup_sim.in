@@ -66,7 +66,7 @@ region sheet_region block INF INF $(v_pullblock_yhi+v_eps) $(v_pullblock_ylo-v_e
 group  sheet region sheet_region
 
 ## Pullblocks
-region PB_ylow_region  block INF INF INF $(v_pullblock_yhi+v_eps) ${sheet_substrate_border} INF
+region PB_ylow_region block INF INF INF $(v_pullblock_yhi+v_eps) ${sheet_substrate_border} INF
 region PB_ylow_rigid_region block INF INF INF $((c_full_sheet_ymin + v_pullblock_yhi)/2) ${sheet_substrate_border} INF 
 region PB_yhigh_region block INF INF $(v_pullblock_ylo-v_eps) INF ${sheet_substrate_border} INF
 region PB_yhigh_rigid_region block INF INF $((c_full_sheet_ymax + v_pullblock_ylo)/2) INF ${sheet_substrate_border} INF 
@@ -209,6 +209,7 @@ print "Setting up simulation from read_restart: ${restart_file}"
 # --- Read restart file --- #
 read_restart ${restart_file}
 compute get_S0 S0_info reduce sum y # Retrieve information about S0 via type 3 tmp atom
+compute get_FN_max S0_info reduce sum x # Retrieve information about FN_max via type 3 tmp atom
 
 
 ###############################
@@ -343,7 +344,9 @@ variable S0 equal c_PB_yhigh_rigid_ymin-c_PB_ylow_rigid_ymax    # start len of i
 if ${readable} then "thermo_style custom c_get_S0 c_PB_yhigh_rigid_ymin c_PB_ylow_rigid_ymax" &
 "run 0" &
 "variable S0 equal $(c_get_S0)" &
+"variable FN_max equal $(c_get_FN_max*1e3)"
 "delete_atoms group S0_info"
+
 
 variable S_len equal c_PB_yhigh_rigid_ymin-c_PB_ylow_rigid_ymax # Updated len of inner sheet
 variable stretch_pct equal (v_S_len-v_S0)/v_S0  # Updated stretch pct

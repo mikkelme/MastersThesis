@@ -139,6 +139,21 @@ def read_CNP(filename, create_fig = True):
     plt.plot(time, data['c_cnp_ave_4'], label = "cnp ave_4")
     
     plt.legend()
+    
+    
+def read_tensile(filename, create_fig = True):
+    data = read_ave_time(filename)
+    time = data['TimeStep']
+    stretch = data['v_stretch_pct']
+    if create_fig: plt.figure(num = unique_fignum())
+    
+    ylow = data['c_PB_ylow_fy']
+    yhigh = data['c_PB_yhigh_fy']
+    ylow, yhigh = savgol_filter(100, 3, ylow, yhigh)
+    plt.plot(stretch, ylow, label = 'ylow')
+    plt.plot(stretch, yhigh, label = 'yhigh')
+    plt.legend()
+     
  
 if __name__ == '__main__':
     
@@ -150,10 +165,11 @@ if __name__ == '__main__':
     # read_vel(os.path.join(path,'vel.txt'))
     # read_ystress(os.path.join(path,'YS.txt'))
     
-    read_MSD(os.path.join(path, 'MSD.txt'))
-    read_CN(os.path.join(path,'CN.txt'))
-    read_CNP(os.path.join(path,'cnp.txt'))
+    # read_MSD(os.path.join(path, 'MSD.txt'))
+    # read_CN(os.path.join(path,'CN.txt'))
+    # read_CNP(os.path.join(path,'cnp.txt'))
     
+    read_tensile(os.path.join(path, 'tensile.txt'))
     
     
     
