@@ -50,6 +50,34 @@ rupture_detection ${rupture_detection} &
 """ file ${info_file}
 
 
+
+# ----------  Write restart files ---------- #
+if "${num_stretch_files}<1 || ${run_rupture_test_}" then "jump SELF after_restart"
+
+variable RNSEED index -1  # Random seed (use command-line argument: -var RNSEED $RANDOM, to generate seed)
+if "${RNSEED} >= 0" then "jump SELF RN_restart"  
+
+if "${num_stretch_files}==1" then &
+"restart $(v_relax_steps+v_stretch_steps) stretch_*_restart" &
+"jump SELF after_restart"
+
+variable restart_freq equal floor((v_stretch_steps)/(v_num_stretch_files-1))
+variable       stride equal stride(v_relax_steps,$(v_relax_steps+v_stretch_steps+v_restart_freq),v_restart_freq)
+
+restart  v_stride stretch_*_restart
+
+jump SELF after_restart
+label RN_restart
+
+variable restart_freq  equal floor(v_stretch_steps/(v_num_stretch_files))
+variable start         equal v_relax_steps+(step!=0)*v_restart_freq*ceil((step-v_relax_steps)/v_restart_freq) # interval start
+variable restart_steps equal round(random(v_start,v_start+v_restart_freq,v_RNSEED+1)) # random timestep in [start+1, start + restart_freq]
+restart  v_restart_steps stretch_*_restart
+
+label after_restart
+
+
+
 # ----------  Relax sheet ---------- #
 # Add spring to restrict rotation or movement of sheet COM:
 #  - Hold PB COM in initial x-position
@@ -76,29 +104,7 @@ unfix PB_ylow_x_hold
 unfix PB_high_x_hold
 unfix sheet_COM_hold
 
-# ----------  Write restart files ---------- #
-if "${num_stretch_files}<1 || ${run_rupture_test_}" then "jump SELF after_restart"
 
-variable RNSEED index -1  # Random seed (use command-line argument: -var RNSEED $RANDOM, to generate seed)
-if "${RNSEED} >= 0" then "jump SELF RN_restart"  
-
-if "${num_stretch_files}==1" then &
-"restart $(v_relax_steps+v_stretch_steps) stretch_*_restart" &
-"jump SELF after_restart"
-
-variable restart_freq equal floor((v_stretch_steps-1)/(v_num_stretch_files-1))
-variable       stride equal stride(v_relax_steps+1,$(v_relax_steps+v_stretch_steps+v_restart_freq),v_restart_freq)
-restart  v_stride stretch_*_restart
-
-jump SELF after_restart
-label RN_restart
-
-variable restart_freq  equal floor(v_stretch_steps/(v_num_stretch_files))
-variable start         equal v_relax_steps+v_restart_freq*ceil((step-v_relax_steps)/v_restart_freq) # interval start
-variable restart_steps equal round(random(v_start+1,v_start+v_restart_freq,v_RNSEED+1)) # random timestep in [start+1, start + restart_freq]
-restart  v_restart_steps stretch_*_restart
-
-label after_restart
 
 
 # ---------- Stretch sheet ---------- # 

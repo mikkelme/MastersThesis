@@ -134,18 +134,19 @@ class Data_generator:
         proc.config_path = self.config_path
         
         # Multi run settings 
-        num_stretch_files = 15
+        # num_stretch_files = 15
+        num_stretch_files = variables['num_stretch_files']
         
         if F_N is None:
             F_N = np.sort(np.random.uniform(0.1, 10, 3))*1e-9
         
         
-        proc.add_variables(num_stretch_files = num_stretch_files, 
-                           RNSEED = '$RANDOM',
-                           run_rupture_test = 1,
-                           stretch_max_pct = 2.0,
-                           root = '.',
-                           dump_freq = 0)
+        # proc.add_variables(num_stretch_files = num_stretch_files, 
+        #                    RNSEED = '$RANDOM',
+        #                    run_rupture_test = 1,
+        #                    stretch_max_pct = 2.0,
+        #                    root = '.',
+        #                    dump_freq = 0)
         
         
         # Start multi run

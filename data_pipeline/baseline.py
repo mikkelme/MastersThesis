@@ -26,7 +26,7 @@ def baseline_multi_stretch(names, files):
         
         
 def baseline_multi_FN(names, files):
-    """ Vary F_N for 5 different stretch (relative to rupture stretch) """
+    """ Vary F_N for 5 different stretch (relative to rupture stretch of each configuration) """
     
     SMAX = [1.0, 0.33, 0.16]
     for i in range(len(files)):
@@ -43,6 +43,25 @@ def baseline_multi_FN(names, files):
         F_N = np.logspace(-1, 2, 30)*1e-9
         gen.run_multi(F_N, variables, num_procs = 16)
         
+
+def baseline_multi_FN_lin():
+    """ Vary F_N linearly for no stretch nocut sheet """
+    
+    name = 'nocut'
+    file = '../config_builder/baseline/nocut.npy'
+    gen = Data_generator(file, header = f'bigfacet:Baseline_fixmove/{name}', simname = 'multi_FN_lin_even', config_ext = name)
+    variables = {   'num_stretch_files': 1, 
+                    'RNSEED'           : -1,
+                    'run_rupture_test' : 0,
+                    'stretch_max_pct'  : 0,
+                    'root'             : '.',
+                    'dump_freq'        : 0}
+        
+    F_N = np.linspace(0.1, 10, 32)*1e-9
+    gen.run_multi(F_N, variables, num_procs = 1)
+ 
+    
+    
 
 def baseline_temp(names, files):
     """ Vary temperature """
@@ -122,31 +141,32 @@ if __name__ == '__main__':
     
     # baseline_multi_stretch(names, files)
     # baseline_multi_FN(names, files)
+    # baseline_multi_FN_lin()
     
     
-    filenames = get_files_in_folder('../config_builder/baseline/', ext = 'npy')
-    variables = {'dump_freq': 10000,
-                 'stretch_speed_pct': 0.001,
-                 'T': 300}
+    # filenames = get_files_in_folder('../config_builder/baseline/', ext = 'npy')
+    # variables = {'dump_freq': 10000,
+    #              'stretch_speed_pct': 0.001,
+    #              'T': 300}
     
     
-    # Honeycomb
-    file = filenames[0]
-    variables['stretch_max_pct'] = 1.40
-    gen = Data_generator(file, header = f'bigfacet:Baseline_fixmove/honeycomb/contact', simname = 'hon_contact', config_ext = 'contact')
-    gen.run_single(variables, num_procs = 16, copy = True)
+    # # Honeycomb
+    # file = filenames[0]
+    # variables['stretch_max_pct'] = 1.40
+    # gen = Data_generator(file, header = f'bigfacet:Baseline_fixmove/honeycomb/contact', simname = 'hon_contact', config_ext = 'contact')
+    # gen.run_single(variables, num_procs = 16, copy = True)
     
-    #Popup
-    file = filenames[1]
-    variables['stretch_max_pct'] = 0.25
-    gen = Data_generator(file, header = f'bigfacet:Baseline_fixmove/popup/contact', simname = 'pop_contact', config_ext = 'contact')
-    gen.run_single(variables, num_procs = 16, copy = True)
+    # #Popup
+    # file = filenames[1]
+    # variables['stretch_max_pct'] = 0.25
+    # gen = Data_generator(file, header = f'bigfacet:Baseline_fixmove/popup/contact', simname = 'pop_contact', config_ext = 'contact')
+    # gen.run_single(variables, num_procs = 16, copy = True)
     
-    # Nocut
-    file = filenames[2]
-    variables['stretch_max_pct'] = 0.40
-    gen = Data_generator(file, header = f'bigfacet:Baseline_fixmove/nocut/contact', simname = 'nocut_contact', config_ext = 'contact')
-    gen.run_single(variables, num_procs = 16, copy = True)
+    # # Nocut
+    # file = filenames[2]
+    # variables['stretch_max_pct'] = 0.40
+    # gen = Data_generator(file, header = f'bigfacet:Baseline_fixmove/nocut/contact', simname = 'nocut_contact', config_ext = 'contact')
+    # gen.run_single(variables, num_procs = 16, copy = True)
     
     
    

@@ -55,6 +55,34 @@ variable stretch_steps equal $(floor(v_FN_max/v_FN_inc))
 
 
 
+# ----------  Write restart files ---------- #
+if "${num_stretch_files}<1 || ${run_rupture_test_}" then "jump SELF after_restart"
+
+variable RNSEED index -1  # Random seed (use command-line argument: -var RNSEED $RANDOM, to generate seed)
+if "${RNSEED} >= 0" then "jump SELF RN_restart"  
+
+if "${num_stretch_files}==1" then &
+"restart $(v_relax_steps+v_stretch_steps) stretch_*_restart" &
+"jump SELF after_restart"
+
+variable restart_freq equal floor((v_stretch_steps)/(v_num_stretch_files-1))
+variable       stride equal stride(v_relax_steps,$(v_relax_steps+v_stretch_steps+v_restart_freq),v_restart_freq)
+
+restart  v_stride stretch_*_restart
+
+jump SELF after_restart
+label RN_restart
+
+variable restart_freq  equal floor(v_stretch_steps/(v_num_stretch_files))
+variable start         equal v_relax_steps+(step!=0)*v_restart_freq*ceil((step-v_relax_steps)/v_restart_freq) # interval start
+variable restart_steps equal round(random(v_start,v_start+v_restart_freq,v_RNSEED+1)) # random timestep in [start+1, start + restart_freq]
+restart  v_restart_steps stretch_*_restart
+
+label after_restart
+
+
+
+
 # ----------  Relax sheet ---------- #
 # Add spring to restrict rotation or movement of sheet COM:
 #  - Hold PB COM in initial x-position
@@ -82,30 +110,6 @@ unfix PB_high_x_hold
 unfix sheet_COM_hold
 
 
-# ----------  Write restart files ---------- #
-if "${num_stretch_files}<1 || ${run_rupture_test_}" then "jump SELF after_restart"
-
-variable RNSEED index -1  # Random seed (use command-line argument: -var RNSEED $RANDOM, to generate seed)
-if "${RNSEED} >= 0" then "jump SELF RN_restart"  
-
-if "${num_stretch_files}==1" then &
-"restart $(v_relax_steps+v_stretch_steps) stretch_*_restart" &
-"jump SELF after_restart"
-
-variable restart_freq equal floor((v_stretch_steps-1)/(v_num_stretch_files-1))
-variable       stride equal stride(v_relax_steps+1,$(v_relax_steps+v_stretch_steps+v_restart_freq),v_restart_freq)
-restart  v_stride stretch_*_restart
-
-jump SELF after_restart
-label RN_restart
-
-variable restart_freq  equal floor(v_stretch_steps/(v_num_stretch_files))
-variable start         equal v_relax_steps+v_restart_freq*ceil((step-v_relax_steps)/v_restart_freq) # interval start
-variable restart_steps equal round(random(v_start+1,v_start+v_restart_freq,v_RNSEED+1)) # random timestep in [start+1, start + restart_freq]
-restart  v_restart_steps stretch_*_restart
-
-label after_restart
-
 
 # ---------- Load and stretch ---------- # 
 # Variable interpretation
@@ -123,7 +127,7 @@ variable R index 5 # tension = R * normal load
 
 
 # Normal load
-variable load equal (v_FN_inc*step)
+variable load equal (v_FN_inc*(step-v_relax_steps))
 variable load_atom equal -v_load/count(PB_tot)
 fix normal_force PB_tot addforce 0.0 0.0 v_load_atom
 
@@ -134,8 +138,8 @@ variable tension_atom_yhigh equal v_tension/count(PB_yhigh_rigid)
 fix ylow_tension PB_ylow_rigid addforce 0.0 v_tension_atom_ylow 0.0
 fix yhigh_tension PB_yhigh_rigid addforce 0.0 v_tension_atom_yhigh 0.0
 
-# Move S0_info in x-direction to save load (as load*1e-3)
-if  "${num_stretch_files}>=1" then "fix load_save S0_info move linear $(v_load*1e-3) NULL NULL units box"
+# Move S0_info in x-direction to save load (as load*1e-2)
+if  "${num_stretch_files}>=1" then "fix load_save S0_info move linear $(v_FN_inc/dt*1e-2) NULL NULL units box"
 
 # run
 thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct v_load v_tension

@@ -99,7 +99,9 @@ if "${is_ruptured}" then "jump SELF after_drag"
 
 # ---------- Apply normal force ---------- #
 print "--> Apply normal force = $(v_F_N)"
-fix normal_force PB_tot addforce 0.0 0.0 $(-v_F_N/count(PB_tot))
+fix normal_force PB_tot addforce 0.0 0.0 $(-v_F_N/count(PB_tot)) # FN on pull blocks
+# fix normal_force full_sheet addforce 0.0 0.0 $(-v_F_N/count(full_sheet)) # FN on whole sheet
+
 
 if "${rupture_detection}" then "thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct c_sheet_COM[3] c_Ff[3] f_normal_force[3] c_sheet_fz v_sub_sheet_seperation c_bmax" &
 else "thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct c_sheet_COM[3] c_Ff[3] f_normal_force[3] c_sheet_fz v_sub_sheet_seperation"

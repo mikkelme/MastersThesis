@@ -13,10 +13,12 @@ variable SMAX equal $(v_stretch_max_pct)
 variable FN_max equal $(v_F_N) 
 if !${readable} then "jump SELF system_is_running"
 
+
 #######################################
 ### --- Setup from read_restart --- ###
 #######################################
 include ${root}/setup_sim.in
+print ${FN_max}
 
 variable SMAX equal v_stretch_pct # Update stretch_max_pct with val from restart file
 unfix PB_ave 
