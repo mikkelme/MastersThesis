@@ -46,7 +46,6 @@ def baseline_multi_FN(names, files):
 
 def baseline_multi_FN_lin():
     """ Vary F_N linearly for no stretch nocut sheet """
-    
     name = 'nocut'
     file = '../config_builder/baseline/nocut.npy'
     gen = Data_generator(file, header = f'bigfacet:Baseline_fixmove/{name}', simname = 'multi_FN_lin_even', config_ext = name)
@@ -61,7 +60,24 @@ def baseline_multi_FN_lin():
     gen.run_multi(F_N, variables, num_procs = 1)
  
     
+def baseline_multi_coupling():
+    """ Run multiple FN for coupling simulation with configuration of choice """
+    name = 'popup'
+    file = '../config_builder/baseline/pop1_7_5.npy'   
+    gen = Data_generator(file, header = f'bigfacet:Baseline_fixmove/{name}', simname = 'multi_coupling', config_ext = name)
+    variables = {'num_stretch_files': 16, 
+                    'RNSEED'           : -1,
+                    'run_rupture_test' : 1,
+                    "stretch_speed_pct": 0.01,
+                    'F_N'              : 100,
+                    "stretch_max_pct"  : 0.4,
+                    'root'             : '.',
+                    'dump_freq'        : 100000}
+
+    F_N = np.array([0])*1e-9
+    gen.run_multi(F_N, variables, num_procs_initial = 16, num_procs = 1, scripts = ["manual_coupling_stretch.in", "manual_coupling_drag.in"])
     
+        
 
 def baseline_temp(names, files):
     """ Vary temperature """
@@ -142,7 +158,11 @@ if __name__ == '__main__':
     # baseline_multi_stretch(names, files)
     # baseline_multi_FN(names, files)
     # baseline_multi_FN_lin()
+    # baseline_multi_coupling()
     
+    
+    ############################################################################
+
     
     # filenames = get_files_in_folder('../config_builder/baseline/', ext = 'npy')
     # variables = {'dump_freq': 10000,

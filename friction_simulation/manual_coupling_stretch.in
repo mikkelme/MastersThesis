@@ -123,7 +123,7 @@ fix PB_ave_ylow PB_ylow_rigid aveforce NULL 0 NULL
 fix PB_ave_yhigh PB_yhigh_rigid aveforce NULL 0 NULL 
 
 # variables
-variable R index 5 # tension = R * normal load
+variable R index 1 # tension = R * normal load
 
 
 # Normal load

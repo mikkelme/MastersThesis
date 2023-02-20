@@ -96,8 +96,6 @@ velocity PB_tot_rigid set 0 0 0
 fix PB_ave PB_tot_rigid aveforce 0 0 0 # Average force vector completely
 fix normal_force PB_tot addforce 0.0 0.0 $(-v_FN_max/count(PB_tot))
 
-
-
 # ---------- Drag sheet ---------- #
 # Create virtuel atom (place in sheet COM)
 thermo_style custom c_sheet_COM[1]
@@ -133,6 +131,7 @@ fix friction_force_spring all ave/time ${Nevery} ${Nrepeat} ${Nfreq} v_move_forc
 
 # Run
 print "--> Drag : $(v_drag_steps) timesteps, $(v_drag_steps*dt) ps"
+print ${FN_max}
 run  $(v_drag_steps) 
 
 # ------------ After drag ------------ # 

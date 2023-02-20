@@ -117,7 +117,7 @@ class Data_generator:
             os.remove(lammps_file_info)    
                 
     
-    def run_multi(self, F_N = None, variables = {}, num_procs_initial = None, num_procs = 16):
+    def run_multi(self, F_N = None, variables = {}, num_procs_initial = None, num_procs = 16, scripts = None):
         
         # Intialize simulation runner
         proc = Simulation_runner(variables)
@@ -150,7 +150,7 @@ class Data_generator:
         
         
         # Start multi run
-        root_path = proc.multi_run(self.header, self.dir, F_N, num_procs_initial, num_procs = num_procs, jobname = self.config_ext)
+        root_path = proc.multi_run(self.header, self.dir, F_N, num_procs_initial, num_procs = num_procs, jobname = self.config_ext, scripts = scripts)
         
         # Transfer config npy- and png-file 
         proc.move_files_to_dest([self.npy_file, png_file], root_path)

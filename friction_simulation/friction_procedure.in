@@ -1,7 +1,7 @@
 variable dt index 0.001 #0.0025
 variable T index 300.0
 variable relax_time index 2
-variable stretch_speed_pct index 0.01 #0.05 #0.01
+variable stretch_speed_pct index 0.1 #0.05 #0.01
 variable pause_time1 index 5
 variable pause_time2 index 5 
 variable drag_speed index 0.2
@@ -17,13 +17,13 @@ variable drag_dir_y index 1
 # variable F_N index 6.241 # 10 nN
 variable F_N index 1 
 
-variable num_stretch_files index 4
+variable num_stretch_files index 3
 variable run_rupture_test index 0
 
-# include ${root}/manual_coupling_stretch.in
+include ${root}/manual_coupling_stretch.in
 # include ${root}/manual_coupling_drag.in
 
-include ${root}/stretch.in
+# include ${root}/stretch.in
 # include ${root}/drag.in 
 
 
