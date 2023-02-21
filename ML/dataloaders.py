@@ -1,27 +1,34 @@
-import torch
-# import torch.nn as nn
-# import torch.optim as optim
-from torch.utils.data import Dataset
-# from torchvision import models, transforms
-
-import os
-# import PIL.Image
-# import pandas as pd
-
-# from sklearn import preprocessing
-from sklearn.model_selection import train_test_split
-# from sklearn.metrics import average_precision_score
-import numpy as np
-import matplotlib.pyplot as plt
+from module_import import *
+from ML_utils import *
+seed_everything(2023)
+# torch.manual_seed(5400)
 
 
-import csv
+
+
+# import torch
+# # import torch.nn as nn
+# # import torch.optim as optim
+# from torch.utils.data import Dataset
+# # from torchvision import models, transforms
+
+# import os
+# # import PIL.Image
+# # import pandas as pd
+
+# from sklearn.model_selection import train_test_split
+# import numpy as np
+# import matplotlib.pyplot as plt
+
+# import csv
+
+
 
 class KirigamiDataset(Dataset):
     """ Imports the Kirigami Dataset and
     generates dataloaders. """
     
-    def __init__(self, data_root, trvaltest, transform=None, maxfilenum = None):
+    def __init__(self, data_root, trvaltest, transform = None, maxfilenum = None):
         self.data_root = data_root
         self.data_dir = []
         random_seed = 0
@@ -65,7 +72,8 @@ class KirigamiDataset(Dataset):
         return len(self.data_dir)
     
     def __getitem__(self, idx):
-        config = torch.from_numpy(np.load(os.path.join(self.data_dir[idx], 'config.npy')))
+        # config = torch.from_numpy(np.load(os.path.join(self.data_dir[idx], 'config.npy')))
+        config = torch.from_numpy(np.load(os.path.join(self.data_dir[idx], 'config.npy')).astype(np.int32))
         
         sample = {}
         with open(os.path.join(self.data_dir[idx], 'val.csv'), newline='') as csvfile:
@@ -110,19 +118,20 @@ def get_ML_setting(use_gpu = False):
 
    
 if __name__ == "__main__":
-    data_root = 'tmp_data'
-    ML_setting = get_ML_setting(data_root)
+    data_root = '../data_pipeline/tmp_data'
+    ML_setting = get_ML_setting()
     
     sample = KirigamiDataset(data_root, 'train')[0]
     
-    # print(sample['config'])
+    # print(sample.keys())
+    print(sample['config'].size())
     
-    datasets, dataloaders = get_data(data_root, ML_setting, maxfilenum = 100)
-    trainloader = dataloaders['train']
+    # datasets, dataloaders = get_data(data_root, ML_setting, maxfilenum = 100)
+    # trainloader = dataloaders['train']
     # out = next(iter(trainloader))
     
-    num_batches = len(trainloader)
-    print(num_batches)
-    for batch_idx, data in enumerate(trainloader):
-        print(batch_idx)
-        exit()
+    # num_batches = len(trainloader)
+    # print(num_batches)
+    # for batch_idx, data in enumerate(trainloader):
+    #     print(batch_idx)
+    #     exit()

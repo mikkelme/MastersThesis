@@ -80,6 +80,7 @@ def get_data_points(multi_dirs):
             # Read rupture test
             rupture_test_dict = read_info_file(os.path.join(dir, 'rupture_test.txt'))
             data['rupture_stretch'] = rupture_test_dict['rupture_stretch']
+            data['is_ruptured'] = int(info_dict['is_ruptured'])
             
             # Analyse friction file
             if not info_dict['is_ruptured']:

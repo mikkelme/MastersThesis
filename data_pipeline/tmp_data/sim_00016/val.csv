@@ -11,6 +11,7 @@ relax_time,15.0
 pause_time1,5.0
 pause_time2,5.0
 rupture_stretch,0.215385724933355
+is_ruptured,1
 Ff_max,nan
 Ff_mean,nan
 Ff_mean_std,nan

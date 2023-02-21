@@ -11,6 +11,7 @@ relax_time,15.0
 pause_time1,5.0
 pause_time2,5.0
 rupture_stretch,1.3194935201838
+is_ruptured,0
 Ff_max,6.571884545863521
 Ff_mean,1.5870854631454239
 Ff_mean_std,0.01611896318756932
