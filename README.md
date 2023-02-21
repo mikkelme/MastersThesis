@@ -225,6 +225,10 @@
 - and getting a PhD position :) 
 - Submitted draft for revision by Henrik
 
+#### Week 8 (20/02/2023 - 26/02/2023) - Working from Pisa
+- Submitted sims with linear increase of F_N applied to pull blocks and whole sheet respectively
+- Wrote code for simultaneously loading and stretching and submitted test with pop_1_7_5
+- Wrote code for ML framework and did simple training with LeNet on dummy data.
 
 
 ## Things to remember 
