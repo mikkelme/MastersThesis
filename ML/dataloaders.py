@@ -1,32 +1,11 @@
 from module_import import *
 from ML_utils import *
 seed_everything(2023)
-# torch.manual_seed(5400)
-
-
-
-
-# import torch
-# # import torch.nn as nn
-# # import torch.optim as optim
-# from torch.utils.data import Dataset
-# # from torchvision import models, transforms
-
-# import os
-# # import PIL.Image
-# # import pandas as pd
-
-# from sklearn.model_selection import train_test_split
-# import numpy as np
-# import matplotlib.pyplot as plt
-
-# import csv
 
 
 
 class KirigamiDataset(Dataset):
-    """ Imports the Kirigami Dataset and
-    generates dataloaders. """
+    """ Imports the Kirigami Dataset and generates dataloaders. """
     
     def __init__(self, data_root, trvaltest, transform = None, maxfilenum = None):
         self.data_root = data_root
@@ -54,10 +33,8 @@ class KirigamiDataset(Dataset):
         # Reduce number of images | Make random version of this? XXX 
         if maxfilenum: # reduce number of images
             self.data_dir = self.data_dir[:maxfilenum]
-        
-        # Divide into train / validation TODO: What about test?
-        train, val = train_test_split(np.arange(len(self.data_dir)), test_size = 0.20, 
-                                                                         random_state = random_seed)
+      
+        train, val = train_test_split(np.arange(len(self.data_dir)), test_size = 0.20, random_state = random_seed)
 
         if trvaltest == 'train':   # Train mode
             self.data_dir = self.data_dir[train]
@@ -72,7 +49,6 @@ class KirigamiDataset(Dataset):
         return len(self.data_dir)
     
     def __getitem__(self, idx):
-        # config = torch.from_numpy(np.load(os.path.join(self.data_dir[idx], 'config.npy')))
         config = torch.from_numpy(np.load(os.path.join(self.data_dir[idx], 'config.npy')).astype(np.int32))
         
         sample = {}
@@ -96,8 +72,8 @@ def get_data(data_root, ML_setting, maxfilenum = None):
 
     # Dataloaders
     dataloaders = {}
-    dataloaders['train'] = torch.utils.data.DataLoader(datasets['train'], batch_size = ML_setting['batchsize_train'], shuffle=True,  num_workers = 1)
-    dataloaders['val']   = torch.utils.data.DataLoader(datasets['val'],   batch_size = ML_setting['batchsize_val'],   shuffle=False, num_workers = 1)
+    dataloaders['train'] = torch.utils.data.DataLoader(datasets['train'], batch_size = ML_setting['batchsize_train'], shuffle=True,  num_workers = 0) # when to have num_workers > 0 ?
+    dataloaders['val']   = torch.utils.data.DataLoader(datasets['val'],   batch_size = ML_setting['batchsize_val'],   shuffle=False, num_workers = 0) # only for GPU perhaps?
     
     return datasets, dataloaders
     
@@ -107,7 +83,7 @@ def get_ML_setting(use_gpu = False):
     ML_setting = {}
     ML_setting['use_gpu'] = use_gpu
     ML_setting['lr'] = 0.005                # Learning rate
-    ML_setting['batchsize_train'] = 16      
+    ML_setting['batchsize_train'] = 1  # 16    
     ML_setting['batchsize_val'] = 64
     ML_setting['maxnumepochs'] = 35
     ML_setting['scheduler_stepsize'] = 10
@@ -121,17 +97,40 @@ if __name__ == "__main__":
     data_root = '../data_pipeline/tmp_data'
     ML_setting = get_ML_setting()
     
-    sample = KirigamiDataset(data_root, 'train')[0]
+    datasets, dataloaders = get_data(data_root, ML_setting, maxfilenum = None)
+    trainloader = dataloaders['train']
     
-    # print(sample.keys())
-    print(sample['config'].size())
     
-    # datasets, dataloaders = get_data(data_root, ML_setting, maxfilenum = 100)
-    # trainloader = dataloaders['train']
-    # out = next(iter(trainloader))
     
+    
+
+    
+    # test_loader = KirigamiDataset(data_root, 'train')
+    # for i in range(len(test_loader)):
+    #     print(test_loader[i]['stretch'])
+    
+    # list of vowels
+    # phones = ['apple', 'samsung', 'oneplus']
+    # phones_iter = iter(phones)
+
+    
+    # print("go")
+    # loader_iter = iter(trainloader)
+    # for i in range(10):
+    #     out = next(loader_iter)
+    #     print(out)
+    # print("go")
+    # loader_iter = iter(trainloader)
+    # for i in range(10):
+    #     out = next(loader_iter)
+    #     print(out)
+        
+        
+        
     # num_batches = len(trainloader)
     # print(num_batches)
     # for batch_idx, data in enumerate(trainloader):
     #     print(batch_idx)
-    #     exit()
+    # print('next')
+    # for batch_idx, data in enumerate(trainloader):
+    #     print(batch_idx)

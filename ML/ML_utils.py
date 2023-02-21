@@ -1,10 +1,6 @@
 from module_import import *
 
 def seed_everything(seed: int):
-    # import random, os
-    # import numpy as np
-    # import torch
-
     random.seed(seed)
     os.environ['PYTHONHASHSEED'] = str(seed)
     np.random.seed(seed)
@@ -13,7 +9,6 @@ def seed_everything(seed: int):
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = True
 
-# seed_everything(5400)
 
 def get_device(ML_setting):
     # Device
@@ -24,152 +19,117 @@ def get_device(ML_setting):
 
     return device
 
-# def get_outputs(mode, model, data, device):
-#     if mode == 0: # Full image (all channels)
-#         rgb_inputs = data['image'].to(device)
-#         outputs = model(rgb_inputs)
-#         return outputs
 
-#     if mode == 1: # Split image into rgb and infrared channels
-#         rgb_inputs = data['image'][:, 0:3].to(device)
-#         infrared_inputs = data['image'][:, 3:].to(device)
-#         outputs = model(rgb_inputs, infrared_inputs)
-#         return outputs
+def get_inputs(data, device):
+    config = data['config']
+    config_shape = config.size()[1:]
+    stretch = torch.from_numpy(np.array([np.full(config_shape, s, dtype=np.float32) for s in data['stretch']]))
+    FN = torch.from_numpy(np.array([np.full(config_shape, f, dtype=np.float32) for f in data['F_N']]))
+    inputs = torch.stack((config, stretch, FN), 1).to(device) # Gather inputs on multiple channels
+    # XXX For some reason I think the .to(device) is nessecary but check up on it
+    
+    return inputs
+    
+def get_labels(data, device):
+    Ff = torch.from_numpy(np.array(data['Ff_mean'], dtype = np.float32))
+    is_ruptured = torch.from_numpy(np.array(data['is_ruptured'], dtype = np.int32))
+    labels = torch.stack((Ff, is_ruptured), 1).to(device) 
+    # XXX When mergening float32 with int32 I believe it stores both as float32 anyway...
+
+    return labels
 
 
-def train_epoch(model, trainloader, criterion, optimizer, device):
-    model.train() # Put into training mode
+
+
+def train_epoch(model, dataloader, criterion, optimizer, device):
+    model.train() # Training mode
     losses = []
 
-    num_batches = len(trainloader)
+    num_batches = len(dataloader)
     progress_bar_length = 8
     
-    for batch_idx, data in enumerate(trainloader):
-        optimizer.zero_grad() # sets gradients of all optimized torch.Tensor's to zero.
+    for batch_idx, data in enumerate(dataloader):
+        # Zero gradients of all optimized torch.Tensor's
+        optimizer.zero_grad() 
 
-
-        # Inputs
-        config = data['config']
-        config_shape = config.size()[1:]
-        stretch = torch.tensor(np.array([np.full(config_shape, s, dtype=np.float32) for s in data['stretch']]))
-        FN = torch.tensor(np.array([np.full(config_shape, f, dtype=np.float32) for f in data['F_N']]))
-        input = torch.stack((config, stretch, FN), 1).to(device) # Gather inputs on multiple channels
-        # XXX For some reason I think the .to(device) is nessecary but check up on it
-        
-        # Labels
-        Ff = torch.tensor(np.array(data['Ff_mean'], dtype = np.float32))
-        is_ruptured = torch.tensor(np.array(data['is_ruptured'], dtype = np.int32))
-        labels = torch.stack((Ff, is_ruptured), 1).to(device) 
-        
-        # XXX When mergening float32 with int32 I believe it stores both as float32 anyway...
-        
+        # --- Evaluate --- #
+        inputs = get_inputs(data, device)
+        labels = get_labels(data, device)
+        outputs = model(inputs)
+        loss, MSE, BCE = criterion(outputs, labels)
        
-        output = model(input)
-        
-        #
-        # XXX Working here XXX
-        #
-        exit()
-        loss = criterion(outputs, labels)
-        
+        # --- Optimize --- #
         loss.backward()
         optimizer.step()
-        losses.append(loss.item())
+        losses.append([loss.item(), MSE.item(), BCE.item()])
 
-        # print progress
+        # --- print progress --- #
         progress = int(((batch_idx+1)/num_batches)*progress_bar_length)
         print(f'\rLoss : {np.mean(losses):.4f} |{progress* "="}>{(progress_bar_length-progress)* " "}| {batch_idx+1}/{num_batches} ({100*(batch_idx+1)/num_batches:2.0f}%)', end = '')
 
     print()
-    return np.mean(losses)
+    losses = np.array(losses)
+    return np.mean(losses, axis = 0)
 
 
-# def evaluate_model(mode, model, dataloader, criterion, device, numcl):
-#     model.eval()
+def evaluate_model(model, dataloader, criterion, device):
+    model.eval() # Evaluation mode
 
-#     concat_outputs =  np.empty((0, numcl)) # model outputs
-#     concat_preds   =  np.empty((0, numcl)) # model predictions (binary)
-#     concat_labels  =  np.empty((0, numcl)) # data labels
-#     avgprecs = np.zeros(numcl) # average precision for each class
-#     filenames = [] # filenames as they come out of the dataloader
-
-
-#     with torch.no_grad():
-#         losses = []
-#         for batch_idx, data in enumerate(dataloader):
-#             labels = data['label'].to(device)
-#             outputs = get_outputs(mode, model, data, device)
-#             loss = criterion(outputs, labels.type(torch.float))
-#             losses.append(loss.item())
-
-#             cpu_outputs = outputs.to('cpu')
-#             cpu_preds = torch.round(outputs).to('cpu')
-#             cpu_labels = labels.float().to('cpu')
-
-
-
-#             concat_outputs = np.concatenate((concat_outputs, cpu_outputs), axis=0)
-#             concat_preds = np.concatenate((concat_preds, cpu_preds), axis=0)
-#             concat_labels = np.concatenate((concat_labels, cpu_labels), axis=0)
-#             filenames += data['filename']
-
-#         for c in range(numcl):
-#             y_true = concat_labels[:,c]
-#             y_true = np.where(np.logical_and(y_true != 0, y_true != 1), y_true > 0.5, y_true) # fix small label mistakes
-#             y_scores = concat_outputs[:,c]
-#             if np.sum(y_true) != 0:
-#                 avgprecs[c] = average_precision_score(y_true, y_scores)
-#             else:
-#                 avgprecs[c] = 0
-
-#             # true_positives = np.sum(np.logical_and(concat_preds[:,c] == 1, concat_labels[:,c] == 1))
-#             # total_positives = np.sum(concat_preds[:,c])
-#             # if total_positives != 0:
-#             #     precision = true_positives / total_positives
-#             # else:
-#             #     precision = 0
-
-#             # avgprecs[c] = precision
+    with torch.no_grad():
+        losses = []
+        Ff_loss = []
+        rup_loss = []
+        for batch_idx, data in enumerate(dataloader):
+            # --- Evaluate --- #
+            inputs = get_inputs(data, device)
+            labels = get_labels(data, device)
+            outputs = model(inputs)
+            loss, MSE, BCE = criterion(outputs, labels)
+       
+            # --- Analyse --- #
+            losses.append([loss.item(), MSE.item(), BCE.item()])
+            # Possibilities to do some more analysis here for accuracy or whatever
+            # Check IN5400 mandatory 1
+        
+        losses = np.array(losses)
+        return np.mean(losses, axis = 0)
 
 
-#     return avgprecs, np.mean(losses), concat_outputs, concat_labels, concat_preds, filenames
 
-
-def train_and_evaluate(mode, dataloader_train, dataloader_test, model, criterion, optimizer, scheduler, num_epochs, device, numcl):
+def train_and_evaluate(model, dataloaders, criterion, optimizer, scheduler, ML_setting, device):
     best_avgprec = 0
     best_epoch = -1
 
     train_losses = []
-    test_losses = []
-    test_precs = []
+    validation_lossed = []
+    
+    num_epochs = ML_setting['maxnumepochs']
 
     print('Training model')
     for epoch in range(num_epochs):
-        print('-' * 14)
-        print('Epoch: {}/{}'.format(epoch+1, num_epochs))
-
-        avgloss = train_epoch(mode, model, dataloader_train, criterion, device, optimizer )
-        train_losses.append(avgloss)
-
-        if scheduler is not None:
-            scheduler.step()
+        try:
+            print('-' * 14)
+            # print(f'Epoch: {epoch+1}/{num_epochs}')
+            print('Epoch: {}/{}'.format(epoch+1, num_epochs))
 
 
-        avgprecs, avgloss, concat_outputs, concat_labels, concat_preds, filenames  = evaluate_model(mode, model, dataloader_test, criterion, device, numcl)
-        test_precs.append(avgprecs)
-        test_losses.append(avgloss)
+            avgloss = train_epoch(model, dataloaders['train'], criterion, optimizer, device)
+            train_losses.append(avgloss)
 
-        combined_avgprec = np.mean(avgprecs)
-        print(f'avg. precision: {combined_avgprec:.5f}')
+            if scheduler is not None: # TODO: Check this
+                scheduler.step()
 
-        if combined_avgprec > best_avgprec:
-            best_weights = model.state_dict()
-            best_avgprec = combined_avgprec
-            best_epoch = epoch
-            best_scores = concat_outputs
-
+            avgloss = evaluate_model(model, dataloaders['val'], criterion, device)
+            validation_lossed.append(avgloss)
+            
+            # Do more data analysis here?
+        
+        
+        except KeyboardInterrupt: break
+        
+    
     print('-' * 14)
-    return best_epoch, best_avgprec, best_weights, best_scores, train_losses, test_losses, test_precs
+    return np.array(train_losses), np.array(validation_lossed)
 
 # def save_training_history(session_name, train_losses, test_losses, test_precs):
 #     filename = session_name + '_training_history.txt'
