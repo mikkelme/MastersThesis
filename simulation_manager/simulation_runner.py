@@ -104,7 +104,7 @@ class Simulation_runner:
             
     
         
-    def multi_run(self, header, dir, F_N, num_procs_initial = None, num_procs = 16, jobname = 'MULTI', scripts = None):
+    def multi_run(self, header, dir, F_N, num_procs_initial = None, num_procs = 16, jobname = 'MULTI', scripts = None, partition = 'normal'):
         print_info = True # Print ({stretch}, {F_N}) sets
         
         # Abbreviation (avoid calling self.variables a lot)
@@ -172,16 +172,16 @@ class Simulation_runner:
         if num_procs_initial is None:
             num_procs_initial = num_procs
         sim.set_input_script(f"../friction_simulation/{stretch_script}", **self.variables)    
-        # slurm_args = {'job-name':jobname, 'partition':'normal', 'ntasks':num_procs_initial, 'nodes':1}
-        slurm_args = {'job-name':jobname, 'partition':'normal', 'ntasks':num_procs_initial, 'cpus-per-task':1}
+        # slurm_args = {'job-name':jobname, 'partition':partition, 'ntasks':num_procs_initial, 'nodes':1}
+        slurm_args = {'job-name':jobname, 'partition':partition, 'ntasks':num_procs_initial, 'cpus-per-task':1}
         
         
         # --- Jobscript for multi run --- #
         sim.pre_generate_jobscript(num_procs=num_procs_initial, lmp_exec="lmp", slurm_args = slurm_args)    
 
         # Set parameters for stretch 
-        # slurm_args = {'job-name':jobname, 'partition':'normal', 'ntasks':num_procs, 'nodes':1}
-        slurm_args = {'job-name':jobname, 'partition':'normal', 'ntasks':num_procs, 'cpus-per-task':1}
+        # slurm_args = {'job-name':jobname, 'partition':partition, 'ntasks':num_procs, 'nodes':1}
+        slurm_args = {'job-name':jobname, 'partition':partition, 'ntasks':num_procs, 'cpus-per-task':1}
         
         self.variables['root'] += '/../..'
         job_array = 'job_array=('
@@ -189,9 +189,9 @@ class Simulation_runner:
             self.variables['F_N'] = F_N[i]
             self.convert_units(["F_N"])
             sub_exec_list = Device.get_exec_list(num_procs = num_procs, 
-                                                lmp_exec = "lmp", 
-                                                lmp_args = {'-in': self.variables['root']+f'/{drag_script}'}, 
-                                                lmp_var = self.variables | {'out_ext':'drag'}) 
+                                                 lmp_exec = "lmp", 
+                                                 lmp_args = {'-in': self.variables['root']+f'/{drag_script}'}, 
+                                                 lmp_var = self.variables | {'out_ext':'drag'}) 
             job_array += '\n\n\"'
             job_array += Device.gen_jobscript_string(sub_exec_list, slurm_args, linebreak = False)
             job_array += '\"'

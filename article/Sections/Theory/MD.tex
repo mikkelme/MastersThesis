@@ -1,4 +1,4 @@
-\section{Molecular Dynamics}
+\chapter{Molecular Dynamics}
 % \cite[p. 18-]{Manini_2016}
 
 Thanks to advances in computing algorithms and hardware the recent years has witnessed a remarkable increase in our ability to simulate tribological processes in realistic nano-frictional system \cite{Manini_2016}. A Molecular dynamics (MD) simulation can be considered as computational ``experiment''. Given a set of inital conditions and a mathematically model for interatomic forces we can solve Newton's (or equivalent) equation of motion by numerical integration [p. 303]{BHUSHAN20051507}. The interatomic forces are derived from interparticle interaction potentials, which is the heart of MD simulations and the specific choice of potentials can often be quite challenging.
@@ -47,7 +47,7 @@ Alternatives to the MD simulation like Ab inito methods calculate the interactio
 
 
 
-\subsection{Potentials}
+\section{Potentials}
 % \cite{PhysRevB.37.6991}
 
 
@@ -61,7 +61,7 @@ Tersoff and Stillinger–Weber potentials, respectively. A typical 12-6
 Lennard–Jones potential is used to describe the van der Waals adhesive
 interaction between graphene and the substrate. 
 
-\subsubsection{General formulation of potentials (?)}
+\subsection{General formulation of potentials (?)}
 On a general note we can generalize the n-body potential as the expansion in
 orders of participating atoms as 
 \begin{align*}
@@ -83,7 +83,7 @@ the sheet and the substrate we use a Lennard Jones pair potential
 describing the non-bonded van der Waals interaction. This simple interaction model between the moving object and substrate has come to be the standard in friction simulations \cite{zhu_study_2018}, \cite{ZHANG201585}, \cite{Yoon2015MolecularDS}, \cite{kim_nano-scale_2009}. 
 
 
-\subsubsection{Lennard Jones}
+\subsection{Lennard Jones}
 \hl{TODO: Add potential curve figure} \\
 % TODO: Add potential curve figure
 This sections is based on \cite{docs_lammps_LJ}, \cite{C9CP05445F}, \cite{chem_libretexts_LJ}.
@@ -115,7 +115,7 @@ attractive.
 % and substrate) in friction studies.
 
 
-\subsubsection{Stillinger weber}
+\subsection{Stillinger weber}
 % Todo: Add some potential curve figure? or figure of three body angles?
 \hl{TODO: Add potential figure and or figure illustrating three body angles}.
 
@@ -192,7 +192,7 @@ The parameters used for the Si-Si bond modeling is displayed in table
 
 
 
-\subsubsection{Tersoff}
+\subsection{Tersoff}
 % Add figure similar to:
 % https://en.wikipedia.org/wiki/Bond_order_potential#/media/File:Bond-order_interatomic_potential.png,
 % showing bond order curves.
@@ -301,7 +301,7 @@ The parameters used to model the graphene C-C bonds is summarized in table
 
 
 
-\subsection{Integration}
+\section{Integration}
 % https://www.eng.uc.edu/~beaucag/Classes/AdvancedMaterialsThermodynamics/Books/%5BComputational%20science%20(San%20Diego,%20Calif.)%5D%20Daan%20Frenkel_%20Berend%20Smit%20-%20Understanding%20molecular%20simulation%20_%20from%20algorithms%20to%20applications%20(2002,%20Academic%20Press%20)%20-%20libgen.lc.pdf
 
 Having defined a system of particles governed by interartomic potentials we need
@@ -334,7 +334,7 @@ temporal steps $t_k = t_0 + k\Delta t$ with start time $t_0$ and time-step $\Del
 % having an energy error. This is sensitive to time step. 
 
 
-\subsubsection{Velocity Verlet}
+\subsection{Velocity Verlet}
 % http://www.physics.drexel.edu/~valliere/PHYS305/Diff_Eq_Integrators/Verlet_Methods/Diffrntleqn3.pdf
 % ttps://www2.ph.ed.ac.uk/~dmarendu/MVP/MVP03.pdf
 
@@ -426,7 +426,7 @@ numerically is as stated in the following steps.
 %   t}{2} \frac{\mathbf{f}_i(t+\delta t)}{m_i} \end{align*} Make sure to check
 %   this out. 
 
-\subsection{Thermostats}
+\section{Thermostats}
 
 As we already mentioned above in Sec. 2, any kind of sliding friction involves mechanical work, some of which is then transformed into heat (the rest going into structural transformations, wear, etc.). The heat is then transported away by phonons (and electrons in the case of metallic sliders) and eventually dissipated to the environment \cite{Manini_2016}.
 
@@ -435,7 +435,7 @@ As we already mentioned above in Sec. 2, any kind of sliding friction involves m
 Likewise all excitations generated in the simulations should be allowed to propagate in the system and disperese in the bulk of both sheet and substrate. Due to small simulation size theese is likely to relfect back and ´´pile up'' unphysically Thus in order to avoid continuous heating and attain a steady state the (Joule) heat must be removed at a steady state. This is very the viscous damping of the langevin equations enter the picture. It can be difficulut to set the value $\gamma$ for the magnitude of this damping. The unphysical introduction of heat sink can be mittigated by some modifictions he mention, which is kind of next level I guess. 
 
 
-\subsubsection{Langevin thermostat} \label{sec:langevin}
+\subsection{Langevin thermostat} \label{sec:langevin}
 
 % Check out \cite{Manini_2016} for a good theory section on this that I had
 % completely missed when writing this!
@@ -619,7 +619,7 @@ motivaiton for the Langeivn equation.
 % strongly out-of-equilibrium nonlinear phenomena which are the target of the
 % present paper.  \cite{Manini_2016}
 
-\subsubsection{Implementing Langevin}
+\subsection{Implementing Langevin}
 % https://docs.lammps.org/fix_langevin.html
 
 % https://www2.ph.ed.ac.uk/~dmarendu/MVP/MVP03.pdf
@@ -779,7 +779,7 @@ thermostat on.
 % see https://www2.ph.ed.ac.uk/~dmarendu/MVP/MVP03.pdf p. 4
 
 
-\subsection{MD limitations (?)}
+\section{MD limitations (?)}
 
 % One of the limitations of concern is in regard to the simulation scale. Despite relatively fast processor speed and efficient algorithm the number of atoms that can be handled realistically is still insufficient for complex system simulation \cite{kim_nano-scale_2009}.
 
@@ -797,5 +797,5 @@ thermostat on.
 % 207]{gnecco_meyer_2015}
 
 
-\subsection{LAMMPS}
+\section{LAMMPS}
 

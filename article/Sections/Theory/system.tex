@@ -1,11 +1,11 @@
-\section{Defining the system}
+\chapter{Defining the system}
 
 The simmulated system consist of two major parts: A 2D graphene sheet and a 3D Silicon ``bulk'' substrate. These parts interact with a van der Waals force (modelled by the LJ potential). We apply a normal load to the sheet inducing a normal force response between the sheet and substrate. By dragging the sheet along the substrate we measure the responding frictional forces.
 \\
 \\
 \hl{Maybe include a few words about the preceding considerations between two different simulations approaches: The one that we use now and the \textit{graphene skin} setup, where one would consider the graphene sheet as the top part of the substrate and then measure friction with an indenting tip (AFM-style). This would probably be more directed towards grasping robot applications (with ability to stretch and relax the sheet before grasping) or creation of fixed pre-stretched surfaces in the case that certain friction coefficients of interest could be achieved here.}
 
-\subsection{Region definitions (Sheet, pullblocks and substrate)}
+\section{Region definitions (Sheet, pullblocks and substrate)}
 
 The system, sheet and substrate, is further subdivided according to
 functionality in the MD simmulations. The sheet ends is reserved for so-called
@@ -92,7 +92,7 @@ The total system size (without cuts in the sheet) is 27456 atoms, and the distri
 \end{table}
 
 
-\subsection{Numerical procedure}
+\section{Numerical procedure}
 
 The numerical procedure for the friction simulations can be arranged as the following.
 
@@ -127,11 +127,11 @@ The numerical procedure for the friction simulations can be arranged as the foll
 
 At the initial timestep the three nearest neighbours (at distance 1.42 Å) of all graphene atoms is recorded. If these nearest neighbours exceed a threshold of 4 Å this is raises a rupture flag which halt the simulation early. Thus, we effectively prevent any kind of wear on the sheet. For the substrate we do not perform such an analysis but only visually confirms that no wear is accouring under the most extreme simulation parameters. 
 
-\subsection{Creating the sheet}
+\section{Creating the sheet}
 
 We are going to create a 2D sheet graphene sheet. 
 
-\subsubsection{Graphene}
+\subsection{Graphene}
 % (https://community.wvu.edu/~miholcomb/graphene.pdf)
 % https://www.physics-in-a-nutshell.com/article/4/lattice-basis-and-crystal
 
@@ -169,7 +169,7 @@ interatomic distance
 
 
 
-\subsubsection{Indexing}
+\subsection{Indexing}
 
 In order to define the cut patterns applied to the graphene sheet we must define
 an indexing system. We must ensure that this gives an unique description of the
@@ -198,7 +198,7 @@ the nearest neighbours (NN) is decided as
   \label{fig:atom_indexing}
 \end{figure}
 
-\subsubsection{Removing atoms}
+\subsection{Removing atoms}
 
 As a mean to ease the formulation of cut patterns we introduce pseudo center
 element in each gap of the hexagonal honeycombs, see figure
@@ -263,10 +263,10 @@ Illustrate some delete path?
 
 
 
-\subsection{Kirigami patterns}
-\subsubsection{Pop-up}
-\subsubsection{Honeycomb}
-\subsubsection{Random walk}
+\section{Kirigami patterns}
+\subsection{Pop-up}
+\subsection{Honeycomb}
+\subsection{Random walk}
 
 
 

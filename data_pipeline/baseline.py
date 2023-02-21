@@ -48,7 +48,7 @@ def baseline_multi_FN_lin():
     """ Vary F_N linearly for no stretch nocut sheet """
     name = 'nocut'
     file = '../config_builder/baseline/nocut.npy'
-    gen = Data_generator(file, header = f'bigfacet:Baseline_fixmove/{name}', simname = 'multi_FN_lin_even', config_ext = name)
+    gen = Data_generator(file, header = f'egil:Baseline_fixmove/{name}', simname = 'multi_FN_lin_even', config_ext = name)
     variables = {   'num_stretch_files': 1, 
                     'RNSEED'           : -1,
                     'run_rupture_test' : 0,
@@ -57,15 +57,15 @@ def baseline_multi_FN_lin():
                     'dump_freq'        : 0}
         
     F_N = np.linspace(0.1, 10, 32)*1e-9
-    gen.run_multi(F_N, variables, num_procs = 1)
+    gen.run_multi(F_N, variables, num_procs = 4, partition = 'mini')
  
     
 def baseline_multi_coupling():
     """ Run multiple FN for coupling simulation with configuration of choice """
     name = 'popup'
     file = '../config_builder/baseline/pop1_7_5.npy'   
-    gen = Data_generator(file, header = f'bigfacet:Baseline_fixmove/{name}', simname = 'multi_coupling', config_ext = name)
-    variables = {'num_stretch_files': 16, 
+    gen = Data_generator(file, header = f'egil:Baseline_fixmove/{name}', simname = 'multi_coupling', config_ext = name)
+    variables = {'num_stretch_files': 32, 
                     'RNSEED'           : -1,
                     'run_rupture_test' : 1,
                     "stretch_speed_pct": 0.01,
@@ -75,7 +75,7 @@ def baseline_multi_coupling():
                     'dump_freq'        : 100000}
 
     F_N = np.array([0])*1e-9
-    gen.run_multi(F_N, variables, num_procs_initial = 16, num_procs = 1, scripts = ["manual_coupling_stretch.in", "manual_coupling_drag.in"])
+    gen.run_multi(F_N, variables, num_procs = 4, partition = 'mini', scripts = ["manual_coupling_stretch.in", "manual_coupling_drag.in"])
     
         
 

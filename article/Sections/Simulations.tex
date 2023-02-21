@@ -1,14 +1,13 @@
-\newpage
-\chapter*{Simulations}
-\addcontentsline{toc}{chapter}{Simulations} 
+% \newpage
+% \chapter*{Simulations}
+% \addcontentsline{toc}{chapter}{Simulations} 
 
 
-
-\section{Baseline study (find better name)}
+\chapter{Pilot study}
 
 \hl{Consider relabeling drag length to sliding distance instead.}
 
-\subsection{Friction simulation parameters}
+\section{Friction simulation parameters}
 
 The friction simulation is governed by a set of parameters where some is kept constant while other is varied to gain insight in the frictional properties. These parameters can be categorised into three main categories of different purpose as described in table \ref{tab:param}. 
 
@@ -122,7 +121,7 @@ Say someting about how these parameters is chosen. Reference to articles for whi
 % Besides the limitations of system size and simulation times that are obvious and will be discussed later, there is another limitation concerning temperature, that is rarely mentioned. All classical frictional simulations, atomistic or otherwise, are only valid at sufficiently high temperature. They become in principle invalid at low temperatures where the mechanical degrees of freedom of solids progressively undergo ”quantum freezing”, and both mechanics and thermodynamics deviate from classical. \cite{Manini_2016}.
 
 
-\subsubsection{Pressure reference for normal load domain}
+\subsection{Pressure reference for normal load domain}
 \text{Find place to put this.}
 
 % source 1: stiletto heeled shoes with less than 1cm diameter:
@@ -164,11 +163,11 @@ drops to a mere $\SI{70}{kPa}$ corresponding to $\sim \SI{0.01}{nN}$.
 
 
 \newpage
-\subsection{Single friction simulation analysis}\label{sec:single_analysis}
+\section{Single friction simulation analysis}\label{sec:single_analysis}
 We begin by assessing the raw data for a single friction simulation run with the default parameters shown in table \ref{tab:final_param} for a non-cut sheet, no stretch and an applied normal force of $\SI{1}{nN}$.
 
 
-\subsubsection{Force oscillations}\label{sec:force_oscillations}
+\subsection{Force oscillations}\label{sec:force_oscillations}
 We first assess the raw data for the friction force $F_{\parallel}$ parallel to the drag direction as seen in figure \ref{fig:drag_Ff}. The sample rate is 10 ps$^{-1}$ = 100 timesteps$^{-1}$ for which each sample is the mean value of the 100 timesteps preceding the given sample interval. We observe immediately that the data carriers oscillations on different time scales. By applying a savgol filter to the data with a polyorder of 5 and window length of 150 timesteps, corresponding to a sliding distance of 3 Å or a time window of 15 ps, we can qualitatively point out at least two different frequencies of osccilation. On figure \ref{fig:drag_Ff_10} we see roughly three waves on the savgol filter corresponding to a relative high frequency, while on \ref{fig:drag_Ff_100} the same savgol filter reveals a lower frequency on top of the first, creating the visual pattern of a wavepacket.
 
 \begin{figure}[H]
@@ -232,7 +231,7 @@ where the latter frequency is denoted with respect to the sliding distance. This
 \end{figure}
 
 
-\subsubsection{Decompositions}
+\subsection{Decompositions}
 In the previous analysis we have looked only at the friction force for the full
 sheet, including the pull blocks which is locked off during sliding, and with
 respect to the drag direction. This represents our choice measurement which we will adress in the following.
@@ -276,7 +275,7 @@ we are neglecting the ``side shift'' induced during the slide phase. In figure \
 \end{figure}
 
 
-\subsubsection{Center of mass path}
+\subsection{Center of mass path}
 From the previous observations of the friction force time series we see evidence
 of a stick-slip behvaiour. Specially, we see in figure \ref{fig:decomp_direc}
 that this might be the case both parallel and perpendicular to the sliding
@@ -311,11 +310,11 @@ motion is associated with a low speed, meaning that is more reminiscent of a ``s
 \end{figure}
 
 
-\subsection{Defining metrics for dynamic and static friction}\label{sec:def_dyn_and_stat}
+\section{Defining metrics for dynamic and static friction}\label{sec:def_dyn_and_stat}
 
 In order to evaluate the frictional properties of the sheet we reduce the comprehensive friction force time series adressed in section \ref{sec:single_analysis} into single metrics describing the dynamic and static friciton. The natural choice is to use the mean and max values of the time series. 
 
-\subsubsection{Dynamic friction} 
+\subsection{Dynamic friction} 
 For the dynamic friction measurement we take the mean value of the latter half
 of the dataset to ensure that we are sample from a stable system. For a full
 sliding simulation of 400 Å we thus base our mean value on the latter 200 Å of
@@ -368,7 +367,7 @@ When including the full dataset of 400 Å of sliding, such that std window actua
 \end{figure}
 
 
-\subsubsection{Static friction} 
+\subsection{Static friction} 
 The max value is the most obvious choice for adressing the static friction, even
 though that the definition of the static friction is a bit vague. When
 considering the friction force time series in figure \ref{fig:drag_Ff} we
@@ -450,7 +449,7 @@ purely on the dynamic friction force.
 
 
 
-\subsection{Out of plane buckling}
+\section{Out of plane buckling}
 
 The out of plane buckling is the main motivation for applying the kirigami
 inspired cuts to the sheet. Thus, we perform a stretch simulation in a low
@@ -502,7 +501,7 @@ the cutted sheets are stretched.
 \hl{Compare figure} \ref{fig:contact_vs_stretch} \hl{to that of figure} \ref{fig:multi_stretch_contact} \hl{where multiple simulations constitute the stretch-contact curve.}
 
 
-\subsection{Investigating selected parmeters}
+\section{Investigating selected parmeters}
 
 We investigate the importance of the physical variables $T$, $v_{\text{slide}}$ and $K$ (\hl{make plots for scan angle as well?}) and the choice of timestep $dt$. This is done partly understand how the dependencies relate to theoretical, numerical and experimerimental results, and partly to understand how these parameter choices defines the regime for our multi configurational search. We use the default parameters in table \ref{tab:final_param} with exception of the single parameter of interest which is varied in a reasonable range of the default choice. In figure \ref{fig:var_temp}-\ref{fig:var_dt} the dynamic friction estimate and the max friction force is shown as a function of $T$, $v_{\text{slide}}$, $K$ and $dt$ respectively. For the dynamic friction estimate the absolute error is denoted by a shaded error which linearly connects the points.
 
@@ -603,14 +602,14 @@ Quick thoughts:
 \end{itemize}
 
 
-\subsection{Normal force and stretch dependencies}
+\section{Normal force and stretch dependencies}
 Till this point we have only changed variables one by one to investigate single dependencies. We now advance the sutdy to a simultaneous variation of stretch and normal force.
 
 \hl{Explain how the stretch is uniformly sampled within equally divided intervals and the normal force is actually uniformly sampled in a given range. Argue that the first might be approximately uniformly distributed for large numbers.}
 
 \hl{Talk about rupture test also. Maybe in the theory/method section under numerical procedure: Before simulating a rupture test is perform to determine under what stretch the sheet ruptures. This is a slightly higher threshold than when applied normal load and sliding along the substrate.}
 
-\subsubsection{Contact area}\ref{sec:contact_area}
+\subsection{Contact area}\ref{sec:contact_area}
 
 We reproduce the contact area investigation of figure \ref{fig:contact_vs_stretch} with the modificaiton that the contact count is measured as an average of the latter 50\% of the sliding simulation at a non-zero applied normal load. The results are shown in figure \ref{fig:multi_stretch_contact} with 30 attempted (some rupture) stretch (pseudo) uniformly distributed stretch between 0 and the rupture point and 3 uniform distributed normal loads in the interval $[0.1, 10]$ nN. 
 
@@ -625,7 +624,7 @@ We reproduce the contact area investigation of figure \ref{fig:contact_vs_stretc
 From figure \ref{fig:contact_vs_stretch} we observe a significant decrease in the contact due to stretching of the cut configurations in contrast to the non-cut which stays roughly constant. This is reminiscent of the non-sliding stretch vs. contact curve shown in figure \ref{fig:contact_vs_stretch}. Given these results, theoretically one would expect the dynamic friction to decrease with stretch for the cut configurations.
 
 
-\subsubsection{Stretch} 
+\subsection{Stretch} 
 
 We make a similar analysis as done in the previous section \ref{sec:contact_area} with the substitution of friction force instead of contact (The data is taken from the same simulaitons runs). The dynamic friction force (\hl{put uncertainty here even though that it is quite low?}) and the max friction is shown in figure \ref{fig:multi_stretch_mean_fric} and \ref{fig:multi_stretch_max_fric} respectively.
 
@@ -682,7 +681,7 @@ By considering the increase in dynamic friction towards the first peak we get a 
 Additionally, we notice that booth the popup and honeycomb also exhibits stretch ranges where the dynamic friction force decrease with increasing stretch. Qualitatively we assign the slope to be on the same order of magnitude as those towrds the first peak. This is useful for the prospect of taking advantage of this phenonama as we can essentially achieve booth higher and lower friction for increasing stretch for different starting points. 
 
 
-\subsubsection{Normal force}
+\subsection{Normal force}
 
 \hl{Main take away from this section should be that the normal force does not really change the friction much; The friciton coefficient is extremely low, but I'm not sure how well the linear fits are (whether they are linear or sublinear). Not sure if I should do a linearly increasing normal force for better linear plots?}
 
@@ -734,7 +733,7 @@ Additionally, we notice that booth the popup and honeycomb also exhibits stretch
 
 
 
-\subsection{Computational cost}
+\section{Computational cost}
 
 Talk about the computatonal cost of different choices. How does computation time scale with drag speed, $dt$ and maybe $T$ and $K$ as well. One could also mention scaling with system size.
 
@@ -744,18 +743,18 @@ Mention the trouble with GPU to show that this was considered, and in fact this 
 
 
 
-\section{Generating data}
+\chapter{Generating data}
 
 Present the configuration and variable choices for the generated dataset. Perhaps include appendix with all the configurations shown in a grid
 
 
-\section{Training forward network}
+\chapter{Training forward network}
 
-\section{Inverse design}
+\chapter{Inverse design}
 
-\section{Negative friction coefficient}
-\subsection{Simulated coupling of normal force and stretch}
-\subsection{Nanomachine coupling}
+\chapter{Negative friction coefficient}
+\section{Simulated coupling of normal force and stretch}
+\section{Nanomachine coupling}
 Attempt to couple normal force and stretch by crossed carbon nanotube (CNT) contraption \ref{fig:nanomachine}. 
 
 
