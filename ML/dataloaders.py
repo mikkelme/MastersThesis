@@ -49,7 +49,8 @@ class KirigamiDataset(Dataset):
         return len(self.data_dir)
     
     def __getitem__(self, idx):
-        config = torch.from_numpy(np.load(os.path.join(self.data_dir[idx], 'config.npy')).astype(np.int32))
+        # config = torch.from_numpy(np.load(os.path.join(self.data_dir[idx], 'config.npy')).astype(np.int32))
+        config = torch.from_numpy(np.load(os.path.join(self.data_dir[idx], 'config.npy')).astype(np.float32))
         
         sample = {}
         with open(os.path.join(self.data_dir[idx], 'val.csv'), newline='') as csvfile:
@@ -83,7 +84,7 @@ def get_ML_setting(use_gpu = False):
     ML_setting = {}
     ML_setting['use_gpu'] = use_gpu
     ML_setting['lr'] = 0.005                # Learning rate
-    ML_setting['batchsize_train'] = 1  # 16    
+    ML_setting['batchsize_train'] = 4  # 16    
     ML_setting['batchsize_val'] = 64
     ML_setting['maxnumepochs'] = 35
     ML_setting['scheduler_stepsize'] = 10

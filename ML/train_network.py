@@ -9,17 +9,17 @@ from networks import *
 
 def loss_func(outputs, labels):
     """ One version of a loss function """
-    # Only include Ff_loss when not ruptured
+    alpha = 0.5 # 1: priority of Fs MSE, 0: priority of rup BCE
     
     criterion = [nn.MSELoss(), nn.BCELoss()]
-    not_ruptured = labels[:,1] == 0
-
+    
+    not_ruptured = labels[:,1] == 0 # Only include Ff_loss when not ruptured
     if torch.all(~not_ruptured):
         Ff_loss = torch.tensor(0)
     else:
-        Ff_loss = criterion[0](outputs[not_ruptured, 0], labels[not_ruptured, 0])
+        Ff_loss = alpha*criterion[0](outputs[not_ruptured, 0], labels[not_ruptured, 0])
 
-    rup_loss = criterion[1](outputs[:, 1], labels[:, 1])
+    rup_loss = (1-alpha)*criterion[1](outputs[:, 1], labels[:, 1])
     loss = Ff_loss + rup_loss
 
     return loss, Ff_loss, rup_loss
@@ -86,11 +86,10 @@ def train_tmp(data_root, model, ML_setting, maxfilenum = None):
 
 
 if __name__=='__main__':
-    
     # TODO: Initialize weights in model
-    # Find more ambious CCN architecture
     
     data_root = '../data_pipeline/tmp_data'
     ML_setting = get_ML_setting()
-    model = LeNet(3)
+    
+    model = VGGNet(mode = 0)
     train_tmp(data_root, model, ML_setting, maxfilenum = None)

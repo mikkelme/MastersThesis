@@ -20,15 +20,23 @@ def get_device(ML_setting):
     return device
 
 
-def get_inputs(data, device):
-    config = data['config']
-    config_shape = config.size()[1:]
-    stretch = torch.from_numpy(np.array([np.full(config_shape, s, dtype=np.float32) for s in data['stretch']]))
-    FN = torch.from_numpy(np.array([np.full(config_shape, f, dtype=np.float32) for f in data['F_N']]))
-    inputs = torch.stack((config, stretch, FN), 1).to(device) # Gather inputs on multiple channels
-    # XXX For some reason I think the .to(device) is nessecary but check up on it
+# def get_inputs(data, device):
+#     config = data['config']
+#     config_shape = config.size()[1:]
+#     stretch = torch.from_numpy(np.array([np.full(config_shape, s, dtype=np.float32) for s in data['stretch']]))
+#     FN = torch.from_numpy(np.array([np.full(config_shape, f, dtype=np.float32) for f in data['F_N']]))
+#     inputs = torch.stack((config, stretch, FN), 1).to(device) # Gather inputs on multiple channels
+#     # XXX For some reason I think the .to(device) is nessecary but check up on it
     
-    return inputs
+#     return inputs
+    
+
+def get_inputs(data, device):
+    image = data['config']
+    stretch = torch.from_numpy(np.array(data['stretch'], dtype = np.float32))
+    FN = torch.from_numpy(np.array(data['F_N'], dtype = np.float32))
+    vals = torch.stack((stretch, FN), 1).to(device)
+    return image, vals
     
 def get_labels(data, device):
     Ff = torch.from_numpy(np.array(data['Ff_mean'], dtype = np.float32))
@@ -52,10 +60,11 @@ def train_epoch(model, dataloader, criterion, optimizer, device):
         # Zero gradients of all optimized torch.Tensor's
         optimizer.zero_grad() 
 
-        # --- Evaluate --- #
-        inputs = get_inputs(data, device)
+        # --- Evaluate --- #    
+        image, vals = get_inputs(data, device)
         labels = get_labels(data, device)
-        outputs = model(inputs)
+        outputs = model(image, vals)
+        
         loss, MSE, BCE = criterion(outputs, labels)
        
         # --- Optimize --- #
@@ -81,9 +90,9 @@ def evaluate_model(model, dataloader, criterion, device):
         rup_loss = []
         for batch_idx, data in enumerate(dataloader):
             # --- Evaluate --- #
-            inputs = get_inputs(data, device)
+            image, vals = get_inputs(data, device)
             labels = get_labels(data, device)
-            outputs = model(inputs)
+            outputs = model(image, vals)
             loss, MSE, BCE = criterion(outputs, labels)
        
             # --- Analyse --- #

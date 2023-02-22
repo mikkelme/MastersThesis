@@ -2,7 +2,8 @@
 # import torch.nn as nn
 # from RainforestDataset import get_classes_list
 
-
+import torch
+import torch.nn as nn
 from torch.nn import Module # Base class for all neural network modules.
 from torch.nn import Conv2d
 from torch.nn import Linear
@@ -10,8 +11,10 @@ from torch.nn import MaxPool2d
 from torch.nn import ReLU
 from torch.nn import Sigmoid
 from torch.nn import LogSoftmax
-from torch import flatten
+from torch.nn import BatchNorm2d
 
+from torch import flatten
+from torchsummary import summary
 
 class LeNet(Module):
     def __init__(self, numChannels):
@@ -29,6 +32,7 @@ class LeNet(Module):
         
 		# Initialize FC ==> RELU layers
         self.fc1 = Linear(in_features=2500, out_features=500)
+        # self.fc1 = Linear(in_features=2500, out_features=500)
         self.relu3 = ReLU()
         
         # Intialize FC output
@@ -61,117 +65,154 @@ class LeNet(Module):
         
   
 
+class VGGNet(Module):
+    """ VGGNet style CNN 
 
-# class Identity(nn.Module):
-#     """
-#     Identity class to return the input of the previous
+    Init Args:
+        mode (int): Toggle different type of data flow. 
+            0: Image and numerical values goes through convolution no seperate input channels
+            1: Image get convoluted while numerical values is inserted at FC
+        num_vals (int): Number of numerical values as input (e.g. stretch and F_N)
+        conv_layers (list of tuples): Define architecture of convolution part. Each convolution block is defined by the tuple and is repeated tuple[0] times seperated by a RELU activation and gets tuple[1] channels each time. Each block is then seperated by a maxpooling layer.
+        FC_layers (list of tuples): Define architecture of fully connected (FC) part. Each fully connected block is repeated tuple[0] times with a total of tuple[1] nodes. Each FC layer is seperated by a RELU activation except the last one which is handled by the hardcoded output layers
 
-#     functions: forward
-#     """
-#     def __init__(self):
-#         super(Identity, self).__init__()
-
-#     def forward(self, x):
-#         return x
-
-
-# class TwoNetworks(nn.Module):
-#     """
-#     This class takes two pretrained networks,
-#     concatenates the high-level features before feeding these into
-#     a linear layer.
-
-#     functions: forward
-#     """
-
-#     def __init__(self, pretrained_net1, pretrained_net2):
-#         super(TwoNetworks, self).__init__()
-
-#         _, num_classes = get_classes_list()
-#         num_ftrs1 = pretrained_net1.fc.in_features
-#         num_ftrs2 = pretrained_net2.fc.in_features
-
-#         pretrained_net1.fc = Identity()
-#         pretrained_net2.fc = Identity()
-#         self.fully_conv1 = pretrained_net1 # rgb
-#         self.fully_conv2 = pretrained_net2 # infrared
-
-#         new_in_channels = 1
-#         layer = self.fully_conv2.conv1
-
-#         # Creating new Conv2d layer
-#         new_layer = nn.Conv2d(in_channels=new_in_channels,
-#                           out_channels=layer.out_channels,
-#                           kernel_size=layer.kernel_size,
-#                           stride=layer.stride,
-#                           padding=layer.padding,
-#                           bias=layer.bias)
-
-#         # Copy weights from red color channel (probably best choice for infrared channel)
-#         with torch.no_grad():
-#             new_layer.weight[:,:,:,:] = layer.weight[:, :1, :, :].clone()
-
-#         self.fully_conv2.conv1 = new_layer
-#         self.fully_conv2.conv1.weight = torch.nn.Parameter(new_layer.weight)
-
-
-#         # Combining networks in linear layer
-#         self.linear = nn.Linear(num_ftrs1 + num_ftrs2, num_classes)
-#         self.sigm = nn.Sigmoid()
-
-
-
-#     def forward(self, inputs1, inputs2):
-#         output1 = self.fully_conv1(inputs1)
-#         output2 = self.fully_conv2(inputs2)
-#         concat_output = torch.cat((output1, output2), 1)
-#         return self.sigm(self.linear(concat_output))
-
-
-
-# def set_parameter_requires_grad(model, feature_extracting):
-#     if feature_extracting:
-#         for param in model.parameters():
-#             param.requires_grad = False
-
-# class SingleNetwork(nn.Module):
-#     """
-#     This class takes one pretrained network,
-#     the first conv layer can be modified to take an extra channel.
-
-#     functions: forward
-#     """
-
-#     def __init__(self, pretrained_net, weight_init=None):
-#         super(SingleNetwork, self).__init__()
-
-#         _, num_classes = get_classes_list()
-#         num_ftrs = pretrained_net.fc.in_features
-
-#         if weight_init is not None:
-#             layer = pretrained_net.conv1
-#             new_layer = nn.Conv2d(in_channels = 4,
-#                               out_channels=layer.out_channels,
-#                               kernel_size=layer.kernel_size,
-#                               stride=layer.stride,
-#                               padding=layer.padding,
-#                               bias=layer.bias)
-#             with torch.no_grad():
-#                 new_layer.weight[:,:3,:,:] = layer.weight.clone()
+    """        
+    def __init__(self,  mode = 0, 
+                        image_shape = (62, 106), 
+                        num_vals = 2,
+                        conv_layers = [(2, 64), (2, 128), (3, 256), (3, 512), (3, 512)],
+                        FC_layers   = [(2, 4096)]):
+       
+        super(VGGNet, self).__init__()
+        
+        self.image_shape = image_shape
+        
+        
+        self.image_input_shape = (62, 106) # Fix
+        input_shape = (62, 106) 
+       
+      
+        
+        if mode == 0: # channels for each numerical input
+            numChannels = 1 + num_vals
+            self.forward = self.f_mix
+        if mode == 1: # numerical inputs to FC directly
+            numChannels = 1
+            self.forward = self.f_insert
+        
+        
+        # conv_layers = [(1, 20), (1, 50)]
+        # FC_layers = [(1, 500), (1, 2)]
+        
+        self.layers = nn.ModuleList()
+        
+        # --- Convolutional blocks --- #
+        prev_channels = numChannels
+        prev_shape = self.image_shape
+        for i, filter in enumerate(conv_layers):
+            for j in range(filter[0]):
+                self.layers.append(Conv2d(in_channels=prev_channels, 
+                                          out_channels=filter[1], 
+                                          kernel_size=(3, 3), 
+                                          padding = 'same', 
+                                          stride = 1))
+                
+                # self.layers.append(BatchNorm2d(num_features = filter[1]))
+                self.layers.append(ReLU())
+                prev_channels = filter[1]
+            self.layers.append(MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding = 1))
+            prev_shape = (prev_shape[0]//2 + 1, prev_shape[1]//2 + 1)
+        self.len_conv = len(self.layers)
+        
+        # --- Fully connected (FC) block --- #
+        prev_features = prev_channels * prev_shape[0] * prev_shape[1] 
+        if mode == 1:
+            prev_features += num_vals
+            
+        for i, filter in enumerate(FC_layers):
+            for j in range(filter[0]):
+                self.layers.append(Linear(in_features=prev_features, out_features=filter[1]))
+                self.layers.append(ReLU())
+                prev_features = filter[1]
+        self.layers.pop(-1)
+        
+        
+        # --- FC Output --- #
+        self.fc = Linear(in_features=prev_features, out_features=2)
+        self.sigmoid = Sigmoid()
 
 
-#             if weight_init == "kaiminghe":
-#                 torch.nn.init.xavier_uniform_(new_layer.weight[:,3:,:,:])
-
-#             pretrained_net.conv1 = new_layer
-#             pretrained_net.conv1.weight = torch.nn.Parameter(new_layer.weight)
+    def f_mix(self, image, vals):
+        """ Image and numerical input (on indivual channels) all go through convolution """
+        # Gather input into channels
+        x = [image]
+        for i in range(vals.size(-1)):
+            x.append(torch.stack([torch.full(self.image_shape, v) for v in vals[:, i]], 0))
+        x = torch.stack(x, 1)
 
         
-#         pretrained_net.fc = nn.Linear(num_ftrs, num_classes)
-
-#         self.net = pretrained_net
-#         self.sigm = nn.Sigmoid()
-
-
-#     def forward(self, inputs, **kwargs):
-#         return self.sigm(self.net(inputs))
+        # Convolutional 
+        for l in range(self.len_conv):
+            x = self.layers[l](x)
+        
+        # Fully connected (FC)
+        x = flatten(x, 1)
+        for l in range(self.len_conv, len(self.layers)):
+            x = self.layers[l](x)
+        
+        # Output
+        x = self.fc(x)
+        x[:,1] = self.sigmoid(x[:,1]) # sigmoid for is_ruptured
+        
+        return x
+        
+    def f_insert(self, image, vals):
+        """ Image through convolution and numerical values input directly to FC """
+        x = torch.unsqueeze(image, 1)
+        
+        # Convolutional 
+        for l in range(self.len_conv):
+            x = self.layers[l](x)
+        
+        # Fully connected (FC)
+        x = flatten(x, 1)
+        x = torch.cat((x, vals), 1)
+        for l in range(self.len_conv, len(self.layers)):
+            x = self.layers[l](x)
+        
+        # Output
+        x = self.fc(x)
+        x[:,1] = self.sigmoid(x[:,1]) # sigmoid for is_ruptured
+        
+        return x
+    
+    
+    
+    # def __str__(self):
+    #     s = '#---- LAYERS ---- #\n'
+    #     for l in self.layers:
+    #         s += str(l)
+    #         s += '\n'
+    #     s += '-- OUTPUT -- \n'
+    #     s += str(self.fc)
+    #     s += '\n'
+    #     s += str(self.sigmoid)
+    #     s += '\n'
+    #     return s             
+        
+        
+        
+if __name__ == '__main__':
+ 
+    model = VGGNet()
+    # model = LeNet(3)
+    # print(model)
+    # for param in model.parameters():
+    #     print(type(param.data), param.size())
+    
+    
+    
+    # print(summary(LeNet(3), (3, 62, 106)))
+    # print(summary(VGGNet(), ([62, 106], [2])))
+    
+    print(summary(VGGNet(), [(62, 106), (2)]))
