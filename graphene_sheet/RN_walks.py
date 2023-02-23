@@ -41,9 +41,9 @@ class RW_Generator:
         
     def initialize(self):
         if self.center_elem:
-            center_size = np.array((int(self.size[0] + 1), int(self.size[1]//2))) # TODO: Double check 
-            self.mat = np.ones(center_size, dtype = int)    # lattice matrix
-            self.valid = np.ones(center_size, dtype = int)  # valid positions
+            self.center_size = np.array((int(self.size[0] + 1), int(self.size[1]//2))) # TODO: Double check 
+            self.mat = np.ones(self.center_size, dtype = int)    # lattice matrix
+            self.valid = np.ones(self.center_size, dtype = int)  # valid positions
             self.connected_neigh = connected_neigh_center_elem
             
         else:
@@ -64,7 +64,49 @@ class RW_Generator:
         # TODO: Consider using the proper random generator
         #       suggested by numpy.
         
+    def center_walk(self, del_map, prev_valid):
+        start = del_map[0] # Starting point
+        CM = np.round(np.mean(del_map, axis = 0)) # Approximate CM
+        continuous_path = np.linspace(0, start-CM, 2*int(np.linalg.norm(start - CM)))
+        
+        if self.center_elem: # jumps of even x
+            size = self.center_size
+            discrete_path = np.unique(np.round(continuous_path), axis = 0).astype(int)
+            mask = discrete_path[:,0]%2 == 0 # Even x-jumps
+            discrete_path = discrete_path[mask]
+            
+        else: # Jumps of even x and y
+            size = self.size
+            discrete_path = np.unique(np.round(continuous_path/2)*2, axis = 0).astype(int) 
     
+        
+        # mask = np.all(discrete_path%2 == (0,0), axis = 1) # Even jumps
+        # discrete_path = discrete_path[mask]
+        
+
+            
+        # Move walk CM to start and backtrack
+        # until valid position is found
+        
+        try_map = del_map
+        for trans in discrete_path:
+            try_map = del_map + trans
+            
+            if self.periodic:
+                try_map = (try_map + size)%size               
+            else:
+                on_sheet = np.all(np.logical_and(try_map < size, try_map >= (0,0)), axis = 1)
+                if not np.all(on_sheet):
+                    break
+          
+            valid = np.all(prev_valid[try_map[:,0], try_map[:,1]])
+            if valid:
+                break
+        
+        # print(start, try_map[0])
+        self.valid = prev_valid.copy()
+        return try_map
+      
 
     
     def generate(self):        
@@ -80,15 +122,18 @@ class RW_Generator:
                 
             if self.center:
                 prev_valid = self.valid.copy()
-                print(prev_valid)
-                exit()    
-            del_map, self.valid = self.walk(start)
+                del_map = self.walk(start)
+                del_map = self.center_walk(del_map, prev_valid)
+            else:  
+                del_map = self.walk(start)
             
-            if self.center:
-                self.center_walk(del_map)
-                
+            
+            # Find way to inverse period PB to get real CM...
+            print(del_map)
+            exit()
+
             self.mat = delete_atoms(self.mat, del_map)
-            self.valid = self.add_dis_bound(del_map) 
+            self.add_dis_bound(del_map) 
         
         if self.center_elem: # transform from center elements to atoms
             del_map = np.column_stack((np.where(self.mat == 0)))
@@ -155,13 +200,7 @@ class RW_Generator:
                 self.DFS(pos)
                 
 
-    def center_walk(self, del_map):
-        
-        start = del_map[0] # Starting point
-        CM = np.round(np.mean(del_map, axis = 0)) # Approximate CM
-        
-        # Move towards CM and check if valid
-        exit()
+
     
 
     def walk(self, start):
@@ -214,7 +253,7 @@ class RW_Generator:
             del_map.append(pos)
             self.valid[tuple(pos)] = 0
                     
-        return np.array(del_map), self.valid
+        return np.array(del_map)
 
 
     def walk_dis(self, input, dis = 0, pre = []):
@@ -252,7 +291,6 @@ class RW_Generator:
             if self.periodic:
                  new_del_map = (new_del_map + (m,n))%(m,n)
             self.valid = delete_atoms(self.valid, new_del_map)
-        return self.valid
     
     
     def get_p(self, input_dir):

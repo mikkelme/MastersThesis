@@ -415,16 +415,17 @@ def RW_dataset(shape = (62,106)):
     png_only = True
     
     SET = []
+    SET.append(RW_Generator(size = (62, 106), num_walks = 1, max_steps = 70, min_dis = 0, bias = [(1, -1), 1], RN6 = False, periodic = True, avoid_unvalid = False, grid_start = True, center_elem = False, center = False))
     
     # --- 6 Directions --- #
     ## Grid start, RN directions 
     # 25, center_elem = False 
     # SET.append(RW_Generator(size = (62, 106), num_walks = 25, max_steps = 15, min_dis = 3, bias = [(1, -1), 1], RN6 = True, periodic = True, avoid_unvalid = False, grid_start = True, center_elem = False))
-    SET.append(RW_Generator(size = (62, 106), num_walks = 1, max_steps = 40, min_dis = 3, bias = [(1, -1), 1], RN6 = False, periodic = True, avoid_unvalid = False, grid_start = True, center_elem = False, center = True))
+    SET.append(RW_Generator(size = (62, 106), num_walks = 25, max_steps = 15, min_dis = 3, bias = [(1, -1), 1], RN6 = True, periodic = False, avoid_unvalid = False, grid_start = True, center_elem = False, center = True))
     SET.append(RW_Generator(size = (62, 106), num_walks = 50, max_steps = 15, min_dis = 3, bias = [(1, -1), 1], RN6 = True, periodic = True, avoid_unvalid = False, grid_start = False, center_elem = False))
     
     # 16, center_elem = True 
-    SET.append(RW_Generator(size = (62, 106), num_walks = 16, max_steps = 8, min_dis = 3, bias = [(1, -1), 1], RN6 = True, periodic = True, avoid_unvalid = False, grid_start = True, center_elem = True))
+    SET.append(RW_Generator(size = (62, 106), num_walks = 16, max_steps = 8, min_dis = 0, bias = [(1, -1), 1], RN6 = True, periodic = True, avoid_unvalid = False, grid_start = True, center_elem = True, center = False))
     
     ## Grid start, single directions (3 first to avoid repeating configurations)
     # 16, center_elem = True
