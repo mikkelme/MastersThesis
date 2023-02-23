@@ -78,8 +78,12 @@ class RW_Generator:
                 if len(idx) == 0: break
                 start = random.choice(idx)
                 
-                
+            if self.center:
+                prev_valid = self.valid.copy()
+                print(prev_valid)
+                exit()    
             del_map, self.valid = self.walk(start)
+            
             if self.center:
                 self.center_walk(del_map)
                 
