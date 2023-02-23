@@ -405,7 +405,100 @@ def baseline_dataset(shape = (62, 106)):
     
     
     
-  
+
+def RW_dataset(shape = (62,106)):
+    
+    # Parameters
+    dir = './RW'
+    overwrite = True
+    store = False
+    png_only = True
+    
+    SET = []
+    
+    # --- 6 Directions --- #
+    ## Grid start, RN directions 
+    # 25, center_elem = False 
+    # SET.append(RW_Generator(size = (62, 106), num_walks = 25, max_steps = 15, min_dis = 3, bias = [(1, -1), 1], RN6 = True, periodic = True, avoid_unvalid = False, grid_start = True, center_elem = False))
+    SET.append(RW_Generator(size = (62, 106), num_walks = 1, max_steps = 40, min_dis = 3, bias = [(1, -1), 1], RN6 = False, periodic = True, avoid_unvalid = False, grid_start = True, center_elem = False, center = True))
+    SET.append(RW_Generator(size = (62, 106), num_walks = 50, max_steps = 15, min_dis = 3, bias = [(1, -1), 1], RN6 = True, periodic = True, avoid_unvalid = False, grid_start = False, center_elem = False))
+    
+    # 16, center_elem = True 
+    SET.append(RW_Generator(size = (62, 106), num_walks = 16, max_steps = 8, min_dis = 3, bias = [(1, -1), 1], RN6 = True, periodic = True, avoid_unvalid = False, grid_start = True, center_elem = True))
+    
+    ## Grid start, single directions (3 first to avoid repeating configurations)
+    # 16, center_elem = True
+    SET.append(RW_Generator(size = (62, 106), num_walks = 16, max_steps = 8, min_dis = 3, bias = [(0, 1), 1], RN6 = False, periodic = True, avoid_unvalid = False, grid_start = True, center_elem = True))
+    SET.append(RW_Generator(size = (62, 106), num_walks = 16, max_steps = 8, min_dis = 3, bias = [(1, 1), 1], RN6 = False, periodic = True, avoid_unvalid = False, grid_start = True, center_elem = True))
+    SET.append(RW_Generator(size = (62, 106), num_walks = 16, max_steps = 8, min_dis = 3, bias = [(1, -1), 1], RN6 = False, periodic = True, avoid_unvalid = False, grid_start = True, center_elem = True))
+    
+    # --- Random patterns ---#
+    # Thin, grid start
+    SET.append(RW_Generator(size = (62, 106), num_walks = 32, max_steps = 20, min_dis = 3, bias = [(0, 1), 0], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = True, center_elem = False))
+    
+    # Thin, RN start slight bias
+    SET.append(RW_Generator(size = (62, 106), num_walks = 32, max_steps = 30, min_dis = 4, bias = [(0, 1), 0.4], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = False, center_elem = False))
+    SET.append(RW_Generator(size = (62, 106), num_walks = 32, max_steps = 30, min_dis = 4, bias = [(1, 1), 0.4], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = False, center_elem = False))
+    SET.append(RW_Generator(size = (62, 106), num_walks = 32, max_steps = 30, min_dis = 4, bias = [(1, -1), 0.4], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = False, center_elem = False))
+    
+    # Thick, RN start slight bias
+    SET.append(RW_Generator(size = (62, 106), num_walks = 16, max_steps = 30, min_dis = 4, bias = [(0, 1), 0.4], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = False, center_elem = True))
+    SET.append(RW_Generator(size = (62, 106), num_walks = 16, max_steps = 30, min_dis = 4, bias = [(1, 1), 0.4], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = False, center_elem = True))
+    SET.append(RW_Generator(size = (62, 106), num_walks = 16, max_steps = 30, min_dis = 4, bias = [(1, -1), 0.4], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = False, center_elem = True))
+    
+    
+    # Porous 
+    SET.append(RW_Generator(size = (62, 106), num_walks = 32, max_steps = 30, min_dis = 5, bias = [(0, -1), 0.5], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = False, center_elem = True))
+    SET.append(RW_Generator(size = (62, 106), num_walks = 32, max_steps = 30, min_dis = 5, bias = [(-1, -1), 0.5], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = False, center_elem = True))
+    SET.append(RW_Generator(size = (62, 106), num_walks = 32, max_steps = 30, min_dis = 5, bias = [(-1, 1), 0.5], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = False, center_elem = True))
+    
+    SET.append(RW_Generator(size = (62, 106), num_walks = 32, max_steps = 30, min_dis = 4, bias = [(0, -1), 0.5], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = False, center_elem = True))
+    SET.append(RW_Generator(size = (62, 106), num_walks = 32, max_steps = 30, min_dis = 4, bias = [(-1, -1), 0.5], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = False, center_elem = True))
+    SET.append(RW_Generator(size = (62, 106), num_walks = 32, max_steps = 30, min_dis = 4, bias = [(-1, 1), 0.5], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = False, center_elem = True))
+    
+    
+    
+    if store:
+        # print(f'\rStoring ({count:03d})| overwrite = {overwrite} | ({xwidth}, {ywidth}, {bridge_thickness}, {bridge_len})/({max_val[0]}, {max_val[1]}, {max_val[2]}, {max_val[3]})', end = "")
+        
+        for i, set in enumerate(SET):
+            name = str(i)
+            mat = set.generate()
+            builder = config_builder(mat)
+            if not png_only:
+                builder.save_mat(dir, name, overwrite)
+            builder.save_view(dir, 'sheet', name, overwrite)
+
+    
+    set = SET[0]
+    mat = set.generate()
+    builder = config_builder(mat)
+    builder.view()
+    
+    # mat = set.generate()
+    # builder = config_builder(mat)
+    # builder.view()
+    
+    # builder = config_builder(set.visit)
+    # builder.view()
+    
+    # set.mat -= set.visit
+    # builder = config_builder(set.visit)
+    # builder.view()
+    
+    # mat[mat == 1] = 2
+    # mat[mat == 0] = 1
+    # mat[mat == 2] = 0
+    # builder = config_builder(mat)
+    # builder.view()
+        
+    
+    # RW = RW_Generator(size = (62, 106), num_walks = 32, max_steps = 30, min_dis = 4, bias = [(1, -1), 1], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = False, center_elem = True)
+    
+    
+
+    
+    
 if __name__ == "__main__":
     
     # pop_up_dataset(shape = (62, 106), min_sp = 1, max_sp = 4, max_cut = (9,13))
@@ -416,19 +509,36 @@ if __name__ == "__main__":
     # pass
     
     
-    # mat = honeycomb((60, 106), 3, 2, 1, 5)
-    # mat = pop_up((60, 106), (7,5), 1)
-    mat = pop_up((20, 26), (7,5), 1)
-    # mat[:] = 1
-    # mat[mat == 1] = 2
-    # mat[mat == 0] = 1
-    # mat[mat == 2] = 0
-    builder = config_builder(mat)
-    builder.add_pullblocks()
-    builder.build()
-    builder.view()
-    # print(builder)
-    builder.save_lammps("sheet", ext = f"pop_20x26_1_7_5", path = '../friction_simulation')
+    RW_dataset()
+    
+    
+    # RW = RW_Generator(size = (62, 106), num_walks = 16, max_steps = 10, min_dis = 3, bias = [(1, -1), 1], RN6 = True, periodic = True, avoid_unvalid = False, grid_start = True, center_elem = False)
+  
+    # mat = RW.generate()
+    
+    # builder = config_builder(mat)
+    # builder.view()
+    # 
+    
+    
+    
+    
+    
+    
+    
+    # # mat = honeycomb((60, 106), 3, 2, 1, 5)
+    # # mat = pop_up((60, 106), (7,5), 1)
+    # mat = pop_up((20, 26), (7,5), 1)
+    # # mat[:] = 1
+    # # mat[mat == 1] = 2
+    # # mat[mat == 0] = 1
+    # # mat[mat == 2] = 0
+    # builder = config_builder(mat)
+    # builder.add_pullblocks()
+    # builder.build()
+    # builder.view()
+    # # print(builder)
+    # builder.save_lammps("sheet", ext = f"pop_20x26_1_7_5", path = '../friction_simulation')
     
     
   

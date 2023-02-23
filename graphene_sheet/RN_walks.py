@@ -1,18 +1,25 @@
 import sys
 sys.path.append('../') # parent folder: MastersThesis
+sys.setrecursionlimit(10000)
 
 from graphene_sheet.build_utils import *
 import random
 
-    
 
-class RN_Generator:
-    def __init__(self, size = (50, 70), num_walks = 49, max_steps = 20, max_dis = 2, bias = [(1, 1), 0.5], periodic = True, avoid_unvalid = False, grid_start = True, center_elem = True):
+class RW_Generator:
+    def __init__(self,  size = (62, 106),
+                        num_walks = 9,
+                        max_steps = 6,
+                        min_dis = 2,
+                        bias = [(1, 1), 1],
+                        RN6 = True,
+                        periodic = True,
+                        avoid_unvalid = False,
+                        grid_start = True,
+                        center_elem = True,
+                        avoid_clustering = 10,
+                        center = False):
 
-        # size = (100, 140)
-        # size = (20, 40)
-        # size = (4, 10)
-        ##############################
 
         shape_error = f"SHAPE ERROR: Got size {size}, y-axis must be multiple of 2 and both nonzero positive integers."
         assert size[0]%1 == 0 and size[1]%1 == 0 and size[1]%2 == 0, shape_error
@@ -21,22 +28,27 @@ class RN_Generator:
         self.size = np.array(size)
         self.num_walks = num_walks
         self.max_steps = max_steps
-        self.max_dis = max_dis
+        self.min_dis = min_dis
         self.bias = bias
+        self.RN6 = RN6
         self.periodic = periodic
         self.avoid_unvalid = avoid_unvalid
         self.grid_start = grid_start
         self.center_elem = center_elem
+        self.avoid_clustering = avoid_clustering
+        self.center = center # Move CM as close to starting point as possible
+        self.initialize()
         
+    def initialize(self):
         if self.center_elem:
-            center_size = np.array((int(size[0] + 1), int(size[1]//2))) # TODO: Double check 
-            self.mat = np.ones(center_size)    # lattice matrix
-            self.valid = np.ones(center_size)  # valid positions
+            center_size = np.array((int(self.size[0] + 1), int(self.size[1]//2))) # TODO: Double check 
+            self.mat = np.ones(center_size, dtype = int)    # lattice matrix
+            self.valid = np.ones(center_size, dtype = int)  # valid positions
             self.connected_neigh = connected_neigh_center_elem
             
         else:
-            self.mat = np.ones(size)    # lattice matrix
-            self.valid = np.ones(size)  # valid positions
+            self.mat = np.ones(self.size, dtype = int)    # lattice matrix
+            self.valid = np.ones(self.size, dtype = int)  # valid positions
             self.connected_neigh = connected_neigh_atom
     
     
@@ -53,6 +65,8 @@ class RN_Generator:
         #       suggested by numpy.
         
     
+
+    
     def generate(self):        
         for w in range(self.num_walks):
             if self.grid_start:
@@ -66,6 +80,9 @@ class RN_Generator:
                 
                 
             del_map, self.valid = self.walk(start)
+            if self.center:
+                self.center_walk(del_map)
+                
             self.mat = delete_atoms(self.mat, del_map)
             self.valid = self.add_dis_bound(del_map) 
         
@@ -86,14 +103,72 @@ class RN_Generator:
             #     del_map = (del_map + (m,n))%(m,n)
             # self.valid = np.ones(self.size)
             # self.valid = delete_atoms(self.valid, del_map)
-            
-    
-        return self.mat
         
+        # Avoid isolated clusters
+        if self.avoid_clustering is not None:
+            # Create binary matrix for visited sites (1 = visited)
+            self.visit = np.zeros(self.size, dtype = int)
+            
+            # Walk configuration
+            self.DFS((0,0))
+            
+            # Check if all sites are visited
+            detect = np.sum(self.mat - self.visit) > 0.5
+            if detect: # Isolated cluster detected
+                self.avoid_clustering -= 1
+                print(f'Isolated cluster detected | {self.avoid_clustering} attempts left')
+                if self.avoid_clustering > 0:
+                    self.initialize()
+                    self.generate()
+                else:
+                    print('Removing isolated clusters')
+                    self.mat = self.visit.copy()
+            
+        # Returns multiple times, but all with the correct matrix though...
+        # Not sure if this is a problem XXX
+        return self.mat
+            
+   
+
+    def DFS(self, pos):
+        """ Depth-first search (DFS) used for 
+            detecting isolated clusters """
+
+        # Check is visited
+        if self.visit[pos[0], pos[1]] == 1:
+            return # Already visited
+      
+        # Mark as visited
+        self.visit[pos[0], pos[1]] = 1
+            
+        # Find potential neighbours (with PB)
+        neigh, _ = self.connected_neigh(pos)
+        neigh = (neigh + self.size)%self.size # PB
+        
+        # Start new search if neighbour atoms is present
+        for pos in neigh:
+            if self.mat[pos[0], pos[1]] == 1: # Atom is present
+                self.DFS(pos)
+                
+
+    def center_walk(self, del_map):
+        
+        start = del_map[0] # Starting point
+        CM = np.round(np.mean(del_map, axis = 0)) # Approximate CM
+        
+        # Move towards CM and check if valid
+        exit()
+    
 
     def walk(self, start):
         self.valid[tuple(start)] = 0
         del_map = [start]
+        
+        if self.RN6:
+            six_directions = [(0,1), (1,1), (1,-1), (0,-1), (-1,-1), (-1,1)]
+            force_dir = six_directions[np.random.choice(len(six_directions), 1)[0]]
+            self.bias[0] = force_dir
+      
         
         pos = start    
         for i in range(self.max_steps):
@@ -122,6 +197,8 @@ class RN_Generator:
                 direction = direction[map]
                 available = available[map]
                 
+            if len(neigh) == 0:
+                break
             
             p = self.get_p(direction)
             choice = np.random.choice(len(neigh), p = p)
@@ -131,15 +208,15 @@ class RN_Generator:
             
             pos = neigh[choice] 
             del_map.append(pos)
-            self.valid[tuple(pos)] = 0.0
+            self.valid[tuple(pos)] = 0
                     
         return np.array(del_map), self.valid
 
 
     def walk_dis(self, input, dis = 0, pre = []):
         """ Recursive function to walk to all sites
-            within a distance of max_dis jumps """
-        if self.max_dis == 0:
+            within a distance of min_dis jumps """
+        if self.min_dis == 0:
             return input
         
         for i, elem in enumerate(input):
@@ -157,7 +234,7 @@ class RN_Generator:
                         neigh.append(s)
             
         dis += 1
-        if dis >= self.max_dis:
+        if dis >= self.min_dis:
             return input + neigh
         else:
             pre = np.array(input)
@@ -232,10 +309,15 @@ class RN_Generator:
         return idx
         
         
+        
+        
 
 if __name__ == "__main__":
     
-    RN = RN_Generator()
+    RW = RW_Generator()
+    
+
+    
     # mat = RN.generate()
     
     
