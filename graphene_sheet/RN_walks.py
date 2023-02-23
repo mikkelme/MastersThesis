@@ -11,14 +11,15 @@ class RW_Generator:
                         num_walks = 9,
                         max_steps = 6,
                         min_dis = 2,
-                        bias = [(1, 1), 1],
-                        RN6 = True,
+                        bias = [(1, 1), 0],
+                        RN6 = False,
                         periodic = True,
                         avoid_unvalid = False,
                         grid_start = True,
                         center_elem = True,
                         avoid_clustering = 10,
                         center = False):
+
 
 
         shape_error = f"SHAPE ERROR: Got size {size}, y-axis must be multiple of 2 and both nonzero positive integers."
@@ -37,10 +38,16 @@ class RW_Generator:
         self.center_elem = center_elem
         self.avoid_clustering = avoid_clustering
         self.center = center # Move CM as close to starting point as possible
+       
+        if self.center_elem == 'intersect':
+            self.del_map_splits = [0]
+            
+       
         self.initialize()
         
+        
     def initialize(self):
-        if self.center_elem:
+        if self.center_elem is not False:
             self.center_size = np.array((int(self.size[0] + 1), int(self.size[1]//2))) # TODO: Double check 
             self.mat = np.ones(self.center_size, dtype = int)    # lattice matrix
             self.valid = np.ones(self.center_size, dtype = int)  # valid positions
@@ -58,36 +65,43 @@ class RW_Generator:
             assert np.all(self.size%2 == 0), f"The size of the sheet {self.size} must have even side lengths to enable periodic boundaries."
     
         # TODO: Work on single walk copied to multiple locations
-        
         # TODO: Distributions on RN walk length?
-    
-        # TODO: Consider using the proper random generator
-        #       suggested by numpy.
+        # TODO: Consider using the proper random generator suggested by numpy.
         
-    def center_walk(self, del_map, prev_valid):
+    def center_walk(self, del_map, prev_valid):  
+        if self.center_elem is not False: 
+            size = self.center_size
+        else: 
+            size = self.size
+    
+        # Unravel PB discontinuous jumps
+        if self.periodic:
+            diff = np.abs(del_map[1:] - del_map[:-1])
+            for d in np.argwhere(diff > 2):
+                sign = np.sign(size[d[1]]//2 - del_map[d[0]+1, d[1]])   
+                del_map[d[0]+1:, d[1]] += sign*size[d[1]]    
+        
+        # Get start and approximate CM
         start = del_map[0] # Starting point
         CM = np.round(np.mean(del_map, axis = 0)) # Approximate CM
-        continuous_path = np.linspace(0, start-CM, 2*int(np.linalg.norm(start - CM)))
         
-        if self.center_elem: # jumps of even x
-            size = self.center_size
+        # Define path to relocate RM to start
+        continuous_path = np.linspace(0, start-CM, 2*int(np.linalg.norm(start - CM)))
+        if self.center_elem is not False: # jumps of even x
             discrete_path = np.unique(np.round(continuous_path), axis = 0).astype(int)
             mask = discrete_path[:,0]%2 == 0 # Even x-jumps
             discrete_path = discrete_path[mask]
             
         else: # Jumps of even x and y
-            size = self.size
             discrete_path = np.unique(np.round(continuous_path/2)*2, axis = 0).astype(int) 
     
-        
-        # mask = np.all(discrete_path%2 == (0,0), axis = 1) # Even jumps
-        # discrete_path = discrete_path[mask]
-        
 
-            
+        # Make sure that path is ordered to end at (0,0)
+        idx = np.flip(np.argsort(np.sum(np.abs(discrete_path), axis = 1)))
+        discrete_path = discrete_path[idx]
+        
         # Move walk CM to start and backtrack
         # until valid position is found
-        
         try_map = del_map
         for trans in discrete_path:
             try_map = del_map + trans
@@ -97,7 +111,7 @@ class RW_Generator:
             else:
                 on_sheet = np.all(np.logical_and(try_map < size, try_map >= (0,0)), axis = 1)
                 if not np.all(on_sheet):
-                    break
+                    continue
           
             valid = np.all(prev_valid[try_map[:,0], try_map[:,1]])
             if valid:
@@ -109,12 +123,15 @@ class RW_Generator:
       
 
     
-    def generate(self):        
+    def generate(self): 
+        grid = self.get_grid()
+           
         for w in range(self.num_walks):
             if self.grid_start:
-                idx = self.get_grid()
+                idx = grid[self.valid[grid[:, 0], grid[:,1]] == 1]
                 if len(idx) == 0: break
                 start = idx[0]
+                grid = grid[1:]
             else:
                 idx = np.argwhere(self.valid == 1)
                 if len(idx) == 0: break
@@ -127,32 +144,42 @@ class RW_Generator:
             else:  
                 del_map = self.walk(start)
             
-            
-            # Find way to inverse period PB to get real CM...
-            print(del_map)
-            exit()
-
+        
             self.mat = delete_atoms(self.mat, del_map)
             self.add_dis_bound(del_map) 
+            if self.center_elem == 'intersect':
+                self.del_map_splits.append(self.del_map_splits[-1] + len(del_map))
         
-        if self.center_elem: # transform from center elements to atoms
+        
+        if self.center_elem is not False: # transform from center elements to atoms
+            
             del_map = np.column_stack((np.where(self.mat == 0)))
-            del_map = center_elem_trans_to_atoms(del_map, full = True) # TODO: Toggle full on/off and handle problem with periodic boundary conditions
+            
+            if self.center_elem == 'intersect':
+                tmp_del_map = []
+                for i in range(len(self.del_map_splits)-1):
+                    local_del_map = del_map[self.del_map_splits[i]: self.del_map_splits[i+1]]
+                    tmp_del_map.append(center_elem_trans_to_atoms(local_del_map, full = False))
+                
+                del_map = np.array(tmp_del_map)
+                print(del_map)
+                exit()
+                # XXX Working here
+                # TODO: Array needs to be concatenated probably in del_map
+                
+            elif self.center_elem == 'full':
+                del_map = center_elem_trans_to_atoms(del_map, full = True) 
+        
+            else:
+                exit(f"center_elem = {self.center_elem} not understood")
+                    
+                
             if self.periodic and len(del_map) > 0:
-                m, n = self.size
-                del_map = (del_map + (m,n))%(m,n)
+                del_map = (del_map + self.size)%self.size
             self.mat = np.ones(self.size)
             self.mat = delete_atoms(self.mat, del_map)
             
-            # # XXX For testing XXX
-            # del_map = np.column_stack((np.where(self.valid == 0)))
-            # del_map = center_elem_trans_to_atoms(del_map, full = True)
-            # if self.periodic:
-            #     m, n = self.size
-            #     del_map = (del_map + (m,n))%(m,n)
-            # self.valid = np.ones(self.size)
-            # self.valid = delete_atoms(self.valid, del_map)
-        
+                
         # Avoid isolated clusters
         if self.avoid_clustering is not None:
             # Create binary matrix for visited sites (1 = visited)
@@ -216,12 +243,12 @@ class RW_Generator:
         pos = start    
         for i in range(self.max_steps):
             neigh, direction = self.connected_neigh(pos)
-            m, n = np.shape(self.mat)   
+            # m, n = np.shape(self.mat)   
             
             if self.periodic: 
-                neigh = (neigh + (m,n))%(m,n)
+                neigh = (neigh + self.size)%self.size
             
-            on_sheet = np.all(np.logical_and(neigh < (m,n), neigh >= (0,0)), axis = 1)
+            on_sheet = np.all(np.logical_and(neigh < self.size, neigh >= (0,0)), axis = 1)
             idx = np.argwhere(on_sheet)[:,0]
             available = on_sheet
             available[idx] = self.valid[neigh[on_sheet][:,0], neigh[on_sheet][:,1]] == 1
@@ -285,11 +312,11 @@ class RW_Generator:
           
     
     def add_dis_bound(self, walk):
-        m, n = np.shape(self.valid)
+        # m, n = np.shape(self.valid)
         for w in walk:
             new_del_map = np.array(self.walk_dis([w]))
             if self.periodic:
-                 new_del_map = (new_del_map + (m,n))%(m,n)
+                 new_del_map = (new_del_map + self.size)%self.size
             self.valid = delete_atoms(self.valid, new_del_map)
     
     
@@ -328,7 +355,6 @@ class RW_Generator:
                 grid.append([xpoint, ypoint])
                 
         grid = np.array(grid)
-        
         # Ordering for even distributed points
         if self.num_walks == len(grid):
             pass # No need to order
@@ -347,8 +373,10 @@ class RW_Generator:
                 order.append(idx)
             grid = grid[order]
         
-        idx = grid[self.valid[grid[:, 0], grid[:,1]] == 1]
-        return idx
+        return grid
+    
+        # idx = grid[self.valid[grid[:, 0], grid[:,1]] == 1]
+        # return idx
         
         
         

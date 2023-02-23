@@ -53,7 +53,7 @@ def center_elem_trans_to_atoms(trans, full = False):
             direction = [diff[0], diff[1] + sign * correction]
 
 
-            # Error to deal with more formula later on...
+            # Error to deal with more formaly later on...
             if np.abs(current_elem[0]-next_elem[0]) == 2:
                 print("ERROR", current_elem, next_elem, direction)    
                 exit()
