@@ -5,7 +5,7 @@ from graphene_sheet.build_graphene_sheet import *
 from config_builder.build_substrate import *
 # from graphene_sheet.build_utils import *
 
-# np.random.seed(seed=1)
+
 
 from datetime import date
 
@@ -439,14 +439,14 @@ def RW_dataset(shape = (62,106)):
     # SET.append(RW_Generator(**{**param, 'max_steps': 10, 'bias': [(0, 1), 1]}))
     
     # Thick
-    param = {**param, 'num_walks': 20, 'max_steps': 15, 'min_dis': 3, 'RN6': False, 'center_elem': 'full', 'centering': True}
+    param = {**param, 'num_walks': 20, 'max_steps': 15, 'center_elem': 'full'}
     # SET.append(RW_Generator(**{**param, 'bias': [(1, 1), 1]}))
     # SET.append(RW_Generator(**{**param, 'bias': [(1, -1), 1]}))
     # SET.append(RW_Generator(**{**param, 'max_steps': 5, 'bias': [(0, 1), 1]}))
     
     ## RN directions 
     # Thin 
-    param = {**param, 'min_dis': 3, 'bias': [(1, -1), 1], 'RN6': True, 'center_elem': False, 'centering': True}
+    param = {**param, 'bias': [(1, -1), 1], 'RN6': True, 'center_elem': False}
     # SET.append(RW_Generator(**{**param, 'num_walks': 16, 'max_steps': 20}))
     # SET.append(RW_Generator(**{**param, 'num_walks': 25, 'max_steps': 15}))
     # SET.append(RW_Generator(**{**param, 'num_walks': 49, 'max_steps': 12}))
@@ -467,20 +467,12 @@ def RW_dataset(shape = (62,106)):
     
     
     # TODO --- More free RW  --- XXX #
+    param = {**param, 'min_dis': 3, 'bias': [(1, -1), 0], 'RN6': False, 'grid_start': False, 'center_elem': False, 'centering': False}
+    SET.append(RW_Generator(**{**param, 'num_walks': 30, 'max_steps': 100, 'avoid_clustering': 0, 'seed': 1}))
+    # SET.append(RW_Generator(**{**param, 'num_walks': 2, 'max_steps': 100}))
     
+    # SET.append(RW_Generator(size = (62, 106), num_walks = 32, max_steps = 12, min_dis = 4, bias = [(0, 1), 0], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = True, center_elem = False))
     
-    # # SET.append(RW_Generator(size = (62, 106), num_walks = 25, max_steps = 15, min_dis = 3, bias = [(1, -1), 1], RN6 = True, periodic = True, avoid_unvalid = False, grid_start = True, center_elem = False))
-    # SET.append(RW_Generator(size = (62, 106), num_walks = 25, max_steps = 15, min_dis = 3, bias = [(1, -1), 1], RN6 = True, periodic = False, avoid_unvalid = False, grid_start = True, center_elem = False, center = True))
-    # SET.append(RW_Generator(size = (62, 106), num_walks = 50, max_steps = 15, min_dis = 3, bias = [(1, -1), 1], RN6 = True, periodic = True, avoid_unvalid = False, grid_start = False, center_elem = False))
-    
-    # # 16, center_elem = True 
-    # SET.append(RW_Generator(size = (62, 106), num_walks = 16, max_steps = 8, min_dis = 0, bias = [(1, -1), 1], RN6 = True, periodic = True, avoid_unvalid = False, grid_start = True, center_elem = True, center = False))
-    
-    # ## Grid start, single directions (3 first to avoid repeating configurations)
-    # # 16, center_elem = True
-    # SET.append(RW_Generator(size = (62, 106), num_walks = 16, max_steps = 8, min_dis = 3, bias = [(0, 1), 1], RN6 = False, periodic = True, avoid_unvalid = False, grid_start = True, center_elem = True))
-    # SET.append(RW_Generator(size = (62, 106), num_walks = 16, max_steps = 8, min_dis = 3, bias = [(1, 1), 1], RN6 = False, periodic = True, avoid_unvalid = False, grid_start = True, center_elem = True))
-    # SET.append(RW_Generator(size = (62, 106), num_walks = 16, max_steps = 8, min_dis = 3, bias = [(1, -1), 1], RN6 = False, periodic = True, avoid_unvalid = False, grid_start = True, center_elem = True))
     
     # # --- Random patterns ---#
     # # Thin, grid start
@@ -561,17 +553,27 @@ if __name__ == "__main__":
     
     
     RW_dataset()
+
     
-    # RW = RW_Generator(size = (16, 32), num_walks = 1, max_steps = 12, min_dis = 3, bias = [(0, 1), 1], RN6 = False, periodic = True, avoid_unvalid = False, grid_start = True, center_elem = 'intersect', center = False)
+    # RW = RW_Generator(size = (16, 32), num_walks = 10, max_steps = 30, min_dis = 3, bias = [(1, 1), 0], RN6 = False, periodic = True, avoid_unvalid = False, grid_start = False, center_elem = False, centering = False)
     # mat = RW.generate()
+    # valid = RW.valid
     # builder = config_builder(mat)
     # builder.view()
+    
+    
     
     
     # mat[mat == 1] = 2
     # mat[mat == 0] = 1
     # mat[mat == 2] = 0
+    # valid[valid == 1] = 2
+    # valid[valid == 0] = 1
+    # valid[valid == 2] = 0
     # builder = config_builder(mat)
+    # builder.view()
+    
+    # builder = config_builder(valid)
     # builder.view()
     
     # RW = RW_Generator(size = (62, 106), num_walks = 16, max_steps = 10, min_dis = 3, bias = [(1, -1), 1], RN6 = True, periodic = True, avoid_unvalid = False, grid_start = True, center_elem = False)

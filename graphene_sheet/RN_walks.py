@@ -18,7 +18,8 @@ class RW_Generator:
                         grid_start = True,
                         center_elem = True,
                         avoid_clustering = 10,
-                        centering = False):
+                        centering = False,
+                        seed = None):
 
 
         # Check shape
@@ -39,14 +40,17 @@ class RW_Generator:
         self.center_elem = center_elem
         self.avoid_clustering = avoid_clustering
         self.centering = centering # Move CM as close to starting point as possible
-        
-        # List for storing of delete maps
-        self.total_del_map = []
+        if seed is not None: # Not working properly... XXX
+            np.random.seed(seed)
+     
         
         
     def initialize(self):
         """ Initialize matrices for walks and link to and setup
             correct neighbour connection  """
+            
+        # List for storing of delete maps
+        self.total_del_map = []
             
         # Walk on center elements
         if self.center_elem is not False:
@@ -63,6 +67,7 @@ class RW_Generator:
         # Check if periodicity is availble if needed
         if self.periodic:
             assert np.all(self.size%2 == 0), f"The size of the sheet {self.size} must have even side lengths to enable periodic boundaries."
+    
     
     
         # TODO: Work on single walk copied to multiple locations
@@ -142,24 +147,41 @@ class RW_Generator:
             
                 
         # --- Avoid isolated clusters --- #
-        if self.avoid_clustering is not None:
+        if self.avoid_clustering is not False:
             # Create binary matrix for visited sites (1 = visited)
             self.visit = np.zeros(self.size, dtype = int)
             
-            # Walk configuration
-            self.DFS((0,0))
+            # Walk configuration from corner
+            self.DFS((0,0), PB = True)
             
-            # Check if all sites are visited
+            # Check if all sites are visited (is multiple clusters present)
             detect = np.sum(self.mat - self.visit) > 0.5
             if detect: # Isolated cluster detected
                 self.avoid_clustering -= 1
                 print(f'Isolated cluster detected | {self.avoid_clustering} attempts left')
                 if self.avoid_clustering > 0:
-                    self.initialize()
+                    print(np.sum(self.mat))
                     self.generate()
                 else:
-                    print('Removing isolated clusters')
-                    self.mat = self.visit.copy()
+                    # Find spanning cluster
+                    print('Removing non-spanning clusters')
+                    
+                    # Move starting point on left side
+                    for j in range(self.size[1]):
+                        self.visit[:] = 0 # Reset 
+                        self.DFS((0,j), PB = False)
+                        
+                        # Is right side reached (without PB)
+                        if np.sum(self.visit[-1, :]) > 0:
+                            bottom_reached = np.sum(self.visit[:, 0]) > 0
+                            top_reached = np.sum(self.visit[:, -1]) > 0
+                            
+                            # Is bottom and top reached
+                            if bottom_reached and top_reached:
+                                return self.visit.copy()
+                    print("No spanning cluster found")
+                    return None
+               
             
             # Returns multiple times, but all with the correct matrix though...
             # Not sure if this is a problem XXX
@@ -306,12 +328,12 @@ class RW_Generator:
             if valid:
                 break
         
-        self.valid = prev_valid.copy()
+        self.valid = prev_valid.copy() # New unvalid sites are added in add_dis_bond()
         return try_map
       
 
     
-    def DFS(self, pos):
+    def DFS(self, pos, PB = True):
         """ Depth-first search (DFS) used for 
             detecting isolated clusters """
 
@@ -324,7 +346,11 @@ class RW_Generator:
             
         # Find potential neighbours (with PB)
         neigh, _ = self.connected_neigh(pos)
-        neigh = self.PB(neigh, self.size)
+        if PB:
+            neigh = self.PB(neigh, self.size)
+        else:
+            on_sheet = np.all(np.logical_and(neigh < self.size, neigh >= (0,0)), axis = 1)
+            neigh = neigh[on_sheet]
         
         # Start new search if neighbour atoms is present
         for pos in neigh:
