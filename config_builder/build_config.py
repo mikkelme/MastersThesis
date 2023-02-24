@@ -5,7 +5,7 @@ from graphene_sheet.build_graphene_sheet import *
 from config_builder.build_substrate import *
 # from graphene_sheet.build_utils import *
 
-np.random.seed(seed=1)
+# np.random.seed(seed=1)
 
 from datetime import date
 
@@ -430,28 +430,43 @@ def RW_dataset(shape = (62,106)):
                 'center_elem': True,
                 'avoid_clustering': 10,
                 'centering': False }
-    # --- 6 Directions --- #
-    ## Grid start, RN directions 
+    # --- 6 Directions (Grid start) --- #
+    ## Fixed directions
+    # Thin 
+    param = {**param, 'num_walks': 30, 'max_steps': 20, 'min_dis': 3, 'RN6': False, 'center_elem': False, 'centering': True}
+    # SET.append(RW_Generator(**{**param, 'bias': [(1, 1), 1]}))
+    # SET.append(RW_Generator(**{**param, 'bias': [(1, -1), 1]}))
+    # SET.append(RW_Generator(**{**param, 'max_steps': 10, 'bias': [(0, 1), 1]}))
     
+    # Thick
+    param = {**param, 'num_walks': 20, 'max_steps': 15, 'min_dis': 3, 'RN6': False, 'center_elem': 'full', 'centering': True}
+    # SET.append(RW_Generator(**{**param, 'bias': [(1, 1), 1]}))
+    # SET.append(RW_Generator(**{**param, 'bias': [(1, -1), 1]}))
+    # SET.append(RW_Generator(**{**param, 'max_steps': 5, 'bias': [(0, 1), 1]}))
+    
+    ## RN directions 
     # Thin 
     param = {**param, 'min_dis': 3, 'bias': [(1, -1), 1], 'RN6': True, 'center_elem': False, 'centering': True}
     # SET.append(RW_Generator(**{**param, 'num_walks': 16, 'max_steps': 20}))
     # SET.append(RW_Generator(**{**param, 'num_walks': 25, 'max_steps': 15}))
-    SET.append(RW_Generator(**{**param, 'num_walks': 49, 'max_steps': 12}))
+    # SET.append(RW_Generator(**{**param, 'num_walks': 49, 'max_steps': 12}))
     # SET.append(RW_Generator(**{**param, 'num_walks': 64, 'max_steps': 8}))
     # SET.append(RW_Generator(**{**param, 'num_walks': 81, 'max_steps': 8}))
     
-    # Thick (intersect)
-    param = {**param, 'min_dis': 3, 'bias': [(1, -1), 1], 'RN6': True, 'center_elem': 'intersect', 'centering': True}
+    # Medium (center_elem = intersect)
+    param = {**param,  'center_elem': 'intersect'}
     # SET.append(RW_Generator(**{**param, 'num_walks': 16, 'max_steps': 10}))
     # SET.append(RW_Generator(**{**param, 'num_walks': 25, 'max_steps': 8}))
-    SET.append(RW_Generator(**{**param, 'num_walks': 49, 'max_steps': 6}))
-    # SET.append(RW_Generator(**{**param, 'num_walks': 64, 'max_steps': 8}))
-    # SET.append(RW_Generator(**{**param, 'num_walks': 81, 'max_steps': 8}))
+    # SET.append(RW_Generator(**{**param, 'num_walks': 49, 'max_steps': 5}))
+    
+    # Thick (center_elem = full)
+    param = {**param,  'center_elem': 'full'}
+    # SET.append(RW_Generator(**{**param, 'num_walks': 16, 'max_steps': 10}))
+    # SET.append(RW_Generator(**{**param, 'num_walks': 25, 'max_steps': 8}))
+    # SET.append(RW_Generator(**{**param, 'num_walks': 49, 'max_steps': 5}))
     
     
-    # # 25, center_elem = False 
-    
+    # TODO --- More free RW  --- XXX #
     
     
     # # SET.append(RW_Generator(size = (62, 106), num_walks = 25, max_steps = 15, min_dis = 3, bias = [(1, -1), 1], RN6 = True, periodic = True, avoid_unvalid = False, grid_start = True, center_elem = False))
