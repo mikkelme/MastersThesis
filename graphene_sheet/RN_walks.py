@@ -119,9 +119,10 @@ class RW_Generator:
                     else:
                         local_del_map = center_elem_trans_to_atoms(del_map, full = False) 
                 
+                    if len(local_del_map) == 0: continue
                     tmp_del_map.append(local_del_map)
+                    
                 del_map = np.concatenate(tmp_del_map)
-              
             
             # Remove all atoms surrounding center elements
             elif self.center_elem == 'full':
