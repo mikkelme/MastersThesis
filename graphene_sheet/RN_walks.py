@@ -49,7 +49,6 @@ class RW_Generator:
         
     def initialize(self):
         if self.center_elem is not False:
-            # self.center_size = np.array((int(self.size[0] + 1), int(self.size[1]//2))) # TODO: Double check 
             self.center_size = np.array((int(self.size[0]), int(self.size[1]//2))) # TODO: Double check 
             self.mat = np.ones(self.center_size, dtype = int)    # lattice matrix
             self.valid = np.ones(self.center_size, dtype = int)  # valid positions
@@ -60,9 +59,7 @@ class RW_Generator:
             self.valid = np.ones(self.size, dtype = int)  # valid positions
             self.connected_neigh = connected_neigh_atom
     
-    
 
-    
         if self.periodic:
             assert np.all(self.size%2 == 0), f"The size of the sheet {self.size} must have even side lengths to enable periodic boundaries."
     
@@ -80,12 +77,7 @@ class RW_Generator:
         if self.periodic:
             del_map = self.unravel_PB(del_map, size)
             
-        # if self.periodic:
-        #     diff = np.abs(del_map[1:] - del_map[:-1])
-        #     for d in np.argwhere(diff > 2):
-        #         sign = np.sign(size[d[1]]//2 - del_map[d[0]+1, d[1]])   
-        #         del_map[d[0]+1:, d[1]] += sign*size[d[1]]    
-        
+    
         # Get start and approximate CM
         start = del_map[0] # Starting point
         CM = np.round(np.mean(del_map, axis = 0)) # Approximate CM
@@ -126,21 +118,6 @@ class RW_Generator:
         self.valid = prev_valid.copy()
         return try_map
       
-
-    def unravel_PB(self, del_map, size):
-        """ Unravel periodic boundary conditions """
-        diff = np.abs(del_map[1:] - del_map[:-1])
-        for d in np.argwhere(diff > 2): # d = [num_cut, axis]
-            sign = -np.sign(del_map[d[0]+1, d[1]] - del_map[d[0], d[1]])
-            del_map[d[0]+1:, d[1]] += sign*size[d[1]]  
-        
-        return del_map
-    
-    
-    def PB(self):
-        """ Apply periodic boundary conditions """
-        pass
-
 
     def generate(self): 
         grid = self.get_grid()
@@ -183,37 +160,22 @@ class RW_Generator:
         
             
             
-            # if self.center_elem == 'intersect':
-            #     tmp_del_map = []
-            #     for i in range(len(self.del_map_splits)-1):
-            #         local_del_map = del_map[self.del_map_splits[i]: self.del_map_splits[i+1]]
-            #         # print(local_del_map)
-            #         tmp_del_map.append(center_elem_trans_to_atoms(local_del_map, full = False))
-                
-            #     del_map = np.concatenate(tmp_del_map)
-            #     print(del_map)
-            if self.center_elem == 'intersect': # TODO: Fix periodic boundaries!
+          
+            if self.center_elem == 'intersect': 
                 tmp_del_map = []
                 for i in range(len(self.del_map_splits)-1):
                     a, b, = self.del_map_splits[i], self.del_map_splits[i+1]
                     local_del_map = del_map[a:b]
 
                     if self.periodic:
-                        # print(local_del_map)
                         local_del_map = self.unravel_PB(local_del_map, self.center_size)
-                        # print(local_del_map)
                         local_del_map = center_elem_trans_to_atoms(local_del_map, full = False) 
-                        local_del_map = (local_del_map + self.size)%self.size
-                        
                     else:
                         local_del_map = center_elem_trans_to_atoms(del_map, full = False) 
                 
                     tmp_del_map.append(local_del_map)
-                    
                 del_map = np.concatenate(tmp_del_map)
                 
-                # del_map = center_elem_trans_to_atoms(del_map, full = False) 
-               
                 
             elif self.center_elem == 'full':
                 del_map = center_elem_trans_to_atoms(del_map, full = True) 
@@ -223,8 +185,9 @@ class RW_Generator:
                     
                 
             if self.periodic and len(del_map) > 0:
-                del_map = (del_map + self.size)%self.size
+                del_map = self.PB(del_map, self.size)
                 
+            # Reset matrix and apply cuts translated from center elemenets
             self.mat = np.ones(self.size)
             self.mat = delete_atoms(self.mat, del_map)
             
@@ -249,35 +212,11 @@ class RW_Generator:
                     print('Removing isolated clusters')
                     self.mat = self.visit.copy()
             
-        # Returns multiple times, but all with the correct matrix though...
-        # Not sure if this is a problem XXX
+            # Returns multiple times, but all with the correct matrix though...
+            # Not sure if this is a problem XXX
         return self.mat
             
    
-
-    def DFS(self, pos):
-        """ Depth-first search (DFS) used for 
-            detecting isolated clusters """
-
-        # Check is visited
-        if self.visit[pos[0], pos[1]] == 1:
-            return # Already visited
-      
-        # Mark as visited
-        self.visit[pos[0], pos[1]] = 1
-            
-        # Find potential neighbours (with PB)
-        neigh, _ = self.connected_neigh(pos)
-        neigh = (neigh + self.size)%self.size # PB
-        
-        # Start new search if neighbour atoms is present
-        for pos in neigh:
-            if self.mat[pos[0], pos[1]] == 1: # Atom is present
-                self.DFS(pos)
-                
-
-
-    
 
     def walk(self, start):
         self.valid[tuple(start)] = 0
@@ -296,27 +235,16 @@ class RW_Generator:
         pos = start    
         for i in range(self.max_steps):
             neigh, direction = self.connected_neigh(pos)
-            # m, n = np.shape(self.mat)   
             
             if self.periodic: 
-                neigh = (neigh + size)%size
+                neigh = self.PB(neigh, size)
             
             on_sheet = np.all(np.logical_and(neigh < size, neigh >= (0,0)), axis = 1)
             idx = np.argwhere(on_sheet)[:,0]
             available = on_sheet
+            available[idx] = self.valid[neigh[on_sheet][:,0], neigh[on_sheet][:,1]] == 1
+          
             
-            try:
-                available[idx] = self.valid[neigh[on_sheet][:,0], neigh[on_sheet][:,1]] == 1
-            except IndexError:
-                print(neigh)
-                print(size)
-                # print(on_sheet)
-                # print(neigh)
-                # print(idx)
-                # print(available)
-                exit()
-                
-                
                 
             if self.avoid_unvalid:
                 neigh = neigh[available]
@@ -358,7 +286,6 @@ class RW_Generator:
             if isinstance(elem, (np.ndarray, np.generic)):
                 input[i] = elem.tolist()
 
-
         neigh = []
         for pos in input:
             suggest, _ = self.connected_neigh(pos)
@@ -374,14 +301,51 @@ class RW_Generator:
         else:
             pre = np.array(input)
             return  np.concatenate((pre, self.walk_dis(neigh, dis, pre)))
-          
+    
+    
+    def DFS(self, pos):
+        """ Depth-first search (DFS) used for 
+            detecting isolated clusters """
+
+        # Check is visited
+        if self.visit[pos[0], pos[1]] == 1:
+            return # Already visited
+      
+        # Mark as visited
+        self.visit[pos[0], pos[1]] = 1
+            
+        # Find potential neighbours (with PB)
+        neigh, _ = self.connected_neigh(pos)
+        neigh = self.PB(neigh, self.size)
+        
+        # Start new search if neighbour atoms is present
+        for pos in neigh:
+            if self.mat[pos[0], pos[1]] == 1: # Atom is present
+                self.DFS(pos)
+                
+    
+    
+    def unravel_PB(self, del_map, size):
+        """ Unravel periodic boundary conditions """
+        diff = np.abs(del_map[1:] - del_map[:-1])
+        for d in np.argwhere(diff > 2): # d = [num_cut, axis]
+            sign = -np.sign(del_map[d[0]+1, d[1]] - del_map[d[0], d[1]])
+            del_map[d[0]+1:, d[1]] += sign*size[d[1]]  
+        
+        return del_map
+    
+    
+    def PB(self, array, size):
+        """ Apply periodic boundary conditions """
+        return (array + size)%size
+        
+    
     
     def add_dis_bound(self, walk):
-        # m, n = np.shape(self.valid)
         for w in walk:
             new_del_map = np.array(self.walk_dis([w]))
             if self.periodic:
-                 new_del_map = (new_del_map + self.size)%self.size
+                new_del_map = self.PB(new_del_map, self.size)
             self.valid = delete_atoms(self.valid, new_del_map)
     
     
@@ -439,9 +403,6 @@ class RW_Generator:
             grid = grid[order]
         
         return grid
-    
-        # idx = grid[self.valid[grid[:, 0], grid[:,1]] == 1]
-        # return idx
         
         
         
