@@ -229,6 +229,12 @@
 - Submitted sims with linear increase of F_N applied to pull blocks and whole sheet respectively
 - Wrote code for simultaneously loading and stretching and submitted test with pop_1_7_5
 - Wrote code for ML framework and did simple training with LeNet on dummy data.
+- Made a flexible class for VGGNet type 
+- Updated random walk code and made a draft dataset of 40 RW-styles where each can potentially be run multiple times due to the inherent randomness of it. 
+
+#### Week 9 (27/02/2023 - 05/03/2023) - Working from Pisa
+- 
+
 
 
 ## Things to remember 
