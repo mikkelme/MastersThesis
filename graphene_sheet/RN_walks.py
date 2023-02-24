@@ -18,14 +18,15 @@ class RW_Generator:
                         grid_start = True,
                         center_elem = True,
                         avoid_clustering = 10,
-                        center = False):
+                        centering = False):
 
 
-
+        # Check shape
         shape_error = f"SHAPE ERROR: Got size {size}, y-axis must be multiple of 2 and both nonzero positive integers."
         assert size[0]%1 == 0 and size[1]%1 == 0 and size[1]%2 == 0, shape_error
         assert size[0] > 0 and size[1] > 0, shape_error
         
+        # Convert variables
         self.size = np.array(size)
         self.num_walks = num_walks
         self.max_steps = max_steps
@@ -37,31 +38,32 @@ class RW_Generator:
         self.grid_start = grid_start
         self.center_elem = center_elem
         self.avoid_clustering = avoid_clustering
-        self.center = center # Move CM as close to starting point as possible
-       
-        if self.center_elem == 'intersect':
-            self.del_map_splits = [0]
-            
-       
-        self.BIG_del_map = []
-        self.initialize()
+        self.centering = centering # Move CM as close to starting point as possible
+        
+        # List for storing of delete maps
+        self.total_del_map = []
         
         
     def initialize(self):
-        if self.center_elem is not False:
-            self.center_size = np.array((int(self.size[0]), int(self.size[1]//2))) # TODO: Double check 
-            self.mat = np.ones(self.center_size, dtype = int)    # lattice matrix
-            self.valid = np.ones(self.center_size, dtype = int)  # valid positions
-            self.connected_neigh = connected_neigh_center_elem
+        """ Initialize matrices for walks and link to and setup
+            correct neighbour connection  """
             
+        # Walk on center elements
+        if self.center_elem is not False:
+            self.working_size = np.array((int(self.size[0]), int(self.size[1]//2)))
+            self.valid = np.ones(self.working_size, dtype = int)  # valid positions
+            self.connected_neigh = connected_neigh_center_elem   # Neighbour connectivity  
+        
+        # Walk on atoms
         else:
-            self.mat = np.ones(self.size, dtype = int)    # lattice matrix
+            self.working_size = self.size
             self.valid = np.ones(self.size, dtype = int)  # valid positions
-            self.connected_neigh = connected_neigh_atom
+            self.connected_neigh = connected_neigh_atom   # Neighbour connectivity  
     
-
+        # Check if periodicity is availble if needed
         if self.periodic:
             assert np.all(self.size%2 == 0), f"The size of the sheet {self.size} must have even side lengths to enable periodic boundaries."
+    
     
         # TODO: Work on single walk copied to multiple locations
         # TODO: Distributions on RN walk length?
@@ -69,79 +71,76 @@ class RW_Generator:
         
    
     def generate(self): 
+        """ Generate random walk pattern """
+        self.initialize()
         grid = self.get_grid()
            
+        # --- Individual RN walks --- #
         for w in range(self.num_walks):
             # Grid start
-            if self.grid_start:
+            if self.grid_start: # Find valid option on grid (already in RN order)
                 idx = grid[self.valid[grid[:, 0], grid[:,1]] == 1]
                 if len(idx) == 0: break
                 start = idx[0]
-                grid = grid[1:]
-            else:
+                grid = grid[1:] # Remove option from grid
+            else: #  Random valid start choice
                 idx = np.argwhere(self.valid == 1)
                 if len(idx) == 0: break
-                start = random.choice(idx)
+                start = random.choice(idx) 
                 
-            # Center
-            if self.center:
+            # Centering
+            if self.centering: # Walk and move CM towards starting point
                 prev_valid = self.valid.copy()
                 del_map = self.walk(start)
                 del_map = self.center_walk(del_map, prev_valid)
-            else:  
+            else: # Walk and leave it
                 del_map = self.walk(start)
             
+            # Store del_map
+            self.total_del_map.append(del_map) 
         
-            self.BIG_del_map.append(del_map) # Store del_maps
-        
-            self.mat = delete_atoms(self.mat, del_map) # Delete right away? or wait? XXX
+            # Make nearby sites unvalid 
             self.add_dis_bound(del_map) 
-            
-            
-            if self.center_elem == 'intersect':
-                self.del_map_splits.append(self.del_map_splits[-1] + len(del_map))
+      
+
+        # Concatenate walkers in delete map
+        del_map = np.concatenate(self.total_del_map)
         
-        
-        if self.center_elem is not False: # transform from center elements to atoms
-            
-            # del_map = np.column_stack((np.where(self.mat == 0)))
-            del_map = np.concatenate(self.BIG_del_map)
-        
-            
-            
-          
+        # --- Transform from center elements to atoms --- #
+        if self.center_elem is not False: 
+    
+            # Remove only intersecting atoms in center jumps
             if self.center_elem == 'intersect': 
                 tmp_del_map = []
-                for i in range(len(self.del_map_splits)-1):
-                    a, b, = self.del_map_splits[i], self.del_map_splits[i+1]
-                    local_del_map = del_map[a:b]
-
+                for local_del_map in self.total_del_map:
                     if self.periodic:
-                        local_del_map = self.unravel_PB(local_del_map, self.center_size)
+                        local_del_map = self.unravel_PB(local_del_map, self.working_size)
                         local_del_map = center_elem_trans_to_atoms(local_del_map, full = False) 
                     else:
                         local_del_map = center_elem_trans_to_atoms(del_map, full = False) 
                 
                     tmp_del_map.append(local_del_map)
                 del_map = np.concatenate(tmp_del_map)
-                
-                
+              
+            
+            # Remove all atoms surrounding center elements
             elif self.center_elem == 'full':
                 del_map = center_elem_trans_to_atoms(del_map, full = True) 
         
             else:
                 exit(f"center_elem = {self.center_elem} not understood")
                     
-                
+            
             if self.periodic and len(del_map) > 0:
                 del_map = self.PB(del_map, self.size)
                 
-            # Reset matrix and apply cuts translated from center elemenets
-            self.mat = np.ones(self.size)
-            self.mat = delete_atoms(self.mat, del_map)
+            
+        # Initialize configuration matrix and apply cuts
+        self.mat = np.ones(self.size, dtype = int) 
+        self.mat = delete_atoms(self.mat, del_map)
             
                 
-        # Avoid isolated clusters
+        # --- Avoid isolated clusters --- #
         if self.avoid_clustering is not None:
             # Create binary matrix for visited sites (1 = visited)
             self.visit = np.zeros(self.size, dtype = int)
@@ -166,42 +165,41 @@ class RW_Generator:
         return self.mat
             
    
-
     def walk(self, start):
-        self.valid[tuple(start)] = 0
-        del_map = [start]
+        """ Perform a single random walk""" 
+        self.valid[tuple(start)] = 0 # Mark starting point as unvalid
+        del_map = [start] # Iniziate delete map
         
+        # Random direction among 6 principal graphene directions
         if self.RN6:
             six_directions = [(0,1), (1,1), (1,-1), (0,-1), (-1,-1), (-1,1)]
             force_dir = six_directions[np.random.choice(len(six_directions), 1)[0]]
             self.bias[0] = force_dir
       
-        if self.center_elem is not False:
-            size = self.center_size
-        else:
-            size = self.size
-        
+    
         pos = start    
-        for i in range(self.max_steps):
+
+        for i in range(self.max_steps): # Walk loop
+            # Get neighbours and directions
             neigh, direction = self.connected_neigh(pos)
             
-            if self.periodic: 
-                neigh = self.PB(neigh, size)
+            if self.periodic:
+                neigh = self.PB(neigh, self.working_size)
             
-            on_sheet = np.all(np.logical_and(neigh < size, neigh >= (0,0)), axis = 1)
+            # Check which neighbours is avaliable (on sheet and noncut)
+            on_sheet = np.all(np.logical_and(neigh < self.working_size, neigh >= (0,0)), axis = 1)
             idx = np.argwhere(on_sheet)[:,0]
             available = on_sheet
             available[idx] = self.valid[neigh[on_sheet][:,0], neigh[on_sheet][:,1]] == 1
           
-            
-                
-            if self.avoid_unvalid:
+           
+            # Manage unavailable sites
+            if self.avoid_unvalid: # Remove all unavailble 
                 neigh = neigh[available]
                 direction = direction[available]
                 available = available[available]
-                if len(neigh) == 0: # No where to go
-                    break
-            else:
+                if len(neigh) == 0: break # No where to go
+            else: # Remove neighbours already visited in this walk
                 map = []
                 for i in range(len(neigh)):
                     map.append(~np.any(np.all(neigh[i] == del_map, axis = 1)))
@@ -209,21 +207,32 @@ class RW_Generator:
                 direction = direction[map]
                 available = available[map]
                 
-            if len(neigh) == 0:
-                break
+            if len(neigh) == 0: break # No where to go
+                
             
+            # Choose next site taking bias into account
             p = self.get_p(direction)
             choice = np.random.choice(len(neigh), p = p)
             
             if available[choice] == False: # Hit unvalid site
                 break
             
+            # Update position, delete map and valid matrix
             pos = neigh[choice] 
             del_map.append(pos)
             self.valid[tuple(pos)] = 0
                     
         return np.array(del_map)
 
+
+    def add_dis_bound(self, walk):
+        """ Mark sites within min_dis walking distance as unvalid """
+        for w in walk:
+            new_del_map = np.array(self.walk_dis([w]))
+            if self.periodic:
+                new_del_map = self.PB(new_del_map, self.size)
+            self.valid = delete_atoms(self.valid, new_del_map)
+    
 
     def walk_dis(self, input, dis = 0, pre = []):
         """ Recursive function to walk to all sites
@@ -253,14 +262,11 @@ class RW_Generator:
     
     
     def center_walk(self, del_map, prev_valid):  
-        if self.center_elem is not False: 
-            size = self.center_size
-        else: 
-            size = self.size
-    
+        """ Move center of mass (CM) as close to the starting point as possible """
+
         # Unravel PB discontinuous jumps
         if self.periodic:
-            del_map = self.unravel_PB(del_map, size)
+            del_map = self.unravel_PB(del_map, self.working_size)
             
     
         # Get start and approximate CM
@@ -289,9 +295,9 @@ class RW_Generator:
             try_map = del_map + trans
             
             if self.periodic:
-                try_map = (try_map + size)%size               
+                try_map = self.PB(try_map, self.working_size)
             else:
-                on_sheet = np.all(np.logical_and(try_map < size, try_map >= (0,0)), axis = 1)
+                on_sheet = np.all(np.logical_and(try_map < self.working_size, try_map >= (0,0)), axis = 1)
                 if not np.all(on_sheet):
                     continue
           
@@ -299,7 +305,6 @@ class RW_Generator:
             if valid:
                 break
         
-        # print(start, try_map[0])
         self.valid = prev_valid.copy()
         return try_map
       
@@ -325,6 +330,10 @@ class RW_Generator:
             if self.mat[pos[0], pos[1]] == 1: # Atom is present
                 self.DFS(pos)
                 
+                
+    def PB(self, array, size):
+        """ Apply periodic boundary conditions """
+        return (array + size)%size
     
     
     def unravel_PB(self, del_map, size):
@@ -337,68 +346,62 @@ class RW_Generator:
         return del_map
     
     
-    def PB(self, array, size):
-        """ Apply periodic boundary conditions """
-        return (array + size)%size
-        
-    
-    
-    def add_dis_bound(self, walk):
-        for w in walk:
-            new_del_map = np.array(self.walk_dis([w]))
-            if self.periodic:
-                new_del_map = self.PB(new_del_map, self.size)
-            self.valid = delete_atoms(self.valid, new_del_map)
-    
     
     def get_p(self, input_dir):
+        """ Get probailities for next site choices taking bias (force) into account. """
         force_dir, strength = self.bias
     
-        if strength == 0:
+        if strength == 0: # Non biased
             return np.ones(len(input_dir))/len(input_dir)
 
+        # Check that directions is probably defined
         assert np.linalg.norm(force_dir) > 0, f"force direction {force_dir} has zero norm"
 
-        # XXX: If strength == 1 ??
+        # Get angle between choice and bias direction
         norm = np.linalg.norm(input_dir, axis = 1)*np.linalg.norm(force_dir)
         dot = np.dot(input_dir, force_dir)/norm
         angle = np.where(np.abs(dot) >= 1, np.arccos(np.sign(dot)), np.arccos(dot))
         
+        # Approach for mapping angles to probabilities depending on bias
         sigma = 10*np.exp(-4.6*strength)
         p = norm_dist(angle, sigma) / np.sum(norm_dist(angle, sigma))
         return p
 
 
     def get_grid(self):
-        # Partition
+        """ Create a square grid for starting points """
+        # Partition into smallest L*L sites allowing space for all walkers
         L = int(np.ceil(np.sqrt(self.num_walks)))
-        size = np.shape(self.mat)
-     
+      
+        # Define grid
         grid = []
         for i in range(L):
-            xstart = (i*size[0])//L
-            xstop = ((i+1)*size[0])//L 
+            xstart = (i * self.working_size[0]) // L
+            xstop  = ((i+1) * self.working_size[0]) // L 
             xpoint = xstart + (xstop-xstart)//2
             for j in range(L):
-                ystart = (j*size[1])//L
-                ystop = ((j+1)*size[1])//L 
+                ystart = (j * self.working_size[1]) // L
+                ystop  = ((j+1) * self.working_size[1]) // L 
                 ypoint = ystart + (ystop-ystart)//2
-                grid.append([xpoint, ypoint])
-                
+                grid.append([xpoint, ypoint])       
         grid = np.array(grid)
-        # Ordering for even distributed points
+        
+        # Order grid to achieve evenly distributed points
         if self.num_walks == len(grid):
-            pass # No need to order
+            pass # Fills perfectly -> No need to order
         elif L > 1:
             order = []
+            
             # Start at lower left quarter center
-            start =  np.array([size[0]//4, size[1]//4])
+            start =  np.array([self.working_size[0]//4, self.working_size[1]//4])
             start_diff = np.linalg.norm(grid-start, axis = 1)
             order.append(np.argmin(start_diff))
             
+            # Choose remaining points to maximize distance 
+            # to already placed points
             left = np.arange(len(grid))
             while len(order) < self.num_walks:
-                dis = np.linalg.norm(grid[order, np.newaxis]-grid[left], axis = 2)
+                dis = np.linalg.norm(grid[order, np.newaxis] - grid[left], axis = 2)
                 dis_min = np.min(dis, axis = 0)
                 idx = np.random.choice(np.where(np.isclose(dis_min, dis_min.max()))[0])
                 order.append(idx)

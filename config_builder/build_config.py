@@ -429,12 +429,12 @@ def RW_dataset(shape = (62,106)):
                 'grid_start': True,
                 'center_elem': True,
                 'avoid_clustering': 10,
-                'center': False }
+                'centering': False }
     # --- 6 Directions --- #
     ## Grid start, RN directions 
     
     # Thin 
-    param = {**param, 'min_dis': 3, 'bias': [(1, -1), 1], 'RN6': True, 'center_elem': False, 'center': True}
+    param = {**param, 'min_dis': 3, 'bias': [(1, -1), 1], 'RN6': True, 'center_elem': False, 'centering': True}
     # SET.append(RW_Generator(**{**param, 'num_walks': 16, 'max_steps': 20}))
     # SET.append(RW_Generator(**{**param, 'num_walks': 25, 'max_steps': 15}))
     # SET.append(RW_Generator(**{**param, 'num_walks': 49, 'max_steps': 12}))
@@ -442,9 +442,9 @@ def RW_dataset(shape = (62,106)):
     # SET.append(RW_Generator(**{**param, 'num_walks': 81, 'max_steps': 8}))
     
     # Thick (intersect)
-    # param = {**param, 'min_dis': 3, 'bias': [(1, -1), 1], 'RN6': True, 'center_elem': 'intersect', 'center': True}
-    param = {**param, 'min_dis': 3, 'bias': [(1, -1), 1], 'RN6': True, 'center_elem': 'intersect', 'center': True}
-    SET.append(RW_Generator(**{**param, 'num_walks': 1, 'max_steps': 120}))
+    # param = {**param, 'min_dis': 3, 'bias': [(1, -1), 1], 'RN6': True, 'center_elem': 'intersect', 'centering': True}
+    param = {**param, 'min_dis': 3, 'bias': [(1, -1), 1], 'RN6': True, 'center_elem': 'intersect', 'centering': True}
+    SET.append(RW_Generator(**{**param, 'num_walks': 1, 'max_steps': 180}))
     # SET.append(RW_Generator(**{**param, 'num_walks': 25, 'max_steps': 15}))
     # SET.append(RW_Generator(**{**param, 'num_walks': 49, 'max_steps': 12}))
     # SET.append(RW_Generator(**{**param, 'num_walks': 64, 'max_steps': 8}))
