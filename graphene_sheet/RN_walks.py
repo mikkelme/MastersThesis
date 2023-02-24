@@ -67,58 +67,7 @@ class RW_Generator:
         # TODO: Distributions on RN walk length?
         # TODO: Consider using the proper random generator suggested by numpy.
         
-    def center_walk(self, del_map, prev_valid):  
-        if self.center_elem is not False: 
-            size = self.center_size
-        else: 
-            size = self.size
-    
-        # Unravel PB discontinuous jumps
-        if self.periodic:
-            del_map = self.unravel_PB(del_map, size)
-            
-    
-        # Get start and approximate CM
-        start = del_map[0] # Starting point
-        CM = np.round(np.mean(del_map, axis = 0)) # Approximate CM
-        
-        # Define path to relocate RM to start
-        continuous_path = np.linspace(0, start-CM, 2*int(np.linalg.norm(start - CM)))
-        if self.center_elem is not False: # jumps of even x
-            discrete_path = np.unique(np.round(continuous_path), axis = 0).astype(int)
-            mask = discrete_path[:,0]%2 == 0 # Even x-jumps
-            discrete_path = discrete_path[mask]
-            
-        else: # Jumps of even x and y
-            discrete_path = np.unique(np.round(continuous_path/2)*2, axis = 0).astype(int) 
-    
-
-        # Make sure that path is ordered to end at (0,0)
-        idx = np.flip(np.argsort(np.sum(np.abs(discrete_path), axis = 1)))
-        discrete_path = discrete_path[idx]
-        
-        # Move walk CM to start and backtrack
-        # until valid position is found
-        try_map = del_map
-        for trans in discrete_path:
-            try_map = del_map + trans
-            
-            if self.periodic:
-                try_map = (try_map + size)%size               
-            else:
-                on_sheet = np.all(np.logical_and(try_map < size, try_map >= (0,0)), axis = 1)
-                if not np.all(on_sheet):
-                    continue
-          
-            valid = np.all(prev_valid[try_map[:,0], try_map[:,1]])
-            if valid:
-                break
-        
-        # print(start, try_map[0])
-        self.valid = prev_valid.copy()
-        return try_map
-      
-
+   
     def generate(self): 
         grid = self.get_grid()
            
@@ -302,6 +251,59 @@ class RW_Generator:
             pre = np.array(input)
             return  np.concatenate((pre, self.walk_dis(neigh, dis, pre)))
     
+    
+    def center_walk(self, del_map, prev_valid):  
+        if self.center_elem is not False: 
+            size = self.center_size
+        else: 
+            size = self.size
+    
+        # Unravel PB discontinuous jumps
+        if self.periodic:
+            del_map = self.unravel_PB(del_map, size)
+            
+    
+        # Get start and approximate CM
+        start = del_map[0] # Starting point
+        CM = np.round(np.mean(del_map, axis = 0)) # Approximate CM
+        
+        # Define path to relocate RM to start
+        continuous_path = np.linspace(0, start-CM, 2*int(np.linalg.norm(start - CM)))
+        if self.center_elem is not False: # jumps of even x
+            discrete_path = np.unique(np.round(continuous_path), axis = 0).astype(int)
+            mask = discrete_path[:,0]%2 == 0 # Even x-jumps
+            discrete_path = discrete_path[mask]
+            
+        else: # Jumps of even x and y
+            discrete_path = np.unique(np.round(continuous_path/2)*2, axis = 0).astype(int) 
+    
+
+        # Make sure that path is ordered to end at (0,0)
+        idx = np.flip(np.argsort(np.sum(np.abs(discrete_path), axis = 1)))
+        discrete_path = discrete_path[idx]
+        
+        # Move walk CM to start and backtrack
+        # until valid position is found
+        try_map = del_map
+        for trans in discrete_path:
+            try_map = del_map + trans
+            
+            if self.periodic:
+                try_map = (try_map + size)%size               
+            else:
+                on_sheet = np.all(np.logical_and(try_map < size, try_map >= (0,0)), axis = 1)
+                if not np.all(on_sheet):
+                    continue
+          
+            valid = np.all(prev_valid[try_map[:,0], try_map[:,1]])
+            if valid:
+                break
+        
+        # print(start, try_map[0])
+        self.valid = prev_valid.copy()
+        return try_map
+      
+
     
     def DFS(self, pos):
         """ Depth-first search (DFS) used for 
