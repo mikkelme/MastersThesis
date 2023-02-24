@@ -160,7 +160,6 @@ class RW_Generator:
                 self.avoid_clustering -= 1
                 print(f'Isolated cluster detected | {self.avoid_clustering} attempts left')
                 if self.avoid_clustering > 0:
-                    print(np.sum(self.mat))
                     self.generate()
                 else:
                     # Find spanning cluster
@@ -178,9 +177,12 @@ class RW_Generator:
                             
                             # Is bottom and top reached
                             if bottom_reached and top_reached:
-                                return self.visit.copy()
-                    print("No spanning cluster found")
-                    return None
+                                self.mat = self.visit.copy()
+                                break
+                        
+                        if j == self.size[1]:                                    
+                            print("No spanning cluster found")
+                            return None
                
             
             # Returns multiple times, but all with the correct matrix though...
