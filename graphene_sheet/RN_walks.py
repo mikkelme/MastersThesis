@@ -43,12 +43,14 @@ class RW_Generator:
             self.del_map_splits = [0]
             
        
+        self.BIG_del_map = []
         self.initialize()
         
         
     def initialize(self):
         if self.center_elem is not False:
-            self.center_size = np.array((int(self.size[0] + 1), int(self.size[1]//2))) # TODO: Double check 
+            # self.center_size = np.array((int(self.size[0] + 1), int(self.size[1]//2))) # TODO: Double check 
+            self.center_size = np.array((int(self.size[0]), int(self.size[1]//2))) # TODO: Double check 
             self.mat = np.ones(self.center_size, dtype = int)    # lattice matrix
             self.valid = np.ones(self.center_size, dtype = int)  # valid positions
             self.connected_neigh = connected_neigh_center_elem
@@ -76,10 +78,13 @@ class RW_Generator:
     
         # Unravel PB discontinuous jumps
         if self.periodic:
-            diff = np.abs(del_map[1:] - del_map[:-1])
-            for d in np.argwhere(diff > 2):
-                sign = np.sign(size[d[1]]//2 - del_map[d[0]+1, d[1]])   
-                del_map[d[0]+1:, d[1]] += sign*size[d[1]]    
+            del_map = self.unravel_PB(del_map, size)
+            
+        # if self.periodic:
+        #     diff = np.abs(del_map[1:] - del_map[:-1])
+        #     for d in np.argwhere(diff > 2):
+        #         sign = np.sign(size[d[1]]//2 - del_map[d[0]+1, d[1]])   
+        #         del_map[d[0]+1:, d[1]] += sign*size[d[1]]    
         
         # Get start and approximate CM
         start = del_map[0] # Starting point
@@ -122,11 +127,26 @@ class RW_Generator:
         return try_map
       
 
+    def unravel_PB(self, del_map, size):
+        """ Unravel periodic boundary conditions """
+        diff = np.abs(del_map[1:] - del_map[:-1])
+        for d in np.argwhere(diff > 2): # d = [num_cut, axis]
+            sign = -np.sign(del_map[d[0]+1, d[1]] - del_map[d[0], d[1]])
+            del_map[d[0]+1:, d[1]] += sign*size[d[1]]  
+        
+        return del_map
     
+    
+    def PB(self):
+        """ Apply periodic boundary conditions """
+        pass
+
+
     def generate(self): 
         grid = self.get_grid()
            
         for w in range(self.num_walks):
+            # Grid start
             if self.grid_start:
                 idx = grid[self.valid[grid[:, 0], grid[:,1]] == 1]
                 if len(idx) == 0: break
@@ -137,6 +157,7 @@ class RW_Generator:
                 if len(idx) == 0: break
                 start = random.choice(idx)
                 
+            # Center
             if self.center:
                 prev_valid = self.valid.copy()
                 del_map = self.walk(start)
@@ -145,27 +166,54 @@ class RW_Generator:
                 del_map = self.walk(start)
             
         
-            self.mat = delete_atoms(self.mat, del_map)
+            self.BIG_del_map.append(del_map) # Store del_maps
+        
+            self.mat = delete_atoms(self.mat, del_map) # Delete right away? or wait? XXX
             self.add_dis_bound(del_map) 
+            
+            
             if self.center_elem == 'intersect':
                 self.del_map_splits.append(self.del_map_splits[-1] + len(del_map))
         
         
         if self.center_elem is not False: # transform from center elements to atoms
             
-            del_map = np.column_stack((np.where(self.mat == 0)))
+            # del_map = np.column_stack((np.where(self.mat == 0)))
+            del_map = np.concatenate(self.BIG_del_map)
+        
             
-            if self.center_elem == 'intersect':
+            
+            # if self.center_elem == 'intersect':
+            #     tmp_del_map = []
+            #     for i in range(len(self.del_map_splits)-1):
+            #         local_del_map = del_map[self.del_map_splits[i]: self.del_map_splits[i+1]]
+            #         # print(local_del_map)
+            #         tmp_del_map.append(center_elem_trans_to_atoms(local_del_map, full = False))
+                
+            #     del_map = np.concatenate(tmp_del_map)
+            #     print(del_map)
+            if self.center_elem == 'intersect': # TODO: Fix periodic boundaries!
                 tmp_del_map = []
                 for i in range(len(self.del_map_splits)-1):
-                    local_del_map = del_map[self.del_map_splits[i]: self.del_map_splits[i+1]]
-                    tmp_del_map.append(center_elem_trans_to_atoms(local_del_map, full = False))
+                    a, b, = self.del_map_splits[i], self.del_map_splits[i+1]
+                    local_del_map = del_map[a:b]
+
+                    if self.periodic:
+                        # print(local_del_map)
+                        local_del_map = self.unravel_PB(local_del_map, self.center_size)
+                        # print(local_del_map)
+                        local_del_map = center_elem_trans_to_atoms(local_del_map, full = False) 
+                        local_del_map = (local_del_map + self.size)%self.size
+                        
+                    else:
+                        local_del_map = center_elem_trans_to_atoms(del_map, full = False) 
                 
-                del_map = np.array(tmp_del_map)
-                print(del_map)
-                exit()
-                # XXX Working here
-                # TODO: Array needs to be concatenated probably in del_map
+                    tmp_del_map.append(local_del_map)
+                    
+                del_map = np.concatenate(tmp_del_map)
+                
+                # del_map = center_elem_trans_to_atoms(del_map, full = False) 
+               
                 
             elif self.center_elem == 'full':
                 del_map = center_elem_trans_to_atoms(del_map, full = True) 
@@ -176,6 +224,7 @@ class RW_Generator:
                 
             if self.periodic and len(del_map) > 0:
                 del_map = (del_map + self.size)%self.size
+                
             self.mat = np.ones(self.size)
             self.mat = delete_atoms(self.mat, del_map)
             
@@ -239,6 +288,10 @@ class RW_Generator:
             force_dir = six_directions[np.random.choice(len(six_directions), 1)[0]]
             self.bias[0] = force_dir
       
+        if self.center_elem is not False:
+            size = self.center_size
+        else:
+            size = self.size
         
         pos = start    
         for i in range(self.max_steps):
@@ -246,13 +299,25 @@ class RW_Generator:
             # m, n = np.shape(self.mat)   
             
             if self.periodic: 
-                neigh = (neigh + self.size)%self.size
+                neigh = (neigh + size)%size
             
-            on_sheet = np.all(np.logical_and(neigh < self.size, neigh >= (0,0)), axis = 1)
+            on_sheet = np.all(np.logical_and(neigh < size, neigh >= (0,0)), axis = 1)
             idx = np.argwhere(on_sheet)[:,0]
             available = on_sheet
-            available[idx] = self.valid[neigh[on_sheet][:,0], neigh[on_sheet][:,1]] == 1
-        
+            
+            try:
+                available[idx] = self.valid[neigh[on_sheet][:,0], neigh[on_sheet][:,1]] == 1
+            except IndexError:
+                print(neigh)
+                print(size)
+                # print(on_sheet)
+                # print(neigh)
+                # print(idx)
+                # print(available)
+                exit()
+                
+                
+                
             if self.avoid_unvalid:
                 neigh = neigh[available]
                 direction = direction[available]

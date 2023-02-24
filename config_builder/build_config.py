@@ -5,6 +5,8 @@ from graphene_sheet.build_graphene_sheet import *
 from config_builder.build_substrate import *
 # from graphene_sheet.build_utils import *
 
+np.random.seed(seed=1)
+
 from datetime import date
 
 
@@ -433,16 +435,16 @@ def RW_dataset(shape = (62,106)):
     
     # Thin 
     param = {**param, 'min_dis': 3, 'bias': [(1, -1), 1], 'RN6': True, 'center_elem': False, 'center': True}
-    # SET.append(RW_Generator(**{**param, 'num_walks': 16, 'max_steps': 20}))
-    # SET.append(RW_Generator(**{**param, 'num_walks': 25, 'max_steps': 15}))
-    # SET.append(RW_Generator(**{**param, 'num_walks': 49, 'max_steps': 12}))
-    # SET.append(RW_Generator(**{**param, 'num_walks': 64, 'max_steps': 8}))
-    # SET.append(RW_Generator(**{**param, 'num_walks': 81, 'max_steps': 8}))
+    SET.append(RW_Generator(**{**param, 'num_walks': 16, 'max_steps': 20}))
+    SET.append(RW_Generator(**{**param, 'num_walks': 25, 'max_steps': 15}))
+    SET.append(RW_Generator(**{**param, 'num_walks': 49, 'max_steps': 12}))
+    SET.append(RW_Generator(**{**param, 'num_walks': 64, 'max_steps': 8}))
+    SET.append(RW_Generator(**{**param, 'num_walks': 81, 'max_steps': 8}))
     
-    # Thick
+    # Thick (intersect)
     # param = {**param, 'min_dis': 3, 'bias': [(1, -1), 1], 'RN6': True, 'center_elem': 'intersect', 'center': True}
-    param = {**param, 'min_dis': 3, 'bias': [(1, -1), 1], 'RN6': True, 'center_elem': 'intersect', 'center': False}
-    SET.append(RW_Generator(**{**param, 'num_walks': 2, 'max_steps': 4}))
+    # param = {**param, 'min_dis': 3, 'bias': [(1, -1), 1], 'RN6': True, 'center_elem': 'intersect', 'center': False}
+    # SET.append(RW_Generator(**{**param, 'num_walks': 1, 'max_steps': 380}))
     # SET.append(RW_Generator(**{**param, 'num_walks': 25, 'max_steps': 15}))
     # SET.append(RW_Generator(**{**param, 'num_walks': 49, 'max_steps': 12}))
     # SET.append(RW_Generator(**{**param, 'num_walks': 64, 'max_steps': 8}))
@@ -547,13 +549,21 @@ if __name__ == "__main__":
     
     RW_dataset()
     
+    # RW = RW_Generator(size = (16, 32), num_walks = 1, max_steps = 12, min_dis = 3, bias = [(0, 1), 1], RN6 = False, periodic = True, avoid_unvalid = False, grid_start = True, center_elem = 'intersect', center = False)
+    # mat = RW.generate()
+    # builder = config_builder(mat)
+    # builder.view()
+    
+    
+    # mat[mat == 1] = 2
+    # mat[mat == 0] = 1
+    # mat[mat == 2] = 0
+    # builder = config_builder(mat)
+    # builder.view()
     
     # RW = RW_Generator(size = (62, 106), num_walks = 16, max_steps = 10, min_dis = 3, bias = [(1, -1), 1], RN6 = True, periodic = True, avoid_unvalid = False, grid_start = True, center_elem = False)
   
-    # mat = RW.generate()
     
-    # builder = config_builder(mat)
-    # builder.view()
     # 
     
     
