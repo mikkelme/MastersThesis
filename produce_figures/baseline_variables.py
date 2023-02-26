@@ -96,7 +96,7 @@ def dt(path, save = False):
     
 def variable_dependency(folders, names, variable_key, xlabel, convert = None, error = 'shade', map = None, default = None, figs = None):
     mean_window_pct = 0.5 # relative length of the mean window [% of total duration]
-    std_window_pct = 0.2  # relative length of the std windoe [% of mean window]
+    std_window_pct = 0.35  # relative length of the std windoe [% of mean window]
     
     if figs is None:
         fig_max = plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
@@ -258,13 +258,43 @@ def multi_FN(path, save = False):
         fig_mean.savefig("../article/figures/baseline/multi_FN_mean_compare.pdf", bbox_inches="tight")
         fig_max.savefig("../article/figures/baseline/multi_FN_max_compare.pdf", bbox_inches="tight")
 
+   
+def multi_FN_force_dist(path, save = False):
+    """ Linear normal force increase with force on pull blocks and on whole sheet respectively """
     
+    common_path = os.path.join(path, 'nocut')
+    folders = [os.path.join(common_path, 'multi_FN_lin'),
+               os.path.join(common_path, 'multi_FN_lin_even')]
+    
+    names = ['Pull block load', 'Uniform load ']
+    
+    
+    mean_window_pct = 0.5 # relative length of the mean window [% of total duration]
+    std_window_pct = 0.35  # relative length of the std windoe [% of mean window]
+    line_and_marker = {'linestyle': '', 
+                       'marker': 'o',
+                       'linewidth': 1.5,
+                       'markersize': 2.5}
+    
+    for f, folder in folders:
+        data = read_multi_folder(folder, mean_window_pct, std_window_pct)
+        
+        
+        Ff = data['Ff'][:, :, 0, 1].T
+        F_N = data['F_N']
+        
+      
+                color = get_color_value(z[k], np.min(z), np.max(z), scale = colorbar_scale, cmap = cmap)
+                axes[f].plot(x, y[:,k], **line_and_marker, color = color)
+        
+        
+ 
 def multi_plot_compare(folders, names, vars, axis_labels, yerr = None, axis_scale = ['linear', 'linear'], colorbar_scale = 'log', equal_axes = [False, True], rupplot = False):
     # Settings
     
     
     mean_window_pct = 0.5 # relative length of the mean window [% of total duration]
-    std_window_pct = 0.2  # relative length of the std windoe [% of mean window]
+    std_window_pct = 0.35  # relative length of the std windoe [% of mean window]
     line_and_marker = {'linestyle': '', 
                        'marker': 'o',
                        'linewidth': 1.5,
@@ -287,15 +317,15 @@ def multi_plot_compare(folders, names, vars, axis_labels, yerr = None, axis_scal
             data = read_multi_folder(folder, mean_window_pct, std_window_pct)
             
             
-            if False:
-                print(f, folder)
-                mu_mean = data['mu_mean']
-                mu_max = data['mu_max']
+            # if False:
+            #     print(f, folder)
+            #     mu_mean = data['mu_mean']
+            #     mu_max = data['mu_max']
                 
-                print("mu mean")
-                print([f'{mu_mean[0][i]:0.{decimals(mu_mean[1][i])}f} +- {mu_mean[1][i]:1.0e}' for i in range(len(mu_mean[0])) if ~np.isnan(mu_mean[1][i])])
-                print("mu max")
-                print([f'{mu_max[0][i]:0.{decimals(mu_max[1][i])}f} +- {mu_max[1][i]:1.0e}' for i in range(len(mu_max[0])) if ~np.isnan(mu_max[1][i])])
+            #     print("mu mean")
+            #     print([f'{mu_mean[0][i]:0.{decimals(mu_mean[1][i])}f} +- {mu_mean[1][i]:1.0e}' for i in range(len(mu_mean[0])) if ~np.isnan(mu_mean[1][i])])
+            #     print("mu max")
+            #     print([f'{mu_max[0][i]:0.{decimals(mu_max[1][i])}f} +- {mu_max[1][i]:1.0e}' for i in range(len(mu_max[0])) if ~np.isnan(mu_max[1][i])])
             
             
             # Get variables of interest
@@ -499,8 +529,11 @@ if __name__ == "__main__":
     # dt(path, save = False)
     
     # multi_stretch(path, save = False)
-    multi_FN(path, save = False)
+    # multi_FN(path, save = False)
     # multi_area(path, save = False)
+    
+    # TODO: Working here :) 
+    multi_FN_force_dist(...)
     
     # contact_vs_time(path, save = False)
     # vaccum_normal_buckling(path, save = False)

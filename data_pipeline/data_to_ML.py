@@ -27,8 +27,7 @@ def locate_multi_dir(dir):
         
     
 
-def get_data_points(multi_dirs):
-    # target_ext = "Ff.txt"
+def convert_data(multi_dirs, dest):
     info_file = 'info_file.txt'
     friction_ext = 'Ff.txt'
     mean_pct = 0.5
@@ -37,6 +36,8 @@ def get_data_points(multi_dirs):
 
     count = 0
     os.mkdir("tmp_data")
+    
+    exit()
     for dir in multi_dirs:
         # Find config array
         for file in os.listdir(dir):
@@ -121,5 +122,15 @@ def get_data_points(multi_dirs):
 
 if __name__ == "__main__":
     dir = '../Data/CONFIGS/TEST'
-    multi_dirs = locate_multi_dir(dir)
-    get_data_points(multi_dirs)
+    
+    
+    
+    # TODO
+    #
+    # Make flexible for input dir and
+    # output destination
+    #
+    # Convert honeycomb and popup data
+    #
+    multi_dirs = locate_multi_dir(dir, dest)
+    convert_data(multi_dirs)
