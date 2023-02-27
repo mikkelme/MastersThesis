@@ -514,6 +514,11 @@ def RW_dataset(shape = (62,106)):
     SET.append(RW_Generator(**{**param, 'num_walks': 32, 'max_steps': 30, 'bias': [(-1, 1), 0.5]}))
     SET.append(RW_Generator(**{**param, 'num_walks': 32, 'max_steps': 30, 'bias': [(-1, 0), 0.5]}))
     
+    
+    # TEST
+    param = {**param, 'min_dis': 5, 'center_elem': False, 'RN6': True}
+    SET.append(RW_Generator(**{**param, 'num_walks': 8 , 'max_steps': 30, 'bias': [(-1, 0), 0.5]}))
+    
    
     
 
@@ -531,7 +536,7 @@ def RW_dataset(shape = (62,106)):
             builder.view()
 
     
-    mat = SET[0].generate()
+    mat = SET[-1].generate()
     builder = config_builder(mat)
     builder.view()
     

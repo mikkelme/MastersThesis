@@ -63,6 +63,7 @@ def train_epoch(model, dataloader, criterion, optimizer, device):
         # --- Evaluate --- #    
         image, vals = get_inputs(data, device)
         labels = get_labels(data, device)
+        
         outputs = model(image, vals)
         
         loss, MSE, BCE = criterion(outputs, labels)
@@ -86,8 +87,9 @@ def evaluate_model(model, dataloader, criterion, device):
 
     with torch.no_grad():
         losses = []
-        Ff_loss = []
-        rup_loss = []
+        abs_error = []
+        accuracy = []
+        
         for batch_idx, data in enumerate(dataloader):
             # --- Evaluate --- #
             image, vals = get_inputs(data, device)
@@ -97,17 +99,24 @@ def evaluate_model(model, dataloader, criterion, device):
        
             # --- Analyse --- #
             losses.append([loss.item(), MSE.item(), BCE.item()])
+            abs_error.append(torch.mean(torch.abs(outputs[:,0] - labels[:, 0])))
+            rup_pred = torch.round(outputs[:,1])
+            accuracy.append((torch.sum(rup_pred == labels[:,1])/len(rup_pred)).item())
+            
             # Possibilities to do some more analysis here for accuracy or whatever
             # Check IN5400 mandatory 1
         
         losses = np.array(losses)
-        return np.mean(losses, axis = 0)
+        abs_error = np.array(abs_error)
+        accuracy = np.array(accuracy)
+        return np.mean(losses, axis = 0), np.mean(abs_error), np.mean(accuracy)
 
 
 
 def train_and_evaluate(model, dataloaders, criterion, optimizer, scheduler, ML_setting, device, save_best = False):
     train_losses = []
     validation_losses = []    
+    
     best = {'loss': 1e6, 'weights': None, 'epoch': -1}
     num_epochs = ML_setting['maxnumepochs']
 
@@ -115,8 +124,7 @@ def train_and_evaluate(model, dataloaders, criterion, optimizer, scheduler, ML_s
     for epoch in range(num_epochs):
         try:
             print('-' * 14)
-            # print(f'Epoch: {epoch+1}/{num_epochs}')
-            print('Epoch: {}/{}'.format(epoch+1, num_epochs))
+            print(f'Epoch: {epoch+1}/{num_epochs}')
 
 
             avgloss = train_epoch(model, dataloaders['train'], criterion, optimizer, device)
@@ -125,9 +133,10 @@ def train_and_evaluate(model, dataloaders, criterion, optimizer, scheduler, ML_s
             if scheduler is not None: # TODO: Check this
                 scheduler.step()
 
-            avgloss = evaluate_model(model, dataloaders['val'], criterion, device)
+            avgloss, avg_abs_error, avgacc = evaluate_model(model, dataloaders['val'], criterion, device)
             validation_losses.append(avgloss)
             
+            print(f'abs: {avg_abs_error}, acc: {avgacc}')
             # Do more data analysis here?
             # print(avgloss)
             # exit()
@@ -169,6 +178,14 @@ def save_best_model(name, model, best_weights):
     torch.save(model.state_dict(), modelname)
 
 
+def load_weights(model, weight_path, use_gpu = False):
+    
+    if use_gpu:
+        model.load_state_dict(torch.load(weight_path))
+    else:
+        model.load_state_dict(torch.load(weight_path, map_location=torch.device('cpu')))
+    
+    return model
 
 # def save_best_model_val_scores(session_name, best_scores, best_epoch):
 #     filename = session_name + '_best_epoch_scores.txt'

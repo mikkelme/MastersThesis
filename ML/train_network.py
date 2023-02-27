@@ -9,7 +9,7 @@ from networks import *
 
 def loss_func(outputs, labels):
     """ One version of a loss function """
-    alpha = 0.5 # 1: priority of Fs MSE, 0: priority of rup BCE
+    alpha = 0.8 # 1: priority of Fs MSE, 0: priority of rup BCE
     
     criterion = [nn.MSELoss(), nn.BCELoss()]
     
@@ -25,7 +25,7 @@ def loss_func(outputs, labels):
     return loss, Ff_loss, rup_loss
 
 
-def train_tmp(data_root, model, ML_setting, save_best = False, maxfilenum = None):
+def train_tmp(data_root, model, ML_setting, save_best = None, maxfilenum = None):
     """ Training...
 
     Args:
@@ -51,14 +51,13 @@ def train_tmp(data_root, model, ML_setting, save_best = False, maxfilenum = None
 
 
     # Train and evaluate
-    train_losses, validation_losses, best = train_and_evaluate(model, dataloaders, criterion, optimizer, lr_scheduler, ML_setting, device, save_best)
+    train_losses, validation_losses, best = train_and_evaluate(model, dataloaders, criterion, optimizer, lr_scheduler, ML_setting, device, save_best = save_best is not None)
 
-    if save_best:
+    if save_best is not None:
         print(f'Best epoch: {best["epoch"]}')
         print(f'Best loss: {best["loss"]}')
-        name = './test100'
         # save_training_history(name, train_losses, test_losses, test_precs)
-        save_best_model(name, model, best['weights'])
+        save_best_model(save_best, model, best['weights'])
         # save_best_model_val_scores(name, best_scores, best_epoch)
         
         
@@ -69,17 +68,17 @@ def train_tmp(data_root, model, ML_setting, save_best = False, maxfilenum = None
     plt.plot(validation_losses[:, 0], label = "validation loss")
     plt.legend()
     
-    plt.figure(num=1, dpi=80, facecolor='w', edgecolor='k')
-    plt.plot(train_losses[:, 0], label = "train loss")
-    plt.plot(train_losses[:, 1], label = "train MSE")
-    plt.plot(train_losses[:, 2], label = "train BCE")
-    plt.legend()
+    # plt.figure(num=1, dpi=80, facecolor='w', edgecolor='k')
+    # plt.plot(train_losses[:, 0], label = "train loss")
+    # plt.plot(train_losses[:, 1], label = "train MSE")
+    # plt.plot(train_losses[:, 2], label = "train BCE")
+    # plt.legend()
 
-    plt.figure(num=2, dpi=80, facecolor='w', edgecolor='k')
-    plt.plot(validation_losses[:, 0], label = "validation loss")
-    plt.plot(validation_losses[:, 1], label = "validation MSE")
-    plt.plot(validation_losses[:, 2], label = "validation BCE")
-    plt.legend()
+    # plt.figure(num=2, dpi=80, facecolor='w', edgecolor='k')
+    # plt.plot(validation_losses[:, 0], label = "validation loss")
+    # plt.plot(validation_losses[:, 1], label = "validation MSE")
+    # plt.plot(validation_losses[:, 2], label = "validation BCE")
+    # plt.legend()
 
     plt.show()
     
@@ -101,5 +100,16 @@ if __name__=='__main__':
     data_root = '../Data/ML/honeycomb'
     ML_setting = get_ML_setting()
     
-    model = VGGNet(mode = 0)
-    train_tmp(data_root, model, ML_setting, save_best = True, maxfilenum = 100)
+    model = VGGNet(mode = 1)
+   
+    
+    
+    #
+    #
+    #
+    # XXX Working here
+    # TODO: abs errror gives nan, check that...
+    #
+    #
+    
+    train_tmp(data_root, model, ML_setting, save_best = './test1000', maxfilenum = 500)

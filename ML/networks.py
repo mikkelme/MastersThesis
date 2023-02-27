@@ -142,6 +142,10 @@ class VGGNet(Module):
         self.sigmoid = Sigmoid()
 
 
+        # --- Initialize weights --- #
+        # self.apply(self.init_weights)
+        self.apply(self._init_weights)
+
     def f_mix(self, image, vals):
         """ Image and numerical input (on indivual channels) all go through convolution """
         # Gather input into channels
@@ -187,6 +191,23 @@ class VGGNet(Module):
         return x
     
     
+    def _init_weights(self, module):
+        # if isinstance(module, nn.Linear):
+        if isinstance(module, Conv2d) or isinstance(module, Linear) :
+            torch.nn.init.xavier_uniform_(module.weight)
+            module.bias.data.fill_(0.01)
+
+
+    
+    # def _init_weights(self, module):
+    #     if isinstance(module, nn.Embedding):
+    #         module.weight.data.normal_(mean=0.0, std=1.0)
+    #         if module.padding_idx is not None:
+    #             module.weight.data[module.padding_idx].zero_()
+    #     elif isinstance(module, nn.LayerNorm):
+    #         module.bias.data.zero_()
+    #         module.weight.data.fill_(1.0)
+
     
     # def __str__(self):
     #     s = '#---- LAYERS ---- #\n'
