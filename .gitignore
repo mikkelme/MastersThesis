@@ -6,6 +6,8 @@
 *.bin
 *.txt
 *.lammps
+*.png
+*.npy
 
 # Folders
 /__pycache__
@@ -17,6 +19,9 @@
 
 # Python
 *.pyc
+
+# ML
+*_model_dict_state
 
 #Latex
 *.aux

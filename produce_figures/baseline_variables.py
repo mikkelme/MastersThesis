@@ -289,6 +289,8 @@ def multi_FN_force_dist(path, save = False):
         axes[f].set_title(names[f])
         axes[f].plot(F_N, Ff, 'o')
         
+        axes[f].set_xlabel('$F_N$ [nN]', fontsize=14)
+        axes[f].set_ylabel(r'$\langle F_\parallel \rangle$ [nN]', fontsize=14)
 
         
         

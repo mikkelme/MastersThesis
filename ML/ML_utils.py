@@ -105,13 +105,10 @@ def evaluate_model(model, dataloader, criterion, device):
 
 
 
-def train_and_evaluate(model, dataloaders, criterion, optimizer, scheduler, ML_setting, device):
-    best_avgprec = 0
-    best_epoch = -1
-
+def train_and_evaluate(model, dataloaders, criterion, optimizer, scheduler, ML_setting, device, save_best = False):
     train_losses = []
-    validation_lossed = []
-    
+    validation_losses = []    
+    best = {'loss': 1e6, 'weights': None, 'epoch': -1}
     num_epochs = ML_setting['maxnumepochs']
 
     print('Training model')
@@ -129,16 +126,26 @@ def train_and_evaluate(model, dataloaders, criterion, optimizer, scheduler, ML_s
                 scheduler.step()
 
             avgloss = evaluate_model(model, dataloaders['val'], criterion, device)
-            validation_lossed.append(avgloss)
+            validation_losses.append(avgloss)
             
             # Do more data analysis here?
+            # print(avgloss)
+            # exit()
+            
+            if save_best:
+                if avgloss[0] < best['loss']: # TODO: Best criteria?
+                    best['weights'] = model.state_dict()
+                    best['loss'] = avgloss[0]
+                    best['epoch'] = epoch
+                    
         
         
         except KeyboardInterrupt: break
-        
-    
     print('-' * 14)
-    return np.array(train_losses), np.array(validation_lossed)
+    
+ 
+    
+    return np.array(train_losses), np.array(validation_losses), best
 
 # def save_training_history(session_name, train_losses, test_losses, test_precs):
 #     filename = session_name + '_training_history.txt'
@@ -155,10 +162,11 @@ def train_and_evaluate(model, dataloaders, criterion, optimizer, scheduler, ML_s
 #     outfile.close()
 
 
-# def save_best_model(session_name, model, best_weights):
-#     modelname = session_name + '_model_dict_state'
-#     model.load_state_dict(best_weights)
-#     torch.save(model.state_dict(), './' + modelname)
+
+def save_best_model(name, model, best_weights):
+    modelname = name + '_model_dict_state'
+    model.load_state_dict(best_weights)
+    torch.save(model.state_dict(), modelname)
 
 
 

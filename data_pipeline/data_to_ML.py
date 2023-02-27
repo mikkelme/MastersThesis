@@ -122,12 +122,11 @@ def convert_data(multi_dirs, dest):
 
 
 if __name__ == "__main__":
-    dir = '../Data/CONFIGS/honeycomb'
-    dest = '../Data/ML/honeycomb'
+    dir = '../Data/CONFIGS/popup'
+    dest = '../Data/ML/popup'
     
     
     multi_dirs = locate_multi_dir(dir)
-    
     convert_data(multi_dirs, dest)
     
     

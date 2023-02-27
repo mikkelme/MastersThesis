@@ -413,7 +413,7 @@ def RW_dataset(shape = (62,106)):
     # Parameters
     dir = './RW'
     overwrite = True
-    store = True
+    store = False
     png_only = True
     
     SET = []
@@ -516,44 +516,7 @@ def RW_dataset(shape = (62,106)):
     
    
     
-    
-    
-    # Free
-    # Thin
-    # SET.append(RW_Generator(**{**param, 'num_walks': 32, 'max_steps': 20}))
-    
-    
-    
-    # SET.append(RW_Generator(**{**param, 'num_walks': 64, 'max_steps': 20}))
-    
-    # SET.append(RW_Generator(size = (62, 106), num_walks = 32, max_steps = 12, min_dis = 4, bias = [(0, 1), 0], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = True, center_elem = False))
-    
-    
-    # # --- Random patterns ---#
-    # # Thin, grid start
-    # SET.append(RW_Generator(size = (62, 106), num_walks = 32, max_steps = 20, min_dis = 3, bias = [(0, 1), 0], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = True, center_elem = False))
-    
-    # # Thin, RN start slight bias
-    # SET.append(RW_Generator(size = (62, 106), num_walks = 32, max_steps = 30, min_dis = 4, bias = [(0, 1), 0.4], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = False, center_elem = False))
-    # SET.append(RW_Generator(size = (62, 106), num_walks = 32, max_steps = 30, min_dis = 4, bias = [(1, 1), 0.4], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = False, center_elem = False))
-    # SET.append(RW_Generator(size = (62, 106), num_walks = 32, max_steps = 30, min_dis = 4, bias = [(1, -1), 0.4], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = False, center_elem = False))
-    
-    # # Thick, RN start slight bias
-    # SET.append(RW_Generator(size = (62, 106), num_walks = 16, max_steps = 30, min_dis = 4, bias = [(0, 1), 0.4], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = False, center_elem = True))
-    # SET.append(RW_Generator(size = (62, 106), num_walks = 16, max_steps = 30, min_dis = 4, bias = [(1, 1), 0.4], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = False, center_elem = True))
-    # SET.append(RW_Generator(size = (62, 106), num_walks = 16, max_steps = 30, min_dis = 4, bias = [(1, -1), 0.4], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = False, center_elem = True))
-    
-    
-    # # Porous 
-    # SET.append(RW_Generator(size = (62, 106), num_walks = 32, max_steps = 30, min_dis = 5, bias = [(0, -1), 0.5], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = False, center_elem = True))
-    # SET.append(RW_Generator(size = (62, 106), num_walks = 32, max_steps = 30, min_dis = 5, bias = [(-1, -1), 0.5], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = False, center_elem = True))
-    # SET.append(RW_Generator(size = (62, 106), num_walks = 32, max_steps = 30, min_dis = 5, bias = [(-1, 1), 0.5], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = False, center_elem = True))
-    
-    # SET.append(RW_Generator(size = (62, 106), num_walks = 32, max_steps = 30, min_dis = 4, bias = [(0, -1), 0.5], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = False, center_elem = True))
-    # SET.append(RW_Generator(size = (62, 106), num_walks = 32, max_steps = 30, min_dis = 4, bias = [(-1, -1), 0.5], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = False, center_elem = True))
-    # SET.append(RW_Generator(size = (62, 106), num_walks = 32, max_steps = 30, min_dis = 4, bias = [(-1, 1), 0.5], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = False, center_elem = True))
-    
-    
+
     
     if store:
         # print(f'\rStoring ({count:03d})| overwrite = {overwrite} | ({xwidth}, {ywidth}, {bridge_thickness}, {bridge_len})/({max_val[0]}, {max_val[1]}, {max_val[2]}, {max_val[3]})', end = "")
@@ -568,10 +531,11 @@ def RW_dataset(shape = (62,106)):
             builder.view()
 
     
-    # set = SET[0]
-    # mat = set.generate()
-    # builder = config_builder(mat)
-    # builder.view()
+    mat = SET[0].generate()
+    builder = config_builder(mat)
+    builder.view()
+    
+    
     
     # mat = set.generate()
     # builder = config_builder(mat)

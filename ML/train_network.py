@@ -25,7 +25,7 @@ def loss_func(outputs, labels):
     return loss, Ff_loss, rup_loss
 
 
-def train_tmp(data_root, model, ML_setting, maxfilenum = None):
+def train_tmp(data_root, model, ML_setting, save_best = False, maxfilenum = None):
     """ Training...
 
     Args:
@@ -51,8 +51,17 @@ def train_tmp(data_root, model, ML_setting, maxfilenum = None):
 
 
     # Train and evaluate
-    train_losses, validation_losses = train_and_evaluate(model, dataloaders, criterion, optimizer, lr_scheduler, ML_setting, device )
+    train_losses, validation_losses, best = train_and_evaluate(model, dataloaders, criterion, optimizer, lr_scheduler, ML_setting, device, save_best)
 
+    if save_best:
+        print(f'Best epoch: {best["epoch"]}')
+        print(f'Best loss: {best["loss"]}')
+        name = './test100'
+        # save_training_history(name, train_losses, test_losses, test_precs)
+        save_best_model(name, model, best['weights'])
+        # save_best_model_val_scores(name, best_scores, best_epoch)
+        
+        
 
     # Fast plotting
     plt.figure(num=0, dpi=80, facecolor='w', edgecolor='k')
@@ -88,8 +97,9 @@ def train_tmp(data_root, model, ML_setting, maxfilenum = None):
 if __name__=='__main__':
     # TODO: Initialize weights in model
     
-    data_root = '../data_pipeline/tmp_data'
+    # data_root = '../data_pipeline/tmp_data'
+    data_root = '../Data/ML/honeycomb'
     ML_setting = get_ML_setting()
     
     model = VGGNet(mode = 0)
-    train_tmp(data_root, model, ML_setting, maxfilenum = None)
+    train_tmp(data_root, model, ML_setting, save_best = True, maxfilenum = 100)
