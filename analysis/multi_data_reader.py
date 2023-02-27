@@ -221,6 +221,8 @@ if __name__ == "__main__":
     # folders.pop(0)
     
     # obj = plot_multi([ '../Data/CONFIGS/cut_sizes/conf'])
-    stability_heatmap([ '../Data/CONFIGS/cut_sizes/conf_6'])
-    plt.show()
+    # stability_heatmap([ '../Data/CONFIGS/cut_sizes/conf_6'])
+    # plt.show()
     
+    
+    data = read_multi_folder('../Data/CONFIGS/honeycomb/hon_21/')

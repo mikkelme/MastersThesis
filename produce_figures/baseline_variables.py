@@ -260,7 +260,7 @@ def multi_FN(path, save = False):
 
    
 def multi_FN_force_dist(path, save = False):
-    """ Linear normal force increase with force on pull blocks and on whole sheet respectively """
+    """ Linear normal force increase (zero stretch) with force on pull blocks and on whole sheet respectively """
     
     common_path = os.path.join(path, 'nocut')
     folders = [os.path.join(common_path, 'multi_FN_lin'),
@@ -276,16 +276,20 @@ def multi_FN_force_dist(path, save = False):
                        'linewidth': 1.5,
                        'markersize': 2.5}
     
-    for f, folder in folders:
+    
+    fig, axes = plt.subplots(1, 2,  figsize = (10,5))#, gridspec_kw ={'width_ratios': width_ratios})
+    
+    for f, folder in enumerate(folders):
         data = read_multi_folder(folder, mean_window_pct, std_window_pct)
         
         
         Ff = data['Ff'][:, :, 0, 1].T
         F_N = data['F_N']
         
-      
-                color = get_color_value(z[k], np.min(z), np.max(z), scale = colorbar_scale, cmap = cmap)
-                axes[f].plot(x, y[:,k], **line_and_marker, color = color)
+        axes[f].set_title(names[f])
+        axes[f].plot(F_N, Ff, 'o')
+        
+
         
         
  
@@ -532,8 +536,7 @@ if __name__ == "__main__":
     # multi_FN(path, save = False)
     # multi_area(path, save = False)
     
-    # TODO: Working here :) 
-    multi_FN_force_dist(...)
+    multi_FN_force_dist(path)
     
     # contact_vs_time(path, save = False)
     # vaccum_normal_buckling(path, save = False)

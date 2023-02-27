@@ -23,6 +23,8 @@ def locate_multi_dir(dir):
         if len(dirs) == 0: continue # Ignore deepest subdirs
         if target in files:
             multi_dirs.append(root)
+    if len(multi_dirs) == 0:
+        print(f'multi_dirs is empty.')
     return multi_dirs  
         
     
@@ -35,9 +37,8 @@ def convert_data(multi_dirs, dest):
     
 
     count = 0
-    os.mkdir("tmp_data")
     
-    exit()
+    os.mkdir(dest)
     for dir in multi_dirs:
         # Find config array
         for file in os.listdir(dir):
@@ -52,14 +53,14 @@ def convert_data(multi_dirs, dest):
             data = {}
             
             # Create folder for data point
-            dest = f"tmp_data/sim_{count:05d}"
-            os.mkdir(dest)
+            subdest = f"{dest}/sim_{count:05d}"
+            os.mkdir(subdest)
             
             # Move config png and npy til folder
             shutil.copyfile(os.path.join(dir, 'config.png'), 
-                            os.path.join(dest, 'config.png'))
+                            os.path.join(subdest, 'config.png'))
             shutil.copyfile(os.path.join(dir, config_file), 
-                            os.path.join(dest, 'config.npy'))
+                            os.path.join(subdest, 'config.npy'))
             
             
             # Read info dict
@@ -103,7 +104,7 @@ def convert_data(multi_dirs, dest):
             
             
             # Write data to file in csv format
-            with open (os.path.join(dest,'val.csv'), 'w') as csvfile:  
+            with open (os.path.join(subdest,'val.csv'), 'w') as csvfile:  
                 w = csv.writer(csvfile)
                 for key, val in data.items():
                     w.writerow([key, val])
@@ -121,7 +122,16 @@ def convert_data(multi_dirs, dest):
 
 
 if __name__ == "__main__":
-    dir = '../Data/CONFIGS/TEST'
+    dir = '../Data/CONFIGS/honeycomb'
+    dest = '../Data/ML/honeycomb'
+    
+    
+    multi_dirs = locate_multi_dir(dir)
+    
+    convert_data(multi_dirs, dest)
+    
+    
+    
     
     
     
@@ -132,5 +142,3 @@ if __name__ == "__main__":
     #
     # Convert honeycomb and popup data
     #
-    multi_dirs = locate_multi_dir(dir, dest)
-    convert_data(multi_dirs)

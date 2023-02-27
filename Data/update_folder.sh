@@ -3,8 +3,8 @@
 
 ssh=egil
 #FLAGS=(--include '*/' --include '*.txt' --include '*.npy' --include '*.png')
-FLAGS=(--include '*/' --include '*.txt' --include '*contact.data')
-# FLAGS=(--include '*/' --include '*.txt')
+#FLAGS=(--include '*/' --include '*.txt' --include '*contact.data')
+FLAGS=(--include '*/' --include '*.txt')
 
 
 if [ $# -eq 0 ] 

@@ -405,6 +405,8 @@ def organize_data(data, stretch_lim, FN_lim):
                     output[col-2][i,j] = data[index[0][0], col]
                   
     
+    
+    
     # --- Trim to limits --- #
     # Handle different version of limit definitions
     if stretch_lim[0] == None: stretch_lim[0] = np.min(stretch_pct) - 1
@@ -982,7 +984,7 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.35, stretch_lim = [Non
                 #     # plt.plot(dat['TimeStep'], CNtol, linestyle = '--', color = 'black')
                 #     # plt.ylabel("CN")
                 #     # plt.xlabel("Timestep")
-                    
+                
                 rupture.append((stretch_pct, F_N, is_ruptured, job_dir))  
                 
                 if not is_ruptured:
@@ -1004,14 +1006,14 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.35, stretch_lim = [Non
     stretch_pct, F_N, Ff, Ff_std, contact_mean, contact_std = organize_data(data, stretch_lim, FN_lim)
     rup_stretch_pct, rup_F_N, rup, filenames = organize_data(rupture, stretch_lim, FN_lim) # XXX 
     
-    
+ 
     
     mu_max = get_friction_coef(Ff[:, :, 0, 0], F_N)
     mu_mean = get_friction_coef(Ff[:, :, 0, 1], F_N)
     
     
     # --- Rupture detection --- #
-    if rup.any():
+    if (rup > 0.5).any():
         # Print information
         detections = [["stretch %", "F_N", "Filenames"]]
         map = np.argwhere(rup == 1)
@@ -1020,7 +1022,11 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.35, stretch_lim = [Non
             detections.append([rup_stretch_pct[i], rup_F_N[j], filenames[i,j].removeprefix(folder)])
            
         detections = np.array(detections)
-        practical_rupture_stretch = np.min(detections[1:,0].astype('float'))
+        try:
+            practical_rupture_stretch = np.min(detections[1:,0].astype('float'))
+        except ValueError:
+            # print(detections)
+            exit()
         print(f"{len(detections)-1} Ruptures detected in \'{folder}\':")
         print(detections)                
     else:
