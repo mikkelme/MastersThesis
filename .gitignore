@@ -8,6 +8,7 @@
 *.lammps
 *.png
 *.npy
+*.csv
 
 # Folders
 /__pycache__
