@@ -19,7 +19,7 @@ class RW_Generator:
                         center_elem = True,
                         avoid_clustering = 10,
                         centering = False,
-                        stay_or_break = False,
+                        stay_or_break = 0,
                         seed = None):
 
 
@@ -29,10 +29,10 @@ class RW_Generator:
         assert size[0] > 0 and size[1] > 0, shape_error
             
     
-        if stay_or_break:
+        if stay_or_break > 0:
             assert center_elem is not False, f"center_elem = {center_elem} is not valid in mode stay_or_break = {stay_or_break}"
             assert avoid_unvalid == False, "TMP"
-            assert bias[-1] > 0, "TMP"
+            # assert bias[-1] > 0, "TMP"
     
         # Convert variables
         self.size = np.array(size)
@@ -209,12 +209,11 @@ class RW_Generator:
             force_dir = six_directions[np.random.choice(len(six_directions), 1)[0]]
             self.bias[0] = force_dir
       
-    
-        # if self.stay_or_break:
-        #     self.directions = force_dir # Get closest valid direction? XXX
-    
-    
-    
+
+        # TODO: Remember last direction
+        # and make self.stay_or_break be prob to continue on
+        # that direction
+
     
         pos = start    
         for i in range(self.max_steps): # Walk loop
@@ -250,10 +249,9 @@ class RW_Generator:
             
             # Choose next site taking bias into account
             p = self.get_p(direction)
+            
+            
             choice = np.random.choice(len(neigh), p = p)
-            print(p)
-            print(direction)
-            exit()
             
             if self.stay_or_break:
                 self.bias[0] = direction[choice]
@@ -398,116 +396,26 @@ class RW_Generator:
     
     def get_p(self, input_dir):
         """ Get discrete transistion probabilities for valid sites provided by input_dir
-            by using the Boltzmann factor to handle the bias """
+            by using a Gibbs–Boltzmann distribution """
         
-        
-        bias_dir, bias_prob = self.bias
+        bias_dir, bias_strength = self.bias
     
-        # if bias_prob == 0: # Non biased
-        #     return np.ones(len(input_dir))/len(input_dir)
-
-        # Check that bias direction and bias probability is properly defined
-        assert np.linalg.norm(bias_dir) > 0, f"force direction {bias_dir} has zero norm"
-        # assert bias_prob >= 0 and bias_prob <= 1, f"bias probability = {bias_prob} must be in interval [0, 1]" 
-
-        # # Get angle between choice and bias direction
-        # norm = np.linalg.norm(input_dir, axis = 1)*np.linalg.norm(bias_dir)
-        # dot = np.dot(input_dir, bias_dir)/norm
-        # angle = np.where(np.abs(dot) >= 1, np.arccos(np.sign(dot)), np.arccos(dot))
-        
-
-
-
-
-
-        exit()
-
-
-        # --- Bias ---#
-        # Choose the biased route by probability bias_prob and 
-        # and a uniform random route by (1 - bias_prob)
-        
-        # Roll the dice
-        bias_route = np.random.uniform(low=0.0, high=1.0) < bias_prob
-        
-        if bias_route:
-            # Get vector length of direction projected on bias direction
-            bias_unit = bias_dir/np.linalg.norm(bias_dir) # TODO: Do this before calling this function XXX
-            
-            proj_norm = np.dot(input_dir, bias_unit)/(np.linalg.norm(bias_dir)*np.linalg.norm(input_dir, axis = 1))
-            
-            mask = proj_norm < 0
-            proj_norm[mask] = 0
-            
-            proj_norm /= np.min(1-proj_norm)
-            # print(proj_norm)
-            # exit()
-    
-            p = proj_norm / np.sum(proj_norm)
-            
-            
-            print(p)
-            
-            # rel_weight = np.min(angle)/angle
-            # print(rel_weight)
-            exit()
-
-        else: 
+        if bias_strength == 0: # Non biased
             return np.ones(len(input_dir))/len(input_dir)
-        
-        exit()
-        
-        # Relative weights based on angle distance to bias direction
-        # Normalize such that two closest have total prob of bias_prob and the remaining (1-bias_prob)
-        
-        if np.min(angle) < 1e-16: # bias aligns perfectly with bias direction
-            rel_weigth = np.full(len(angle), (1-self.bias[1])/(len(angle)-1))
-            rel_weigth[np.argmin(angle)] = self.bias[1]
 
-        else: 
-            rel_weight = np.min(angle)/angle
-            # rel_weight = 1/(angle/np.min(angle))
-            
-            # print(angle)
-            rel_weight = np.cos(angle)
-            
-            pos_mask = rel_weight > 0
-            
-            
-            rel_weight[pos_mask] *= bias_prob/np.sum(rel_weight[pos_mask])
-            rel_weight[~pos_mask] *= (1-bias_prob)/np.sum(rel_weight[~pos_mask])
-            
-            
-        
-            
-        print(rel_weight)
-        exit()
+        # Check that bias direction properly defined
+        assert np.linalg.norm(bias_dir) > 0, f"force direction {bias_dir} has zero norm"
 
-        if self.bias[1] == 1.0:
-            print(input_dir)
-            print(angle)
-            
-            # Relative weight
-            if np.min(angle) < 1e-16: # bias aligns with path
-                rel = np.zeros(len(angle))
-                rel[np.argmin(angle)] = 1
-            else: 
-                rel = 1/(angle/np.min(angle))
-                rel /= np.sum(rel) # normalize
-                
-                
-            print(rel)
-            
-            exit()
+        # --- Gibbs–Boltzmann distribution --- #
+        # Energy difference is calculated assuming a unit jump in direction of input_dir
+        # under influence of a force in bias_dir direction and |F|/kT = bias_strength
 
-        print(angle)
-
-        exit()
-        # Approach for mapping angles to probabilities depending on bias
-        sigma = 10*np.exp(-4.6*strength)
-        p = norm_dist(angle, sigma) / np.sum(norm_dist(angle, sigma))
+        DeltaE = -bias_strength*np.dot(input_dir, bias_dir)/(np.linalg.norm(bias_dir)*np.linalg.norm(input_dir, axis = 1))
+        expE = np.exp(-DeltaE)
+        p = expE/np.sum(expE)
         return p
-
+    
+    
 
     def get_grid(self):
         """ Create a square grid for starting points """
