@@ -190,6 +190,6 @@ label no_rupture_detection
 # Repeat script without rupture test
 if "${run_rupture_test_}" then &
 "clear" &
-"include ${root}/manual_coupling.in"
+"include ${root}/manual_coupling_stretch.in" # use jump instead?
 
 

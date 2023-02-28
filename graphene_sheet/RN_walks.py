@@ -264,13 +264,19 @@ class RW_Generator:
                         p[mask] = self.stay_or_break
                         p[~mask] *= (1-self.stay_or_break)/np.sum(p[~mask])
                        
-                choice = np.random.choice(len(neigh), p = p)
+                try:
+                    choice = np.random.choice(len(neigh), p = p)
+                except ValueError:
+                    print("probabilities does not sum to one")
+                    print(p)
+                    print(np.sum(p))
+                    exit()
                 self.last_direction = direction[choice] 
             else:
                 choice = np.random.choice(len(neigh), p = p)
             
                 
-        
+
             if available[choice] == False: # Hit unvalid site
                 break
             
