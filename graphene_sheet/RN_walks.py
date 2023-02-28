@@ -19,6 +19,7 @@ class RW_Generator:
                         center_elem = True,
                         avoid_clustering = 10,
                         centering = False,
+                        stay_or_break = False,
                         seed = None):
 
 
@@ -26,7 +27,13 @@ class RW_Generator:
         shape_error = f"SHAPE ERROR: Got size {size}, y-axis must be multiple of 2 and both nonzero positive integers."
         assert size[0]%1 == 0 and size[1]%1 == 0 and size[1]%2 == 0, shape_error
         assert size[0] > 0 and size[1] > 0, shape_error
-        
+            
+    
+        if stay_or_break:
+            assert center_elem is not False, f"center_elem = {center_elem} is not valid in mode stay_or_break = {stay_or_break}"
+            assert avoid_unvalid == False, "TMP"
+            assert bias[-1] > 0, "TMP"
+    
         # Convert variables
         self.size = np.array(size)
         self.num_walks = num_walks
@@ -40,6 +47,7 @@ class RW_Generator:
         self.center_elem = center_elem
         self.avoid_clustering = avoid_clustering
         self.centering = centering # Move CM as close to starting point as possible
+        self.stay_or_break = stay_or_break
         if seed is not None: # Not working properly... XXX
             np.random.seed(seed)
      
@@ -202,8 +210,13 @@ class RW_Generator:
             self.bias[0] = force_dir
       
     
+        # if self.stay_or_break:
+        #     self.directions = force_dir # Get closest valid direction? XXX
+    
+    
+    
+    
         pos = start    
-
         for i in range(self.max_steps): # Walk loop
             # Get neighbours and directions
             neigh, direction = self.connected_neigh(pos)
@@ -238,7 +251,14 @@ class RW_Generator:
             # Choose next site taking bias into account
             p = self.get_p(direction)
             choice = np.random.choice(len(neigh), p = p)
+            print(p)
+            print(direction)
+            exit()
             
+            if self.stay_or_break:
+                self.bias[0] = direction[choice]
+                
+        
             if available[choice] == False: # Hit unvalid site
                 break
             
@@ -377,20 +397,112 @@ class RW_Generator:
     
     
     def get_p(self, input_dir):
-        """ Get probailities for next site choices taking bias (force) into account. """
-        force_dir, strength = self.bias
-    
-        if strength == 0: # Non biased
-            return np.ones(len(input_dir))/len(input_dir)
-
-        # Check that directions is probably defined
-        assert np.linalg.norm(force_dir) > 0, f"force direction {force_dir} has zero norm"
-
-        # Get angle between choice and bias direction
-        norm = np.linalg.norm(input_dir, axis = 1)*np.linalg.norm(force_dir)
-        dot = np.dot(input_dir, force_dir)/norm
-        angle = np.where(np.abs(dot) >= 1, np.arccos(np.sign(dot)), np.arccos(dot))
+        """ Get discrete transistion probabilities for valid sites provided by input_dir
+            by using the Boltzmann factor to handle the bias """
         
+        
+        bias_dir, bias_prob = self.bias
+    
+        # if bias_prob == 0: # Non biased
+        #     return np.ones(len(input_dir))/len(input_dir)
+
+        # Check that bias direction and bias probability is properly defined
+        assert np.linalg.norm(bias_dir) > 0, f"force direction {bias_dir} has zero norm"
+        # assert bias_prob >= 0 and bias_prob <= 1, f"bias probability = {bias_prob} must be in interval [0, 1]" 
+
+        # # Get angle between choice and bias direction
+        # norm = np.linalg.norm(input_dir, axis = 1)*np.linalg.norm(bias_dir)
+        # dot = np.dot(input_dir, bias_dir)/norm
+        # angle = np.where(np.abs(dot) >= 1, np.arccos(np.sign(dot)), np.arccos(dot))
+        
+
+
+
+
+
+        exit()
+
+
+        # --- Bias ---#
+        # Choose the biased route by probability bias_prob and 
+        # and a uniform random route by (1 - bias_prob)
+        
+        # Roll the dice
+        bias_route = np.random.uniform(low=0.0, high=1.0) < bias_prob
+        
+        if bias_route:
+            # Get vector length of direction projected on bias direction
+            bias_unit = bias_dir/np.linalg.norm(bias_dir) # TODO: Do this before calling this function XXX
+            
+            proj_norm = np.dot(input_dir, bias_unit)/(np.linalg.norm(bias_dir)*np.linalg.norm(input_dir, axis = 1))
+            
+            mask = proj_norm < 0
+            proj_norm[mask] = 0
+            
+            proj_norm /= np.min(1-proj_norm)
+            # print(proj_norm)
+            # exit()
+    
+            p = proj_norm / np.sum(proj_norm)
+            
+            
+            print(p)
+            
+            # rel_weight = np.min(angle)/angle
+            # print(rel_weight)
+            exit()
+
+        else: 
+            return np.ones(len(input_dir))/len(input_dir)
+        
+        exit()
+        
+        # Relative weights based on angle distance to bias direction
+        # Normalize such that two closest have total prob of bias_prob and the remaining (1-bias_prob)
+        
+        if np.min(angle) < 1e-16: # bias aligns perfectly with bias direction
+            rel_weigth = np.full(len(angle), (1-self.bias[1])/(len(angle)-1))
+            rel_weigth[np.argmin(angle)] = self.bias[1]
+
+        else: 
+            rel_weight = np.min(angle)/angle
+            # rel_weight = 1/(angle/np.min(angle))
+            
+            # print(angle)
+            rel_weight = np.cos(angle)
+            
+            pos_mask = rel_weight > 0
+            
+            
+            rel_weight[pos_mask] *= bias_prob/np.sum(rel_weight[pos_mask])
+            rel_weight[~pos_mask] *= (1-bias_prob)/np.sum(rel_weight[~pos_mask])
+            
+            
+        
+            
+        print(rel_weight)
+        exit()
+
+        if self.bias[1] == 1.0:
+            print(input_dir)
+            print(angle)
+            
+            # Relative weight
+            if np.min(angle) < 1e-16: # bias aligns with path
+                rel = np.zeros(len(angle))
+                rel[np.argmin(angle)] = 1
+            else: 
+                rel = 1/(angle/np.min(angle))
+                rel /= np.sum(rel) # normalize
+                
+                
+            print(rel)
+            
+            exit()
+
+        print(angle)
+
+        exit()
         # Approach for mapping angles to probabilities depending on bias
         sigma = 10*np.exp(-4.6*strength)
         p = norm_dist(angle, sigma) / np.sum(norm_dist(angle, sigma))

@@ -69,7 +69,7 @@ def baseline_multi_coupling():
                     'RNSEED'           : -1,
                     'run_rupture_test' : 1,
                     "stretch_speed_pct": 0.01,
-                    'F_N'              : 100,
+                    'F_N'              : 100e-9,
                     "stretch_max_pct"  : 0.4,
                     'root'             : '.',
                     'dump_freq'        : 100000}
@@ -158,7 +158,7 @@ if __name__ == '__main__':
     # baseline_multi_stretch(names, files)
     # baseline_multi_FN(names, files)
     # baseline_multi_FN_lin()
-    # baseline_multi_coupling()
+    baseline_multi_coupling()
     
     
     ############################################################################

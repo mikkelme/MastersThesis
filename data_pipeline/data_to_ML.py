@@ -49,6 +49,7 @@ def convert_data(multi_dirs, dest):
         # Analyse data points
         for root, dirs, files in os.walk(dir, topdown=False):
             if len(dirs) > 0: continue # Only use lowest subdirs
+            count += 1
             print(f'\rAnalysing file | count = {count:05d} | dir = {root} ', end = '')
             data = {}
             
@@ -114,7 +115,6 @@ def convert_data(multi_dirs, dest):
 
             
             
-            count += 1
     print()
 
 
@@ -122,22 +122,18 @@ def convert_data(multi_dirs, dest):
 
 
 if __name__ == "__main__":
-    dir = '../Data/CONFIGS/popup'
-    dest = '../Data/ML/popup'
+    dir = '../Data/CONFIGS/honeycomb'
+    dest = '../Data/ML_data/honeycomb'
+    # dir = '../Data/CONFIGS/popup'
+    # dest = '../Data/ML/popup'
     
     
     multi_dirs = locate_multi_dir(dir)
     convert_data(multi_dirs, dest)
+    pass
     
     
     
     
     
-    
-    # TODO
-    #
-    # Make flexible for input dir and
-    # output destination
-    #
-    # Convert honeycomb and popup data
-    #
+ 
