@@ -150,6 +150,13 @@ class RW_Generator:
         self.mat = np.ones(self.size, dtype = int) 
         self.mat = delete_atoms(self.mat, del_map)
             
+        # XXX
+        self.mat[:] = 1
+        self.mat[10,:10] = 0
+        self.mat[-10,:10] = 0
+        self.mat[10:-10,10] = 0
+        # self.mat[0:10, 0] = 0
+        # XXX
                 
         # --- Avoid isolated clusters --- #
         if self.avoid_clustering is not False:
@@ -158,10 +165,41 @@ class RW_Generator:
             self.visit = np.zeros(self.size, dtype = int)
             
             # Walk configuration from corner
-            self.DFS((0,0), PB = True)
+            x_start = (np.argwhere(self.mat[:, 0] == 1)).ravel()
+            
+            if len(x_start) == 0:
+                exit("this cannot work")
+                
+            
+                
+            self.DFS((x_start[0],0), PB = False)
+            # # Check if some sites are not visited at top or bottom
+            # # and start walk from there if that is the case
+            bottom = np.sum(self.mat[:, 0] - self.visit[:, 0]) 
+            top = np.sum(self.mat[:, -1] - self.visit[:, -1]) 
+            
+            print(top)
+            print(bottom)
+            exit()
+            
+            
+            #
+            #
+            # Working here XXX
+            # Deploy DFS from top and bottom since 
+            # clusters connected to top and bottom is allowed.
+            #
+            print()
+            
+            
+            
             
             # Check if all sites are visited (is multiple clusters present)
             detect = np.sum(self.mat - self.visit) > 0.5
+            
+            print(detect)
+            return self.mat
+            
             if detect: # Isolated cluster detected
                 self.avoid_clustering -= 1
                 print(f'Isolated cluster detected | {self.avoid_clustering} attempts left')
@@ -183,7 +221,7 @@ class RW_Generator:
                             
                             # Is bottom and top reached
                             if bottom_reached and top_reached:
-                                self.mat = self.visit.copy()
+                                self.mat = self.visit.copy() 
                                 break
                         
                         if j == self.size[1]:                                    
@@ -383,18 +421,17 @@ class RW_Generator:
         self.visit[pos[0], pos[1]] = 1
             
         # Find potential neighbours (with PB)
-        # neigh, _ = self.connected_neigh(pos)
-        neigh, _ = connected_neigh_atom  (pos)
+        neigh, _ = connected_neigh_atom(pos)
         if PB:
             neigh = self.PB(neigh, self.size)
         else:
             on_sheet = np.all(np.logical_and(neigh < self.size, neigh >= (0,0)), axis = 1)
             neigh = neigh[on_sheet]
-        
+            
         # Start new search if neighbour atoms is present
         for pos in neigh:
             if self.mat[pos[0], pos[1]] == 1: # Atom is present
-                self.DFS(pos)
+                self.DFS(pos, PB)
                 
                 
     def PB(self, array, size):
