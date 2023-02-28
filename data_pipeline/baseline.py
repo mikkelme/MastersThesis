@@ -69,13 +69,14 @@ def baseline_multi_coupling():
                     'RNSEED'           : -1,
                     'run_rupture_test' : 1,
                     "stretch_speed_pct": 0.01,
-                    'F_N'              : 100e-9,
+                    'F_N'              : 50e-9, # Keep in mind: this was set specifically after seeing rupture results XXX
                     "stretch_max_pct"  : 0.4,
                     'root'             : '.',
                     'dump_freq'        : 100000}
 
     F_N = np.array([0])*1e-9
-    gen.run_multi(F_N, variables, num_procs = 4, partition = 'mini', scripts = ["manual_coupling_stretch.in", "manual_coupling_drag.in"])
+    # gen.run_multi(F_N, variables, num_procs = 4, partition = 'mini', scripts = ["manual_coupling_stretch.in", "manual_coupling_drag.in"])
+    gen.run_multi(F_N, variables, num_procs = 16, partition = 'normal', scripts = ["manual_coupling_stretch.in", "manual_coupling_drag.in"])
     
         
 

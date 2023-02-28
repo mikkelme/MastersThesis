@@ -30,9 +30,7 @@ class RW_Generator:
             
     
         if stay_or_break > 0:
-            assert center_elem is not False, f"center_elem = {center_elem} is not valid in mode stay_or_break = {stay_or_break}"
-            assert avoid_unvalid == False, "TMP"
-            # assert bias[-1] > 0, "TMP"
+            assert center_elem is not False, f"center_elem = {center_elem} is not valid in mode stay_or_break = {stay_or_break} > 0"
     
         # Convert variables
         self.size = np.array(size)
@@ -155,6 +153,7 @@ class RW_Generator:
                 
         # --- Avoid isolated clusters --- #
         if self.avoid_clustering is not False:
+            
             # Create binary matrix for visited sites (1 = visited)
             self.visit = np.zeros(self.size, dtype = int)
             
@@ -262,15 +261,14 @@ class RW_Generator:
                     if np.any(dis < 1e-3): 
                         mask = dis < 1e-3
                         p[mask] = self.stay_or_break
-                        p[~mask] *= (1-self.stay_or_break)/np.sum(p[~mask])
+                        
+                        if len(mask) == 1:
+                            p = [1]
+                        else:
+                            p[~mask] *= (1-self.stay_or_break)/np.sum(p[~mask])
+                            p /= np.sum(p) # normalize again (avoid problems when only leading direction is an option)
                        
-                try:
-                    choice = np.random.choice(len(neigh), p = p)
-                except ValueError:
-                    print("probabilities does not sum to one")
-                    print(p)
-                    print(np.sum(p))
-                    exit()
+                choice = np.random.choice(len(neigh), p = p)
                 self.last_direction = direction[choice] 
             else:
                 choice = np.random.choice(len(neigh), p = p)
@@ -375,7 +373,7 @@ class RW_Generator:
     
     def DFS(self, pos, PB = True):
         """ Depth-first search (DFS) used for 
-            detecting isolated clusters """
+            detecting isolated clusters (walking on atoms not centers) """
 
         # Check is visited
         if self.visit[pos[0], pos[1]] == 1:
@@ -385,7 +383,8 @@ class RW_Generator:
         self.visit[pos[0], pos[1]] = 1
             
         # Find potential neighbours (with PB)
-        neigh, _ = self.connected_neigh(pos)
+        # neigh, _ = self.connected_neigh(pos)
+        neigh, _ = connected_neigh_atom  (pos)
         if PB:
             neigh = self.PB(neigh, self.size)
         else:
