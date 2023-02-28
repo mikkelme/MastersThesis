@@ -580,7 +580,7 @@ if __name__ == "__main__":
 
     
     # RW = RW_Generator(size = (62, 106), stay_or_break = True, num_walks = 1, max_steps = 30, min_dis = 4, bias = [(np.tan(np.pi/6), 1), 1], RN6 = False, periodic = True, avoid_unvalid = False, grid_start = True, center_elem = 'full', centering = False, avoid_clustering = 2)
-    RW = RW_Generator(size = (62, 106), stay_or_break = 0.9, num_walks = 1, max_steps = 30, min_dis = 4, bias = [(0.0, 1), 5], RN6 = False, periodic = True, avoid_unvalid = False, grid_start = True, center_elem = 'full', centering = False, avoid_clustering = 2)
+    RW = RW_Generator(size = (62, 106), stay_or_break = 0.8, num_walks = 5, max_steps = 30, min_dis = 4, bias = [(0, 1), 0], RN6 = True, periodic = True, avoid_unvalid = False, grid_start = True, center_elem = 'full', centering = False, avoid_clustering = 2)
 
     mat = RW.generate()
     builder = config_builder(mat)

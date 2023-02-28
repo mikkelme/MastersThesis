@@ -77,7 +77,6 @@ class RW_Generator:
             assert np.all(self.size%2 == 0), f"The size of the sheet {self.size} must have even side lengths to enable periodic boundaries."
     
     
-    
         # TODO: Work on single walk copied to multiple locations
         # TODO: Distributions on RN walk length?
         # TODO: Consider using the proper random generator suggested by numpy.
@@ -202,17 +201,20 @@ class RW_Generator:
         """ Perform a single random walk""" 
         self.valid[tuple(start)] = 0 # Mark starting point as unvalid
         del_map = [start] # Iniziate delete map
-        
-        # Random direction among 6 principal graphene directions
-        if self.RN6:
-            six_directions = [(0,1), (1,1), (1,-1), (0,-1), (-1,-1), (-1,1)]
-            force_dir = six_directions[np.random.choice(len(six_directions), 1)[0]]
-            self.bias[0] = force_dir
-      
 
-        # TODO: Remember last direction
-        # and make self.stay_or_break be prob to continue on
-        # that direction
+
+        if self.stay_or_break > 0:
+            self.last_direction = None
+        
+        # Random direction among 6 principal graphene directions (center elem)
+        if self.RN6:
+            six_directions = connected_neigh_center_elem((0,0))[1]
+            bias_dir = six_directions[np.random.choice(len(six_directions), 1)[0]]
+            self.bias[0] = bias_dir
+            
+            if self.stay_or_break > 0:
+                self.last_direction = bias_dir
+
 
     
         pos = start    
@@ -250,11 +252,23 @@ class RW_Generator:
             # Choose next site taking bias into account
             p = self.get_p(direction)
             
+          
+            if self.stay_or_break > 0:  # Stay on direction (if possible) by prob stay_or_break
+                if self.last_direction is not None:
+                    # Calculate distance between last direction and possible directions
+                    dis = np.linalg.norm(direction - self.last_direction, axis = 1)
+                    
+                    # If direction can be maintained -> adjust p[dir] = self.stay_or_break
+                    if np.any(dis < 1e-3): 
+                        mask = dis < 1e-3
+                        p[mask] = self.stay_or_break
+                        p[~mask] *= (1-self.stay_or_break)/np.sum(p[~mask])
+                       
+                choice = np.random.choice(len(neigh), p = p)
+                self.last_direction = direction[choice] 
+            else:
+                choice = np.random.choice(len(neigh), p = p)
             
-            choice = np.random.choice(len(neigh), p = p)
-            
-            if self.stay_or_break:
-                self.bias[0] = direction[choice]
                 
         
             if available[choice] == False: # Hit unvalid site
