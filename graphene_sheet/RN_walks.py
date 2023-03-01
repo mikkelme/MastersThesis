@@ -29,8 +29,8 @@ class RW_Generator:
         assert size[0] > 0 and size[1] > 0, shape_error
             
     
-        if stay_or_break > 0:
-            assert center_elem is not False, f"center_elem = {center_elem} is not valid in mode stay_or_break = {stay_or_break} > 0"
+        # if stay_or_break > 0:
+        #     assert center_elem is not False, f"center_elem = {center_elem} is not valid in mode stay_or_break = {stay_or_break} > 0"
     
         # Convert variables
         self.size = np.array(size)
@@ -48,9 +48,29 @@ class RW_Generator:
         self.stay_or_break = stay_or_break
         if seed is not None: # Not working properly... XXX
             np.random.seed(seed)
-     
+            
+        # Possible directions
+        self.main_center = connected_neigh_center_elem((0,0))[1] # 6 main directions based on the center elements
         
-        
+        # Equilivasnt atom direction when following center direction
+        atom_even = connected_neigh_atom((0,0))[1]
+        atom_odd = connected_neigh_atom((1,0))[1]
+        self.center_to_atom = np.zeros((len(self.main_center), 2, 2))
+        for i, main in enumerate(self.main_center):
+            best_even_idx = np.argmin(np.linalg.norm(main - atom_even, axis = 1))
+            best_odd_idx = np.argmin(np.linalg.norm(main - atom_odd, axis = 1))
+            self.center_to_atom[i, :] = atom_even[best_even_idx], atom_odd[best_even_idx]
+      
+      
+        #
+        #
+        # TODO: Working here
+        #  self.center_to_atom is not right
+        #  check shape and axis of lingalg.norm
+        #
+        print(self.main_center)
+        print(self.center_to_atom)
+        exit()
     def initialize(self):
         """ Initialize matrices for walks and link to and setup
             correct neighbour connection  """
@@ -75,7 +95,8 @@ class RW_Generator:
             assert np.all(self.size%2 == 0), f"The size of the sheet {self.size} must have even side lengths to enable periodic boundaries."
     
     
-        # TODO: Work on single walk copied to multiple locations
+        # Ideas for further features
+        # TODO: Single walk copied to multiple locations
         # TODO: Distributions on RN walk length?
         # TODO: Consider using the proper random generator suggested by numpy.
         
@@ -150,30 +171,6 @@ class RW_Generator:
         self.mat = np.ones(self.size, dtype = int) 
         self.mat = delete_atoms(self.mat, del_map)
             
-        # XXX
-        # self.mat[:] = 1
-        # self.mat[10,:10] = 0
-        # self.mat[-10,:10] = 0
-        # self.mat[10:-10,10] = 0
-        
-        # self.mat[30:40, 30] = 0
-        # self.mat[30:40, 40] = 0
-        # self.mat[30, 30:40] = 0
-        # self.mat[40, 30:40] = 0
-        
-        # self.mat[-10:, 10] = 0
-        # self.mat[-10:, -10] = 0
-        # self.mat[-10, 10:-10] = 0
-        
-        
-        # self.mat[10,-10:] = 0
-        # self.mat[-10,-10:] = 0
-        # self.mat[10:-10,-10] = 0
-        
-        # self.mat[:, 50] = 0
-        # self.mat[:, 0] = 0
-        
-        # XXX
                 
         # --- Avoid isolated clusters --- #
         if self.avoid_clustering is not False:
@@ -228,28 +225,6 @@ class RW_Generator:
                         print('Removing non-spanning clusters')
                         self.mat = self.visit.copy() 
                     
-                    
-                    # Find spanning cluster
-                    # # Move starting point on left side
-                    # for j in range(self.size[1]):
-                    #     self.visit[:] = 0 # Reset 
-                    #     self.DFS((0,j), PB = False)
-                        
-                    #     # Is right side reached (without PB)
-                    #     if np.sum(self.visit[-1, :]) > 0:
-                    #         bottom_reached = np.sum(self.visit[:, 0]) > 0
-                    #         top_reached = np.sum(self.visit[:, -1]) > 0
-                            
-                    #         # Is bottom and top reached
-                    #         if bottom_reached and top_reached:
-                    #             self.mat = self.visit.copy() 
-                    #             break
-                        
-                    #     if j == self.size[1]:                                    
-                    #         print("No spanning cluster found")
-                    #         return None
-               
-            
             # Returns multiple times, but all with the correct matrix though...
             # Not sure if this is a problem XXX
         return self.mat
@@ -262,7 +237,7 @@ class RW_Generator:
 
 
         if self.stay_or_break > 0:
-            self.last_direction = None
+            self.last_direction = None # rounded to nearest of the six
         
         # Random direction among 6 principal graphene directions (center elem)
         if self.RN6:
@@ -306,19 +281,51 @@ class RW_Generator:
                 
             if len(neigh) == 0: break # No where to go
                 
-            
             # Choose next site taking bias into account
             p = self.get_p(direction)
             
           
             if self.stay_or_break > 0:  # Stay on direction (if possible) by prob stay_or_break
+                
+                # print(self.last_direction)
+                # print(direction)
+                # print()
                 if self.last_direction is not None:
                     # Calculate distance between last direction and possible directions
-                    dis = np.linalg.norm(direction - self.last_direction, axis = 1)
+                    
+                    if self.center_elem == False:
+                        dis = np.linalg.norm(self.main_center - self.last_direction, axis = 1)
+                    else:
+                        dis = np.linalg.norm(direction - self.last_direction, axis = 1)
+                        
                     
                     # If direction can be maintained -> adjust p[dir] = self.stay_or_break
                     if np.any(dis < 1e-3): 
                         mask = dis < 1e-3
+                        if self.center_elem == False:
+                            candidates = self.center_to_atom[mask][0]
+                            
+                            
+                            
+                            # new_dis = np.array([np.linalg.norm(candidates - d, axis = 1) for d in direction])
+                            # new_arg = np.unravel_index(new_dis.argmin(), new_dis.shape)
+                            new_dis = np.array([np.linalg.norm(c - direction, axis = 1) for c in candidates])
+                            new_arg = np.unravel_index(new_dis.argmin(), new_dis.shape)
+                            mask = new_dis[new_arg[0]] < 1e-3
+                        else:
+                            mask = dis < 1e-3
+                        
+                        print(self.last_direction)
+                        print(direction)
+                        print(candidates)
+                        # print(mask)
+                        # print(self.last_direction)
+                        # print(direction)
+                        # print(p)
+                        
+                        print("Verify that this is right before moving on")
+                        exit()
+                        
                         p[mask] = self.stay_or_break
                         
                         if len(mask) == 1:
@@ -327,11 +334,12 @@ class RW_Generator:
                             p[~mask] *= (1-self.stay_or_break)/np.sum(p[~mask])
                             p /= np.sum(p) # normalize again (avoid problems when only leading direction is an option)
                        
+                    exit()
                 choice = np.random.choice(len(neigh), p = p)
                 self.last_direction = direction[choice] 
             else:
                 choice = np.random.choice(len(neigh), p = p)
-            
+
                 
 
             if available[choice] == False: # Hit unvalid site
