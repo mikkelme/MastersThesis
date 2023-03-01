@@ -52,25 +52,38 @@ class RW_Generator:
         # Possible directions
         self.main_center = connected_neigh_center_elem((0,0))[1] # 6 main directions based on the center elements
         
+        main_atom_even = connected_neigh_atom((0,0))[1]
+        main_atom_odd = connected_neigh_atom((1,0))[1]
+        
+        idx = (2,2)
+        test = connected_neigh_atom(idx)[1]
+        
+        odd_even = (idx[0]+idx[1])%2 # even = 0, odd = 1
+        
+        # print(self.main_center)
+        # print(self.main_atom_even)
+        # print(self.main_atom_odd)
+        # exit()
+        
+        # self.center_to_atom_even 
+        # self.center_to_atom_odd 
+        
         # Equilivasnt atom direction when following center direction
-        atom_even = connected_neigh_atom((0,0))[1]
-        atom_odd = connected_neigh_atom((1,0))[1]
-        self.center_to_atom = np.zeros((len(self.main_center), 2, 2))
+        
+        
+        self.center_to_atom_even = []
+        self.center_to_atom_odd = []
         for i, main in enumerate(self.main_center):
-            best_even_idx = np.argmin(np.linalg.norm(main - atom_even, axis = 1))
-            best_odd_idx = np.argmin(np.linalg.norm(main - atom_odd, axis = 1))
-            self.center_to_atom[i, :] = atom_even[best_even_idx], atom_odd[best_even_idx]
-      
-      
-        #
-        #
-        # TODO: Working here
-        #  self.center_to_atom is not right
-        #  check shape and axis of lingalg.norm
-        #
-        print(self.main_center)
-        print(self.center_to_atom)
-        exit()
+            best_even_idx = np.argmin(np.linalg.norm(main - main_atom_even, axis = 1))
+            best_odd_idx = np.argmin(np.linalg.norm(main - main_atom_odd, axis = 1))
+            
+            self.center_to_atom_even.append(main_atom_even[best_even_idx])
+            self.center_to_atom_odd.append(main_atom_odd[best_odd_idx])
+            
+        self.center_to_atom_even = np.array(self.center_to_atom_even)
+        self.center_to_atom_odd = np.array(self.center_to_atom_odd)
+    
+    
     def initialize(self):
         """ Initialize matrices for walks and link to and setup
             correct neighbour connection  """
@@ -303,28 +316,30 @@ class RW_Generator:
                     if np.any(dis < 1e-3): 
                         mask = dis < 1e-3
                         if self.center_elem == False:
+                            odd_even = (pos[0]+pos[1])%2 # even = 0, odd = 1
+                            
+                            if odd_even == 0: # even
+                                pass
+                            else: # odd_even == 1 # odd
+                                pass
+
+                            #
+                            #
+                            # TODO: Working here
+                            # get right atom jump
+                            # depending on odd even position
+                            #
+                            #    
+                            
+                            exit("Working on line 334 in RN_walks.py")
                             candidates = self.center_to_atom[mask][0]
-                            
-                            
-                            
-                            # new_dis = np.array([np.linalg.norm(candidates - d, axis = 1) for d in direction])
-                            # new_arg = np.unravel_index(new_dis.argmin(), new_dis.shape)
                             new_dis = np.array([np.linalg.norm(c - direction, axis = 1) for c in candidates])
                             new_arg = np.unravel_index(new_dis.argmin(), new_dis.shape)
                             mask = new_dis[new_arg[0]] < 1e-3
                         else:
                             mask = dis < 1e-3
                         
-                        print(self.last_direction)
-                        print(direction)
-                        print(candidates)
-                        # print(mask)
-                        # print(self.last_direction)
-                        # print(direction)
-                        # print(p)
-                        
-                        print("Verify that this is right before moving on")
-                        exit()
+                       
                         
                         p[mask] = self.stay_or_break
                         
@@ -333,10 +348,16 @@ class RW_Generator:
                         else:
                             p[~mask] *= (1-self.stay_or_break)/np.sum(p[~mask])
                             p /= np.sum(p) # normalize again (avoid problems when only leading direction is an option)
-                       
-                    exit()
+                  
+                  
+                print(self.last_direction)
+                print(direction)
+                print(p)
                 choice = np.random.choice(len(neigh), p = p)
+                
                 self.last_direction = direction[choice] 
+                print(self.last_direction)
+                exit()
             else:
                 choice = np.random.choice(len(neigh), p = p)
 
