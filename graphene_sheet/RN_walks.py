@@ -151,82 +151,103 @@ class RW_Generator:
         self.mat = delete_atoms(self.mat, del_map)
             
         # XXX
-        self.mat[:] = 1
-        self.mat[10,:10] = 0
-        self.mat[-10,:10] = 0
-        self.mat[10:-10,10] = 0
-        # self.mat[0:10, 0] = 0
+        # self.mat[:] = 1
+        # self.mat[10,:10] = 0
+        # self.mat[-10,:10] = 0
+        # self.mat[10:-10,10] = 0
+        
+        # self.mat[30:40, 30] = 0
+        # self.mat[30:40, 40] = 0
+        # self.mat[30, 30:40] = 0
+        # self.mat[40, 30:40] = 0
+        
+        # self.mat[-10:, 10] = 0
+        # self.mat[-10:, -10] = 0
+        # self.mat[-10, 10:-10] = 0
+        
+        
+        # self.mat[10,-10:] = 0
+        # self.mat[-10,-10:] = 0
+        # self.mat[10:-10,-10] = 0
+        
+        # self.mat[:, 50] = 0
+        # self.mat[:, 0] = 0
+        
         # XXX
                 
         # --- Avoid isolated clusters --- #
         if self.avoid_clustering is not False:
+            self.vertical_spanning = None
             
             # Create binary matrix for visited sites (1 = visited)
             self.visit = np.zeros(self.size, dtype = int)
             
-            # Walk configuration from corner
+            # First bottom left site available
             x_start = (np.argwhere(self.mat[:, 0] == 1)).ravel()
-            
-            if len(x_start) == 0:
-                exit("this cannot work")
+            if len(x_start) == 0: # Cannot span vertically
+                self.vertical_spanning = False
+            else:
+                start = (x_start[0], 0)
                 
-            
                 
-            self.DFS((x_start[0],0), PB = False)
-            # # Check if some sites are not visited at top or bottom
-            # # and start walk from there if that is the case
-            bottom = np.sum(self.mat[:, 0] - self.visit[:, 0]) 
-            top = np.sum(self.mat[:, -1] - self.visit[:, -1]) 
-            
-            print(top)
-            print(bottom)
-            exit()
-            
-            
-            #
-            #
-            # Working here XXX
-            # Deploy DFS from top and bottom since 
-            # clusters connected to top and bottom is allowed.
-            #
-            print()
-            
-            
-            
-            
+    
+            # Walk from all bottom sites and check if vertical spanning
+            # and then walk from all top sites
+            while self.vertical_spanning is not False: 
+                self.DFS(start, PB = False)
+                
+                
+                bottom_x = np.argwhere (self.mat[:, 0] - self.visit[:, 0] > 0).ravel()
+                top_x = np.argwhere (self.mat[:, -1] - self.visit[:, -1] > 0).ravel()
+                if len(bottom_x) > 0: # Walk from bottom
+                    start = [bottom_x[0], 0]
+                elif self.vertical_spanning is None: # Check if vertical spanning
+                    top_reached = np.sum(self.visit[:, -1]) > 0
+                    self.vertical_spanning = top_reached
+                elif len(top_x) > 0: # Walk from top
+                    start = (top_x[0], self.size[1]-1)
+                else:
+                    break
+                    
             # Check if all sites are visited (is multiple clusters present)
-            detect = np.sum(self.mat - self.visit) > 0.5
-            
-            print(detect)
-            return self.mat
-            
+            all_visited = np.sum(self.mat - self.visit) > 0.5
+            not_vertically_spanning = self.vertical_spanning != True
+            detect = all_visited or not_vertically_spanning
+                        
             if detect: # Isolated cluster detected
                 self.avoid_clustering -= 1
                 print(f'Isolated cluster detected | {self.avoid_clustering} attempts left')
                 if self.avoid_clustering > 0:
                     self.generate()
                 else:
-                    # Find spanning cluster
-                    print('Removing non-spanning clusters')
                     
-                    # Move starting point on left side
-                    for j in range(self.size[1]):
-                        self.visit[:] = 0 # Reset 
-                        self.DFS((0,j), PB = False)
+                    if not_vertically_spanning:
+                        print("Not possible to get vertical spanning cluster")
+                        self.mat = None
+                    else:
+                        print('Removing non-spanning clusters')
+                        self.mat = self.visit.copy() 
+                    
+                    
+                    # Find spanning cluster
+                    # # Move starting point on left side
+                    # for j in range(self.size[1]):
+                    #     self.visit[:] = 0 # Reset 
+                    #     self.DFS((0,j), PB = False)
                         
-                        # Is right side reached (without PB)
-                        if np.sum(self.visit[-1, :]) > 0:
-                            bottom_reached = np.sum(self.visit[:, 0]) > 0
-                            top_reached = np.sum(self.visit[:, -1]) > 0
+                    #     # Is right side reached (without PB)
+                    #     if np.sum(self.visit[-1, :]) > 0:
+                    #         bottom_reached = np.sum(self.visit[:, 0]) > 0
+                    #         top_reached = np.sum(self.visit[:, -1]) > 0
                             
-                            # Is bottom and top reached
-                            if bottom_reached and top_reached:
-                                self.mat = self.visit.copy() 
-                                break
+                    #         # Is bottom and top reached
+                    #         if bottom_reached and top_reached:
+                    #             self.mat = self.visit.copy() 
+                    #             break
                         
-                        if j == self.size[1]:                                    
-                            print("No spanning cluster found")
-                            return None
+                    #     if j == self.size[1]:                                    
+                    #         print("No spanning cluster found")
+                    #         return None
                
             
             # Returns multiple times, but all with the correct matrix though...
@@ -409,9 +430,10 @@ class RW_Generator:
       
 
     
-    def DFS(self, pos, PB = True):
+    def DFS(self, pos, PB = False):
         """ Depth-first search (DFS) used for 
             detecting isolated clusters (walking on atoms not centers) """
+
 
         # Check is visited
         if self.visit[pos[0], pos[1]] == 1:

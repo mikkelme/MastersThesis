@@ -420,7 +420,7 @@ def RW_dataset(shape = (62,106)):
     
     param = {   'size': (62, 106),
                 'periodic': True,
-                'avoid_clustering': 0 } #XXX -> 5-10
+                'avoid_clustering': 0} #XXX -> 5-10
     
     
     direc = {'up': (0, 1), 
@@ -536,6 +536,8 @@ def RW_dataset(shape = (62,106)):
             print(f'\rStoring ({i+1:03d}/{len(SET):03d})| overwrite = {overwrite}', end = "")
             name = str(i)
             mat = set.generate()
+            if mat is None:
+                continue
             builder = config_builder(mat)
             if not png_only:
                 builder.save_mat(dir, name, overwrite)
@@ -583,19 +585,19 @@ if __name__ == "__main__":
     # pass
     
     
-    # RW_dataset()
+    RW_dataset()
 
     
     # RW = RW_Generator(size = (62, 106), stay_or_break = True, num_walks = 1, max_steps = 30, min_dis = 4, bias = [(np.tan(np.pi/6), 1), 1], RN6 = False, periodic = True, avoid_unvalid = False, grid_start = True, center_elem = 'full', centering = False, avoid_clustering = 2)
     
     
-    RW = RW_Generator(size = (62, 106), stay_or_break = 0, num_walks = 1,  max_steps = 1, min_dis = 3, bias = [(0, 0), 0], RN6 = True, periodic = True, avoid_unvalid = True, grid_start = False, center_elem = 'full', centering = False, avoid_clustering = 0)
-    mat = RW.generate()
-    builder = config_builder(mat)
-    builder.view()
+    # RW = RW_Generator(size = (62, 106), stay_or_break = 0, num_walks = 1,  max_steps = 1, min_dis = 3, bias = [(0, 0), 0], RN6 = True, periodic = True, avoid_unvalid = True, grid_start = False, center_elem = 'full', centering = False, avoid_clustering = 0)
+    # mat = RW.generate()
+    # builder = config_builder(mat)
+    # builder.view()
     
-    builder = config_builder(RW.visit)
-    builder.view()
+    # builder = config_builder(RW.visit)
+    # builder.view()
     
     
     # builder = config_builder(RW.visit)
