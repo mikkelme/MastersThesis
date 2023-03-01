@@ -24,15 +24,6 @@ def read_friction_file(filename):
     data = np.loadtxt(filename)
     outdict = dict(zip(header, data.T))
     
-    # # Change name of keys
-    # xyz_to_elem = {'x':'[1]', 'y':'[2]'}
-    # elem_to_xyz = ['x', 'y', 'z']
-    # if 'f_spring_force[1]' in outdict:
-    #     old_keys = [key for key in outdict.keys() if 'f_spring_force' in key] 
-    #     # new_keys = ['v_move_force' + key.strip('f_spring_force') for key in old_keys ]     
-    #     new_keys = ['v_move_force_' + elem_to_xyz[int(key.strip('f_spring_force[]'))-1] for key in old_keys ]     
-    #     for old_key, new_key in zip(old_keys, new_keys): outdict[new_key] = outdict.pop(old_key)
-        
     return outdict
 
 
@@ -900,13 +891,16 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.35, stretch_lim = [Non
     rupture_file = 'rupture_test.txt'
     friction_ext = 'Ff.txt'
     
-    
-    
     if rupture_file in os.listdir(folder):
         rupture_info = read_info_file(os.path.join(folder, rupture_file))
-        rupture_stretch = rupture_info['rupture_stretch']
+        if rupture_info['is_ruptured']:
+            rupture_stretch = rupture_info['rupture_stretch']
+        else:
+            rupture_stretch = None
     else:
         rupture_stretch = None
+    
+
 
     # Make list for data 
     data = [] # Measurements
@@ -937,53 +931,10 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.35, stretch_lim = [Non
                     print("Sim not done")
                     continue
                 
-                
-                
-                
-                
-                # try:
-                #     is_ruptured = info_dict['is_ruptured']
-                # except KeyError: # is_ruptred not yet added to file
-                #     print("Sim not done")
-                #     continue
-                    
-                
-                
 
                 stretch_pct = info_dict['SMAX']
                 F_N = metal_to_SI(info_dict['F_N'], 'F')*1e9
                 
-                
-                # if False:
-                #     plt.figure(num = unique_fignum())
-                #     plt.subplot(3,1,1)
-                #     plt.title(f'{job_dir}\nstretch = {stretch_pct},  F_N = {F_N}')
-                #     read_vel(os.path.join(job_dir,'vel.txt'), create_fig = False)
-                    
-                #     plt.subplot(3,1,2)
-                #     read_MSD(os.path.join(job_dir,'MSD.txt'), create_fig = False)
-                #     # read_CN(os.path.join(job_dir,'CN.txt'), create_fig = False)
-                    
-                #     plt.subplot(3,1,3)
-                #     read_ystress(os.path.join(job_dir,'YS.txt'), create_fig = False)
-                    
-                    
-                #     # plt.title(f'{job_dir}\nstretch = {stretch_pct},  F_N = {F_N}')
-                #     # dat = read_ave_time(os.path.join(job_dir,'YS.txt'))
-                #     # runmax = cum_max(dat['c_YS'])
-                #     # YStol = 0.95*runmax
-                #     # plt.plot(dat['TimeStep'], dat['c_YS'])
-                #     # plt.plot(dat['TimeStep'], YStol, linestyle = '--', color = 'black')
-                #     # plt.ylabel("YS")
-
-                #     # plt.subplot(2,1,2)
-                #     # dat = read_ave_time(os.path.join(job_dir,'CN.txt'))
-                #     # runmax = cum_max(dat['c_CN_ave'])
-                #     # CNtol = (1-2/4090)*runmax
-                #     # plt.plot(dat['TimeStep'], dat['c_CN_ave'])
-                #     # plt.plot(dat['TimeStep'], CNtol, linestyle = '--', color = 'black')
-                #     # plt.ylabel("CN")
-                #     # plt.xlabel("Timestep")
                 
                 rupture.append((stretch_pct, F_N, is_ruptured, job_dir))  
                 
@@ -1053,7 +1004,6 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.35, stretch_lim = [Non
         
     return output
     
-    # return  (stretch_pct, F_N, Ff, Ff_std, contact_mean, contact_std), (rup_stretch_pct, rup_F_N, rup, filenames)
 
 
 def get_friction_coef(Ff, F_N):

@@ -1,0 +1,50 @@
+from data_generator import *
+
+
+def multi_coupling_popup():
+    """ Run multiple FN for coupling simulation with configuration of choice """
+    name = 'popup'
+    file = '../config_builder/baseline/pop1_7_5.npy'   
+    gen = Data_generator(file, header = f'egil:negative_coef', simname = f'multi_coupling_{name}', config_ext = name)
+    variables = {'num_stretch_files': 32, 
+                    'RNSEED'           : -1,
+                    'run_rupture_test' : 1,
+                    "stretch_speed_pct": 0.01,
+                    'F_N'              : 100e-9,
+                    "stretch_max_pct"  : 0.4,
+                    'root'             : '.',
+                    'dump_freq'        : 100000}
+
+    F_N = np.array([0])*1e-9
+    
+    # gen.run_multi(F_N, variables, num_procs = 4, partition = 'mini', scripts = ["manual_coupling_stretch.in", "manual_coupling_drag.in"])
+    gen.run_multi(F_N, variables, num_procs = 16, partition = 'normal', scripts = ["manual_coupling_stretch.in", "manual_coupling_drag.in"])
+    
+    
+
+def multi_coupling_honeycomb():
+    """ Run multiple FN for coupling simulation with configuration of choice """
+    name = 'honeycomb'
+    file = '../config_builder/baseline/hon3215.npy'   
+    gen = Data_generator(file, header = f'egil:negative_coef', simname = f'multi_coupling_{name}', config_ext = name)
+    variables = {'num_stretch_files': 32, 
+                    'RNSEED'           : -1,
+                    'run_rupture_test' : 1,
+                    "stretch_speed_pct": 0.01,
+                    'F_N'              : 100e-9,
+                    "stretch_max_pct"  : 1.5,
+                    'root'             : '.',
+                    'dump_freq'        : 100000}
+
+    F_N = np.array([0])*1e-9
+    
+    # gen.run_multi(F_N, variables, num_procs = 4, partition = 'mini', scripts = ["manual_coupling_stretch.in", "manual_coupling_drag.in"])
+    gen.run_multi(F_N, variables, num_procs = 16, partition = 'normal', scripts = ["manual_coupling_stretch.in", "manual_coupling_drag.in"])
+    
+        
+        
+        
+if __name__ == '__main__':
+    # multi_coupling_popup()
+    # multi_coupling_honeycomb()
+    pass
