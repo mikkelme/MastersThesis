@@ -45,6 +45,7 @@ T ${T}
 relax_time ${relax_time}
 stretch_speed_pct $(v_stretch_speed_pct/v_stretch_slow_down)
 SMAX ${SMAX}
+R ${R}
 num_stretch_files ${num_stretch_files}
 rupture_detection ${rupture_detection} &
 """ file ${info_file}

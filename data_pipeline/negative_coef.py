@@ -47,6 +47,6 @@ def multi_coupling_honeycomb():
         
         
 if __name__ == '__main__':
-    # multi_coupling_popup()
-    # multi_coupling_honeycomb()
+    multi_coupling_popup()
+    multi_coupling_honeycomb()
     pass

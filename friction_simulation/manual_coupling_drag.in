@@ -71,6 +71,7 @@ T ${T}
 relax_time ${relax_time}
 stretch_speed_pct ${stretch_speed_pct}
 SMAX ${SMAX}
+R ${R}
 pause_time1 ${pause_time1}
 pause_time2 ${pause_time2}
 drag_speed ${drag_speed}
