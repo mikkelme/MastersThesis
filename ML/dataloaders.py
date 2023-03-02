@@ -68,14 +68,13 @@ class KirigamiDataset(Dataset):
         for dir in os.listdir(path):
             try:
                 dir_idx = int(dir.split('_')[-1])
-            except ValueError: # TODO: Remind me when this happens validly?
+            except ValueError: # e.g. avoid problems with .DS_store 
                 continue
             indexes.append(dir_idx)
             self.data_dir.append(os.path.join(path, dir))
         return indexes
             
-        
-        
+
     def __len__(self):
         return len(self.data_dir)
     
@@ -130,9 +129,9 @@ def get_ML_setting(use_gpu = False):
    
 if __name__ == "__main__":
     # data_root = '../data_pipeline/tmp_data'
-    # data_root = '../Data/ML/honeycomb'
-    # data_root = '../Data/ML/popup'
-    data_root = ['../Data/ML/honeycomb', '../Data/ML/popup'] 
+    # data_root = '../Data/ML_data/honeycomb'
+    # data_root = '../Data/ML_data/popup'
+    data_root = ['../Data/ML_data/honeycomb', '../Data/ML_data/popup'] 
     ML_setting = get_ML_setting()
     
     
