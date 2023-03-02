@@ -233,7 +233,9 @@
 - Updated random walk code and made a draft dataset of 40 RW-styles where each can potentially be run multiple times due to the inherent randomness of it. 
 
 #### Week 9 (27/02/2023 - 05/03/2023) - Working from Pisa
-- 
+- Working on RW dataset and have been implementing new features such as improved Gibbs-boltzmann bias and stay_or_break mode.
+- Working on stay_or_break for atom coordinate RW. 
+- Got first data from manual coupling of load and stretch with a promising fit with non coupled equivalent. However, I have resubmitted with more suiting load range and speed. 
 
 
 
