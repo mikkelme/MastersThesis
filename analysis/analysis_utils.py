@@ -268,10 +268,13 @@ def analyse_friction_file(filename, mean_window_pct = 0.5, std_window_pct = None
     else:
         std_window = int(std_window_pct*mean_window) # std window length
         
+          
         # Mean and std friction: parallel to drag direction
         mean_full_sheet, std_full_sheet = mean_cut_and_std(Ff_full_sheet[:, 0], mean_window, std_window) # Full sheet
         mean_sheet,      std_sheet      = mean_cut_and_std(Ff_sheet[:, 0],      mean_window, std_window) # Inner sheet
         mean_PB,         std_PB         = mean_cut_and_std(Ff_PB[:, 0],         mean_window, std_window) # Pull blocks
+    
+      
         
         # Mean and std contact 
         contact_mean_full_sheet, contact_std_full_sheet = mean_cut_and_std(contact[:, 0], mean_window, std_window) # Full sheet

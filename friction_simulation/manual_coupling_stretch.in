@@ -143,6 +143,9 @@ if  "${num_stretch_files}>=1" then "fix load_save S0_info move linear $(v_FN_inc
 
 # run
 thermo_style custom step time cpu cpuremain c_sheetTemp c_subtopTemp v_stretch_pct v_full_sheet_bond_pct v_load v_tension
+if "${run_rupture_test_}" then &
+"fix stretch_tension all ave/time ${Nevery} ${Nrepeat} ${Nfreq} v_stretch_pct v_load v_tension file stretch_tension.txt" 
+
 print "--> Stretch: $(v_stretch_steps) timesteps, $(v_stretch_steps*dt) ps"
 run $(v_stretch_steps)
 
@@ -189,6 +192,7 @@ label no_rupture_detection
 
 # Repeat script without rupture test
 if "${run_rupture_test_}" then &
+"unfix stretch_tension" &
 "clear" &
 "include ${root}/manual_coupling_stretch.in" # use jump instead?
 
