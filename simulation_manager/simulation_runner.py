@@ -64,7 +64,8 @@ class Simulation_runner:
                 if key in self.conv_dict:
                     self.convert_units([key])
             else: 
-                print(f"WARNING: Variable \"{key}\" is not defined")
+                print(f"WARNING: Variable \"{key}\" is not expected")
+                self.variables[key] = dict[key]
                 
     def add_variables(self, **kwargs):
         self.update_variables(kwargs)

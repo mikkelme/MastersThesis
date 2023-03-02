@@ -158,8 +158,8 @@ def manual_coupling(path, compare_path = None, save = False):
     
     mean_window_pct = 0.5 # relative length of the mean window [% of total duration]
     std_window_pct = 0.35  # relative length of the std windoe [% of mean window]
-    
-    
+    stretch_tension_file = 'stretch_tension.txt' 
+
     cmap = matplotlib.cm.viridis
     colorbar_scale = 'linear'
     
@@ -171,6 +171,10 @@ def manual_coupling(path, compare_path = None, save = False):
                         'edgecolors': "black"}
    
     
+    fig, axes = plt.subplots(1, 3, num = unique_fignum(), figsize = (10,5), gridspec_kw ={'width_ratios': [1, 1, 0.1]})
+    handles, labels = [], []
+    
+    
     # Get coupling data
     data = read_multi_coupling(path, mean_window_pct, std_window_pct)
     stretch = data['stretch_pct']
@@ -178,12 +182,12 @@ def manual_coupling(path, compare_path = None, save = False):
     Ff = data['Ff'][:, 0, 1]
     
     
-    fig, axes = plt.subplots(1, 2, num = unique_fignum(), figsize = (8,5), gridspec_kw ={'width_ratios': [1, 0.1]})
-    handles, labels = [], []
     
+    # Get min max for F_N    
     FN_min = np.min(F_N)
     FN_max = np.max(F_N)
     
+
     # Add compare data (without coupling)
     if compare_path is not None:
         data = read_multi_folder(compare_path, mean_window_pct, std_window_pct)    
@@ -198,22 +202,21 @@ def manual_coupling(path, compare_path = None, save = False):
         FN_max = max(FN_max, np.max(F_N_compare))
         
 
-
-
     # Plot compare    
     if compare_path is not None:     
         for k in range(len(F_N_compare)):
                 color = get_color_value(F_N_compare[k], FN_min, FN_max, scale = colorbar_scale, cmap = cmap)
-                axes[0].scatter(stretch_compare, Ff_compare[:,k], **plotset_compare, color = color, label = 'Independent')
-        h, l = axes[0].get_legend_handles_labels()
+                axes[1].scatter(stretch_compare, Ff_compare[:,k], **plotset_compare, color = color, label = 'Independent')
+        h, l = axes[1].get_legend_handles_labels()
         handles.append(h[-1])
         labels.append(l[-1])
     
     # Plot coupling
+    axes[0].scatter(F_N, stretch, **plotset_coupling, color = color_cycle(1))
     for k in range(len(F_N)):
         color = get_color_value(F_N[k], FN_min, FN_max, scale = colorbar_scale, cmap = cmap)
-        axes[0].scatter(stretch[k], Ff[k], **plotset_coupling, color = color, label = 'Coupled')
-    h, l = axes[0].get_legend_handles_labels()
+        axes[1].scatter(stretch[k], Ff[k], **plotset_coupling, color = color, label = 'Coupled')
+    h, l = axes[1].get_legend_handles_labels()
     handles.append(h[-1])
     labels.append(l[-1])
     
@@ -235,11 +238,28 @@ def manual_coupling(path, compare_path = None, save = False):
     cb.set_label(label = '$F_N$ [nN]', fontsize=14)
 
 
-    axes[0].set_xlabel('Stretch', fontsize = 14)
-    axes[0].set_ylabel(r'$\langle F_\parallel \rangle$ [nN]', fontsize = 14)
+    axes[1].set_xlabel('Stretch', fontsize = 14)
+    axes[1].set_ylabel(r'$\langle F_\parallel \rangle$ [nN]', fontsize = 14)
     
     fig.legend(handles, labels, loc = 'upper left', fontsize = 13)
+    
 
+
+    # Get load (tension) vs stretch
+    stretch_tension = read_friction_file(os.path.join(path, stretch_tension_file))
+    # rupture_dict = read_info_file(os.path.join(path, 'rupture_test.txt'))
+    
+    stretch_test = stretch_tension['v_stretch_pct']
+    load_test = metal_to_SI(stretch_tension['v_load'], 'F')*1e9
+    tension_test = metal_to_SI(stretch_tension['v_tension'], 'F')*1e9
+    
+    # interpolate with stretch values from multi data
+    # load_interp = np.interp(stretch, stretch_test, load_test)
+    
+    # plot load-stretch curve
+    axes[0].plot(load_test, stretch_test)
+    # axes[0].plot(tension_test, stretch_test)
+    # axes[0].plot(load_interp, stretch, 'o')
 
 
 
@@ -254,12 +274,37 @@ def manual_coupling(path, compare_path = None, save = False):
 
 
 if __name__ == '__main__':
+    
+    
+    # stretch_tension = read_friction_file('../friction_simulation/my_simulation_space/stretch_tension_rupture_test.txt')
+    # stretch1 = stretch_tension['v_stretch_pct']
+    # load1 = metal_to_SI(stretch_tension['v_load'], 'F')*1e9
+    # plt.plot(load1, stretch1, label = "rupture test")
+    
+    
+    # stretch_tension = read_friction_file('../friction_simulation/my_simulation_space/stretch_tension.txt')
+    # stretch2 = stretch_tension['v_stretch_pct']
+    # load2 = metal_to_SI(stretch_tension['v_load'], 'F')*1e9
+    # plt.plot(load2, stretch2, label = "after test ")
+    
+    # plt.legend()
+    
+    # plt.show()
+    
+
+    # exit()
+    
+    
     path = '../Data/negative_coef/multi_coupling_popup'
     compare_path = '../Data/Baseline_fixmove/popup/multi_stretch'
-    manual_coupling(path, compare_path, save = 'manual_coupling_pop1_7_5.pdf')
+    # manual_coupling(path, compare_path, save = 'manual_coupling_pop1_7_5.pdf')
+    manual_coupling(path, compare_path, save = False)
     
     
     path = '../Data/negative_coef/multi_coupling_honeycomb'
     compare_path = '../Data/Baseline_fixmove/honeycomb/multi_stretch'
-    manual_coupling(path, compare_path, save = 'manual_coupling_hon3215.pdf')
+    # manual_coupling(path, compare_path, save = 'manual_coupling_hon3215.pdf')
+    manual_coupling(path, compare_path, save = False)
+    
+    
     plt.show()
