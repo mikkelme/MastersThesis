@@ -43,7 +43,8 @@ class RW_Generator:
         self.avoid_unvalid = avoid_unvalid
         self.grid_start = grid_start
         self.center_elem = center_elem
-        self.initial_avoid_clustering = avoid_clustering
+        # self.initial_avoid_clustering = avoid_clustering
+        self.avoid_clustering = avoid_clustering
         self.centering = centering # Move CM as close to starting point as possible
         self.stay_or_break = stay_or_break
         if seed is not None: # Not working properly... XXX
@@ -94,9 +95,7 @@ class RW_Generator:
         if self.periodic:
             assert np.all(self.size%2 == 0), f"The size of the sheet {self.size} must have even side lengths to enable periodic boundaries."
     
-        self.avoid_clustering = self.initial_avoid_clustering
-
-    
+        
         # Ideas for further features
         # TODO: Single walk copied to multiple locations
         # TODO: Distributions on RN walk length?
@@ -214,8 +213,8 @@ class RW_Generator:
             detect = all_visited or not_vertically_spanning
                         
             if detect: # Isolated cluster detected
-                print(f'Isolated cluster detected | {self.avoid_clustering} attempts left')
                 self.avoid_clustering -= 1
+                print(f'Isolated cluster detected | {self.avoid_clustering} attempts left')
                 if self.avoid_clustering > 0:
                     self.generate()
                 else:

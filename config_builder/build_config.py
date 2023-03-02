@@ -420,7 +420,7 @@ def RW_dataset(shape = (62,106)):
     
     param = {   'size': (62, 106),
                 'periodic': True,
-                'avoid_clustering': 0} #XXX -> 5-10
+                'avoid_clustering': 5} #XXX -> 5-10
     
     
     direc = {'up': (0, 1), 
@@ -602,7 +602,7 @@ if __name__ == "__main__":
     
     
     
-    # RW = RW_Generator(size = (62, 106), stay_or_break = 0.95, num_walks = 1,  max_steps = 50, min_dis = 3, bias = [(0, 1), 0], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = True, center_elem = False,  centering = False, avoid_clustering = 0)
+    # RW = RW_Generator(size = (62, 106), stay_or_break = 0, num_walks = 50,  max_steps = 50, min_dis = 0, bias = [(0, 1), 0], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = True, center_elem = False,  centering = False, avoid_clustering = 5)
     # mat = RW.generate()
     # builder = config_builder(mat)
     # builder.view()
