@@ -467,10 +467,22 @@ def RW_dataset(shape = (62,106)):
     
     
     # --- Stay or break --- #
+    # Thin
+    param = {**param, 'min_dis': 3, 'bias': [(0, 0), 0], 'RN6': True, 'grid_start': False, 'center_elem': False, 'avoid_unvalid': True,  'centering': False}
+    SET += [RW_Generator(**{**param, 'num_walks': 15, 'max_steps': 40, 'stay_or_break': 0.85})] * 2
+    SET += [RW_Generator(**{**param, 'num_walks': 15, 'max_steps': 40, 'stay_or_break': 0.9})] * 2
+    SET += [RW_Generator(**{**param, 'num_walks': 15, 'max_steps': 40, 'stay_or_break': 0.95})] * 2
+    SET += [RW_Generator(**{**param, 'num_walks': 25, 'max_steps': 40, 'stay_or_break': 0.85})] * 2
+    SET += [RW_Generator(**{**param, 'num_walks': 25, 'max_steps': 40, 'stay_or_break': 0.9})] * 2
+    SET += [RW_Generator(**{**param, 'num_walks': 25, 'max_steps': 40, 'stay_or_break': 0.95})] * 2
+    
+    
+    
+    # Thick
     param = {**param, 'min_dis': 3, 'bias': [(0, 0), 0], 'RN6': True, 'grid_start': False, 'center_elem': 'full', 'avoid_unvalid': True,  'centering': False}
-    SET += [RW_Generator(**{**param, 'num_walks': 15, 'max_steps': 20, 'stay_or_break': 0.7})] * 5
-    SET += [RW_Generator(**{**param, 'num_walks': 15, 'max_steps': 20, 'stay_or_break': 0.8})] * 5
-    SET += [RW_Generator(**{**param, 'num_walks': 10, 'max_steps': 20, 'stay_or_break': 0.9})] * 5
+    SET += [RW_Generator(**{**param, 'num_walks': 15, 'max_steps': 20, 'stay_or_break': 0.7})] * 4
+    SET += [RW_Generator(**{**param, 'num_walks': 15, 'max_steps': 20, 'stay_or_break': 0.8})] * 4
+    SET += [RW_Generator(**{**param, 'num_walks': 10, 'max_steps': 20, 'stay_or_break': 0.9})] * 4
 
     
     # --- More traditional RW --- #
@@ -585,15 +597,15 @@ if __name__ == "__main__":
     # pass
     
     
-    # RW_dataset()
+    RW_dataset()
 
     
     
     
-    RW = RW_Generator(size = (62, 106), stay_or_break = 0.95, num_walks = 1,  max_steps = 50, min_dis = 3, bias = [(0, 1), 0], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = True, center_elem = False,  centering = False, avoid_clustering = 0)
-    mat = RW.generate()
-    builder = config_builder(mat)
-    builder.view()
+    # RW = RW_Generator(size = (62, 106), stay_or_break = 0.95, num_walks = 1,  max_steps = 50, min_dis = 3, bias = [(0, 1), 0], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = True, center_elem = False,  centering = False, avoid_clustering = 0)
+    # mat = RW.generate()
+    # builder = config_builder(mat)
+    # builder.view()
     
     # builder = config_builder(RW.visit)
     # builder.view()

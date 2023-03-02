@@ -43,7 +43,7 @@ class RW_Generator:
         self.avoid_unvalid = avoid_unvalid
         self.grid_start = grid_start
         self.center_elem = center_elem
-        self.avoid_clustering = avoid_clustering
+        self.initial_avoid_clustering = avoid_clustering
         self.centering = centering # Move CM as close to starting point as possible
         self.stay_or_break = stay_or_break
         if seed is not None: # Not working properly... XXX
@@ -52,26 +52,13 @@ class RW_Generator:
         # Possible directions
         self.main_center = connected_neigh_center_elem((0,0))[1] # 6 main directions based on the center elements
         
+        # Get equivalent atom direction when following center direction
         main_atom_even = connected_neigh_atom((0,0))[1]
         main_atom_odd = connected_neigh_atom((1,0))[1]
         
-        idx = (2,2)
-        test = connected_neigh_atom(idx)[1]
-        
-        odd_even = (idx[0]+idx[1])%2 # even = 0, odd = 1
-        
-        # print(self.main_center)
-        # print(self.main_atom_even)
-        # print(self.main_atom_odd)
-        # exit()
-        
-        # self.center_to_atom_even 
-        # self.center_to_atom_odd 
-        
-        # Equilivasnt atom direction when following center direction
-        
-        
-        self.center_to_atom_even = []
+        # Distinguish between odd or even positions
+        # (idx[0]+idx[1])%2 => 0: even, 1: odd
+        self.center_to_atom_even = [] 
         self.center_to_atom_odd = []
         for i, main in enumerate(self.main_center):
             best_even_idx = np.argmin(np.linalg.norm(main - main_atom_even, axis = 1))
@@ -107,6 +94,8 @@ class RW_Generator:
         if self.periodic:
             assert np.all(self.size%2 == 0), f"The size of the sheet {self.size} must have even side lengths to enable periodic boundaries."
     
+        self.avoid_clustering = self.initial_avoid_clustering
+
     
         # Ideas for further features
         # TODO: Single walk copied to multiple locations
@@ -225,8 +214,8 @@ class RW_Generator:
             detect = all_visited or not_vertically_spanning
                         
             if detect: # Isolated cluster detected
-                self.avoid_clustering -= 1
                 print(f'Isolated cluster detected | {self.avoid_clustering} attempts left')
+                self.avoid_clustering -= 1
                 if self.avoid_clustering > 0:
                     self.generate()
                 else:
@@ -357,8 +346,11 @@ class RW_Generator:
                                 p[mask] = 0 # Already ruled this out
                                 p[~mask] /= np.sum(p[~mask])
                               
-                                # if len(p) == 0:
-                                
+                              
+                                if np.sum(p) == 0: # No where to go
+                                    break
+                                    
+                                p /= np.sum(p) # Normalize again for safety measures
                                 choice = np.random.choice(len(neigh), p = p)
                                 self.last_direction = direction[choice]
                                  
