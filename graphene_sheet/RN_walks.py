@@ -298,71 +298,95 @@ class RW_Generator:
             p = self.get_p(direction)
             
           
+          
             if self.stay_or_break > 0:  # Stay on direction (if possible) by prob stay_or_break
-                
-                # print(self.last_direction)
-                # print(direction)
-                # print()
+            
+                # Whether the element is considered odd or even              
+                if self.center_elem == False:
+                    odd_even = (pos[0]+pos[1])%2 # even = 0, odd = 1
+                    if odd_even == 0: # even     
+                        center_to_atom = self.center_to_atom_even
+                    else: # odd_even == 1 # odd
+                        center_to_atom = self.center_to_atom_odd
+            
                 if self.last_direction is not None:
-                    # Calculate distance between last direction and possible directions
                     
+                    # Calculate distance between last direction and possible directions 
                     if self.center_elem == False:
                         dis = np.linalg.norm(self.main_center - self.last_direction, axis = 1)
                     else:
                         dis = np.linalg.norm(direction - self.last_direction, axis = 1)
-                        
                     
-                    # If direction can be maintained -> adjust p[dir] = self.stay_or_break
-                    if np.any(dis < 1e-3): 
+                    
+                    if np.any(dis < 1e-3): # Direction can be maintained
+                        stay = np.random.random() < self.stay_or_break
                         mask = dis < 1e-3
+                                                    
+                        
+                        if stay: # Stay on direction
+                            if self.center_elem == False:
+                                target_direction = center_to_atom[mask].ravel()                 
+                            else:
+                                target_direction = self.last_direction
+                            
+                            choice = np.argmin(np.linalg.norm(target_direction - direction, axis = 1))
+
+                        else: # Change direction
+                            if self.center_elem == False:
+                                
+                                dis_matrix = np.array([np.linalg.norm(center_to_atom - d, axis= 1) for d in direction])
+                                mapping = np.argwhere(dis_matrix < 1e-3)
+                                center_p = np.zeros(len(self.main_center))
+                            
+                            
+                                for (i,j) in mapping:
+                                    center_p[j] = p[i]
+                              
+                              
+                                center_p[mask] = 0 # Already ruled this out
+                                center_p[~mask] /= np.sum(center_p[~mask])
+                                
+                              
+                                center_choice = np.random.choice(len(self.main_center), p = center_p)
+                                self.last_direction = self.main_center[center_choice]
+                                
+                                atom_direction = center_to_atom[center_choice]
+                                choice = np.argmin(np.linalg.norm(atom_direction - direction, axis = 1))
+                            
+                            else:
+                                p[mask] = 0 # Already ruled this out
+                                p[~mask] /= np.sum(p[~mask])
+                              
+                                # if len(p) == 0:
+                                
+                                choice = np.random.choice(len(neigh), p = p)
+                                self.last_direction = direction[choice]
+                                 
+                    else: # Direction cannot be maintained
+                        self.last_direction = None
+                
+                
+                if self.last_direction is None: # Last direction is not yet set or direction cannot be maintained causes self.last_direction = None
+                        
+                        choice = np.random.choice(len(neigh), p = p)
+                        
                         if self.center_elem == False:
-                            odd_even = (pos[0]+pos[1])%2 # even = 0, odd = 1
+                            center_cand = np.argwhere(np.linalg.norm(center_to_atom - direction[choice], axis = 1) < 1e-3).ravel()
+                            p = self.get_p(self.main_center[center_cand])
+                            center_choice = center_cand[np.random.choice(len(center_cand), p = p)]
+                            self.last_direction = self.main_center[center_choice]
                             
-                            if odd_even == 0: # even
-                                pass
-                            else: # odd_even == 1 # odd
-                                pass
-
-                            #
-                            #
-                            # TODO: Working here
-                            # get right atom jump
-                            # depending on odd even position
-                            #
-                            #    
+                            atom_direction = center_to_atom[center_choice]
+                            choice = np.argmin(np.linalg.norm(atom_direction - direction, axis = 1))
                             
-                            exit("Working on line 334 in RN_walks.py")
-                            candidates = self.center_to_atom[mask][0]
-                            new_dis = np.array([np.linalg.norm(c - direction, axis = 1) for c in candidates])
-                            new_arg = np.unravel_index(new_dis.argmin(), new_dis.shape)
-                            mask = new_dis[new_arg[0]] < 1e-3
                         else:
-                            mask = dis < 1e-3
-                        
-                       
-                        
-                        p[mask] = self.stay_or_break
-                        
-                        if len(mask) == 1:
-                            p = [1]
-                        else:
-                            p[~mask] *= (1-self.stay_or_break)/np.sum(p[~mask])
-                            p /= np.sum(p) # normalize again (avoid problems when only leading direction is an option)
-                  
-                  
-                print(self.last_direction)
-                print(direction)
-                print(p)
-                choice = np.random.choice(len(neigh), p = p)
-                
-                self.last_direction = direction[choice] 
-                print(self.last_direction)
-                exit()
-            else:
+                            self.last_direction = direction[choice]
+                            
+                            
+            else: # OFF: self.stay_or_break = 0
                 choice = np.random.choice(len(neigh), p = p)
 
-                
-
+             
             if available[choice] == False: # Hit unvalid site
                 break
             
@@ -370,7 +394,6 @@ class RW_Generator:
             pos = neigh[choice] 
             del_map.append(pos)
             self.valid[tuple(pos)] = 0
-                    
         return np.array(del_map)
 
 
