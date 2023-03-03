@@ -236,6 +236,9 @@
 - Working on RW dataset and have been implementing new features such as improved Gibbs-boltzmann bias and stay_or_break mode.
 - Working on stay_or_break for atom coordinate RW. 
 - Got first data from manual coupling of load and stretch with a promising fit with non coupled equivalent. However, I have resubmitted with more suiting load range and speed. 
+- Made correlation analysis
+- Looked into weight initialization
+- Begun some local training on nocut, popup and honeycomb.
 
 
 
