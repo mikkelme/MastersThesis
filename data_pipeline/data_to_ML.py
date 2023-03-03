@@ -49,10 +49,10 @@ def convert_data(multi_dirs, dest):
         # Analyse data points
         for root, dirs, files in os.walk(dir, topdown=False):
             if len(dirs) > 0: continue # Only use lowest subdirs
-            count += 1
-            print(f'\rAnalysing file | count = {count:05d} | dir = {root} ', end = '')
+            print(f'\rAnalysing file | count = {count+1:05d} | dir = {root} ', end = '')
             data = {}
             
+        
             # Create folder for data point
             subdest = f"{dest}/sim_{count:05d}"
             os.mkdir(subdest)
@@ -62,6 +62,7 @@ def convert_data(multi_dirs, dest):
                             os.path.join(subdest, 'config.png'))
             shutil.copyfile(os.path.join(dir, config_file), 
                             os.path.join(subdest, 'config.npy'))
+            
             
             
             # Read info dict
@@ -103,6 +104,11 @@ def convert_data(multi_dirs, dest):
                 data['contact'] = np.nan
                 data['contact_std'] = np.nan
             
+            # Read matrix and calculate porosity (void fraction)   
+            mat = np.load(os.path.join(dir, config_file))
+            porosity = np.sum(mat < 0.5)/np.sum(mat)
+            data['porosity'] = porosity
+            
             
             # Write data to file in csv format
             with open (os.path.join(subdest,'val.csv'), 'w') as csvfile:  
@@ -110,9 +116,9 @@ def convert_data(multi_dirs, dest):
                 for key, val in data.items():
                     w.writerow([key, val])
             
-           
         
 
+            count += 1
             
             
     print()
@@ -122,10 +128,10 @@ def convert_data(multi_dirs, dest):
 
 
 if __name__ == "__main__":
-    dir = '../Data/CONFIGS/honeycomb'
-    dest = '../Data/ML_data/honeycomb'
-    # dir = '../Data/CONFIGS/popup'
-    # dest = '../Data/ML/popup'
+    # dir = '../Data/CONFIGS/honeycomb'
+    # dest = '../Data/ML_data/honeycomb'
+    dir = '../Data/CONFIGS/popup'
+    dest = '../Data/ML_data/popup'
     
     
     multi_dirs = locate_multi_dir(dir)

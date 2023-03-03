@@ -750,10 +750,66 @@ Present the configuration and variable choices for the generated dataset. Perhap
 
 \chapter{Training forward network}
 
+\section{Dataset analysis}
+
+
+Pearson product-moment correlation coefficient (PPMCC) between data set $X$ and $Y$ is defined as
+\begin{align*}
+  \mathrm{corr}(X,Y) = \frac{\mathrm{Cov}(X,Y)}{\sigma_X \sigma_Y} = \frac{\langle (X - \mu_X)(Y - \mu_Y)\rangle}{\sigma_X \sigma_Y}
+\end{align*}
+where $\mathrm{Cov}(X,Y)$ is the covariance, $\mu$ the mean value and $\sigma$ the standard deviation. The correlation coefficients is shown in figure \ref{fig:corrcoef_matrix}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{figures/ML/corrcoef_matrix.pdf}
+  \caption{Pearson product-moment correlation coefficients for popup and honeycomb dataset so far \hl{add RW as well}.}
+  \label{fig:corrcoef_matrix}
+\end{figure}
+
+From figure \ref{fig:corrcoef_matrix} we see specially that the mean friction force $\langle F_{\parallel} \rangle$ is positive correlated with stretch $(0.74)$ and porosity ($0.59$) (void fraction). However, when calculating the relative stretch, scaled by the rupture stretch, the correlation is weaker ($0.75 \to 0.29$). Moreover, we observe that the mean friction is negatively correlated with the contact area ($-0.6$). In figure \ref{corr_vis} the individual dependencies between variables for each dataset is visualized for some of the more interesting variable combinations.
+
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[t]{0.32\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/ML/corr_stretch_Ff.pdf}
+      \caption{}
+      % \label{fig:}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.32\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/ML/corr_porosity_Ff.pdf}
+      \caption{}
+      % \label{fig:}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.32\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/ML/corr_contact_Ff.pdf}
+      \caption{}
+      % \label{fig:}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.32\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/ML/corr_stretch_contact.pdf}
+      \caption{}
+      % \label{fig:}
+  \end{subfigure}
+  \hfill
+     \caption{Visualization of variable dependence in the specific datasets.}
+     \label{fig:corr_vis}
+\end{figure}
+
+
 \chapter{Inverse design}
 
 \chapter{Negative friction coefficient}
-\section{Simulated coupling of normal force and stretch}
+\section{Manual coupling of normal force and stretch}
+
+
 \section{Nanomachine coupling}
 Attempt to couple normal force and stretch by crossed carbon nanotube (CNT) contraption \ref{fig:nanomachine}. 
 
