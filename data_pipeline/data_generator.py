@@ -135,10 +135,10 @@ class Data_generator:
         
         # Multi run settings 
         # num_stretch_files = 15
-        num_stretch_files = variables['num_stretch_files']
+        # num_stretch_files = variables['num_stretch_files']
         
-        if F_N is None:
-            F_N = np.sort(np.random.uniform(0.1, 10, 3))*1e-9
+        # if F_N is None:
+        #     F_N = np.sort(np.random.uniform(0.1, 10, 3))*1e-9
         
         
         # proc.add_variables(num_stretch_files = num_stretch_files, 
@@ -163,22 +163,35 @@ class Data_generator:
 
 
 def run_files(filenames, header, simname, num_procs_initial = None, num_procs = 16):
+    
+    variables = {   'num_stretch_files': 15, 
+                    'RNSEED': '$RANDOM',
+                    'run_rupture_test': 1,
+                    'stretch_max_pct': 2.0,
+                    'root': '.',
+                    'dump_freq': 0
+                }
+    
     for file in filenames:
+        F_N = np.sort(np.random.uniform(0.1, 10, 3))*1e-9
         gen = Data_generator(file, header, simname)
-        gen.run_multi(num_procs_initial = num_procs_initial, num_procs = num_procs)
+        gen.run_multi(F_N = F_N, variables = variables, num_procs_initial = num_procs_initial, num_procs = num_procs)
         
 
 
 if __name__ == "__main__":
+    # filenames = get_files_in_folder('../config_builder/popup/', ext = 'npy')
     # filenames = get_files_in_folder('../config_builder/honeycomb/', ext = 'npy')
-    filenames = get_files_in_folder('../config_builder/popup/', ext = 'npy')
+    filenames = get_files_in_folder('../config_builder/RW/', ext = 'npy')
+    filenames = np.sort(filenames)
     
-    # filenames = filenames[40:]
-    # print('[40:]')
+    filenames = filenames[10:20] # Done these XXX 
+    # TODO: Continue from filenames[20: ]
+    exit()
     # print(filenames)
     
     
-    # run_files(filenames, header =  'egil:CONFIGS/popup', simname = 'pop', num_procs_initial = None, num_procs = 4)
+    run_files(filenames, header =  'egil:CONFIGS/RW', simname = 'RW', num_procs_initial = None, num_procs = 4)
    
     pass
     

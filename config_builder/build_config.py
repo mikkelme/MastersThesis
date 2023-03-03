@@ -24,7 +24,7 @@ class config_builder:
         self.a_Si = 5.430953
     
         # Parameters
-        self.Cdis = 1.461 # carbon-carbon distance [Å] TODO: Take as input from data_generator???
+        self.Cdis = 1.461 # carbon-carbon distance [Å] 
         self.sheet_substrate_dis = 2.8 # [Å] 
         self.bottom_substrate_freeze = 4 # [Å]
         self.contact_depth = 4 # [Å]
@@ -93,7 +93,6 @@ class config_builder:
         minmax = get_minmax(object)
         
         # Add space for PBC for substrate
-        # if self.a_Si is not None: # <--------- Not valid anymore XXX XXX XXX 
         if self.substrate is not None: 
             minmax_substrate = get_minmax(self.substrate)
             minmax[1,:2] = np.max((minmax[1,:2], minmax_substrate[1,:2] + self.a_Si/4), axis = 0)
@@ -414,15 +413,12 @@ def RW_dataset(shape = (62,106)):
     dir = './RW'
     overwrite = True
     store = True
-    png_only = True
+    png_only = False
     
     SET = []
-    
     param = {   'size': (62, 106),
                 'periodic': True,
-                'avoid_clustering': 5} #XXX -> 5-10
-    
-    
+                'avoid_clustering': 10} 
     direc = {'up': (0, 1), 
              'down': (0, -1),
              'up_right': (np.tan(np.pi/3), 1), 
@@ -431,58 +427,57 @@ def RW_dataset(shape = (62,106)):
              'down_left': (-np.tan(np.pi/3), -1)}
 
      
-    
     # --- 6 Directions  --- #
     ## Fixed directions
     # Thin
     param = {**param, 'num_walks': 10, 'max_steps': 40, 'min_dis': 4, 'RN6': False, 'grid_start': True,  'center_elem': False, 'avoid_unvalid': False,  'centering': True, 'stay_or_break': 0}
-    SET += [RW_Generator(**{**param, 'bias': [direc['up_right'], 100]})] * 1
-    SET += [RW_Generator(**{**param, 'bias': [direc['down_right'], 100]})] * 1
-    SET += [RW_Generator(**{**param, 'bias': [(1, 0), 100]})] * 1
+    SET += [RW_Generator(**{**param, 'bias': [direc['up_right'], 100]}) for k in range(1)]
+    SET += [RW_Generator(**{**param, 'bias': [direc['down_right'], 100]}) for k in range(1)]
+    SET += [RW_Generator(**{**param, 'bias': [(1, 0), 100]}) for k in range(1)]
     
     # Thick
     param = {**param, 'num_walks': 10, 'max_steps': 15, 'min_dis': 4, 'RN6': False, 'grid_start': True,  'center_elem': 'full', 'avoid_unvalid': False,  'centering': True, 'stay_or_break': 0}
-    SET += [RW_Generator(**{**param, 'bias': [direc['up_right'], 100]})] * 1 
-    SET += [RW_Generator(**{**param, 'bias': [direc['down_right'], 100]})] * 1
-    SET += [RW_Generator(**{**param, 'bias': [(1, 0), 100]})] * 1
+    SET += [RW_Generator(**{**param, 'bias': [direc['up_right'], 100]}) for k in range(1)] 
+    SET += [RW_Generator(**{**param, 'bias': [direc['down_right'], 100]}) for k in range(1)]
+    SET += [RW_Generator(**{**param, 'bias': [(1, 0), 100]}) for k in range(1)]
     
     param = {**param, 'max_steps': 10, 'grid_start': False, 'centering': False}
-    SET += [RW_Generator(**{**param, 'bias': [direc['up_right'], 100]})] * 2
-    SET += [RW_Generator(**{**param, 'bias': [direc['down_right'], 100]})] * 2
-    SET += [RW_Generator(**{**param, 'bias': [(1, 0), 100]})] * 2
-    SET += [RW_Generator(**{**param, 'bias': [direc['up'], 100]})] * 3
+    SET += [RW_Generator(**{**param, 'bias': [direc['up_right'], 100]}) for k in range(2)]
+    SET += [RW_Generator(**{**param, 'bias': [direc['down_right'], 100]}) for k in range(2)]
+    SET += [RW_Generator(**{**param, 'bias': [(1, 0), 100]}) for k in range(2)]
+    SET += [RW_Generator(**{**param, 'bias': [direc['up'], 100]}) for k in range(3)]
     
 
     ## RN6 directions 
     # Thin 
     param = {**param, 'min_dis': 3, 'bias': [(0, 0), 100], 'RN6': True, 'grid_start': True,  'center_elem': False, 'avoid_unvalid': False,  'centering': True, 'stay_or_break': 0}
-    SET += [RW_Generator(**{**param, 'num_walks': 16, 'max_steps': 20})] * 2
-    SET += [RW_Generator(**{**param, 'num_walks': 25, 'max_steps': 15})] * 2
+    SET += [RW_Generator(**{**param, 'num_walks': 16, 'max_steps': 20}) for k in range(2)]
+    SET += [RW_Generator(**{**param, 'num_walks': 25, 'max_steps': 15}) for k in range(2)]
     
     
     # Thick (center_elem = full)
     param = {**param, 'min_dis': 3, 'bias': [(0, 0), 100], 'RN6': True, 'grid_start': True,  'center_elem': 'full', 'avoid_unvalid': False,  'centering': True, 'stay_or_break': 0}
-    SET += [RW_Generator(**{**param, 'num_walks': 16, 'max_steps': 10})] * 2
-    SET += [RW_Generator(**{**param, 'num_walks': 25, 'max_steps': 8})] * 2
+    SET += [RW_Generator(**{**param, 'num_walks': 16, 'max_steps': 10}) for k in range(2)]
+    SET += [RW_Generator(**{**param, 'num_walks': 25, 'max_steps': 8}) for k in range(2)]
     
     
     # --- Stay or break --- #
     # Thin
     param = {**param, 'min_dis': 3, 'bias': [(0, 0), 0], 'RN6': True, 'grid_start': False, 'center_elem': False, 'avoid_unvalid': True,  'centering': False}
-    SET += [RW_Generator(**{**param, 'num_walks': 15, 'max_steps': 40, 'stay_or_break': 0.85})] * 2
-    SET += [RW_Generator(**{**param, 'num_walks': 15, 'max_steps': 40, 'stay_or_break': 0.9})] * 2
-    SET += [RW_Generator(**{**param, 'num_walks': 15, 'max_steps': 40, 'stay_or_break': 0.95})] * 2
-    SET += [RW_Generator(**{**param, 'num_walks': 25, 'max_steps': 40, 'stay_or_break': 0.85})] * 2
-    SET += [RW_Generator(**{**param, 'num_walks': 25, 'max_steps': 40, 'stay_or_break': 0.9})] * 2
-    SET += [RW_Generator(**{**param, 'num_walks': 25, 'max_steps': 40, 'stay_or_break': 0.95})] * 2
+    SET += [RW_Generator(**{**param, 'num_walks': 15, 'max_steps': 40, 'stay_or_break': 0.85}) for k in range(2)]
+    SET += [RW_Generator(**{**param, 'num_walks': 15, 'max_steps': 40, 'stay_or_break': 0.9}) for k in range(2)]
+    SET += [RW_Generator(**{**param, 'num_walks': 15, 'max_steps': 40, 'stay_or_break': 0.95}) for k in range(2)]
+    SET += [RW_Generator(**{**param, 'num_walks': 25, 'max_steps': 40, 'stay_or_break': 0.85}) for k in range(2)]
+    SET += [RW_Generator(**{**param, 'num_walks': 25, 'max_steps': 40, 'stay_or_break': 0.9}) for k in range(2)]
+    SET += [RW_Generator(**{**param, 'num_walks': 25, 'max_steps': 40, 'stay_or_break': 0.95}) for k in range(2)]
     
     
     
     # Thick
     param = {**param, 'min_dis': 3, 'bias': [(0, 0), 0], 'RN6': True, 'grid_start': False, 'center_elem': 'full', 'avoid_unvalid': True,  'centering': False}
-    SET += [RW_Generator(**{**param, 'num_walks': 15, 'max_steps': 20, 'stay_or_break': 0.7})] * 4
-    SET += [RW_Generator(**{**param, 'num_walks': 15, 'max_steps': 20, 'stay_or_break': 0.8})] * 4
-    SET += [RW_Generator(**{**param, 'num_walks': 10, 'max_steps': 20, 'stay_or_break': 0.9})] * 4
+    SET += [RW_Generator(**{**param, 'num_walks': 15, 'max_steps': 20, 'stay_or_break': 0.7}) for k in range(4)]
+    SET += [RW_Generator(**{**param, 'num_walks': 15, 'max_steps': 20, 'stay_or_break': 0.8}) for k in range(4)]
+    SET += [RW_Generator(**{**param, 'num_walks': 10, 'max_steps': 20, 'stay_or_break': 0.9}) for k in range(4)]
 
     
     # --- More traditional RW --- #
@@ -490,63 +485,73 @@ def RW_dataset(shape = (62,106)):
     
     ## Free
     # Thin, avoid each other
-    SET += [RW_Generator(**{**param, 'num_walks': 15, 'max_steps': 40})] * 3 
-    SET += [RW_Generator(**{**param, 'num_walks': 25, 'max_steps': 40})] * 3 
-    SET += [RW_Generator(**{**param, 'num_walks': 30, 'max_steps': 40})] * 3 
-    SET += [RW_Generator(**{**param, 'num_walks': 50, 'max_steps': 40})] * 3 
+    SET += [RW_Generator(**{**param, 'num_walks': 15, 'max_steps': 40}) for k in range(3)] 
+    SET += [RW_Generator(**{**param, 'num_walks': 25, 'max_steps': 40}) for k in range(3)] 
+    SET += [RW_Generator(**{**param, 'num_walks': 30, 'max_steps': 40}) for k in range(3)] 
+    SET += [RW_Generator(**{**param, 'num_walks': 50, 'max_steps': 40}) for k in range(3)] 
     
 
     ## Slight bias
     # Thin, avoid each other
     param = {**param, 'min_dis': 4, 'RN6': False, 'grid_start': False,  'center_elem': False, 'avoid_unvalid': True,  'centering': False, 'stay_or_break': 0}
-    SET += [RW_Generator(**{**param, 'num_walks': 8 , 'max_steps': 30, 'bias': [direc['up'], 1]})] * 2
-    SET += [RW_Generator(**{**param, 'num_walks': 8 , 'max_steps': 30, 'bias': [(1, 0), 1]})] * 2
-    SET += [RW_Generator(**{**param, 'num_walks': 8 , 'max_steps': 30, 'bias': [direc['up_right'], 1]})] * 2
-    SET += [RW_Generator(**{**param, 'num_walks': 8 , 'max_steps': 30, 'bias': [direc['down_right'], 1]})] * 2
-    SET += [RW_Generator(**{**param, 'num_walks': 16, 'max_steps': 30, 'bias': [direc['up'], 1]})] * 2 
-    SET += [RW_Generator(**{**param, 'num_walks': 16, 'max_steps': 30, 'bias': [(1, 0), 1]})] * 2 
-    SET += [RW_Generator(**{**param, 'num_walks': 16, 'max_steps': 30, 'bias': [direc['up_right'], 1]})] * 2 
-    SET += [RW_Generator(**{**param, 'num_walks': 16, 'max_steps': 30, 'bias': [direc['down_right'], 1]})] * 2 
+    SET += [RW_Generator(**{**param, 'num_walks': 8 , 'max_steps': 30, 'bias': [direc['up'], 1]}) for k in range(2)]
+    SET += [RW_Generator(**{**param, 'num_walks': 8 , 'max_steps': 30, 'bias': [(1, 0), 1]}) for k in range(2)]
+    SET += [RW_Generator(**{**param, 'num_walks': 8 , 'max_steps': 30, 'bias': [direc['up_right'], 1]}) for k in range(2)]
+    SET += [RW_Generator(**{**param, 'num_walks': 8 , 'max_steps': 30, 'bias': [direc['down_right'], 1]}) for k in range(2)]
+    SET += [RW_Generator(**{**param, 'num_walks': 16, 'max_steps': 30, 'bias': [direc['up'], 1]}) for k in range(2)] 
+    SET += [RW_Generator(**{**param, 'num_walks': 16, 'max_steps': 30, 'bias': [(1, 0), 1]}) for k in range(2)] 
+    SET += [RW_Generator(**{**param, 'num_walks': 16, 'max_steps': 30, 'bias': [direc['up_right'], 1]}) for k in range(2)] 
+    SET += [RW_Generator(**{**param, 'num_walks': 16, 'max_steps': 30, 'bias': [direc['down_right'], 1]}) for k in range(2)] 
     
     # Thick, avoid each other
     param = {**param, 'min_dis': 4, 'RN6': False, 'grid_start': False,  'center_elem': 'full', 'avoid_unvalid': True,  'centering': False, 'stay_or_break': 0}
-    SET += [RW_Generator(**{**param, 'num_walks': 8 , 'max_steps': 30, 'bias': [direc['up'], 1]})] * 2
-    SET += [RW_Generator(**{**param, 'num_walks': 8 , 'max_steps': 30, 'bias': [(1, 0), 1]})] * 2
-    SET += [RW_Generator(**{**param, 'num_walks': 8 , 'max_steps': 30, 'bias': [direc['up_right'], 1]})] * 2
-    SET += [RW_Generator(**{**param, 'num_walks': 8 , 'max_steps': 30, 'bias': [direc['down_right'], 1]})] * 2
-    SET += [RW_Generator(**{**param, 'num_walks': 16, 'max_steps': 30, 'bias': [direc['up'], 1]})] * 2 
-    SET += [RW_Generator(**{**param, 'num_walks': 16, 'max_steps': 30, 'bias': [(1, 0), 1]})] * 2 
-    SET += [RW_Generator(**{**param, 'num_walks': 16, 'max_steps': 30, 'bias': [direc['up_right'], 1]})] * 2 
-    SET += [RW_Generator(**{**param, 'num_walks': 16, 'max_steps': 30, 'bias': [direc['down_right'], 1]})] * 2 
+    SET += [RW_Generator(**{**param, 'num_walks': 8 , 'max_steps': 30, 'bias': [direc['up'], 1]}) for k in range(2)]
+    SET += [RW_Generator(**{**param, 'num_walks': 8 , 'max_steps': 30, 'bias': [(1, 0), 1]}) for k in range(2)]
+    SET += [RW_Generator(**{**param, 'num_walks': 8 , 'max_steps': 30, 'bias': [direc['up_right'], 1]}) for k in range(2)]
+    SET += [RW_Generator(**{**param, 'num_walks': 8 , 'max_steps': 30, 'bias': [direc['down_right'], 1]}) for k in range(2)]
+    SET += [RW_Generator(**{**param, 'num_walks': 16, 'max_steps': 30, 'bias': [direc['up'], 1]}) for k in range(2)] 
+    SET += [RW_Generator(**{**param, 'num_walks': 16, 'max_steps': 30, 'bias': [(1, 0), 1]}) for k in range(2)] 
+    SET += [RW_Generator(**{**param, 'num_walks': 16, 'max_steps': 30, 'bias': [direc['up_right'], 1]}) for k in range(2)] 
+    SET += [RW_Generator(**{**param, 'num_walks': 16, 'max_steps': 30, 'bias': [direc['down_right'], 1]}) for k in range(2)] 
     
  
     
     ## High porosity,
     param = {**param, 'min_dis': 5, 'RN6': False, 'grid_start': False,  'center_elem': 'full', 'avoid_unvalid': True,  'centering': False, 'stay_or_break': 0}
-    SET += [RW_Generator(**{**param, 'num_walks': 32, 'max_steps': 30, 'bias': [direc['down'], 1.2]})] * 1
-    SET += [RW_Generator(**{**param, 'num_walks': 32, 'max_steps': 30, 'bias': [direc['down_left'], 1.2]})] * 1
-    SET += [RW_Generator(**{**param, 'num_walks': 32, 'max_steps': 30, 'bias': [(-1, 0), 1.2]})] * 1
+    SET += [RW_Generator(**{**param, 'num_walks': 32, 'max_steps': 30, 'bias': [direc['down'], 1.2]}) for k in range(1)]
+    SET += [RW_Generator(**{**param, 'num_walks': 32, 'max_steps': 30, 'bias': [direc['down_left'], 1.2]}) for k in range(1)]
+    SET += [RW_Generator(**{**param, 'num_walks': 32, 'max_steps': 30, 'bias': [(-1, 0), 1.2]}) for k in range(1)]
     
     param = {**param, 'min_dis': 4, 'center_elem': 'full'}
-    SET += [RW_Generator(**{**param, 'num_walks': 32, 'max_steps': 30, 'bias': [direc['down'], 1.2]})] * 1
-    SET += [RW_Generator(**{**param, 'num_walks': 32, 'max_steps': 30, 'bias': [direc['down_left'], 1.2]})] * 1
-    SET += [RW_Generator(**{**param, 'num_walks': 32, 'max_steps': 30, 'bias': [(-1, 0), 1.2]})] * 1
+    SET += [RW_Generator(**{**param, 'num_walks': 32, 'max_steps': 30, 'bias': [direc['down'], 1.2]}) for k in range(1)]
+    SET += [RW_Generator(**{**param, 'num_walks': 32, 'max_steps': 30, 'bias': [direc['down_left'], 1.2]}) for k in range(1)]
+    SET += [RW_Generator(**{**param, 'num_walks': 32, 'max_steps': 30, 'bias': [(-1, 0), 1.2]}) for k in range(1)]
     
     param = {**param, 'min_dis': 3, 'center_elem': 'full'}
-    SET += [RW_Generator(**{**param, 'num_walks': 32, 'max_steps': 30, 'bias': [direc['down'], 1.2]})] * 1
-    SET += [RW_Generator(**{**param, 'num_walks': 32, 'max_steps': 30, 'bias': [direc['down_left'], 1.2]})] * 1
-    SET += [RW_Generator(**{**param, 'num_walks': 32, 'max_steps': 30, 'bias': [(-1, 0), 1.2]})] * 1
+    SET += [RW_Generator(**{**param, 'num_walks': 32, 'max_steps': 30, 'bias': [direc['down'], 1.2]}) for k in range(1)]
+    SET += [RW_Generator(**{**param, 'num_walks': 32, 'max_steps': 30, 'bias': [direc['down_left'], 1.2]}) for k in range(1)]
+    SET += [RW_Generator(**{**param, 'num_walks': 32, 'max_steps': 30, 'bias': [(-1, 0), 1.2]}) for k in range(1)]
     
-    
-    
-   
     
 
     
-    if store:
+    if store: 
+        try:
+            outfile = open(os.path.join(dir,'dataset_info.txt'), 'w')
+        except FileNotFoundError:
+            os.makedirs(dir)
+            outfile = open(os.path.join(dir,'dataset_info.txt'), 'w')
+        
+        outfile.write('DATASET INFO\n')
+        outfile.write(f'Date: {date.today()}\n')
+        outfile.write(f'Total configurations: {len(SET)}\n')
+        outfile.write(f'Generated as:\n')
+        
+        
         for i, set in enumerate(SET):
             print(f'\rStoring ({i+1:03d}/{len(SET):03d})| overwrite = {overwrite}', end = "")
-            name = str(i)
+            name = f'RW{i}'
+            outfile.write(f'{name} | {set}\n')
             mat = set.generate()
             if mat is None:
                 continue
@@ -555,38 +560,10 @@ def RW_dataset(shape = (62,106)):
                 builder.save_mat(dir, name, overwrite)
             builder.save_view(dir, 'sheet', name, overwrite)
             # builder.view()
-
-    
-    # mat = SET[-1].generate()
-    # builder = config_builder(mat)
-    # builder.view()
-    
-    
-    
-    # mat = set.generate()
-    # builder = config_builder(mat)
-    # builder.view()
-    
-    # builder = config_builder(set.visit)
-    # builder.view()
-    
-    # set.mat -= set.visit
-    # builder = config_builder(set.visit)
-    # builder.view()
-    
-    # mat[mat == 1] = 2
-    # mat[mat == 0] = 1
-    # mat[mat == 2] = 0
-    # builder = config_builder(mat)
-    # builder.view()
-        
-    
-    # RW = RW_Generator(size = (62, 106), num_walks = 32, max_steps = 30, min_dis = 4, bias = [(1, -1), 1], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = False, center_elem = True)
-    
+            
+        outfile.close()
     
 
-    
-    
 if __name__ == "__main__":
     
     # pop_up_dataset(shape = (62, 106), min_sp = 1, max_sp = 4, max_cut = (9,13))

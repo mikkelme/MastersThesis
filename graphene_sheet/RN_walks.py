@@ -11,15 +11,15 @@ class RW_Generator:
                         num_walks = 9,
                         max_steps = 6,
                         min_dis = 2,
-                        bias = [(1, 1), 0],
-                        RN6 = False,
-                        periodic = True,
-                        avoid_unvalid = False,
-                        grid_start = True,
+                        bias = [(0, 0), 0],
                         center_elem = True,
-                        avoid_clustering = 10,
+                        avoid_unvalid = False,
+                        RN6 = False,
+                        grid_start = True,
                         centering = False,
                         stay_or_break = 0,
+                        avoid_clustering = 10,
+                        periodic = True,
                         seed = None):
 
 
@@ -38,15 +38,15 @@ class RW_Generator:
         self.max_steps = max_steps
         self.min_dis = min_dis
         self.bias = bias
-        self.RN6 = RN6
-        self.periodic = periodic
-        self.avoid_unvalid = avoid_unvalid
-        self.grid_start = grid_start
         self.center_elem = center_elem
-        # self.initial_avoid_clustering = avoid_clustering
-        self.avoid_clustering = avoid_clustering
+        self.avoid_unvalid = avoid_unvalid
+        self.RN6 = RN6
+        self.grid_start = grid_start
         self.centering = centering # Move CM as close to starting point as possible
         self.stay_or_break = stay_or_break
+        self.avoid_clustering = avoid_clustering
+        self.periodic = periodic
+        self.seed = seed
         if seed is not None: # Not working properly... XXX
             np.random.seed(seed)
             
@@ -579,14 +579,27 @@ class RW_Generator:
         
         return grid
         
-        
-        
-        
+    def __str__(self):
+        s = f'size = {self.size}, \
+num_walks = {self.num_walks}, \
+max_steps = {self.max_steps}, \
+min_dis = {self.min_dis}, \
+bias = {self.bias}, \
+center_elem = {self.center_elem}, \
+avoid_unvalid = {self.avoid_unvalid}, \
+RN6 = {self.RN6}, \
+grid_start = {self.grid_start}, \
+centering = {self.centering}, \
+stay_or_break{self.stay_or_break}, \
+avoid_clustering = {self.avoid_clustering}, \
+periodic = {self.periodic}, \
+seed = {self.seed}'
+        return s
 
 if __name__ == "__main__":
     
     RW = RW_Generator()
-    
+    print(RW)
 
     
     # mat = RN.generate()

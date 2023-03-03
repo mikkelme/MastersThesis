@@ -159,6 +159,7 @@ def manual_coupling(path, compare_path = None, save = False):
     mean_window_pct = 0.5 # relative length of the mean window [% of total duration]
     std_window_pct = 0.35  # relative length of the std windoe [% of mean window]
     stretch_tension_file = 'stretch_tension.txt' 
+    stretch_tension_file = 'stretch_tension_rupture_test.txt' 
 
     cmap = matplotlib.cm.viridis
     colorbar_scale = 'linear'
@@ -212,7 +213,7 @@ def manual_coupling(path, compare_path = None, save = False):
         labels.append(l[-1])
     
     # Plot coupling
-    axes[0].scatter(F_N, stretch, **plotset_coupling, color = color_cycle(1))
+    axes[0].scatter(F_N, stretch, **plotset_coupling, color = color_cycle(1), label = "data points (coupled)")
     for k in range(len(F_N)):
         color = get_color_value(F_N[k], FN_min, FN_max, scale = colorbar_scale, cmap = cmap)
         axes[1].scatter(stretch[k], Ff[k], **plotset_coupling, color = color, label = 'Coupled')
@@ -241,26 +242,26 @@ def manual_coupling(path, compare_path = None, save = False):
     axes[1].set_xlabel('Stretch', fontsize = 14)
     axes[1].set_ylabel(r'$\langle F_\parallel \rangle$ [nN]', fontsize = 14)
     
-    fig.legend(handles, labels, loc = 'upper left', fontsize = 13)
+    # fig.legend(handles, labels, loc = 'upper left', fontsize = 13)
+    axes[1].legend(handles, labels, loc = 'best', fontsize = 13)
     
 
 
     # Get load (tension) vs stretch
     stretch_tension = read_friction_file(os.path.join(path, stretch_tension_file))
-    # rupture_dict = read_info_file(os.path.join(path, 'rupture_test.txt'))
+    rupture_dict = read_info_file(os.path.join(path, 'rupture_test.txt'))
     
     stretch_test = stretch_tension['v_stretch_pct']
     load_test = metal_to_SI(stretch_tension['v_load'], 'F')*1e9
     tension_test = metal_to_SI(stretch_tension['v_tension'], 'F')*1e9
     
-    # interpolate with stretch values from multi data
-    # load_interp = np.interp(stretch, stretch_test, load_test)
     
     # plot load-stretch curve
-    axes[0].plot(load_test, stretch_test)
-    # axes[0].plot(tension_test, stretch_test)
-    # axes[0].plot(load_interp, stretch, 'o')
-
+    axes[0].plot(load_test, stretch_test, linewidth = 1, alpha = 1, label = 'rupture test')
+    add_xaxis(axes[0], x = load_test, xnew = load_test*rupture_dict['R'], xlabel = 'Tension [nN]', decimals = 1, fontsize = 14)
+    axes[0].set_xlabel(r'$F_N$ [nN]', fontsize = 14)
+    axes[0].set_ylabel('Stretch', fontsize = 14)
+    axes[0].legend(fontsize = 13)
 
 
     plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
@@ -276,35 +277,15 @@ def manual_coupling(path, compare_path = None, save = False):
 if __name__ == '__main__':
     
     
-    # stretch_tension = read_friction_file('../friction_simulation/my_simulation_space/stretch_tension_rupture_test.txt')
-    # stretch1 = stretch_tension['v_stretch_pct']
-    # load1 = metal_to_SI(stretch_tension['v_load'], 'F')*1e9
-    # plt.plot(load1, stretch1, label = "rupture test")
-    
-    
-    # stretch_tension = read_friction_file('../friction_simulation/my_simulation_space/stretch_tension.txt')
-    # stretch2 = stretch_tension['v_stretch_pct']
-    # load2 = metal_to_SI(stretch_tension['v_load'], 'F')*1e9
-    # plt.plot(load2, stretch2, label = "after test ")
-    
-    # plt.legend()
-    
-    # plt.show()
-    
-
-    # exit()
-    
-    
     path = '../Data/negative_coef/multi_coupling_popup'
     compare_path = '../Data/Baseline_fixmove/popup/multi_stretch'
-    # manual_coupling(path, compare_path, save = 'manual_coupling_pop1_7_5.pdf')
-    manual_coupling(path, compare_path, save = False)
+    manual_coupling(path, compare_path, save = 'manual_coupling_pop1_7_5.pdf')
     
     
     path = '../Data/negative_coef/multi_coupling_honeycomb'
     compare_path = '../Data/Baseline_fixmove/honeycomb/multi_stretch'
-    # manual_coupling(path, compare_path, save = 'manual_coupling_hon3215.pdf')
-    manual_coupling(path, compare_path, save = False)
+    manual_coupling(path, compare_path, save = 'manual_coupling_hon3215.pdf')
+    # manual_coupling(path, compare_path, save = False)
     
     
     plt.show()
