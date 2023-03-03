@@ -80,6 +80,7 @@ class VGGNet(Module):
     def __init__(self,  mode = 0, 
                         image_shape = (62, 106), 
                         num_vals = 2,
+                        out_features = 2,
                         conv_layers = [(2, 64), (2, 128), (3, 256), (3, 512), (3, 512)],
                         FC_layers   = [(2, 4096)]):
        
@@ -88,21 +89,12 @@ class VGGNet(Module):
         self.image_shape = image_shape
         
         
-        self.image_input_shape = (62, 106) # Fix
-        input_shape = (62, 106) 
-       
-      
-        
         if mode == 0: # channels for each numerical input
             numChannels = 1 + num_vals
             self.forward = self.f_mix
         if mode == 1: # numerical inputs to FC directly
             numChannels = 1
             self.forward = self.f_insert
-        
-        
-        # conv_layers = [(1, 20), (1, 50)]
-        # FC_layers = [(1, 500), (1, 2)]
         
         self.layers = nn.ModuleList()
         
@@ -117,7 +109,7 @@ class VGGNet(Module):
                                           padding = 'same', 
                                           stride = 1))
                 
-                # self.layers.append(BatchNorm2d(num_features = filter[1]))
+                self.layers.append(BatchNorm2d(num_features = filter[1]))
                 self.layers.append(ReLU())
                 prev_channels = filter[1]
             self.layers.append(MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding = 1))
@@ -138,13 +130,12 @@ class VGGNet(Module):
         
         
         # --- FC Output --- #
-        self.fc = Linear(in_features=prev_features, out_features=2)
+        self.fc = Linear(in_features=prev_features, out_features=out_features)
         self.sigmoid = Sigmoid()
 
 
         # --- Initialize weights --- #
-        # self.apply(self.init_weights)
-        self.apply(self._init_weights)
+        # self.apply(self. init_weights)
 
     def f_mix(self, image, vals):
         """ Image and numerical input (on indivual channels) all go through convolution """
@@ -166,7 +157,7 @@ class VGGNet(Module):
         
         # Output
         x = self.fc(x)
-        x[:,1] = self.sigmoid(x[:,1]) # sigmoid for is_ruptured
+        x[:,-1] = self.sigmoid(x[:,-1]) # sigmoid for is_ruptured
         
         return x
         
@@ -186,28 +177,38 @@ class VGGNet(Module):
         
         # Output
         x = self.fc(x)
-        x[:,1] = self.sigmoid(x[:,1]) # sigmoid for is_ruptured
+        x[:,-1] = self.sigmoid(x[:,-1]) # sigmoid for is_ruptured
         
         return x
     
     
-    def _init_weights(self, module):
+    def init_weights(self, module):
+        if isinstance(module, Conv2d):
+            # print(module)
+            # print(torch.mean(module.weight).item(), torch.std(module.weight).item())
+            torch.nn.init.kaiming_uniform_(module.weight, mode='fan_out', nonlinearity='relu')
+            # print(torch.mean(module.weight).item(), torch.std(module.weight).item())
+            # print()
+            if module.bias is not None:
+                nn.init.constant_(module.bias, 0.01)
+                
+        elif isinstance(module, Linear):
+            torch.nn.init.kaiming_uniform_(module.weight)
+            nn.init.constant_(module.bias, 0.01)
+                
+        
         # if isinstance(module, nn.Linear):
-        if isinstance(module, Conv2d) or isinstance(module, Linear) :
-            torch.nn.init.xavier_uniform_(module.weight)
-            module.bias.data.fill_(0.01)
-
-
+        #     module.weight.data.normal_(mean=0.0, std=1.0)
+        #     if module.bias is not None:
+        #         nn.init.constant_(module.bias, 0.01)
+            
     
-    # def _init_weights(self, module):
-    #     if isinstance(module, nn.Embedding):
-    #         module.weight.data.normal_(mean=0.0, std=1.0)
-    #         if module.padding_idx is not None:
-    #             module.weight.data[module.padding_idx].zero_()
-    #     elif isinstance(module, nn.LayerNorm):
-    #         module.bias.data.zero_()
-    #         module.weight.data.fill_(1.0)
-
+        # elif isinstance(module, BatchNorm2d):
+        #     nn.init.constant_(module.weight, 1) 
+        #     nn.init.constant_(module.bias, 0) 
+            
+    
+    
     
     # def __str__(self):
     #     s = '#---- LAYERS ---- #\n'
@@ -224,8 +225,8 @@ class VGGNet(Module):
         
         
 if __name__ == '__main__':
- 
-    model = VGGNet()
+    model = VGGNet(mode = 0, image_shape = (62, 106), num_vals = 2)
+    pass
     # model = LeNet(3)
     # print(model)
     # for param in model.parameters():
@@ -236,4 +237,6 @@ if __name__ == '__main__':
     # print(summary(LeNet(3), (3, 62, 106)))
     # print(summary(VGGNet(), ([62, 106], [2])))
     
-    print(summary(VGGNet(), [(62, 106), (2)]))
+    # print(summary(VGGNet(), [(62, 106), (2)]))
+    
+    

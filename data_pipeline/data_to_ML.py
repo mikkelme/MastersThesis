@@ -10,11 +10,6 @@ import sys
 sys.path.append('../') # parent folder: MastersThesis
 from analysis.analysis_utils import *
 
-# Input: Data folder
-# Retrive variables and results
-# Gather in new file
-# Move to desired location
-
 
 def locate_multi_dir(dir):
     target = "config.png"
@@ -130,8 +125,13 @@ def convert_data(multi_dirs, dest):
 if __name__ == "__main__":
     # dir = '../Data/CONFIGS/honeycomb'
     # dest = '../Data/ML_data/honeycomb'
-    dir = '../Data/CONFIGS/popup'
-    dest = '../Data/ML_data/popup'
+    # dir = '../Data/CONFIGS/popup'
+    # dest = '../Data/ML_data/popup'
+    
+    dir = '../Data/Baseline_fixmove/nocut/multi_stretch'
+    dest = '../Data/ML_data/nocut'
+    
+    
     
     
     multi_dirs = locate_multi_dir(dir)
