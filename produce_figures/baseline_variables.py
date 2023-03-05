@@ -6,6 +6,9 @@ from plot_set import *
 
 from analysis.analysis_utils import *
 from brokenaxes import brokenaxes
+from matplotlib.colors import LinearSegmentedColormap
+import matplotlib.colors as colors
+
 
 def temp(path, save = False):
     common_folder = 'temp3' 
@@ -295,7 +298,7 @@ def multi_FN_force_dist(path, save = False):
         
         
  
-def multi_plot_compare(folders, names, vars, axis_labels, yerr = None, axis_scale = ['linear', 'linear'], colorbar_scale = 'log', equal_axes = [False, True], rupplot = False):
+def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yerr = None, axis_scale = ['linear', 'linear'], colorbar_scale = 'log', equal_axes = [False, True], rupplot = False):
     # Settings
     
     
@@ -315,23 +318,12 @@ def multi_plot_compare(folders, names, vars, axis_labels, yerr = None, axis_scal
     
     
     rupture_stretch = np.full((len(folders), 2), np.nan) 
-    fig, axes = plt.subplots(grid[0], grid[1],  figsize = (10,5), gridspec_kw ={'width_ratios': width_ratios})
+    fig, axes = plt.subplots(grid[0], grid[1], num = unique_fignum(),  figsize = figsize, gridspec_kw ={'width_ratios': width_ratios})
     
     # Loop through data folders
     for f, folder in enumerate(folders):
             axes[f].set_title(names[f])
             data = read_multi_folder(folder, mean_window_pct, std_window_pct)
-            
-            
-            # if False:
-            #     print(f, folder)
-            #     mu_mean = data['mu_mean']
-            #     mu_max = data['mu_max']
-                
-            #     print("mu mean")
-            #     print([f'{mu_mean[0][i]:0.{decimals(mu_mean[1][i])}f} +- {mu_mean[1][i]:1.0e}' for i in range(len(mu_mean[0])) if ~np.isnan(mu_mean[1][i])])
-            #     print("mu max")
-            #     print([f'{mu_max[0][i]:0.{decimals(mu_max[1][i])}f} +- {mu_max[1][i]:1.0e}' for i in range(len(mu_max[0])) if ~np.isnan(mu_max[1][i])])
             
             
             # Get variables of interest
@@ -343,8 +335,13 @@ def multi_plot_compare(folders, names, vars, axis_labels, yerr = None, axis_scal
                 f_yerr = eval(yerr)
                 
             for k in range(len(z)):
-                color = get_color_value(z[k], np.min(z), np.max(z), scale = colorbar_scale, cmap = cmap)
-                axes[f].plot(x, y[:,k], **line_and_marker, color = color)
+                if len(z) > 1:
+                    color = get_color_value(z[k], np.min(z), np.max(z), scale = colorbar_scale, cmap = cmap)
+                    axes[f].plot(x, y[:,k], **line_and_marker, color = color)
+                else:
+                    color = get_color_value(0.5, 0, 1, scale = colorbar_scale, cmap = cmap)
+                    # TODO
+                    axes[f].plot(x, y[:,k], **line_and_marker, color = color)
                 
                 if yerr is not None:
                     # xlim, ylim = axes[f].get_xlim(), axes[f].get_ylim()
@@ -361,18 +358,41 @@ def multi_plot_compare(folders, names, vars, axis_labels, yerr = None, axis_scal
            
                 
     
-    # Colorbar
     if colorbar_scale == 'linear':
-        norm = matplotlib.colors.BoundaryNorm(z, cmap.N)
+        # norm = matplotlib.colors.BoundaryNorm(z, cm.N)
+        # norm = colors.BoundaryNorm(boundaries=bins, ncolors=cm.N)
+        pass
     elif colorbar_scale == 'log':
-        norm = matplotlib.colors.LogNorm(z[0], z[-1])
+        exit("Under construction: Does not work ")
+        norm = matplotlib.colors.LogNorm(np.min(z), np.max(z))
     else:
         exit(f'scale = \'{colorbar_scale}\' is not defined.')
         
     axes[-1].grid(False)
     axes[-1].set_aspect(10)
-    cb = fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax=axes[-1])
-    cb.set_label(label = axis_labels[2], fontsize=14)
+    
+    if len(z) > 1:  
+        cm = ListedColormap([get_color_value(z[k], np.min(z), np.max(z), scale = colorbar_scale, cmap = cmap) for k in range(len(z))])
+        mid = (z[1:] + z[:-1])/2
+        bins = np.array([z[0]] + [m for m in mid] + [z[-1]])
+        norm = colors.BoundaryNorm(boundaries=bins, ncolors=cm.N)
+    
+        cb = fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cm), ticks = z, spacing = 'proportional', cax=axes[-1])
+        cb.set_label(label = axis_labels[2], fontsize=14)
+    
+    else:
+        cm = ListedColormap([get_color_value(0.5, 0, 1, scale = colorbar_scale, cmap = cmap)])
+        cb = fig.colorbar(matplotlib.cm.ScalarMappable(norm=None, cmap=cm), boundaries = [0, 10], ticks = z, cax=axes[-1])
+        
+            
+    # bound = bins - bins[0]
+    # ticks = z - bins[0]
+    # bound, ticks = bound/bound[-1], ticks/bound[-1]
+    # cb = fig.colorbar(matplotlib.cm.ScalarMappable(norm=None, cmap=cm), boundaries = boundaries, spacing = 'proportional', cax=axes[-1])
+    # cb = fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cm), ticks = z, spacing = 'proportional', cax=axes[-1])
+    
+   
+    
     
     # Axis limits
     if np.any(equal_axes):
@@ -468,12 +488,6 @@ def vaccum_normal_buckling(path, save = False):
     colors = [color_cycle(0), color_cycle(1), color_cycle(3)]
     
     
-
-    
-    # dump_files.pop(0)
-    # dirs.pop(0)
-    # names.pop(0)
-    # colors.pop(0)
     
     grid = (1, len(dump_files))
     fig, axes = plt.subplots(grid[0], grid[1],  figsize = (10,5))
@@ -521,6 +535,8 @@ def vaccum_normal_buckling(path, save = False):
     plt.subplots_adjust(right=0.8)
     if save:
         plt.savefig("../article/figures/baseline/vacuum_normal_buckling", bbox_inches="tight")
+
+
 
 if __name__ == "__main__":
     

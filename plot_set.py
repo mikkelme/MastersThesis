@@ -15,6 +15,8 @@ matplotlib.rcParams['font.family'] = 'STIXGeneral'
 import numpy as np
 import statsmodels.api as sm
 def lin_fit(x,y):
+    if len(x) < 2:
+        return np.nan, np.nan, np.nan, np.nan
     x = sm.add_constant(x)
     model = sm.OLS(y, x)
     res = model.fit()

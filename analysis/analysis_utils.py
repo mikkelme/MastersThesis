@@ -1010,12 +1010,10 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.35, stretch_lim = [Non
 
 
 def get_friction_coef(Ff, F_N):
-    
     mu = np.zeros(Ff.shape[0])
     mu_err = np.zeros(Ff.shape[0])
     for i in range(Ff.shape[0]):
-        mu[i], b, mu_err[i], b_err = lin_fit(F_N, Ff[i])
-        
+        mu[i], b, mu_err[i], b_err = lin_fit(F_N, Ff[i])        
     return mu, mu_err
     
 
