@@ -19,9 +19,9 @@ def config_profile(model, config_path, stretch, F_N):
     vals = torch.stack((stretch_torch, F_N_torch), 1)
 
     output = model(config, vals).detach().numpy()
-    rupture = output[:,1] > 0.5
+    rupture = output[:,-1] > 0.5
     
-    # print(output[:, 1])
+    print(output[:, 1])
     
     plt.figure(num=0, dpi=80, facecolor='w', edgecolor='k')
     plt.plot(stretch[~rupture], output[:,0][~rupture], 'o', markersize = 1, label = "No rupture")
@@ -43,7 +43,7 @@ def compare_model():
 
 def load_model(weight_path):
     # model = VGGNet(mode = 1)
-    model = VGGNet(mode = 0, out_features = 2, conv_layers = [(1, 16), (1, 32), (1, 64)], FC_layers = [(1, 512), (1,128)])
+    model = VGGNet(mode = 0, out_features = 3, conv_layers = [(1, 16), (1, 32), (1, 64)], FC_layers = [(1, 512), (1,128)])
     
     model = load_weights(model, weight_path)
     return model
@@ -51,11 +51,11 @@ def load_model(weight_path):
 
 def test_model():
     model = load_model('test_model_dict_state')
-    num_points = 1000 
+    num_points = 100
     
     # config_path = '../config_builder/baseline/nocut.npy'
-    # config_path = '../config_builder/baseline/pop1_7_5.npy'
-    config_path = '../config_builder/baseline/hon3215.npy'
+    config_path = '../config_builder/baseline/pop1_7_5.npy'
+    # config_path = '../config_builder/baseline/hon3215.npy'
     stretch = np.linspace(0, 2, num_points)
     F_N = np.linspace(1, 1, num_points) # nN
     config_profile(model, config_path, stretch, F_N)

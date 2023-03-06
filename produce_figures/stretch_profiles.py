@@ -87,6 +87,6 @@ if __name__ == "__main__":
     path = '../Data/CONFIGS/honeycomb'
     # path = '../Data/CONFIGS/popup'
     # plot_individual_profiles(path, save = False)
-    plot_profiles_together(path, save = True)
-    plt.show()    
+    # plot_profiles_together(path, save = True)
+    # plt.show()    
     

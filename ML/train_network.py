@@ -45,7 +45,7 @@ def loss_func(outputs, labels):
         Ff_loss = alpha*criterion[0](outputs[not_ruptured, 0], labels[not_ruptured, 0])
 
     rup_stretch_loss = 0.5*(1-alpha)*criterion[1](outputs[:, 1], labels[:, 1])
-    is_ruptured_loss = 0.5*(1-alpha)*criterion[-1](outputs[:, 1], labels[:, 1])
+    is_ruptured_loss = 0.5*(1-alpha)*criterion[-1](outputs[:, -1], labels[:, -1])
     rup_loss = (rup_stretch_loss + is_ruptured_loss)/2
     
     loss = Ff_loss + rup_loss
@@ -80,6 +80,7 @@ def train(data_root, model, ML_setting, save_best = False, maxfilenum = None):
 
     # Train and evaluate
     train_val_hist, best = train_and_evaluate(model, dataloaders, criterion, optimizer, lr_scheduler, ML_setting, device, save_best = save_best is not None)
+    
     if save_best is not False:      
         print(f'Best epoch: {best["epoch"]}')
         print(f'Best loss: {best["loss"]}')
@@ -106,5 +107,6 @@ if __name__=='__main__':
     ML_setting = get_ML_setting()
     
     # model = VGGNet(mode = 0)
-    model = VGGNet(mode = 0, out_features = 2, conv_layers = [(1, 16), (1, 32), (1, 64)], FC_layers = [(1, 512), (1,128)])    
+    model = VGGNet(mode = 0, out_features = 3, conv_layers = [(1, 16), (1, 32), (1, 64)], FC_layers = [(1, 512), (1,128)])    
+    
     train(data_root, model, ML_setting, save_best = 'test', maxfilenum = None)
