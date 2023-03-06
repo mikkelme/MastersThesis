@@ -298,7 +298,7 @@ def multi_FN_force_dist(path, save = False):
         
         
  
-def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yerr = None, axis_scale = ['linear', 'linear'], colorbar_scale = 'log', equal_axes = [False, True], rupplot = False):
+def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yerr = None, axis_scale = ['linear', 'linear'], colorbar_scale = [None, 'log'], equal_axes = [False, True], rupplot = False):
     # Settings
     
     
@@ -318,17 +318,17 @@ def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yer
     
     
     rupture_stretch = np.full((len(folders), 2), np.nan) 
-    fig, axes = plt.subplots(grid[0], grid[1], num = unique_fignum(),  figsize = figsize, gridspec_kw ={'width_ratios': width_ratios})
+    fig, axes = plt.subplots(grid[0], grid[1], num = unique_fignum(), figsize = figsize, gridspec_kw ={'width_ratios': width_ratios})
     
     # Loop through data folders
     for f, folder in enumerate(folders):
             axes[f].set_title(names[f])
             data = read_multi_folder(folder, mean_window_pct, std_window_pct)
             
-            
             # Get variables of interest
             locs = locals()
             x, y, z = [eval(v, locs) for v in vars]
+            
             
             # Plot
             if yerr is not None:
@@ -336,10 +336,11 @@ def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yer
                 
             for k in range(len(z)):
                 if len(z) > 1:
-                    color = get_color_value(z[k], np.min(z), np.max(z), scale = colorbar_scale, cmap = cmap)
+                    color = get_color_value(z[k], np.min(z), np.max(z), scale = colorbar_scale[-1], cmap = cmap)
                     axes[f].plot(x, y[:,k], **line_and_marker, color = color)
                 else:
-                    color = get_color_value(0.5, 0, 1, scale = colorbar_scale, cmap = cmap)
+                    exit("Handle this")
+                    color = get_color_value(0.5, 0, 1, scale = colorbar_scale[-1], cmap = cmap)
                     # TODO
                     axes[f].plot(x, y[:,k], **line_and_marker, color = color)
                 
@@ -356,33 +357,50 @@ def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yer
             # Get rupture strecth information
             rupture_stretch[f] = (data['rupture_stretch'], data['practical_rupture_stretch'])
            
-                
     
-    if colorbar_scale == 'linear':
-        # norm = matplotlib.colors.BoundaryNorm(z, cm.N)
-        # norm = colors.BoundaryNorm(boundaries=bins, ncolors=cm.N)
-        pass
-    elif colorbar_scale == 'log':
-        exit("Under construction: Does not work ")
-        norm = matplotlib.colors.LogNorm(np.min(z), np.max(z))
+    if colorbar_scale[0] is None: # standard range
+        vmin = 0.1 # nN
+        vmax = 10 # nN
     else:
-        exit(f'scale = \'{colorbar_scale}\' is not defined.')
+        vmin = colorbar_scale[0][0]
+        vmax = colorbar_scale[0][1]
+    
+    if colorbar_scale[-1] == 'linear':
+        norm = matplotlib.colors.Normalize(vmin, vmax)
+    elif colorbar_scale[-1] == 'log':
+        norm = matplotlib.colors.LogNorm(vmin, vmax)
+    else:
+        exit(f'scale = \'{colorbar_scale[-1]}\' is not defined.')
         
-    axes[-1].grid(False)
-    axes[-1].set_aspect(10)
+    cb = fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax=axes[-1])
+    cb.set_label(label = axis_labels[2], fontsize=14)
     
-    if len(z) > 1:  
-        cm = ListedColormap([get_color_value(z[k], np.min(z), np.max(z), scale = colorbar_scale, cmap = cmap) for k in range(len(z))])
-        mid = (z[1:] + z[:-1])/2
-        bins = np.array([z[0]] + [m for m in mid] + [z[-1]])
-        norm = colors.BoundaryNorm(boundaries=bins, ncolors=cm.N)
+        
+    # if colorbar_scale == 'linear':
+    #     # norm = matplotlib.colors.BoundaryNorm(z, cm.N)
+    #     # norm = colors.BoundaryNorm(boundaries=bins, ncolors=cm.N)
+    #     pass
+    # elif colorbar_scale == 'log':
+    #     exit("Under construction: Does not work ")
+    #     norm = matplotlib.colors.LogNorm(np.min(z), np.max(z))
+    # else:
+    #     exit(f'scale = \'{colorbar_scale}\' is not defined.')
+        
+    # axes[-1].grid(False)
+    # axes[-1].set_aspect(10)
     
-        cb = fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cm), ticks = z, spacing = 'proportional', cax=axes[-1])
-        cb.set_label(label = axis_labels[2], fontsize=14)
+    # if len(z) > 1:  
+    #     cm = ListedColormap([get_color_value(z[k], np.min(z), np.max(z), scale = colorbar_scale, cmap = cmap) for k in range(len(z))])
+    #     mid = (z[1:] + z[:-1])/2
+    #     bins = np.array([z[0]] + [m for m in mid] + [z[-1]])
+    #     norm = colors.BoundaryNorm(boundaries=bins, ncolors=cm.N)
     
-    else:
-        cm = ListedColormap([get_color_value(0.5, 0, 1, scale = colorbar_scale, cmap = cmap)])
-        cb = fig.colorbar(matplotlib.cm.ScalarMappable(norm=None, cmap=cm), boundaries = [0, 10], ticks = z, cax=axes[-1])
+    #     cb = fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cm), ticks = z, spacing = 'proportional', cax=axes[-1])
+    #     cb.set_label(label = axis_labels[2], fontsize=14)
+    
+    # else:
+    #     cm = ListedColormap([get_color_value(0.5, 0, 1, scale = colorbar_scale, cmap = cmap)])
+    #     cb = fig.colorbar(matplotlib.cm.ScalarMappable(norm=None, cmap=cm), boundaries = [0, 10], ticks = z, cax=axes[-1])
         
             
     # bound = bins - bins[0]
@@ -410,7 +428,7 @@ def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yer
     if rupplot: 
         for a, ax in enumerate(axes[:-1]):    
             vline(ax, rupture_stretch[a, 0], linestyle = '--', color = 'black', linewidth = 1, zorder = 0, label = "Rupture stretch" )
-            yfill(ax, [rupture_stretch[a, 1], 10], color = 'red', alpha = 0.1, zorder = 0, label = "Rupture drag")
+            yfill(ax, [rupture_stretch[a, 1], 10], color = 'red', alpha = 0.1, zorder = 0, label = "Rupture slide")
 
 
     # Axis scale 
@@ -421,8 +439,6 @@ def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yer
     fig.supylabel(axis_labels[1], fontsize = 14)
     handles, labels = axes[-2].get_legend_handles_labels()
     fig.legend(handles, labels, loc = 'lower right', bbox_to_anchor = (0.0, 0.0, 1, 1), bbox_transform = plt.gcf().transFigure, ncols = 2, fontsize = 13)
-    
-    
     fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
     return fig        
 

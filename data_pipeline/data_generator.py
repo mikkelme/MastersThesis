@@ -185,13 +185,9 @@ if __name__ == "__main__":
     filenames = get_files_in_folder('../config_builder/RW/', ext = 'npy')
     filenames = np.sort(filenames)
     
-    filenames = filenames[10:20] # Done these XXX 
-    # TODO: Continue from filenames[20: ]
-    exit()
+    # filenames = filenames[90:100] 
     # print(filenames)
-    
-    
-    run_files(filenames, header =  'egil:CONFIGS/RW', simname = 'RW', num_procs_initial = None, num_procs = 4)
+    # run_files(filenames, header =  'egil:CONFIGS/RW', simname = 'RW9', num_procs_initial = None, num_procs = 4)
    
     pass
     

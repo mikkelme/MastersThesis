@@ -373,13 +373,12 @@ def plot_xy_time(fig, ax, x, y, z, z_label = 'time $[ps]$', cmap = 'gist_rainbow
 def organize_data(data, stretch_lim, FN_lim): 
     """ organize by column 0 and 1 """
     
-    # try:
-    # except IndexError:
-    #     print(np.shape(data))
     
     # Get sorted array of unique stretch_pct and F_N 
     stretch_pct = np.unique(data[:,0]) 
     F_N = np.unique(data[:,1])
+    
+ 
     
     
     output = []    
@@ -389,6 +388,8 @@ def organize_data(data, stretch_lim, FN_lim):
         obj = data[0,col]
         shape = (len(stretch_pct), len(F_N)) + np.shape(obj)
         output.append(np.full(shape, np.nan, dtype = 'object'))
+
+
 
     # Match object values to stetch_pct and F_N 
     for i, s in enumerate(stretch_pct):
@@ -402,15 +403,18 @@ def organize_data(data, stretch_lim, FN_lim):
     
     
     # --- Trim to limits --- #
-    # Handle different version of limit definitions
-    if stretch_lim[0] == None: stretch_lim[0] = np.min(stretch_pct) - 1
-    if stretch_lim[1] == None: stretch_lim[1] = np.max(stretch_pct) + 1
-    if FN_lim[0] == None: FN_lim[0] = np.min(F_N) - 1
-    if FN_lim[1] == None: FN_lim[1] = np.max(F_N) + 1
+    # Handle different version of limit definitions    
+    loc_stretch_lim = stretch_lim.copy()
+    loc_FN_lim = FN_lim.copy()
+    if loc_stretch_lim[0] == None: loc_stretch_lim[0] = np.min(stretch_pct) - 1
+    if loc_stretch_lim[1] == None: loc_stretch_lim[1] = np.max(stretch_pct) + 1
+    if loc_FN_lim[0] == None: loc_FN_lim[0] = np.min(F_N) - 1
+    if loc_FN_lim[1] == None: loc_FN_lim[1] = np.max(F_N) + 1
     
-    # Get idx
-    stretch_idx = np.argwhere(np.logical_and(stretch_lim[0] <= stretch_pct, stretch_pct <= stretch_lim[-1])).flatten()
-    FN_idx = np.argwhere(np.logical_and(FN_lim[0] <= F_N, F_N <= FN_lim[-1])).flatten()
+    
+    stretch_idx = np.argwhere(np.logical_and(loc_stretch_lim[0] <= stretch_pct, stretch_pct <= loc_stretch_lim[-1])).flatten()
+    FN_idx = np.argwhere(np.logical_and(loc_FN_lim[0] <= F_N, F_N <= loc_FN_lim[-1])).flatten()
+
     
     # Apply index
     stretch_pct = stretch_pct[stretch_idx].astype('float')
@@ -420,10 +424,8 @@ def organize_data(data, stretch_lim, FN_lim):
             output[i] = output[i][stretch_idx][:, FN_idx].astype('float')
         except ValueError:
             output[i] = output[i][stretch_idx][:, FN_idx].astype('str')
-        
                     
     return stretch_pct, F_N, *output,
-    # return np.array(stretch_pct, dtype = 'float'), np.array(F_N, dtype = 'float'), *output,
     
     
     
@@ -698,18 +700,6 @@ def running_mean(arr, window_len = 1000):
 
 
 
-# def moving_std(arr, window_pct = 0.1):
-#     """ Returns std of running tail window to the left 
-#         corresponding x-position """
-#     window = int(len(arr) * window_pct)
-#     assert(window >= 10), "Window must be >= 10"
-    
-#     out = np.full(len(arr), np.nan)
-#     for i in range(window-1, len(arr)):
-#         if i%(len(arr)/10) == 0:
-#             print(i/len(arr))
-#         out[i] = np.std(arr[i+1-window:i+1])
-#     return out
     
 def cum_max(arr):
     return  np.maximum.accumulate(arr)
@@ -939,6 +929,7 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.35, stretch_lim = [Non
                 F_N = metal_to_SI(info_dict['F_N'], 'F')*1e9
                 
                 
+                
                 rupture.append((stretch_pct, F_N, is_ruptured, job_dir))  
                 
                 if not is_ruptured:
@@ -947,7 +938,8 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.35, stretch_lim = [Non
                     _, fricData = analyse_friction_file(friction_file, mean_pct, std_pct)
                     data.append((stretch_pct, F_N, fricData['Ff'], fricData['Ff_std'], fricData['contact_mean'], fricData['contact_std']))  
                 else:
-                    data.append((stretch_pct, F_N, np.nan, np.nan, np.nan, np.nan))  
+                    # data.append((stretch_pct, F_N, np.nan, np.nan, np.nan, np.nan))  
+                    data.append((stretch_pct, F_N, np.full((3,2), np.nan), np.full(3, np.nan), np.full(2, np.nan), np.full(2, np.nan)))  
                     
             
             except FileNotFoundError:
@@ -957,14 +949,12 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.35, stretch_lim = [Non
     # Organize data
     data = np.array(data, dtype = 'object')
     rupture = np.array(rupture, dtype = 'object')
+    
     stretch_pct, F_N, Ff, Ff_std, contact_mean, contact_std = organize_data(data, stretch_lim, FN_lim)
     rup_stretch_pct, rup_F_N, rup, filenames = organize_data(rupture, stretch_lim, FN_lim) # XXX 
     
- 
-    
     mu_max = get_friction_coef(Ff[:, :, 0, 0], F_N)
     mu_mean = get_friction_coef(Ff[:, :, 0, 1], F_N)
-    
     
     # --- Rupture detection --- #
     if (rup > 0.5).any():
@@ -987,7 +977,9 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.35, stretch_lim = [Non
         practical_rupture_stretch = None
         print("No rupture detected")
         
-        
+    
+    
+    
     output = {
         'stretch_pct': stretch_pct,
         'F_N': F_N,
@@ -1012,6 +1004,10 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.35, stretch_lim = [Non
 def get_friction_coef(Ff, F_N):
     mu = np.zeros(Ff.shape[0])
     mu_err = np.zeros(Ff.shape[0])
+    
+    if F_N.shape[0] == 1:
+        return np.nan, np.nan
+    
     for i in range(Ff.shape[0]):
         mu[i], b, mu_err[i], b_err = lin_fit(F_N, Ff[i])        
     return mu, mu_err
