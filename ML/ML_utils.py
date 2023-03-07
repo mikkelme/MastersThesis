@@ -38,12 +38,16 @@ def get_inputs(data, device):
     vals = torch.stack((stretch, FN), 1).to(device)
     return image, vals
     
-def get_labels(data, device):
-    Ff = torch.from_numpy(np.array(data['Ff_mean'], dtype = np.float32))
-    rupture_stretch = torch.from_numpy(np.array(data['rupture_stretch'], dtype = np.float32)) # When mergening float32 with int32 I believe it stores both as float32 anyway...
-    is_ruptured = torch.from_numpy(np.array(data['is_ruptured'], dtype = np.int32))
+def get_labels(data, keys, device):
+    labels = []
+    for key in keys:
+        labels.append(torch.from_numpy(np.array(data[key], dtype = np.float32)))
+    labels = torch.stack(labels, 1).to(device) 
     
-    labels = torch.stack((Ff, rupture_stretch, is_ruptured), 1).to(device) 
+    # Ff = torch.from_numpy(np.array(data['Ff_mean'], dtype = np.float32))
+    # rupture_stretch = torch.from_numpy(np.array(data['rupture_stretch'], dtype = np.float32)) # When mergening float32 with int32 I believe it stores both as float32 anyway...
+    # is_ruptured = torch.from_numpy(np.array(data['is_ruptured'], dtype = np.int32))
+    # labels = torch.stack((Ff, rupture_stretch, is_ruptured), 1).to(device) 
     return labels
 
 
@@ -60,18 +64,14 @@ def train_epoch(model, dataloader, criterion, optimizer, device):
         # Zero gradients of all optimized torch.Tensor's
         optimizer.zero_grad() 
 
-        # --- Evaluate --- #    
-        image, vals = get_inputs(data, device)
-        labels = get_labels(data, device)
+        # # --- Evaluate --- #    
+        # image, vals = get_inputs(data, device)
+        # labels = get_labels(data, model.keys, device)
         
-        outputs = model(image, vals)
-        loss, Ff_loss, rup_loss = criterion(outputs, labels)
-        
-        # test_out = outputs[0]
-        # test_label = labels[0]
-        # print(f'Ff | pred = {test_out[0]:0.2f}, label = {test_label[0]:0.2f}')
-        # print(f'rup_stretch | pred = {test_out[1]:0.2f}, label = {test_label[1]:0.2f}')
-        # print(f'is_ruptured | pred = {test_out[2]:0.2f}, label = {test_label[2]:0.2f}')
+        # outputs = model(image, vals)
+        # loss, Ff_loss, other_loss, rup_loss = criterion(outputs, labels)
+        loss, Ff_loss, other_loss, rup_loss  = common_things(model, data, device)  
+      
        
         # --- Optimize --- #
         loss.backward()
@@ -87,6 +87,16 @@ def train_epoch(model, dataloader, criterion, optimizer, device):
     return np.mean(losses, axis = 0)
 
 
+def common_things(model, data, device):
+     # --- Evaluate --- #    
+    image, vals = get_inputs(data, device)
+    labels = get_labels(data, model.keys, device)
+    outputs = model(image, vals)
+    loss, Ff_loss, other_loss, rup_loss = criterion(outputs, labels)
+    return loss, Ff_loss, other_loss, rup_loss 
+    
+    
+
 def evaluate_model(model, dataloader, criterion, device):
     model.eval() # Evaluation mode
 
@@ -100,11 +110,12 @@ def evaluate_model(model, dataloader, criterion, device):
         for batch_idx, data in enumerate(dataloader):
             # --- Evaluate --- #
             image, vals = get_inputs(data, device)
-            labels = get_labels(data, device)
+            labels = get_labels(data, model.keys, device)
+            
             outputs = model(image, vals)
             
             # loss, MSE, BCE = criterion(outputs, labels)
-            loss, Ff_loss, rup_loss = criterion(outputs, labels)
+            loss, Ff_loss, other_loss, rup_loss  = criterion(outputs, labels)
             
        
             # --- Analyse --- #

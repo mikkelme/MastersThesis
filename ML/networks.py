@@ -16,6 +16,8 @@ from torch.nn import BatchNorm2d
 from torch import flatten
 from torchsummary import summary
 
+
+import numpy as np
 class LeNet(Module):
     def __init__(self, numChannels):
         super(LeNet, self).__init__()
@@ -72,25 +74,29 @@ class VGGNet(Module):
         mode (int): Toggle different type of data flow. 
             0: Image and numerical values goes through convolution no seperate input channels
             1: Image get convoluted while numerical values is inserted at FC
-        num_vals (int): Number of numerical values as input (e.g. stretch and F_N)
+        out_features (list of strings): Define the output features and their type. 'R' refer to regression type quanity (continous) and 'C' refers to a classification type feature (sigmoid to [0, 1])
+        input_num (int): Number of numerical values as input (e.g. stretch and F_N) in addition to config matrix
         conv_layers (list of tuples): Define architecture of convolution part. Each convolution block is defined by the tuple and is repeated tuple[0] times seperated by a RELU activation and gets tuple[1] channels each time. Each block is then seperated by a maxpooling layer.
         FC_layers (list of tuples): Define architecture of fully connected (FC) part. Each fully connected block is repeated tuple[0] times with a total of tuple[1] nodes. Each FC layer is seperated by a RELU activation except the last one which is handled by the hardcoded output layers
 
     """        
     def __init__(self,  mode = 0, 
                         image_shape = (62, 106), 
-                        num_vals = 2,
-                        out_features = 2,
+                        input_num = 2,
                         conv_layers = [(2, 64), (2, 128), (3, 256), (3, 512), (3, 512)],
-                        FC_layers   = [(2, 4096)]):
+                        FC_layers   = [(2, 4096)],
+                        out_features = ['R', 'C'],
+                        keys = None):
+       
        
         super(VGGNet, self).__init__()
-        
+       
         self.image_shape = image_shape
-        
+        self.out_features = np.array(out_features)
+        self.keys = keys
         
         if mode == 0: # channels for each numerical input
-            numChannels = 1 + num_vals
+            numChannels = 1 + input_num
             self.forward = self.f_mix
         if mode == 1: # numerical inputs to FC directly
             numChannels = 1
@@ -119,7 +125,7 @@ class VGGNet(Module):
         # --- Fully connected (FC) block --- #
         prev_features = prev_channels * prev_shape[0] * prev_shape[1] 
         if mode == 1:
-            prev_features += num_vals
+            prev_features += input_num
             
         for i, filter in enumerate(FC_layers):
             for j in range(filter[0]):
@@ -130,8 +136,10 @@ class VGGNet(Module):
         
         
         # --- FC Output --- #
-        self.fc = Linear(in_features=prev_features, out_features=out_features)
+        self.fc = Linear(in_features=prev_features, out_features=len(out_features))
         self.sigmoid = Sigmoid()
+        self.sig_map = self.out_features == 'C'
+        
 
 
         # --- Initialize weights --- #
@@ -158,9 +166,10 @@ class VGGNet(Module):
         
         # Output
         x = self.fc(x)
-        x[:,-1] = self.sigmoid(x[:,-1]) # sigmoid for is_ruptured
-        # print(self.fc.weight)
         
+        x[:,self.sig_map] = self.sigmoid(x[:,self.sig_map]) # sigmoid for is_ruptured
+        # x[:,-1] = self.sigmoid(x[:, -1]) # sigmoid for is_ruptured
+         
         return x
         
     def f_insert(self, image, vals):
@@ -179,7 +188,8 @@ class VGGNet(Module):
         
         # Output
         x = self.fc(x)
-        x[:,-1] = self.sigmoid(x[:,-1]) # sigmoid for is_ruptured
+        x[:,self.sig_map] = self.sigmoid(x[:,self.sig_map]) # sigmoid for is_ruptured
+
         
         return x
     
@@ -243,7 +253,7 @@ class VGGNet(Module):
         
         
 if __name__ == '__main__':
-    model = VGGNet(mode = 0, image_shape = (62, 106), num_vals = 2)
+    model = VGGNet(mode = 0, image_shape = (62, 106), input_num = 2)
     pass
     # model = LeNet(3)
     # print(model)
@@ -253,7 +263,7 @@ if __name__ == '__main__':
     
     
     # print(summary(LeNet(3), (3, 62, 106)))
-    # print(summary(VGGNet(), ([62, 106], [2])))
+    # print(summary(VGGNet(), (2, 62, 106, 2)))
     
     # print(summary(VGGNet(), [(62, 106), (2)]))
     

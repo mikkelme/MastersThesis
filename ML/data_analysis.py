@@ -109,7 +109,7 @@ def plot_corrcoef(save = False):
     data_root = ['../Data/ML_data/honeycomb', '../Data/ML_data/popup'] 
     obj = Data_fetch(data_root)
     
-    obj.get_data(['stretch', 'rupture_stretch', 'F_N', 'porosity', 'Ff_mean', 'contact', 'Ff_mean_std', 'contact_std'], obj[:])
+    obj.get_data(['stretch', 'rupture_stretch', 'F_N', 'porosity', 'Ff_mean',  'Ff_max', 'contact', 'Ff_mean_std', 'contact_std'], obj[:])
     obj.data['rel. stretch'] =  obj.data['stretch']/obj.data['rupture_stretch']
     
     if save:
@@ -122,9 +122,11 @@ def plot_corrcoef(save = False):
                                'F_N': '$F_N$', 
                                'porosity': 'Porosity', 
                                'Ff_mean': r'$\langle F_\parallel \rangle$', 
+                               'Ff_max': 'max Ff',
                                'contact': 'Contact',
                                'Ff_mean_std': r'std $\langle F_\parallel \rangle$',
-                               'contact_std': 'std contact'}, save = savename)
+                               'contact_std': 'std contact'
+                               }, save = savename)
     
     
     
@@ -195,18 +197,14 @@ if __name__ == '__main__':
     
     # plot_corrcoef(save = False)
     # plot_corr_scatter(save = True)
-    # plt.show()
+    plt.show()
+    pass
     
-    data_root = ['../Data/ML_data/honeycomb', '../Data/ML_data/popup'] 
-    obj = Data_fetch(data_root)
+    # data_root = ['../Data/ML_data/honeycomb', '../Data/ML_data/popup'] 
+    # obj = Data_fetch(data_root)
+    # data = obj.get_data(['is_ruptured'], obj[:], exclude_rupture = False)
+    # part = np.sum(data['is_ruptured']) / len(data['is_ruptured'])
+    # print(part)
     
-    
-    data = obj.get_data(['is_ruptured'], obj[:], exclude_rupture = False)
-    part = np.sum(data['is_ruptured']) / len(data['is_ruptured'])
-    
-    
-    # np.sum(data['is_ruptured'] > 0.5) / np.sum(data['is_ruptured'])
-    print(part)
-    # obj.data['rel. stretch'] =  obj.data['stretch']/obj.data['rupture_stretch']
     
     

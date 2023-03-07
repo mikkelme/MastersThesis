@@ -27,8 +27,8 @@ def config_profile(model, config_path, stretch, F_N):
     # print(output[:, :])
     
     plt.figure(num=0, dpi=80, facecolor='w', edgecolor='k')
-    plt.plot(stretch[~rupture], output[:,0][~rupture], 'o', markersize = 1, label = "No rupture")
-    plt.plot(stretch[rupture], output[:,0][rupture], 'o', markersize = 1, label = "Rupture")
+    plt.plot(stretch[~rupture], output[:,0][~rupture], 'o', markersize = 1.5, label = "No rupture")
+    plt.plot(stretch[rupture], output[:,0][rupture], 'o', markersize = 1.5, label = "Rupture")
     
     plt.xlabel('Stretch', fontsize=14)
     plt.ylabel(r'$\langle F_\parallel \rangle$ [nN]', fontsize=14)
@@ -81,12 +81,18 @@ def compare_model_to_data(model, folder):
 
 def load_model(weight_path):
     # model = VGGNet(mode = 1)
-    model = VGGNet(mode = 0, out_features = 3, conv_layers = [(1, 16), (1, 32), (1, 64)], FC_layers = [(1, 512), (1,128)])    
+    model = VGGNet( mode = 0, 
+                    input_num = 2, 
+                    conv_layers = [(1, 16), (1, 32), (1, 64)], 
+                    FC_layers = [(1, 512), (1,128)],
+                    out_features = ['R', 'R', 'C'])
+    
+    
     model = load_weights(model, weight_path)
     return model
 
 
-def test_model_compare():
+def test_model_compare(model_path):
     model = load_model('test_model_dict_state')
 
     # folder = '../Data/CONFIGS/honeycomb/hon_1' # hon3215 used in ML data
@@ -97,7 +103,7 @@ def test_model_compare():
 
 
 def test_model_manual():
-    model = load_model('test_model_dict_state')
+    model = load_model('training/more_output_model_dict_state')
 
 
     num_points = 100    
@@ -112,7 +118,7 @@ def test_model_manual():
 
 if __name__ == '__main__':
     test_model_manual()
-    test_model_compare()
+    # test_model_compare()
     plt.show()
     
     # config_profile(config_path, model)
