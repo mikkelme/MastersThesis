@@ -21,8 +21,6 @@ include ${root}/setup_sim.in
 print ${FN_max}
 
 variable SMAX equal v_stretch_pct # Update stretch_max_pct with val from restart file
-unfix PB_ave 
-fix PB_ave PB_tot aveforce 0 0 0 # Average force vector completely
 
 # ---------- Print drag schedule ---------- #
 # Timestamps
@@ -91,10 +89,11 @@ if "${is_ruptured}" then "jump SELF after_drag"
 
 # ---------- Update fixes ---------- #
 velocity PB_tot_rigid set 0 0 0
+unfix PB_ave 
+fix PB_ave PB_tot_rigid aveforce 0 0 0 # Average force vector completely
 
 
 # ---------- Apply normal force ---------- #
-fix PB_ave PB_tot_rigid aveforce 0 0 0 # Average force vector completely
 fix normal_force PB_tot addforce 0.0 0.0 $(-v_FN_max/count(PB_tot))
 
 # ---------- Drag sheet ---------- #
