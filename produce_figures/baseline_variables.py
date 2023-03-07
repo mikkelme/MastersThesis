@@ -336,7 +336,8 @@ def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yer
                 
             for k in range(len(z)):
                 if len(z) > 1:
-                    color = get_color_value(z[k], np.min(z), np.max(z), scale = colorbar_scale[-1], cmap = cmap)
+                    # color = get_color_value(z[k], np.min(z), np.max(z), scale = colorbar_scale[-1], cmap = cmap)
+                    color = get_color_value(z[k], colorbar_scale[0][0], colorbar_scale[0][1], scale = colorbar_scale[-1], cmap = cmap)
                     axes[f].plot(x, y[:,k], **line_and_marker, color = color)
                 else:
                     exit("Handle this")
@@ -440,7 +441,7 @@ def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yer
     handles, labels = axes[-2].get_legend_handles_labels()
     fig.legend(handles, labels, loc = 'lower right', bbox_to_anchor = (0.0, 0.0, 1, 1), bbox_transform = plt.gcf().transFigure, ncols = 2, fontsize = 13)
     fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
-    return fig        
+    return fig, data      
 
 
 def contact_vs_time(path, save = False):

@@ -60,7 +60,7 @@ class Data_fetch():
         if exclude_rupture:
             rupture_mask = self.data['is_ruptured'] > 0.5
             for key in self.data:
-                self.data[key] = self.data[key][~rupture_mask]        
+                self.data[key] = self.data[key][~rupture_mask]     
             self.data.pop('is_ruptured')
         
         return self.data
@@ -103,7 +103,6 @@ class Data_fetch():
     
 
 
-# covariance = np.cov(, data2)
 
 
 def plot_corrcoef(save = False):
@@ -195,7 +194,19 @@ def plot_corr_scatter(save = False):
 if __name__ == '__main__':
     
     # plot_corrcoef(save = False)
-    plot_corr_scatter(save = True)
-
-    plt.show()
+    # plot_corr_scatter(save = True)
+    # plt.show()
+    
+    data_root = ['../Data/ML_data/honeycomb', '../Data/ML_data/popup'] 
+    obj = Data_fetch(data_root)
+    
+    
+    data = obj.get_data(['is_ruptured'], obj[:], exclude_rupture = False)
+    part = np.sum(data['is_ruptured']) / len(data['is_ruptured'])
+    
+    
+    # np.sum(data['is_ruptured'] > 0.5) / np.sum(data['is_ruptured'])
+    print(part)
+    # obj.data['rel. stretch'] =  obj.data['stretch']/obj.data['rupture_stretch']
+    
     

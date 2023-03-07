@@ -136,6 +136,7 @@ class VGGNet(Module):
 
         # --- Initialize weights --- #
         # self.apply(self. init_weights)
+        # exit()
 
     def f_mix(self, image, vals):
         """ Image and numerical input (on indivual channels) all go through convolution """
@@ -158,6 +159,7 @@ class VGGNet(Module):
         # Output
         x = self.fc(x)
         x[:,-1] = self.sigmoid(x[:,-1]) # sigmoid for is_ruptured
+        # print(self.fc.weight)
         
         return x
         
@@ -183,18 +185,34 @@ class VGGNet(Module):
     
     
     def init_weights(self, module):
-        if isinstance(module, Conv2d):
-            # print(module)
-            # print(torch.mean(module.weight).item(), torch.std(module.weight).item())
-            torch.nn.init.kaiming_uniform_(module.weight, mode='fan_out', nonlinearity='relu')
-            # print(torch.mean(module.weight).item(), torch.std(module.weight).item())
-            # print()
-            if module.bias is not None:
-                nn.init.constant_(module.bias, 0.01)
+        
+         if isinstance(module, Conv2d) or isinstance(module, Linear) :
+            torch.nn.init.xavier_uniform_(module.weight)
+            module.bias.data.fill_(0.01)
+        
+        
+        # if isinstance(module, Conv2d):
+        #     # print(module)
+        #     # print(torch.mean(module.weight).item(), torch.std(module.weight).item())
+        #     torch.nn.init.kaiming_uniform_(module.weight, mode='fan_out', nonlinearity='relu')
+        #     # print(torch.mean(module.weight).item(), torch.std(module.weight).item())
+        #     # print()
+        #     if module.bias is not None:
+        #         nn.init.constant_(module.bias, 0.01)
                 
-        elif isinstance(module, Linear):
-            torch.nn.init.kaiming_uniform_(module.weight)
-            nn.init.constant_(module.bias, 0.01)
+        # elif isinstance(module, Linear):
+        #     # if module.out_features == 3:
+        #     #     pass
+        #     # else:
+        #     module.weight.data.normal_(mean=0.0, std=0.01)
+        #     nn.init.constant_(module.bias, 0.01)
+        #         # torch.nn.init.kaiming_uniform_(module.weight, mode='fan_out', nonlinearity='relu')
+            
+            
+            
+            # module.weight.data.normal_(mean=0.0, std=0.1)
+            # if module.bias is not None:
+            #     nn.init.constant_(module.bias, 0.01)
                 
         
         # if isinstance(module, nn.Linear):

@@ -11,15 +11,19 @@ sys.path.append('../') # parent folder: MastersThesis
 from analysis.analysis_utils import *
 
 
-def locate_multi_dir(dir):
+def locate_multi_dir(dir_list):
     target = "config.png"
     multi_dirs = []
-    for root, dirs, files in os.walk(dir):
-        if len(dirs) == 0: continue # Ignore deepest subdirs
-        if target in files:
-            multi_dirs.append(root)
-    if len(multi_dirs) == 0:
-        print(f'multi_dirs is empty.')
+    
+    if isinstance(dir_list, str): # Not list
+        dir_list = [dir_list]
+    for dir in dir_list:
+        for root, dirs, files in os.walk(dir):
+            if len(dirs) == 0: continue # Ignore deepest subdirs
+            if target in files:
+                multi_dirs.append(root)
+        if len(multi_dirs) == 0:
+            print(f'multi_dirs is empty.')
     return multi_dirs  
         
     
@@ -128,14 +132,16 @@ if __name__ == "__main__":
     # dir = '../Data/CONFIGS/popup'
     # dest = '../Data/ML_data/popup'
     
-    dir = '../Data/Baseline_fixmove/nocut/multi_stretch'
-    dest = '../Data/ML_data/nocut'
+    dir = ['../Data/Baseline_fixmove/nocut/multi_stretch',
+           '../Data/Baseline_fixmove/popup/multi_stretch',
+           '../Data/Baseline_fixmove/honeycomb/multi_stretch']
+    dest = '../Data/ML_data/baseline'
     
     
     
     
-    multi_dirs = locate_multi_dir(dir)
-    convert_data(multi_dirs, dest)
+    # multi_dirs = locate_multi_dir(dir)
+    # convert_data(multi_dirs, dest)
     pass
     
     

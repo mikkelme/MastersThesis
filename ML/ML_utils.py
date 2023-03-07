@@ -67,7 +67,11 @@ def train_epoch(model, dataloader, criterion, optimizer, device):
         outputs = model(image, vals)
         loss, Ff_loss, rup_loss = criterion(outputs, labels)
         
-
+        # test_out = outputs[0]
+        # test_label = labels[0]
+        # print(f'Ff | pred = {test_out[0]:0.2f}, label = {test_label[0]:0.2f}')
+        # print(f'rup_stretch | pred = {test_out[1]:0.2f}, label = {test_label[1]:0.2f}')
+        # print(f'is_ruptured | pred = {test_out[2]:0.2f}, label = {test_label[2]:0.2f}')
        
         # --- Optimize --- #
         loss.backward()
@@ -171,7 +175,6 @@ def train_and_evaluate(model, dataloaders, criterion, optimizer, scheduler, ML_s
                 scheduler.step()
 
             avgloss, avg_metrics = evaluate_model(model, dataloaders['val'], criterion, device)
-            # avgloss, avg_abs_error, avgacc = evaluate_model(model, dataloaders['val'], criterion, device)
             
             train_val_hist['val_loss_TOT'].append(avgloss[0])
             train_val_hist['val_loss_MSE'].append(avgloss[1])
@@ -186,7 +189,7 @@ def train_and_evaluate(model, dataloaders, criterion, optimizer, scheduler, ML_s
                     
                     
             
-            # print(f'val_loss: {avgloss[0]:g}, abs: {avg_abs_error:g}, acc: {avgacc:g}')
+            # print(f'val_loss: {avgloss[0]:g}, Ff_abs: {avg_metrics["Ff_abs_error"]:g}, Ff_rel: {avg_metrics["Ff_rel_error"]:g} rup_acc: {avg_metrics["rup_acc"]:g}')                  
             print(f'val_loss: {avgloss[0]:g}, Ff_abs: {avg_metrics["Ff_abs_error"]:g}, Ff_rel: {avg_metrics["Ff_rel_error"]:g}, rup_stretch_abs: {avg_metrics["rup_stretch_abs_error"]:g}, rup_acc: {avg_metrics["rup_acc"]:g}')                  
                     
             

@@ -121,7 +121,9 @@ def get_ML_setting(use_gpu = False):
     ML_setting['batchsize_val'] = 64
     ML_setting['maxnumepochs'] = 35
     ML_setting['scheduler_stepsize'] = 10
-    ML_setting['scheduler_factor'] = 0.1 #0.3
+    ML_setting['scheduler_factor'] = 0.3
+    # ML_setting['scheduler_stepsize'] = None
+    # ML_setting['scheduler_factor'] = None #0.3
 
     return ML_setting
 
