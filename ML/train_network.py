@@ -178,6 +178,7 @@ class Trainer:
         self.optimizer = optim.SGD(model.parameters(), lr = self.ML_setting['lr'], momentum = 0.9)
         if self.ML_setting['scheduler_stepsize'] is None or self.ML_setting['scheduler_factor'] is None:
             self.lr_scheduler = None
+            exit(f'lr_scheduler is None | This is not yet implemented')
         else:
             self.lr_scheduler = torch.optim.lr_scheduler.StepLR(self.optimizer, 
                                                         step_size = self.ML_setting['scheduler_stepsize'], 
@@ -185,27 +186,36 @@ class Trainer:
                                                         last_epoch = - 1, 
                                                         verbose = False)
 
+
+        # Default list
         
+        
+        self.history = {'epoch': [],
+                        'train_loss': [],
+                        'val_loss': []
+                        }
+        
+        #^^^ Starts form arrays since we know the max length = maxnumepochs ... ? XXX ^^^
+        
+        # self.history = {'epoch': [],
+        #                 'train_loss_Ff': [],
+        #                 'train_loss_other': [],
+        #                 'train_loss_rup': [],
+        #                 'val_loss_Ff': [],
+        #                 'val_loss_other': [],
+        #                 'val_loss_rup': [],
+        #                 }              
 
-    def train(self, save_best = False, maxfilenum = None):
-        """ Training...
-
-        Args:
-            data_root (string): root directory for data files
-            ML_setting (dict): ML settings
-            maxfilenum (int, optional): Maximum number of data points to include in the total dataset. Defaults to None.
-        """    
-
+    def learn(self, save_best = False, maxfilenum = None):
+        """ Train the model """
+        
         # Data and device
         self.datasets, self.dataloaders = get_data(self.data_root, self.ML_setting, maxfilenum)
-        self.device = get_device(ML_setting)
-
-    
-        if self.lr_scheduler is None:
-            exit(f'lr_scheduler is None | Not yet implemented')
+        self.device = get_device(self.ML_setting)
 
         # Train and evaluate
         train_val_hist, best = self.train_and_evaluate(save_best = save_best is not False)
+
 
         if save_best is not False:      
             print(f'Best epoch: {best["epoch"]}')
@@ -224,15 +234,6 @@ class Trainer:
 
 
     def train_and_evaluate(self, save_best = False):
-        train_val_hist = {'epoch': [],
-                        'train_loss_TOT': [],
-                        'train_loss_MSE': [],
-                        'train_loss_BCE': [],
-                        'val_loss_TOT': [],
-                        'val_loss_MSE': [],
-                        'val_loss_BCE': []
-                        }   
-        
         best = {'epoch': -1, 'loss': 1e6, 'weights': None}
         num_epochs = self.ML_setting['maxnumepochs']
 
@@ -242,34 +243,32 @@ class Trainer:
                 print('-' * 14)
                 print(f'Epoch: {epoch+1}/{num_epochs}')
 
-
-                # avgloss = train_epoch(model, dataloaders['train'], criterion, optimizer, device)
-                avgloss = self.train_epoch()
-
-                train_val_hist['epoch'].append(epoch)
-                train_val_hist['train_loss_TOT'].append(avgloss[0])
-                train_val_hist['train_loss_MSE'].append(avgloss[1])
-                train_val_hist['train_loss_BCE'].append(avgloss[2])
-                
-                if self.lr_scheduler is not None: # TODO: Check this
+                # Train
+                train_loss = self.train_epoch()
+                if self.lr_scheduler is not None:
                     self.lr_scheduler.step()
 
-                avgloss, avg_metrics = self.evaluate_model()
-                train_val_hist['val_loss_TOT'].append(avgloss[0])
-                train_val_hist['val_loss_MSE'].append(avgloss[1])
-                train_val_hist['val_loss_BCE'].append(avgloss[2])
+                # Validate
+                val_loss, avg_metrics = self.evaluate_model()
+                
+                
+                # Add to history
+                self.history['epoch'].append(epoch)
+                self.history['train_loss'].append(train_loss)
+                self.history['val_loss'].append(val_loss)
                 
                 if epoch == 0:
                     for key in avg_metrics:
-                        train_val_hist[key] = [avg_metrics[key]]
+                        self.history[key] = [avg_metrics[key]]
                 else:
                     for key in avg_metrics:
-                        train_val_hist[key].append(avg_metrics[key])
+                        self.history[key].append(avg_metrics[key])
                         
-                        
-                
+                output_string = f'Val_loss: {val_loss[0]:g}'
+                print(output_string)
+                # TODO: Add other metrics in for-loop
                 # print(f'val_loss: {avgloss[0]:g}, Ff_abs: {avg_metrics["Ff_abs_error"]:g}, Ff_rel: {avg_metrics["Ff_rel_error"]:g} rup_acc: {avg_metrics["rup_acc"]:g}')                  
-                print(f'val_loss: {avgloss[0]:g}, Ff_abs: {avg_metrics["Ff_abs_error"]:g}, Ff_rel: {avg_metrics["Ff_rel_error"]:g}, rup_stretch_abs: {avg_metrics["rup_stretch_abs_error"]:g}, rup_acc: {avg_metrics["rup_acc"]:g}')                  
+                # print(f'val_loss: {avgloss[0]:g}, Ff_abs: {avg_metrics["Ff_abs_error"]:g}, Ff_rel: {avg_metrics["Ff_rel_error"]:g}, rup_stretch_abs: {avg_metrics["rup_stretch_abs_error"]:g}, rup_acc: {avg_metrics["rup_acc"]:g}')                  
                         
                 
                 if save_best:
@@ -293,7 +292,6 @@ class Trainer:
         
         
         return train_val_hist, best
-        # return np.array(train_losses), np.array(validation_losses), best
 
 
     def common_things(self, data):
@@ -315,21 +313,20 @@ class Trainer:
         progress_bar_length = 8
         
         for batch_idx, data in enumerate(dataloader):
-            # Zero gradients of all optimized torch.Tensor's
-            self.optimizer.zero_grad() 
+            self.optimizer.zero_grad() # Zero gradients of all optimized torch.Tensor's
 
-    
+            # --- Evaluate --- #
             loss, Ff_loss, other_loss, rup_loss, outputs, labels  = self.common_things(data)
-        
         
             # --- Optimize --- #
             loss.backward()
             self.optimizer.step()
-            losses.append([loss.item(), Ff_loss.item(), rup_loss.item()])
+            losses.append([loss.item(), Ff_loss.item(), other_loss.item(), rup_loss.item()])
 
             # --- print progress --- #
             progress = int(((batch_idx+1)/num_batches)*progress_bar_length)
-            print(f'\rLoss : {np.mean(losses):.4f} |{progress* "="}>{(progress_bar_length-progress)* " "}| {batch_idx+1}/{num_batches} ({100*(batch_idx+1)/num_batches:2.0f}%)', end = '')
+            print(f'\rTrain loss : {np.mean(losses):.4f} |{progress* "="}>{(progress_bar_length-progress)* " "}| {batch_idx+1}/{num_batches} ({100*(batch_idx+1)/num_batches:2.0f}%)', end = '')
+            # print(len(losses), np.mean(losses))
 
         print()
         losses = np.array(losses)
@@ -355,11 +352,8 @@ class Trainer:
                 # --- Evaluate --- #
                 loss, Ff_loss, other_loss, rup_loss, outputs, labels  = self.common_things(data)
                 
-                
-                
-        
                 # --- Analyse --- #
-                losses.append([loss.item(), Ff_loss.item(), rup_loss.item()])
+                losses.append([loss.item(), Ff_loss.item(), other_loss.item(), rup_loss.item()])
                 non_rupture = labels[:, -1] < 0.5
                 
                 # Additional metrics
@@ -416,9 +410,12 @@ if __name__=='__main__':
     criterion = Loss(alpha = [[1], [], [1/2, 1/2]], out_features = [['R'], [], ['R', 'C']])
     
     coach = Trainer(model, data_root, criterion)
-    coach.train(save_best = False, maxfilenum = 500)
+    coach.learn(save_best = False, maxfilenum = 500)
     # coach = Trainer(model, data_root, loss, **ML_setting)
     # coach = Trainer(model, data_root, loss, use_gpu = True)
     
     
     # train(data_root, model, loss, ML_setting, save_best = 'training/more_output', maxfilenum = 500)
+
+    # TODO: Finish clean up of Trainer class and try implementing contact and porosity (and max Ff) as output 
+    # to see if this makes the model better. 
