@@ -90,6 +90,8 @@ class VGGNet(Module):
        
        
         super(VGGNet, self).__init__()
+        if keys is not None:
+            assert len(keys) == len(out_features), f"Number of keys {len(keys)}: {keys}, does not match number of out_features {len(out_features)}: {out_features}"
        
         self.image_shape = image_shape
         self.out_features = np.array(out_features)
@@ -167,8 +169,8 @@ class VGGNet(Module):
         # Output
         x = self.fc(x)
         
-        x[:,self.sig_map] = self.sigmoid(x[:,self.sig_map]) # sigmoid for is_ruptured
-        # x[:,-1] = self.sigmoid(x[:, -1]) # sigmoid for is_ruptured
+        x[:,self.sig_map] = self.sigmoid(x[:,self.sig_map]) # sigmoid for classfication type variables
+         
          
         return x
         
@@ -188,7 +190,7 @@ class VGGNet(Module):
         
         # Output
         x = self.fc(x)
-        x[:,self.sig_map] = self.sigmoid(x[:,self.sig_map]) # sigmoid for is_ruptured
+        x[:,self.sig_map] = self.sigmoid(x[:,self.sig_map]) # sigmoid for classfication type variables
 
         
         return x

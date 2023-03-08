@@ -116,12 +116,12 @@ def get_ML_setting(use_gpu = False):
     
     ML_setting = {}
     ML_setting['use_gpu'] = use_gpu
-    ML_setting['lr'] = 0.005                # Learning rate
-    ML_setting['batchsize_train'] = 16   
+    ML_setting['lr'] = 0.0005 #0.005                # Learning rate
+    ML_setting['batchsize_train'] = 32 #16   
     ML_setting['batchsize_val'] = 64
-    ML_setting['maxnumepochs'] = 35
+    ML_setting['max_epochs'] = 35
     ML_setting['scheduler_stepsize'] = 10
-    ML_setting['scheduler_factor'] = 0.3
+    ML_setting['scheduler_factor'] = 0.1
     # ML_setting['scheduler_stepsize'] = None
     # ML_setting['scheduler_factor'] = None #0.3
 

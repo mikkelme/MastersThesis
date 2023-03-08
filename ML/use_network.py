@@ -80,25 +80,32 @@ def compare_model_to_data(model, folder):
 
 
 def load_model(weight_path):
-    # model = VGGNet(mode = 1)
+    # model = VGGNet( mode = 0, 
+    #                 input_num = 2, 
+    #                 conv_layers = [(1, 16), (1, 32), (1, 64)], 
+    #                 FC_layers = [(1, 512), (1,128)],
+    #                 out_features = ['R', 'R', 'C'])
     model = VGGNet( mode = 0, 
                     input_num = 2, 
-                    conv_layers = [(1, 16), (1, 32), (1, 64)], 
+                    conv_layers = [(1, 32), (1, 64), (1, 128)], 
                     FC_layers = [(1, 512), (1,128)],
-                    out_features = ['R', 'R', 'C'])
+                    out_features = ['R', 'R', 'R', 'R', 'R', 'C'])
     
     
     model = load_weights(model, weight_path)
     return model
 
 
-def test_model_compare(model_path):
-    model = load_model('test_model_dict_state')
+def test_model_compare():
+    model = load_model('training/test_model_dict_state')
 
+    # folder = '../Data/CONFIGS/honeycomb/hon_5' 
+    # folder = '../Data/CONFIGS/popup/pop_4'
+    
     # folder = '../Data/CONFIGS/honeycomb/hon_1' # hon3215 used in ML data
-    folder = '../Data/Baseline_fixmove/honeycomb/multi_stretch' # hon3215 used in Baseline
+    # folder = '../Data/Baseline_fixmove/honeycomb/multi_stretch' # hon3215 used in Baseline
     # folder = '../Data/CONFIGS/popup/pop_35' # pop1_7_5 used in ML data
-    # folder = '../Data/Baseline_fixmove/popup/multi_stretch' # pop1_7_5 used in Baseline
+    folder = '../Data/Baseline_fixmove/popup/multi_stretch' # pop1_7_5 used in Baseline
     compare_model_to_data(model, folder)
 
 
@@ -108,7 +115,7 @@ def test_model_manual():
 
     num_points = 100    
     config_path = '../config_builder/baseline/nocut.npy'
-    config_path = '../config_builder/baseline/pop1_7_5.npy'
+    # config_path = '../config_builder/baseline/pop1_7_5.npy'
     config_path = '../config_builder/baseline/hon3215.npy'
     stretch = np.linspace(0, 2, num_points)
     F_N = np.linspace(1, 1, num_points) # nN
@@ -117,8 +124,8 @@ def test_model_manual():
 
 
 if __name__ == '__main__':
-    test_model_manual()
-    # test_model_compare()
+    # test_model_manual()
+    test_model_compare()
     plt.show()
     
     # config_profile(config_path, model)

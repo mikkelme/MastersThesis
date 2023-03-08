@@ -20,10 +20,12 @@ class Loss: # Maybe find better name: 'Criterion' or 'Loss_func'
       
         assert len(out_features) == 3, f"out_features = {out_features} must have len 3, not {len(out_features)}." 
         self.alpha = [[], [], []]
+        self.out_features = out_features
         self.criterion = [[], [], []]
         self.cat_to_col_map = [[], [], []]
         
-        idx_count = 0
+        
+        self.num_out_features = 0
         alpha_sum = 0
         for i, cat in enumerate(self.criterion):      
             for j, o in enumerate(out_features[i]):
@@ -32,8 +34,8 @@ class Loss: # Maybe find better name: 'Criterion' or 'Loss_func'
                     alpha_sum += alpha[i][j]
                 else:
                     exit("This type of alpha list is not implemented yet")
-                self.cat_to_col_map[i].append(idx_count)
-                idx_count += 1
+                self.cat_to_col_map[i].append(self.num_out_features)
+                self.num_out_features += 1
                 if o == 'R': # Regression => MSE
                     cat.append(nn.MSELoss())
                 elif o == 'C': # Classification => Binary cross entropy
@@ -55,6 +57,7 @@ class Loss: # Maybe find better name: 'Criterion' or 'Loss_func'
         is_ruptured = labels[:,-1] # Convention to have is_ruptured last
         not_ruptured = is_ruptured == 0 
         
+        
         loss = [0, 0, 0]
         
         # --- Ff loss --- #
@@ -63,7 +66,8 @@ class Loss: # Maybe find better name: 'Criterion' or 'Loss_func'
             for i, crit in enumerate(self.criterion[0]):
                 loss[0] += self.alpha[0][i] * crit(outputs[not_ruptured, self.cat_to_col_map[0][i]], labels[not_ruptured, self.cat_to_col_map[0][i]])
             if isinstance(loss[0], int):
-                print("hep")
+                exit("Why did I write af if-statement for this?")
+                
         # --- Other and rup loss --- #
         for k in range(1, len(loss)):
             for i, crit in enumerate(self.criterion[k]):
@@ -71,6 +75,7 @@ class Loss: # Maybe find better name: 'Criterion' or 'Loss_func'
             if isinstance(loss[k], int):
                 loss[k] = torch.tensor(loss[k])
             
+        
         tot_loss = loss[0] + loss[1] + loss[2]
         return tot_loss, loss[0], loss[1], loss[2]
             
@@ -83,6 +88,24 @@ class Trainer:
         self.data_root = data_root
         self.criterion = criterion
         
+        # Check that model and criterion is build for the same number number and style of output features
+        model_out_feat = self.model.out_features
+        criterion_out_feat = [item for sublist in self.criterion.out_features for item in sublist]        
+        assert len(model_out_feat) == len(criterion_out_feat), f"Model expected {len(model_out_feat)} output features: {self.model.keys}, but criterion was build for {self.criterion.num_out_features} of style: {self.criterion.out_features}."
+        assert np.all(np.array(model_out_feat) == np.array(criterion_out_feat)), f'Model output feature style: {model_out_feat} is not equal to that of the criteiron {criterion_out_feat}'
+        
+        Ff_style_keys = ['Ff_mean', 'Ff_max', 'Ff_mean_std', 'contact', 'contact_std']
+        non_Ff_style_keys = self.model.keys[len(self.criterion.out_features[0]): ]
+        
+        # Check that none Ff_style keys was misplaced
+        for key in non_Ff_style_keys:
+            if key in Ff_style_keys:
+                print(f"Key: \"{key}\" was used as non Ff_style key.")
+                print(f'Keys: {Ff_style_keys}, must be used as Ff_style variable')
+                exit()
+        
+        
+    
         
         # Default settings
         self.ML_setting = {
@@ -90,7 +113,7 @@ class Trainer:
             'lr': 0.005,  # Learning rate
             'batchsize_train': 16,
             'batchsize_val': 64,
-            'maxnumepochs': 35,
+            'max_epochs': 35,
             'scheduler_stepsize': 10,
             'scheduler_factor': 0.3
         }
@@ -121,15 +144,18 @@ class Trainer:
         # print(self.history)
         # exit()
         
-        #^^^ Starts form arrays since we know the max length = maxnumepochs ... ? XXX ^^^
+        #^^^ Starts form arrays since we know the max length = max_epochs ... ? XXX ^^^
         
              
 
-    def learn(self, maxfilenum = None):
+    def learn(self, max_epochs = None, max_file_num = None):
         """ Train the model """
         
+        if max_epochs is not None:
+            self.ML_setting['max_epochs'] = max_epochs
+        
         # Data and device
-        self.datasets, self.dataloaders = get_data(self.data_root, self.ML_setting, maxfilenum)
+        self.datasets, self.dataloaders = get_data(self.data_root, self.ML_setting, max_file_num)
         self.device = get_device(self.ML_setting)
 
         # Train and evaluate
@@ -171,7 +197,7 @@ class Trainer:
 
     def train_and_evaluate(self):
         best = {'epoch': -1, 'loss': 1e6, 'weights': None}
-        num_epochs = self.ML_setting['maxnumepochs']
+        num_epochs = self.ML_setting['max_epochs']
 
         print('Training model')
         for epoch in range(num_epochs):
@@ -331,32 +357,92 @@ class Trainer:
         plt.show()
 
 
+
+# --- Available data --- #
+# stretch
+# F_N
+# scan_angle
+# dt
+# T
+# drag_speed
+# drag_length
+# K
+# stretch_speed_pct	
+# relax_time
+# pause_time1
+# pause_time2
+# rupture_stretch
+# is_ruptured	
+# Ff_max
+# Ff_mean
+# Ff_mean_std
+# contact
+# contact_std
+
+
+
 if __name__=='__main__':
     data_root = ['../Data/ML_data/baseline', '../Data/ML_data/popup', '../Data/ML_data/honeycomb']
     ML_setting = get_ML_setting()
     
-    # model = VGGNet(mode = 0)
+    
+    # Reference: Ff, rup_stretch, is_ruptured
+    # alpha = [[1/2], [], [1/4, 1/4]]
+    # criterion_out_features = [['R'], [], ['R', 'C']]
+    # keys = ['Ff_mean', 'rupture_stretch', 'is_ruptured']
+    # model_out_features = [item for sublist in criterion_out_features for item in sublist]        
+    
+    # + Contact
+    # alpha = [[1/2, 1/6], [], [1/6, 1/6]]
+    # criterion_out_features = [['R', 'R'], [], ['R', 'C']]
+    # keys = ['Ff_mean', 'contact', 'rupture_stretch', 'is_ruptured']
+    # model_out_features = [item for sublist in criterion_out_features for item in sublist]        
+    
+    # + Porosity
+    # alpha = [[1/2], [1/6], [1/6, 1/6]]
+    # criterion_out_features = [['R'], ['R'], ['R', 'C']]
+    # keys = ['Ff_mean', 'porosity', 'rupture_stretch', 'is_ruptured']
+    # model_out_features = [item for sublist in criterion_out_features for item in sublist]        
+    
+    # + Ff max
+    # alpha = [[1/2, 1/6], [], [1/6, 1/6]]
+    # criterion_out_features = [['R', 'R'], [], ['R', 'C']]
+    # keys = ['Ff_mean', 'Ff_max', 'rupture_stretch', 'is_ruptured']
+    # model_out_features = [item for sublist in criterion_out_features for item in sublist]        
+    
+    # Contact + Porosity + Ff max
+    alpha = [[1/2, 1/10, 1/10], [1/10], [1/10, 1/10]]
+    criterion_out_features = [['R', 'R', 'R'], ['R'], ['R', 'C']]
+    keys = ['Ff_mean', 'Ff_max', 'contact', 'porosity', 'rupture_stretch', 'is_ruptured']
+    model_out_features = [item for sublist in criterion_out_features for item in sublist]        
+    
+    # Training
+    # model = VGGNet( mode = 0, 
+    #                 input_num = 2, 
+    #                 conv_layers = [(1, 32), (1, 64), (1, 128)], 
+    #                 FC_layers = [(1, 512), (1, 128)],
+    #                 out_features = model_out_features,
+    #                 keys = keys)
     model = VGGNet( mode = 0, 
                     input_num = 2, 
-                    conv_layers = [(1, 16), (1, 32), (1, 64)], 
-                    FC_layers = [(1, 512), (1,128)],
-                    out_features = ['R', 'R', 'C'],
-                    keys = ['Ff_mean', 'rupture_stretch', 'is_ruptured'])
+                    conv_layers = [(1, 16), (1, 32)], 
+                    FC_layers = [(1, 32), (1, 16)],
+                    out_features = model_out_features,
+                    keys = keys)
     
 
-    criterion = Loss(alpha = [[1], [], [1/2, 1/2]], out_features = [['R'], [], ['R', 'C']])
+    criterion = Loss(alpha = alpha, out_features = criterion_out_features)
     
     coach = Trainer(model, data_root, criterion)
-    coach.learn(maxfilenum = 500)
-    coach.save_history('training/training_test')
+    coach.learn(max_epochs = 300, max_file_num = None)
+    coach.save_history('training/test')
     coach.plot_history()
+
+    # TODO: Try without scheduler to follow graphen/h-BN article more closely
+
     
     
     # coach = Trainer(model, data_root, loss, **ML_setting)
     # coach = Trainer(model, data_root, loss, use_gpu = True)
     
     
-    # train(data_root, model, loss, ML_setting, save_best = 'training/more_output', maxfilenum = 500)
-
-    # TODO: Finish clean up of Trainer class and try implementing contact and porosity (and max Ff) as output 
-    # to see if this makes the model better. 
