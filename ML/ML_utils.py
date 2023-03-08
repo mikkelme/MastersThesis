@@ -20,17 +20,6 @@ def get_device(ML_setting):
     return device
 
 
-# def get_inputs(data, device):
-#     config = data['config']
-#     config_shape = config.size()[1:]
-#     stretch = torch.from_numpy(np.array([np.full(config_shape, s, dtype=np.float32) for s in data['stretch']]))
-#     FN = torch.from_numpy(np.array([np.full(config_shape, f, dtype=np.float32) for f in data['F_N']]))
-#     inputs = torch.stack((config, stretch, FN), 1).to(device) # Gather inputs on multiple channels
-#     # XXX For some reason I think the .to(device) is nessecary but check up on it
-    
-#     return inputs
-    
-
 def get_inputs(data, device):
     image = data['config']
     stretch = torch.from_numpy(np.array(data['stretch'], dtype = np.float32))
@@ -43,32 +32,27 @@ def get_labels(data, keys, device):
     for key in keys:
         labels.append(torch.from_numpy(np.array(data[key], dtype = np.float32)))
     labels = torch.stack(labels, 1).to(device) 
-    
-    # Ff = torch.from_numpy(np.array(data['Ff_mean'], dtype = np.float32))
-    # rupture_stretch = torch.from_numpy(np.array(data['rupture_stretch'], dtype = np.float32)) # When mergening float32 with int32 I believe it stores both as float32 anyway...
-    # is_ruptured = torch.from_numpy(np.array(data['is_ruptured'], dtype = np.int32))
-    # labels = torch.stack((Ff, rupture_stretch, is_ruptured), 1).to(device) 
     return labels
 
 
-def save_training_history(name, train_val_hist, ML_setting, precision = 4):
+def save_training_history(name, history, ML_setting, precision = 4):
     filename = name + '_training_history.txt'
     outfile = open(filename, 'w')
     
     for key in ML_setting:
         outfile.write(f'# {key} = {ML_setting[key]}\n')
     
-    epochs = train_val_hist['epoch']
+    epochs = history['epoch']
     
     keys = ''
-    for key in train_val_hist:
+    for key in history:
         keys += f'{key} '
     keys += '\n' # add linebreak
     outfile.write(keys)
     
     for i, epoch in enumerate(epochs):
-        for key in train_val_hist:
-            data = train_val_hist[key][i]
+        for key in history:
+            data = history[key][i]
             if key == 'epoch':
                 outfile.write(f'{data:d} ')
             else:
@@ -77,15 +61,21 @@ def save_training_history(name, train_val_hist, ML_setting, precision = 4):
     outfile.close()
 
 
-def save_best_model_scores(name, best, ML_setting):
+def save_best_model_scores(name, best, history, ML_setting,  precision = 4):
     filename = name + '_best_scores.txt'
     
+    best_epoch = best['epoch']
     outfile = open(filename, 'w')
     for key in ML_setting:
         outfile.write(f'# {key} = {ML_setting[key]}\n')
-    for key in best:
-        if key != 'weights':
-            outfile.write(f'{key} = {best[key]}\n')
+        
+    for key in history:
+        data = history[key][best_epoch]
+        if key == 'epoch':
+            outfile.write(f'{key} {data:d}\n')
+        else:
+            outfile.write(f'{key} {data:0.{precision}e}\n')
+        
     outfile.close()
 
 

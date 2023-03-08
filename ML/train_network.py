@@ -5,7 +5,7 @@
 from dataloaders import *
 from ML_utils import *
 from networks import *
-
+from collections import OrderedDict
 
 class Loss: # Maybe find better name: 'Criterion' or 'Loss_func'
     def __init__(self, alpha = [[1], [], [1/2, 1/2]], out_features = [['R'], [], ['R', 'C']]):
@@ -74,84 +74,7 @@ class Loss: # Maybe find better name: 'Criterion' or 'Loss_func'
         tot_loss = loss[0] + loss[1] + loss[2]
         return tot_loss, loss[0], loss[1], loss[2]
             
-            
         
-# def loss_func(outputs, labels):
-#     """ One version of a loss function """
-#     alpha = 0.5 # 1: priority of MSE, 0: priority of rup stretch MSE and rup BCE
-    
-#     criterion = [nn.MSELoss(), nn.MSELoss(), nn.BCELoss()]
-    
-#     not_ruptured = labels[:,-1] == 0 # Only include Ff_loss when not ruptured
-#     if torch.all(~not_ruptured):
-#         Ff_loss = torch.tensor(0)
-#     else:
-#         Ff_loss = alpha*criterion[0](outputs[not_ruptured, 0], labels[not_ruptured, 0])
-
-#     is_ruptured_loss = criterion[-1](outputs[:, -1], labels[:, -1])
-    
-#     if outputs.shape[1] > 2:
-#         rup_stretch_loss = criterion[1](outputs[:, 1], labels[:, 1])
-#         rup_loss = (rup_stretch_loss + is_ruptured_loss)/2
-#     else:
-#         rup_loss = is_ruptured_loss
-    
-#     loss = alpha*Ff_loss + (1-alpha)*rup_loss
-    
-#     return loss, Ff_loss, rup_loss
-
-
-# def train(data_root, model, loss_func, ML_setting, save_best = False, maxfilenum = None):
-#     """ Training...
-
-#     Args:
-#         data_root (string): root directory for data files
-#         ML_setting (dict): ML settings
-#         maxfilenum (int, optional): Maximum number of data points to include in the total dataset. Defaults to None.
-#     """    
-    
-#     # Data and device
-#     datasets, dataloaders = get_data(data_root, ML_setting, maxfilenum)
-#     device = get_device(ML_setting)
-    
-   
-#     # Loss function, optimizer, scheduler
-#     # criterion = loss_func
-#     optimizer = optim.SGD(model.parameters(), lr = ML_setting['lr'], momentum = 0.9)
-    
-#     if ML_setting['scheduler_stepsize'] is None or ML_setting['scheduler_factor'] is None:
-#         lr_scheduler = None
-#     else:
-#         lr_scheduler = torch.optim.lr_scheduler.StepLR( optimizer, 
-#                                                     step_size = ML_setting['scheduler_stepsize'], 
-#                                                     gamma = ML_setting['scheduler_factor'], 
-#                                                     last_epoch = - 1, 
-#                                                     verbose = False)
-
-#     if lr_scheduler is None:
-#         exit(f'lr_scheduler is None | Not yet implemented')
-
-#     # Train and evaluate
-#     train_val_hist, best = train_and_evaluate(model, dataloaders, loss_func, optimizer, lr_scheduler, ML_setting, device, save_best = save_best is not None)
-    
-#     if save_best is not False and save_best is not None:      
-#         print(f'Best epoch: {best["epoch"]}')
-#         print(f'Best loss: {best["loss"]}')
-#         save_training_history(save_best, train_val_hist, ML_setting)
-#         save_best_model_scores(save_best, best, ML_setting)
-#         save_best_model(save_best, model, best['weights'])
-        
-        
-        
-
-#     # Fast plotting
-#     plt.figure(num=0, dpi=80, facecolor='w', edgecolor='k')
-#     plt.plot(train_val_hist['train_loss_TOT'], label = "train loss")
-#     plt.plot(train_val_hist['val_loss_TOT'], label = "validation loss")
-#     plt.legend()
-#     plt.show()
-    
-    
 
 
 class Trainer:
@@ -187,26 +110,22 @@ class Trainer:
                                                         verbose = False)
 
 
-        # Default list
-        
-        
+        # Training-validation history
         self.history = {'epoch': [],
                         'train_loss': [],
                         'val_loss': []
                         }
         
+        self.history = OrderedDict([('epoch', []), ('train_loss', []), ('val_loss', [])])
+        # self.history['epoch'].append(1)
+        # print(self.history)
+        # exit()
+        
         #^^^ Starts form arrays since we know the max length = maxnumepochs ... ? XXX ^^^
         
-        # self.history = {'epoch': [],
-        #                 'train_loss_Ff': [],
-        #                 'train_loss_other': [],
-        #                 'train_loss_rup': [],
-        #                 'val_loss_Ff': [],
-        #                 'val_loss_other': [],
-        #                 'val_loss_rup': [],
-        #                 }              
+             
 
-    def learn(self, save_best = False, maxfilenum = None):
+    def learn(self, maxfilenum = None):
         """ Train the model """
         
         # Data and device
@@ -214,26 +133,43 @@ class Trainer:
         self.device = get_device(self.ML_setting)
 
         # Train and evaluate
-        train_val_hist, best = self.train_and_evaluate(save_best = save_best is not False)
-
-
-        if save_best is not False:      
-            print(f'Best epoch: {best["epoch"]}')
-            print(f'Best loss: {best["loss"]}')
-            save_training_history(save_best, train_val_hist, ML_setting)
-            save_best_model_scores(save_best, best, ML_setting)
-            save_best_model(save_best, model, best['weights'])
+        self.train_and_evaluate()
             
+        print(f'Best epoch: {self.best["epoch"]}')
+        print(f'Best val_loss: {self.best["loss"]}')
+
+        # --- Clean up history --- #
+        # Unpack train_ and val_loss
+        train_loss = self.history['train_loss']
+        self.history.pop('train_loss')
+        self.history['train_tot_loss'] = train_loss[:, 0]
+        self.history['train_Ff_loss'] = train_loss[:, 1]
+        self.history['train_other_loss'] = train_loss[:, 2]
+        self.history['train_rup_loss'] = train_loss[:, 3]
+        
+        val_loss = self.history['val_loss']
+        self.history.pop('val_loss')
+        self.history['val_tot_loss'] = val_loss[:, 0]
+        self.history['val_Ff_loss'] = val_loss[:, 1]
+        self.history['val_other_loss'] = val_loss[:, 2]
+        self.history['val_rup_loss'] = val_loss[:, 3]
+        
+        
+        # Reorder a bit for txt file
+        self.history.move_to_end('train_rup_loss', last = False)
+        self.history.move_to_end('train_other_loss', last = False)
+        self.history.move_to_end('train_Ff_loss', last = False)
+        self.history.move_to_end('train_tot_loss', last = False)
+        
+        self.history.move_to_end('val_rup_loss', last = False)
+        self.history.move_to_end('val_other_loss', last = False)
+        self.history.move_to_end('val_Ff_loss', last = False)
+        self.history.move_to_end('val_tot_loss', last = False)
             
-        # Fast plotting
-        plt.figure(num=0, dpi=80, facecolor='w', edgecolor='k')
-        plt.plot(train_val_hist['train_loss_TOT'], label = "train loss")
-        plt.plot(train_val_hist['val_loss_TOT'], label = "validation loss")
-        plt.legend()
-        plt.show()
+        self.history.move_to_end('epoch', last = False)
+        
 
-
-    def train_and_evaluate(self, save_best = False):
+    def train_and_evaluate(self):
         best = {'epoch': -1, 'loss': 1e6, 'weights': None}
         num_epochs = self.ML_setting['maxnumepochs']
 
@@ -243,98 +179,77 @@ class Trainer:
                 print('-' * 14)
                 print(f'Epoch: {epoch+1}/{num_epochs}')
 
-                # Train
+                # --- Train --- #
                 train_loss = self.train_epoch()
                 if self.lr_scheduler is not None:
                     self.lr_scheduler.step()
 
-                # Validate
-                val_loss, avg_metrics = self.evaluate_model()
+                # --- Validate --- #
+                val_loss, metrics = self.evaluate_model()
+            
                 
-                
+                # --- Store information
                 # Add to history
                 self.history['epoch'].append(epoch)
                 self.history['train_loss'].append(train_loss)
                 self.history['val_loss'].append(val_loss)
                 
-                if epoch == 0:
-                    for key in avg_metrics:
-                        self.history[key] = [avg_metrics[key]]
-                else:
-                    for key in avg_metrics:
-                        self.history[key].append(avg_metrics[key])
-                        
+                # and output string
                 output_string = f'Val_loss: {val_loss[0]:g}'
+                for key in metrics:
+                    if epoch == 0:
+                        self.history[key] = [metrics[key]]
+                    else:
+                        self.history[key].append(metrics[key])
+                    
+                    output_string += f', {key}: {metrics[key]:g}'
                 print(output_string)
-                # TODO: Add other metrics in for-loop
-                # print(f'val_loss: {avgloss[0]:g}, Ff_abs: {avg_metrics["Ff_abs_error"]:g}, Ff_rel: {avg_metrics["Ff_rel_error"]:g} rup_acc: {avg_metrics["rup_acc"]:g}')                  
-                # print(f'val_loss: {avgloss[0]:g}, Ff_abs: {avg_metrics["Ff_abs_error"]:g}, Ff_rel: {avg_metrics["Ff_rel_error"]:g}, rup_stretch_abs: {avg_metrics["rup_stretch_abs_error"]:g}, rup_acc: {avg_metrics["rup_acc"]:g}')                  
-                        
                 
-                if save_best:
-                    if avgloss[0] < best['loss']: # TODO: Best criteria?
-                        best['epoch'] = epoch
-                        best['loss'] = avgloss[0]
-                        best["Ff_abs_error"] =  avg_metrics["Ff_abs_error"]
-                        best["Ff_rel_error"] = avg_metrics["Ff_rel_error"]
-                        best["rup_stretch_abs_error"] = avg_metrics["rup_stretch_abs_error"]
-                        best["rup_acc"] = avg_metrics["rup_acc"]                  
-                        best['weights'] = self.model.state_dict()
+                # --- Save best --- #
+                if best['epoch'] < 0 or val_loss[0] < best['loss']:
+                    best['epoch'] = epoch
+                    best['loss'] = val_loss[0]
+                    best['weights'] = self.model.state_dict()
                         
-            
             
             except KeyboardInterrupt: break
         print('-' * 14)
+        print("Training done")
         
+        for key in self.history:
+            self.history[key] = np.array(self.history[key])
         
-        for key in train_val_hist:
-            train_val_hist[key] = np.array(train_val_hist[key])
-        
-        
-        return train_val_hist, best
-
-
-    def common_things(self, data):
-        # --- Evaluate --- #    
-        image, vals = get_inputs(data, self.device)
-        labels = get_labels(data, self.model.keys, self.device)
-        outputs = self.model(image, vals)
-        loss, Ff_loss, other_loss, rup_loss = self.criterion(outputs, labels)
-        return loss, Ff_loss, other_loss, rup_loss, outputs, labels 
-    
-    
+        self.best = best
 
     def train_epoch(self):
         self.model.train() # Training mode
         dataloader = self.dataloaders['train']
-        losses = []
-
         num_batches = len(dataloader)
-        progress_bar_length = 8
+        losses = np.zeros((num_batches, 4))
         
+        progress_bar_length = 8
         for batch_idx, data in enumerate(dataloader):
             self.optimizer.zero_grad() # Zero gradients of all optimized torch.Tensor's
 
-            # --- Evaluate --- #
-            loss, Ff_loss, other_loss, rup_loss, outputs, labels  = self.common_things(data)
+            # --- Forward pass --- #
+            loss, Ff_loss, other_loss, rup_loss, outputs, labels  = self.forward_pass(data)
         
             # --- Optimize --- #
             loss.backward()
             self.optimizer.step()
-            losses.append([loss.item(), Ff_loss.item(), other_loss.item(), rup_loss.item()])
+            
+            # --- Collect losses --- #
+            losses[batch_idx] = loss.item(), Ff_loss.item(), other_loss.item(), rup_loss.item()
+            mean = np.mean(losses[:batch_idx+1, 0])
 
             # --- print progress --- #
             progress = int(((batch_idx+1)/num_batches)*progress_bar_length)
-            print(f'\rTrain loss : {np.mean(losses):.4f} |{progress* "="}>{(progress_bar_length-progress)* " "}| {batch_idx+1}/{num_batches} ({100*(batch_idx+1)/num_batches:2.0f}%)', end = '')
-            # print(len(losses), np.mean(losses))
+            print(f'\rTrain loss : {np.mean(losses[:batch_idx+1, 0]):.4f} |{progress* "="}>{(progress_bar_length-progress)* " "}| {batch_idx+1}/{num_batches} ({100*(batch_idx+1)/num_batches:2.0f}%)', end = '')
+
 
         print()
-        losses = np.array(losses)
         return np.mean(losses, axis = 0)
-
-
-        
-        
+                
 
     def evaluate_model(self):
         self.model.eval() # Evaluation mode
@@ -349,8 +264,8 @@ class Trainer:
             accuracy = []
             
             for batch_idx, data in enumerate(dataloader):
-                # --- Evaluate --- #
-                loss, Ff_loss, other_loss, rup_loss, outputs, labels  = self.common_things(data)
+                # --- Forward pass --- #
+                loss, Ff_loss, other_loss, rup_loss, outputs, labels  = self.forward_pass(data)
                 
                 # --- Analyse --- #
                 losses.append([loss.item(), Ff_loss.item(), other_loss.item(), rup_loss.item()])
@@ -381,7 +296,7 @@ class Trainer:
                             'Ff_rel_error': np.mean(np.array(Ff_rel_error)),
                             'rup_stretch_abs_error': np.mean(np.array(rup_stretch_abs_error)),
                             'rup_acc': np.mean(np.array(accuracy)) 
-                        }
+                          }
             
             
             return np.mean(losses, axis = 0), avg_metrics
@@ -389,9 +304,31 @@ class Trainer:
 
 
 
-                
-
+    def forward_pass(self, data):
+        # --- Evaluate --- #    
+        image, vals = get_inputs(data, self.device)
+        labels = get_labels(data, self.model.keys, self.device)
+        outputs = self.model(image, vals)
+        loss, Ff_loss, other_loss, rup_loss = self.criterion(outputs, labels)
+        return loss, Ff_loss, other_loss, rup_loss, outputs, labels 
     
+                
+    def save_history(self, name):
+        """ Save training history, best scores and model weights """
+        
+       
+        # --- Save --- #
+        save_training_history(name, self.history, self.ML_setting)
+        save_best_model_scores(name, self.best, self.history, self.ML_setting)
+        save_best_model(name, self.model, self.best['weights'])
+    
+    def plot_history(self):
+        # Fast plotting
+        plt.figure(num=0, dpi=80, facecolor='w', edgecolor='k')
+        plt.plot(self.history['train_tot_loss'], '-o', label = "train loss")
+        plt.plot(self.history['val_tot_loss'], '-o', label = "validation loss")
+        plt.legend()
+        plt.show()
 
 
 if __name__=='__main__':
@@ -410,7 +347,11 @@ if __name__=='__main__':
     criterion = Loss(alpha = [[1], [], [1/2, 1/2]], out_features = [['R'], [], ['R', 'C']])
     
     coach = Trainer(model, data_root, criterion)
-    coach.learn(save_best = False, maxfilenum = 500)
+    coach.learn(maxfilenum = 500)
+    coach.save_history('training/training_test')
+    coach.plot_history()
+    
+    
     # coach = Trainer(model, data_root, loss, **ML_setting)
     # coach = Trainer(model, data_root, loss, use_gpu = True)
     
