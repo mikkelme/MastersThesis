@@ -162,7 +162,7 @@ def manual_coupling(path, compare_path = None, save = False):
     stretch_tension_file = 'stretch_tension_rupture_test.txt' 
 
     cmap = matplotlib.cm.viridis
-    colorbar_scale = 'linear'
+    colorbar_scale = 'log'
     
     plotset_coupling = {'marker': 'v',
                         's': 40,
@@ -172,7 +172,16 @@ def manual_coupling(path, compare_path = None, save = False):
                         'edgecolors': "black"}
    
     
-    fig, axes = plt.subplots(1, 3, num = unique_fignum(), figsize = (10,5), gridspec_kw ={'width_ratios': [1, 1, 0.1]})
+    # Get load (tension) vs stretch
+    stretch_tension = read_friction_file(os.path.join(path, stretch_tension_file))
+    rupture_dict = read_info_file(os.path.join(path, 'rupture_test.txt'))
+    stretch_test = stretch_tension['v_stretch_pct']
+    load_test = metal_to_SI(stretch_tension['v_load'], 'F')*1e9
+    tension_test = metal_to_SI(stretch_tension['v_tension'], 'F')*1e9
+    
+    
+    
+    fig, axes = plt.subplots(1, 3, num = unique_fignum(), figsize = (10,5), gridspec_kw ={'width_ratios': [1, 1, 0.05]})
     handles, labels = [], []
     
     
@@ -182,7 +191,8 @@ def manual_coupling(path, compare_path = None, save = False):
     F_N = data['F_N'] # Full sheet
     Ff = data['Ff'][:, 0, 1]
     
-    
+    vmin = 0.1
+    vmax = 10
     
     # Get min max for F_N    
     FN_min = np.min(F_N)
@@ -206,28 +216,34 @@ def manual_coupling(path, compare_path = None, save = False):
     # Plot compare    
     if compare_path is not None:     
         for k in range(len(F_N_compare)):
-                color = get_color_value(F_N_compare[k], FN_min, FN_max, scale = colorbar_scale, cmap = cmap)
-                axes[1].scatter(stretch_compare, Ff_compare[:,k], **plotset_compare, color = color, label = 'Independent')
+                # color = get_color_value(F_N_compare[k], FN_min, FN_max, scale = colorbar_scale, cmap = cmap)
+                color = get_color_value(F_N_compare[k], vmin, vmax, scale = colorbar_scale, cmap = cmap)
+                axes[1].scatter(stretch_compare, Ff_compare[:,k], **plotset_compare, color = color, label = r'Const. $F_N$')
         h, l = axes[1].get_legend_handles_labels()
         handles.append(h[-1])
         labels.append(l[-1])
     
     # Plot coupling
-    axes[0].scatter(F_N, stretch, **plotset_coupling, color = color_cycle(1), label = "data points (coupled)")
-    for k in range(len(F_N)):
-        color = get_color_value(F_N[k], FN_min, FN_max, scale = colorbar_scale, cmap = cmap)
-        axes[1].scatter(stretch[k], Ff[k], **plotset_coupling, color = color, label = 'Coupled')
+    axes[0].scatter(F_N, stretch, **plotset_coupling, color = color_cycle(1), label = "Data points (coupled)")
+    axes[1].scatter(stretch, Ff, **plotset_coupling, color = color_cycle(1), label = f"Coupled (R = {rupture_dict['R']:g})")
+    add_xaxis(axes[1], x = stretch, xnew = F_N, xlabel = r'$F_N$ [nN] (Coupled)', decimals = 1, fontsize = 14)
+ 
+    
+    # for k in range(len(F_N)):
+    #     color = get_color_value(F_N[k], FN_min, FN_max, scale = colorbar_scale, cmap = cmap)
+    #     axes[1].scatter(stretch[k], Ff[k], **plotset_coupling, color = color, label = 'Coupled')
     h, l = axes[1].get_legend_handles_labels()
     handles.append(h[-1])
     labels.append(l[-1])
     
 
-
     # Colorbar
     if colorbar_scale == 'linear':
-        norm = matplotlib.colors.BoundaryNorm(np.linspace(FN_min, FN_max, 11), cmap.N)
+        # norm = matplotlib.colors.BoundaryNorm(np.linspace(FN_min, FN_max, 11), cmap.N)
+        norm = matplotlib.colors.Normalize(vmin, vmax)
     elif colorbar_scale == 'log':
-        norm = matplotlib.colors.LogNorm(FN_min, FN_max)
+        # norm = matplotlib.colors.LogNorm(FN_min, FN_max)
+        norm = matplotlib.colors.LogNorm(vmin, vmax)
     else:
         exit(f'scale = \'{colorbar_scale}\' is not defined.')
         
@@ -246,18 +262,9 @@ def manual_coupling(path, compare_path = None, save = False):
     axes[1].legend(handles, labels, loc = 'best', fontsize = 13)
     
 
-
-    # Get load (tension) vs stretch
-    stretch_tension = read_friction_file(os.path.join(path, stretch_tension_file))
-    rupture_dict = read_info_file(os.path.join(path, 'rupture_test.txt'))
-    
-    stretch_test = stretch_tension['v_stretch_pct']
-    load_test = metal_to_SI(stretch_tension['v_load'], 'F')*1e9
-    tension_test = metal_to_SI(stretch_tension['v_tension'], 'F')*1e9
-    
     
     # plot load-stretch curve
-    axes[0].plot(load_test, stretch_test, linewidth = 1, alpha = 1, label = 'rupture test')
+    axes[0].plot(load_test, stretch_test, linewidth = 1, alpha = 1, label = 'Rupture test')
     add_xaxis(axes[0], x = load_test, xnew = load_test*rupture_dict['R'], xlabel = 'Tension [nN]', decimals = 1, fontsize = 14)
     axes[0].set_xlabel(r'$F_N$ [nN]', fontsize = 14)
     axes[0].set_ylabel('Stretch', fontsize = 14)
@@ -285,7 +292,6 @@ if __name__ == '__main__':
     path = '../Data/negative_coef/multi_coupling_honeycomb'
     compare_path = '../Data/Baseline_fixmove/honeycomb/multi_stretch'
     manual_coupling(path, compare_path, save = 'manual_coupling_hon3215.pdf')
-    # manual_coupling(path, compare_path, save = False)
     
     
     plt.show()
