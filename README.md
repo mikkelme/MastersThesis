@@ -240,6 +240,11 @@
 - Looked into weight initialization
 - Begun some local training on nocut, popup and honeycomb.
 
+#### Week 10 (06/03/2023 - 12/03/2023) - Working from Pisa
+- Submitted RW dataset 
+- Submitted more realistic nanomachine imitation where the PB is not locked but kept apart by the tension force.
+- Working on flexible ML code towards a hyperparameter search running on cluster (with GPU).
+
 
 
 ## Things to remember 

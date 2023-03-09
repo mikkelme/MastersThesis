@@ -160,15 +160,17 @@ class Trainer:
         self.num_out_features = len(self.model.out_features)
         val_sum = torch.zeros(self.num_out_features)
         val_num = torch.zeros(self.num_out_features)
+        
         for batch_idx, data in enumerate(self.dataloaders['val']):
             labels = get_labels(data, self.model.keys, self.device)
             non_ruptured = labels[:, -1] < 0.5
-            
             for i in range(labels.shape[1]):
                 not_nan = ~torch.isnan(labels[:, i])
                 d = labels[:, i]
                 val_sum[i] += torch.sum(d[not_nan])
                 val_num[i] += len(d[not_nan])
+        
+        
         val_mean = val_sum / val_num
         
         # Get SS_tot
@@ -225,6 +227,17 @@ class Trainer:
         best = {'epoch': -1, 'loss': 1e6, 'weights': None}
         num_epochs = self.ML_setting['max_epochs']
 
+
+        # Add keys to history
+        # The divided for-loops gives better order
+        for i in range(self.num_out_features):
+            self.history[f'R2_{i}'] = []
+        for i in range(self.num_out_features):
+            self.history[f'abs_{i}'] = []
+        for i in range(self.num_out_features):
+            self.history[f'rel_{i}'] = []
+        self.history[f'acc'] = []
+
         print('Training model')
         for epoch in range(num_epochs):
             try:
@@ -237,25 +250,27 @@ class Trainer:
                     self.lr_scheduler.step()
 
                 # --- Validate --- #
-                val_loss, metrics = self.evaluate_model()
+                val_loss, R2, abs_error, rel_error, accuracy = self.evaluate_model()
             
-                
-                # --- Store information
+                # --- Store information -- #
                 # Add to history
                 self.history['epoch'].append(epoch)
                 self.history['train_loss'].append(train_loss)
                 self.history['val_loss'].append(val_loss)
                 
-                # and output string
-                output_string = f'Val_loss: {val_loss[0]:g}'
-                for key in metrics:
-                    if epoch == 0:
-                        self.history[key] = [metrics[key]]
-                    else:
-                        self.history[key].append(metrics[key])
-                    
-                    output_string += f', {key}: {metrics[key]:g}'
-                print(output_string)
+                for i in range(self.num_out_features):
+                    self.history[f'R2_{i}'].append(R2[i])
+                    self.history[f'abs_{i}'].append(abs_error[i])
+                    self.history[f'rel_{i}'].append(rel_error[i])
+                self.history[f'acc'].append(accuracy)
+                
+                # Print to terminal 
+                print(f'Val_loss: {val_loss[0]:g}')
+                print('R2:', [f'{val:g}' for i, val in enumerate(R2)])
+                print('Abs:', [f'{val:g}' for i, val in enumerate(abs_error)])
+                print('Rel:', [f'{val:g}' for i, val in enumerate(rel_error)])
+                print(f'Acc: {accuracy}')
+                
                 
                 # --- Save best --- #
                 if best['epoch'] < 0 or val_loss[0] < best['loss']:
@@ -310,11 +325,12 @@ class Trainer:
         
         with torch.no_grad():
             losses = []
-            Ff_abs_error_list = []
-            Ff_rel_error_list = []
-            rup_stretch_abs_error_list = []
+            
+            abs_error_list = []
+            rel_error_list = []
             accuracy_list = []
             
+        
             val_SS_res = torch.zeros(self.num_out_features)
             for batch_idx, data in enumerate(dataloader):
                 # --- Forward pass --- #
@@ -330,7 +346,6 @@ class Trainer:
                 
                 # Additional metrics
                 output_diff = torch.where(non_nan, outputs - labels, 0)
-                
                 abs_error = torch.abs(output_diff)
                 rel_error = torch.where(non_nan, torch.abs(output_diff/labels), 0)
 
@@ -338,48 +353,32 @@ class Trainer:
                 mean_rel_error = torch.sum(rel_error, dim = -2) / torch.sum(non_nan, dim = -2)
                 
                 
-                
-                
                 val_SS_res +=  torch.sum(output_diff**2, dim = -2)
             
        
-                Ff_abs_error = mean_abs_error[0]
-                Ff_rel_error = mean_rel_error[0]
-                rup_stretch_abs_error = mean_abs_error[-2]
-                
                 rup_pred = torch.round(outputs[:,-1])
                 acc = torch.sum(rup_pred == labels[:,-1])/len(rup_pred)
                
-               
-               
-                
-                # Ff_R2 = r2_score(outputs[non_rupture, 0], labels[non_rupture, 0])
-                # SSres = torch.sum(Ff_diff**2)
-                # SStot = torch.sum((labels[non_rupture, 0] -  torch.mean( labels[non_rupture, 0]))**2)
-                # man_Ff_R2 = 1 - SSres/SStot
-                
              
                 # Add to list
-                Ff_abs_error_list.append(Ff_abs_error.item())
-                Ff_rel_error_list.append(Ff_rel_error.item())
-                rup_stretch_abs_error_list.append(rup_stretch_abs_error.item())
+                abs_error_list.append(mean_abs_error)
+                rel_error_list.append(mean_rel_error)
                 accuracy_list.append(acc.item())
-                
             
-            print(val_SS_res)
-            exit()
             
             losses = np.array(losses)
-            avg_metrics = {
-                            'Ff_abs_error': np.mean(np.array(Ff_abs_error_list)), 
-                            'Ff_rel_error': np.mean(np.array(Ff_rel_error_list)),
-                            'rup_stretch_abs_error': np.mean(np.array(rup_stretch_abs_error_list)),
-                            'rup_acc': np.mean(np.array(accuracy_list)) 
-                          }
+            R2 = (1 - val_SS_res/self.val_SS_tot).numpy()
+            abs_error = torch.mean(torch.stack(abs_error_list), dim = -2).numpy()
+            rel_error = torch.mean(torch.stack(rel_error_list), dim = -2).numpy()
+            accuracy = np.mean(accuracy_list)
             
-            exit()
-            return np.mean(losses, axis = 0), avg_metrics
-            # return np.mean(losses, axis = 0), np.mean(abs_error), np.mean(accuracy)
+            # Put last to nan corresponding to is_ruptured
+            abs_error[-1] = np.nan
+            rel_error[-1] = np.nan
+            R2[-1] = np.nan
+            
+            
+            return np.mean(losses, axis = 0), R2, abs_error, rel_error, accuracy
 
 
 
@@ -499,32 +498,32 @@ if __name__=='__main__':
     model_out_features = [item for sublist in criterion_out_features for item in sublist]        
     
     # Training
-    # model = VGGNet( mode = 0, 
-    #                 input_num = 2, 
-    #                 conv_layers = [(1, 32), (1, 64), (1, 128)], 
-    #                 FC_layers = [(1, 512), (1, 128)],
-    #                 out_features = model_out_features,
-    #                 keys = keys)
-    
     model = VGGNet( mode = 0, 
                     input_num = 2, 
-                    conv_layers = [(1,16), (1,16), (1,16)], 
-                    FC_layers = [(1,16)],
+                    conv_layers = [(1, 32), (1, 64), (1, 128)], 
+                    FC_layers = [(1, 512), (1, 128)],
                     out_features = model_out_features,
                     keys = keys)
+    
+    # model = VGGNet( mode = 0, 
+    #                 input_num = 2, 
+    #                 conv_layers = [(1,16), (1,16), (1,16)], 
+    #                 FC_layers = [(1,16)],
+    #                 out_features = model_out_features,
+    #                 keys = keys)
     
 
     criterion = Loss(alpha = alpha, out_features = criterion_out_features)
     
     
     coach = Trainer(model, data_root, criterion, **ML_setting)
-    coach.learn(max_epochs = 10, max_file_num = 200)
+    coach.learn(max_epochs = 20, max_file_num = None)
     coach.save_history('training/test')
+    coach.plot_history()
     # coach.get_info()
     
     
     
-    # coach.plot_history()
 
 
     
