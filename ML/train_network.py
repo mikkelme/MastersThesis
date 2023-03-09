@@ -152,10 +152,41 @@ class Trainer:
         # Data and device
         self.datasets, self.dataloaders = get_data(self.data_root, self.ML_setting)
         self.device = get_device(self.ML_setting)
-
-        # Train and evaluate
-        self.train_and_evaluate()
+        
+        
+        
+        # --- Pre analyse validation data to get SS_tot --- #
+        # Get mean
+        self.num_out_features = len(self.model.out_features)
+        val_sum = torch.zeros(self.num_out_features)
+        val_num = torch.zeros(self.num_out_features)
+        for batch_idx, data in enumerate(self.dataloaders['val']):
+            labels = get_labels(data, self.model.keys, self.device)
+            non_ruptured = labels[:, -1] < 0.5
             
+            for i in range(labels.shape[1]):
+                not_nan = ~torch.isnan(labels[:, i])
+                d = labels[:, i]
+                val_sum[i] += torch.sum(d[not_nan])
+                val_num[i] += len(d[not_nan])
+        val_mean = val_sum / val_num
+        
+        # Get SS_tot
+        self.val_SS_tot = torch.zeros(self.num_out_features)
+        for batch_idx, data in enumerate(self.dataloaders['val']):
+            labels = get_labels(data, self.model.keys, self.device)
+            non_ruptured = labels[:, -1] < 0.5
+            
+            for i in range(labels.shape[1]):
+                not_nan = ~torch.isnan(labels[:, i])
+                d = labels[not_nan, i]
+                self.val_SS_tot[i] += torch.sum((d - val_mean[i])**2)
+
+
+        # --- Train and evaluate --- #
+        self.train_and_evaluate()
+        
+        # Print best
         print(f'Best epoch: {self.best["epoch"]}')
         print(f'Best val_loss: {self.best["loss"]}')
 
@@ -279,11 +310,12 @@ class Trainer:
         
         with torch.no_grad():
             losses = []
-            Ff_abs_error = []
-            Ff_rel_error = []
-            rup_stretch_abs_error = []
-            accuracy = []
+            Ff_abs_error_list = []
+            Ff_rel_error_list = []
+            rup_stretch_abs_error_list = []
+            accuracy_list = []
             
+            val_SS_res = torch.zeros(self.num_out_features)
             for batch_idx, data in enumerate(dataloader):
                 # --- Forward pass --- #
                 loss, Ff_loss, other_loss, rup_loss, outputs, labels  = self.forward_pass(data)
@@ -291,35 +323,58 @@ class Trainer:
                 # --- Analyse --- #
                 losses.append([loss.item(), Ff_loss.item(), other_loss.item(), rup_loss.item()])
                 non_rupture = labels[:, -1] < 0.5
+                non_nan = ~torch.isnan(labels)
+                
+                
+            
                 
                 # Additional metrics
-                Ff_diff = outputs[non_rupture, 0] - labels[non_rupture, 0]
-                Ff_abs_diff = torch.mean(torch.abs(Ff_diff))
-                Ff_rel_diff = torch.mean(torch.abs(Ff_diff/labels[non_rupture, 0]))
+                output_diff = torch.where(non_nan, outputs - labels, 0)
                 
-                rup_stretch_diff = outputs[non_rupture, 1] - labels[non_rupture, 1]
-                rup_stretch_abs_diff = torch.mean(torch.abs(rup_stretch_diff))
+                abs_error = torch.abs(output_diff)
+                rel_error = torch.where(non_nan, torch.abs(output_diff/labels), 0)
+
+                mean_abs_error = torch.sum(abs_error, dim = -2) / torch.sum(non_nan, dim = -2)
+                mean_rel_error = torch.sum(rel_error, dim = -2) / torch.sum(non_nan, dim = -2)
+                
+                
+                
+                
+                val_SS_res +=  torch.sum(output_diff**2, dim = -2)
+            
+       
+                Ff_abs_error = mean_abs_error[0]
+                Ff_rel_error = mean_rel_error[0]
+                rup_stretch_abs_error = mean_abs_error[-2]
                 
                 rup_pred = torch.round(outputs[:,-1])
                 acc = torch.sum(rup_pred == labels[:,-1])/len(rup_pred)
+               
+               
+               
                 
+                # Ff_R2 = r2_score(outputs[non_rupture, 0], labels[non_rupture, 0])
+                # SSres = torch.sum(Ff_diff**2)
+                # SStot = torch.sum((labels[non_rupture, 0] -  torch.mean( labels[non_rupture, 0]))**2)
+                # man_Ff_R2 = 1 - SSres/SStot
                 
+             
                 # Add to list
-                Ff_abs_error.append(Ff_abs_diff.item())
-                Ff_rel_error.append(Ff_rel_diff.item())
-                rup_stretch_abs_error.append(rup_stretch_abs_diff.item())
-                accuracy.append(acc.item())
+                Ff_abs_error_list.append(Ff_abs_error.item())
+                Ff_rel_error_list.append(Ff_rel_error.item())
+                rup_stretch_abs_error_list.append(rup_stretch_abs_error.item())
+                accuracy_list.append(acc.item())
                 
                 
             losses = np.array(losses)
             avg_metrics = {
-                            'Ff_abs_error': np.mean(np.array(Ff_abs_error)), 
-                            'Ff_rel_error': np.mean(np.array(Ff_rel_error)),
-                            'rup_stretch_abs_error': np.mean(np.array(rup_stretch_abs_error)),
-                            'rup_acc': np.mean(np.array(accuracy)) 
+                            'Ff_abs_error': np.mean(np.array(Ff_abs_error_list)), 
+                            'Ff_rel_error': np.mean(np.array(Ff_rel_error_list)),
+                            'rup_stretch_abs_error': np.mean(np.array(rup_stretch_abs_error_list)),
+                            'rup_acc': np.mean(np.array(accuracy_list)) 
                           }
             
-            
+            exit()
             return np.mean(losses, axis = 0), avg_metrics
             # return np.mean(losses, axis = 0), np.mean(abs_error), np.mean(accuracy)
 
@@ -369,6 +424,8 @@ class Trainer:
         s += f'# --- ML settings --- #\n'
         for key in self.ML_setting:
             s += f'# {key} = {self.ML_setting[key]}\n'
+        s += f'# --- Data --- #\n'
+        s += f'# data_root = {self.data_root}\n'
         
         return s
     
@@ -403,7 +460,8 @@ class Trainer:
 
 
 if __name__=='__main__':
-    data_root = ['../Data/ML_data/baseline', '../Data/ML_data/popup', '../Data/ML_data/honeycomb']
+    # data_root = ['../Data/ML_data/baseline', '../Data/ML_data/popup', '../Data/ML_data/honeycomb']
+    data_root = [ '../Data/ML_data/honeycomb']
     ML_setting = get_ML_setting()
     
     
@@ -444,9 +502,10 @@ if __name__=='__main__':
     #                 FC_layers = [(1, 512), (1, 128)],
     #                 out_features = model_out_features,
     #                 keys = keys)
+    
     model = VGGNet( mode = 0, 
                     input_num = 2, 
-                    conv_layers = [(1,16)], 
+                    conv_layers = [(1,16), (1,16), (1,16)], 
                     FC_layers = [(1,16)],
                     out_features = model_out_features,
                     keys = keys)
@@ -454,8 +513,9 @@ if __name__=='__main__':
 
     criterion = Loss(alpha = alpha, out_features = criterion_out_features)
     
+    
     coach = Trainer(model, data_root, criterion, **ML_setting)
-    coach.learn(max_epochs = 2, max_file_num = 500)
+    coach.learn(max_epochs = 10, max_file_num = 200)
     coach.save_history('training/test')
     # coach.get_info()
     

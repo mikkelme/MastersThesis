@@ -16,3 +16,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 import random
+
+
+from torchmetrics.functional import r2_score
