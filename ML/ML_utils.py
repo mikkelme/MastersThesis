@@ -35,13 +35,12 @@ def get_labels(data, keys, device):
     return labels
 
 
-def save_training_history(name, history, ML_setting, precision = 4):
+def save_training_history(name, history, info, precision = 4):
     filename = name + '_training_history.txt'
     outfile = open(filename, 'w')
+    outfile.write(info)
     
-    for key in ML_setting:
-        outfile.write(f'# {key} = {ML_setting[key]}\n')
-    
+
     epochs = history['epoch']
     
     keys = ''
@@ -61,13 +60,15 @@ def save_training_history(name, history, ML_setting, precision = 4):
     outfile.close()
 
 
-def save_best_model_scores(name, best, history, ML_setting,  precision = 4):
+def save_best_model_scores(name, best, history, info,  precision = 4):
     filename = name + '_best_scores.txt'
     
     best_epoch = best['epoch']
     outfile = open(filename, 'w')
-    for key in ML_setting:
-        outfile.write(f'# {key} = {ML_setting[key]}\n')
+    outfile.write(info)
+    
+    # for key in ML_setting:
+    #     outfile.write(f'# {key} = {ML_setting[key]}\n')
         
     for key in history:
         data = history[key][best_epoch]

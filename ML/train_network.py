@@ -88,6 +88,8 @@ class Trainer:
         self.data_root = data_root
         self.criterion = criterion
         
+       
+        
         # Check that model and criterion is build for the same number number and style of output features
         model_out_feat = self.model.out_features
         criterion_out_feat = [item for sublist in self.criterion.out_features for item in sublist]        
@@ -113,7 +115,8 @@ class Trainer:
             'lr': 0.005,  # Learning rate
             'batchsize_train': 16,
             'batchsize_val': 64,
-            'max_epochs': 35,
+            'max_epochs': 100,
+            'max_file_num': None,
             'scheduler_stepsize': 10,
             'scheduler_factor': 0.3
         }
@@ -121,31 +124,19 @@ class Trainer:
         self.ML_setting.update(ML_setting)
     
     
+    
         self.optimizer = optim.SGD(model.parameters(), lr = self.ML_setting['lr'], momentum = 0.9)
         if self.ML_setting['scheduler_stepsize'] is None or self.ML_setting['scheduler_factor'] is None:
             self.lr_scheduler = None
-            exit(f'lr_scheduler is None | This is not yet implemented')
+            # exit(f'lr_scheduler is None | This is not yet implemented')
         else:
             self.lr_scheduler = torch.optim.lr_scheduler.StepLR(self.optimizer, 
                                                         step_size = self.ML_setting['scheduler_stepsize'], 
                                                         gamma = self.ML_setting['scheduler_factor'], 
                                                         last_epoch = - 1, 
                                                         verbose = False)
-
-
-        # Training-validation history
-        self.history = {'epoch': [],
-                        'train_loss': [],
-                        'val_loss': []
-                        }
         
         self.history = OrderedDict([('epoch', []), ('train_loss', []), ('val_loss', [])])
-        # self.history['epoch'].append(1)
-        # print(self.history)
-        # exit()
-        
-        #^^^ Starts form arrays since we know the max length = max_epochs ... ? XXX ^^^
-        
              
 
     def learn(self, max_epochs = None, max_file_num = None):
@@ -153,9 +144,13 @@ class Trainer:
         
         if max_epochs is not None:
             self.ML_setting['max_epochs'] = max_epochs
+            
+        if max_file_num is not None:
+            self.ML_setting['max_file_num'] = max_file_num
+        
         
         # Data and device
-        self.datasets, self.dataloaders = get_data(self.data_root, self.ML_setting, max_file_num)
+        self.datasets, self.dataloaders = get_data(self.data_root, self.ML_setting)
         self.device = get_device(self.ML_setting)
 
         # Train and evaluate
@@ -341,11 +336,10 @@ class Trainer:
                 
     def save_history(self, name):
         """ Save training history, best scores and model weights """
-        
        
         # --- Save --- #
-        save_training_history(name, self.history, self.ML_setting)
-        save_best_model_scores(name, self.best, self.history, self.ML_setting)
+        save_training_history(name, self.history, self.get_info())
+        save_best_model_scores(name, self.best, self.history, self.get_info())
         save_best_model(name, self.model, self.best['weights'])
     
     def plot_history(self):
@@ -356,6 +350,33 @@ class Trainer:
         plt.legend()
         plt.show()
 
+
+    def get_info(self):
+        s = '# --- Model settings --- #\n'
+        s += f'# name = {self.model.name}\n'
+        s += f'# image_shape = {self.model.image_shape}\n'
+        s += f'# input_num = {self.model.input_num}\n'
+        s += f'# conv_layers = {self.model.conv_layers}\n'
+        s += f'# FC_layers = {self.model.FC_layers}\n'
+        s += f'# out_features = {self.model.out_features}\n'
+        s += f'# keys = {self.model.keys}\n'
+        s += f'# batchnorm = {self.model.batchnorm}\n'
+        s += f'# num params = {self.model.get_num_params()}\n'
+        s += f'# --- Criterion --- #\n'
+        s += f'# alpha = {self.criterion.alpha}\n'
+        s += f'# out_features = {self.criterion.out_features}\n'
+        s += f'# criterion = {self.criterion.criterion}\n'
+        s += f'# --- ML settings --- #\n'
+        for key in self.ML_setting:
+            s += f'# {key} = {self.ML_setting[key]}\n'
+        
+        return s
+    
+    def __str__(self):
+        return self.get_info()
+
+        
+                
 
 
 # --- Available data --- #
@@ -425,20 +446,23 @@ if __name__=='__main__':
     #                 keys = keys)
     model = VGGNet( mode = 0, 
                     input_num = 2, 
-                    conv_layers = [(1, 16), (1, 32)], 
-                    FC_layers = [(1, 32), (1, 16)],
+                    conv_layers = [(1,16)], 
+                    FC_layers = [(1,16)],
                     out_features = model_out_features,
                     keys = keys)
     
 
     criterion = Loss(alpha = alpha, out_features = criterion_out_features)
     
-    coach = Trainer(model, data_root, criterion)
-    coach.learn(max_epochs = 300, max_file_num = None)
+    coach = Trainer(model, data_root, criterion, **ML_setting)
+    coach.learn(max_epochs = 2, max_file_num = 500)
     coach.save_history('training/test')
-    coach.plot_history()
+    # coach.get_info()
+    
+    
+    
+    # coach.plot_history()
 
-    # TODO: Try without scheduler to follow graphen/h-BN article more closely
 
     
     

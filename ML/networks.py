@@ -14,7 +14,7 @@ from torch.nn import LogSoftmax
 from torch.nn import BatchNorm2d
 
 from torch import flatten
-from torchsummary import summary
+from torchinfo import summary
 
 
 import numpy as np
@@ -80,22 +80,32 @@ class VGGNet(Module):
         FC_layers (list of tuples): Define architecture of fully connected (FC) part. Each fully connected block is repeated tuple[0] times with a total of tuple[1] nodes. Each FC layer is seperated by a RELU activation except the last one which is handled by the hardcoded output layers
 
     """        
-    def __init__(self,  mode = 0, 
+    def __init__( self, name = 'VGGNet',
+                        mode = 0, 
                         image_shape = (62, 106), 
                         input_num = 2,
                         conv_layers = [(2, 64), (2, 128), (3, 256), (3, 512), (3, 512)],
                         FC_layers   = [(2, 4096)],
                         out_features = ['R', 'C'],
-                        keys = None):
+                        keys = None,
+                        batchnorm = True):
        
        
         super(VGGNet, self).__init__()
+        
+        
+        
         if keys is not None:
             assert len(keys) == len(out_features), f"Number of keys {len(keys)}: {keys}, does not match number of out_features {len(out_features)}: {out_features}"
        
+        self.name = name
+        self.input_num = input_num
         self.image_shape = image_shape
+        self.conv_layers = conv_layers
+        self.FC_layers = FC_layers
         self.out_features = np.array(out_features)
         self.keys = keys
+        self.batchnorm = batchnorm
         
         if mode == 0: # channels for each numerical input
             numChannels = 1 + input_num
@@ -117,7 +127,8 @@ class VGGNet(Module):
                                           padding = 'same', 
                                           stride = 1))
                 
-                self.layers.append(BatchNorm2d(num_features = filter[1]))
+                if batchnorm:
+                    self.layers.append(BatchNorm2d(num_features = filter[1]))
                 self.layers.append(ReLU())
                 prev_channels = filter[1]
             self.layers.append(MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding = 1))
@@ -151,6 +162,8 @@ class VGGNet(Module):
     def f_mix(self, image, vals):
         """ Image and numerical input (on indivual channels) all go through convolution """
         # Gather input into channels
+        
+        
         x = [image]
         for i in range(vals.size(-1)):
             x.append(torch.stack([torch.full(self.image_shape, v) for v in vals[:, i]], 0))
@@ -170,7 +183,6 @@ class VGGNet(Module):
         x = self.fc(x)
         
         x[:,self.sig_map] = self.sigmoid(x[:,self.sig_map]) # sigmoid for classfication type variables
-         
          
         return x
         
@@ -238,35 +250,37 @@ class VGGNet(Module):
         #     nn.init.constant_(module.bias, 0) 
             
     
+    def get_num_params(self):
+        num_param = 0
+        for param in self.parameters():
+            p = torch.prod(torch.tensor(param.size()))
+            num_param += p
+        return num_param.item()
+        
+        
+    def __str__(self):
+        s = summary(self, [(1, self.image_shape[0], self.image_shape[1]), (1, self.input_num)],
+                    verbose = 0)
+        return str(s)
+        
+        
     
-    
-    # def __str__(self):
-    #     s = '#---- LAYERS ---- #\n'
-    #     for l in self.layers:
-    #         s += str(l)
-    #         s += '\n'
-    #     s += '-- OUTPUT -- \n'
-    #     s += str(self.fc)
-    #     s += '\n'
-    #     s += str(self.sigmoid)
-    #     s += '\n'
-    #     return s             
         
         
         
 if __name__ == '__main__':
-    model = VGGNet(mode = 0, image_shape = (62, 106), input_num = 2)
-    pass
-    # model = LeNet(3)
+    # model = VGGNet(mode = 0, image_shape = (62, 106), input_num = 2)
+    
+    model = VGGNet( mode = 0, 
+                    input_num = 2, 
+                    image_shape = (62, 106),
+                    conv_layers = [(1, 16), (1, 32)], 
+                    FC_layers = [(1, 32), (1, 16)],
+                    out_features = ['R', 'C'],
+                    batchnorm = True)
+    
+    num_params = model.get_num_params()
+    print(num_params)
     # print(model)
-    # for param in model.parameters():
-    #     print(type(param.data), param.size())
     
-    
-    
-    # print(summary(LeNet(3), (3, 62, 106)))
-    # print(summary(VGGNet(), (2, 62, 106, 2)))
-    
-    # print(summary(VGGNet(), [(62, 106), (2)]))
-    
-    
+   

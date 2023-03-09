@@ -6,14 +6,14 @@ seed_everything(2023) # TODO: Keep here? Or put elsewhere?
 class KirigamiDataset(Dataset):
     """ Imports the Kirigami Dataset and generates dataloaders. """
     
-    def __init__(self, data_root, trvaltest, transform = None, maxfilenum = None, train_val_split = 0.2):
+    def __init__(self, data_root, trvaltest, transform = None, max_file_num = None, train_val_split = 0.2):
         """_summary_
 
         Args:
             data_root (String / List of strings): Can be parent folder of multiple paths...
             trvaltest (_type_): _description_
             transform (_type_, optional): _description_. Defaults to None.
-            maxfilenum (_type_, optional): _description_. Defaults to None.
+            max_file_num (_type_, optional): _description_. Defaults to None.
         """        
         
         
@@ -46,9 +46,9 @@ class KirigamiDataset(Dataset):
         
     
         # (Optionally): Reduce number of images into RN sub sample
-        if maxfilenum: 
-            self.data_dir = np.random.choice(self.data_dir, maxfilenum, replace = False)
-            # self.data_dir = self.data_dir[:maxfilenum]
+        if max_file_num: 
+            self.data_dir = np.random.choice(self.data_dir, max_file_num, replace = False)
+            # self.data_dir = self.data_dir[:max_file_num]
             
         # Make train-validation-split
         train, val = train_test_split(np.arange(len(self.data_dir)), test_size = train_val_split, random_state = random_seed)
@@ -96,13 +96,15 @@ class KirigamiDataset(Dataset):
         return sample
         
 
-def get_data(data_root, ML_setting, maxfilenum = None):
+def get_data(data_root, ML_setting, max_file_num = None):
     """Get datasets and dataloaders from Kirigami dataset. """
+
+    max_file_num = ML_setting['max_file_num']
 
     # Datasets
     datasets={}
-    datasets['train'] = KirigamiDataset(data_root, trvaltest = 'train', maxfilenum = maxfilenum)
-    datasets['val']   = KirigamiDataset(data_root, trvaltest = 'val',   maxfilenum = maxfilenum)
+    datasets['train'] = KirigamiDataset(data_root, trvaltest = 'train', max_file_num = max_file_num)
+    datasets['val']   = KirigamiDataset(data_root, trvaltest = 'val',   max_file_num = max_file_num)
 
     # Dataloaders
     dataloaders = {}
@@ -119,11 +121,12 @@ def get_ML_setting(use_gpu = False):
     ML_setting['lr'] = 0.0005 #0.005                # Learning rate
     ML_setting['batchsize_train'] = 32 #16   
     ML_setting['batchsize_val'] = 64
-    ML_setting['max_epochs'] = 35
-    ML_setting['scheduler_stepsize'] = 10
-    ML_setting['scheduler_factor'] = 0.1
-    # ML_setting['scheduler_stepsize'] = None
-    # ML_setting['scheduler_factor'] = None #0.3
+    ML_setting['max_epochs'] = 300
+    ML_setting['max_file_num'] = None
+    # ML_setting['scheduler_stepsize'] = 10
+    # ML_setting['scheduler_factor'] = 0.1
+    ML_setting['scheduler_stepsize'] = None
+    ML_setting['scheduler_factor'] = None #0.3
 
     return ML_setting
 
@@ -139,8 +142,8 @@ if __name__ == "__main__":
     
     KirigamiDataset(data_root, trvaltest = 'train')
     
-    # datasets, dataloaders = get_data(data_root, ML_setting, maxfilenum = None)
-    # datasets, dataloaders = get_data(data_root, ML_setting, maxfilenum = None)
+    # datasets, dataloaders = get_data(data_root, ML_setting, max_file_num = None)
+    # datasets, dataloaders = get_data(data_root, ML_setting, max_file_num = None)
     # trainloader = dataloaders['train']
     
     

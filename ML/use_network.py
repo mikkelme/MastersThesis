@@ -85,10 +85,15 @@ def load_model(weight_path):
     #                 conv_layers = [(1, 16), (1, 32), (1, 64)], 
     #                 FC_layers = [(1, 512), (1,128)],
     #                 out_features = ['R', 'R', 'C'])
+    # model = VGGNet( mode = 0, 
+    #                 input_num = 2, 
+    #                 conv_layers = [(1, 32), (1, 64), (1, 128)], 
+    #                 FC_layers = [(1, 512), (1,128)],
+    #                 out_features = ['R', 'R', 'R', 'R', 'R', 'C'])
     model = VGGNet( mode = 0, 
                     input_num = 2, 
-                    conv_layers = [(1, 32), (1, 64), (1, 128)], 
-                    FC_layers = [(1, 512), (1,128)],
+                    conv_layers = [(1, 16), (1, 32)], 
+                    FC_layers = [(1, 32), (1,16)],
                     out_features = ['R', 'R', 'R', 'R', 'R', 'C'])
     
     
@@ -97,20 +102,20 @@ def load_model(weight_path):
 
 
 def test_model_compare():
-    model = load_model('training/test_model_dict_state')
+    model = load_model('training/C16C32D32D16_model_dict_state')
 
     # folder = '../Data/CONFIGS/honeycomb/hon_5' 
     # folder = '../Data/CONFIGS/popup/pop_4'
     
     # folder = '../Data/CONFIGS/honeycomb/hon_1' # hon3215 used in ML data
-    # folder = '../Data/Baseline_fixmove/honeycomb/multi_stretch' # hon3215 used in Baseline
+    folder = '../Data/Baseline_fixmove/honeycomb/multi_stretch' # hon3215 used in Baseline
     # folder = '../Data/CONFIGS/popup/pop_35' # pop1_7_5 used in ML data
-    folder = '../Data/Baseline_fixmove/popup/multi_stretch' # pop1_7_5 used in Baseline
+    # folder = '../Data/Baseline_fixmove/popup/multi_stretch' # pop1_7_5 used in Baseline
     compare_model_to_data(model, folder)
 
 
 def test_model_manual():
-    model = load_model('training/more_output_model_dict_state')
+    model = load_model('training/test_model_dict_state')
 
 
     num_points = 100    
