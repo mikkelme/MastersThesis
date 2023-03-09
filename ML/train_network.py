@@ -365,7 +365,10 @@ class Trainer:
                 rup_stretch_abs_error_list.append(rup_stretch_abs_error.item())
                 accuracy_list.append(acc.item())
                 
-                
+            
+            print(val_SS_res)
+            exit()
+            
             losses = np.array(losses)
             avg_metrics = {
                             'Ff_abs_error': np.mean(np.array(Ff_abs_error_list)), 
