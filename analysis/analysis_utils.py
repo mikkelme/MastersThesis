@@ -842,11 +842,11 @@ def plot_heatmap(heat, param1, param2, title = None):
     return ax
    
 
-def unique_fignum():
-    fignum = 0
-    if fignum in plt.get_fignums():
-        fignum = plt.get_fignums()[-1] + 1
-    return fignum
+# def unique_fignum():
+#     fignum = 0
+#     if fignum in plt.get_fignums():
+#         fignum = plt.get_fignums()[-1] + 1
+#     return fignum
 
 
 

@@ -37,7 +37,12 @@ def get_labels(data, keys, device):
 
 def save_training_history(name, history, info, precision = 4):
     filename = name + '_training_history.txt'
-    outfile = open(filename, 'w')
+    try:
+        outfile = open(filename, 'w')
+    except FileNotFoundError:
+        path = filename.split('/')
+        os.makedirs(os.path.join(*path[:-1]))
+        outfile = open(filename, 'w')
     outfile.write(info)
     
 
@@ -64,11 +69,14 @@ def save_best_model_scores(name, best, history, info,  precision = 4):
     filename = name + '_best_scores.txt'
     
     best_epoch = best['epoch']
-    outfile = open(filename, 'w')
+    try:
+        outfile = open(filename, 'w')
+    except FileNotFoundError:
+        path = filename.split('/')
+        os.makedirs(os.path.join(*path[:-1]))
+        outfile = open(filename, 'w')
     outfile.write(info)
     
-    # for key in ML_setting:
-    #     outfile.write(f'# {key} = {ML_setting[key]}\n')
         
     for key in history:
         data = history[key][best_epoch]

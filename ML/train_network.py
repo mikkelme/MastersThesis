@@ -399,13 +399,20 @@ class Trainer:
         save_best_model_scores(name, self.best, self.history, self.get_info())
         save_best_model(name, self.model, self.best['weights'])
     
-    def plot_history(self):
+    def plot_history(self, show = True, save = False):
         # Fast plotting
-        plt.figure(num=0, dpi=80, facecolor='w', edgecolor='k')
-        plt.plot(self.history['train_tot_loss'], '-o', label = "train loss")
-        plt.plot(self.history['val_tot_loss'], '-o', label = "validation loss")
-        plt.legend()
-        plt.show()
+        plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
+        plt.plot(self.history['train_tot_loss'], '-o', label = "Training")
+        plt.plot(self.history['val_tot_loss'], '-o', label = "Validation")
+        plt.xlabel('Epoch', fontsize=14)
+        plt.ylabel('Loss', fontsize=14)
+        plt.legend(fontsize = 13)
+        plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+        if save is not False:
+            plt.savefig(save, bbox_inches='tight')
+        
+        if show:
+            plt.show()
 
 
     def get_info(self):

@@ -34,6 +34,15 @@ def color_cycle(num_color):
     color = plt.rcParams['axes.prop_cycle'].by_key()['color']
     return color[num_color]
 
+
+def unique_fignum():
+    """ Get unique figure number """
+    fignum = 0
+    if fignum in plt.get_fignums():
+        fignum = plt.get_fignums()[-1] + 1
+    return fignum
+
+
 def vline(ax, x, **kwargs):
     """ Make vertical line spanning whole y range
         without changing ylim of axes """

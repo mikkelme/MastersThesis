@@ -1,3 +1,7 @@
+import sys
+sys.path.append('../') # parent folder: MastersThesis
+
+
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -19,3 +23,7 @@ import random
 
 
 from torchmetrics.functional import r2_score
+
+
+# --- Plotting --- #
+from plot_set import *
