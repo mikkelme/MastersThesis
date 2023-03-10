@@ -1,0 +1,27 @@
+
+# --- RUNNINF --- #
+
+# Activate pyenv
+pyenv activate env
+
+# Run on GPU x (Only works when staying logged in)
+
+CUDA_VISIBLE_DEVICES=0 python yourscript.py
+
+# Run on GPU x (With possibility to logout)
+CUDA_VISIBLE_DEVICES=x nohup python yourscript.py > out1.log 2> error1.log &
+
+
+# CUDA_VISIBLE_DEVICES=1 TMP=./tmp  python 
+#CUDA_VISIBLE_DEVICES=x TMP=./tmp nohup python yourscript.py > out1.log 2> error1.log &
+
+
+# --- Info --- #
+# Look at system
+htop
+nvidia-smi
+
+# Look at jobs
+ps -u mikkelme
+ps -u mikkelme | grep -i python
+kill -9 PID
