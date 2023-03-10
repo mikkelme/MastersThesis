@@ -48,6 +48,7 @@ class Loss: # Maybe find better name: 'Criterion' or 'Loss_func'
             assert len(self.cat_to_col_map[i]) == len(out_features[i]), f"Length of self.cat_to_col_map does not match out_features at category i = {i}" 
 
         
+        
         # Normalize weights in alpha:
         for i in range(len(self.alpha)):
             for j in range(len(self.alpha[i])):
@@ -84,7 +85,23 @@ class Loss: # Maybe find better name: 'Criterion' or 'Loss_func'
 
 class Trainer:
     def __init__(self, model, data_root, criterion, **ML_setting):
-        self.model = model
+        # Default ML settings
+        self.ML_setting = {
+            'use_gpu': False,
+            'lr': 0.005,  # Learning rate
+            'batchsize_train': 16,
+            'batchsize_val': 64,
+            'max_epochs': 100,
+            'max_file_num': None,
+            'scheduler_stepsize': 10,
+            'scheduler_factor': 0.3
+        }
+        # Update 
+        self.ML_setting.update(ML_setting)
+        
+
+        self.device = get_device(self.ML_setting)
+        self.model = model.to(self.device)
         self.data_root = data_root
         self.criterion = criterion
         
@@ -107,23 +124,6 @@ class Trainer:
                 exit()
         
         
-    
-        
-        # Default settings
-        self.ML_setting = {
-            'use_gpu': False,
-            'lr': 0.005,  # Learning rate
-            'batchsize_train': 16,
-            'batchsize_val': 64,
-            'max_epochs': 100,
-            'max_file_num': None,
-            'scheduler_stepsize': 10,
-            'scheduler_factor': 0.3
-        }
-        
-        self.ML_setting.update(ML_setting)
-    
-    
     
         self.optimizer = optim.SGD(model.parameters(), lr = self.ML_setting['lr'], momentum = 0.9)
         if self.ML_setting['scheduler_stepsize'] is None or self.ML_setting['scheduler_factor'] is None:
@@ -151,15 +151,14 @@ class Trainer:
         
         # Data and device
         self.datasets, self.dataloaders = get_data(self.data_root, self.ML_setting)
-        self.device = get_device(self.ML_setting)
         
         
         
         # --- Pre analyse validation data to get SS_tot --- #
         # Get mean
         self.num_out_features = len(self.model.out_features)
-        val_sum = torch.zeros(self.num_out_features)
-        val_num = torch.zeros(self.num_out_features)
+        val_sum = torch.zeros(self.num_out_features).to(self.device)
+        val_num = torch.zeros(self.num_out_features).to(self.device)
         
         for batch_idx, data in enumerate(self.dataloaders['val']):
             labels = get_labels(data, self.model.keys, self.device)
@@ -174,7 +173,7 @@ class Trainer:
         val_mean = val_sum / val_num
         
         # Get SS_tot
-        self.val_SS_tot = torch.zeros(self.num_out_features)
+        self.val_SS_tot = torch.zeros(self.num_out_features).to(self.device)
         for batch_idx, data in enumerate(self.dataloaders['val']):
             labels = get_labels(data, self.model.keys, self.device)
             non_ruptured = labels[:, -1] < 0.5

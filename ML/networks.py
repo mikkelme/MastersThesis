@@ -161,15 +161,31 @@ class VGGNet(Module):
 
     def f_mix(self, image, vals):
         """ Image and numerical input (on indivual channels) all go through convolution """
-        # Gather input into channels
+        # --- Gather input into channels --- #
+        # Unsqueeze numerical valuess and expand channels into mathing image dimensions
+        vals = vals.view(vals.shape[0], vals.shape[1], 1, 1).expand(vals.shape[0], vals.shape[1], image.shape[1], image.shape[2])
+        
+        # Unsqueeze image for concatenation
+        image = torch.unsqueeze(image, dim = 1)
+        
+        # Concatenate input channels 
+        x = torch.cat((image, vals), dim = 1)
+      
+          
+        # x = [image]
+        # for i in range(vals.size(-1)):
+        #     x.append(torch.stack([torch.full(self.image_shape, v) for v in vals[:, i]], 0))
         
         
-        x = [image]
-        for i in range(vals.size(-1)):
-            x.append(torch.stack([torch.full(self.image_shape, v) for v in vals[:, i]], 0))
-        x = torch.stack(x, 1)
-
+        # x = torch.stack(x, 1)
         
+        # print(x[0, 0]) # image
+        # print(x[0, 1]) # stretch
+        # print(x[0, 2]) # F_N
+        # print(x.size())
+        # exit()
+        
+        # --- Forward pass --- #
         # Convolutional 
         for l in range(self.len_conv):
             x = self.layers[l](x)
@@ -181,7 +197,6 @@ class VGGNet(Module):
         
         # Output
         x = self.fc(x)
-        
         x[:,self.sig_map] = self.sigmoid(x[:,self.sig_map]) # sigmoid for classfication type variables
          
         return x

@@ -106,6 +106,12 @@ def get_data(data_root, ML_setting, max_file_num = None):
     datasets['train'] = KirigamiDataset(data_root, trvaltest = 'train', max_file_num = max_file_num)
     datasets['val']   = KirigamiDataset(data_root, trvaltest = 'val',   max_file_num = max_file_num)
 
+
+    
+    # Be sure to make this flexible for GPU!
+    # https://medium.com/analytics-vidhya/training-deep-neural-networks-on-a-gpu-with-pytorch-2851ccfb6066
+
+
     # Dataloaders
     dataloaders = {}
     dataloaders['train'] = torch.utils.data.DataLoader(datasets['train'], batch_size = ML_setting['batchsize_train'], shuffle=True,  num_workers = 0) # when to have num_workers > 0 ?
@@ -116,6 +122,8 @@ def get_data(data_root, ML_setting, max_file_num = None):
 def get_ML_setting(use_gpu = False):
     """ Fetch config dictionary with hardcoded settings  """
     
+    
+    # torch.cuda.is_available() # For automatic CPU / GPU use
     ML_setting = {}
     ML_setting['use_gpu'] = use_gpu
     ML_setting['lr'] = 0.0005 #0.005                # Learning rate

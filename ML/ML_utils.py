@@ -21,10 +21,14 @@ def get_device(ML_setting):
 
 
 def get_inputs(data, device):
-    image = data['config']
+    image = data['config'].to(device)
     stretch = torch.from_numpy(np.array(data['stretch'], dtype = np.float32))
     FN = torch.from_numpy(np.array(data['F_N'], dtype = np.float32))
     vals = torch.stack((stretch, FN), 1).to(device)
+    
+    # print(vals.get_device())
+    # print(device)
+    # exit()
     return image, vals
     
 def get_labels(data, keys, device):
