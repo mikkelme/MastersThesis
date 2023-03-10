@@ -244,6 +244,8 @@
 - Submitted RW dataset 
 - Submitted more realistic nanomachine imitation where the PB is not locked but kept apart by the tension force.
 - Working on flexible ML code towards a hyperparameter search running on cluster (with GPU).
+- Submitted ML hyperparameter architecture tuning to bigfacet 
+- Made class for accerlerated search will be used to evaulate performance of different configurations and evolve by some searching strategy - perhaps genetic algorithms. 
 
 
 
