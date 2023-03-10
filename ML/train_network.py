@@ -423,8 +423,10 @@ class Trainer:
         s += f'# FC_layers = {self.model.FC_layers}\n'
         s += f'# out_features = {self.model.out_features}\n'
         s += f'# keys = {self.model.keys}\n'
+        s += f'# mode = {self.model.mode}\n'
         s += f'# batchnorm = {self.model.batchnorm}\n'
-        s += f'# num params = {self.model.get_num_params()}\n'
+        s += '# --- Model info --- #\n'
+        s += f'# num_params = {self.model.get_num_params()}\n'
         s += f'# --- Criterion --- #\n'
         s += f'# alpha = {self.criterion.alpha}\n'
         s += f'# out_features = {self.criterion.out_features}\n'
@@ -523,9 +525,11 @@ if __name__=='__main__':
     
     
     coach = Trainer(model, data_root, criterion, **ML_setting)
-    coach.learn(max_epochs = 20, max_file_num = None)
+    coach.learn(max_epochs = 2, max_file_num = None)
     coach.save_history('training/test')
     coach.plot_history()
+    
+    
     # coach.get_info()
     
     

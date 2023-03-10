@@ -105,6 +105,7 @@ class VGGNet(Module):
         self.FC_layers = FC_layers
         self.out_features = np.array(out_features)
         self.keys = keys
+        self.mode = mode
         self.batchnorm = batchnorm
         
         if mode == 0: # channels for each numerical input
