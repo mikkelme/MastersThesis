@@ -170,20 +170,6 @@ class VGGNet(Module):
         
         # Concatenate input channels 
         x = torch.cat((image, vals), dim = 1)
-      
-          
-        # x = [image]
-        # for i in range(vals.size(-1)):
-        #     x.append(torch.stack([torch.full(self.image_shape, v) for v in vals[:, i]], 0))
-        
-        
-        # x = torch.stack(x, 1)
-        
-        # print(x[0, 0]) # image
-        # print(x[0, 1]) # stretch
-        # print(x[0, 2]) # F_N
-        # print(x.size())
-        # exit()
         
         # --- Forward pass --- #
         # Convolutional 

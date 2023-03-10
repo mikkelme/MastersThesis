@@ -330,7 +330,7 @@ class Trainer:
             accuracy_list = []
             
         
-            val_SS_res = torch.zeros(self.num_out_features)
+            val_SS_res = torch.zeros(self.num_out_features).to(self.device)
             for batch_idx, data in enumerate(dataloader):
                 # --- Forward pass --- #
                 loss, Ff_loss, other_loss, rup_loss, outputs, labels  = self.forward_pass(data)
@@ -366,9 +366,9 @@ class Trainer:
             
             
             losses = np.array(losses)
-            R2 = (1 - val_SS_res/self.val_SS_tot).numpy()
-            abs_error = torch.mean(torch.stack(abs_error_list), dim = -2).numpy()
-            rel_error = torch.mean(torch.stack(rel_error_list), dim = -2).numpy()
+            R2 = (1 - val_SS_res/self.val_SS_tot).to('cpu').numpy() 
+            abs_error = torch.mean(torch.stack(abs_error_list), dim = -2).to('cpu').numpy()
+            rel_error = torch.mean(torch.stack(rel_error_list), dim = -2).to('cpu').numpy()
             accuracy = np.mean(accuracy_list)
             
             # Put last to nan corresponding to is_ruptured
