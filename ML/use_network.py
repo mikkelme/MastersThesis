@@ -10,128 +10,16 @@ from plot_set import *
 # from analysis.analysis_utils import *
 from produce_figures.baseline_variables import *
 
-
-def config_profile(model, config_path, stretch, F_N):
-    model.eval() # Evaluation mode
-    
-    
-    F_N_torch = torch.from_numpy(F_N.astype(np.float32))
-    stretch_torch = torch.from_numpy(stretch.astype(np.float32))
-    
-    
-    config = torch.from_numpy(np.load(config_path).astype(np.float32))
-    config = config.unsqueeze(0).repeat(len(stretch_torch), 1, 1)
-    vals = torch.stack((stretch_torch, F_N_torch), 1)
-
-    output = model(config, vals).detach().numpy()
-    rupture = output[:,-1] > 0.5
-    
-    # print(output[:, :])
-    
-    plt.figure(num=0, dpi=80, facecolor='w', edgecolor='k')
-    plt.plot(stretch[~rupture], output[:,0][~rupture], 'o', markersize = 1.5, label = "No rupture")
-    plt.plot(stretch[rupture], output[:,0][rupture], 'o', markersize = 1.5, label = "Rupture")
-    
-    plt.xlabel('Stretch', fontsize=14)
-    plt.ylabel(r'$\langle F_\parallel \rangle$ [nN]', fontsize=14)
-    plt.legend(fontsize = 13)
-    plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
-    # plt.savefig('../article/figures/figure.pdf', bbox_inches='tight')
-
-    
-    
-    
-
-def compare_model_to_data(model, folder):
-    
-    colorbar_scale = [(0.1, 10), 'log']
-    
-    config_path = find_single_file(folder, '.npy')
-    vars = ['data[\'stretch_pct\']', 'data[\'Ff\'][:, :, 0, 1]', 'data[\'F_N\']']
-    axis_labels = [r'Stretch', r'$\langle F_\parallel \rangle$ [nN]', r'$F_N$ [nN]']
-    fig, data = multi_plot_compare([folder], [config_path], vars, axis_labels, figsize = (7, 5), axis_scale = ['linear', 'linear'], colorbar_scale = colorbar_scale, equal_axes = [False, False], rupplot = True)
-    axes = fig.axes
-   
-    stretch = data['stretch_pct']
-    F_N = data['F_N']
-    
-  
-
-    
-    num_points = 100
-    stretch_torch = torch.from_numpy(np.linspace(np.min(stretch), np.max(stretch), num_points).astype(np.float32))
-    config = torch.from_numpy(np.load(config_path).astype(np.float32))
-    config = config.unsqueeze(0).repeat(len(stretch_torch), 1, 1)
-    
-    model.eval()
-    for k in F_N:
-        F_N_torch = torch.from_numpy((np.full(len(stretch_torch), k)).astype(np.float32))
-        vals = torch.stack((stretch_torch, F_N_torch), 1)
-
-        output = model(config, vals).detach().numpy()
-        rupture = output[:,-1] > 0.5
-
-
-        color = get_color_value(k, colorbar_scale[0][0], colorbar_scale[0][1], scale = colorbar_scale[1], cmap = matplotlib.cm.viridis)
-        axes[0].plot(stretch_torch, output[:, 0], color = color)
-        
-    
-    
-    
-    
-
-
-def load_model(weight_path):
-    # model = VGGNet( mode = 0, 
-    #                 input_num = 2, 
-    #                 conv_layers = [(1, 16), (1, 32), (1, 64)], 
-    #                 FC_layers = [(1, 512), (1,128)],
-    #                 out_features = ['R', 'R', 'C'])
-    # model = VGGNet( mode = 0, 
-    #                 input_num = 2, 
-    #                 conv_layers = [(1, 32), (1, 64), (1, 128)], 
-    #                 FC_layers = [(1, 512), (1,128)],
-    #                 out_features = ['R', 'R', 'R', 'R', 'R', 'C'])
-    model = VGGNet( mode = 0, 
-                    input_num = 2, 
-                    conv_layers = [(1, 16), (1, 32)], 
-                    FC_layers = [(1, 32), (1,16)],
-                    out_features = ['R', 'R', 'R', 'R', 'R', 'C'])
-    
-    
-    model = load_weights(model, weight_path)
-    return model
-
-
-def test_model_compare():
-    model = load_model('training/C16C32D32D16_model_dict_state')
-
-    # folder = '../Data/CONFIGS/honeycomb/hon_5' 
-    # folder = '../Data/CONFIGS/popup/pop_4'
-    
-    # folder = '../Data/CONFIGS/honeycomb/hon_1' # hon3215 used in ML data
-    folder = '../Data/Baseline_fixmove/honeycomb/multi_stretch' # hon3215 used in Baseline
-    # folder = '../Data/CONFIGS/popup/pop_35' # pop1_7_5 used in ML data
-    # folder = '../Data/Baseline_fixmove/popup/multi_stretch' # pop1_7_5 used in Baseline
-    compare_model_to_data(model, folder)
-
-
-# def test_model_manual():
-#     model = load_model('training/test_model_dict_state')
-
-
-#     num_points = 100    
-#     config_path = '../config_builder/baseline/nocut.npy'
-#     # config_path = '../config_builder/baseline/pop1_7_5.npy'
-#     config_path = '../config_builder/baseline/hon3215.npy'
-#     stretch = np.linspace(0, 2, num_points)
-#     F_N = np.linspace(1, 1, num_points) # nN
-#     config_profile(model, config_path, stretch, F_N)
+from scipy.signal import argrelextrema
 
 
 
 
-class Accelerated_search():
+
+
+
+
+class Evaluater():
     def __init__(self, model_weights, model_info, config_path = None):
         self.load_model(model_weights, model_info)
         
@@ -176,6 +64,9 @@ class Accelerated_search():
 
     def load_config(self, config_path):
         self.image = torch.from_numpy(np.load(config_path).astype(np.float32))
+        
+    def set_config(self, mat):
+        self.image = torch.from_numpy(mat.astype(np.float32))
 
 
     def predict(self, stretch, F_N):
@@ -250,11 +141,73 @@ class Accelerated_search():
             axes[0].plot(stretch, output[:, 0], color = color)
         
     
-def test_model_manual():
+    def evaluate_properties(self, stretch = np.linspace(0, 2, 100),  F_N = 5,  show = False):
+        
+        # Input vals XXX Hardcoded for now XXX
+        # num_points = 100
+        # stretch = np.linspace(0, 2, num_points)
+        # F_N = 5
+        ##############################
+        
+        image, vals, output = self.predict(stretch, F_N)
+        
+        stretch = vals[:, 0]
+        Ff = output[:, 0]
+        rupture = output[:,-1] > 0.5
+        
+        # --- Property metrics
+        metrics = {}
+        # Practical rupture stretch
+        prac_rup_stretch_idx = np.min(np.argwhere(rupture))
+        # prac_rup_stretch = stretch[prac_rup_stretch_idx]
+        
+        # Min and max friction (before any rupture prediction)
+        Ffmin_idx = np.argmin(Ff[:prac_rup_stretch_idx])
+        Ffmax_idx = np.argmax(Ff[:prac_rup_stretch_idx])
+        
+        
+        # Biggest forward drop in Ff
+        loc_max = argrelextrema(Ff[:prac_rup_stretch_idx], np.greater_equal)[0]
+        loc_min = argrelextrema(Ff[:prac_rup_stretch_idx], np.less_equal)[0]
+
+        drop_start = 0; drop_end = 0; max_drop = 0
+        for i in loc_max:
+            for j in loc_min:
+                if j > i: # Only look forward 
+                    drop = Ff[i] - Ff[j]
+                    if drop > max_drop:
+                        drop_start = i
+                        drop_end = j
+                        max_drop = drop
+                        
+      
+        metrics['prac_rup_stretch'] = stretch[prac_rup_stretch_idx]
+        metrics['Ff_min'] = (stretch[Ffmin_idx], Ff[Ffmin_idx])
+        metrics['Ff_max'] = (stretch[Ffmax_idx], Ff[Ffmax_idx])
+        metrics['max_drop'] = (stretch[drop_start], stretch[drop_end], max_drop)
+                 
+
+        if show:
+            plt.figure(num=0, dpi=80, facecolor='w', edgecolor='k')
+            plt.plot(stretch[~rupture], output[:,0][~rupture], 'o', markersize = 1.5, label = "No rupture")
+            plt.plot(stretch[rupture], output[:,0][rupture], 'o', markersize = 1.5, label = "Rupture")
+            # plt.plot(stretch[Ffmin_idx], Ff[Ffmin_idx], 'o')
+            # plt.plot(stretch[Ffmax_idx], Ff[Ffmax_idx], 'o')
+            if drop_end != 0:
+                plt.plot(stretch[drop_start], Ff[drop_start], 'o')
+                plt.plot(stretch[drop_end], Ff[drop_end], 'o')
+                
+            plt.show()    
+        
+        return metrics
+    
+def test_model_manual(name = None):
     # Model 
-    name = 'USE'
-    model_weights = f'training/{name}_model_dict_state'
-    model_info = f'training/{name}_best_scores.txt'
+    if name is None:
+        name = 'training/USE'
+
+    model_weights = f'{name}_model_dict_state'
+    model_info = f'{name}_best_scores.txt'
 
     # Config
     config_path = '../config_builder/baseline/nocut.npy'
@@ -266,16 +219,17 @@ def test_model_manual():
     F_N = 5
 
     # --- Stretch profile --- #
-    AS = Accelerated_search(model_weights, model_info, config_path)
-    AS.stretch_profile(stretch, F_N)
+    EV = Evaluater(model_weights, model_info, config_path)
+    EV.stretch_profile(stretch, F_N)
     plt.show()
 
 
-def test_model_compare():
+def test_model_compare(name = None):
     # Model 
-    name = 'USE'
-    model_weights = f'training/{name}_model_dict_state'
-    model_info = f'training/{name}_best_scores.txt'
+    if name is None:
+        name = 'training/USE'
+    model_weights = f'{name}_model_dict_state'
+    model_info = f'{name}_best_scores.txt'
 
     # Folder
     # folder = '../Data/CONFIGS/honeycomb/hon_5' 
@@ -287,8 +241,8 @@ def test_model_compare():
     # folder = '../Data/Baseline_fixmove/popup/multi_stretch' # pop1_7_5 used in Baseline
 
     # --- Compare --- #
-    AS = Accelerated_search(model_weights, model_info)
-    AS.compare_to_folder(folder)
+    EV = Evaluater(model_weights, model_info)
+    EV.compare_to_folder(folder)
     plt.show()
     
 
@@ -297,17 +251,23 @@ def test_model_compare():
 
 if __name__ == '__main__':
     
+    name = 'graphene_h_BN/C16C32C64D64D32D16'
     # test_model_manual()
-    test_model_compare()
+    # test_model_compare(name)
+    
+    
     pass
     
-    # model_weights = 'training/USE_model_dict_state'
-    # model_info = 'training/USE_best_scores.txt'
-    # AS = Accelerated_search(model_weights, model_info, config_path = '../config_builder/baseline/hon3215.npy')
+    model_weights = f'{name}_model_dict_state'
+    model_info = f'{name}_best_scores.txt'
+    EV = Evaluater(model_weights, model_info, config_path = '../config_builder/baseline/hon3215.npy')
+    EV.load_config('../config_builder/baseline/pop1_7_5.npy')
+    EV.evaluate_properties(show = True)
+    
     
     # stretch = np.linspace(0, 2, 100)
     # F_N = 10
-    # # AS.stretch_profile(stretch, F_N)
-    # AS.compare_to_folder(folder = '../Data/Baseline_fixmove/honeycomb/multi_stretch')
+    # # EV.stretch_profile(stretch, F_N)
+    # EV.compare_to_folder(folder = '../Data/Baseline_fixmove/honeycomb/multi_stretch')
     
     # plt.show()

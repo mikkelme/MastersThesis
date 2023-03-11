@@ -153,7 +153,7 @@ if __name__ == '__main__':
     
     ML_setting = {
         'use_gpu': True,
-        'lr': 0.0005,  # Learning rate
+        'lr': 0.005,  # Learning rate
         'batchsize_train': 32,
         'batchsize_val': 64,
         'max_epochs': 300,
@@ -165,7 +165,7 @@ if __name__ == '__main__':
     
     
     A = A_test(mode = 0, batchnorm = True)
-    train_architectures(A, data_root, ML_setting, save_folder = 'grahene_h_BN')
+    train_architectures(A, data_root, ML_setting, save_folder = 'ghBN_4')
     
     
     
