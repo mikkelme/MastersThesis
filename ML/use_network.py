@@ -236,9 +236,9 @@ def test_model_compare(name = None):
     # folder = '../Data/CONFIGS/popup/pop_4'
 
     # folder = '../Data/CONFIGS/honeycomb/hon_1' # hon3215 used in ML data
-    folder = '../Data/Baseline_fixmove/honeycomb/multi_stretch' # hon3215 used in Baseline
+    # folder = '../Data/Baseline_fixmove/honeycomb/multi_stretch' # hon3215 used in Baseline
     # folder = '../Data/CONFIGS/popup/pop_35' # pop1_7_5 used in ML data
-    # folder = '../Data/Baseline_fixmove/popup/multi_stretch' # pop1_7_5 used in Baseline
+    folder = '../Data/Baseline_fixmove/popup/multi_stretch' # pop1_7_5 used in Baseline
 
     # --- Compare --- #
     EV = Evaluater(model_weights, model_info)
@@ -253,16 +253,16 @@ if __name__ == '__main__':
     
     name = 'graphene_h_BN/C16C32C64D64D32D16'
     # test_model_manual()
-    # test_model_compare(name)
+    test_model_compare(name)
     
     
     pass
     
-    model_weights = f'{name}_model_dict_state'
-    model_info = f'{name}_best_scores.txt'
-    EV = Evaluater(model_weights, model_info, config_path = '../config_builder/baseline/hon3215.npy')
-    EV.load_config('../config_builder/baseline/pop1_7_5.npy')
-    EV.evaluate_properties(show = True)
+    # model_weights = f'{name}_model_dict_state'
+    # model_info = f'{name}_best_scores.txt'
+    # EV = Evaluater(model_weights, model_info, config_path = '../config_builder/baseline/hon3215.npy')
+    # EV.load_config('../config_builder/baseline/pop1_7_5.npy')
+    # EV.evaluate_properties(show = True)
     
     
     # stretch = np.linspace(0, 2, 100)

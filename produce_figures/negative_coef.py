@@ -280,18 +280,46 @@ def manual_coupling(path, compare_path = None, save = False):
         plt.savefig(f'../article/figures/negative_coefficient/{save}', bbox_inches='tight')
     
 
-
-if __name__ == '__main__':
-    
-    
+def manual_coupling_locked(save = False):
+        
     path = '../Data/negative_coef/multi_coupling_popup'
     compare_path = '../Data/Baseline_fixmove/popup/multi_stretch'
-    manual_coupling(path, compare_path, save = 'manual_coupling_pop1_7_5.pdf')
+    if save is not False:
+        manual_coupling(path, compare_path, save = 'manual_coupling_pop1_7_5.pdf')
+    else:
+        manual_coupling(path, compare_path, save)
+        
     
     
     path = '../Data/negative_coef/multi_coupling_honeycomb'
     compare_path = '../Data/Baseline_fixmove/honeycomb/multi_stretch'
-    manual_coupling(path, compare_path, save = 'manual_coupling_hon3215.pdf')
+    if save is not False:
+        manual_coupling(path, compare_path, save = 'manual_coupling_hon3215.pdf')
+    else:
+        manual_coupling(path, compare_path, save)
+
+def manual_coupling_free(save = False):
+        
+    path = '../Data/negative_coef/multi_coupling_free_popup'
+    compare_path = '../Data/Baseline_fixmove/popup/multi_stretch'
+    if save is not False:
+        manual_coupling(path, compare_path, save = 'manual_coupling_free_pop1_7_5.pdf')
+    else:
+        manual_coupling(path, compare_path, save)
+        
+    
+    
+ 
+    
+    # path = '../Data/negative_coef/multi_coupling_honeycomb'
+    # compare_path = '../Data/Baseline_fixmove/honeycomb/multi_stretch'
+    # manual_coupling(path, compare_path, save = 'manual_coupling_hon3215.pdf')
+    
+    
+
+if __name__ == '__main__':
+    # manual_coupling_locked(save = False)
+    manual_coupling_free(save = True)
     
     
     plt.show()

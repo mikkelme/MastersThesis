@@ -33,12 +33,14 @@ def multi_coupling_honeycomb():
     """ Run multiple FN for coupling simulation with configuration of choice """
     name = 'honeycomb'
     file = '../config_builder/baseline/hon3215.npy'   
-    gen = Data_generator(file, header = f'egil:negative_coef', simname = f'multi_coupling_{name}', config_ext = name)
+    # simname = f'multi_coupling_{name}'
+    simname = f'multi_coupling_free_{name}'
+    gen = Data_generator(file, header = f'egil:negative_coef', simname = simname, config_ext = name)
     variables = {'num_stretch_files': 100, 
                     'RNSEED'           : -1,
                     'run_rupture_test' : 1,
                     "stretch_speed_pct": 0.001,
-                    'F_N'              : 20e-9,
+                    'F_N'              : 10e-9,
                     'R'                : 6,
                     "stretch_max_pct"  : 1.5,
                     'root'             : '.',
@@ -47,12 +49,15 @@ def multi_coupling_honeycomb():
     F_N = np.array([0])*1e-9
     
     # gen.run_multi(F_N, variables, num_procs = 4, partition = 'mini', scripts = ["manual_coupling_stretch.in", "manual_coupling_drag.in"])
-    gen.run_multi(F_N, variables, num_procs_initial = 16, num_procs = 4, partition = 'normal', scripts = ["manual_coupling_stretch.in", "manual_coupling_drag.in"])
+    # gen.run_multi(F_N, variables, num_procs_initial = 16, num_procs = 4, partition = 'normal', scripts = ["manual_coupling_stretch.in", "manual_coupling_drag.in"])
     
+    # manual_coupling_free_drag.in
+    variables['K'] = 1e4 # Stiff springs to approximate fix move conditions
+    gen.run_multi(F_N, variables, num_procs_initial = 16, num_procs = 4, partition = 'mini', scripts = ["manual_coupling_stretch.in", "manual_coupling_free_drag.in"])
         
         
         
 if __name__ == '__main__':
     # multi_coupling_popup()
-    # multi_coupling_honeycomb()
+    multi_coupling_honeycomb()
     pass
