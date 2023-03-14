@@ -5,28 +5,38 @@ from config_builder.build_config import *
 
 
 class Accelerated_search:
-    def __init__(self, model_weights, model_info):
+    # TODO: Simply stored matrixes by using n0 = 1 - n1 and similar for P matrx
+    # TODO: Make initialization for kirigami dataset
+    # TODO: Make functionality to use smaller populaiton and then translate it periodically to the whole sheet
+    # TODO: Make repair function to ensure valid configurations once in a while or every generation perhaps. 
+    def __init__(self, model_weights, model_info, image_shape = (62, 106)):
         
         # self.image_shape = (62, 106)
-        self.image_shape = (10, 10)
-        self.N = 100 # Population size
-        self.A = np.zeros((self.N, *self.image_shape), dtype = int) # Population
+        # self.image_shape = (10, 10)
+        self.image_shape = image_shape
+        
+            
+            
+        
+        # Transistion probabilities
         self.P = np.zeros((*self.image_shape, 2,2))
-            
-            
-            # Transistion probabilities
+        
+        # Distribution states
         self.n = np.zeros((*self.image_shape, 2))
         self.n_target = np.zeros((*self.image_shape, 2))
-
-
-        ### FILL RANDOMLY FOR NOW XXX
-        # ones = np.random.rand(*np.shape(self.A)) < 0.5
-        ones = np.random.rand(*np.shape(self.A)) < 0.5
-        self.A[ones] = 1
+       
         
         self.gen = 0
     
+
+    def initialize_random_population(N = 100, p = 0.5):
+        self.N = N # Population size
+        self.A = np.zeros((self.N, *self.image_shape), dtype = int) # Population
+        ones = np.random.rand(*np.shape(self.A)) < p
+        self.A[ones] = 1
         self.scores = np.zeros(self.N)
+
+
     
     def fitness_func(self, conf):
         """ Tmp fitness function for testing """
@@ -57,7 +67,7 @@ class Accelerated_search:
         
         self.scores = self.scores[self.rank]
         self.A = self.A[self.rank]
-        # self.N_mark = self.N//10
+        # self.N_mark = self.N//2
         self.N_mark = self.N//10
         
         
@@ -72,7 +82,7 @@ class Accelerated_search:
         C0 = 1 - C1
         self.n[:, :, 0] = C0
         self.n[:, :, 1] = C1
-        # TODO: Keep only C0 and n1 since these sum to one anyway 
+        # TODO: Keep only C0 and n0 since these sum to one anyway 
         # and can be related as n1 = 1 - n0
 
     def update_state_distribution_target(self):
@@ -102,13 +112,9 @@ class Accelerated_search:
         self.P[~nonzero_n1, 1, 0] = 1
         
         
-        
-        
-        prob_bound = 0
         # Clip the result at probability range [bound, 1-bound]
-        underflow = self.P[:, :, 1, 0] < prob_bound
-        overflow = self.P[:, :, 1, 0] > 1-prob_bound
-        
+        prob_bound = 0 
+        # Only P10 exceedes [0, 1] but it is perhaps usefull to put into a sub range for more exploration
         self.P[self.P[:, :, 1, 0] < prob_bound, 1, 0] = prob_bound
         self.P[self.P[:, :, 1, 0] > 1-prob_bound, 1, 0] = 1-prob_bound
         
@@ -134,7 +140,6 @@ class Accelerated_search:
         # print('pred_P10', [f'{s:0.4f}' for s in pred_P10])
         # print()
         
-        # print(f'P10 = {np.mean(self.P[:, :, 1, 0]):g}, n0target = {np.mean(self.n_target[:, :, 0]):g}, P00 = {np.mean(self.P[:, :, 0, 0]):g}, n0 = {np.mean(self.n[:, :, 0]):g}, n1 = {np.mean(self.n[:, :, 1]):g}, avg P10 = {avg_P10}')
         
         # --- Calculate remaining P11 and P01 --- # XXX Never used explicitly 
         self.P[:, :, 1, 1] = 1 - self.P[:, :, 1, 0]
@@ -220,10 +225,10 @@ class Accelerated_search:
                 print(f'Gen = {self.gen} | Min score = {self.min_score:g}, Mean score = {self.mean_score:g}, Max score = {self.max_score:g}, mean P01 = {np.mean(self.P[:, :, 0, 1]):g}, mean P10 = {np.mean(self.P[:, :, 1, 0]):g}')
                 # print(f'Gen = {self.gen} | Max score = {self.max_score:g}, mean P01 = {np.mean(self.P[:, :, 0, 1]):g}, mean P10 = {np.mean(self.P[:, :, 1, 0]):g},  best porosity = {best_porosity:g}, avg td = {np.mean(self.n_target[:, :, 0]):g}, {np.mean(self.n_target[:, :, 1]):g}')
                 
-                # if self.gen % 100 == 0:
-                #     plt.imshow(self.A[0])
-                #     plt.show()
-                # print(f'Gen = {self.gen} | Max score = {self.max_score:g}, mean P01 = {np.mean(self.P[:, :, 0, 1]):g}, mean P10 = {np.mean(self.P[:, :, 1, 0]):g},  best porosity = {best_porosity:g}, avg td = {np.mean(self.n_target[:, :, 0]):g}, {np.mean(self.n_target[:, :, 1]):g}')
+                if self.gen % 100 == 0:
+                    plt.imshow(self.A[0])
+                    plt.show()
+                print(f'Gen = {self.gen} | Max score = {self.max_score:g}, mean P01 = {np.mean(self.P[:, :, 0, 1]):g}, mean P10 = {np.mean(self.P[:, :, 1, 0]):g},  best porosity = {best_porosity:g}, avg td = {np.mean(self.n_target[:, :, 0]):g}, {np.mean(self.n_target[:, :, 1]):g}')
                 
                 # print(f'Gen = {self.g
                 # en} |, dist: best = {np.mean(self.n[:, :, 0]):g}, {np.mean(self.n[:, :, 1]):g}, target = {np.mean(self.n_target[:, :, 0]):g}, {np.mean(self.n_target[:, :, 1]):g}')
