@@ -77,6 +77,13 @@ def read_multi_coupling(folder, mean_pct = 0.5, std_pct = 0.35, stretch_lim = [N
                 # Get data
                 friction_file = find_single_file(subsub, ext = friction_ext)    
                 raw_data = read_friction_file(friction_file)   
+                # print(raw_data.keys())
+                # s = raw_data['v_stretch_pct']
+                # print(np.min(s))
+                # print(np.mean(s))
+                # print(np.std(s))
+                # print(np.max(s))
+                # exit()
                 
                 stretch_pct = info_dict['SMAX']
                 F_N = -metal_to_SI(np.mean(raw_data['c_Ff_sheet[3]'] + raw_data['c_Ff_PB[3]']), 'F')*1e9
@@ -86,9 +93,19 @@ def read_multi_coupling(folder, mean_pct = 0.5, std_pct = 0.35, stretch_lim = [N
                 
                 if not is_ruptured:
                     _, fricData = analyse_friction_file(friction_file, mean_pct, std_pct)
-                    data.append((stretch_pct, F_N, fricData['Ff'], fricData['Ff_std'], fricData['contact_mean'], fricData['contact_std']))  
+                    if 'v_stretch_pct' in raw_data:
+                        mean_stretch = np.mean(raw_data['v_stretch_pct']) 
+                        std_stretch = np.std(raw_data['v_stretch_pct'])
+                        data.append((stretch_pct, F_N, fricData['Ff'], fricData['Ff_std'], fricData['contact_mean'], fricData['contact_std'], mean_stretch, std_stretch))  
+                    else:
+                        data.append((stretch_pct, F_N, fricData['Ff'], fricData['Ff_std'], fricData['contact_mean'], fricData['contact_std']))  
                 else:
-                    data.append((stretch_pct, F_N, np.full((3,2) ,np.nan), np.full(3, np.nan), np.full(2, np.nan), np.full(2, np.nan)))  
+                    if 'v_stretch_pct' in raw_data:
+                        mean_stretch = np.mean(raw_data['v_stretch_pct']) 
+                        std_stretch = np.std(raw_data['v_stretch_pct'])
+                        data.append((stretch_pct, F_N, np.full((3,2) ,np.nan), np.full(3, np.nan), np.full(2, np.nan), np.full(2, np.nan), mean_stretch, std_stretch))  
+                    else:
+                        data.append((stretch_pct, F_N, np.full((3,2) ,np.nan), np.full(3, np.nan), np.full(2, np.nan), np.full(2, np.nan)))  
                     
             
             
@@ -108,7 +125,11 @@ def read_multi_coupling(folder, mean_pct = 0.5, std_pct = 0.35, stretch_lim = [N
     data = data[sort]
     rupture = rupture[sort]
     
-    stretch_pct, F_N, Ff, Ff_std, contact_mean, contact_std = np.stack(data[:, 0]), np.stack(data[:, 1]), np.stack(data[:, 2]), np.stack(data[:, 3]), np.stack(data[:, 4]), np.stack(data[:, 5]) 
+    if data.shape[1] == 6:
+        stretch_pct, F_N, Ff, Ff_std, contact_mean, contact_std = np.stack(data[:, 0]), np.stack(data[:, 1]), np.stack(data[:, 2]), np.stack(data[:, 3]), np.stack(data[:, 4]), np.stack(data[:, 5]) 
+    elif data.shape[1] == 8:
+        stretch_pct, F_N, Ff, Ff_std, contact_mean, contact_std, mean_stretch, std_stretch = np.stack(data[:, 0]), np.stack(data[:, 1]), np.stack(data[:, 2]), np.stack(data[:, 3]), np.stack(data[:, 4]), np.stack(data[:, 5]), np.stack(data[:, 6]), np.stack(data[:, 7]) 
+    
     rup_stretch_pct, rup_F_N, rup, filenames = np.stack(rupture[:, 0]), np.stack(rupture[:, 1]), np.stack(rupture[:, 2]), np.stack(rupture[:, 3])
     
         
@@ -147,6 +168,12 @@ def read_multi_coupling(folder, mean_pct = 0.5, std_pct = 0.35, stretch_lim = [N
         'rupture_stretch': rupture_stretch,
         'practical_rupture_stretch': practical_rupture_stretch,
     }    
+    
+    if data.shape[1] == 8:
+        output['mean_stretch'] = mean_stretch
+        output['std_stretch'] = std_stretch
+        
+ 
         
     return output
     
@@ -188,6 +215,10 @@ def manual_coupling(path, compare_path = None, save = False):
     # Get coupling data
     data = read_multi_coupling(path, mean_window_pct, std_window_pct)
     stretch = data['stretch_pct']
+    print(stretch, data['mean_stretch'])
+    print(data.keys())
+    exit()
+    
     F_N = data['F_N'] # Full sheet
     Ff = data['Ff'][:, 0, 1]
     
@@ -319,7 +350,7 @@ def manual_coupling_free(save = False):
 
 if __name__ == '__main__':
     # manual_coupling_locked(save = False)
-    manual_coupling_free(save = True)
+    manual_coupling_free(save = False)
     
     
     plt.show()
