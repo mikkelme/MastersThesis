@@ -29,7 +29,7 @@ class Accelerated_search:
         self.gen = 0
     
 
-    def initialize_random_population(N = 100, p = 0.5):
+    def initialize_random_population(self, N = 100, p = 0.5):
         self.N = N # Population size
         self.A = np.zeros((self.N, *self.image_shape), dtype = int) # Population
         ones = np.random.rand(*np.shape(self.A)) < p
@@ -67,8 +67,8 @@ class Accelerated_search:
         
         self.scores = self.scores[self.rank]
         self.A = self.A[self.rank]
-        # self.N_mark = self.N//2
-        self.N_mark = self.N//10
+        self.N_mark = self.N//2
+        # self.N_mark = self.N//10
         
         
         self.min_score  = self.scores[-1]
@@ -193,9 +193,8 @@ class Accelerated_search:
                 RN = np.random.rand(*self.image_shape)
                 zeros = self.A[i] < 0.5
                 
-                P01 = bias[i]*self.P[:, :, 0, 1] + (1-bias[i])*0.5
-                P10 = bias[i]*self.P[:, :, 1, 0] + (1-bias[i])*0.5
-                
+                # P01 = bias[i]*self.P[:, :, 0, 1] + (1-bias[i])*0.5
+                # P10 = bias[i]*self.P[:, :, 1, 0] + (1-bias[i])*0.5
                 # flip0 = np.logical_and(RN < P01, zeros)
                 # flip1 = np.logical_and(RN < P10, ~zeros)
                 flip0 = np.logical_and(RN < self.P[:, :, 0, 1], zeros)
@@ -225,10 +224,9 @@ class Accelerated_search:
                 print(f'Gen = {self.gen} | Min score = {self.min_score:g}, Mean score = {self.mean_score:g}, Max score = {self.max_score:g}, mean P01 = {np.mean(self.P[:, :, 0, 1]):g}, mean P10 = {np.mean(self.P[:, :, 1, 0]):g}')
                 # print(f'Gen = {self.gen} | Max score = {self.max_score:g}, mean P01 = {np.mean(self.P[:, :, 0, 1]):g}, mean P10 = {np.mean(self.P[:, :, 1, 0]):g},  best porosity = {best_porosity:g}, avg td = {np.mean(self.n_target[:, :, 0]):g}, {np.mean(self.n_target[:, :, 1]):g}')
                 
-                if self.gen % 100 == 0:
+                if self.gen % 10 == 0:
                     plt.imshow(self.A[0])
                     plt.show()
-                print(f'Gen = {self.gen} | Max score = {self.max_score:g}, mean P01 = {np.mean(self.P[:, :, 0, 1]):g}, mean P10 = {np.mean(self.P[:, :, 1, 0]):g},  best porosity = {best_porosity:g}, avg td = {np.mean(self.n_target[:, :, 0]):g}, {np.mean(self.n_target[:, :, 1]):g}')
                 
                 # print(f'Gen = {self.g
                 # en} |, dist: best = {np.mean(self.n[:, :, 0]):g}, {np.mean(self.n[:, :, 1]):g}, target = {np.mean(self.n_target[:, :, 0]):g}, {np.mean(self.n_target[:, :, 1]):g}')
@@ -264,6 +262,7 @@ if __name__ == '__main__':
     
     # Init
     AS = Accelerated_search(model_weights, model_info)
+    AS.initialize_random_population(N = 10, p = 0.5)
     AS.evolution()
     # AS.evaluate_fitness()
     # AS.mutate()
