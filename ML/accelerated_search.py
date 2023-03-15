@@ -2,7 +2,7 @@ from use_network import *
 
 from config_builder.build_config import *
 
-
+# matplotlib.interactive(True)
 
 class Accelerated_search:
     # TODO: Simply stored matrixes by using n0 = 1 - n1 and similar for P matrx
@@ -22,8 +22,12 @@ class Accelerated_search:
         self.P = np.zeros((*self.image_shape, 2,2))
         
         # Distribution states
-        self.n = np.zeros((*self.image_shape, 2))
-        self.n_target = np.zeros((*self.image_shape, 2))
+        # self.n = np.zeros((*self.image_shape, 2))
+        # self.n_target = np.zeros((*self.image_shape, 2))
+        
+        self.n0 = np.zeros(self.image_shape)
+        self.n0_target = np.zeros(self.image_shape)
+        
        
         
         self.gen = 0
@@ -44,12 +48,10 @@ class Accelerated_search:
         
         score = 0
         Lx, Ly = self.image_shape[0], self.image_shape[1]
-        for i in range(1, Lx):
-            for j in range(1, Ly):
-                x = (i + Lx)%Lx
-                y = (i + Lx)%Lx
+        for i in range(Lx):
+            for j in range(Ly):
                 set1 = [conf[i,j], conf[(i + 1 + Lx)%Lx,j]]
-                set2 = [conf[i,j], conf[i,(j + 1 + Ly)%Ly]]
+                set2 = [conf[i,j], conf[i, (j + 1 + Ly)%Ly]]
                 score += np.sum(set1) + np.sum(set2) - 2*np.min(set1) - 2*np.min(set2)
         
         
@@ -67,8 +69,8 @@ class Accelerated_search:
         
         self.scores = self.scores[self.rank]
         self.A = self.A[self.rank]
-        self.N_mark = self.N//2
-        # self.N_mark = self.N//10
+        # self.N_mark = self.N//2
+        self.N_mark = self.N//10
         
         
         self.min_score  = self.scores[-1]
@@ -80,71 +82,58 @@ class Accelerated_search:
     def update_state_distribution(self):
         C1 = np.mean(self.A, axis = 0)
         C0 = 1 - C1
-        self.n[:, :, 0] = C0
-        self.n[:, :, 1] = C1
-        # TODO: Keep only C0 and n0 since these sum to one anyway 
-        # and can be related as n1 = 1 - n0
+        # self.n[:, :, 0] = C0
+        # self.n[:, :, 1] = C1
+        
+        self.n0 = C0
+        
 
     def update_state_distribution_target(self):
         C0_target = np.max(np.multiply(self.W[:, np.newaxis, np.newaxis], -self.A+1), axis = 0)
         C1_target = np.max(np.multiply(self.W[:, np.newaxis, np.newaxis], self.A), axis = 0)
-        # TODO: What if the pixel is all zero or ones... XXX
+    
+        # C0_target = np.sum(np.multiply(self.W[:, np.newaxis, np.newaxis], -self.A+1), axis = 0)
+        # C1_target = np.sum(np.multiply(self.W[:, np.newaxis, np.newaxis], self.A), axis = 0)
         
-        self.n_target[:, :, 0] = C0_target
-        self.n_target[:, :, 1] = C1_target
+        
      
-        # Normalize
-        self.n_target /= np.sum(self.n_target, axis = -1)[:, :, np.newaxis]
         
+        # Normalize
+        self.n0_target = C0_target /(C0_target + C1_target)
+    
     def update_gene_transistion_probabilities(self):
         
+        self.update_state_distribution()
+
         # --- Set P00 --- #
         if self.gen == 0:
+            n0 = self.n0
             self.P[:, :, 0, 0] = 0.5
+            self.update_state_distribution_target()
         else:
-            self.P[:, :, 0, 0] = self.n[:, :, 0]
+            # n0 = self.n0_target # Old target
+            n0 = (self.n0_target+self.n0)/2 # mix
+            self.update_state_distribution_target()
+            self.P[:, :, 0, 0] = n0
         
         
         # --- Calculate P10 --- #
-        # Only apply formula to indexes for self.n[:, :, 1] != 0
-        nonzero_n1 = self.n[:, :, 1] > 0
-        self.P[nonzero_n1, 1, 0] = (self.n_target[nonzero_n1, 0] - self.P[nonzero_n1, 0, 0]*self.n[nonzero_n1, 0])/self.n[nonzero_n1, 1]
+        n1 = 1 - n0
+        nonzero_n1 = n1 > 0
+        self.P[nonzero_n1, 1, 0] = (self.n0_target[nonzero_n1] - self.P[nonzero_n1, 0, 0] * n0[nonzero_n1])/n1[nonzero_n1]
         self.P[~nonzero_n1, 1, 0] = 1
         
+
         
-        # Clip the result at probability range [bound, 1-bound]
-        prob_bound = 0 
-        # Only P10 exceedes [0, 1] but it is perhaps usefull to put into a sub range for more exploration
-        self.P[self.P[:, :, 1, 0] < prob_bound, 1, 0] = prob_bound
-        self.P[self.P[:, :, 1, 0] > 1-prob_bound, 1, 0] = 1-prob_bound
-        
-        self.P[self.P[:, :, 0, 1] < prob_bound, 0, 1] = prob_bound
-        self.P[self.P[:, :, 0, 1] > 1-prob_bound, 0, 1] = 1-prob_bound
-        
-    
-        
-        # # Watch a row
-        # P10 = self.P[0, :, 1, 0]
-        # P01 = self.P[0, :, 0, 1]
-        # n0target = self.n_target[0, :, 0]
-        # P00 = self.P[0, :, 0, 0]
-        # n0 = self.n[0, :, 0]
-        # n1 = self.n[0, :, 1]
-        # pred_P10 = (n0target - P00*n0)/n1
-        # print('P10     ', [f'{s:0.4f}' for s in P10])
-        # print('P01     ', [f'{s:0.4f}' for s in P01])
-        # print('n0target', [f'{s:0.4f}' for s in n0target])
-        # print('P00     ', [f'{s:0.4f}' for s in P00])
-        # print('n0      ', [f'{s:0.4f}' for s in n0])
-        # print('n1      ', [f'{s:0.4f}' for s in n1])
-        # print('pred_P10', [f'{s:0.4f}' for s in pred_P10])
-        # print()
-        
-        
-        # --- Calculate remaining P11 and P01 --- # XXX Never used explicitly 
-        self.P[:, :, 1, 1] = 1 - self.P[:, :, 1, 0]
+        # --- Calculate P01 --- #
         self.P[:, :, 0, 1] = 1 - self.P[:, :, 0, 0]
         
+        # --- Clip --- #
+        # Clip the result at probability range [0, 1]
+        self.P[self.P[:, :, 1, 0] < 0, 1, 0] = 0
+        self.P[self.P[:, :, 1, 0] > 1, 1, 0] = 1
+        
+    
         
     def ranking_func(self):
         
@@ -159,7 +148,6 @@ class Accelerated_search:
         # slope = 1/(mark_score-best_score)
         # r = np.where(i <= self.N_mark, np.abs((self.scores[i]-best_score)*slope) , 1)
         
-    
         # Quadratic    
         # r = np.where(i <= self.N_mark, i**2, 1)
         
@@ -177,28 +165,30 @@ class Accelerated_search:
        
        
         mutate_individual = np.random.rand(self.N) < a
-        self.update_state_distribution()
-        self.update_state_distribution_target()
+        
+        # self.old_n0_target = self.n0_target
+        # self.update_state_distribution()
+        # self.update_state_distribution_target()
         self.update_gene_transistion_probabilities()
         
+        # Clip bottom prob. increasingly towards end to avoid locking of prob.
+        i = np.arange(self.N).astype('float')
+        max_bound = 0.05
+        slope = max_bound/(self.N-self.N_mark-1)
+        clip = np.where(i >= self.N_mark, (i - self.N_mark)*slope, 0)
         
-        # XXX This might work, but then we need to introduce a similar
-        # weighting in the target distirbution calculation XXX
-        # i = np.arange(self.N).astype('float')
-        # bias = np.where(i >= self.N_mark, len(i)-1-i, 1)
-        # bias[self.N_mark:] /= bias[self.N_mark]
+
         for i in range(self.N):
            
             if mutate_individual[i]:
                 RN = np.random.rand(*self.image_shape)
                 zeros = self.A[i] < 0.5
+                   
+                flip0 = np.logical_and(RN < np.maximum(self.P[:, :, 0, 1], clip[i]), zeros)
+                flip1 = np.logical_and(RN < np.maximum(self.P[:, :, 1, 0], clip[i]), ~zeros)
+                # if i == self.N -1:
+                #     print(f'flip0 = {np.sum(flip0)}, flip1 = {np.sum(flip1)}, clip = {clip[i]}')
                 
-                # P01 = bias[i]*self.P[:, :, 0, 1] + (1-bias[i])*0.5
-                # P10 = bias[i]*self.P[:, :, 1, 0] + (1-bias[i])*0.5
-                # flip0 = np.logical_and(RN < P01, zeros)
-                # flip1 = np.logical_and(RN < P10, ~zeros)
-                flip0 = np.logical_and(RN < self.P[:, :, 0, 1], zeros)
-                flip1 = np.logical_and(RN < self.P[:, :, 1, 0], ~zeros)
                 self.A[i][flip0] = 1
                 self.A[i][flip1] = 0
         
@@ -222,31 +212,35 @@ class Accelerated_search:
                 best_porosity = np.mean(self.A[0])
                 
                 print(f'Gen = {self.gen} | Min score = {self.min_score:g}, Mean score = {self.mean_score:g}, Max score = {self.max_score:g}, mean P01 = {np.mean(self.P[:, :, 0, 1]):g}, mean P10 = {np.mean(self.P[:, :, 1, 0]):g}')
-                # print(f'Gen = {self.gen} | Max score = {self.max_score:g}, mean P01 = {np.mean(self.P[:, :, 0, 1]):g}, mean P10 = {np.mean(self.P[:, :, 1, 0]):g},  best porosity = {best_porosity:g}, avg td = {np.mean(self.n_target[:, :, 0]):g}, {np.mean(self.n_target[:, :, 1]):g}')
                 
-                if self.gen % 10 == 0:
-                    plt.imshow(self.A[0])
-                    plt.show()
-                
-                # print(f'Gen = {self.g
-                # en} |, dist: best = {np.mean(self.n[:, :, 0]):g}, {np.mean(self.n[:, :, 1]):g}, target = {np.mean(self.n_target[:, :, 0]):g}, {np.mean(self.n_target[:, :, 1]):g}')
+                # if self.gen % 100 == 1:
+                #     self.show_status()
+                #     plt.show()
+                    
+                    
                 self.evolve()
             except KeyboardInterrupt: 
                 break
         
+    def show_status(self):
+        fig, axes = plt.subplots(2, 2, num = unique_fignum(), figsize = (10, 5))
+        axes[0,0].imshow(1 - self.n0, vmin = 0, vmax = 1)
+        axes[0,0].set_title('1 -n0')
+        axes[0,1].imshow(1- self.n0_target, vmin = 0, vmax = 1)
+        axes[0,1].set_title('1 -n0 target')
+        
+        axes[1,0].imshow(self.P[:, :, 1, 0], vmin = 0, vmax = 1)
+        axes[1,0].set_title('P10')
+        
+        axes[1,1].imshow(self.P[:, :, 0, 1], vmin = 0, vmax = 1)
+        axes[1,1].set_title('P01')
+        fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
         
         
-    # def evolution(self, num_generations = 20): 
-    #     self.population_scores = self.get_scores(self.population)
-    #     print(f'Gen = {self.gen} | N = {len(self.population)}, Min score = {np.min(self.population_scores):g}, Max score = {np.max(self.population_scores):g}')
-    #     for generation in range(num_generations):
-    #         try:
-    #             self.evolve(num_mutations = 10, num_survivors = 2)
-    #             print(f'Gen = {self.gen} | N = {len(self.population)}, Min score = {np.min(self.population_scores):g}, Max score = {np.max(self.population_scores):g}')
-    #         except KeyboardInterrupt: 
-    #             break
-            
-        
+        fig_conf = plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
+        plt.imshow(self.A[0], vmin = 0, vmax = 1)
+        fig_conf.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+       
     def repair(self):
         # functionality to repair detached configurations
         pass
@@ -261,8 +255,8 @@ if __name__ == '__main__':
     F_N = 5
     
     # Init
-    AS = Accelerated_search(model_weights, model_info)
-    AS.initialize_random_population(N = 10, p = 0.5)
-    AS.evolution()
-    # AS.evaluate_fitness()
-    # AS.mutate()
+    AS = Accelerated_search(model_weights, model_info, image_shape = (10,10))
+    AS.initialize_random_population(N = 100, p = 0.5)
+    AS.evolution(num_generations = 200)
+    AS.show_status()
+    plt.show()
