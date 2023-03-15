@@ -9,62 +9,73 @@ class Accelerated_search:
     # TODO: Make initialization for kirigami dataset
     # TODO: Make functionality to use smaller populaiton and then translate it periodically to the whole sheet
     # TODO: Make repair function to ensure valid configurations once in a while or every generation perhaps. 
-    def __init__(self, model_weights, model_info, image_shape = (62, 106)):
+    def __init__(self, model_weights, model_info, N = 100, image_shape = (62, 106)):
         
         # self.image_shape = (62, 106)
         # self.image_shape = (10, 10)
         self.image_shape = image_shape
+        self.N = N
+        self.A = np.zeros((N, *image_shape), dtype = int) # Population
         
-            
-            
+        self.EV = Evaluater(model_weights, model_info)
         
         # Transistion probabilities
         self.P = np.zeros((*self.image_shape, 2,2))
-        
+    
         # Distribution states
-        # self.n = np.zeros((*self.image_shape, 2))
-        # self.n_target = np.zeros((*self.image_shape, 2))
-        
         self.n0 = np.zeros(self.image_shape)
         self.n0_target = np.zeros(self.image_shape)
         
-       
-        
         self.gen = 0
-    
-
-    def initialize_random_population(self, N = 100, p = 0.5):
-        self.N = N # Population size
-        self.A = np.zeros((self.N, *self.image_shape), dtype = int) # Population
-        ones = np.random.rand(*np.shape(self.A)) < p
-        self.A[ones] = 1
+        
         self.scores = np.zeros(self.N)
-
-
     
-    def fitness_func(self, conf):
-        """ Tmp fitness function for testing """
-        # Favorites certain porosity 
         
-        score = 0
-        Lx, Ly = self.image_shape[0], self.image_shape[1]
-        for i in range(Lx):
-            for j in range(Ly):
-                set1 = [conf[i,j], conf[(i + 1 + Lx)%Lx,j]]
-                set2 = [conf[i,j], conf[i, (j + 1 + Ly)%Ly]]
-                score += np.sum(set1) + np.sum(set2) - 2*np.min(set1) - 2*np.min(set2)
+    def init_population(self, configs):
+        for i in range(self.N):
+            conf = configs[i%len(configs)]
+            if isinstance(conf, str): # Path to array
+                self.A[i] = np.load(conf).astype(np.float32)
+            elif isinstance(conf, np.ndarray): # Array
+                self.A[i] = conf.copy()
+            elif isinstance(conf, float): # Float defining site probability 
+                ones = np.random.rand(*self.image_shape) < conf
+                self.A[i][ones] = 1
+        
+
+    def set_fitness_func(self, func):
+        self.fitness = func
         
         
-        # porosity = np.mean(conf)
-        # target_porosity = 0
-        # score = 1 - np.abs(porosity - target_porosity)
+    def max_drop(self, conf): 
+        self.EV.set_config(conf)
+        metrics = self.EV.evaluate_properties(self.stretch, self.F_N)
+        score = metrics['max_drop'][-1] 
         return score
     
-    
+
+    # def fitness_func(self, conf):
+    #     """ Tmp fitness function for testing """
+    #     # Favorites certain porosity 
+        
+    #     # score = 0
+    #     # Lx, Ly = self.image_shape[0], self.image_shape[1]
+    #     # for i in range(Lx):
+    #     #     for j in range(Ly):
+    #     #         set1 = [conf[i,j], conf[(i + 1 + Lx)%Lx,j]]
+    #     #         set2 = [conf[i,j], conf[i, (j + 1 + Ly)%Ly]]
+    #     #         score += np.sum(set1) + np.sum(set2) - 2*np.min(set1) - 2*np.min(set2)
+        
+        
+    #     porosity = np.mean(conf)
+    #     target_porosity = 0.2
+    #     score = 1 - np.abs(porosity - target_porosity)
+    #     return score
+        
     
     def evaluate_fitness(self):
         for i in range(self.N):
-            self.scores[i] = self.fitness_func(self.A[i])
+            self.scores[i] = self.fitness(self.A[i])
         self.rank = np.argsort(self.scores)[::-1] # In descending order
         
         self.scores = self.scores[self.rank]
@@ -76,27 +87,18 @@ class Accelerated_search:
         self.min_score  = self.scores[-1]
         self.mean_score = np.mean(self.scores)
         self.max_score  = self.scores[0]
-        
+           
       
-        
     def update_state_distribution(self):
         C1 = np.mean(self.A, axis = 0)
         C0 = 1 - C1
-        # self.n[:, :, 0] = C0
-        # self.n[:, :, 1] = C1
-        
         self.n0 = C0
         
-
     def update_state_distribution_target(self):
         C0_target = np.max(np.multiply(self.W[:, np.newaxis, np.newaxis], -self.A+1), axis = 0)
         C1_target = np.max(np.multiply(self.W[:, np.newaxis, np.newaxis], self.A), axis = 0)
-    
         # C0_target = np.sum(np.multiply(self.W[:, np.newaxis, np.newaxis], -self.A+1), axis = 0)
         # C1_target = np.sum(np.multiply(self.W[:, np.newaxis, np.newaxis], self.A), axis = 0)
-        
-        
-     
         
         # Normalize
         self.n0_target = C0_target /(C0_target + C1_target)
@@ -166,9 +168,6 @@ class Accelerated_search:
        
         mutate_individual = np.random.rand(self.N) < a
         
-        # self.old_n0_target = self.n0_target
-        # self.update_state_distribution()
-        # self.update_state_distribution_target()
         self.update_gene_transistion_probabilities()
         
         # Clip bottom prob. increasingly towards end to avoid locking of prob.
@@ -178,8 +177,7 @@ class Accelerated_search:
         clip = np.where(i >= self.N_mark, (i - self.N_mark)*slope, 0)
         
 
-        for i in range(self.N):
-           
+        for i in range(self.N): 
             if mutate_individual[i]:
                 RN = np.random.rand(*self.image_shape)
                 zeros = self.A[i] < 0.5
@@ -211,7 +209,7 @@ class Accelerated_search:
             try:
                 best_porosity = np.mean(self.A[0])
                 
-                print(f'Gen = {self.gen} | Min score = {self.min_score:g}, Mean score = {self.mean_score:g}, Max score = {self.max_score:g}, mean P01 = {np.mean(self.P[:, :, 0, 1]):g}, mean P10 = {np.mean(self.P[:, :, 1, 0]):g}')
+                print(f'Gen = {self.gen} | Min score = {self.min_score:g}, Mean score = {self.mean_score:g}, Max score = {self.max_score:g}, mean P01 = {np.mean(self.P[:, :, 0, 1]):g}, mean P10 = {np.mean(self.P[:, :, 1, 0]):g}, porosity = {best_porosity:g}')
                 
                 # if self.gen % 100 == 1:
                 #     self.show_status()
@@ -245,18 +243,50 @@ class Accelerated_search:
         # functionality to repair detached configurations
         pass
         
+        
+        
+def porosity_target(conf):
+    porosity = np.mean(conf)
+    target_porosity = 0.2
+    score = 1 - np.abs(porosity - target_porosity)
+    return score
+
+def ising_max(conf):
+    score = 0
+    Lx, Ly = conf.shape[0], conf.shape[1]
+    for i in range(Lx):
+        for j in range(Ly):
+            set1 = [conf[i,j], conf[(i + 1 + Lx)%Lx,j]]
+            set2 = [conf[i,j], conf[i, (j + 1 + Ly)%Ly]]
+            score += np.sum(set1) + np.sum(set2) - 2*np.min(set1) - 2*np.min(set2)
+    
+    return score 
+
+
+
 if __name__ == '__main__':
+    
+    # Initialize instance
     name = 'graphene_h_BN/C16C32C64D64D32D16'
     model_weights = f'{name}_model_dict_state'
     model_info = f'{name}_best_scores.txt'
+    AS = Accelerated_search(model_weights, model_info, N = 20, image_shape = (62,106))
     
-    # Input vals
-    stretch = np.linspace(0, 2, 100)
-    F_N = 5
+    # Define fitness
+    AS.stretch = np.linspace(0, 2, 100)
+    AS.F_N = 5
+    AS.set_fitness_func(AS.max_drop)
     
-    # Init
-    AS = Accelerated_search(model_weights, model_info, image_shape = (10,10))
-    AS.initialize_random_population(N = 100, p = 0.5)
-    AS.evolution(num_generations = 200)
-    AS.show_status()
+    # Initialize populartion
+    AS.init_population([0.3])
+    
+    
+    plt.imshow(AS.A[0])
     plt.show()
+    # TODO: Try out repair function XXX
+        
+
+    
+    # AS.evolution(num_generations = 10)
+    # AS.show_status()
+    # plt.show()

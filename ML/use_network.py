@@ -142,13 +142,6 @@ class Evaluater():
         
     
     def evaluate_properties(self, stretch = np.linspace(0, 2, 100),  F_N = 5,  show = False):
-        
-        # Input vals XXX Hardcoded for now XXX
-        # num_points = 100
-        # stretch = np.linspace(0, 2, num_points)
-        # F_N = 5
-        ##############################
-        
         image, vals, output = self.predict(stretch, F_N)
         
         stretch = vals[:, 0]
