@@ -98,23 +98,30 @@ class Evaluater():
         return image.detach().numpy(), vals.detach().numpy(), self.output
 
 
-    def stretch_profile(self, stretch, F_N):
+    def stretch_profile(self, stretch, F_N, ax = None):
         image, vals, output = self.predict(stretch, F_N)
         rupture = output[:,-1] > 0.5
     
         stretch = vals[:, 0]
         F_N = vals[:, 1]
-    
-        plt.figure(num=0, dpi=80, facecolor='w', edgecolor='k')
-        plt.plot(stretch[~rupture], output[:,0][~rupture], 'o', markersize = 1.5, label = "No rupture")
-        plt.plot(stretch[rupture], output[:,0][rupture], 'o', markersize = 1.5, label = "Rupture")
         
-        plt.xlabel('Stretch', fontsize=14)
-        plt.ylabel(r'$\langle F_\parallel \rangle$ [nN]', fontsize=14)
-        plt.legend(fontsize = 13)
-        plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
-        # plt.savefig('../article/figures/figure.pdf', bbox_inches='tight')
+        if ax is None:
+            fig = plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
+            ax = plt.gca()
 
+    
+        ax.plot(stretch[~rupture], output[:,0][~rupture], 'o', markersize = 1.5, label = "No rupture")
+        ax.plot(stretch[rupture], output[:,0][rupture], 'o', markersize = 1.5, label = "Rupture")
+        
+        ax.set_xlabel('Stretch', fontsize=14)
+        ax.set_ylabel(r'$\langle F_\parallel \rangle$ [nN]', fontsize=14)
+        ax.legend(fontsize = 13)
+        
+        
+        if ax is None:
+            fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+        # plt.savefig('../article/figures/figure.pdf', bbox_inches='tight')
+        return ax
 
     def compare_to_folder(self, folder, colorbar_scale = [(0.1, 10), 'log'], num_points = 100):
         # Plot comparison
@@ -148,11 +155,18 @@ class Evaluater():
         Ff = output[:, 0]
         rupture = output[:,-1] > 0.5
         
+        
+        
+        
         # --- Property metrics
         metrics = {}
         # Practical rupture stretch
-        prac_rup_stretch_idx = np.min(np.argwhere(rupture))
-        # prac_rup_stretch = stretch[prac_rup_stretch_idx]
+        
+        if np.any(rupture):
+            prac_rup_stretch_idx = np.min(np.argwhere(rupture))
+        else:
+            prac_rup_stretch_idx = -1
+      
         
         # Min and max friction (before any rupture prediction)
         Ffmin_idx = np.argmin(Ff[:prac_rup_stretch_idx])

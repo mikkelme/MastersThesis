@@ -72,19 +72,40 @@ class A_allstar(Architectures):
     #     criterion = Loss(alpha = self.alpha, out_features = self.criterion_out_features)
     #     return model, criterion
    
-    def A5(self): #C32C64C128D128D64D32
+    # def A5(self): #C32C64C128D128D64D32
+    #     # Model
+    #     model = VGGNet( name = 'C32C64C128D128D64D32',
+    #                     mode = self.mode, 
+    #                     input_num = 2, 
+    #                     conv_layers = [(1, 32), (1, 64), (1, 128)], 
+    #                     FC_layers = [(1, 128), (1, 64), (1, 32)],
+    #                     out_features = self.model_out_features,
+    #                     keys = self.keys,
+    #                     batchnorm = self.batchnorm)
+        
+    #     # Criterion
+    #     criterion = Loss(alpha = self.alpha, out_features = self.criterion_out_features)
+    #     return model, criterion
+    
+    def A6(self): #C32C64C128D128D64D32
         # Model
-        model = VGGNet( name = 'C32C64C128D128D64D32',
+        
+        alpha = [[1/2], [], [1/4, 1/4]]
+        criterion_out_features = [['R'], [], ['R', 'C']]
+        keys = ['Ff_mean', 'rupture_stretch', 'is_ruptured']
+        model_out_features = [item for sublist in criterion_out_features for item in sublist] 
+        
+        model = VGGNet( name = 'C32C64C128D128D64D32_fewout',
                         mode = self.mode, 
                         input_num = 2, 
                         conv_layers = [(1, 32), (1, 64), (1, 128)], 
                         FC_layers = [(1, 128), (1, 64), (1, 32)],
-                        out_features = self.model_out_features,
-                        keys = self.keys,
+                        out_features = model_out_features,
+                        keys = keys,
                         batchnorm = self.batchnorm)
         
         # Criterion
-        criterion = Loss(alpha = self.alpha, out_features = self.criterion_out_features)
+        criterion = Loss(alpha = alpha, out_features = criterion_out_features)
         return model, criterion
     
     
