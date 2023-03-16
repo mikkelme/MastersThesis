@@ -320,19 +320,109 @@ class Accelerated_search:
         
         
         return fig
+    
+    
+    def walk_dis(self, input, label, dis = 0, pre = []):
+        """ Recursive function to walk to all sites
+            within a distance of min_dis jumps """
+        if self.min_dis == 0:
+            return input
+        
+        
+        for i, elem in enumerate(input):
+            if isinstance(elem, (np.ndarray, np.generic)):
+                input[i] = elem.tolist()
+
+        neigh = []
+        for pos in input:
+            suggest, _ = connected_neigh_atom(pos)
+            for s in suggest:
+                if len(pre) == 0:
+                    s_in_pre = False
+                else:
+                    s_in_pre = np.any(np.all(s == pre, axis = -1))
+                
+                if len(neigh) == 0:
+                    s_in_neigh = False
+                else:
+                    s_in_neigh = np.any(np.all(s == neigh, axis = -1))
+            
+                site_label = self.visit[s[0], s[1]]
+                on_sheet =  np.all(np.logical_and(s < np.shape(self.visit), s >= (0,0)))
+                if not s_in_pre and not s_in_neigh and site_label != label and on_sheet:
+                        neigh.append(s)
+            
+        dis += 1
+        if dis >= self.min_dis:
+            return input + neigh
+        else:
+            pre = np.array(input)
+            return  np.concatenate((pre, self.walk_dis(neigh, label, dis, pre)))
+    
        
     def repair(self, conf):
         # Repair by least changed atoms approah:
         # Try to add atom on the edge to connect until
         # the amount of added atoms surpasses the size of the cluster
         # then remoce the cluster instead.
-        
-        cluster_sizes = self.get_clusters(conf)
-        size_sort = np.argsort(cluster_sizes)
-        for i in size_sort:
-            label = i+1
-            size = cluster_sizes[i]
+        labels, cluster_sizes = self.get_clusters(conf)
+        for label in reversed(labels):
+            if label not in self.visit:
+                continue
+            
+    
+            size = cluster_sizes[label-1]
             edge = self.get_edge(label) 
+            
+            # print(label, size)
+            self.min_dis = 1
+            
+            path = [[e] for e in edge]
+            best_label = [[] for e in edge]
+            while True:
+                print(path)
+                # TODO: start from lavel and walk to edge in first step instead maybe...
+                for i, p in enumerate(path):
+                    walk = np.array(self.walk_dis([p[-1]], label = label))
+                    walk = walk[~np.all(np.isin(walk, p), axis = 1)]
+                    site_labels = self.visit[walk[:, 0], walk[:, 1]]
+                    
+                    hits = site_labels > 0
+                    if np.any(hits):
+                        best = np.argmin(site_labels[hits])
+                        test = site_labels[hits][best]
+                        
+                        path[i].append(walk[hits][best])
+                        best_label[i] = site_labels[hits][best]
+                        
+                    else: # All -1
+                        for w in range(1, len(walk)):
+                            path.append(path[i] + [walk[w]])
+                            best_label.append(-1)
+                        path[i].append(walk[0])
+                        best_label[i] = -1
+                for k in range(len(path)):
+                    print(path[k], best_label[k])
+                exit()
+                        
+            # while True:
+                
+            #     hits = np.array(self.walk_dis(list(hits), label = label))
+            #     print(self.visit[hits[:, 0], hits[:, 1]])
+            #     print(hits)
+            #     exit()
+            
+            # print(hits)
+            # exit()
+            # for e, pos in enumerate(edge):
+            #     hits = np.array(self.walk_dis([pos], label = label))
+            #     print(hits)
+            #     exit()
+            
+            exit()
+            
+            
+            best_pos = np.nan
             best_neigh = np.nan    # XXX
             lowest_label = 1e3 # XXX
             for e, pos in enumerate(edge):
@@ -342,26 +432,25 @@ class Accelerated_search:
                 sites = self.visit[neigh[:,0], neigh[:,1]]
                 best_label = np.min(sites, initial = 1e3, where = sites > 0) 
                 if best_label < lowest_label:
+                    best_pos = pos
                     best_neigh = neigh
                     lowest_label = int(best_label)
                 
-                if lowest_label == 1: # Just go for it
+                if lowest_label == 1: # Just go for it TODO: 1 is not always the biggest cluster
                     break
             
-            test = self.visit[best_neigh[:,0], best_neigh[:,1]]
-            print(self.visit)
-            check = np.isin(self.visit, test)
-            print(check)
-            # print(lowest_label)
-            # print(test)
-            # if lowest_label != 1e3:
-                # pass
+            connecting_labels = self.visit[best_neigh[:,0], best_neigh[:,1]] # Watch out for -1 here
+            merge = np.isin(self.visit, connecting_labels)
+            self.visit[best_pos[0], best_pos[1]] = lowest_label
+            self.visit[merge] = lowest_label
+            print("flip", best_pos)
 
+            if np.max(self.visit) < 1.5:
+                break
 
-            exit()
-            print(edge)
-            break
-        
+        conf[:] = 1
+        conf[self.visit < 0] = 0
+        return conf
     
     def get_edge(self, label):
         out = np.argwhere(self.visit == label)
@@ -399,8 +488,21 @@ class Accelerated_search:
         
             cluster_sizes.append(np.sum(self.visit == label))
 
-        return cluster_sizes # label = 1, 2, ..., len(clustes_sizes)
+
+        # Rearange labels to match cluster size
+        # Biggest cluster first
+        cluster_sizes = np.array(cluster_sizes)
+        zero_map = np.argwhere(self.visit == -1)
+        size_sort = np.argsort(cluster_sizes)[::-1]
+        for i, to_label in enumerate(size_sort+1):
+            from_label = i+1
+            self.visit[self.visit == from_label] = -to_label
+        self.visit = np.abs(self.visit)
+        self.visit[zero_map[:, 0], zero_map[:, 1]] = -1
         
+        labels = np.arange(1, 1+len(cluster_sizes))
+        return labels, cluster_sizes[size_sort] 
+    
     
     def DFS(self, pos, label):
         """ Depth-first search (DFS) used for 
@@ -469,24 +571,23 @@ if __name__ == '__main__':
     
     # Initialize populartion
     mat = np.ones((5,10))
-    mat[1,1] = 0
-    mat[2,2] = 0
-    mat[1,3] = 0
+    mat[0, 3] = 0
+    mat[0, 4] = 0
+    mat[1, 0] = 0
+    mat[1, 2] = 0
+    mat[1, 3] = 0
+    mat[2, 0] = 0
+    mat[2, 2] = 0
     
-    mat[1,5] = 0
-    mat[1,7] = 0
-    mat[2,2] = 0
-    mat[2,7] = 0
-    mat[3,2] = 0
-    mat[3,6] = 0
-    mat[4,4] = 0
-    
-    AS.repair(mat)
+    # AS.init_population([mat])
+    # AS.show_sheet()
+    mat = AS.repair(mat)
+    AS.init_population([mat])
+    AS.show_sheet()
+    exit()
     # AS.get_clusters(mat)
     
     exit()
-    # AS.init_population([mat])
-    AS.show_sheet()
     # TODO: Try out repair function on smaller image  XXX
     
     # AS.show_status()
