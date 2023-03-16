@@ -376,31 +376,131 @@ class Accelerated_search:
             
             # print(label, size)
             self.min_dis = 1
-            
             path = [[e] for e in edge]
-            best_label = [[] for e in edge]
+            best_label = [[-1] for e in edge]
+            
+            
             while True:
-                print(path)
-                # TODO: start from lavel and walk to edge in first step instead maybe...
-                for i, p in enumerate(path):
-                    walk = np.array(self.walk_dis([p[-1]], label = label))
-                    walk = walk[~np.all(np.isin(walk, p), axis = 1)]
-                    site_labels = self.visit[walk[:, 0], walk[:, 1]]
+                for k in range(len(path)):
+                    print(path[k], best_label[k])
+                print()
+                for i in range(len(path)):
+                    p = path[i]
+                    # Get current (end of path) position and label
+                    current_pos = p[-1]
+                    current_site_label = self.visit[current_pos[0], current_pos[1]]
+                    
+                    # Continue to next path if already on 
+                    # non zero label not in its own cluster
+                    if current_site_label > 0 and current_site_label != label:
+                        best_label[i] = current_site_label
+                        continue
+                
+
+                    # Walk from end of path
+                    walk = np.array(self.walk_dis([current_pos], label = label))
+                    
+                    not_in_path = ~np.any(np.all(walk == np.array(p)[:, np.newaxis], axis = -1), axis = 0)
+                    walk = walk[not_in_path]
+                    
+                    
+                    # print("---")
+                    # print(walk)
+                    # print(path)
+                    # print(walk[not_in_path])
+                    # print("---")
+                    
+                    
+                    # test = walk.copy()
+                    # print('---')
+                    # test_p = [np.array([1,2]), np.array((2,2))]
+                    # # try:
+                        
+                    # #     test[2,1] = 1 
+                    # #     test[2,0] = 2
+                    # # except:
+                    # #     pass
+                    
+                    
+                    # print(test)
+                    # print(test_p)
+                    # # out = test == np.array(test_p)[:, np.newaxis]
+                    # out = np.any(np.all(test == np.array(test_p)[:, np.newaxis], axis = -1), axis = 0)
+                    # print(out)
+                    # # print(p[0])
+                    # # print(np.isin(test, [p[0]]))
+                    # # print(~np.all(np.isin(test, p[0]), axis = 1))
+                    # print('---')
+                    # # walk = walk[~np.all(np.isin(walk, p), axis = 1)] # Remove sites already in current path
+                    # # walk = walk[~np.all(np.isin(walk, np.array(path, dtype = object)), axis = 1)] # Remove sites already in path
+                    
+                    # # print('---')
+                    # # # print(np.array(p))
+                    # # # print('---')
+                    # # print(np.array(path))
+                    # # print('---')
+                    # # print(walk)
+                    # # print('---')
+                    # # print(np.isin(walk, np.array(path, dtype = object)))
+                    # # print('---')
+                    
+                    site_labels = self.visit[walk[:, 0], walk[:, 1]] # New site labels
                     
                     hits = site_labels > 0
-                    if np.any(hits):
+                    if np.any(hits): # If any hits stop at the best (biggest cluster = lowest label)
+                        exit("in here")
                         best = np.argmin(site_labels[hits])
                         test = site_labels[hits][best]
                         
                         path[i].append(walk[hits][best])
                         best_label[i] = site_labels[hits][best]
                         
-                    else: # All -1
+                    else: # If all labels = -1 store all path combinations
+                        # test = [l[-1] for l in path]
+                        # for w in range(1, len(walk)):
+                        #     # if not np.any(np.all(walk[w] == test, axis = 1)):
+                        #     if w == 0:
+                        #         path[i].append(walk[w])
+                        #         best_label[i] = -1
+                        #     else:
+                        #         print('ap')
+                        #         path.append(path[i] + [walk[w]])
+                        #         best_label.append(-1)
+                        
+                        #     print(path)
+                        #     print()
+                        # exit()
+                                
                         for w in range(1, len(walk)):
+                            # print(path[i] + [walk[w]])
                             path.append(path[i] + [walk[w]])
                             best_label.append(-1)
                         path[i].append(walk[0])
                         best_label[i] = -1
+                        
+                print()
+                # Check for duplicates on last site in path
+                last_elements = [l[-1] for l in path]
+                k = 0; k_end = len(path)
+                while True:
+                    print(path)
+                    match = np.all(path[k][-1] == last_elements, axis = 1)
+                    match[k] = False
+                    del_idx = np.argwhere(match).ravel()
+                    for d in del_idx:
+                        print(d)
+                        del path[d]
+                        del last_elements[d]
+                        k_end -= 1
+                    
+                    k += 1
+                    if k == k_end:
+                        break
+                    
+            
+                        
+                print()
+                
                 for k in range(len(path)):
                     print(path[k], best_label[k])
                 exit()
@@ -440,7 +540,7 @@ class Accelerated_search:
                     break
             
             connecting_labels = self.visit[best_neigh[:,0], best_neigh[:,1]] # Watch out for -1 here
-            merge = np.isin(self.visit, connecting_labels)
+            merge = np.isin(self.visit, connecting_labels) # TODO: isin might not be safe as (x,y) = (y,x) = (x, x) = (y, y) generates a match... XXX
             self.visit[best_pos[0], best_pos[1]] = lowest_label
             self.visit[merge] = lowest_label
             print("flip", best_pos)
