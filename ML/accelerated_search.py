@@ -327,12 +327,8 @@ class Accelerated_search:
         # the amount of added atoms surpasses the size of the cluster
         # then remoce the cluster instead.
         
-        num_clusters = self.get_clusters(conf)
-        print(self.visit)
-        print(num_clusters)
-        # functionality to repair detached configurations
-        pass
-    
+        cluster_list = self.get_clusters(conf)
+        print(cluster_list)
     
     def get_clusters(self, conf):
         self.visit = conf.copy()
@@ -340,6 +336,7 @@ class Accelerated_search:
         self.visit[conf == 1] = 0
         
         label = 0
+        cluster_list = []
         while True:
             y, x = np.where(self.visit == 0)
             valid_starts = np.array(list(zip(y, x)))
@@ -349,8 +346,9 @@ class Accelerated_search:
             label += 1
             self.DFS(valid_starts[0], label)
         
-        num_clusters = label
-        return num_clusters
+            cluster_size = np.where(self.visit = label)
+            cluster_list.append((label, cluster_size))
+        return cluster_list
         
     
     def DFS(self, pos, label):
