@@ -360,30 +360,33 @@ class Accelerated_search:
             return  np.concatenate((pre, self.walk_dis(neigh, label, dis, pre)))
     
        
-    def repair(self, conf):
+    def repair(self, conf, max_walk_dis = None):
         # Repair by least changed atoms approah:
         # Try to add atom on the edge to connect until
         # the amount of added atoms surpasses the size of the cluster
         # then remoce the cluster instead.
         labels, cluster_sizes = self.get_clusters(conf)
+        num_clusters = len(cluster_sizes)
+        
+        
+        
         for label in reversed(labels):
             if label not in self.visit:
                 continue
-            
     
             size = cluster_sizes[label-1]
+            if max_walk_dis is not None:
+                size = max_walk_dis
             edge = self.get_edge(label) 
+            self.visit_old = self.visit.copy()
             
-            # print(label, size)
+            num_atoms_added = 0
+            max_path_len = 0
             self.min_dis = 1
             path = [[e] for e in edge]
             best_label = [[-1] for e in edge]
-            
-            
-            while True:
-                for k in range(len(path)):
-                    print(path[k], best_label[k])
-                print()
+            while num_clusters > 1 and max_path_len <= size+1: 
+                
                 for i in range(len(path)):
                     p = path[i]
                     # Get current (end of path) position and label
@@ -399,154 +402,101 @@ class Accelerated_search:
 
                     # Walk from end of path
                     walk = np.array(self.walk_dis([current_pos], label = label))
-                    
+                    print(f'i = {i}')
+                    # Remove elements already in the path    
                     not_in_path = ~np.any(np.all(walk == np.array(p)[:, np.newaxis], axis = -1), axis = 0)
                     walk = walk[not_in_path]
+                
+                    site_labels = self.visit[walk[:, 0], walk[:, 1]] # New site labels  
                     
-                    
-                    # print("---")
-                    # print(walk)
-                    # print(path)
-                    # print(walk[not_in_path])
-                    # print("---")
-                    
-                    
-                    # test = walk.copy()
-                    # print('---')
-                    # test_p = [np.array([1,2]), np.array((2,2))]
-                    # # try:
+                    # Store all path combinations
+                    for w in range(1, len(walk)):
+                        path.append(path[i] + [walk[w]])
+                        best_label.append(site_labels[w])
+                    path[i].append(walk[0])
+                    best_label[i] = site_labels[0]
+                
+                      
                         
-                    # #     test[2,1] = 1 
-                    # #     test[2,0] = 2
-                    # # except:
-                    # #     pass
+                # Sort path by best label
+                best_label_tmp = np.array(best_label)
+                path_tmp = path.copy()
+                
+                sort_weight = np.where(best_label_tmp > 0, best_label_tmp, 1e3)
+                label_sort = np.argsort(sort_weight)
+                
+                for idx_in, idx_out in enumerate(label_sort):
+                    best_label[idx_in] = best_label_tmp[idx_out]
+                    path[idx_in] = path_tmp[idx_out]
                     
-                    
-                    # print(test)
-                    # print(test_p)
-                    # # out = test == np.array(test_p)[:, np.newaxis]
-                    # out = np.any(np.all(test == np.array(test_p)[:, np.newaxis], axis = -1), axis = 0)
-                    # print(out)
-                    # # print(p[0])
-                    # # print(np.isin(test, [p[0]]))
-                    # # print(~np.all(np.isin(test, p[0]), axis = 1))
-                    # print('---')
-                    # # walk = walk[~np.all(np.isin(walk, p), axis = 1)] # Remove sites already in current path
-                    # # walk = walk[~np.all(np.isin(walk, np.array(path, dtype = object)), axis = 1)] # Remove sites already in path
-                    
-                    # # print('---')
-                    # # # print(np.array(p))
-                    # # # print('---')
-                    # # print(np.array(path))
-                    # # print('---')
-                    # # print(walk)
-                    # # print('---')
-                    # # print(np.isin(walk, np.array(path, dtype = object)))
-                    # # print('---')
-                    
-                    site_labels = self.visit[walk[:, 0], walk[:, 1]] # New site labels
-                    
-                    hits = site_labels > 0
-                    if np.any(hits): # If any hits stop at the best (biggest cluster = lowest label)
-                        exit("in here")
-                        best = np.argmin(site_labels[hits])
-                        test = site_labels[hits][best]
-                        
-                        path[i].append(walk[hits][best])
-                        best_label[i] = site_labels[hits][best]
-                        
-                    else: # If all labels = -1 store all path combinations
-                        # test = [l[-1] for l in path]
-                        # for w in range(1, len(walk)):
-                        #     # if not np.any(np.all(walk[w] == test, axis = 1)):
-                        #     if w == 0:
-                        #         path[i].append(walk[w])
-                        #         best_label[i] = -1
-                        #     else:
-                        #         print('ap')
-                        #         path.append(path[i] + [walk[w]])
-                        #         best_label.append(-1)
-                        
-                        #     print(path)
-                        #     print()
-                        # exit()
-                                
-                        for w in range(1, len(walk)):
-                            # print(path[i] + [walk[w]])
-                            path.append(path[i] + [walk[w]])
-                            best_label.append(-1)
-                        path[i].append(walk[0])
-                        best_label[i] = -1
-                        
-                print()
+                
+                # path = list(np.array(path)[label_sort])
+                # best_label = list(np.array(best_label)[label_sort])
                 # Check for duplicates on last site in path
                 last_elements = [l[-1] for l in path]
                 k = 0; k_end = len(path)
                 while True:
-                    print(path)
                     match = np.all(path[k][-1] == last_elements, axis = 1)
                     match[k] = False
                     del_idx = np.argwhere(match).ravel()
                     for d in del_idx:
-                        print(d)
                         del path[d]
                         del last_elements[d]
+                        del best_label[d]
                         k_end -= 1
                     
                     k += 1
                     if k == k_end:
                         break
                     
-            
-                        
-                print()
-                
-                for k in range(len(path)):
-                    print(path[k], best_label[k])
-                exit()
-                        
-            # while True:
-                
-            #     hits = np.array(self.walk_dis(list(hits), label = label))
-            #     print(self.visit[hits[:, 0], hits[:, 1]])
-            #     print(hits)
-            #     exit()
-            
-            # print(hits)
-            # exit()
-            # for e, pos in enumerate(edge):
-            #     hits = np.array(self.walk_dis([pos], label = label))
-            #     print(hits)
-            #     exit()
-            
-            exit()
-            
-            
-            best_pos = np.nan
-            best_neigh = np.nan    # XXX
-            lowest_label = 1e3 # XXX
-            for e, pos in enumerate(edge):
-                neigh, _ = connected_neigh_atom(pos)
-                on_sheet = np.all(np.logical_and(neigh < np.shape(self.visit), neigh >= (0,0)), axis = 1)
-                neigh = neigh[on_sheet]
-                sites = self.visit[neigh[:,0], neigh[:,1]]
-                best_label = np.min(sites, initial = 1e3, where = sites > 0) 
-                if best_label < lowest_label:
-                    best_pos = pos
-                    best_neigh = neigh
-                    lowest_label = int(best_label)
-                
-                if lowest_label == 1: # Just go for it TODO: 1 is not always the biggest cluster
+                    
+                max_path_len = len(path[0]) + num_atoms_added
+                if max_path_len > size+1:
                     break
-            
-            connecting_labels = self.visit[best_neigh[:,0], best_neigh[:,1]] # Watch out for -1 here
-            merge = np.isin(self.visit, connecting_labels) # TODO: isin might not be safe as (x,y) = (y,x) = (x, x) = (y, y) generates a match... XXX
-            self.visit[best_pos[0], best_pos[1]] = lowest_label
-            self.visit[merge] = lowest_label
-            print("flip", best_pos)
+                
+                
 
-            if np.max(self.visit) < 1.5:
-                break
+                
+                if np.max(best_label) > 0: # Go to positive label
+                    # Go through paths and connect to unique until 
+                    # clusters is merged (if possible)  
+                    sort_path = np.argsort(best_label)
+                    already_merged = []
+                    for s in sort_path:
+                        p = np.array(path[s])
+                        l = best_label[s]
+                        if l < 0:
+                            continue
+                        
+                        
+                        if l not in already_merged:
+                            num_atoms_added += len(p) - 1
+                            self.visit[p[:,0], p[:,1]] = l
+                            self.visit[self.visit == label] = l
+                            already_merged.append(l)
+                            
+                            num_clusters -= 1
+                            if not num_clusters > 1:
+                                break
+                            
+                    # Delete path with already merged labels
+                    for idx in reversed(range(len(best_label))):
+                        if best_label[idx] in already_merged:
+                            best_label.pop(idx)
+                            path.pop(idx)
+                        
+                
+            # Breaking out of while loop in label loop
+            if not num_clusters > 1:
+                # Repair completed
+                break # out of label loop
+            elif max_path_len > size:
+                # Did not manage to bridge clusters
+                # Instead delete label cluster
+                
+                self.visit = self.visit_old # Reset visit array
+                self.visit[self.visit == label] = -1 # Delete label cluster
+                num_clusters -= 1
 
         conf[:] = 1
         conf[self.visit < 0] = 0
@@ -670,18 +620,22 @@ if __name__ == '__main__':
     AS.set_fitness_func(ising_max)
     
     # Initialize populartion
-    mat = np.ones((5,10))
-    mat[0, 3] = 0
-    mat[0, 4] = 0
-    mat[1, 0] = 0
-    mat[1, 2] = 0
-    mat[1, 3] = 0
-    mat[2, 0] = 0
-    mat[2, 2] = 0
-    
+    # mat = np.ones((5,10))
+    # mat[0, 2] = 0
+    # mat[0, 3] = 0
+    # mat[0, 4] = 0
+    # mat[0, 5] = 0
+    # mat[1, 0] = 0
+    # mat[1, 1] = 0
+    # mat[1, 2] = 0
+    # mat[1, 3] = 0
+    # mat[1, 4] = 0
+    # mat[2, 0] = 0
     # AS.init_population([mat])
-    # AS.show_sheet()
-    mat = AS.repair(mat)
+  
+    AS.init_population([0.1])
+    AS.show_sheet()
+    mat = AS.repair(AS.A[0])
     AS.init_population([mat])
     AS.show_sheet()
     exit()
