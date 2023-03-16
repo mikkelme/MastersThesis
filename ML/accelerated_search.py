@@ -327,8 +327,58 @@ class Accelerated_search:
         # the amount of added atoms surpasses the size of the cluster
         # then remoce the cluster instead.
         
-        cluster_list = self.get_clusters(conf)
-        print(cluster_list)
+        cluster_sizes = self.get_clusters(conf)
+        size_sort = np.argsort(cluster_sizes)
+        for i in size_sort:
+            label = i+1
+            size = cluster_sizes[i]
+            edge = self.get_edge(label) 
+            best_neigh = np.nan    # XXX
+            lowest_label = 1e3 # XXX
+            for e, pos in enumerate(edge):
+                neigh, _ = connected_neigh_atom(pos)
+                on_sheet = np.all(np.logical_and(neigh < np.shape(self.visit), neigh >= (0,0)), axis = 1)
+                neigh = neigh[on_sheet]
+                sites = self.visit[neigh[:,0], neigh[:,1]]
+                best_label = np.min(sites, initial = 1e3, where = sites > 0) 
+                if best_label < lowest_label:
+                    best_neigh = neigh
+                    lowest_label = int(best_label)
+                
+                if lowest_label == 1: # Just go for it
+                    break
+            
+            test = self.visit[best_neigh[:,0], best_neigh[:,1]]
+            print(self.visit)
+            check = np.isin(self.visit, test)
+            print(check)
+            # print(lowest_label)
+            # print(test)
+            # if lowest_label != 1e3:
+                # pass
+
+
+            exit()
+            print(edge)
+            break
+        
+    
+    def get_edge(self, label):
+        out = np.argwhere(self.visit == label)
+        edge = []
+        for pos in out:
+            neigh, _ = connected_neigh_atom(pos)
+            on_sheet = np.all(np.logical_and(neigh < np.shape(self.visit), neigh >= (0,0)), axis = 1)
+            neigh = neigh[on_sheet]
+            trial = self.visit[neigh[:, 0], neigh[:, 1]]
+            out = np.argwhere(trial == -1).ravel()
+            for hit in neigh[out]:
+                if len(edge) == 0:
+                    edge.append(hit)
+                elif not np.any(np.all(hit == edge, axis = 1)):
+                    edge.append(hit)
+        return np.array(edge)
+        
     
     def get_clusters(self, conf):
         self.visit = conf.copy()
@@ -336,19 +386,20 @@ class Accelerated_search:
         self.visit[conf == 1] = 0
         
         label = 0
-        cluster_list = []
+        cluster_sizes = []
         while True:
-            y, x = np.where(self.visit == 0)
-            valid_starts = np.array(list(zip(y, x)))
+            valid_starts = np.argwhere(self.visit == 0)
+            # y, x = np.where(self.visit == 0)
+            # valid_starts = np.array(list(zip(y, x)))
             if len(valid_starts) == 0: 
                 break
             
             label += 1
             self.DFS(valid_starts[0], label)
         
-            cluster_size = np.where(self.visit == label)
-            cluster_list.append((label, cluster_size))
-        return cluster_list
+            cluster_sizes.append(np.sum(self.visit == label))
+
+        return cluster_sizes # label = 1, 2, ..., len(clustes_sizes)
         
     
     def DFS(self, pos, label):
@@ -363,7 +414,7 @@ class Accelerated_search:
         # Mark as visited
         self.visit[pos[0], pos[1]] = label # Make dynamic labeling
             
-        # Find potential neighbours (with PB)
+        # Find potential neighbours
         neigh, _ = connected_neigh_atom(pos)
         on_sheet = np.all(np.logical_and(neigh < np.shape(self.visit), neigh >= (0,0)), axis = 1)
         neigh = neigh[on_sheet]
