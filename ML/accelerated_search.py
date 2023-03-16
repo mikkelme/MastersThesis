@@ -347,9 +347,13 @@ class Accelerated_search:
                 else:
                     s_in_neigh = np.any(np.all(s == neigh, axis = -1))
             
-                site_label = self.visit[s[0], s[1]]
                 on_sheet =  np.all(np.logical_and(s < np.shape(self.visit), s >= (0,0)))
-                if not s_in_pre and not s_in_neigh and site_label != label and on_sheet:
+                if on_sheet:
+                    site_label = self.visit[s[0], s[1]]
+                else:
+                    continue
+                
+                if not s_in_pre and not s_in_neigh and site_label != label:
                         neigh.append(s)
             
         dis += 1
@@ -384,7 +388,7 @@ class Accelerated_search:
             max_path_len = 0
             self.min_dis = 1
             path = [[e] for e in edge]
-            best_label = [[-1] for e in edge]
+            best_label = [-1 for e in edge]
             while num_clusters > 1 and max_path_len <= size+1: 
                 
                 for i in range(len(path)):
@@ -399,30 +403,29 @@ class Accelerated_search:
                         best_label[i] = current_site_label
                         continue
                 
-
+                    
+                    
                     # Walk from end of path
                     walk = np.array(self.walk_dis([current_pos], label = label))
-                    print(f'i = {i}')
                     # Remove elements already in the path    
                     not_in_path = ~np.any(np.all(walk == np.array(p)[:, np.newaxis], axis = -1), axis = 0)
                     walk = walk[not_in_path]
                 
                     site_labels = self.visit[walk[:, 0], walk[:, 1]] # New site labels  
-                    
                     # Store all path combinations
-                    for w in range(1, len(walk)):
-                        path.append(path[i] + [walk[w]])
-                        best_label.append(site_labels[w])
-                    path[i].append(walk[0])
-                    best_label[i] = site_labels[0]
-                
-                      
-                        
+                    if len(walk) > 0:
+                        for w in range(1, len(walk)):
+                            path.append(path[i] + [walk[w]])
+                            best_label.append(site_labels[w])
+                        path[i].append(walk[0])
+                        best_label[i] = site_labels[0]
+                    
                 # Sort path by best label
                 best_label_tmp = np.array(best_label)
                 path_tmp = path.copy()
                 
                 sort_weight = np.where(best_label_tmp > 0, best_label_tmp, 1e3)
+                    
                 label_sort = np.argsort(sort_weight)
                 
                 for idx_in, idx_out in enumerate(label_sort):
@@ -620,20 +623,16 @@ if __name__ == '__main__':
     AS.set_fitness_func(ising_max)
     
     # Initialize populartion
-    # mat = np.ones((5,10))
-    # mat[0, 2] = 0
-    # mat[0, 3] = 0
-    # mat[0, 4] = 0
-    # mat[0, 5] = 0
-    # mat[1, 0] = 0
-    # mat[1, 1] = 0
-    # mat[1, 2] = 0
-    # mat[1, 3] = 0
-    # mat[1, 4] = 0
-    # mat[2, 0] = 0
-    # AS.init_population([mat])
+    mat = np.ones((5,10))
+    mat[0, 1] = 0
+    mat[0, 8] = 0
+    mat[1, 6] = 0
+    mat[1, 9] = 0
+    mat[3, 1] = 0
+    mat[3, 6] = 0
+    AS.init_population([mat])
   
-    AS.init_population([0.1])
+    # AS.init_population([0.15])
     AS.show_sheet()
     mat = AS.repair(AS.A[0])
     AS.init_population([mat])
