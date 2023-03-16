@@ -346,7 +346,7 @@ class Accelerated_search:
             label += 1
             self.DFS(valid_starts[0], label)
         
-            cluster_size = np.where(self.visit = label)
+            cluster_size = np.where(self.visit == label)
             cluster_list.append((label, cluster_size))
         return cluster_list
         
