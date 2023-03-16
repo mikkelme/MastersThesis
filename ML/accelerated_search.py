@@ -2,14 +2,12 @@ from use_network import *
 
 from config_builder.build_config import *
 from ase.visualize.plot import plot_atoms
+from graphene_sheet.build_utils import *
 
 
 # matplotlib.interactive(True)
 
 class Accelerated_search:
-    # TODO: Simply stored matrixes by using n0 = 1 - n1 and similar for P matrx
-    # TODO: Make initialization for kirigami dataset
-    # TODO: Make functionality to use smaller populaiton and then translate it periodically to the whole sheet
     # TODO: Make repair function to ensure valid configurations once in a while or every generation perhaps. 
     def __init__(self, model_weights, model_info, N = 100, image_shape = (62, 106), expand = None):
 
@@ -53,6 +51,7 @@ class Accelerated_search:
         
         
     def init_population(self, configs):
+        assert isinstance(configs, list), f"input_population input must be a list (containing str, array and/or float) not type: {type(configs)}."
         for i in range(self.N):
             conf = configs[i%len(configs)]
             if isinstance(conf, str): # Path to array
@@ -322,9 +321,62 @@ class Accelerated_search:
         
         return fig
        
-    def repair(self):
+    def repair(self, conf):
+        # Repair by least changed atoms approah:
+        # Try to add atom on the edge to connect until
+        # the amount of added atoms surpasses the size of the cluster
+        # then remoce the cluster instead.
+        
+        num_clusters = self.get_clusters(conf)
+        print(self.visit)
+        print(num_clusters)
         # functionality to repair detached configurations
         pass
+    
+    
+    def get_clusters(self, conf):
+        self.visit = conf.copy()
+        self.visit[conf == 0] = -1
+        self.visit[conf == 1] = 0
+        
+        label = 0
+        while True:
+            y, x = np.where(self.visit == 0)
+            valid_starts = np.array(list(zip(y, x)))
+            if len(valid_starts) == 0: 
+                break
+            
+            label += 1
+            self.DFS(valid_starts[0], label)
+        
+        num_clusters = label
+        return num_clusters
+        
+    
+    def DFS(self, pos, label):
+        """ Depth-first search (DFS) used for 
+            detecting isolated clusters (walking on atoms not centers) """
+
+
+        # Check if visited
+        if self.visit[pos[0], pos[1]] != 0:
+            return # Already visited
+      
+        # Mark as visited
+        self.visit[pos[0], pos[1]] = label # Make dynamic labeling
+            
+        # Find potential neighbours (with PB)
+        neigh, _ = connected_neigh_atom(pos)
+        on_sheet = np.all(np.logical_and(neigh < np.shape(self.visit), neigh >= (0,0)), axis = 1)
+        neigh = neigh[on_sheet]
+        
+            
+        # Start new search if neighbour atoms is present
+        for pos in neigh:
+            if self.visit[pos[0], pos[1]] == 0: # Atom is present
+                self.DFS(pos, label)
+                
+        
         
         
         
@@ -354,7 +406,8 @@ if __name__ == '__main__':
     model_weights = f'{name}_model_dict_state'
     model_info = f'{name}_best_scores.txt'
     # AS = Accelerated_search(model_weights, model_info, N = 50, image_shape = (62,106))
-    AS = Accelerated_search(model_weights, model_info, N = 1, image_shape = (10, 10), expand = (62,106))
+    # AS = Accelerated_search(model_weights, model_info, N = 1, image_shape = (10, 10), expand = (62,106))
+    AS = Accelerated_search(model_weights, model_info, N = 1, image_shape = (5, 10), expand = None)
     # AS = Accelerated_search(model_weights, model_info, N = 10, image_shape = (4, 4), expand = (100, 100))
     # AS = Accelerated_search(model_weights, model_info, N = 10, image_shape = (100, 100), expand =  None)
     
@@ -362,13 +415,29 @@ if __name__ == '__main__':
     AS.stretch = np.linspace(0, 2, 100)
     AS.F_N = 5
     # AS.set_fitness_func(AS.max_drop)
-    AS.set_fitness_func(AS.max_fric)
-    # AS.set_fitness_func(ising_max)
+    # AS.set_fitness_func(AS.max_fric)
+    AS.set_fitness_func(ising_max)
     
     # Initialize populartion
-    AS.init_population([0.5])
-    plt.imshow(AS.A[0])
-    plt.show()
+    mat = np.ones((5,10))
+    mat[1,1] = 0
+    mat[2,2] = 0
+    mat[1,3] = 0
+    
+    mat[1,5] = 0
+    mat[1,7] = 0
+    mat[2,2] = 0
+    mat[2,7] = 0
+    mat[3,2] = 0
+    mat[3,6] = 0
+    mat[4,4] = 0
+    
+    AS.repair(mat)
+    # AS.get_clusters(mat)
+    
+    exit()
+    # AS.init_population([mat])
+    AS.show_sheet()
     # TODO: Try out repair function on smaller image  XXX
     
     # AS.show_status()
