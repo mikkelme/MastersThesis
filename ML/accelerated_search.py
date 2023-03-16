@@ -458,8 +458,6 @@ class Accelerated_search:
                     break
                 
                 
-
-                
                 if np.max(best_label) > 0: # Go to positive label
                     # Go through paths and connect to unique until 
                     # clusters is merged (if possible)  
@@ -623,16 +621,16 @@ if __name__ == '__main__':
     AS.set_fitness_func(ising_max)
     
     # Initialize populartion
-    mat = np.ones((5,10))
-    mat[0, 1] = 0
-    mat[0, 8] = 0
-    mat[1, 6] = 0
-    mat[1, 9] = 0
-    mat[3, 1] = 0
-    mat[3, 6] = 0
-    AS.init_population([mat])
+    # mat = np.ones((5,10))
+    # mat[0, 1] = 0
+    # mat[0, 8] = 0
+    # mat[1, 6] = 0
+    # mat[1, 9] = 0
+    # mat[3, 1] = 0
+    # mat[3, 6] = 0
+    # AS.init_population([mat])
   
-    # AS.init_population([0.15])
+    AS.init_population([0.15])
     AS.show_sheet()
     mat = AS.repair(AS.A[0])
     AS.init_population([mat])
