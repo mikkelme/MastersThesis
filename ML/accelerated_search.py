@@ -372,8 +372,6 @@ class Accelerated_search:
         labels, cluster_sizes = self.get_clusters(conf)
         num_clusters = len(cluster_sizes)
         
-        
-        
         for label in reversed(labels):
             if label not in self.visit:
                 continue
@@ -389,8 +387,15 @@ class Accelerated_search:
             self.min_dis = 1
             path = [[e] for e in edge]
             best_label = [-1 for e in edge]
+            
+            print(f'label = {label}, num_clusters = {num_clusters}')
+            
+            # if label == 2:
+            #     print("label = 2")
+            #     print(max_path_len)
+            #     print(num_clusters)
+            #     print(path)
             while num_clusters > 1 and max_path_len <= size+1: 
-                
                 for i in range(len(path)):
                     p = path[i]
                     # Get current (end of path) position and label
@@ -432,9 +437,9 @@ class Accelerated_search:
                     best_label[idx_in] = best_label_tmp[idx_out]
                     path[idx_in] = path_tmp[idx_out]
                     
+        
                 
-                # path = list(np.array(path)[label_sort])
-                # best_label = list(np.array(best_label)[label_sort])
+                
                 # Check for duplicates on last site in path
                 last_elements = [l[-1] for l in path]
                 k = 0; k_end = len(path)
@@ -452,10 +457,7 @@ class Accelerated_search:
                     if k == k_end:
                         break
                     
-                    
                 max_path_len = len(path[0]) + num_atoms_added
-                if max_path_len > size+1:
-                    break
                 
                 
                 if np.max(best_label) > 0: # Go to positive label
@@ -471,25 +473,30 @@ class Accelerated_search:
                         
                         
                         if l not in already_merged:
-                            num_atoms_added += len(p) - 1
+                            num_atoms_added += len(p) - 1 # TODO: This counter is overwrited later...
                             self.visit[p[:,0], p[:,1]] = l
                             self.visit[self.visit == label] = l
                             already_merged.append(l)
                             
                             num_clusters -= 1
+                            print(f'num_clusters: {num_clusters+1} -> {num_clusters}, max_path_len = {max_path_len}, size = {size}' )
                             if not num_clusters > 1:
                                 break
-                            
+                            # TODO: LOOK INTO mechanisms here! XXX
+                
                     # Delete path with already merged labels
                     for idx in reversed(range(len(best_label))):
                         if best_label[idx] in already_merged:
                             best_label.pop(idx)
                             path.pop(idx)
-                        
+                    
+                    if len(path) == 0:
+                        break
                 
             # Breaking out of while loop in label loop
             if not num_clusters > 1:
                 # Repair completed
+                print(f'Added atoms = {num_atoms_added}')
                 break # out of label loop
             elif max_path_len > size:
                 # Did not manage to bridge clusters
@@ -497,7 +504,13 @@ class Accelerated_search:
                 
                 self.visit = self.visit_old # Reset visit array
                 self.visit[self.visit == label] = -1 # Delete label cluster
+                
                 num_clusters -= 1
+                print(f'num_clusters: {num_clusters+1} -> {num_clusters}, max_path_len = {max_path_len}, size = {size}' )
+                # TODO: LOOK INTO mechanisms here! XXX
+                print("Working with debugging. Look at line 485 and 510")
+                exit()
+                
 
         conf[:] = 1
         conf[self.visit < 0] = 0
@@ -621,20 +634,23 @@ if __name__ == '__main__':
     AS.set_fitness_func(ising_max)
     
     # Initialize populartion
-    # mat = np.ones((5,10))
-    # mat[0, 1] = 0
-    # mat[0, 8] = 0
-    # mat[1, 6] = 0
-    # mat[1, 9] = 0
-    # mat[3, 1] = 0
-    # mat[3, 6] = 0
-    # AS.init_population([mat])
-  
-    AS.init_population([0.15])
-    AS.show_sheet()
-    mat = AS.repair(AS.A[0])
+    mat = np.ones((5,10))
+    mat[0, 3] = 0
+    mat[1, 1] = 0
+    mat[1, 7] = 0
+    mat[1, 9] = 0
+    mat[3, 6] = 0
+    mat[3, 9] = 0
+    mat[4, 0] = 0
+    mat[4, 1] = 0
+    mat[4, 8] = 0
     AS.init_population([mat])
-    AS.show_sheet()
+  
+    # AS.init_population([0.2])
+    # AS.show_sheet()
+    mat = AS.repair(AS.A[0])
+    # AS.init_population([mat])
+    # AS.show_sheet()
     exit()
     # AS.get_clusters(mat)
     
