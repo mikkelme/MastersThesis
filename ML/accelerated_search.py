@@ -441,6 +441,8 @@ class Accelerated_search:
             
             num_clusters = self.num_clusters
             while num_clusters > 1 and max_path_len <= size: 
+                if len(path) == 0:
+                    break
                     
                 # Sort path by best label (1, 2, ...., max, -1)
                 best_label_tmp = np.array(best_label)
@@ -455,8 +457,14 @@ class Accelerated_search:
                 # Check and remove duplicates on last site in path
                 last_elements = [l[-1] for l in path]
                 k = 0; k_end = len(path)
-                while True:
-                    match = np.all(path[k][-1] == last_elements, axis = 1)
+                while k < k_end:
+                    try:
+                        match = np.all(path[k][-1] == last_elements, axis = 1)
+                    except IndexError:
+                        print(len(path))
+                        print(path)
+                        print(k)
+                        exit()
                     match[k] = False
                     del_idx = np.argwhere(match).ravel()
                     for d in del_idx:
@@ -465,12 +473,15 @@ class Accelerated_search:
                         del best_label[d]
                         k_end -= 1
                     k += 1
-                    if k == k_end:
-                        break
                 
                 # Update max path length 
                 max_path_len = len(path[0]) + num_atoms_added
+                # if len(path) > 0:
+                #     max_path_len = len(path[0]) + num_atoms_added
+                # else:
+                #     max_path_len = num_atoms_added
           
+
           
                 # If any positive labels is present 
                 if np.max(best_label) > 0:
@@ -717,7 +728,10 @@ if __name__ == '__main__':
     model_info = f'{name}_best_scores.txt'
     # AS = Accelerated_search(model_weights, model_info, N = 50, image_shape = (62,106))
     # AS = Accelerated_search(model_weights, model_info, N = 1, image_shape = (10, 10), expand = (62,106))
-    AS = Accelerated_search(model_weights, model_info, N = 1, image_shape = (5, 10), expand = None)
+    
+    # AS = Accelerated_search(model_weights, model_info, N = 1, image_shape = (5, 10), expand = None)
+    AS = Accelerated_search(model_weights, model_info, N = 1, image_shape = (10, 20), expand = None)
+    
     # AS = Accelerated_search(model_weights, model_info, N = 10, image_shape = (4, 4), expand = (100, 100))
     # AS = Accelerated_search(model_weights, model_info, N = 10, image_shape = (100, 100), expand =  None)
     
@@ -729,23 +743,30 @@ if __name__ == '__main__':
     AS.set_fitness_func(ising_max)
     
     # Initialize populartion
-    mat = np.zeros((5,10))
-    mat[0, 0] = 1
-    mat[0, 3] = 1
-    mat[0, 6] = 1
-    mat[0, 9] = 1
-    mat[1, 1] = 1
-    mat[1, 8] = 1
-    mat[2, 5] = 1
-    mat[2, 7] = 1
-    mat[2, 9] = 1
-    mat[3, 3] = 1
-    mat[4, 0:2] = 1
-    mat[4, 7] = 1
-    mat[4, 9] = 1
-    AS.init_population([mat])
+    # mat = np.zeros((5,10))
+    # mat[0, 0] = 1
+    # mat[0, 3] = 1
+    # mat[0, 6] = 1
+    # mat[0, 9] = 1
+    # mat[1, 1] = 1
+    # mat[1, 8] = 1
+    # mat[2, 5] = 1
+    # mat[2, 7] = 1
+    # mat[2, 9] = 1
+    # mat[3, 3] = 1
+    # mat[4, 0:2] = 1
+    # mat[4, 7] = 1
+    # mat[4, 9] = 1
+    # AS.init_population([mat])
   
-    # AS.init_population([0.7])
+  
+    ### XXX
+    ### XXX Still some bugs showing in the bigger images
+    ### XXX Some clusters are still floating at the end...
+    ### XXX
+    ### XXX Also sometimes it goes forever, like in a stuck while loop
+  
+    AS.init_population([0.5])
     AS.show_sheet()
     mat = AS.repair(AS.A[0])
     AS.init_population([mat])
@@ -754,7 +775,6 @@ if __name__ == '__main__':
     # AS.get_clusters(mat)
     
     exit()
-    # TODO: Try out repair function on smaller image  XXX
     
     # AS.show_status()
     # plt.show()
