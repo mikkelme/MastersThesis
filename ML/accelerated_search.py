@@ -386,6 +386,9 @@ class Accelerated_search:
         self.num_clusters = len(cluster_sizes)
         self.min_dis = 1 # For DFS
         
+        print(self.visit)
+        exit()
+        
         for label in reversed(labels):
             if label not in self.visit:
                 continue
