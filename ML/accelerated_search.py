@@ -385,18 +385,48 @@ class Accelerated_search:
         labels, cluster_sizes = self.get_clusters(conf)
         self.num_clusters = len(cluster_sizes)
         self.min_dis = 1 # For DFS
+        # print(self.visit)
+        # exit()
         
-        print(self.visit)
-        exit()
-        
-        for label in reversed(labels):
-            if label not in self.visit:
-                continue
+        # for label in reversed(labels):
+        #     if label not in self.visit:
+        #         continue
+    
+        while True:
+            if len(labels) > 0:
+                
+                # Rearange labels to match cluster size
+                # Biggest cluster first
+                cluster_sizes = np.array(cluster_sizes)
+                zero_map = np.argwhere(self.visit < 0)
+                size_sort = np.argsort(cluster_sizes)[::-1]
+                
+                for i, from_label in enumerate(size_sort+1):
+                    to_label = i+1
+                    self.visit[self.visit == from_label] = -to_label
+                self.visit = np.abs(self.visit)
+                self.visit[zero_map[:, 0], zero_map[:, 1]] = -1
+            
+                labels = [c for c in range(1, 1+len(cluster_sizes))]
+                cluster_sizes = list(cluster_sizes[size_sort])
+                
+                
+                # resort labels by cluster size
+                # sort = np.argsort(cluster_sizes)[::-1]
+                # print(labels, cluster_sizes)
+                # cluster_sizes = list(np.array(cluster_sizes)[sort])
+                # labels = list(np.array(labels)[sort])
+                # print(labels, cluster_sizes)
+                label = labels[-1]
+            else:
+                break
             print('---')
+            print(labels)
             print(self.visit)
+            print(cluster_sizes)
             print('---')
     
-            size = cluster_sizes[label-1]
+            size = cluster_sizes[-1] # XXX
             if max_walk_dis is not None:
                 size = max_walk_dis
             edge = self.get_edge(label) 
@@ -499,14 +529,18 @@ class Accelerated_search:
                             
                             # Merge clusters sizes
                             # Note: We only merge original sizes not the one from added atoms
-                            cluster_sizes[to_label-1] += cluster_sizes[from_label-1]
-                            cluster_sizes[from_label-1] = 0
+                            from_idx = np.argmin(np.abs(from_label - labels))
+                            to_idx = np.argmin(np.abs(to_label - labels))
+                            cluster_sizes[to_idx] += cluster_sizes[from_idx] # XXX
+                            cluster_sizes.pop(from_idx) 
+                            # cluster_sizes[to_label-1] += cluster_sizes[from_label-1] # XXX
                             already_merged.append(to_label)
                             num_clusters -= 1
                             print(f'label = {label}, build: {p}, num_clusters: {self.num_clusters}->{num_clusters}')
                             
-                            # Update label
-                            label = to_label # Important for multiple walks from one label to multiple others
+                            # Update labels
+                            label = to_label # Upfate current label (Important for multiple walks from one label to multiple others)
+                            labels.pop(from_idx) # Remove label from global list
                             
                             if not num_clusters > 1:
                                 break
@@ -523,12 +557,13 @@ class Accelerated_search:
                     if len(path) == 0: # No more paths to build on
                         break
                             
-                            
+
+                
                             
                 if max_path_len > size:
                     # Break if progress is made
                     if num_clusters < self.num_clusters:
-                        print(f'num_clusters < self.num_clusters = {num_clusters < self.num_clusters}')
+                        # print(f'num_clusters < self.num_clusters = {num_clusters < self.num_clusters}')
                         break
                     
                     # Check if the removing of the cluster would kill spanning possibilities
@@ -542,18 +577,9 @@ class Accelerated_search:
                     if top_atoms_left == 0 or bottom_atoms_left == 0: # Killing spanning properties
                         print(f"label = {label}, go nuts")
                         size += 1 # Unlimited walking allowed to find connection
-                    # else: # Fine, remove it.
-                        # break
-            
             
             
                 
-                
-                            
-                
-            
-            print(f'out from label {label}, num_clusters: {self.num_clusters}->{num_clusters}')
-            print()
             if not num_clusters > 1:
                 # Repair completed
                 break # break label loops
@@ -564,6 +590,11 @@ class Accelerated_search:
                 self.visit = self.visit_old # Reset visit array
                 self.visit[self.visit == label] = -1 # Delete label cluster
                 num_clusters -= 1
+            
+                label_idx = np.argmin(np.abs(label - np.array(labels)))
+                labels.pop(label_idx) # TODO: Thos can most likely be removed ...
+                cluster_sizes.pop(label_idx) 
+                
 
             self.num_clusters = num_clusters
             
@@ -612,23 +643,24 @@ class Accelerated_search:
         
             cluster_sizes.append(np.sum(self.visit == label))
 
-
+        labels = [c for c in range(1, 1+len(cluster_sizes))]
+        return labels, cluster_sizes
+        # # Rearange labels to match cluster size
+        # # Biggest cluster first
+        # cluster_sizes = np.array(cluster_sizes)
+        # zero_map = np.argwhere(self.visit < 0)
+        # size_sort = np.argsort(cluster_sizes)[::-1]
         
-        # Rearange labels to match cluster size
-        # Biggest cluster first
-        cluster_sizes = np.array(cluster_sizes)
-        zero_map = np.argwhere(self.visit < 0)
-        size_sort = np.argsort(cluster_sizes)[::-1]
-        
-        for i, from_label in enumerate(size_sort+1):
-            to_label = i+1
-            self.visit[self.visit == from_label] = -to_label
-        self.visit = np.abs(self.visit)
-        self.visit[zero_map[:, 0], zero_map[:, 1]] = -1
+        # for i, from_label in enumerate(size_sort+1):
+        #     to_label = i+1
+        #     self.visit[self.visit == from_label] = -to_label
+        # self.visit = np.abs(self.visit)
+        # self.visit[zero_map[:, 0], zero_map[:, 1]] = -1
         
         
-        labels = np.arange(1, 1+len(cluster_sizes))
-        return labels, cluster_sizes[size_sort] 
+        # labels = [c for c in range(1, 1+len(cluster_sizes))]
+        # # np.arange(1, 1+len(cluster_sizes))
+        # return labels, list(cluster_sizes[size_sort])
     
     
     def DFS(self, pos, label):
@@ -699,8 +731,8 @@ if __name__ == '__main__':
     # Initialize populartion
     mat = np.zeros((5,10))
     mat[:, :2] = 1
-    mat[0, 5] = 1
-    mat[1, 5] = 1
+    mat[0, 3] = 1
+    mat[1, 3] = 1
     mat[0, 8] = 1
     mat[1, 9] = 1
     mat[2, 9] = 1
