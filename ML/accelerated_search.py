@@ -729,18 +729,17 @@ if __name__ == '__main__':
     AS.set_fitness_func(ising_max)
     
     # Initialize populartion
-    mat = np.zeros((5,10))
-    mat[:, :2] = 1
-    mat[0, 3] = 1
-    mat[1, 3] = 1
-    mat[0, 8] = 1
-    mat[1, 9] = 1
-    mat[2, 9] = 1
-    mat[4, 9] = 1
-    
-    AS.init_population([mat])
+    # mat = np.zeros((5,10))
+    # mat[:, :2] = 1
+    # mat[0, 3] = 1
+    # mat[1, 3] = 1
+    # mat[0, 8] = 1
+    # mat[1, 9] = 1
+    # mat[2, 9] = 1
+    # mat[4, 9] = 1
+    # AS.init_population([mat])
   
-    # AS.init_population([0.7])
+    AS.init_population([0.7])
     AS.show_sheet()
     mat = AS.repair(AS.A[0])
     AS.init_population([mat])
