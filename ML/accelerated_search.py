@@ -441,40 +441,6 @@ class Accelerated_search:
             
             num_clusters = self.num_clusters
             while num_clusters > 1 and max_path_len <= size: 
-                # for k in range(len(path)):
-                #     print(path[k], best_label[k])
-                # stop = input(f"while loop | label = {label}, size = {size}")
-                for i in range(len(path)):
-                    p = path[i]
-                    
-                    # Get current (end of path) position and label
-                    current_pos = p[-1]
-                    current_site_label = self.visit[current_pos[0], current_pos[1]]
-                    
-                    # Continue to next path if already on a
-                    # non zero label not in its own cluster
-                    if current_site_label > 0 and current_site_label != label:
-                        best_label[i] = current_site_label
-                        continue
-                
-                    
-                    # Walk from end of path
-                    walk = np.array(self.walk_dis([current_pos], label = label))
-                    # Remove elements already in the preceding part of the path    
-                    not_in_path = ~np.any(np.all(walk == np.array(p)[:, np.newaxis], axis = -1), axis = 0)
-                    walk = walk[not_in_path]
-                
-                    # New walk destination site labels
-                    site_labels = self.visit[walk[:, 0], walk[:, 1]]
-                    
-                    # Store all path combinations
-                    if len(walk) > 0:
-                        for w in range(1, len(walk)):
-                            path.append(path[i] + [walk[w]])
-                            best_label.append(site_labels[w])
-                        path[i].append(walk[0])
-                        best_label[i] = site_labels[0]
-        
                     
                 # Sort path by best label (1, 2, ...., max, -1)
                 best_label_tmp = np.array(best_label)
@@ -579,6 +545,39 @@ class Accelerated_search:
                         size += 1 # Unlimited walking allowed to find connection
             
             
+                # Add to path
+                for i in range(len(path)):
+                    p = path[i]
+                    
+                    # Get current (end of path) position and label
+                    current_pos = p[-1]
+                    current_site_label = self.visit[current_pos[0], current_pos[1]]
+                    
+                    # Continue to next path if already on a
+                    # non zero label not in its own cluster
+                    if current_site_label > 0 and current_site_label != label:
+                        best_label[i] = current_site_label
+                        continue
+                
+                    
+                    # Walk from end of path
+                    walk = np.array(self.walk_dis([current_pos], label = label))
+                    # Remove elements already in the preceding part of the path    
+                    not_in_path = ~np.any(np.all(walk == np.array(p)[:, np.newaxis], axis = -1), axis = 0)
+                    walk = walk[not_in_path]
+                
+                    # New walk destination site labels
+                    site_labels = self.visit[walk[:, 0], walk[:, 1]]
+                    
+                    # Store all path combinations
+                    if len(walk) > 0:
+                        for w in range(1, len(walk)):
+                            path.append(path[i] + [walk[w]])
+                            best_label.append(site_labels[w])
+                        path[i].append(walk[0])
+                        best_label[i] = site_labels[0]
+        
+            ### Out of while loop ###
                 
             if not num_clusters > 1:
                 # Repair completed
@@ -614,7 +613,8 @@ class Accelerated_search:
             on_sheet = np.all(np.logical_and(neigh < np.shape(self.visit), neigh >= (0,0)), axis = 1)
             neigh = neigh[on_sheet]
             trial = self.visit[neigh[:, 0], neigh[:, 1]]
-            out = np.argwhere(trial == -1).ravel()
+            # out = np.argwhere(trial == -1).ravel()
+            out = np.argwhere(trial != label).ravel()
             for hit in neigh[out]:
                 if len(edge) == 0:
                     edge.append(hit)
@@ -729,17 +729,23 @@ if __name__ == '__main__':
     AS.set_fitness_func(ising_max)
     
     # Initialize populartion
-    # mat = np.zeros((5,10))
-    # mat[:, :2] = 1
-    # mat[0, 3] = 1
-    # mat[1, 3] = 1
-    # mat[0, 8] = 1
-    # mat[1, 9] = 1
-    # mat[2, 9] = 1
-    # mat[4, 9] = 1
-    # AS.init_population([mat])
+    mat = np.zeros((5,10))
+    mat[0, 0] = 1
+    mat[0, 3] = 1
+    mat[0, 6] = 1
+    mat[0, 9] = 1
+    mat[1, 1] = 1
+    mat[1, 8] = 1
+    mat[2, 5] = 1
+    mat[2, 7] = 1
+    mat[2, 9] = 1
+    mat[3, 3] = 1
+    mat[4, 0:2] = 1
+    mat[4, 7] = 1
+    mat[4, 9] = 1
+    AS.init_population([mat])
   
-    AS.init_population([0.7])
+    # AS.init_population([0.7])
     AS.show_sheet()
     mat = AS.repair(AS.A[0])
     AS.init_population([mat])
