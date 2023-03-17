@@ -370,14 +370,21 @@ class Accelerated_search:
         # the amount of added atoms surpasses the size of the cluster
         # then remoce the cluster instead.
         
-        self.num_top_atoms = np.sum(conf[:, -1])
-        print(self.num_top_atoms)
-        exit()
+        
+        num_top_atoms = np.sum(conf[:, -1])
+        num_bottom_atoms = np.sum(conf[:, 0])
+        # If bottom or top row is already completely detached
+        # then simply fill that row and let the walkers find
+        # a connection (here unlimited walks will be provided)
+        if num_top_atoms == 0:
+            conf[:, -1] = 1
+        if num_bottom_atoms == 0:
+            conf[:, 0] = 1
+            
         
         labels, cluster_sizes = self.get_clusters(conf)
         self.num_clusters = len(cluster_sizes)
         self.min_dis = 1 # For DFS
-        print()
         
         for label in reversed(labels):
             if label not in self.visit:
@@ -401,6 +408,9 @@ class Accelerated_search:
             
             num_clusters = self.num_clusters
             while num_clusters > 1 and max_path_len <= size: 
+                # for k in range(len(path)):
+                #     print(path[k], best_label[k])
+                # stop = input(f"while loop | label = {label}, size = {size}")
                 for i in range(len(path)):
                     p = path[i]
                     
@@ -417,7 +427,6 @@ class Accelerated_search:
                     
                     # Walk from end of path
                     walk = np.array(self.walk_dis([current_pos], label = label))
-                    
                     # Remove elements already in the preceding part of the path    
                     not_in_path = ~np.any(np.all(walk == np.array(p)[:, np.newaxis], axis = -1), axis = 0)
                     walk = walk[not_in_path]
@@ -432,6 +441,7 @@ class Accelerated_search:
                             best_label.append(site_labels[w])
                         path[i].append(walk[0])
                         best_label[i] = site_labels[0]
+        
                     
                 # Sort path by best label (1, 2, ...., max, -1)
                 best_label_tmp = np.array(best_label)
@@ -461,9 +471,8 @@ class Accelerated_search:
                 
                 # Update max path length 
                 max_path_len = len(path[0]) + num_atoms_added
-                
-                
-                
+          
+          
                 # If any positive labels is present 
                 if np.max(best_label) > 0:
                     # Go through paths and connect clusters with positive
@@ -502,7 +511,6 @@ class Accelerated_search:
                             if max_path_len > size+1:
                                 break
                             
-                
                     # Delete path and label list which is already merged
                     for idx in reversed(range(len(best_label))):
                         if best_label[idx] in already_merged:
@@ -511,6 +519,34 @@ class Accelerated_search:
                     
                     if len(path) == 0: # No more paths to build on
                         break
+                            
+                            
+                            
+                if max_path_len > size:
+                    # Break if progress is made
+                    if num_clusters < self.num_clusters:
+                        print(f'num_clusters < self.num_clusters = {num_clusters < self.num_clusters}')
+                        break
+                    
+                    # Check if the removing of the cluster would kill spanning possibilities
+                    del_map = self.visit == label
+                    
+                    # Potential top and bottom atoms left when removing cluster
+                    top_atoms_left = np.sum(self.visit[:, -1] > 0) - np.sum(del_map[:, -1])
+                    bottom_atoms_left = np.sum(self.visit[:, 0] > 0) - np.sum(del_map[:, 0])
+                    
+                    # If this is killing spanning properties 
+                    if top_atoms_left == 0 or bottom_atoms_left == 0: # Killing spanning properties
+                        print(f"label = {label}, go nuts")
+                        size += 1 # Unlimited walking allowed to find connection
+                    # else: # Fine, remove it.
+                        # break
+            
+            
+            
+                
+                
+                            
                 
             
             print(f'out from label {label}, num_clusters: {self.num_clusters}->{num_clusters}')
@@ -520,10 +556,7 @@ class Accelerated_search:
                 break # break label loops
             
             if num_clusters == self.num_clusters: # Did not manage to reduce number of clusters
-                
-                # If this is killing spanning properties 
-                # if 
-                
+                # Remove cluster
                 print(f'label {label}, removing cluster')
                 self.visit = self.visit_old # Reset visit array
                 self.visit[self.visit == label] = -1 # Delete label cluster
@@ -663,20 +696,16 @@ if __name__ == '__main__':
     # Initialize populartion
     mat = np.zeros((5,10))
     mat[:, :2] = 1
-    mat[:, -1:] = 1
-    # mat[0, 0] = 1
-    # mat[0, 4] = 1
-    # mat[0, 6] = 1
-    # mat[1, 4] = 1
-    # mat[1, 6] = 1
-    # mat[2, 3] = 1
-    # mat[2, 6] = 1
-    # mat[3, 0:2] = 1
-    # mat[4, 1] = 1
-    # mat[4, 8] = 1
+    mat[0, 5] = 1
+    mat[1, 5] = 1
+    mat[0, 8] = 1
+    mat[1, 9] = 1
+    mat[2, 9] = 1
+    mat[4, 9] = 1
+    
     AS.init_population([mat])
   
-    # AS.init_population([0.8])
+    # AS.init_population([0.7])
     AS.show_sheet()
     mat = AS.repair(AS.A[0])
     AS.init_population([mat])
