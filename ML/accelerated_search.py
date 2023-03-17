@@ -8,7 +8,6 @@ from graphene_sheet.build_utils import *
 # matplotlib.interactive(True)
 
 class Accelerated_search:
-    # TODO: Make repair function to ensure valid configurations once in a while or every generation perhaps. 
     def __init__(self, model_weights, model_info, N = 100, image_shape = (62, 106), expand = None):
 
         # Settings        
@@ -365,58 +364,67 @@ class Accelerated_search:
     
        
     def repair(self, conf, max_walk_dis = None):
+        # TODO: Add check for spanning cluster as well XXX
         # Repair by least changed atoms approah:
         # Try to add atom on the edge to connect until
         # the amount of added atoms surpasses the size of the cluster
         # then remoce the cluster instead.
+        
+        self.num_top_atoms = np.sum(conf[:, -1])
+        print(self.num_top_atoms)
+        exit()
+        
         labels, cluster_sizes = self.get_clusters(conf)
-        num_clusters = len(cluster_sizes)
+        self.num_clusters = len(cluster_sizes)
+        self.min_dis = 1 # For DFS
+        print()
         
         for label in reversed(labels):
             if label not in self.visit:
                 continue
+            print('---')
+            print(self.visit)
+            print('---')
     
             size = cluster_sizes[label-1]
             if max_walk_dis is not None:
                 size = max_walk_dis
             edge = self.get_edge(label) 
+            
             self.visit_old = self.visit.copy()
             
             num_atoms_added = 0
             max_path_len = 0
-            self.min_dis = 1
             path = [[e] for e in edge]
             best_label = [-1 for e in edge]
             
-            print(f'label = {label}, num_clusters = {num_clusters}')
             
-            # if label == 2:
-            #     print("label = 2")
-            #     print(max_path_len)
-            #     print(num_clusters)
-            #     print(path)
-            while num_clusters > 1 and max_path_len <= size+1: 
+            num_clusters = self.num_clusters
+            while num_clusters > 1 and max_path_len <= size: 
                 for i in range(len(path)):
                     p = path[i]
+                    
                     # Get current (end of path) position and label
                     current_pos = p[-1]
                     current_site_label = self.visit[current_pos[0], current_pos[1]]
                     
-                    # Continue to next path if already on 
+                    # Continue to next path if already on a
                     # non zero label not in its own cluster
                     if current_site_label > 0 and current_site_label != label:
                         best_label[i] = current_site_label
                         continue
                 
                     
-                    
                     # Walk from end of path
                     walk = np.array(self.walk_dis([current_pos], label = label))
-                    # Remove elements already in the path    
+                    
+                    # Remove elements already in the preceding part of the path    
                     not_in_path = ~np.any(np.all(walk == np.array(p)[:, np.newaxis], axis = -1), axis = 0)
                     walk = walk[not_in_path]
                 
-                    site_labels = self.visit[walk[:, 0], walk[:, 1]] # New site labels  
+                    # New walk destination site labels
+                    site_labels = self.visit[walk[:, 0], walk[:, 1]]
+                    
                     # Store all path combinations
                     if len(walk) > 0:
                         for w in range(1, len(walk)):
@@ -425,22 +433,17 @@ class Accelerated_search:
                         path[i].append(walk[0])
                         best_label[i] = site_labels[0]
                     
-                # Sort path by best label
+                # Sort path by best label (1, 2, ...., max, -1)
                 best_label_tmp = np.array(best_label)
                 path_tmp = path.copy()
-                
                 sort_weight = np.where(best_label_tmp > 0, best_label_tmp, 1e3)
-                    
                 label_sort = np.argsort(sort_weight)
-                
                 for idx_in, idx_out in enumerate(label_sort):
                     best_label[idx_in] = best_label_tmp[idx_out]
                     path[idx_in] = path_tmp[idx_out]
-                    
-        
                 
                 
-                # Check for duplicates on last site in path
+                # Check and remove duplicates on last site in path
                 last_elements = [l[-1] for l in path]
                 k = 0; k_end = len(path)
                 while True:
@@ -452,17 +455,19 @@ class Accelerated_search:
                         del last_elements[d]
                         del best_label[d]
                         k_end -= 1
-                    
                     k += 1
                     if k == k_end:
                         break
-                    
+                
+                # Update max path length 
                 max_path_len = len(path[0]) + num_atoms_added
                 
                 
-                if np.max(best_label) > 0: # Go to positive label
-                    # Go through paths and connect to unique until 
-                    # clusters is merged (if possible)  
+                
+                # If any positive labels is present 
+                if np.max(best_label) > 0:
+                    # Go through paths and connect clusters with positive
+                    # label hits until clusters is merged (if possible)  
                     sort_path = np.argsort(best_label)
                     already_merged = []
                     for s in sort_path:
@@ -471,46 +476,64 @@ class Accelerated_search:
                         if l < 0:
                             continue
                         
-                        
                         if l not in already_merged:
-                            num_atoms_added += len(p) - 1 # TODO: This counter is overwrited later...
-                            self.visit[p[:,0], p[:,1]] = l
-                            self.visit[self.visit == label] = l
-                            already_merged.append(l)
+                            num_atoms_added += len(p) - 1 
+                            max_path_len +=  len(p) - 1
                             
+                            from_label = np.max((l, label))
+                            to_label = np.min((l, label))
+                            self.visit[p[:,0], p[:,1]] = to_label
+                            self.visit[self.visit == from_label] = to_label
+                            
+                            # Merge clusters sizes
+                            # Note: We only merge original sizes not the one from added atoms
+                            cluster_sizes[to_label-1] += cluster_sizes[from_label-1]
+                            cluster_sizes[from_label-1] = 0
+                            already_merged.append(to_label)
                             num_clusters -= 1
-                            print(f'num_clusters: {num_clusters+1} -> {num_clusters}, max_path_len = {max_path_len}, size = {size}' )
+                            print(f'label = {label}, build: {p}, num_clusters: {self.num_clusters}->{num_clusters}')
+                            
+                            # Update label
+                            label = to_label # Important for multiple walks from one label to multiple others
+                            
                             if not num_clusters > 1:
                                 break
-                            # TODO: LOOK INTO mechanisms here! XXX
+                            
+                            if max_path_len > size+1:
+                                break
+                            
                 
-                    # Delete path with already merged labels
+                    # Delete path and label list which is already merged
                     for idx in reversed(range(len(best_label))):
                         if best_label[idx] in already_merged:
                             best_label.pop(idx)
                             path.pop(idx)
                     
-                    if len(path) == 0:
+                    if len(path) == 0: # No more paths to build on
                         break
                 
-            # Breaking out of while loop in label loop
+            
+            print(f'out from label {label}, num_clusters: {self.num_clusters}->{num_clusters}')
+            print()
             if not num_clusters > 1:
                 # Repair completed
-                print(f'Added atoms = {num_atoms_added}')
-                break # out of label loop
-            elif max_path_len > size:
-                # Did not manage to bridge clusters
-                # Instead delete label cluster
+                break # break label loops
+            
+            if num_clusters == self.num_clusters: # Did not manage to reduce number of clusters
                 
+                # If this is killing spanning properties 
+                # if 
+                
+                print(f'label {label}, removing cluster')
                 self.visit = self.visit_old # Reset visit array
                 self.visit[self.visit == label] = -1 # Delete label cluster
-                
                 num_clusters -= 1
-                print(f'num_clusters: {num_clusters+1} -> {num_clusters}, max_path_len = {max_path_len}, size = {size}' )
-                # TODO: LOOK INTO mechanisms here! XXX
-                print("Working with debugging. Look at line 485 and 510")
-                exit()
-                
+
+            self.num_clusters = num_clusters
+            
+          
+        
+        print(f'Repair completed') 
 
         conf[:] = 1
         conf[self.visit < 0] = 0
@@ -530,6 +553,7 @@ class Accelerated_search:
                     edge.append(hit)
                 elif not np.any(np.all(hit == edge, axis = 1)):
                     edge.append(hit)
+                
         return np.array(edge)
         
     
@@ -553,16 +577,19 @@ class Accelerated_search:
             cluster_sizes.append(np.sum(self.visit == label))
 
 
+        
         # Rearange labels to match cluster size
         # Biggest cluster first
         cluster_sizes = np.array(cluster_sizes)
-        zero_map = np.argwhere(self.visit == -1)
+        zero_map = np.argwhere(self.visit < 0)
         size_sort = np.argsort(cluster_sizes)[::-1]
-        for i, to_label in enumerate(size_sort+1):
-            from_label = i+1
+        
+        for i, from_label in enumerate(size_sort+1):
+            to_label = i+1
             self.visit[self.visit == from_label] = -to_label
         self.visit = np.abs(self.visit)
         self.visit[zero_map[:, 0], zero_map[:, 1]] = -1
+        
         
         labels = np.arange(1, 1+len(cluster_sizes))
         return labels, cluster_sizes[size_sort] 
@@ -634,23 +661,26 @@ if __name__ == '__main__':
     AS.set_fitness_func(ising_max)
     
     # Initialize populartion
-    mat = np.ones((5,10))
-    mat[0, 3] = 0
-    mat[1, 1] = 0
-    mat[1, 7] = 0
-    mat[1, 9] = 0
-    mat[3, 6] = 0
-    mat[3, 9] = 0
-    mat[4, 0] = 0
-    mat[4, 1] = 0
-    mat[4, 8] = 0
+    mat = np.zeros((5,10))
+    mat[:, :2] = 1
+    mat[:, -1:] = 1
+    # mat[0, 0] = 1
+    # mat[0, 4] = 1
+    # mat[0, 6] = 1
+    # mat[1, 4] = 1
+    # mat[1, 6] = 1
+    # mat[2, 3] = 1
+    # mat[2, 6] = 1
+    # mat[3, 0:2] = 1
+    # mat[4, 1] = 1
+    # mat[4, 8] = 1
     AS.init_population([mat])
   
-    # AS.init_population([0.2])
-    # AS.show_sheet()
+    # AS.init_population([0.8])
+    AS.show_sheet()
     mat = AS.repair(AS.A[0])
-    # AS.init_population([mat])
-    # AS.show_sheet()
+    AS.init_population([mat])
+    AS.show_sheet()
     exit()
     # AS.get_clusters(mat)
     
