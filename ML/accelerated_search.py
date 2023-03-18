@@ -381,78 +381,70 @@ class Accelerated_search:
         
        
     def repair(self, conf, max_walk_dis = None):
-        # Repair by least changed atoms approah:
-        # Try to add atom on the edge to connect until
-        # the amount of added atoms surpasses the size of the cluster
-        # then remoce the cluster instead.
-        
-        
-        
-        # If bottom or top row is already detached
-        # then simply fill that row and let the walkers find
-        # a connection (here unlimited walks will be provided)
+        """ Repair sheet configuration by reducing it to a single cluster that 
+            spans top to bottom in y-direction.
+
+        Args:
+            conf (2D array): Cut configuration
+            max_walk_dis (None or int, optional): Maximum number of steps for walkers to take. Defaults to None meaning that the current cluster size is used.
+
+
+        Algorithm summary:
+                1.  Update label in descending order by cluster size.
+                2.  Start walker from smallest cluster (last element of list).
+                3.  Walk until another cluster is found or the step size 
+                    exceeds the cluster size itself. 
+                4.  If (another cluster was found)  --> connect thoose
+                    Else:
+                        If (cluster is the last cluster attached)   --> Extend walking
+                        Else                                        --> Remove cluster
+                
+                5.  If number of clusters is 1 --> Terminate
+                    Else:                      --> Go to step 1.
+                    
+        """
+       
+        # --- Check that top and bottom row is present --- #
+        # If missing fill row completely 
         num_top_atoms = np.sum(conf[:, -1])
         num_bottom_atoms = np.sum(conf[:, 0])
-        
         if num_top_atoms == 0:
             conf[:, -1] = 1
         if num_bottom_atoms == 0:
             conf[:, 0] = 1
             
+        # --- Get clusters --- #
         self.labels, self.cluster_sizes = self.get_clusters(conf)
         self.num_clusters = len(self.cluster_sizes)
         self.min_dis = 1 # For DFS
         
         
-        while True:
-            if len(self.labels) > 1:
-                label = self.labels[-1]
-                self.reorder()
-            else: # One cluster left
-                print("Did I break here?")
-                exit()
-                break
+        while self.num_clusters > 1:
+            # Order clusters by size and pick on from minimum
+            self.reorder()
+            label = self.labels[-1]
             
-            # print('---')
-            # print(self.labels)
-            # print(self.visit)
-            # print(self.cluster_sizes)
-            # print('---')
-            
-            # Get cluster size
-            size = self.cluster_sizes[-1] # XXX
+            # Get current cluster size
+            size = self.cluster_sizes[-1] 
             if max_walk_dis is not None: # Adjust for cases of extended walk
                 size = max_walk_dis
-            edge = self.get_edge(label) 
-            self.visit_old = self.visit.copy() # Copy of initial state
             
+            # Get copy of initial state
+            self.visit_old = self.visit.copy() 
             
             # Reset parameters
             num_atoms_added = 0
             max_path_len = 0
             num_clusters = self.num_clusters
             
-            # Reset edge and best_label 
+            # Set new starting point from edge
+            edge = self.get_edge(label) 
             path = [[e] for e in edge]
             best_label = [-1 for e in edge]
             
-            # --- Walk from last label (smallest cluster) --- #
-            while num_clusters > 1 and max_path_len <= size: 
-                if len(path) == 0:
-                    print("This should not happen...")
-                    exit()
-                    break
-                    
-                # Sort path by best label (1, 2, ...., max, -1)
-                best_label_tmp = np.array(best_label)
-                path_tmp = path.copy()
-                sort_weight = np.where(best_label_tmp > 0, best_label_tmp, 1e3)
-                label_sort = np.argsort(sort_weight)
-                for idx_in, idx_out in enumerate(label_sort):
-                    best_label[idx_in] = best_label_tmp[idx_out]
-                    path[idx_in] = path_tmp[idx_out]
-                
-                # Check and remove duplicates on last site in path
+            # --- Walk from smallest cluster --- #
+            while num_clusters > 1 and max_path_len <= size:         
+                # Remove possible duplicates on last site in path
                 last_elements = [l[-1] for l in path]
                 k = 0; k_end = len(path)
                 while k < k_end:
@@ -469,7 +461,7 @@ class Accelerated_search:
                 # Update max path length 
                 max_path_len = len(path[0]) + num_atoms_added
 
-          
+
                 # If any positive labels is present (HIT) 
                 if np.max(best_label) > 0:
                     hit = np.argmax(best_label)
@@ -497,22 +489,21 @@ class Accelerated_search:
                     
                     break # while loop for current label
                         
-                            
+                # If max walking length is reached check of clusters is last spanning option
                 if max_path_len > size: 
-                    # Check if the removing of the cluster would kill spanning possibilities
                     del_map = self.visit == label
                     
                     # Potential top and bottom atoms left when removing cluster
                     top_atoms_left = np.sum(self.visit[:, -1] > 0) - np.sum(del_map[:, -1])
                     bottom_atoms_left = np.sum(self.visit[:, 0] > 0) - np.sum(del_map[:, 0])
                     
-                    # If this is killing spanning properties 
+                    # If this is killing spanning properties exten walking (by increasing cluster size)
                     if top_atoms_left == 0 or bottom_atoms_left == 0: # Killing spanning properties
                         print(f"label = {label}, go nuts")
                         size += 1 # Unlimited walking allowed to find connection
             
 
-                # Add to path
+                # Add new site to paths
                 for i in range(len(path)):
                     p = path[i]
                     
@@ -520,20 +511,15 @@ class Accelerated_search:
                     current_pos = p[-1]
                     current_site_label = self.visit[current_pos[0], current_pos[1]]
                     
-                    # Continue to next path if already on a
-                    # non zero label not in its own cluster
-                    if current_site_label > 0 and current_site_label != label:
-                        best_label[i] = current_site_label
-                        continue
-                
                     
                     # Walk from end of path
                     walk = np.array(self.walk_dis([current_pos], label = label))
+                    
                     # Remove elements already in the preceding part of the path    
                     not_in_path = ~np.any(np.all(walk == np.array(p)[:, np.newaxis], axis = -1), axis = 0)
                     walk = walk[not_in_path]
                 
-                    # New walk destination site labels
+                    # Get labels on destination sites
                     site_labels = self.visit[walk[:, 0], walk[:, 1]]
                     
                     # Store all path combinations
@@ -545,11 +531,8 @@ class Accelerated_search:
                         best_label[i] = site_labels[0]
         
         
-            ### Out of while loop ###        
-            if not num_clusters > 1:
-                # Repair completed
-                break # break label loop
-            
+            ### Coming out of while loop ###        
+         
             if num_clusters == self.num_clusters: # Did not manage to reduce number of clusters
                 # Remove cluster
                 print(f'label {label}, removing cluster')
@@ -562,17 +545,19 @@ class Accelerated_search:
                 self.cluster_sizes.pop(label_idx) 
                 
 
+            # Update number of clusters
             self.num_clusters = num_clusters
             
           
-        
         print(f'Repair completed') 
-
+        
+        # Update configuration
         conf[:] = 1
         conf[self.visit < 0] = 0
         return conf
     
     def get_edge(self, label):
+        """ Find edge of specific cluster """
         out = np.argwhere(self.visit == label)
         edge = []
         for pos in out:
@@ -592,6 +577,7 @@ class Accelerated_search:
         
     
     def get_clusters(self, conf):
+        """ Label detached clusters and store size (not sorted yet) """
         self.visit = conf.copy()
         self.visit[conf == 0] = -1
         self.visit[conf == 1] = 0
@@ -670,8 +656,8 @@ if __name__ == '__main__':
     # AS = Accelerated_search(model_weights, model_info, N = 50, image_shape = (62,106))
     # AS = Accelerated_search(model_weights, model_info, N = 1, image_shape = (10, 10), expand = (62,106))
     
-    # AS = Accelerated_search(model_weights, model_info, N = 1, image_shape = (5, 10), expand = None)
-    AS = Accelerated_search(model_weights, model_info, N = 1, image_shape = (62, 106), expand = None)
+    AS = Accelerated_search(model_weights, model_info, N = 1, image_shape = (30, 60), expand = None)
+    # AS = Accelerated_search(model_weights, model_info, N = 1, image_shape = (62, 106), expand = None)
     
     # AS = Accelerated_search(model_weights, model_info, N = 10, image_shape = (4, 4), expand = (100, 100))
     # AS = Accelerated_search(model_weights, model_info, N = 10, image_shape = (100, 100), expand =  None)
@@ -701,19 +687,8 @@ if __name__ == '__main__':
     # AS.init_population([mat])
   
   
-  
-    # TODO: Try big image
-    # This will give you the error:
-    # Traceback (most recent call last):
-    # File "/Users/mikkelme/Documents/Github/MastersThesis/ML/accelerated_search.py", line 716, in <module>
-    # mat = AS.repair(AS.A[0])
-    # File "/Users/mikkelme/Documents/Github/MastersThesis/ML/accelerated_search.py", line 469, in repair
-    # del path[d]
-    # IndexError: list assignment index out of range
-    # XXX
-  
-    np.random.seed(1235)
-    AS.init_population([0.5])
+    # np.random.seed(1235)
+    AS.init_population([0.35])
     AS.show_sheet()
     mat = AS.repair(AS.A[0])
     AS.init_population([mat])
