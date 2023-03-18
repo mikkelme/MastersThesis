@@ -413,11 +413,11 @@ class Accelerated_search:
                 exit()
                 break
             
-            print('---')
-            print(self.labels)
-            print(self.visit)
-            print(self.cluster_sizes)
-            print('---')
+            # print('---')
+            # print(self.labels)
+            # print(self.visit)
+            # print(self.cluster_sizes)
+            # print('---')
             
             # Get cluster size
             size = self.cluster_sizes[-1] # XXX
@@ -456,19 +456,13 @@ class Accelerated_search:
                 last_elements = [l[-1] for l in path]
                 k = 0; k_end = len(path)
                 while k < k_end:
-                    try:
-                        match = np.all(path[k][-1] == last_elements, axis = 1)
-                    except IndexError:
-                        print(len(path))
-                        print(path)
-                        print(k)
-                        exit()
+                    match = np.all(path[k][-1] == last_elements, axis = 1)
                     match[k] = False
                     del_idx = np.argwhere(match).ravel()
-                    for d in del_idx:
-                        del path[d]
-                        del last_elements[d]
-                        del best_label[d]
+                    for pop_count, d in enumerate(del_idx):
+                        del path[d-pop_count]
+                        del last_elements[d-pop_count]
+                        del best_label[d-pop_count]
                         k_end -= 1
                     k += 1
                 
@@ -677,7 +671,7 @@ if __name__ == '__main__':
     # AS = Accelerated_search(model_weights, model_info, N = 1, image_shape = (10, 10), expand = (62,106))
     
     # AS = Accelerated_search(model_weights, model_info, N = 1, image_shape = (5, 10), expand = None)
-    AS = Accelerated_search(model_weights, model_info, N = 1, image_shape = (60, 60), expand = None)
+    AS = Accelerated_search(model_weights, model_info, N = 1, image_shape = (62, 106), expand = None)
     
     # AS = Accelerated_search(model_weights, model_info, N = 10, image_shape = (4, 4), expand = (100, 100))
     # AS = Accelerated_search(model_weights, model_info, N = 10, image_shape = (100, 100), expand =  None)
@@ -718,6 +712,7 @@ if __name__ == '__main__':
     # IndexError: list assignment index out of range
     # XXX
   
+    np.random.seed(1235)
     AS.init_population([0.5])
     AS.show_sheet()
     mat = AS.repair(AS.A[0])
