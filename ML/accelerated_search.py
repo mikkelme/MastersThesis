@@ -7,12 +7,13 @@ from graphene_sheet.build_utils import *
 
 
 class Accelerated_search:
-    def __init__(self, model_weights, model_info, N = 100, image_shape = (62, 106), expand = None):
+    def __init__(self, model_weights, model_info, N = 100, image_shape = (62, 106), expand = None, repair = False):
 
         # Settings        
         self.N = N
         self.image_shape = image_shape
         self.expand = expand
+        self.repair = repair
         
         # Initialize arrays
         self.A = np.zeros((N, *image_shape), dtype = int)   # Population
@@ -59,6 +60,9 @@ class Accelerated_search:
             elif isinstance(conf, float): # Float defining porosity probability 
                 ones = np.random.rand(*self.image_shape) > conf
                 self.A[i][ones] = 1
+                
+            if self.repair:
+                self.A[i] = self.repair_sheet(self.A[i])
         
         if self.expand:
             self.expand_population()
@@ -210,34 +214,19 @@ class Accelerated_search:
             flip1 = np.logical_and(RN < np.maximum(self.P[:, :, 1, 0]*a[i], clip[i]), ~zeros)
             self.A[i][flip0] = 1
             self.A[i][flip1] = 0
+            
+            if self.repair:
+                self.A[i] = self.repair_sheet(self.A[i])
 
             if self.expand is not None:
                 self.expand_population()    
                     
-            # if mutate_individual[i]:
-            #     zeros = self.A[i] < 0.5
-                
-            #     flip0 = np.logical_and(self.P[:, :, 0, 1] > np.quantile(self.P[:, :, 0, 1], 1 - a[i]), zeros)
-            #     flip1 = np.logical_and(self.P[:, :, 1, 0] > np.quantile(self.P[:, :, 1, 0], 1 - a[i]), ~zeros)
-               
-            #     # RN = np.random.rand(*self.image_shape)
-            #     # flip0 = np.logical_and(RN < np.maximum(self.P[:, :, 0, 1]*a[i], clip[i]), zeros)
-            #     # flip1 = np.logical_and(RN < np.maximum(self.P[:, :, 1, 0]*a[i], clip[i]), ~zeros)
-                
-            #     # flip0 = np.logical_and(RN < np.maximum(self.P[:, :, 0, 1], clip[i]), zeros)
-            #     # flip1 = np.logical_and(RN < np.maximum(self.P[:, :, 1, 0], clip[i]), ~zeros)
-            #     # if i == self.N -1:
-            #     #     print(f'flip0 = {np.sum(flip0)}, flip1 = {np.sum(flip1)}, clip = {clip[i]}')
-                
-            #     self.A[i][flip0] = 1
-            #     self.A[i][flip1] = 0
         
         
     def evolve(self):
         """ Evolve by one generation """
         
         self.mutate()
-        # self.repair()
         self.gen += 1
         self.evaluate_fitness()
         
@@ -254,11 +243,11 @@ class Accelerated_search:
                 
                 print(f'Gen = {self.gen} | Min score = {self.min_score:g}, Mean score = {self.mean_score:g}, Max score = {self.max_score:g}, mean P01 = {np.mean(self.P[:, :, 0, 1]):g}, mean P10 = {np.mean(self.P[:, :, 1, 0]):g}, porosity = {best_porosity:g}')
                 
-                # if self.gen % 10 == 0:
-                #     fig = self.show_status()
-                #     fig.savefig(f'AS/gen{self.gen}.pdf', bbox_inches='tight')
-                #     # plt.show()
-                #     plt.clf()
+                if self.gen % 10 == 0:
+                    fig = self.show_status()
+                    fig.savefig(f'AS/gen{self.gen}.pdf', bbox_inches='tight')
+                    # plt.show()
+                    fig.clf()
                     
                     # self.show_sheet()
                 # if self.gen % 100 == 1:
@@ -271,8 +260,8 @@ class Accelerated_search:
                 break
         
         
-    def show_sheet(self):
-        builder = config_builder(self.A[0])
+    def show_sheet(self, conf):
+        builder = config_builder(conf)
         builder.view()
         
     def show_status(self):
@@ -318,69 +307,8 @@ class Accelerated_search:
         
         
         return fig
-    
-    
-    def walk_dis(self, input, label, dis = 0, pre = []):
-        """ Recursive function to walk to all sites
-            within a distance of min_dis jumps """
-        if self.min_dis == 0:
-            return input
-        
-        
-        for i, elem in enumerate(input):
-            if isinstance(elem, (np.ndarray, np.generic)):
-                input[i] = elem.tolist()
-
-        neigh = []
-        for pos in input:
-            suggest, _ = connected_neigh_atom(pos)
-            for s in suggest:
-                if len(pre) == 0:
-                    s_in_pre = False
-                else:
-                    s_in_pre = np.any(np.all(s == pre, axis = -1))
-                
-                if len(neigh) == 0:
-                    s_in_neigh = False
-                else:
-                    s_in_neigh = np.any(np.all(s == neigh, axis = -1))
-            
-                on_sheet =  np.all(np.logical_and(s < np.shape(self.visit), s >= (0,0)))
-                if on_sheet:
-                    site_label = self.visit[s[0], s[1]]
-                else:
-                    continue
-                
-                if not s_in_pre and not s_in_neigh and site_label != label:
-                        neigh.append(s)
-            
-        dis += 1
-        if dis >= self.min_dis:
-            return input + neigh
-        else:
-            pre = np.array(input)
-            return  np.concatenate((pre, self.walk_dis(neigh, label, dis, pre)))
-    
        
-    def reorder(self):
-        """ Rearange labels to match cluster size
-            Descending order: Biggest cluster first """
-        self.cluster_sizes = np.array(self.cluster_sizes) # TODO: Do we want to avoid transformation between array and list here?
-        zero_map = np.argwhere(self.visit < 0)
-        size_sort = np.argsort(self.cluster_sizes)[::-1]
-        
-        for i, from_label in enumerate(size_sort+1):
-            to_label = i+1
-            self.visit[self.visit == from_label] = -to_label
-        self.visit = np.abs(self.visit)
-        self.visit[zero_map[:, 0], zero_map[:, 1]] = -1
-    
-        self.labels = [c for c in range(1, 1+len(self.cluster_sizes))]
-        self.cluster_sizes = list(self.cluster_sizes[size_sort])
-        
-        
-       
-    def repair(self, conf, max_walk_dis = None):
+    def repair_sheet(self, conf, max_walk_dis = None):
         """ Repair sheet configuration by reducing it to a single cluster that 
             spans top to bottom in y-direction.
 
@@ -485,7 +413,7 @@ class Accelerated_search:
                     self.cluster_sizes.pop(from_idx) 
                     self.labels.pop(from_idx)
                     num_clusters -= 1
-                    print(f'label = {label}, build: {p}, num_clusters: {self.num_clusters}->{num_clusters}')
+                    # print(f'label = {label}, build: {p}, num_clusters: {self.num_clusters}->{num_clusters}')
                     
                     break # while loop for current label
                         
@@ -499,7 +427,7 @@ class Accelerated_search:
                     
                     # If this is killing spanning properties exten walking (by increasing cluster size)
                     if top_atoms_left == 0 or bottom_atoms_left == 0: # Killing spanning properties
-                        print(f"label = {label}, go nuts")
+                        # print(f"label = {label}, go nuts")
                         size += 1 # Unlimited walking allowed to find connection
             
 
@@ -535,7 +463,7 @@ class Accelerated_search:
          
             if num_clusters == self.num_clusters: # Did not manage to reduce number of clusters
                 # Remove cluster
-                print(f'label {label}, removing cluster')
+                # print(f'label {label}, removing cluster')
                 self.visit = self.visit_old # Reset visit array
                 self.visit[self.visit == label] = -1 # Delete label cluster
                 num_clusters -= 1
@@ -549,13 +477,70 @@ class Accelerated_search:
             self.num_clusters = num_clusters
             
           
-        print(f'Repair completed') 
+        # print(f'Repair completed') 
         
         # Update configuration
         conf[:] = 1
         conf[self.visit < 0] = 0
         return conf
     
+    def walk_dis(self, input, label, dis = 0, pre = []):
+        """ Recursive function to walk to all sites
+            within a distance of min_dis jumps """
+        if self.min_dis == 0:
+            return input
+        
+        
+        for i, elem in enumerate(input):
+            if isinstance(elem, (np.ndarray, np.generic)):
+                input[i] = elem.tolist()
+
+        neigh = []
+        for pos in input:
+            suggest, _ = connected_neigh_atom(pos)
+            for s in suggest:
+                if len(pre) == 0:
+                    s_in_pre = False
+                else:
+                    s_in_pre = np.any(np.all(s == pre, axis = -1))
+                
+                if len(neigh) == 0:
+                    s_in_neigh = False
+                else:
+                    s_in_neigh = np.any(np.all(s == neigh, axis = -1))
+            
+                on_sheet =  np.all(np.logical_and(s < np.shape(self.visit), s >= (0,0)))
+                if on_sheet:
+                    site_label = self.visit[s[0], s[1]]
+                else:
+                    continue
+                
+                if not s_in_pre and not s_in_neigh and site_label != label:
+                        neigh.append(s)
+            
+        dis += 1
+        if dis >= self.min_dis:
+            return input + neigh
+        else:
+            pre = np.array(input)
+            return  np.concatenate((pre, self.walk_dis(neigh, label, dis, pre)))
+    
+    def reorder(self):
+        """ Rearange labels to match cluster size
+            Descending order: Biggest cluster first """
+        self.cluster_sizes = np.array(self.cluster_sizes) # TODO: Do we want to avoid transformation between array and list here?
+        zero_map = np.argwhere(self.visit < 0)
+        size_sort = np.argsort(self.cluster_sizes)[::-1]
+        
+        for i, from_label in enumerate(size_sort+1):
+            to_label = i+1
+            self.visit[self.visit == from_label] = -to_label
+        self.visit = np.abs(self.visit)
+        self.visit[zero_map[:, 0], zero_map[:, 1]] = -1
+    
+        self.labels = [c for c in range(1, 1+len(self.cluster_sizes))]
+        self.cluster_sizes = list(self.cluster_sizes[size_sort])
+        
     def get_edge(self, label):
         """ Find edge of specific cluster """
         out = np.argwhere(self.visit == label)
@@ -575,7 +560,6 @@ class Accelerated_search:
                 
         return np.array(edge)
         
-    
     def get_clusters(self, conf):
         """ Label detached clusters and store size (not sorted yet) """
         self.visit = conf.copy()
@@ -598,8 +582,6 @@ class Accelerated_search:
 
         labels = [c for c in range(1, 1+len(cluster_sizes))]
         return labels, cluster_sizes
-    
-   
     
     def DFS(self, pos, label):
         """ Depth-first search (DFS) used for 
@@ -624,9 +606,7 @@ class Accelerated_search:
             if self.visit[pos[0], pos[1]] == 0: # Atom is present
                 self.DFS(pos, label)
                 
-        
-        
-        
+               
         
 def porosity_target(conf):
     porosity = np.mean(conf)
@@ -654,20 +634,27 @@ if __name__ == '__main__':
     model_weights = f'{name}_model_dict_state'
     model_info = f'{name}_best_scores.txt'
     # AS = Accelerated_search(model_weights, model_info, N = 50, image_shape = (62,106))
-    # AS = Accelerated_search(model_weights, model_info, N = 1, image_shape = (10, 10), expand = (62,106))
+    AS = Accelerated_search(model_weights, model_info, N = 50, image_shape = (10, 10), expand = (62,106), repair = True)
+    # AS = Accelerated_search(model_weights, model_info, N = 10, image_shape = (10, 10), expand = None)
     
-    AS = Accelerated_search(model_weights, model_info, N = 1, image_shape = (30, 60), expand = None)
-    # AS = Accelerated_search(model_weights, model_info, N = 1, image_shape = (62, 106), expand = None)
-    
-    # AS = Accelerated_search(model_weights, model_info, N = 10, image_shape = (4, 4), expand = (100, 100))
-    # AS = Accelerated_search(model_weights, model_info, N = 10, image_shape = (100, 100), expand =  None)
-    
-    # Define fitness
+    # --- Define fitness --- #
     AS.stretch = np.linspace(0, 2, 100)
     AS.F_N = 5
-    # AS.set_fitness_func(AS.max_drop)
-    # AS.set_fitness_func(AS.max_fric)
-    AS.set_fitness_func(ising_max)
+    AS.set_fitness_func(AS.max_drop)
+    # AS.set_fitness_func(ising_max)
+    # AS.init_population(['../config_builder/baseline/hon3215.npy', '../config_builder/baseline/pop1_7_5.npy', 0, 0.25, 0.5, 0.75, 1])
+    AS.init_population([0.25, 0.5, 0.75, 1])
+    AS.evolution(num_generations = 100)
+    AS.show_sheet(AS.A[0])
+    AS.show_sheet(AS.A_ex[0])
+    AS.show_status()
+    plt.show()
+    
+    # TODO: Reparing sheet A before expanding to A_ex does not guarantee spanning,
+    # but is probably much faster. When running on cluster feel free to repair on expanded sheet.
+    
+    
+    
     
     # Initialize populartion
     # mat = np.zeros((5,10))
@@ -688,21 +675,19 @@ if __name__ == '__main__':
   
   
     # np.random.seed(1235)
-    AS.init_population([0.35])
-    AS.show_sheet()
-    mat = AS.repair(AS.A[0])
-    AS.init_population([mat])
-    AS.show_sheet()
-    exit()
+    # AS.init_population([0.35])
+    # AS.show_sheet()
+    # mat = AS.repair(AS.A[0])
+    # AS.init_population([mat])
+    # AS.show_sheet()
+    # exit()
     # AS.get_clusters(mat)
     
-    exit()
     
     # AS.show_status()
     # plt.show()
     
     
-    # AS.init_population(['../config_builder/baseline/hon3215.npy', '../config_builder/baseline/pop1_7_5.npy', 0, 0.25, 0.5, 0.74, 1])
     
     
     
@@ -711,9 +696,3 @@ if __name__ == '__main__':
         
 
 
-
-    # Get first stretch curve
-    # AS.evolution(num_generations = 100)
-    # AS.show_status()
-    # plt.show()
-    
