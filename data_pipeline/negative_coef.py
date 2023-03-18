@@ -25,7 +25,7 @@ def multi_coupling_popup():
 
     # manual_coupling_free_drag.in
     variables['K'] = 1e4 # Stiff springs to approximate fix move conditions
-    gen.run_multi(F_N, variables, num_procs_initial = 16, num_procs = 4, partition = 'mini', scripts = ["manual_coupling_stretch.in", "manual_coupling_free_drag.in"])
+    gen.run_multi(F_N, variables, num_procs_initial = 16, num_procs = 4, partition = 'normal', scripts = ["manual_coupling_stretch.in", "manual_coupling_free_drag.in"])
     
     
 
@@ -58,6 +58,6 @@ def multi_coupling_honeycomb():
         
         
 if __name__ == '__main__':
-    # multi_coupling_popup()
-    multi_coupling_honeycomb()
+    multi_coupling_popup()
+    # multi_coupling_honeycomb()
     pass

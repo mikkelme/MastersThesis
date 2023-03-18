@@ -45,7 +45,7 @@ def build_graphene_sheet(mat, Cdis = 1.461):
     atoms.set_positions(new_posistions)
     atoms.set_cell(new_cell)
 
-    #--- Reorder atoms ---# (Is this important)
+    #--- Reorder atoms ---#
     yline_len = 2*ylen 
     for i in range(1,xlen, 2):
         for j in range(yline_len):

@@ -37,14 +37,14 @@ The total system size (without cuts in the sheet) is 27456 atoms, and the distri
   \centering
   \begin{subfigure}[b]{0.80\textwidth}
       \centering
-      \includegraphics[width=\textwidth]{figures/system_sideview.png}
+      \includegraphics[width=\textwidth]{figures/system/system_sideview.png}
       \caption{Side view showing sheet on top of the substrate.}
       \label{fig:sideview}
   \end{subfigure}
   \hfill
   \begin{subfigure}[b]{0.80\textwidth}
       \centering
-      \includegraphics[width=\textwidth]{figures/system_topview.png}
+      \includegraphics[width=\textwidth]{figures/system/system_topview.png}
       \caption{Top view showing only the sheet.}
       \label{fig:topview}
   \end{subfigure}
@@ -162,7 +162,7 @@ interatomic distance
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.3\linewidth]{figures/crystal.png}
+  \includegraphics[width=0.3\linewidth]{figures/system/crystal.png}
   \caption{Graphene crystal structure with basis.}
   \label{fig:graphene_crystal}
 \end{figure}
@@ -193,7 +193,7 @@ the nearest neighbours (NN) is decided as
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\linewidth]{figures/atom_indexing.pdf}
+  \includegraphics[width=0.7\linewidth]{figures/system/atom_indexing.pdf}
   \caption{Graphene atom indexing}
   \label{fig:atom_indexing}
 \end{figure}
@@ -206,7 +206,7 @@ element in each gap of the hexagonal honeycombs, see figure
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\linewidth]{figures/center_indexing.pdf}
+  \includegraphics[width=0.7\linewidth]{figures/system/center_indexing.pdf}
   \caption{Graphene center indexing}
   \label{fig:center_indexing}
 \end{figure}
@@ -227,7 +227,7 @@ the full neighbour list is illustrated in figure \ref{fig:center_directions}.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\linewidth]{figures/center_directions.pdf}
+  \includegraphics[width=0.7\linewidth]{figures/system/center_directions.pdf}
   \caption{Graphene center elements directions}
   \label{fig:center_directions}
 \end{figure}
@@ -264,7 +264,33 @@ Illustrate some delete path?
 
 
 \section{Kirigami patterns}
-\subsection{Pop-up}
+
+We propose a series of kirigami inspired cut patterns for the altering of the graphene sheet. We seek inspiration from macroscale patterns that showcases a considerable amount of out of plane buckling when stretched. We choose to imitate two different designs: 1$)$ An alternating repeating series of perpendicular cuts as shown in figure \ref{fig:kirigami_inspiration_a} commonly used in studies of morphable metematerials \cite{new_pop_up}. This patteren produce surface buckling with a tetrahedron (three sided pyramid) shape when stretched. 2$)$ A more intricate pattern shown in figure \ref{fig:kirigami_inspiration_b} which is used Scotch\textsuperscript{TM} Cushion Lock\textsuperscript{TM} \cite{cushion_wrap} as protective wrap for items during shipping. This pattern buckles into a hexagoal honeycomb structure when stretched. In addition to the modeling of the so-called \textit{tetrahedron} and \textit{honeycomb} patterns we also create a series of random walk styled cut patterns.
+
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[t]{0.48\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/system/pop_up_inspiration.png}
+      \caption{}
+      \label{fig:kirigami_inspiration_a}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/system/honeycomb_inspiration.jpg}
+      \caption{}
+      \label{fig:kirigami_inspiration_b}
+  \end{subfigure}
+  \hfill
+     \caption{Macroscale kirigami cut patterns used as inspiraton for the nanoscale implementation. (a) Alternating perpendicular cuts producing a tetrahedron shaped surface buckling when stretched \cite{new_pop_up}. (b) Scotch\textsuperscript{TM} Cushion Lock\textsuperscript{TM} \cite{cushion_wrap} producing a honeycomb shaped surface buckling when stretched.}
+     \label{fig:kirigami_inspiration}
+\end{figure}
+
+\subsection{Tetrahedron}
+
+
 \subsection{Honeycomb}
 \subsection{Random walk}
 
