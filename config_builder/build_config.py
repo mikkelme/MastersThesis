@@ -569,12 +569,12 @@ if __name__ == "__main__":
     # pop_up_dataset(shape = (62, 106), min_sp = 1, max_sp = 4, max_cut = (9,13))
     # honeycomb_dataset(shape = (62, 106), min_val = (2, 1, 1, 1), max_val = (3, 5, 5, 5))
     # baseline_dataset()
+    # RW_dataset()
     # exit()
     
     # pass
     
     
-    RW_dataset()
 
     
     
@@ -617,15 +617,15 @@ if __name__ == "__main__":
     
     # # mat = honeycomb((60, 106), 3, 2, 1, 5)
     # # mat = pop_up((60, 106), (7,5), 1)
-    # mat = pop_up((20, 26), (7,5), 1)
-    # # mat[:] = 1
-    # # mat[mat == 1] = 2
-    # # mat[mat == 0] = 1
-    # # mat[mat == 2] = 0
-    # builder = config_builder(mat)
+    mat = pop_up((20, 26), (7,5), 1)
+    # mat[:] = 1
+    # mat[mat == 1] = 2
+    # mat[mat == 0] = 1
+    # mat[mat == 2] = 0
+    builder = config_builder(mat)
     # builder.add_pullblocks()
-    # builder.build()
-    # builder.view()
+    builder.build()
+    builder.view()
     # # print(builder)
     # builder.save_lammps("sheet", ext = f"pop_20x26_1_7_5", path = '../friction_simulation')
     

@@ -24,8 +24,12 @@ def pop_up(shape = (50, 100), size = (5,3), sp = 1, ref = None):
     # Reference position
     if ref is None: # Defaults to center
         ref = np.array([mat.shape[0]//2, mat.shape[1]//4]) 
-    elif ref == 'RAND': # Random reference on the sheet
-        ref = np.array((random.randint(0, mat.shape[0]), random.randint(0, mat.shape[1]//2)))
+    elif isinstance(ref, str):
+        if ref == 'RAND':
+            ref = np.array((random.randint(0, mat.shape[0]), random.randint(0, mat.shape[1]//2)))
+        else:
+            print(f'REF = {ref} is not understood.')
+            exit()
     else:
         ref = np.array(ref)
   
