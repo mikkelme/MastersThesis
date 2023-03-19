@@ -10,10 +10,10 @@ matplotlib.rc('ytick', labelsize=14)
 matplotlib.rcParams['mathtext.fontset'] = 'stix'
 matplotlib.rcParams['font.family'] = 'STIXGeneral'
 
-
-
+import colorsys
 import numpy as np
 import statsmodels.api as sm
+
 def lin_fit(x,y):
     if len(x) < 2:
         return np.nan, np.nan, np.nan, np.nan
@@ -33,6 +33,17 @@ def color_cycle(num_color):
         use as: color = color_cycle(3) """
     color = plt.rcParams['axes.prop_cycle'].by_key()['color']
     return color[num_color]
+
+
+
+def shade_color(color, offset = 1):
+    rgb = matplotlib.colors.ColorConverter.to_rgb(color)
+    h, l, s =  colorsys.rgb_to_hls(*rgb) # Hue, lightness, sauration
+    
+    new_color = (h, l*offset, s) 
+    return colorsys.hls_to_rgb(*new_color)
+
+
 
 
 def unique_fignum():

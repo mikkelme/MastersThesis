@@ -1,5 +1,4 @@
 from indexing import *
-import colorsys
 
 def plot_sheet(mat, ax, radius, **param):
     full = build_graphene_sheet(np.ones(np.shape(mat)))
@@ -43,18 +42,9 @@ def plot_center_coordinates(shape, ax, radius, **param):
     
   
 
-
-def shade_color(color, offset = 1):
-    rgb = matplotlib.colors.ColorConverter.to_rgb(color)
-    h, l, s =  colorsys.rgb_to_hls(*rgb) # Hue, lightness, sauration
-    
-    new_color = (h, l*offset, s) 
-    return colorsys.hls_to_rgb(*new_color)
-
-
 def show_pop_up(save = False):
     # Settings
-    shape = (30,50)
+    shape = (40,50)
     ref = np.array([shape[0]//2+1, shape[1]//4])
     sp = 2
     size = (7,5)
@@ -100,13 +90,37 @@ def show_pop_up(save = False):
     
     del_unit1 = np.array(line1 + line2)
     del_unit2 = np.array(line1 + line2) + unit2_axis
+    
+    del_hor = np.concatenate((np.array(line1), np.array(line1) + unit2_axis))
+    del_ver = np.concatenate((np.array(line2), np.array(line2) + unit2_axis))
+    unit_hor = np.ones(shape)
+    unit_ver = np.ones(shape)
+    
+    # --- Translate cut-out-units across lattice --- # 
+    # Estimate how far to translate to cover the whole sheet
+    range1 = int(np.ceil(np.dot(np.array([m,n]), axis1)/np.dot(axis1, axis1))) + 1      # project top-right corner on axis 1 vector
+    range2 = int(np.ceil(np.dot(np.array([0,n]), axis2)/np.dot(axis2, axis2)/2))  + 1   # project top-left corner on axis 2 vector
 
+    # Number of possible unique pertubations of ref
+    M = int(np.abs(np.cross(axis1, axis2))/2)
+    
+    # Translate and cut out
+    for i in range(-range1, range1+1):
+        for j in range(-range2, range2+1):
+            vec = i*axis1 + j*axis2 
+            unit_hor =  delete_atoms(unit_hor, center_elem_trans_to_atoms(del_hor + vec, full = True))
+            unit_ver =  delete_atoms(unit_ver, center_elem_trans_to_atoms(del_ver + vec, full = True))
+    
+    
     unit1 = delete_atoms(np.ones(shape), center_elem_trans_to_atoms(del_unit1, full = True))
     unit2 = delete_atoms(np.ones(shape), center_elem_trans_to_atoms(del_unit2, full = True))
     
-    # Inverse 
     unit1 = 1 - unit1
     unit2 = 1 - unit2
+    unit_hor = 1 - unit_hor
+    unit_ver = 1 - unit_ver
+    unit1_hor = np.where(np.logical_and(unit1 == unit_hor, unit1 == 1), 1, 0)
+    unit1_ver = np.where(np.logical_and(unit1 == unit_ver, unit1 == 1), 1, 0)
     
     # --- Get space indicators --- #
     up = ref[0]%2 == 0
@@ -115,101 +129,73 @@ def show_pop_up(save = False):
     
     # --- Plot --- # 
     green  = color_cycle(3)
+    orange = color_cycle(4)
     blue = color_cycle(6)
     
     # Remove overlap
     sp1[1-mat == 1] = 0
-    # sp2[1-mat == 1] = 0
-    
-    fig, axes = plt.subplots(1, 2, num = unique_fignum(), figsize = (10,5))
-    plot_sheet(1-mat, axes[0], atom_radii, facecolor = shade_color(green, 2), edgecolor = 'black')
-    plot_sheet(unit1, axes[0], atom_radii, facecolor = shade_color(green, 1.3), edgecolor = 'black')
-    plot_sheet(mat, axes[0], atom_radii, facecolor = 'None', edgecolor = 'black', alpha = 0.2)
-    plot_center_coordinates(np.shape(mat), axes[0], center_radii, facecolor = blue, edgecolor = None)
-    plot_sheet(sp1, axes[0], atom_radii, facecolor = color_cycle(1), edgecolor = 'black', alpha = 0.2)
-    plot_sheet(sp2, axes[0], atom_radii, facecolor = color_cycle(1), edgecolor = 'black', alpha = 0.2)
-    
-    plot_sheet(mat, axes[1], atom_radii, facecolor = 'grey', edgecolor = 'black')
-    plot_sheet(1-mat, axes[1], atom_radii, facecolor = 'None', edgecolor = 'black', alpha = 0.2)
-    plot_center_coordinates(np.shape(mat), axes[1], center_radii, facecolor = blue, edgecolor = None)
     
     
-    
-    axes[0].grid(False)
-    axes[1].grid(False)
-    axes[0].set_xticks([])
-    axes[0].set_yticks([])
-    axes[1].set_xticks([])
-    axes[1].set_yticks([])
-    plt.show()
-    
-    
-    exit()
-    
+    # --- Inverse --- #
+    fig1 = plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
+    fig2 = plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
+    ax1 = fig1.gca()
+    ax1.set_facecolor("white")
+    ax2 = fig2.gca()
+    ax2.set_facecolor("white")
 
     
     
-    
-    # # Inverse and build
-    # unit1 = build_graphene_sheet(1 - unit1)
-    # unit2 = build_graphene_sheet(1 - unit2)
-    # dummy = build_graphene_sheet(np.ones(shape))
-    
-    # Alter color
-    # unit1.set_chemical_symbols(np.array([10]*unit1.get_global_number_of_atoms()))
-    # unit2.set_chemical_symbols(np.array([9]*unit2.get_global_number_of_atoms()))
-    # dummy.set_chemical_symbols(np.array([6]*dummy.get_global_number_of_atoms()))
-   
-   
-    # # Show
     # fig, axes = plt.subplots(1, 2, num = unique_fignum(), figsize = (10,5))
+    plot_sheet(unit1_hor, ax1, atom_radii, facecolor = shade_color(green, 1.3), edgecolor = 'black')
+    plot_sheet(unit1_ver, ax1, atom_radii, facecolor = shade_color(orange, 1.3), edgecolor = 'black')
+    plot_sheet(unit_hor - unit1, ax1, atom_radii, facecolor = shade_color(green, 1.5), edgecolor = 'black', alpha = 0.6)
+    plot_sheet(unit_ver - unit1, ax1, atom_radii, facecolor = shade_color(orange, 1.5), edgecolor = 'black', alpha = 0.6)
+    
+    # Background
+    plot_sheet(mat, ax1, atom_radii, facecolor = 'None', edgecolor = 'black', alpha = 0.2)
+    
+    # Spacing 
+    plot_sheet(sp1, ax1, atom_radii, facecolor = blue, edgecolor = 'black', alpha = 0.2)
+    plot_sheet(sp2, ax1, atom_radii, facecolor = blue, edgecolor = 'black', alpha = 0.2)
+    
+    
+    # --- Pattern --- #
+    plot_sheet(mat, ax2, atom_radii, facecolor = 'grey', edgecolor = 'black')
+    plot_sheet(1-mat, ax2, atom_radii, facecolor = 'None', edgecolor = 'black', alpha = 0.2)
+    
+    # Center coordinates for both
+    plot_center_coordinates(np.shape(mat), ax1, center_radii, facecolor = shade_color(blue, 1.5), edgecolor = None)
+    plot_center_coordinates(np.shape(mat), ax2, center_radii, facecolor = blue, edgecolor = None)
+    
+    
+    # Remove grid and ticks
+    ax1.grid(False)
+    ax2.grid(False)
+    ax1.set_xticks([])
+    ax1.set_yticks([])
+    ax2.set_xticks([])
+    ax2.set_yticks([])
+    
+    # Set axies
+    fig1.supxlabel(r"$x$ (armchair direction)", fontsize = 14)
+    fig1.supylabel(r"$y$ (zigzag direction)", fontsize = 14)
+    fig1.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    fig2.supxlabel(r"$x$ (armchair direction)", fontsize = 14)
+    fig2.supylabel(r"$y$ (zigzag direction)", fontsize = 14)
+    fig2.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    
+    
+    if save:
+        fig1.savefig('../article/figures/system/pop_up_inverse.pdf', bbox_inches='tight')
+        fig2.savefig('../article/figures/system/pop_up_pattern.pdf', bbox_inches='tight')
 
-
-    # # test = unit1.get_positions()
-
-    # # TODO: Working with plotting XXX
     
-    
-    # print(sheet)
-    # print(unit1)
-    
-    
-    
-    
-    
-    
-    # # plot_atoms(dummy, axes[0], radii = atom_radii, show_unit_cell = 1, scale = 1, offset = (0,0), colors = [(1, 1, 1)]*dummy.get_global_number_of_atoms())
-    # plot_atoms(sheet, axes[0], radii = atom_radii, show_unit_cell = 1, scale = 1, offset = (0,0))
-    # plot_atoms(unit1, axes[0], radii = atom_radii, show_unit_cell = 1, scale = 1, offset = (0,0), colors = ['limegreen']*unit1.get_global_number_of_atoms())
-    # # plot_atoms(unit2, axes[0], radii = atom_radii, show_unit_cell = 1, scale = 1, offset = (0,0), colors = ['lightskyblue']*unit2.get_global_number_of_atoms())
-    
-    # # plot_atoms(dummy, axes[0], radii = atom_radii/10, show_unit_cell = 0, scale = 1, offset = (-(atom_radii - atom_radii/10), (-atom_radii - atom_radii/10))) # TODO: ???
-    # # plot_atoms(dummy, axes[0], radii = atom_radii, show_unit_cell = 0, scale = 1, offset = (0.35,0.35))
-    
-    # plot_atoms(dummy, axes[1], radii = atom_radii, show_unit_cell = 0, scale = 1, offset = (0,0), colors = ['white']*dummy.get_global_number_of_atoms())
-    # plot_atoms(sheet, axes[1], radii = atom_radii, show_unit_cell = 0, scale = 1, offset = (0,0))
-    # # plot_atoms(dummy, axes[1], radii = atom_radii/10, show_unit_cell = 0, scale = 1, offset = (0, 0))
-    # # plot_atoms(dummy, axes[1], radii = atom_radii, show_unit_cell = 0, scale = 1, offset = (0.45,0.45))
-   
-    
-    # ax = plot_atoms(sheet, radii = atom_radii, show_unit_cell = 0, scale = 1, offset = (0,0))
-    # plot_atoms(unit1, ax, radii = atom_radii, show_unit_cell = 0, scale = 1, offset = (0,0), colors = ['blue']*unit1.get_global_number_of_atoms())
-    # plot_atoms(unit2, ax, radii = atom_radii, show_unit_cell = 0, scale = 1, offset = (0,0), colors = ['red']*unit2.get_global_number_of_atoms())
-    
-    # sheet += unit1 + unit2
-    # view(sheet)
-    
-    
-    
-    ####################
-    # cut = np.zeros(np.shape(mat))
-    # cut[mat == 0] = 1
-    
-    
-    #  v.custom_colors({'Mn':'green','As':'blue'})
-    
+def show_honeycomb(save = False):
+    pass   
     
    
 
 if __name__ == '__main__':
-    show_pop_up()
+    show_pop_up(save = True)
+    plt.show()
