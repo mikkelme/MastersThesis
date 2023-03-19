@@ -45,7 +45,7 @@ def pop_up(shape = (50, 100), size = (5,3), sp = 1, ref = None):
     axis2 = np.array([- 2*(1 + size[1]//2 + sp), 3*(1 + size[1]//2 + sp)])  # up left
     unit2_axis =  np.array([3 + size[0]//2 + size[1]//2, 1 + size[0]//4 + size[1]//4 - size[1]]) + (2*sp, -sp) # 2nd unit relative to ref
 
- 
+
     # Create unit1 and unit2
     up = ref[0]%2 == 0
     line1 = [ref]
@@ -150,13 +150,19 @@ def honeycomb(shape = (50, 100), xwidth = 1, ywidth = 1,  bridge_thickness = 1, 
     # Build cut matrix
     mat = np.ones((shape[0], shape[1])).astype('int') 
     
+
     # Reference position
     if ref is None: # Defaults to center
         ref = np.array([mat.shape[0]//2, mat.shape[1]//4]) 
-    elif ref == 'RAND': # Random reference on the sheet
-        ref = np.array((random.randint(0, mat.shape[0]), random.randint(0, mat.shape[1]//2)))
+    elif isinstance(ref, str):
+        if ref == 'RAND':
+            ref = np.array((random.randint(0, mat.shape[0]), random.randint(0, mat.shape[1]//2)))
+        else:
+            print(f'REF = {ref} is not understood.')
+            exit()
     else:
         ref = np.array(ref)
+  
   
    
     # Catch unvalid settings

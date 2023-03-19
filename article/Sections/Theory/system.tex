@@ -289,17 +289,20 @@ We propose a series of kirigami inspired cut patterns for the altering of the gr
 \end{figure}
 
 \subsection{Tetrahedron}
-
-The tetrahedron pattern is defined in terms of center elements for which all atoms sourrounding a given center elements is removed. The pattern is characterized by two straight cuts, line 1 and line 2, perpendicular to each other which is translated to the whole sheet. We arrange the lines such that the center of line 1 alligns with the end of line 2. We define the pattern by the number of center elements in the first and second cut lines $L_1$ and $L_2$ along with a spacing between lines $sp$. In figure \ref{fig:pop_up} an example is shown for $(L_1, L_2, sp) = (7, 5, 2)$. 
-
-Is the direction used for this pattern along the graphene lattice vectors? At least talk about this as one way to get perpendicular cuts. 
-
-
-
-% and the number of center elements in spacing $sp$ between the lines. We arrange the lines such that the first line alligns with the center of the second line.
-
-
-% cut units which is translated to the whole defined by a spacing. The cut pattern is defined 
+The \textit{tetrahedron} pattern is defined in terms of center elements for which all
+atoms sourrounding a given center element are removed. The pattern is
+characterized by two straight cuts, here denoted line 1 and line 2, arranged
+perpendicular to each other such that one line aligns with the center of the
+other line and with a given spacing in between. In order to achieve
+perpendicular cuts we cannot rely purely on the six principal directions
+corresponding to the center element neighbours which is spaced by 60$^\circ$.
+Instead, we let line 1 run along the center elemnts in the direction of the
+``upper right'' center elements (and ``lower left'') while line 2 goes in the
+direction between the ``lower'' and ``lower right'' center elements
+corresponding to the direction $(1/\sqrt{3}, -1)$. We define variations of the
+pattern by the number of center elements $L_1$ and $L_2$ in line 1 and 2
+respectively together with the spacing between the lines $d$ as the tuple $(L_1,
+L_2, d)$. The pattern is constructed by translating the two lines to thew whole sheet while according to the spacing. Due to the alignment criterias of having one line point to the center of the other line we can only have odd line length to have a clearly defined center element in the center of each line. Furthermore, in order to ensure that each translated center element stays on the same odd or even type center element we must in practice require that $|L_2 - L_1| = 2, 6, 10, \cdots$. In figure \ref{fig:pop_up} we see a visual representation of the pattern components for the $(7, 5, 2)$ patteren. 
 
 
 \begin{figure}[H]
@@ -318,16 +321,16 @@ Is the direction used for this pattern along the graphene lattice vectors? At le
       \label{fig:pop_up_b}
   \end{subfigure}
   \hfill
-     \caption{Deconstruction of the tetrahedron pattern with unit sizes $(7, 5)$ and spacing 2. $(a)$ The cut pattern highlighted in colors showing the translation of the first cut unit (green) to the whole sheet (light green) and similar the second unit in orange and light orange. The spacing between unit 1 and 2 is highlighted at two different spots in light blue $(b)$ The sheet after applying the cut pattern where the grey circles denotes atoms and the transparent white denotes empty positions. The small blue circles show the center elements for reference}.
+     \caption{Visual representation of the tetrahedron pattern consisting of two perpendicular lines, line 1 and line 2, of length $L_1$ and $L_2$ respectively with spacing $d$. This example used $(L_1, L_2, d) = (7, 5, 2)$. $(a)$ Highlight of the atoms removed. Line 1 is shown in green and line 2 in orange, with lighter colors for the translated variations, and the spacing is shown in light blue. $(b)$ The sheet after applying the cut pattern where the grey circles denote atoms and the transparent white denotes removed atoms. The small blue circles show the center elements for reference}.
      \label{fig:pop_up}
 \end{figure}
 
-
-
-
+In addition to the three parameters $L_1, L_2, d$, the pattern is also anchored to a reference point which describes the position of line 1 and 2 before translating to the whole sheet. Due to the repeating structure of the pattern there exist a small finite number of unique reference positions. For the pattern $(7, 5, 2)$ used as an example in figure \ref{fig:pop_up} there are 140 \footnote{The calculation of this is rather complicated in comparision of the importance in this context. Thus, we exclude the formula for this calculation as the derivation is rather handwavy and the number stated here is numerically backed for this specific parameter set.} unique reference positions.
 
 
 \subsection{Honeycomb}
+The \textit{honeycomb} pattern 
+
 \subsection{Random walk}
 
 

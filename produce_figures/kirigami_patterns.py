@@ -137,11 +137,9 @@ def show_pop_up(save = False):
     
     
     # --- Inverse --- #
-    fig1 = plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
-    fig2 = plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
-    ax1 = fig1.gca()
+    fig1 = plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k'); ax1 = fig1.gca()
+    fig2 = plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k'); ax2 = fig2.gca()
     ax1.set_facecolor("white")
-    ax2 = fig2.gca()
     ax2.set_facecolor("white")
 
     
@@ -165,7 +163,7 @@ def show_pop_up(save = False):
     plot_sheet(1-mat, ax2, atom_radii, facecolor = 'None', edgecolor = 'black', alpha = 0.2)
     
     # Center coordinates for both
-    plot_center_coordinates(np.shape(mat), ax1, center_radii, facecolor = shade_color(blue, 1.5), edgecolor = None)
+    plot_center_coordinates(np.shape(mat), ax1, center_radii, facecolor = blue, edgecolor = None)
     plot_center_coordinates(np.shape(mat), ax2, center_radii, facecolor = blue, edgecolor = None)
     
     
@@ -192,10 +190,85 @@ def show_pop_up(save = False):
 
     
 def show_honeycomb(save = False):
+    # Settings
+    shape = (40,50)
+    xwidth = 1#3
+    ywidth = 2
+    # bridge_thickness = 1
+    bridge_thickness = 3
+    bridge_len = 5
+    ref = np.array([shape[0]//2, shape[1]//4]) 
+    atom_radii = 0.6
+    center_radii = 0.2
+    
+    mat = honeycomb(shape, xwidth, ywidth, bridge_thickness, bridge_len, ref)
+    
+    fig1 = plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k'); ax1 = fig1.gca()
+    fig2 = plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k'); ax2 = fig2.gca()
+    ax1.set_facecolor("white")
+    ax2.set_facecolor("white")
+    
+    
+    # TODO: Working here with inverse objects XXX
+    
+    # --- Objects --- #
+    bridge = 1-delete_atoms(np.ones(shape), center_elem_trans_to_atoms([[ref[0] + 2*(i-bridge_thickness//2), ref[1] + j - bridge_len//2]  for i in range(bridge_thickness) for j in range(bridge_len)], full = True))
+    
+    
+    # --- Plot --- # 
+    green  = color_cycle(3)
+    orange = color_cycle(4)
+    blue = color_cycle(6)
+    
+
+    # --- Inverse --- #
+    # plot_sheet(1-mat, ax1, atom_radii, facecolor = 'grey', edgecolor = 'black')
+    plot_sheet(bridge, ax1, atom_radii, facecolor = green, edgecolor = 'black')
+
+    
+    # --- Pattern --- #
+    plot_sheet(mat, ax2, atom_radii, facecolor = 'grey', edgecolor = 'black')
+    
+    
+    # Background
+    plot_sheet(mat-bridge, ax1, atom_radii, facecolor = 'None', edgecolor = 'black', alpha = 0.2)
+    plot_sheet(np.ones(shape)-mat, ax2, atom_radii, facecolor = 'None', edgecolor = 'black', alpha = 0.2)
+
+    
+    # Center elements 
+    plot_center_coordinates(np.shape(mat), ax1, center_radii, facecolor = blue, edgecolor = None)
+    plot_center_coordinates(np.shape(mat), ax2, center_radii, facecolor = blue, edgecolor = None)
+    
+    
+    # Remove grid and ticks
+    ax1.grid(False)
+    ax2.grid(False)
+    ax1.set_xticks([])
+    ax1.set_yticks([])
+    ax2.set_xticks([])
+    ax2.set_yticks([])
+    
+
+    # Set axies
+    fig1.supxlabel(r"$x$ (armchair direction)", fontsize = 14)
+    fig1.supylabel(r"$y$ (zigzag direction)", fontsize = 14)
+    fig1.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    fig2.supxlabel(r"$x$ (armchair direction)", fontsize = 14)
+    fig2.supylabel(r"$y$ (zigzag direction)", fontsize = 14)
+    fig2.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    
+    
+    # if save:
+    #     fig1.savefig('../article/figures/system/honeycomb_inverse.pdf', bbox_inches='tight')
+    #     fig2.savefig('../article/figures/system/honeycomb_pattern.pdf', bbox_inches='tight')
+
+    
+    
     pass   
     
    
 
 if __name__ == '__main__':
-    show_pop_up(save = True)
+    # show_pop_up(save = False)
+    show_honeycomb(save = False)
     plt.show()
