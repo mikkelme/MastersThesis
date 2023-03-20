@@ -327,9 +327,50 @@ L_2, d)$. The pattern is constructed by translating the two lines to thew whole 
 
 In addition to the three parameters $L_1, L_2, d$, the pattern is also anchored to a reference point which describes the position of line 1 and 2 before translating to the whole sheet. Due to the repeating structure of the pattern there exist a small finite number of unique reference positions. For the pattern $(7, 5, 2)$ used as an example in figure \ref{fig:pop_up} there are 140 \footnote{The calculation of this is rather complicated in comparision of the importance in this context. Thus, we exclude the formula for this calculation as the derivation is rather handwavy and the number stated here is numerically backed for this specific parameter set.} unique reference positions.
 
+Show different flavors of the pattern (maybe 4 examples).
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{figures/system/pop_up_flavors.pdf}
+  \caption{}
+  \label{fig:pop_up_flavors}
+\end{figure}
+
+
 
 \subsection{Honeycomb}
-The \textit{honeycomb} pattern 
+The \textit{honeycomb} pattern is defined, similarly to the tetrahedron pattern,
+in terms of center elements for which all atoms sourrounding a given center
+element are removed. The honeycomb pattern is build from a repeating series of
+cuts remniscient of a roman numeral one put on its side
+(\rotatebox[origin=c]{90}{\MakeUppercase{\romannumeral 1}}). With a given spacing these are put next to each other in the x-direction (\rotatebox[origin=c]{90}{\MakeUppercase{\romannumeral 1}}
+\rotatebox[origin=c]{90}{\MakeUppercase{\romannumeral 1}}
+\rotatebox[origin=c]{90}{\MakeUppercase{\romannumeral 1}}) to achieve a row
+where only a thin \textit{bridge} in between each cut is left to connect the sheet in the y-direction. By placing multiple rows along the y-direction with alternating x-offsett we get the class of honeycomb patterns as visualized in figure \ref{fig:honeycomb}. The pattern
+is described in terms of the parameters: (x-width, y-width, bridge thickness,
+bridge length) which is annotated in figure \ref{fig:honeycomb_a} where the parameters (2, 2, 1, 5) is used as an example.
+
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[t]{0.48\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/system/honeycomb_inverse.pdf}
+      \caption{}
+      \label{fig:honeycomb_a}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/system/honeycomb_pattern.pdf}
+      \caption{}
+      \label{fig:honeycomb_b}
+  \end{subfigure}
+  \hfill
+     \caption{...}
+     \label{fig:honeycomb}
+\end{figure}
+
 
 \subsection{Random walk}
 

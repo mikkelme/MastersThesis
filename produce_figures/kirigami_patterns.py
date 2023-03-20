@@ -4,14 +4,24 @@ def plot_sheet(mat, ax, radius, **param):
     full = build_graphene_sheet(np.ones(np.shape(mat)))
     
     pos = full.get_positions().reshape(*np.shape(mat), 3)
+    on = mat > 0.5
+    xmin = np.min(pos[on, 0])
+    ymin = np.min(pos[on, 1])
+    xmax = np.max(pos[on, 0])
+    ymax = np.max(pos[on, 1])
+    
+
+    
     for i in range(mat.shape[0]):
         for j in range(mat.shape[1]):
-            if mat[i, j] > 0.5:
+            if on[i, j]:
                 x, y = pos[i, j, 0:2]
                 circle = plt.Circle((x, y), radius,  **param)
                 ax.add_patch(circle)
                 
     ax.axis('equal')
+    
+    return xmin, ymin, xmax, ymax
     
     
 def plot_center_coordinates(shape, ax, radius, **param):
@@ -40,12 +50,13 @@ def plot_center_coordinates(shape, ax, radius, **param):
             ax.add_patch(circle)
             
     
+
   
 
 def show_pop_up(save = False):
     # Settings
     shape = (40,50)
-    ref = np.array([shape[0]//2+1, shape[1]//4])
+    ref = np.array([shape[0]//2, shape[1]//4])
     sp = 2
     size = (7,5)
     atom_radii = 0.6
@@ -187,15 +198,59 @@ def show_pop_up(save = False):
     if save:
         fig1.savefig('../article/figures/system/pop_up_inverse.pdf', bbox_inches='tight')
         fig2.savefig('../article/figures/system/pop_up_pattern.pdf', bbox_inches='tight')
-
+        
+        
+def pop_up_flavors(save = False):
+    # Settings
+    shape = (40,80)
+    ref = np.array([shape[0]//2, shape[1]//4])
+    sp = 2
+    size = (7,5)
+    
+    patterns = [(7, 5, 2), (7, 5, 2), (7, 5, 2), (7, 5, 2)]
+    
+    atom_radii = 0.6
+    center_radii = 0.2
+    blue = color_cycle(6)
+    
+    fig, axes = plt.subplots(1, 4, num = unique_fignum(), figsize = (12,4))
+    # fig, axes = plt.subplots(1, 4, num = unique_fignum(),  dpi=80, facecolor='w', edgecolor='k')
+    
+    for i, p in enumerate(patterns):
+        mat = pop_up(shape, (p[0], p[1]), p[2], ref = None)
+        # ax = axes[i//axes.shape[1], i%axes.shape[1]]
+        ax = axes[i]
+        
+        # Pattern
+        plot_sheet(mat, ax, atom_radii, facecolor = 'grey', edgecolor = 'black')
+        
+        # Background
+        plot_sheet(1-mat, ax, atom_radii, facecolor = 'None', edgecolor = 'black', alpha = 0.2)
+        
+        # Center elements
+        plot_center_coordinates(np.shape(mat), ax, center_radii, facecolor = blue, edgecolor = None)
+        
+        # plot settings
+        ax.grid(False)
+        ax.set_xticks([])
+        ax.set_yticks([])
+        ax.set_facecolor("white")
+        
+    
+    # Set axies
+    fig.supxlabel(r"$x$ (armchair direction)", fontsize = 14)
+    fig.supylabel(r"$y$ (zigzag direction)", fontsize = 14)
+    fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+   
+    if save:
+        fig.savefig('../article/figures/system/pop_up_flavors.pdf', bbox_inches='tight')
     
 def show_honeycomb(save = False):
     # Settings
     shape = (40,50)
-    xwidth = 1#3
+    xwidth = 3
     ywidth = 2
-    # bridge_thickness = 1
-    bridge_thickness = 3
+    bridge_thickness = 1
     bridge_len = 5
     ref = np.array([shape[0]//2, shape[1]//4]) 
     atom_radii = 0.6
@@ -209,11 +264,26 @@ def show_honeycomb(save = False):
     ax2.set_facecolor("white")
     
     
-    # TODO: Working here with inverse objects XXX
     
     # --- Objects --- #
     bridge = 1-delete_atoms(np.ones(shape), center_elem_trans_to_atoms([[ref[0] + 2*(i-bridge_thickness//2), ref[1] + j - bridge_len//2]  for i in range(bridge_thickness) for j in range(bridge_len)], full = True))
+    yw = 1-delete_atoms(np.ones(shape), center_elem_trans_to_atoms([[ref[0]+i, j+ref[1]+bridge_len//2+1 + (1-ref[0]%2)] for i in range(-(3+2*(bridge_thickness//2)),(3+2*(bridge_thickness//2))+1, 2) for j in range(ywidth)], full = True))
+    # xw = 1-delete_atoms(np.ones(shape), center_elem_trans_to_atoms([[ref[0]+i, j+ref[1]+bridge_len//2+1 + (1-ref[0]%2)] for i in range((3+2*(bridge_thickness//2)),(3+2*(bridge_thickness//2))+2+xwidth , 2) for j in range(ywidth)], full = True))
+    xw = 1-delete_atoms(np.ones(shape), center_elem_trans_to_atoms([ [ref[0]+i + 4 + 2*(bridge_thickness//2), ref[1]-1-j+(ref[0]+i)%2] for i in range(xwidth) for j in range(ywidth)], full = True))
     
+    # Remove left and right column from yw
+    yw[np.min(np.argwhere(yw == 1)[:, 0]), :] = 0;
+    yw[np.max(np.argwhere(yw == 1)[:, 0]), :] = 0;
+    
+    
+    # Remove overlap
+    yw[1-mat == 1] = 0
+    xw[1-mat == 1] = 0
+    xw[yw == 1] = 0
+
+    
+    # Remaning cuts
+    remaning = 1-mat - bridge + yw + xw - mat
     
     # --- Plot --- # 
     green  = color_cycle(3)
@@ -222,9 +292,36 @@ def show_honeycomb(save = False):
     
 
     # --- Inverse --- #
-    # plot_sheet(1-mat, ax1, atom_radii, facecolor = 'grey', edgecolor = 'black')
-    plot_sheet(bridge, ax1, atom_radii, facecolor = green, edgecolor = 'black')
+    br_xmin, br_ymin, br_xmax, br_ymax = plot_sheet(bridge, ax1, atom_radii, facecolor = blue, edgecolor = 'black', alpha = 0.3)
+    yw_xmin, yw_ymin, yw_xmax, yw_ymax = plot_sheet(yw, ax1, atom_radii, facecolor = orange, edgecolor = 'black', alpha = 0.3)
+    xw_xmin, xw_ymin, xw_xmax, xw_ymax = plot_sheet(xw, ax1, atom_radii, facecolor = orange, edgecolor = 'black', alpha = 0.3)
+    plot_sheet(remaning, ax1, atom_radii, facecolor = shade_color(green, 1.5), edgecolor = 'black')
+    # br_xmin, br_ymin, br_xmax, br_ymax = plot_sheet(bridge, ax1, atom_radii, facecolor = green, edgecolor = 'black', alpha = 0.3)
+    # yw_xmin, yw_ymin, yw_xmax, yw_ymax = plot_sheet(yw, ax1, atom_radii, facecolor = orange, edgecolor = 'black', alpha = 0.3)
+    # xw_xmin, xw_ymin, xw_xmax, xw_ymax = plot_sheet(xw, ax1, atom_radii, facecolor = blue, edgecolor = 'black', alpha = 0.3)
+    # plot_sheet(remaning, ax1, atom_radii, facecolor = shade_color(color_cycle(1), 1.5), edgecolor = 'black')
 
+
+    # Annotate
+    arrowprops = {'arrowstyle': '<->', 'color': 'black', 'lw': 1.5}
+    bbox = dict(facecolor='white', edgecolor = 'None',  alpha=0.8)
+    # xw
+    ax1.text((xw_xmax+xw_xmin)/2, xw_ymin - 5, 'x-width', horizontalalignment = 'center', bbox=bbox)
+    ax1.annotate('', xy=(xw_xmin - 2*atom_radii, xw_ymin - 2), xytext=(xw_xmax + 2*atom_radii, xw_ymin - 2), textcoords='data', arrowprops=arrowprops)
+    
+    # yw
+    ax1.text(br_xmin - 7, (yw_ymin+yw_ymax)/2, 'y-width', horizontalalignment = 'right', bbox=bbox)
+    ax1.annotate('', xy=(br_xmin - 6, yw_ymin - 2*atom_radii), xytext=(br_xmin - 6, yw_ymax + 2*atom_radii), textcoords='data', arrowprops=arrowprops)
+    
+    # bridge thickness
+    ax1.text((br_xmax+br_xmin)/2 + 5, br_ymin - 5, 'bridge thickness', horizontalalignment = 'right', bbox=bbox) 
+    ax1.annotate('', xy=(br_xmin - 2*atom_radii, br_ymin - 2), xytext=(br_xmax + 2*atom_radii, br_ymin - 2), textcoords='data', arrowprops=arrowprops)
+    
+    # bridge length
+    ax1.text(br_xmin - 7, (br_ymin+br_ymax)/2 - (bridge_len//4+1)*(br_ymax-br_ymin)/bridge_len , 'bridge length', horizontalalignment = 'right', bbox=bbox)
+    ax1.annotate('', xy=(br_xmin - 6, br_ymin - 2*atom_radii), xytext=(br_xmin - 6, br_ymax + 2*atom_radii), textcoords='data', arrowprops=arrowprops)
+    
+    
     
     # --- Pattern --- #
     plot_sheet(mat, ax2, atom_radii, facecolor = 'grey', edgecolor = 'black')
@@ -258,9 +355,9 @@ def show_honeycomb(save = False):
     fig2.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
     
     
-    # if save:
-    #     fig1.savefig('../article/figures/system/honeycomb_inverse.pdf', bbox_inches='tight')
-    #     fig2.savefig('../article/figures/system/honeycomb_pattern.pdf', bbox_inches='tight')
+    if save:
+        fig1.savefig('../article/figures/system/honeycomb_inverse.pdf', bbox_inches='tight')
+        fig2.savefig('../article/figures/system/honeycomb_pattern.pdf', bbox_inches='tight')
 
     
     
@@ -270,5 +367,6 @@ def show_honeycomb(save = False):
 
 if __name__ == '__main__':
     # show_pop_up(save = False)
-    show_honeycomb(save = False)
+    pop_up_flavors(save = True)
+    # show_honeycomb(save = False)
     plt.show()

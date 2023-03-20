@@ -77,17 +77,10 @@ def read_multi_coupling(folder, mean_pct = 0.5, std_pct = 0.35, stretch_lim = [N
                 # Get data
                 friction_file = find_single_file(subsub, ext = friction_ext)    
                 raw_data = read_friction_file(friction_file)   
-                # print(raw_data.keys())
-                # s = raw_data['v_stretch_pct']
-                # print(np.min(s))
-                # print(np.mean(s))
-                # print(np.std(s))
-                # print(np.max(s))
-                # exit()
+         
                 
                 stretch_pct = info_dict['SMAX']
                 F_N = -metal_to_SI(np.mean(raw_data['c_Ff_sheet[3]'] + raw_data['c_Ff_PB[3]']), 'F')*1e9
-                
                 
                 rupture.append((stretch_pct, F_N, is_ruptured, subsub))  
                 
@@ -114,8 +107,6 @@ def read_multi_coupling(folder, mean_pct = 0.5, std_pct = 0.35, stretch_lim = [N
                 
     print()
     
-    
-
     # Organize data 
     data = np.array(data, dtype = 'object')
     rupture = np.array(rupture, dtype = 'object')
@@ -156,6 +147,7 @@ def read_multi_coupling(folder, mean_pct = 0.5, std_pct = 0.35, stretch_lim = [N
         
     output = {
         'stretch_pct': stretch_pct,
+        'std_stretch': std_stretch,
         'F_N': F_N,
         'Ff': Ff,
         'Ff_std': Ff_std,
@@ -214,14 +206,21 @@ def manual_coupling(path, compare_path = None, save = False):
     
     # Get coupling data
     data = read_multi_coupling(path, mean_window_pct, std_window_pct)
-    stretch = data['stretch_pct']
-    print(stretch, data['mean_stretch'])
-    print(data.keys())
-    exit()
+    info = read_info_file(os.path.join(path, 'info_file.txt'))
+    # stretch = data['stretch_pct']
+    stretch = data['mean_stretch']
+    stretch_initial = data['stretch_pct']
+    std_stretch = data['std_stretch']
+    non_rup = data['rup'] < 1
     
+    
+    # for i in range(len(stretch)):
+    #         # print(f'{data["stretch_pct"][i]}, {data["mean_stretch"][i]}, {data["std_stretch"][i]}')
+    #         print(f'{data["stretch_pct"][i]}, {data["F_N"][i]}, {data["filenames"][i]}')
+            
+            
     F_N = data['F_N'] # Full sheet
     Ff = data['Ff'][:, 0, 1]
-    
     vmin = 0.1
     vmax = 10
     
@@ -255,11 +254,14 @@ def manual_coupling(path, compare_path = None, save = False):
         labels.append(l[-1])
     
     # Plot coupling
-    axes[0].scatter(F_N, stretch, **plotset_coupling, color = color_cycle(1), label = "Data points (coupled)")
-    axes[1].scatter(stretch, Ff, **plotset_coupling, color = color_cycle(1), label = f"Coupled (R = {rupture_dict['R']:g})")
-    add_xaxis(axes[1], x = stretch, xnew = F_N, xlabel = r'$F_N$ [nN] (Coupled)', decimals = 1, fontsize = 14)
- 
+    axes[0].scatter(F_N[non_rup], stretch[non_rup], marker = 'v', s = 40, edgecolors = "black",  color = color_cycle(1), label = "Mean stretch")
+    axes[0].scatter(F_N[non_rup], stretch_initial[non_rup], marker = 'o', edgecolors = "black", color = color_cycle(0), alpha = 0.5, label = "Initial stretch")
+    # axes[0].fill_between(F_N, stretch - 3*std_stretch, stretch + 3*std_stretch, color = color_cycle(2), alpha = 0.5, label = "$\pm 3\sigma$ ", zorder = -1)
+   
+    axes[1].scatter(stretch[non_rup], Ff[non_rup], **plotset_coupling, color = color_cycle(1), label = f"Coupled (R = {rupture_dict['R']:g})")
+    add_xaxis(axes[1], x = stretch[non_rup], xnew = F_N[non_rup], xlabel = r'$F_N$ [nN] (Coupled)', decimals = 1, fontsize = 14)
     
+ 
     # for k in range(len(F_N)):
     #     color = get_color_value(F_N[k], FN_min, FN_max, scale = colorbar_scale, cmap = cmap)
     #     axes[1].scatter(stretch[k], Ff[k], **plotset_coupling, color = color, label = 'Coupled')
@@ -295,7 +297,7 @@ def manual_coupling(path, compare_path = None, save = False):
 
     
     # plot load-stretch curve
-    axes[0].plot(load_test, stretch_test, linewidth = 1, alpha = 1, label = 'Rupture test')
+    # axes[0].plot(load_test, stretch_test, linewidth = 1, alpha = 1, label = 'Rupture test')
     add_xaxis(axes[0], x = load_test, xnew = load_test*rupture_dict['R'], xlabel = 'Tension [nN]', decimals = 1, fontsize = 14)
     axes[0].set_xlabel(r'$F_N$ [nN]', fontsize = 14)
     axes[0].set_ylabel('Stretch', fontsize = 14)
@@ -320,8 +322,6 @@ def manual_coupling_locked(save = False):
     else:
         manual_coupling(path, compare_path, save)
         
-    
-    
     path = '../Data/negative_coef/multi_coupling_honeycomb'
     compare_path = '../Data/Baseline_fixmove/honeycomb/multi_stretch'
     if save is not False:
@@ -329,14 +329,21 @@ def manual_coupling_locked(save = False):
     else:
         manual_coupling(path, compare_path, save)
 
-def manual_coupling_free(save = False):
-        
+
+
+def manual_coupling_free(save = False):        
     path = '../Data/negative_coef/multi_coupling_free_popup'
     compare_path = '../Data/Baseline_fixmove/popup/multi_stretch'
     if save is not False:
-        manual_coupling(path, compare_path, save = 'manual_coupling_free_pop1_7_5.pdf')
-    else:
-        manual_coupling(path, compare_path, save)
+        save = 'manual_coupling_free_pop1_7_5.pdf'
+    manual_coupling(path, compare_path, save)
+        
+    
+    path = '../Data/negative_coef/multi_coupling_free_honeycomb'
+    compare_path = '../Data/Baseline_fixmove/honeycomb/multi_stretch'
+    if save is not False:
+        save = 'manual_coupling_free_hon3215.pdf'
+    manual_coupling(path, compare_path, save)
         
     
     
@@ -350,7 +357,7 @@ def manual_coupling_free(save = False):
 
 if __name__ == '__main__':
     # manual_coupling_locked(save = False)
-    manual_coupling_free(save = False)
+    manual_coupling_free(save = True)
     
     
     plt.show()

@@ -471,7 +471,8 @@ class Trainer:
 
 if __name__=='__main__':
     # data_root = ['../Data/ML_data/baseline', '../Data/ML_data/popup', '../Data/ML_data/honeycomb']
-    data_root = [ '../Data/ML_data/honeycomb']
+    # data_root = [ '../Data/ML_data/honeycomb']
+    data_root = [ '../Data/ML_data/RW']
     ML_setting = get_ML_setting()
     
     
@@ -526,7 +527,7 @@ if __name__=='__main__':
     
     coach = Trainer(model, data_root, criterion, **ML_setting)
     coach.learn(max_epochs = 2, max_file_num = None)
-    coach.save_history('training/test')
+    # coach.save_history('training/test')
     coach.plot_history()
     
     
