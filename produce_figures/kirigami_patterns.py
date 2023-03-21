@@ -1,4 +1,5 @@
 from indexing import *
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 def plot_sheet(mat, ax, radius, **param):
     full = build_graphene_sheet(np.ones(np.shape(mat)))
@@ -47,11 +48,10 @@ def plot_center_coordinates(shape, ax, radius, **param):
             x = xs + (1+ 3/2*(i - 1)) * Lx
             y = ys + a*(1/2 + 1/2*j - 1/2*(i%2)) 
             circle = plt.Circle((x, y), radius, **param)
-            ax.add_patch(circle)
-            
-    
+            ax.add_patch(circle) # direct way
 
-  
+            
+    return BL, TR
 
 def show_pop_up(save = False):
     # Settings
@@ -203,11 +203,7 @@ def show_pop_up(save = False):
 def pop_up_flavors(save = False):
     # Settings
     shape = (40,80)
-    ref = np.array([shape[0]//2, shape[1]//4])
-    sp = 2
-    size = (7,5)
-    
-    patterns = [(7, 5, 2), (7, 5, 2), (7, 5, 2), (7, 5, 2)]
+    patterns = [ (9, 3, 4), (3, 9, 3), (3, 5, 1), (3, 1, 1)]
     
     atom_radii = 0.6
     center_radii = 0.2
@@ -218,19 +214,16 @@ def pop_up_flavors(save = False):
     
     for i, p in enumerate(patterns):
         mat = pop_up(shape, (p[0], p[1]), p[2], ref = None)
-        # ax = axes[i//axes.shape[1], i%axes.shape[1]]
         ax = axes[i]
+        name = f'{p}'
+        # ax = axes[i//axes.shape[1], i%axes.shape[1]]
         
-        # Pattern
-        plot_sheet(mat, ax, atom_radii, facecolor = 'grey', edgecolor = 'black')
-        
-        # Background
-        plot_sheet(1-mat, ax, atom_radii, facecolor = 'None', edgecolor = 'black', alpha = 0.2)
-        
-        # Center elements
-        plot_center_coordinates(np.shape(mat), ax, center_radii, facecolor = blue, edgecolor = None)
+        plot_sheet(mat, ax, atom_radii, facecolor = 'grey', edgecolor = 'black') # Pattern   
+        plot_sheet(1-mat, ax, atom_radii, facecolor = 'None', edgecolor = 'black', alpha = 0.2)  # Background
+        plot_center_coordinates(np.shape(mat), ax, center_radii, facecolor = blue, edgecolor = None) # Center elements
         
         # plot settings
+        ax.set_title(name)
         ax.grid(False)
         ax.set_xticks([])
         ax.set_yticks([])
@@ -363,10 +356,164 @@ def show_honeycomb(save = False):
     
     pass   
     
+ 
+        
+def honeycomb_flavors(save = False):
+    # Settings
+    shape = (40,80)
+    
+    patterns = [(1,1,5,5), (1,2,1,9), (3,2,3,1), (3,1,1,3)]
+    
+    atom_radii = 0.6
+    center_radii = 0.2
+    blue = color_cycle(6)
+    
+    fig, axes = plt.subplots(1, 4, num = unique_fignum(), figsize = (12,4))
+    # fig, axes = plt.subplots(1, 4, num = unique_fignum(),  dpi=80, facecolor='w', edgecolor='k')
+    
+    for i, p in enumerate(patterns):
+        mat = honeycomb(shape, p[0], p[1], p[2], p[3], None)
+        ax = axes[i]
+        name = f'{((1+p[0]//2), p[1], p[2], p[3])}'
+        # ax = axes[i//axes.shape[1], i%axes.shape[1]]
+        
+        plot_sheet(mat, ax, atom_radii, facecolor = 'grey', edgecolor = 'black') # Pattern   
+        plot_sheet(1-mat, ax, atom_radii, facecolor = 'None', edgecolor = 'black', alpha = 0.2)  # Background
+        plot_center_coordinates(np.shape(mat), ax, center_radii, facecolor = blue, edgecolor = None) # Center elements
+        
+        # plot settings
+        ax.set_title(name)
+        ax.grid(False)
+        ax.set_xticks([])
+        ax.set_yticks([])
+        ax.set_facecolor("white")
+        
+    
+    # Set axies
+    fig.supxlabel(r"$x$ (armchair direction)", fontsize = 14)
+    fig.supylabel(r"$y$ (zigzag direction)", fontsize = 14)
+    fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
    
+    if save:
+        fig.savefig('../article/figures/system/honeycomb_flavors.pdf', bbox_inches='tight')
+    
+    
+def bias_prop_distirbution(save = False):
+    
+
+    green  = color_cycle(3)
+    orange = color_cycle(4)
+    blue = color_cycle(6)
+    atom_radii = 0.6
+    center_radii = 0.2
+    
+    
+    # --- Directions --- #
+    fig1 = plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k'); ax1 = fig1.gca()
+    mat = np.ones((2,6))
+    mat[:, -1] = 0
+    plot_sheet(mat, ax1, atom_radii, facecolor = 'grey', edgecolor = 'black', alpha = 0.3)
+    BL, TL = plot_center_coordinates(np.shape(mat), ax1, center_radii, facecolor = blue, edgecolor = None)
+    
+    Cdis = 1.461
+    a = 3*Cdis/np.sqrt(3)
+    Bx = a/(np.sqrt(3)*2)
+    vecax = a*np.sqrt(3)/2
+    vecay = a/2
+    Lx = (vecax + Bx)/2 
+    xs, ys = BL[0], BL[1] # Start
+    center = (xs + (1+ 3/2*(1 - 1)) * Lx, ys + a*(1/2 + 1/2*1 - 1/2*(2%2)) )
+    neigh, directions = connected_neigh_center_elem((1,1))
+    directions[:2] *= np.linalg.norm(directions[2])
+    
+    num = np.array([3, 2, 5, 4, 1, 0])
+    for i, pos in enumerate(center + directions):
+            circle = plt.Circle((pos[0], pos[1]), center_radii*1.5, color = blue)
+            ax1.add_patch(circle) # direct way
+            eps = 0.04
+            ax1.text(pos[0], pos[1]-eps, f'{num[i]}', fontsize = 15, ha = 'center', va = 'center')
+    
+    from_pos = center + 0.1*directions 
+    to_pos = center + 0.9*directions 
+    bias = np.array((3, 1))
+    
+    arrowprops = dict(facecolor='black', lw = 1)
+    ax1.annotate('', xy=(to_pos[0]), xytext= (from_pos[0]), textcoords='data', arrowprops=arrowprops)
+    ax1.annotate('', xy=(to_pos[1]), xytext= (from_pos[1]), textcoords='data', arrowprops=arrowprops)
+    ax1.annotate('', xy=(to_pos[2]), xytext= (from_pos[2]), textcoords='data', arrowprops=arrowprops)
+    ax1.annotate('', xy=(to_pos[3]), xytext= (from_pos[3]), textcoords='data', arrowprops=arrowprops)
+    ax1.annotate('', xy=(to_pos[4]), xytext= (from_pos[4]), textcoords='data', arrowprops=arrowprops)
+    ax1.annotate('', xy=(to_pos[5]), xytext= (from_pos[5]), textcoords='data', arrowprops=arrowprops)
+    ax1.annotate('', xy=(center[0] + 0.9*bias[0], center[1] + 0.9*bias[1]), xytext= (center[0] + 0.1*bias[0], center[1] + 0.1*bias[1]), textcoords='data', arrowprops=dict(facecolor='orange', lw = 1))
+    ax1.text(center[0] + 0.9*bias[0] - 0.4, center[1] + 0.9*bias[1] - 0.6, 'Bias', fontsize = 15)
+    
+    ax1.grid(False)
+    ax1.set_xticks([])
+    ax1.set_yticks([])
+    ax1.axis('off')
+    ax1.set_facecolor("white")
+    fig1.set_edgecolor("white")
+    
+    # --- Probability distribution --- #
+    fig2, axes = plt.subplots(1, 2, num = unique_fignum(), dpi=80, gridspec_kw ={'width_ratios': [1, 0.05]})
+    ax2, ax22 = axes
+    # fig2 = plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k'); ax2 = fig2.gca()
+    
+    B = np.linspace(1, 10, 7)
+    cmap = 'coolwarm'
+    for b in B:
+        line_color = get_color_value(b, np.min(B), np.max(B), scale = 'linear', cmap=cmap)
+        theta_con = np.linspace(0, np.pi, int(1e3))
+        cos_theta_dis = np.dot(directions, bias)/(np.linalg.norm(bias)*np.linalg.norm(directions, axis = 1))
+        p_con = np.exp(b*np.cos(theta_con))
+        p_dis = np.exp(b*cos_theta_dis)
+        norm = np.sum(p_dis)
+        
+
+        ax2.plot(theta_con/np.pi, p_con/norm, color = line_color, zorder = -1)
+        ax2.scatter(np.arccos(cos_theta_dis)/np.pi, p_dis/norm, facecolor = line_color)
+        ax2.set_xlabel(r'$\theta$ [$\pi$]', fontsize = 14)
+        ax2.set_ylabel(r'$p(\theta)$', fontsize = 14)
+        
+    angles = np.arccos(cos_theta_dis)/np.pi
+    for a in angles:
+        vline(ax2, a, linewidth = 1, linestyle = '--', color = 'black', alpha = 0.5)
+    
+    ax3 = ax2.twiny()
+    ax3.set_xlim(ax2.get_xlim())
+    ax3.set_xticks(angles)
+    ax3.set_xticklabels(num[np.arange(len(angles))])
+    ax3.set(xlabel='Direction indexes')
+    ax3.xaxis.label.set_fontsize(14)
+    
+    
+    norm = matplotlib.colors.Normalize(np.min(B), np.max(B))
+    cb = fig2.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax = ax22)
+    cb.set_label(label = r'Bias strength', fontsize=14)
+    
+    # cb = fig2.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax=ax2)
+    
+    # --- Save --- #
+    fig1.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    fig2.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    
+    if save:
+        fig1.savefig('../article/figures/system/bias_prob_a.pdf', bbox_inches='tight')
+        fig2.savefig('../article/figures/system/bias_prob_b.pdf', bbox_inches='tight')
+        
+
+    
+
+    
+def show_min_dis(save = False):
+    pass
+    
 
 if __name__ == '__main__':
     # show_pop_up(save = False)
-    pop_up_flavors(save = True)
+    # pop_up_flavors(save = False)
     # show_honeycomb(save = False)
+    # honeycomb_flavors(save = False)
+    
+    bias_prop_distirbution(save = True)
     plt.show()
