@@ -755,10 +755,12 @@ Better word might be detched and nondetached as used by Hanakate in Accelerated 
 
 \section{Dataset analysis}
 
+A summary of the data points is given in table \ref{yab:dataset_summary}
+
 \begin{table}[H]
   \begin{center}
   \caption{Summary of the number of generated data points used for machine learning. Due to random stretch values not all submitted simulations makes it through the framework to become a data point (\hl{explain this somewhere})  Notice that the Tetrahedon (7, 5, 2) and Honeycomb (2, 2, 1, 5) from the pilot study is rerun as a part fo the Tetrahedon and Honeycomb dataset seperately. In the latter the reference point for the pattern is randomized and thus theese configurations is included twice. This is the reason for the total configuration count summing up to two less than otherwise expected. }
-  \label{tab:dataset}
+  \label{tab:dataset_summary}
   \begin{tabular}{ | c | c | c | c |} \hline
   \textbf{Type} & \textbf{Configurations} & \textbf{Submitted data points} & \textbf{Final data points} \\ \hline
   Pilot study & 3 & 270 & 261    \\ \hline
@@ -773,61 +775,77 @@ Better word might be detched and nondetached as used by Hanakate in Accelerated 
 % Reason for some missing sims is that if restart file is set to be produced close to rupture point
 % it might rupture a bit before and not submit the restart file. 
 
-
-
-Pearson product-moment correlation coefficient (PPMCC) between data set $X$ and $Y$ is defined as
+In order to gain insight into the correlations between variables associated to the simulations we calculate the correlations coefficients between all variable combinations. More specific, we are going to calculate the Pearson product-moment correlation coefficient (PPMCC) for which is defined, between data set $X$ and $Y$, as
 \begin{align*}
-  \mathrm{corr}(X,Y) = \frac{\mathrm{Cov}(X,Y)}{\sigma_X \sigma_Y} = \frac{\langle (X - \mu_X)(Y - \mu_Y)\rangle}{\sigma_X \sigma_Y}
+  \mathrm{corr}(X,Y) = \frac{\mathrm{Cov}(X,Y)}{\sigma_X \sigma_Y} = \frac{\langle (X - \mu_X)(Y - \mu_Y)\rangle}{\sigma_X \sigma_Y} \ \in [-1, 1]
 \end{align*}
-where $\mathrm{Cov}(X,Y)$ is the covariance, $\mu$ the mean value and $\sigma$ the standard deviation. The correlation coefficients is shown in figure \ref{fig:corrcoef_matrix}
+where $\mathrm{Cov}(X,Y)$ is the covariance, $\mu$ the mean value and $\sigma$ the standard deviation. The correlation coefficients ranges from perfect negative correlation $(-1)$ through no correlation $(0)$ to a perfect positive correlation $(1)$. The correlation coefficients is shown in figure \ref{fig:corrcoef_matrix}
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{figures/ML/corrcoef_matrix.pdf}
-  \caption{Pearson product-moment correlation coefficients for popup and honeycomb dataset so far \hl{add RW as well}.}
+  \caption{Pearson product-moment correlation coefficients for the full datset (see table \ref{tab:dataset_summary}).}
   \label{fig:corrcoef_matrix}
 \end{figure}
 
-From figure \ref{fig:corrcoef_matrix} we see specially that the mean friction force $\langle F_{\parallel} \rangle$ is positive correlated with stretch $(0.74)$ and porosity ($0.59$) (void fraction). However, when calculating the relative stretch, scaled by the rupture stretch, the correlation is weaker ($0.75 \to 0.29$). Moreover, we observe that the mean friction is negatively correlated with the contact area ($-0.6$). In figure \ref{corr_vis} the individual dependencies between variables for each dataset is visualized for some of the more interesting variable combinations.
+From figure \ref{fig:corrcoef_matrix} we especially notice that the mean
+friction force $\langle F_{\parallel} \rangle$ has a signifciant positively
+correlation with stretch $(0.77)$ and porosity $(0.60)$ (void fraction).
+However, the relative stretch, which is scaled by the rupture stretch, has a
+weaker correlation of only 0.25 which indicates that it is the absolute stretch
+value that has the most significant impact on the friction force increase during
+stretching. This is further supported by the fact that the mean friction and the
+rupture stretch is also strongly positively correlated $(0.78)$. From figure
+\ref{fig:corrcoef_matrix} we also observe that the contact bond count is
+negatively correlated with the mean friction $(-0.67)$ and the stretch value
+$(-0.74)$ which is consistent with the trend observed in the pilot study (figure \ref{fig:multi_stretch_contact} and \ref{fig:multi_stretch_mean_fric}) of the
+contact decreasing with increasing stretch and mean friction. However, we must
+take note that the correlation coefficients is a measure of the strength and slope of a
+forced linear fit on the data. We clearly observed a non-linear relationship between stretch and mean friction for the tetrahedron and honeycomb pattern used in the pilot study (figure \ref{fig:multi_stretch_mean_fric}) where the relationship was partwise characterized by a postive correlation for some stretch ranges and partwise negative correlation for other stretch ranges. Hence, interesting strong regime-specific correlations might not be accurately highlighted by the correlation coefficients shown in figure \ref{fig:corrcoef_matrix}.
 
+In figure \ref{fig:corr_vis} we have visualized the data (excluding the pilot study) for chosen pairs of variables on the axes. In addition to a visual confirmation of how the given correlations look in a 2D plot we also get a feeling for the coverage in various areas of the parameter space that we are eventually going to feed the neural network. The honeycomb pattern is spanning a significant larger range of stretch, contact and mean friction makes the data rather biased towards the Honeycomb pattern in thoose areas. 
+% Judging form the combinned information of the pilot study and the data distribution shown in figure \ref{fig:corr_vis} it would not be surprising if the machine learning were to learn that the honeycomb pattern is superiour for 
 
 \begin{figure}[H]
   \centering
-  \begin{subfigure}[t]{0.32\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/ML/corr_stretch_Ff.pdf}
       \caption{}
       % \label{fig:}
   \end{subfigure}
   \hfill
-  \begin{subfigure}[t]{0.32\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/ML/corr_porosity_Ff.pdf}
-      \caption{}
-      % \label{fig:}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.32\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/ML/corr_contact_Ff.pdf}
-      \caption{}
-      % \label{fig:}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.32\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/ML/corr_stretch_contact.pdf}
       \caption{}
       % \label{fig:}
   \end{subfigure}
   \hfill
-     \caption{Visualization of variable dependence in the specific datasets. \hl{I think the legends are swapped: honeycomb stretch further than popup}}
+  \begin{subfigure}[t]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/ML/corr_contact_Ff.pdf}
+      \caption{}
+      % \label{fig:}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/ML/corr_porosity_Ff.pdf}
+      \caption{}
+      % \label{fig:}
+  \end{subfigure}
+  \hfill
+     \caption{Scatter plot of the data sets Tetrahedron, Honeycomb and Random Walk (excluding the pilot study) for various variable combinations in order to visualize some chosen  correlations of interest and distributions in the data}
      \label{fig:corr_vis}
 \end{figure}
 
 
+
+
+
  
-\chapter{Inverse design}
+\chapter{Accelerated Search}
 
 \chapter{Negative friction coefficient}
 \section{Manual coupling of normal force and stretch}

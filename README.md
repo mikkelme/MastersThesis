@@ -247,7 +247,16 @@
 - Submitted ML hyperparameter architecture tuning to bigfacet 
 - Made class for accerlerated search will be used to evaulate performance of different configurations and evolve by some searching strategy - perhaps genetic algorithms. 
 
+#### Week 11 (13/03/2023 - 19/03/2023) - Working from Pisa
+- Made genetic algorithm (GA) for accelerated search 
+- Added repair function for configuration proposals/mutation in GA
+- Submitted fixed version of the coupled stretch sim
+- Finished RW dataset
 
+#### Week 11 (20/03/2023 - 26/03/2023) - Working from Pisa
+- Made nice plots of tetrahedron (pop-up) and honeycomb for dataset part in article
+- Included data analysis of RW data
+- 
 
 ## Things to remember 
 

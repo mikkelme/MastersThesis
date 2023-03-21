@@ -77,14 +77,26 @@ class Data_fetch():
         """ Pearson product-moment correlation coefficients. """
         
         
-        var = np.array([self.data[keys] for keys in self.data])
-        names = [keys for keys in self.data]
+        var = np.array([self.data[key] for key in self.data])
+        names = [key for key in self.data]
         
         if label_map is not None:
+            label_map_keys = np.array([key for key in label_map])
+            label_map_sort = []
             for i, key in enumerate(names):
                 if key in label_map:
+                    label_map_sort.append(np.argwhere(label_map_keys == names[i]).ravel()[0])
                     names[i] = label_map[key]
+                else:
+                    label_map_sort.append(len(names)-1)
         
+        
+        # Sort 
+        sort = np.argsort(label_map_sort)
+        old_names = names.copy()
+        for i, j in enumerate(sort): # Sort list
+            names[i] = old_names[j]
+        var = var[sort] # Sort array
         
         assert var.shape[1] > 1, f"The number of datapoints per variable = {var.shape[1]} must be more than one"
         
@@ -92,7 +104,7 @@ class Data_fetch():
         mat = np.corrcoef(var)
         
         fig, ax = plt.subplots(figsize=(10, 6))
-        sns.heatmap(mat, xticklabels=names, yticklabels = names, cbar_kws={'label': 'Correlation coefficients'}, annot=True, vmin=-1, vmax=1, cmap = 'coolwarm', ax=ax)
+        sns.heatmap(mat, xticklabels=names, yticklabels = names, cbar_kws={'label': 'Correlation coefficient'}, annot=True, vmin=-1, vmax=1, cmap = 'coolwarm', ax=ax)
         plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
         if save is not None:
             plt.savefig(f'../article/figures/ML/{save}', bbox_inches='tight')
@@ -106,7 +118,8 @@ class Data_fetch():
 
 
 def plot_corrcoef(save = False):
-    data_root = ['../Data/ML_data/honeycomb', '../Data/ML_data/popup'] 
+    root = '../Data/ML_data/'
+    data_root = [root+'baseline', root+'popup', root+'honeycomb', root+'RW']
     obj = Data_fetch(data_root)
     
     obj.get_data(['stretch', 'rupture_stretch', 'F_N', 'porosity', 'Ff_mean',  'Ff_max', 'contact', 'Ff_mean_std', 'contact_std'], obj[:])
@@ -117,13 +130,14 @@ def plot_corrcoef(save = False):
     else:
         savename = False
     
-    mat = obj.corrcoef_matrix({'stretch': 'Stretch', 
+    mat = obj.corrcoef_matrix({'porosity': 'porosity',
+                               'stretch': 'stretch',  
+                               'rel. stretch': 'rel. stretch',
                                'rupture_stretch': 'rup. stretch',
                                'F_N': '$F_N$', 
-                               'porosity': 'Porosity', 
                                'Ff_mean': r'$\langle F_\parallel \rangle$', 
                                'Ff_max': 'max Ff',
-                               'contact': 'Contact',
+                               'contact': 'contact',
                                'Ff_mean_std': r'std $\langle F_\parallel \rangle$',
                                'contact_std': 'std contact'
                                }, save = savename)
@@ -131,14 +145,18 @@ def plot_corrcoef(save = False):
     
     
 def plot_corr_scatter(save = False):
-    data_root = ['../Data/ML_data/honeycomb', '../Data/ML_data/popup'] 
+    root = '../Data/ML_data/'
+    data_root = [root+'popup', root+'honeycomb', root+'RW']
+    reg_name = ['Tetrahedron    ', 'Honeycomb    ', 'Random Walk']
     
-    size = 15
-    plot_settings = [{'color': color_cycle(1), 'marker': '^', 's': size},
-                     {'color': color_cycle(3), 'marker': 'D', 's': size}]
     
-    reg_name = ['popup', 'honeycomb']
+    size = 5
+    plot_settings = [{'color': color_cycle(1), 'marker': '^', 's': size, 'alpha': 0.5},
+                     {'color': color_cycle(3), 'marker': 'D', 's': size, 'alpha': 0.5},
+                     {'color': color_cycle(4), 'marker': 'o', 's': size, 'zorder': -1, 'alpha': 0.5}]
+    
 
+    
     
     # x, y, x-label, y-label, savename
     plots = [
@@ -147,6 +165,7 @@ def plot_corr_scatter(save = False):
     ['porosity'         , 'Ff_mean', 'Porosity'             , r'$\langle F_\parallel \rangle$', 'corr_porosity_Ff.pdf'      ],
     ['contact'          , 'Ff_mean', 'Contact'              , r'$\langle F_\parallel \rangle$', 'corr_contact_Ff.pdf'       ],
     ['stretch'          , 'contact', 'Stretch'              , 'Contact'                       , 'corr_stretch_contact.pdf'  ],
+    ['porosity'          ,'contact', 'Porosity'             , 'Contact'                       , 'corr_porosity_contact.pdf'  ],
     ]
     
     
@@ -196,7 +215,7 @@ def plot_corr_scatter(save = False):
 if __name__ == '__main__':
     
     # plot_corrcoef(save = False)
-    # plot_corr_scatter(save = True)
+    plot_corr_scatter(save = True)
     plt.show()
     pass
     
