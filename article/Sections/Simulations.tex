@@ -751,9 +751,28 @@ Present the configuration and variable choices for the generated dataset. Perhap
 \section{Rupture}
 Better word might be detched and nondetached as used by Hanakate in Accelerated search article.
 
-\chapter{Training forward network}
+\chapter{Training forward network (Data analysis?)}
 
 \section{Dataset analysis}
+
+\begin{table}[H]
+  \begin{center}
+  \caption{Summary of the number of generated data points used for machine learning. Due to random stretch values not all submitted simulations makes it through the framework to become a data point (\hl{explain this somewhere})  Notice that the Tetrahedon (7, 5, 2) and Honeycomb (2, 2, 1, 5) from the pilot study is rerun as a part fo the Tetrahedon and Honeycomb dataset seperately. In the latter the reference point for the pattern is randomized and thus theese configurations is included twice. This is the reason for the total configuration count summing up to two less than otherwise expected. }
+  \label{tab:dataset}
+  \begin{tabular}{ | c | c | c | c |} \hline
+  \textbf{Type} & \textbf{Configurations} & \textbf{Submitted data points} & \textbf{Final data points} \\ \hline
+  Pilot study & 3 & 270 & 261    \\ \hline
+  Tetrahedon & 68 & 3060 & 3015  \\ \hline
+  Honeycomb & 45 & 2025 & 1983  \\ \hline
+  Random walk & 100 & 4500 & 4401 \\ \hline \hline
+  Total & 214 (216) & 9855 & 9660 \\ \hline
+  \end{tabular}
+  \end{center}
+\end{table}
+
+% Reason for some missing sims is that if restart file is set to be produced close to rupture point
+% it might rupture a bit before and not submit the restart file. 
+
 
 
 Pearson product-moment correlation coefficient (PPMCC) between data set $X$ and $Y$ is defined as

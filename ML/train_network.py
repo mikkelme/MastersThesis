@@ -527,7 +527,7 @@ if __name__=='__main__':
     
     coach = Trainer(model, data_root, criterion, **ML_setting)
     coach.learn(max_epochs = 2, max_file_num = None)
-    # coach.save_history('training/test')
+    coach.save_history('training/test')
     coach.plot_history()
     
     

@@ -48,7 +48,7 @@ def train_architectures(A_instance, data_root, ML_setting, save_folder):
         coach = Trainer(model, data_root, criterion, **ML_setting)
         coach.learn()
         coach.save_history(os.path.join(save_folder, model.name))
-        coach.plot_history(show = False, save = os.path.join(save_folder, f'{model.name}_loss.pdf'))
+        coach.plot_history(show = False, save = os.path.join(save_folder, model.name, 'loss.pdf'))
       
       
   
@@ -61,11 +61,9 @@ if __name__ == '__main__':
     # model, criterion = get_A(1)
 
     A = Architectures()
-    exit(A)
     
-    # TODO: Try to run this one 
-    model, criterion = A[7]
+    model, criterion = A[6]
     coach = Trainer(model, data_root, criterion)
-    coach.learn(max_epochs = 300, max_file_num = None)
-    coach.save_history('training/test')
+    coach.learn(max_epochs = 2, max_file_num = None)
+    coach.save_history('training')
     coach.plot_history()

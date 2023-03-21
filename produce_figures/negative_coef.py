@@ -297,7 +297,7 @@ def manual_coupling(path, compare_path = None, save = False):
 
     
     # plot load-stretch curve
-    # axes[0].plot(load_test, stretch_test, linewidth = 1, alpha = 1, label = 'Rupture test')
+    axes[0].plot(load_test, stretch_test, linewidth = 1, alpha = 1, label = 'Rupture test')
     add_xaxis(axes[0], x = load_test, xnew = load_test*rupture_dict['R'], xlabel = 'Tension [nN]', decimals = 1, fontsize = 14)
     axes[0].set_xlabel(r'$F_N$ [nN]', fontsize = 14)
     axes[0].set_ylabel('Stretch', fontsize = 14)

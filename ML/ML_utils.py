@@ -40,7 +40,7 @@ def get_labels(data, keys, device):
 
 
 def save_training_history(name, history, info, precision = 4):
-    filename = name + '_training_history.txt'
+    filename = os.path.join(name, 'training_history.txt')
     try:
         outfile = open(filename, 'w')
     except FileNotFoundError:
@@ -70,7 +70,7 @@ def save_training_history(name, history, info, precision = 4):
 
 
 def save_best_model_scores(name, best, history, info,  precision = 4):
-    filename = name + '_best_scores.txt'
+    filename = os.path.join(name, 'best_scores.txt')
     
     best_epoch = best['epoch']
     try:
@@ -93,7 +93,7 @@ def save_best_model_scores(name, best, history, info,  precision = 4):
 
 
 def save_best_model(name, model, best_weights):
-    modelname = name + '_model_dict_state'
+    modelname = os.path.join(name, 'model_dict_state')
     model.load_state_dict(best_weights)
     torch.save(model.state_dict(), modelname)
 
