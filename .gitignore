@@ -22,7 +22,7 @@
 *.pyc
 
 # ML
-*_model_dict_state
+*model_dict_state
 
 #Latex
 *.aux
