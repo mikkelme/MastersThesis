@@ -459,10 +459,10 @@ def bias_prop_distirbution(save = False):
     ax2, ax22 = axes
     # fig2 = plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k'); ax2 = fig2.gca()
     
-    B = np.linspace(1, 10, 7)
+    B = np.logspace(-1, 1.3, 8)
     cmap = 'coolwarm'
     for b in B:
-        line_color = get_color_value(b, np.min(B), np.max(B), scale = 'linear', cmap=cmap)
+        line_color = get_color_value(b, np.min(B), np.max(B), scale = 'log', cmap=cmap)
         theta_con = np.linspace(0, np.pi, int(1e3))
         cos_theta_dis = np.dot(directions, bias)/(np.linalg.norm(bias)*np.linalg.norm(directions, axis = 1))
         p_con = np.exp(b*np.cos(theta_con))
@@ -487,7 +487,9 @@ def bias_prop_distirbution(save = False):
     ax3.xaxis.label.set_fontsize(14)
     
     
-    norm = matplotlib.colors.Normalize(np.min(B), np.max(B))
+    # norm = matplotlib.colors.Normalize(np.min(B), np.max(B))
+    norm = matplotlib.colors.LogNorm(np.min(B), np.max(B))
+    
     cb = fig2.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax = ax22)
     cb.set_label(label = r'Bias strength', fontsize=14)
     

@@ -381,41 +381,110 @@ bridge length) which is annotated in figure \ref{fig:honeycomb_a} where the para
 
 
 \subsection{Random walk}
+The random walk serves as a method for introducing random patterns into the dataset with the scope of populating the configuration space more broadly than achieved with the more systematic patterns classes described above. By this argument a more straightforward way to create random configurations could be achieved by random noise, either uniform or gaussian. However, this would often leave the sheet detached with lots of non-connected atom clusters, and intuitively we do not find this promising for the generation of large scale organized structures which is hypothesized to be of interest. The random walk pattern generation is characterized by the parameters summarized in table \ref{tab:RW_params} which will be introduced throughout the following paragraphs. 
 
-The random walk serves as a method for introducing random patterns into the dataset with the scope of populating the configuration more broadly than achieved with the tetrahedron and honeycomb pattern alone. This could also be achieved by generating patterns from random noise, but this would leave the sheet detached with lots of non-connected atoms and intuitively this does not seem promising for the generation of larger structures which is hypothesized to be of interest. 
 
-For a given uncut sheet we deploy $M$ random walkers one by one and let them
-walk for a maximum number of $S$ steps. For this we can either choose to let the
-walkers jump between atom sites removing the atoms in the path or between center
-elements removing all sourrounding atoms. Nonetheless, we will remove a site
-once visited such that the walker itself or any other walker can use this site
-again. That is, the walkers are self avoiding, but it does also avoid any path
-made by previously deployed walkers. By default, the walker has an equal chance
-of chosing any of its adjecent neighbours. When walking on the atom sites this
-gives three options for the next step while a total of six options is availble
-for the center element walk. If the walker happens to jump to an already visited
-site the walk is terminated early. Optionally we can choose to remove any
-neighbouring sites which are already visited which avoid the walker to choose a
-visited site. This prolongs the walking distance, however the walk is terminated
-if there are no valid options among the neighbours. 
+\begin{table}[H]
+  \begin{center}
+  \caption{Parameters for the random walk generator.}
+  \label{tab:RW_params}
+  \begin{tabular}{ | c | m{12cm} |} \hline
+  \textbf{Parameters} & \textbf{Description}  \\ \hline
+  Num.\ walkers ($M$)  & Number of random walks to be initiated on the sheet (one at a time). \\ \hline
+  Max.\ steps ($S$)  & The maximum steps allowed for any random walker. \\ \hline
+  Min.\ distance  & \\ \hline
+  Bias  & \\ \hline
+  Connection  & Walk between atoms or between center elements (removing all adjecent atoms) \\ \hline
+  Avoid unvalid  & \\ \hline
+  RN6  & \\ \hline
+  grid start  & \\ \hline
+  centering  & \\ \hline
+  stay or break  & \\ \hline
+  avoid clustering  & \\ \hline
+  Periodic  & \\ \hline
+  \end{tabular}
+  \end{center}
+\end{table}
 
+\subsubsection{Fundamentals} % M, S, Connection, Periodic, Avoid unvalid
+For an uncut sheet we deploy $M$ random walkers one at a time and let them walk
+for a maximum number of $S$ steps. We can either let the walker travel between
+atom sites, removing the atoms in the path as it goes, or between center
+elements, removing all sourrounding atoms - \textit{Connection: Atom/Center
+elements}. Nonetheless, we will always remove a site once visited such that the
+walker itself or any other walker cannot use this site again. This corresponds
+with the property of a self avoiding random walk, but it futhermore constraint
+the walkers not to visit any path previously visited by another walker on the
+sheet. By default, the walker has an equal chance of chosing any of its adjecent
+neighbours for the next step, i.e.\ we draw the next step from a discrete
+uniform distribution. Optionally we can use periodic bounary conditions,
+\textit{Periodic: True/False}, allowing neighbouring sites to be connected
+through the edge in both the x and y-direction. When traveling on atom sites
+this gives three nieghbour options for the next step while traveling on the
+center elements gives six neighbour options. If the walker happens to arrive at
+an already visited site the walk is terminated early. Optionally, we can choose
+to remove any neighbouring sites already visited from the neighbour list,
+\textit{Avoid unvalid: True/False}, and choose uniformly between the remaining
+options instead. This prolongs the walking distance. However, the walker is
+still able to find itself in a situation where no neighbouring sites is
+availble, note that it cannot backtrack its own path either, and in such a case
+the walk is always terminated dispite the setting of \textit{Avoid unvalid}.
 
 
 \subsubsection{Spacing of walking paths}
-We have implemented a minimum distance feature for which the walkers cannot visit any
-sites which is equal to or less than a given distance to the path of a previous
-walker. For this, the distance is measured in the least amount of steps between
-a site of interest and the path. In practice this is achieved by keeping an
-additional matrix of the sheet state. After a walker has terminated its run a
-recursive algorithm is utilized to mark all sites within the given walking
-distance to any of the visited sites in the path. This is done by deploying
-walkers for each site which follows each of the possible neighbouring sites
-recursively until the defined deistance is reached. These walkers do not care
-about present or removed site. All sites covered in this procedure is marked as
-visited in the additional sheet state matrix. When a new walker is deployed it
-will then use this matrix for the evaluation of the neighbour state instead which results in the avoidance of these pesudo removed sites. 
+In order to control the spacing between the paths of the various walkers we
+implement a so-called \textit{minimum distance: 0, 1, \ldots} parameter,
+describing the spacing required between paths in terms of the least amount of
+steps. When a walker has ended its walk, either by early termination or hitting
+the maximum limits of steps, all sites within a walking distance of the minimum
+distance is marked as visited, allthough they are not removed from the sheet.
+This prevents any subsequent walkers to visit those sites in their walk
+according to the general behaviour described in the
+previous paragraph. In practice this is done through a recursive algorithm as described in algorithm \ref{algo:walk_dis}. After the walker has ended its walk this function is called for a list of all sites in the path. The function then gatheres gather all sourrounding neighbours regardless of their state on the sheet and call itself using a list of those neighbours. This means that it will follow all possible paths connected to the inital path of inerest. However, this recursiveness terminates when the number of recursive calls exceeds the given minimum distance. The resulting output is then all sites within a walking distance less or equal to the minimum distance which can then be marked as visited. 
 
-% Show some pseudo algorithm
+
+\begin{algorithm}[H]
+  \caption{Recursive algorithm implemented as class method to mark sites within a distance of the class attribute self.min\_dis.}
+  \label{algo:walk_dis}
+  \begin{algorithmic}[1]
+    \Require self.min\_dis $>$ 0 \Comment{This pseudocode does not handle other cases}
+    \Function{walk\_distance}{self, input, dis = 0, pre = [ ]}
+      % \State neigh $\gets$ NewList() 
+      \State new\_neigh $\gets$ [ ] \Comment{Initialize list for new neighbours}
+      \For{site in input}
+        \State neigh $\gets$ get\_neighbouring\_sites(site) \Comment{Get sourrounding neighbours}
+        \For{n in neigh}
+          \If {(n not in pre) and (n not in new\_neigh)} \Comment{If not already added}
+            \State AddItem(new\_neigh, n)
+          \EndIf
+        \EndFor
+      \EndFor
+      \State dis += 1 \Comment{Increment distance counter}
+      \If{dis $\ge$ self.min\_dis} \Comment{Max limit hit}
+        \State \Return input + new\_neigh 
+      \Else \Comment{Start a new walk from each of the neighbouring sites}
+        \State pre $\gets$ input
+        \State \Return pre +  self.walk\_distance(new\_neigh, dis, pre)
+      \EndIf
+    \EndFunction
+  \end{algorithmic}
+\end{algorithm}
+
+
+
+% We have implemented a minimum distance feature for which the walkers cannot visit any
+% sites which is equal to or less than a given distance to the path of a previous
+% walker. For this, the distance is measured in the least amount of steps between
+% a site of interest and the path. In practice this is achieved by keeping an
+% additional matrix of the sheet state. After a walker has terminated its run a
+% recursive algorithm is utilized to mark all sites within the given walking
+% distance to any of the visited sites in the path. This is done by deploying
+% walkers for each site which follows each of the possible neighbouring sites
+% recursively until the defined deistance is reached. These walkers do not care
+% about present or removed site. All sites covered in this procedure is marked as
+% visited in the additional sheet state matrix. When a new walker is deployed it
+% will then use this matrix for the evaluation of the neighbour state instead which results in the avoidance of these pesudo removed sites. 
+
 
 % Show figure of the self.visited shadowing 
 \subsubsection{Bias}
@@ -465,27 +534,6 @@ The partition function serves simply as a normalization constant which in practi
 
 \subsubsection{Deployment position schemes}
 
-\begin{table}[H]
-  \begin{center}
-  \caption{Parameters for the random walk generator.}
-  \label{tab:RW_param}
-  \begin{tabular}{ | c | m{12cm} |} \hline
-  \textbf{Parameters} & \textbf{Description}  \\ \hline
-  num. walkers  & \\ \hline
-  max steps  & \\ \hline
-  min. distance  & \\ \hline
-  bias  & \\ \hline
-  Connection  & Walk between atoms or between center elements (removing all adjecent atoms) \\ \hline
-  Avoid unvalid  & \\ \hline
-  RN6  & \\ \hline
-  grid start  & \\ \hline
-  centering  & \\ \hline
-  stay or break  & \\ \hline
-  avoid clustering  & \\ \hline
-  periodic  & \\ \hline
-  \end{tabular}
-  \end{center}
-\end{table}
 
 
 
