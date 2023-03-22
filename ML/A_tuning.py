@@ -186,7 +186,7 @@ if __name__ == '__main__':
     
     ML_setting = {
         'use_gpu': True,
-        'lr': 0.0001,  # Learning rate
+        'lr': 0.0005,  # Learning rate
         'batchsize_train': 32,
         'batchsize_val': 64,
         'max_epochs': 1000,

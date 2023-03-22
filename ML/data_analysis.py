@@ -2,9 +2,11 @@ import sys
 sys.path.append('../') # parent folder: MastersThesis
 from plot_set import *
 from analysis.analysis_utils import *
+import ast
 
 from dataloaders import *
 import seaborn as sns
+
 
 class Data_fetch():
     """ Fetch data for analysing (not ML) """
@@ -201,21 +203,103 @@ def plot_corr_scatter(save = False):
                 fig.savefig(f'../article/figures/ML/{savename}', bbox_inches='tight')
         
         
+def read_best_scores(path):
+    infile = open(path, 'r')
+    info = {}
+    data = {}
+    last_key = ''
+    for line in infile:
+        if '---' in line:
+            header = line.strip('#-\n ')
+            header = header.replace(' ', '_')
+            info[header] = {}
+            last_key = header
+            continue
+      
+        if line[0] == '#':
+            if len(last_key) > 0:
+                key, val = line.strip('#\n ').split(' = ')
+                
+                # Convert to right data type
+                if '[' in val or '(' in val:
+                    if not ',' in val:
+                        val = val.replace(' ', ', ')
+                    try:
+                        val = ast.literal_eval(val)
+                    except ValueError:
+                        pass # just string then
+                else:
+                    if val == 'True' or val == 'False':
+                        val = bool(val)
+                    else:
+                        try:
+                            val = int(val)
+                        except ValueError:
+                            pass # just string then
+                
+                info[last_key][key] = val 
+                # model_settings[key] = val
+        else:
+            key, val = line.strip('\n').split(' ')
+            data[key] = float(val)
+            
+    return info, data    
         
+def model_performance(path, save = False):
+    # Get folders
+    folders = os.listdir(path)
+    folders.remove('.DS_Store')
     
+    # Initialize arrays
+    name = ['' for i in range(len(folders))]
+    num_params = np.zeros(len(folders))
+    epoch = np.zeros(len(folders))
+    R2 = np.zeros((len(folders), 6))
+    acc = np.zeros(len(folders))
+    
+    # Go through data
+    for i, folder in enumerate(folders):
+        # Read file
+        file = os.path.join(path, folder, 'best_scores.txt')
+        info, data = read_best_scores(file)
         
-# plt.figure(num=0, dpi=80, facecolor='w', edgecolor='k')
-# plt.xlabel(r'$x$', fontsize=14)
-# plt.ylabel(r'$y$', fontsize=14)
+        # Add to arrays
+        name[i] = info['Model_settings']['name']
+        num_params[i] = info['Model_info']['num_params']
+        epoch[i] = data['epoch']
+        R2[i] = [data[f'R2_{i}'] for i in range(len(R2[i]))]
+        acc[i] = data['acc']
 
-        
-
-        
+    sort = np.argsort(num_params)
+    
+    num_params = num_params[sort]
+    epoch = epoch[sort]
+    R2 = R2[sort]
+    acc = acc[sort]
+    
+    
+    plt.figure(num=0, dpi=80, facecolor='w', edgecolor='k')
+    plt.plot(R2[:, 0], '-o', label = r'$R_2$ $\langle F_\parallel \rangle$')
+    plt.plot(R2[:, 1], '-o', label = r'$R_2$ $ \max F_\parallel$')
+    plt.plot(R2[:, 2], '-o', label = r'$R_2$ Contact')
+    plt.plot(R2[:, 3], '-o', label = r'$R_2$ Porosity')
+    plt.plot(R2[:, 4], '-o', label = r'$R_2$ Rupture stretch')
+    plt.plot(acc, '-o', label = 'Accuracy rupture')
+    plt.xlabel(r'Model number', fontsize=14)
+    plt.ylabel('Validation performance', fontsize=14)
+    plt.legend(fontsize = 13)
+    plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    # plt.savefig('../article/figures/figure.pdf', bbox_inches='tight')
+    
+    for i in range(len(name)):
+        print(f'{i:2d} | name = {name[i]:30s}, #params = {int(num_params[i]):8d}, best epoch = {int(epoch[i]):4d}')
 
 if __name__ == '__main__':
-    
     # plot_corrcoef(save = False)
-    plot_corr_scatter(save = True)
+    # plot_corr_scatter(save = False)
+    
+    model_performance('training_1')
+    
     plt.show()
     pass
     

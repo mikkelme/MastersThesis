@@ -9,12 +9,7 @@ from plot_set import *
 
 # from analysis.analysis_utils import *
 from produce_figures.baseline_variables import *
-
 from scipy.signal import argrelextrema
-
-
-
-
 
 
 
@@ -212,9 +207,9 @@ def test_model_manual(name = None):
     # Model 
     if name is None:
         name = 'training/USE'
-
-    model_weights = f'{name}_model_dict_state'
-    model_info = f'{name}_best_scores.txt'
+    model_weights = os.path.join(name, 'model_dict_state')
+    model_info = os.path.join(name, 'best_scores.txt')
+    
 
     # Config
     config_path = '../config_builder/baseline/nocut.npy'
@@ -235,8 +230,8 @@ def test_model_compare(name = None):
     # Model 
     if name is None:
         name = 'training/USE'
-    model_weights = f'{name}_model_dict_state'
-    model_info = f'{name}_best_scores.txt'
+    model_weights = os.path.join(name, 'model_dict_state')
+    model_info = os.path.join(name, 'best_scores.txt')
 
     # Folder
     # folder = '../Data/CONFIGS/honeycomb/hon_5' 
@@ -258,10 +253,23 @@ def test_model_compare(name = None):
 
 if __name__ == '__main__':
     
-    name = 'graphene_h_BN/C16C32C64D64D32D16'
-    # test_model_manual()
-    test_model_compare(name)
+    # name = 'graphene_h_BN/C16C32C64D64D32D16'
+    # name = 'training_1/C16C32D32D16'
     
+    # name = 'training_1/C8C16C32C64D32D16D8' 
+    # name = 'training_1/C8C16D16D8' 
+    # name = 'training_1/C16C16D16D16'
+    # name = 'training_1/C16C32C32D32D32D16' 
+    # name = 'training_1/C16C32C64C64D64D32D16'
+    # name = 'training_1/C16C32C64C64D512D128' 
+    # name = 'training_1/C16C32C64C128D64D32D16' 
+    # name = 'training_1/C16C32C64D64D32D16'
+    name = 'training_1/C16C32C64D512D128' # BEST
+    # name = 'training_1/C16C32D32D16'
+    # name = 'training_1/C32C64C128D128D64D32' # BEST
+    
+    # test_model_manual(name)
+    test_model_compare(name)
     
     pass
     

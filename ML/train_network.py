@@ -399,10 +399,15 @@ class Trainer:
         save_best_model(name, self.model, self.best['weights'])
     
     def plot_history(self, show = True, save = False):
-        # Fast plotting
+        # Some quick plotting for insight
         plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
-        plt.plot(self.history['train_tot_loss'], '-o', label = "Training")
-        plt.plot(self.history['val_tot_loss'], '-o', label = "Validation")
+        start = 0
+        if len(self.history['train_tot_loss']) > 10:
+            start = 10
+            
+        plt.plot(self.history['train_tot_loss'][start:], '-o', markersize = 1, label = "Training")
+        plt.plot(self.history['val_tot_loss'][start:], '-o',  markersize = 1, label = "Validation")
+        plt.xscale('log')
         plt.xlabel('Epoch', fontsize=14)
         plt.ylabel('Loss', fontsize=14)
         plt.legend(fontsize = 13)
@@ -471,8 +476,9 @@ class Trainer:
 
 if __name__=='__main__':
     # data_root = ['../Data/ML_data/baseline', '../Data/ML_data/popup', '../Data/ML_data/honeycomb']
+    data_root = [ '../Data/ML_data/baseline']
     # data_root = [ '../Data/ML_data/honeycomb']
-    data_root = [ '../Data/ML_data/RW']
+    # data_root = [ '../Data/ML_data/RW']
     ML_setting = get_ML_setting()
     
     
@@ -526,7 +532,7 @@ if __name__=='__main__':
     
     
     coach = Trainer(model, data_root, criterion, **ML_setting)
-    coach.learn(max_epochs = 2, max_file_num = None)
+    coach.learn(max_epochs = 50, max_file_num = None)
     coach.save_history('training/test')
     coach.plot_history()
     
