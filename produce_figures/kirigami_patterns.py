@@ -426,7 +426,9 @@ def bias_prop_distirbution(save = False):
     neigh, directions = connected_neigh_center_elem((1,1))
     directions[:2] *= np.linalg.norm(directions[2])
     
-    num = np.array([3, 2, 5, 4, 1, 0])
+    # num = np.array([3, 2, 5, 4, 1, 0])
+    # num = np.array([2, 3, 0, 1, 4, 5])
+    num = np.array([3, 4, 1, 2, 5, 6])
     for i, pos in enumerate(center + directions):
             circle = plt.Circle((pos[0], pos[1]), center_radii*1.5, color = blue)
             ax1.add_patch(circle) # direct way
@@ -461,7 +463,7 @@ def bias_prop_distirbution(save = False):
     
     B = np.logspace(-1, 1.3, 8)
     cmap = 'coolwarm'
-    for b in B:
+    for i, b in enumerate(B):
         line_color = get_color_value(b, np.min(B), np.max(B), scale = 'log', cmap=cmap)
         theta_con = np.linspace(0, np.pi, int(1e3))
         cos_theta_dis = np.dot(directions, bias)/(np.linalg.norm(bias)*np.linalg.norm(directions, axis = 1))
@@ -470,19 +472,20 @@ def bias_prop_distirbution(save = False):
         norm = np.sum(p_dis)
         
 
-        ax2.plot(theta_con/np.pi, p_con/norm, color = line_color, zorder = -1)
-        ax2.scatter(np.arccos(cos_theta_dis)/np.pi, p_dis/norm, facecolor = line_color)
+        ax2.plot(theta_con/np.pi, p_con/norm, color = line_color, zorder = i)
+        ax2.scatter(np.arccos(cos_theta_dis)/np.pi, p_dis/norm, facecolor = line_color, edgecolor = 'black', zorder = i)
         ax2.set_xlabel(r'$\theta$ [$\pi$]', fontsize = 14)
         ax2.set_ylabel(r'$p(\theta)$', fontsize = 14)
         
     angles = np.arccos(cos_theta_dis)/np.pi
-    for a in angles:
-        vline(ax2, a, linewidth = 1, linestyle = '--', color = 'black', alpha = 0.5)
+    # for a in angles:
+    #     vline(ax2, a, linewidth = 1, linestyle = '--', color = 'black', alpha = 0.5)
     
     ax3 = ax2.twiny()
     ax3.set_xlim(ax2.get_xlim())
     ax3.set_xticks(angles)
     ax3.set_xticklabels(num[np.arange(len(angles))])
+    ax3.grid(False)
     ax3.set(xlabel='Direction indexes')
     ax3.xaxis.label.set_fontsize(14)
     

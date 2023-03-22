@@ -170,26 +170,28 @@ interatomic distance
 
 
 \subsection{Indexing}
+In order to define the cut patterns applied to the graphene sheet we need to
+define an indexing system. We must ensure that this gives an unique description
+of the atoms as we eventually want to pass a binary matrix, containing 0 for
+removed atoms and 1 for present atoms, that uniquely describes the sheet. We do
+this by letting the x-coordinate point to zigzag chains and the y-coordinate to
+the position along that chain. This is illustrated in figure
+\ref{fig:atom_indexing}. Other solutions might naturally invole the lattice
+vectors, but as these are used to translate between similar basis atoms
+unfortunate duality is introduced as one need to include the basis atom of
+choice into the indexing system. Additionally, we want a system where the
+indexes reflect the relative physical position of neighbours . That is, atom
+$(i, j)$ is in the proximity of $\{(i+1, j), (i-1, j), (i, j+1), (i, j-1)\}$.
+However, only three of them is categorized as nearest neighbours due to the
+hexgonal structure of the lattice. While $(i, j\pm 1)$ is always a nearest
+neighbour the neighbour in the x-direction flip sides when incrementing either
+x- or y-coordinate. That is the nearest neighbours (NN) is decided as
 
-In order to define the cut patterns applied to the graphene sheet we must define
-an indexing system. We must ensure that this gives an unique description of the
-atoms as we eventually want to pass a binary matrix, containg 0 for removed atom
-and 1 for present atom, that uniquely describes the sheet. We do this by letting
-the x-coordinate point to zigzag chains and the y-coordinate to the position
-along that chain. This is illustrated in figure \ref{fig:atom_indexing}. Other
-solutions might naturally invole the lattice vectors, but as these only can be
-used to translate to similar basis atoms a unfortunate duality is introduced as
-ones need to include the basis atom of choice into the indexing system. With the
-current system we notice that locallity is somewhat preserved. That is, atom
-$(i, j)$ is in the proximity of $\{(i+1, j), (i-1, j), (i, j+1), (i, j-1)\}$,
-but only three of them is categorized as nearest neighbours due to the hexgonal
-structure of the lattice. While $(i, j\pm 1)$ is always nearest neighbours the
-neighbour in the x-direction flip sides with incrementing y-coordinate. That is
-the nearest neighbours (NN) is decided as
 \begin{align*}
-  j \ \text{is even} &\rightarrow \text{NN} = \{(i+1, j), (i, j+1), (i, j-1)\}, \\
-  j \ \text{is odd} &\rightarrow \text{NN} = \{(i-1, j), (i, j+1), (i, j-1)\}.
+  (i + j) \ \text{is even} &\rightarrow \text{NN} = \{(i-1, j), (i, j+1), (i, j-1)\}, \\
+  (i + j) \ \text{is odd} &\rightarrow \text{NN} = \{(i+1, j), (i, j+1), (i, j-1)\}.
 \end{align*}
+
 
 \begin{figure}[H]
   \centering
@@ -197,6 +199,8 @@ the nearest neighbours (NN) is decided as
   \caption{Graphene atom indexing}
   \label{fig:atom_indexing}
 \end{figure}
+
+
 
 \subsection{Removing atoms}
 
@@ -212,11 +216,9 @@ element in each gap of the hexagonal honeycombs, see figure
 \end{figure}
 
 
-
-
-Similar to the case of the indexing for the carbon atoms themself the nearest
-neighbour center elements alternate with position, this time along the
-x-coordinate. Each center element has six nearest neighbours, in clock wise
+Similar to the case of the indexing for the carbon atoms themselves the nearest
+neighbour center elements alternate with position, this time only along the
+x-coordinate index. Each center element has six nearest neighbours, in clock wise
 direction we can denote them: ``up'', ``upper right'', ``lower right'',
 ``down'', ``lower left'', ``upper left''. The ``up'' and ``down'' is always
 accesed as $(i,j\pm 1)$, but for even $i$ the $(i+1,j)$ index corresponds to the
@@ -388,20 +390,20 @@ The random walk serves as a method for introducing random patterns into the data
   \begin{center}
   \caption{Parameters for the random walk generator.}
   \label{tab:RW_params}
-  \begin{tabular}{ | c | m{12cm} |} \hline
-  \textbf{Parameters} & \textbf{Description}  \\ \hline
-  Num.\ walkers ($M$)  & Number of random walks to be initiated on the sheet (one at a time). \\ \hline
-  Max.\ steps ($S$)  & The maximum steps allowed for any random walker. \\ \hline
-  Min.\ distance  & \\ \hline
-  Bias  & \\ \hline
-  Connection  & Walk between atoms or between center elements (removing all adjecent atoms) \\ \hline
-  Avoid unvalid  & \\ \hline
-  RN6  & \\ \hline
-  grid start  & \\ \hline
-  centering  & \\ \hline
-  stay or break  & \\ \hline
-  avoid clustering  & \\ \hline
-  Periodic  & \\ \hline
+  \begin{tabular}{ | c | c | m{8cm} |} \hline
+  \textbf{Parameters} & \textbf{Value} & \textbf{Description}  \\ \hline
+  Num.\ walkers ($M$) & Integer & Number of random walks to be initiated on the sheet (one at a time). \\ \hline
+  Max.\ steps ($S$)  & Integer &The maximum steps allowed for any random walker. \\ \hline
+  Min.\ distance  & Positive integer &The minimum distance required between any future paths and the previous paths in terms of the least walking steps in between. \\ \hline
+  Bias  & Vector & Bias direction and strength defining the discrete probability for the chocie of the next site. \\ \hline
+  Connection  & Atoms / Center elements & Walk between atoms or between center elements (removing all adjecent atoms). \\ \hline
+  Avoid unvalid  & True/False & Whether to remove already visited sites from the neighbour list before picking the next site. This prevents jumping to already visited site and lowers the likelihood of early termination.  \\ \hline
+  RN6  & True/False & \\ \hline
+  grid start  & True/False & \\ \hline
+  centering  & True/False & \\ \hline
+  stay or break  & $p = [0,1]$ & \\ \hline
+  avoid clustering  & True/False & \\ \hline
+  Periodic  & True/False & \\ \hline
   \end{tabular}
   \end{center}
 \end{table}
@@ -431,7 +433,7 @@ availble, note that it cannot backtrack its own path either, and in such a case
 the walk is always terminated dispite the setting of \textit{Avoid unvalid}.
 
 
-\subsubsection{Spacing of walking paths}
+\subsubsection{Spacing of walking paths} % minimum distance
 In order to control the spacing between the paths of the various walkers we
 implement a so-called \textit{minimum distance: 0, 1, \ldots} parameter,
 describing the spacing required between paths in terms of the least amount of
@@ -440,8 +442,7 @@ the maximum limits of steps, all sites within a walking distance of the minimum
 distance is marked as visited, allthough they are not removed from the sheet.
 This prevents any subsequent walkers to visit those sites in their walk
 according to the general behaviour described in the
-previous paragraph. In practice this is done through a recursive algorithm as described in algorithm \ref{algo:walk_dis}. After the walker has ended its walk this function is called for a list of all sites in the path. The function then gatheres gather all sourrounding neighbours regardless of their state on the sheet and call itself using a list of those neighbours. This means that it will follow all possible paths connected to the inital path of inerest. However, this recursiveness terminates when the number of recursive calls exceeds the given minimum distance. The resulting output is then all sites within a walking distance less or equal to the minimum distance which can then be marked as visited. 
-
+previous paragraph. In practice this is done through a recursive algorithm as described in algorithm \ref{algo:walk_dis}. For a given path the function walk\_distance() is called with the input being a list of all sites in the given paths. The function will then for each site gather all site neighbours (regardless of their state on the sheet) and call itself using this neighbour list as input while incrementing a distance counter passed along. This will result in an expansion along all possible outgoing paths from the initial path of interest which is terminated when the distance counter hits the minimum distance limit. The function will then return the final neighbour lists which is cummulated into a final output corresponding to a list of all sites within the minimum distance to the path.
 
 \begin{algorithm}[H]
   \caption{Recursive algorithm implemented as class method to mark sites within a distance of the class attribute self.min\_dis.}
@@ -471,40 +472,44 @@ previous paragraph. In practice this is done through a recursive algorithm as de
 \end{algorithm}
 
 
+% Show figure of the self.visited shadowing  XXX
 
-% We have implemented a minimum distance feature for which the walkers cannot visit any
-% sites which is equal to or less than a given distance to the path of a previous
-% walker. For this, the distance is measured in the least amount of steps between
-% a site of interest and the path. In practice this is achieved by keeping an
-% additional matrix of the sheet state. After a walker has terminated its run a
-% recursive algorithm is utilized to mark all sites within the given walking
-% distance to any of the visited sites in the path. This is done by deploying
-% walkers for each site which follows each of the possible neighbouring sites
-% recursively until the defined deistance is reached. These walkers do not care
-% about present or removed site. All sites covered in this procedure is marked as
-% visited in the additional sheet state matrix. When a new walker is deployed it
-% will then use this matrix for the evaluation of the neighbour state instead which results in the avoidance of these pesudo removed sites. 
-
-
-% Show figure of the self.visited shadowing 
-\subsubsection{Bias}
-
-We include the option for biased random walks as well. We model the system
-analog to the canonical ensemble where each microstate $i$ has the associated
-probability $p_i$ (Gibbs–Boltzmann distribution) 
+\subsubsection{Bias} % Bias
+We include the option perform biased random walk through the \text{Bias:
+(direction, strength)} parameter option. We implement this by modelling each
+walking step as an analog to the canonical ensemble under the influence of an
+external force $\vec{F}$ representing the bias. For such a system each
+microstate $i$, corresponding to the sites in the neighbour list, has the
+associated probability $p_i$ given by the Gibbs–Boltzmann distribution
 \begin{align*}
-  p_{i} = \frac{1}{Z}e^{-\beta E_i},
+  p_{i} = \frac{1}{Z}e^{-\beta E_i}, \qquad Z = \sum_i e^{-\beta E_i},
 \end{align*}
-where $Z$ is the canonical partition function $Z = \sum_i e^{-E_i/k_BT}$, $\beta
-= 1/k_B T$ for the boltzmann constant $k_B$ and temperature $T$, and $E_i$ the
-energy of microstate $i$. We model the bias as an external force $F$ acting on
-the walker, defined by a magnitude and a direction. We define the current site
-as having $E = 0$ such that energy associated to the neighbouring sites are
-given as the work required to move there. For a step with length and direction
-$\vec{s}$ the energy becomes $E_i = -\vec{s}\cdot\vec{F}$. The step length to neighbouring sites will always be equal and by defining the bias magnitude $B = \beta|\vec{F}||\vec{s}|$ we get that the probability for jumping to site $i$ is given by $p_i = Z^{-1}
-\exp{(B\hat{\vec{s}}\cdot\hat{\vec{F}})}$, where the hat denotes the unit direction of the vector. We see that the bias magnitude $B$ captures the opposing effects of the magnitide of the external force and the temperature as $B\propto |\vec{F}|/T$. We notice that $\hat{\vec{s}}\cdot\hat{\vec{F}} = \cos{(\theta)}$ for the angle $\theta$ between the vectors which shows that the bias will contribute positively the most when the step direction is allinged with the bias direction ($\theta = 0$), have no contribution for orthogonal direction ($\theta = \pm \pi/2$) and contribute negatively the most when the directions are antiparallel ($\theta = \pi$). This aligns intuitively with our expectations of the bias effect that we wanted. In additon the bias magnitude 
-
-The partition function serves simply as a normalization constant which in practice is initially excluded from the calculation of $p_i$ and then enforced afterwards as a divition by the sum of all $p_i$. In the numerical implementation we then pick the step destination weighted by $p_i$ 
+where $Z$ is the canonical partition function, $\beta = 1/k_B T$ for the
+boltzmann constant $k_B$ and temperature $T$, and $E_i$ the energy of site $i$.
+We model the energy of each site as the work required to move there. For a step
+$\vec{s}$ the energy becomes $E_i = -\vec{s}\cdot\vec{F}$, where we notice that
+the energy is negative for alligned bias and step analogous to an energy gain by
+moving there. Due to the symmetry of both the atom sites and the center elements
+sites the step length to neighbouring sites will always be equal. By defining
+the bias magnitude $B = \beta|\vec{F}||\vec{s}|$ we get that the probability for
+jumping to site $i$ is given by
+\begin{align*}
+  p_i = \frac{1}{Z}e^{B\hat{\vec{s}}\cdot\hat{\vec{F}}} \propto e^{B\hat{\vec{s}}\cdot\hat{\vec{F}}},
+\end{align*}
+ where the hat denotes the unit direction of the vector. The bias magnitude $B$
+ captures the opposing effects of the magnitude of the external force and the
+ temperature of the system as $B\propto |\vec{F}|/T$. We notice that
+ $\hat{\vec{s}}\cdot\hat{\vec{F}} = \cos{(\theta)}$ for the angle $\theta$
+ between the step and bias direction. This shows that the bias will have the
+ biggest positive contribution when the step direction is allinged with the bias
+ direction ($\theta = 0$), have no contribution for orthogonal directions
+ ($\theta = \pm \pi/2$) and biggest positive contribution when the directions
+ are antiparallel ($\theta = \pi$). The partition function serves simply as a
+ normalization constant which in practice is  excluded ($Z = 1$) from the
+ calculation of $p_i$ initially and then enforced at the final stage as a
+ divition by the sum of all $p_i$. In the numerical implementation we then pick
+ the step destination weighted by the discrete probability distribtion $p_i$. In
+ figure \ref{fig:bias_prob} we have illustrated how a bias of different strength impacts the probability disitrbution for a random walk between center elements. We can visually confirm that the bias will favorise the directions that lies closes to the bias direction. This favorization is more distinct at high bias strenghs while at low strength $B\to0$ we get a uniform distribution whichi alligns with the default unbiased random walk. 
 
 
 \begin{figure}[H]
@@ -523,16 +528,25 @@ The partition function serves simply as a normalization constant which in practi
       \label{fig:bias_prob_b}
   \end{subfigure}
   \hfill
-     \caption{}
+     \caption{Illustration of the probability distribution for the various step direction during a bias random walked between center elements. $(a)$ Shows the possible step directions as black arrows pointing towards the neighbouring center elements shown as blue circles. The bias direction is denoted as an orange arrow and the numbering indicates the most likely direction to take (1) towards the least likely (6). The atoms sites are marked as grey circles for reference. $(b)$ The probability distribution as a function of angle between the direction of choice and the bias direction. The disitrbution is normalized according to the discrete probabilities marked with dots for which the continous line simple highlights the curve of the distribution. The direction indexes corresponds to the numbering on figure $(a)$. The color map indicates different strenghs of the bias. }
      \label{fig:bias_prob}
 \end{figure}
 
 
-
 \subsubsection{Stay or break}
+The \textit{Stay or break} parameter defines the probability $p_{\text{stay}}$ that the walker will keep its direction or otherwise break into a different direction by probability $1-p_{\text{stay}}$ Due to the layout of the atom sites it is not possible to follow the same direction continously. We recall that the nearest neighbours change whether the index sum is even or odd for which the direction change as well as
 
+\begin{align*}
+  (i + j) \ \text{is even} &\rightarrow D = \left\{ \frac{a}{2}\left(\frac{-2}{\sqrt{3}}, 0\right), \frac{a}{2}\left(\frac{1}{\sqrt{3}}, 1\right), \frac{a}{2}\left(\frac{1}{\sqrt{3}}, -1\right)\right\}, \\
+  (i + j) \ \text{is odd} &\rightarrow \cdots .
+\end{align*}
 
-\subsubsection{Deployment position schemes}
+% Writing here...
+
+% What happens if it cannot stay?
+% Or if it would like to break but cannot?
+
+\subsubsection{Deployment schemes}
 
 
 
