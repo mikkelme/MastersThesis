@@ -557,26 +557,23 @@ class RW_Generator:
         grid = np.array(grid)
         
         # Order grid to achieve evenly distributed points
-        if self.num_walks == len(grid):
-            pass # Fills perfectly -> No need to order
-        elif L > 1:
-            order = []
-            
-            # Start at lower left quarter center
-            start =  np.array([self.working_size[0]//4, self.working_size[1]//4])
-            start_diff = np.linalg.norm(grid-start, axis = 1)
-            order.append(np.argmin(start_diff))
-            
-            # Choose remaining points to maximize distance 
-            # to already placed points
-            left = np.arange(len(grid))
-            while len(order) < self.num_walks:
-                dis = np.linalg.norm(grid[order, np.newaxis] - grid[left], axis = 2)
-                dis_min = np.min(dis, axis = 0)
-                idx = np.random.choice(np.where(np.isclose(dis_min, dis_min.max()))[0])
-                order.append(idx)
-            grid = grid[order]
+        order = []
         
+        # Start at lower left quarter center
+        start =  np.array([self.working_size[0]//4, self.working_size[1]//4])
+        start_diff = np.linalg.norm(grid-start, axis = 1)
+        order.append(np.argmin(start_diff))
+        
+        # Choose remaining points to maximize distance 
+        # to already placed points
+        left = np.arange(len(grid))
+        while len(order) < self.num_walks:
+            dis = np.linalg.norm(grid[order, np.newaxis] - grid[left], axis = 2)
+            dis_min = np.min(dis, axis = 0)
+            idx = np.random.choice(np.where(np.isclose(dis_min, dis_min.max()))[0])
+            order.append(idx)
+        grid = grid[order]
+    
         return grid
         
     def __str__(self):

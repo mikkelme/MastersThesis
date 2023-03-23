@@ -490,7 +490,6 @@ def bias_prop_distribution(save = False):
     cb = fig2.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax = ax22)
     cb.set_label(label = r'Bias strength', fontsize=14)
     
-    # cb = fig2.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax=ax2)
     
     # --- Save --- #
     fig1.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
@@ -579,6 +578,53 @@ def stay_or_break(save = False):
         fig1.savefig('../article/figures/system/stay_or_break.pdf', bbox_inches='tight')
         
 
+def grid_start(save = False):
+    mat = np.ones((6, 10))
+    # mat = np.ones((14, 20))
+    atom_radii = 0.6
+    center_radii = 0.2
+    blue = color_cycle(6)
+    cmap = 'terrain'
+    
+    fig, axes = plt.subplots(3, 3, num = unique_fignum(), figsize = (12,8))
+    for nw in range(1, 10):
+        ax = axes[(nw-1)//axes.shape[1], (nw-1)%axes.shape[1]]
+        print(nw)
+        
+        mat[:, :] = 1
+        RW = RW_Generator(size = np.shape(mat), num_walks = nw, grid_start = True, center_elem = False)
+        RW.initialize()
+        grid = RW.get_grid()
+        print(grid)
+        print()
+        for i, g in enumerate(grid):
+            g_mat = np.zeros(np.shape(mat))
+            g_mat[g[0], g[1]] = 1
+            mat[g[0], g[1]] = 0
+            color = get_color_value(i+1, 1, 9, scale = 'linear', cmap=cmap)
+            
+            plot_sheet(g_mat, ax, atom_radii, facecolor = color, edgecolor = 'black') # Pattern   
+            
+        plot_sheet(mat, ax, atom_radii, facecolor = 'None', edgecolor = 'black', alpha = 1)
+        ax.grid(False)
+        ax.set_xticks([])
+        ax.set_yticks([])
+        ax.set_facecolor("white")
+            
+    norm = matplotlib.colors.Normalize(0.5, 9.5)
+    cmap = plt.get_cmap(cmap, 9)
+    fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2,)
+    cb = fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), ticks=np.arange(1, 10), ax=axes.ravel().tolist())
+    
+    # divider = make_axes_locatable(axes)
+    # cax = divider.append_axes("right", "5%", pad="3%")
+    # cb = fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), ticks=np.arange(1, 10), cax=cax)
+   
+    if save:
+        fig.savefig('../article/figures/system/grid_start.pdf', bbox_inches='tight')
+    
+  
+
 
     
 def show_min_dis(save = False):
@@ -592,5 +638,6 @@ if __name__ == '__main__':
     # honeycomb_flavors(save = False)
     
     # bias_prop_distribution(save = False)
-    stay_or_break(save = True)
+    # stay_or_break(save = False)
+    grid_start(save = False)
     plt.show()
