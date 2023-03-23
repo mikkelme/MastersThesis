@@ -60,63 +60,62 @@ determine the amplitude and phase as a function of freqeuncy as
 \subsection{LRP}
 \subsection{t-SNE}
 
-\chapter{Accelerated Search}
-\section{Markov-Chain Accelerated Genetic Algorithms}
-% Following the article:
-% Accelerated Genetic Algorithms with Markov Chains
-% Guan Wang, Chen Chen, and K.Y. Szeto
+% \section{Markov-Chain Accelerated Genetic Algorithms}
+% % Following the article:
+% % Accelerated Genetic Algorithms with Markov Chains
+% % Guan Wang, Chen Chen, and K.Y. Szeto
 
-\subsection{Talk about traditional method also?}
+% \subsection{Talk about traditional method also?}
 
-\subsection{Implementing for 1D chromosone (following article closely)}
+% \subsection{Implementing for 1D chromosone (following article closely)}
 
-We have the binary population matrix $A(t)$ at time (generation) $t$ consisting of $N$ rows denoting chromosones and with $L$ columns denoting the so-called locus (fixed position on a chromosome where a particular gene or genetic marker is located, wiki). We sort the matrix rowwise by the fitness of each chromosono evaluated by a fitness function $f$ such that $f_i(t) \le f_k(t)$ for $i \ge k$. We assume that there are a transistion probability between the current state $A(t)$ and the next state $A(t+1)$. We consider this transistion probability only to take into account mutation process (mutation only updating scheme). During each generation chromosones are sorted from most to least fitted. The chromosone at the $i$-th fitted place is assigned a row mutation probability $a_i(t)$ by some monotonic increasing function. This is taken to be 
-\begin{align*}
-  a_i(t) = 
-  \begin{cases}
-    (i-1)/N',& i-1 < N' \\
-    1, &\text{else}
-  \end{cases}
-\end{align*}
-for some limit $N'$ (refer to first part of article talking about this). We use $N' = N/2$. We also defines the survival probability $s_i = 1 - a_i$. In thus wau $a_i$ and $s_i$ decide together whether to mutate to the other state (flip binary) or to remain in the current state. We use $s_i$ as the statistical weight for the $i$-th chromosone given it a weight $w_i = s_i$.
-\\
-Now the column mutation. For each locus $j$ we define the count of 0's and 1's as $C_0(j)$ and $C_1(j)$ resepctively. These are normalized as
-\begin{align*}
-  n_0(j, t) = \frac{C_0(j)}{C_0(j) + C_1(j)}, \quad n_1(j, t) = \frac{C_1(j)}{C_0(j) + C_1(j)}.
-\end{align*}
-These are gathered into the vector $\vec{n}(j,t)=(n_0(j, t), n_1(j, t))$ which characterizes the state distribution of $j$-th locus. In order to direct the current population to a preferred state for locus $j$ we look at the highest weight of row $i$ for locus $j$ taking the value 0 and 1 respectively.
-\begin{align*}
-  C'_0(j) &= \max\{W_i | A_{ij} = 0; \ i = 1, \cdots, N\} \\
-  C'_1(j) &= \max\{W_i | A_{ij} = 1; \ i = 1, \cdots, N\}
-\end{align*}
-which is normalized again
-\begin{align*}
-  n_0(j, t+1) = \frac{C'_0(j)}{C'_0(j) + C'_1(j)}, \quad n_1(j, t+1) = \frac{C'_1(j)}{C'_0(j) + C'_1(j)}.
-\end{align*}
-The vector $\vec{n}(j,t+1)=(n_0(j, t+1), n_1(j, t+1))$ then provides a direction for the population to evolve against. This characterizes the target state distribution of the locus $j$ among all the chromosones in the next generation. We have
-\begin{align*}
-  \begin{bmatrix}
-    n_0(j, t+1) \\
-    n_1(j, t+1)
-  \end{bmatrix}
-  = 
-  \begin{bmatrix}
-    P_{00}(j,t) \ P_{10}(j,t) \\
-    P_{01}(j,t) \ P_{11}(j,t)
-  \end{bmatrix}
-  \begin{bmatrix}
-    n_0(j, t) \\
-    n_1(j, t)
-  \end{bmatrix}
-\end{align*}
-Since the probability must sum to one for the rows in the P-matrix we have 
-\begin{align*}
-  P_{00}(j, t) = 1 - P_{01}(j, t), \quad P_{11}(j, t) = 1 - P_{10}(j, t)
-\end{align*}
-These conditions allow us to solve for the transition probability $P_{10}(j,t)$ in terms of the single variable $P_{00}{j,t}$.
-\begin{align*}
-  P_{10}(j,t) &= \frac{n_0(j, t+1) - P_{00}(j,t)n_0(j, t)}{n_1(j,t)} \\
-  P_{01}(j,t) &= 1 - P_{00}(j,t) \\
-  P_{11}(j,t) &= 1 - P_{10}(j,t)
-\end{align*}
-We just need to know $P_{00}(j,t)$. We start from $P_{00}(j, t = 0) = 0.5$ and then choose $P_{00}(j,t) = n_0(j,t)$
+% We have the binary population matrix $A(t)$ at time (generation) $t$ consisting of $N$ rows denoting chromosones and with $L$ columns denoting the so-called locus (fixed position on a chromosome where a particular gene or genetic marker is located, wiki). We sort the matrix rowwise by the fitness of each chromosono evaluated by a fitness function $f$ such that $f_i(t) \le f_k(t)$ for $i \ge k$. We assume that there are a transistion probability between the current state $A(t)$ and the next state $A(t+1)$. We consider this transistion probability only to take into account mutation process (mutation only updating scheme). During each generation chromosones are sorted from most to least fitted. The chromosone at the $i$-th fitted place is assigned a row mutation probability $a_i(t)$ by some monotonic increasing function. This is taken to be 
+% \begin{align*}
+%   a_i(t) = 
+%   \begin{cases}
+%     (i-1)/N',& i-1 < N' \\
+%     1, &\text{else}
+%   \end{cases}
+% \end{align*}
+% for some limit $N'$ (refer to first part of article talking about this). We use $N' = N/2$. We also defines the survival probability $s_i = 1 - a_i$. In thus wau $a_i$ and $s_i$ decide together whether to mutate to the other state (flip binary) or to remain in the current state. We use $s_i$ as the statistical weight for the $i$-th chromosone given it a weight $w_i = s_i$.
+% \\
+% Now the column mutation. For each locus $j$ we define the count of 0's and 1's as $C_0(j)$ and $C_1(j)$ resepctively. These are normalized as
+% \begin{align*}
+%   n_0(j, t) = \frac{C_0(j)}{C_0(j) + C_1(j)}, \quad n_1(j, t) = \frac{C_1(j)}{C_0(j) + C_1(j)}.
+% \end{align*}
+% These are gathered into the vector $\vec{n}(j,t)=(n_0(j, t), n_1(j, t))$ which characterizes the state distribution of $j$-th locus. In order to direct the current population to a preferred state for locus $j$ we look at the highest weight of row $i$ for locus $j$ taking the value 0 and 1 respectively.
+% \begin{align*}
+%   C'_0(j) &= \max\{W_i | A_{ij} = 0; \ i = 1, \cdots, N\} \\
+%   C'_1(j) &= \max\{W_i | A_{ij} = 1; \ i = 1, \cdots, N\}
+% \end{align*}
+% which is normalized again
+% \begin{align*}
+%   n_0(j, t+1) = \frac{C'_0(j)}{C'_0(j) + C'_1(j)}, \quad n_1(j, t+1) = \frac{C'_1(j)}{C'_0(j) + C'_1(j)}.
+% \end{align*}
+% The vector $\vec{n}(j,t+1)=(n_0(j, t+1), n_1(j, t+1))$ then provides a direction for the population to evolve against. This characterizes the target state distribution of the locus $j$ among all the chromosones in the next generation. We have
+% \begin{align*}
+%   \begin{bmatrix}
+%     n_0(j, t+1) \\
+%     n_1(j, t+1)
+%   \end{bmatrix}
+%   = 
+%   \begin{bmatrix}
+%     P_{00}(j,t) \ P_{10}(j,t) \\
+%     P_{01}(j,t) \ P_{11}(j,t)
+%   \end{bmatrix}
+%   \begin{bmatrix}
+%     n_0(j, t) \\
+%     n_1(j, t)
+%   \end{bmatrix}
+% \end{align*}
+% Since the probability must sum to one for the rows in the P-matrix we have 
+% \begin{align*}
+%   P_{00}(j, t) = 1 - P_{01}(j, t), \quad P_{11}(j, t) = 1 - P_{10}(j, t)
+% \end{align*}
+% These conditions allow us to solve for the transition probability $P_{10}(j,t)$ in terms of the single variable $P_{00}{j,t}$.
+% \begin{align*}
+%   P_{10}(j,t) &= \frac{n_0(j, t+1) - P_{00}(j,t)n_0(j, t)}{n_1(j,t)} \\
+%   P_{01}(j,t) &= 1 - P_{00}(j,t) \\
+%   P_{11}(j,t) &= 1 - P_{10}(j,t)
+% \end{align*}
+% We just need to know $P_{00}(j,t)$. We start from $P_{00}(j, t = 0) = 0.5$ and then choose $P_{00}(j,t) = n_0(j,t)$

@@ -221,6 +221,31 @@ class Evaluater():
         
         return metrics
     
+    
+    def get_feature_maps(self):
+        # XXX WORKING HERE XXX
+        # TODO: Plot the feature map for different images
+        model_children = list(self.model.children())
+        
+        model_weights = []
+        conv_layers = []
+        
+        for i in range(len(model_children)):
+            if type(model_children[i]) == nn.Conv2d:
+                model_weights.append(model_children[i].weight)
+                conv_layers.append(model_children[i])
+        
+        print(model_children)
+        
+        
+        # https://ravivaishnav20.medium.com/visualizing-feature-maps-using-pytorch-12a48cd1e573
+        
+    
+    def explainable_AI_methods(self):
+        # TODO: Use some kind of linearization method to show which pixels 
+        # it is most sensitive to in order to reveal information about attention behind prediciton 
+        pass
+    
 def test_model_manual(name = None):
     # Model 
     if name is None:
@@ -265,9 +290,19 @@ def test_model_compare(name = None):
     EV.compare_to_folder(folder)
     plt.show()
     
+    
+def show_CNN_layers(model_path):
+    model_weights = os.path.join(name, 'model_dict_state')
+    model_info = os.path.join(name, 'best_scores.txt')
 
 
-
+    # folder = '../Data/CONFIGS/honeycomb/hon_1' # hon3215 used in ML data
+    # folder = '../Data/Baseline_fixmove/honeycomb/multi_stretch' # hon3215 used in Baseline
+    # folder = '../Data/CONFIGS/popup/pop_35' # pop1_7_5 used in ML data
+    folder = '../Data/Baseline_fixmove/popup/multi_stretch' # pop1_7_5 used in Baseline
+    EV = Evaluater(model_weights, model_info)
+    EV.get_feature_maps()
+    
 
 if __name__ == '__main__':
     
@@ -289,7 +324,10 @@ if __name__ == '__main__':
     # name = f'{folder}/C32C64C128D128D64D32'
     
     # test_model_manual(name)
-    test_model_compare(name)
+    # test_model_compare(name)
+    show_CNN_layers(name)
+    
+    
     
     pass
     

@@ -394,18 +394,18 @@ The random walk serves as a method for introducing random patterns into the data
   \label{tab:RW_params}
   \begin{tabular}{ | c | c | m{8cm} |} \hline
   \textbf{Parameters} & \textbf{Value} & \textbf{Description}  \\ \hline
-  Num.\ walkers ($M$) & Integer & Number of random walks to be initiated on the sheet (one at a time). \\ \hline
-  Max.\ steps ($S$)  & Integer &The maximum steps allowed for any random walker. \\ \hline
-  Min.\ distance  & Positive integer &The minimum distance required between any future paths and the previous paths in terms of the least walking steps in between. \\ \hline
+  Num.\ walkers ($M$) & Integer $\ge$ 1 & Number of random walks to be initiated on the sheet (one at a time). \\ \hline
+  Max.\ steps ($S$)  & Integer $\ge$ 1 &The maximum steps allowed for any random walker. \\ \hline
+  Min.\ distance  & Integer $\ge$ 0 &The minimum distance required between any future paths and the previous paths in terms of the least walking steps in between. \\ \hline
   Bias  & Vector & Bias direction and strength defining the discrete probability for the chocie of the next site. \\ \hline
   Connection  & Atoms / Center elements & Walk between atoms or between center elements (removing all adjecent atoms). \\ \hline
   Avoid unvalid  & True/False & Whether to remove already visited sites from the neighbour list before picking the next site. This prevents jumping to already visited site and lowers the likelihood of early termination.  \\ \hline
   Stay or break  & $p = [0,1]$ & \\ \hline
-  Periodic  & True/False & \\ \hline
-  Avoid clustering  & True/False & \\ \hline
-  RN6  & True/False & \\ \hline
-  Grid start  & True/False & \\ \hline
-  Centering  & True/False & \\ \hline
+  Periodic  & True/False & Whether to use periodic boundary conditions of all four sides. \\ \hline
+  Avoid clustering  & Integer $\ge$ 0 & Amount of times to retry random walk in order to avoid detached clusters. Non-spanning clusters are removed after this amount of tries.\\ \hline
+  RN6  & True/False & Randomly change the bias direction between one of the six center element directiosn for each random walker deployed. \\ \hline
+  Grid start  & True/False & The option to have the random walkers start in an evenly spaced grid. \\ \hline
+  Centering  & True/False & Relocate the path of a random walk after termination such that the path center of mass gets closer to the starting point (without violating the rules for travelling on already visited sites).\\ \hline
   \end{tabular}
   \end{center}
 \end{table}
@@ -553,13 +553,53 @@ Hence, we use the six directions from the center element walk as the common dire
 
 In cases where the site corresponding to following the previous direction is not available we get a break of direction by definition. 
 
-\subsubsection{Deployment schemes}
-By default, each random walker is given an uniform random starting point among the non-visited sites left on the sheet. This includes any marking in relation to the minimum distance parameter. 
+\subsubsection{Deployment schemes} % Grid start, Centering, RN6
+By default, each random walker is given an uniform random starting point among
+the non-visited sites left on the sheet. This includes any modifications in
+relation to the minimum distance parameter. By toggling the \textit{Grid start:
+True/False} parameter on the starting points are instead predefined on evenly
+spaced grid. That is, the sheet is subdivided into the least amount of squares
+that will accomodate a space for each starting point. $\{1\}$ walker leads to a
+$1\times 1$ partition, $\{2,3,4\}$ walkers lead to a $2\times 2$ partition,
+$\{5,6,7,8,9\}$ walker lead to a $3\times 3$ partition and so on. The lower left
+corner \footnote{In hindsight this would have been statistically better spaced
+if with a random starting corner, but this is not considered to be of great
+importance for the way we used this feature in the dataset generation.} is then choosen as a default starting place for the first
+walker for which the remaining sites are filled according to the order that
+maximizes the minimum distance between a new starting point and the ones already
+used. The population of the grid is visualized in figure \ref{fig:grid_start} for 1-9 walkers in total. 
 
-Write about different ways to deploy the random walkers. 
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{figures/system/grid_start.pdf}
+  \caption{Populaiton of starting points with the centering parameter toggled on in a $14\times 18$ sheet. This is shown for 1-9 number of random walkers with the color map conveying the order of the population.}
+  \label{fig:grid_start}
+\end{figure}
+
+
+The \textit{Centering: True/False} parameter let us relocate the path of the random walker such that the path center of mass alligns better with the starting point. This can be used in combination to the grid start and the bias parameter to make rather ordered configurations. In addition, the \textit{RN6:True/False} parameter can be used change the bias direction to on of the six directions of the center element walk for each new walker. This lets us create confgiratiosn like [EXAMPLE]. 
+
+\subsubsection{Validity}
+The simulation procedure requires the sheet is fully attatched which can be summarized as the following requirements. 
+\begin{enumerate}
+  \item There exist only a single cluster on the sheet. We define a cluster as the set of atoms which can all be reached through nearest neighbour walking on the cluster.
+  \item The cluster of atoms is spanning the sheet in the y-direction. This means that there exist at least one path through nearest neighbour walks that connect the bottom and the top of the sheet. This is due to the reason that the sheet must be attatched to the pull blocks.
+\end{enumerate}
+
+In order to accommodate these requirements we count the number of clusters and search for a spanning cluster after all walkers have terminated. If the requirements are not met we simply rerun the random walk from scratch. This is done \textit{Avoid clustering} amount of times. If the requirements are not met during any of those reruns the non-spanning clusters are simply removed. In the case of no spanning cluster the configuration is dropped. This crude scheme was later reinvented as a more refined repair scheme which alters the sheet by the intention of performing the least amount of changes (addition of subtraction of atoms) in order to meet attatchment requirements. This was done as a part of the accelerated search procedure and hence it was not utilized in the creation of the random walk dataset. 
+
+
+
+% We might get configurations with multiple isolated clusters, meaning that the sheet is already detached and the simulation will reach a halt immediately. This is especially a problem when having a high number of walkers with a high number of maximum steps. Even with the minimum distance parameter in use a single walker can sourround and inclose a region which will become detached. In order to mitigate this problem we count the number of clusters on the sheet after performing the random walks. We define a cluster of atoms as a set for which all atoms can be reached by walking between neighbouring sites. If there exist more than one cluster, or if the custer is not spanning the sheet in the x, y 
 
 
 
 \subsubsection{Random walk examples}
 
-Show some flavors here. Maybe more in appendix
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{figures/system/RW_flavors.pdf}
+  \caption{Some example uses of the random walking class.}
+  \label{fig:RW_flavors}
+\end{figure}

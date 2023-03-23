@@ -399,6 +399,74 @@ def honeycomb_flavors(save = False):
         fig.savefig('../article/figures/system/honeycomb_flavors.pdf', bbox_inches='tight')
     
     
+
+def RW_flavors(save = False):
+    # Settings
+    size = (62,106)
+    np.random.seed(0)
+    
+    direc = {'up': (0, 1), 
+             'down': (0, -1),
+             'up_right': (np.tan(np.pi/3), 1), 
+             'up_left': (-np.tan(np.pi/3), 1),
+             'down_right': (np.tan(np.pi/3), -1),
+             'down_left': (-np.tan(np.pi/3), -1)}
+
+    
+    atom_radii = 0.6
+    center_radii = 0.2
+    blue = color_cycle(6)
+    
+    
+    # --- Patterns --- #
+    SET = []
+    # Order
+    SET += [RW_Generator(size, num_walks = 25, max_steps = 15, min_dis = 0, bias = [direc['up_right'], 100], center_elem = False,  avoid_unvalid = False,  RN6 = False,  grid_start = True,  centering = True,  stay_or_break = 0,  avoid_clustering = 10,  periodic = True)]
+    SET += [RW_Generator(size, num_walks = 25, max_steps = 15, min_dis = 0, bias = [direc['up_right'], 100], center_elem = False,  avoid_unvalid = False,  RN6 = True,  grid_start = True,  centering = True,  stay_or_break = 0,  avoid_clustering = 10,  periodic = True)]
+    
+    # Stay or break
+    SET += [RW_Generator(size, num_walks = 20, max_steps = 30, min_dis = 4, bias = [(0,0), 0], center_elem = False,  avoid_unvalid = True,  RN6 = True,  grid_start = False,  centering = False,  stay_or_break = 0.9,  avoid_clustering = 10,  periodic = True)]
+    
+    # Traditional 
+    SET += [RW_Generator(size, num_walks = 30, max_steps = 40, min_dis = 4, bias = [(0,0), 0], center_elem = False,  avoid_unvalid = True,  RN6 = False,  grid_start = False,  centering = False,  stay_or_break = 0,  avoid_clustering = 10,  periodic = True)]
+    
+    # Slight bias
+    SET += [RW_Generator(size, num_walks = 20, max_steps = 30, min_dis = 4, bias = [direc['down_right'], 1.2], center_elem = False,  avoid_unvalid = True,  RN6 = False,  grid_start = False,  centering = False,  stay_or_break = 0,  avoid_clustering = 10,  periodic = True)]
+    
+    # High porosity
+    SET += [RW_Generator(size, num_walks = 32, max_steps = 30, min_dis = 4, bias = [direc['down_left'], 1.2], center_elem = 'full', avoid_unvalid = True,  RN6 = False,  grid_start = False,  centering = False,  stay_or_break = 0,  avoid_clustering = 10,  periodic = True)]
+    
+    
+    fig, axes = plt.subplots(2, 3, num = unique_fignum(), figsize = (12,8))
+    names = ['(a)', '(b)', '(c)', '(d)', '(e)', '(f)', '(g)', '(h)', '(i)', '(j)', '(k)', '(l)', '(m)', '(n)', '(o)', '(p)']
+    for i, set in enumerate(SET):
+        print(i)
+        mat = set.generate()
+        ax = axes[(i)//axes.shape[1], (i)%axes.shape[1]]
+        # builder = config_builder(mat)
+        # builder.view()
+        
+        plot_sheet(mat, ax, atom_radii, facecolor = 'grey', edgecolor = 'black') # Pattern   
+        plot_sheet(1-mat, ax, atom_radii, facecolor = 'None', edgecolor = 'black', alpha = 0.2)  # Background
+        plot_center_coordinates(np.shape(mat), ax, center_radii, facecolor = blue, edgecolor = None) # Center elements
+        
+        # plot settings
+        ax.set_title(names[i], y=-0.05)
+        # ax.set_xlabel(names[i], fontsize = 14)
+        ax.grid(False)
+        ax.set_facecolor("white")
+        ax.axis('off')
+        
+    # Set axies
+    fig.supxlabel(r"$x$ (armchair direction)", fontsize = 14)
+    fig.supylabel(r"$y$ (zigzag direction)", fontsize = 14)
+    fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+   
+    if save:
+        fig.savefig('../article/figures/system/RW_flavors.pdf', bbox_inches='tight')
+    
+    
+    
 def bias_prop_distribution(save = False):
     green  = color_cycle(3)
     orange = color_cycle(4)
@@ -579,43 +647,53 @@ def stay_or_break(save = False):
         
 
 def grid_start(save = False):
-    mat = np.ones((6, 10))
-    # mat = np.ones((14, 20))
+    mat = np.ones((14, 18))
     atom_radii = 0.6
     center_radii = 0.2
     blue = color_cycle(6)
     cmap = 'terrain'
+    cmap = plt.get_cmap('terrain')
+    cmap = truncate_colormap(cmap, 0, 0.85)
+    np.random.seed(1)
     
-    fig, axes = plt.subplots(3, 3, num = unique_fignum(), figsize = (12,8))
+    fig, axes = plt.subplots(3, 3, num = unique_fignum(), figsize = (12,7))
     for nw in range(1, 10):
-        ax = axes[(nw-1)//axes.shape[1], (nw-1)%axes.shape[1]]
         print(nw)
-        
+        ax = axes[(nw-1)//axes.shape[1], (nw-1)%axes.shape[1]]
         mat[:, :] = 1
-        RW = RW_Generator(size = np.shape(mat), num_walks = nw, grid_start = True, center_elem = False)
-        RW.initialize()
-        grid = RW.get_grid()
-        print(grid)
-        print()
-        for i, g in enumerate(grid):
+        
+        # Update grid to nearest square size (works better visually )
+        if np.sqrt(nw-1)%1 < 0.01:
+            num_walks = np.ceil(np.sqrt(nw))**2
+            RW = RW_Generator(size = np.shape(mat), num_walks = num_walks, grid_start = True, center_elem = False)
+            RW.initialize()
+            grid = RW.get_grid()
+        
+        
+        for i, g in enumerate(grid[:nw]):
             g_mat = np.zeros(np.shape(mat))
             g_mat[g[0], g[1]] = 1
             mat[g[0], g[1]] = 0
             color = get_color_value(i+1, 1, 9, scale = 'linear', cmap=cmap)
-            
             plot_sheet(g_mat, ax, atom_radii, facecolor = color, edgecolor = 'black') # Pattern   
             
-        plot_sheet(mat, ax, atom_radii, facecolor = 'None', edgecolor = 'black', alpha = 1)
+        plot_sheet(mat, ax, atom_radii, facecolor = 'None', edgecolor = 'black', alpha = 0.5)
         ax.grid(False)
         ax.set_xticks([])
         ax.set_yticks([])
         ax.set_facecolor("white")
             
-    norm = matplotlib.colors.Normalize(0.5, 9.5)
-    cmap = plt.get_cmap(cmap, 9)
+    fig.supxlabel(r"$x$ (armchair direction)", fontsize = 14)
+    fig.supylabel(r"$y$ (zigzag direction)", fontsize = 14)
     fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2,)
-    cb = fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), ticks=np.arange(1, 10), ax=axes.ravel().tolist())
+
+    norm = matplotlib.colors.Normalize(0.5, 9.5)
+    bounds = np.linspace(0.5, 9.5, 10)
+    cb = plt.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), spacing='proportional', boundaries=bounds, ticks=np.arange(1, 10), ax=axes.ravel().tolist())
+    cb.set_label(label = r'Ordering', fontsize=14)
     
+    
+    # cb = fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), ticks=np.arange(1, 10), ax=axes.ravel().tolist())
     # divider = make_axes_locatable(axes)
     # cax = divider.append_axes("right", "5%", pad="3%")
     # cb = fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), ticks=np.arange(1, 10), cax=cax)
@@ -625,7 +703,11 @@ def grid_start(save = False):
     
   
 
-
+def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
+    new_cmap = matplotlib.colors.LinearSegmentedColormap.from_list(
+        'trunc({n},{a:.2f},{b:.2f})'.format(n=cmap.name, a=minval, b=maxval),
+        cmap(np.linspace(minval, maxval, n)))
+    return new_cmap
     
 def show_min_dis(save = False):
     pass
@@ -639,5 +721,6 @@ if __name__ == '__main__':
     
     # bias_prop_distribution(save = False)
     # stay_or_break(save = False)
-    grid_start(save = False)
+    # grid_start(save = False)
+    RW_flavors(save = True)
     plt.show()
