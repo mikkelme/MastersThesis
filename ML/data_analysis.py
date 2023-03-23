@@ -248,7 +248,8 @@ def read_best_scores(path):
 def model_performance(path, save = False):
     # Get folders
     folders = os.listdir(path)
-    folders.remove('.DS_Store')
+    if '.DS_Store' in folders:
+        folders.remove('.DS_Store')
     
     # Initialize arrays
     name = ['' for i in range(len(folders))]
@@ -292,13 +293,14 @@ def model_performance(path, save = False):
     # plt.savefig('../article/figures/figure.pdf', bbox_inches='tight')
     
     for i in range(len(name)):
-        print(f'{i:2d} | name = {name[i]:30s}, #params = {int(num_params[i]):8d}, best epoch = {int(epoch[i]):4d}')
+        print(f'{i:2d} | name = {name[i]:30s}, #params = {int(num_params[i]):8d}, best epoch = {int(epoch[i]):4d}, R2 = {R2[i]}')
 
 if __name__ == '__main__':
     # plot_corrcoef(save = False)
     # plot_corr_scatter(save = False)
     
-    model_performance('training_1')
+    # model_performance('training_1')
+    model_performance('training_2')
     
     plt.show()
     pass

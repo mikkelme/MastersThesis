@@ -186,17 +186,17 @@ if __name__ == '__main__':
     
     ML_setting = {
         'use_gpu': True,
-        'lr': 0.0005,  # Learning rate
+        'lr': 0.01,  # Learning rate
         'batchsize_train': 32,
         'batchsize_val': 64,
         'max_epochs': 1000,
         'max_file_num': None,
-        'scheduler_stepsize': None, # 10
-        'scheduler_factor': None # 0.3
+        'scheduler_stepsize': 100,
+        'scheduler_factor': 0.5
     }
     
     
     A = A_test(mode = 0, batchnorm = True)
-    train_architectures(A, data_root, ML_setting, save_folder = 'training')
+    train_architectures(A, data_root, ML_setting, save_folder = 'training_3')
     
     

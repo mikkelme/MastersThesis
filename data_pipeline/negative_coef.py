@@ -34,17 +34,27 @@ def multi_coupling_honeycomb():
     name = 'honeycomb'
     file = '../config_builder/baseline/hon3215.npy'   
     # simname = f'multi_coupling_{name}'
+    # simname = f'multi_coupling_free_{name}'
     simname = f'multi_coupling_free_{name}_zoom'
     gen = Data_generator(file, header = f'egil:negative_coef', simname = simname, config_ext = name)
-    variables = {'num_stretch_files': 100, 
+    # variables = {'num_stretch_files': 100, 
+    #                 'RNSEED'           : -1,
+    #                 'run_rupture_test' : 1,    # 0
+    #                 "stretch_speed_pct": 0.0001,
+    #                 'F_N'              : 10e-9,  # 1.5e-9
+    #                 'R'                : 6,
+    #                 "stretch_max_pct"  : 1.5, # 1.0
+    #                 'root'             : '.',
+    #                 'dump_freq'        : 0}
+    variables = {'num_stretch_files': 1000, 
                     'RNSEED'           : -1,
-                    'run_rupture_test' : 0,#1,
-                    "stretch_speed_pct": 0.001,
-                    'F_N'              : 1.5e-9,#10e-9,
+                    'run_rupture_test' : 0,
+                    "stretch_speed_pct": 0.0001,
+                    'F_N'              : 1.2e-9,
                     'R'                : 6,
-                    "stretch_max_pct"  : 1.0,#1.5,
+                    "stretch_max_pct"  : 1.0,
                     'root'             : '.',
-                    'dump_freq'        : 100000}
+                    'dump_freq'        : 0}
 
     F_N = np.array([0])*1e-9
     
@@ -59,5 +69,5 @@ def multi_coupling_honeycomb():
         
 if __name__ == '__main__':
     # multi_coupling_popup()
-    multi_coupling_honeycomb()
+    # multi_coupling_honeycomb()
     pass

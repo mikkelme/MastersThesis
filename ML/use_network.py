@@ -129,19 +129,37 @@ class Evaluater():
         # Get input data range
         stretch = data['stretch_pct']
         F_N = data['F_N']    
+        Ff = data['Ff'][:, :, 0, 1]
+    
+        # Exact input for R2 calculation
+        
     
         # Make ML input
-        stretch = np.linspace(np.min(stretch), np.max(stretch), num_points)
+        stretch_space = np.linspace(np.min(stretch), np.max(stretch), num_points)
         self.load_config(config_path)
         
         # Predict for different F_N
-        for k in F_N:
-            _, _, output = self.predict(stretch, k)
+        for k in range(len(F_N)):
+            
+            # Get R2
+            no_rupture = ~np.isnan(Ff[:, k]) 
+            Ff_target = Ff[no_rupture, k]
+            Ff_target_mean = np.mean(Ff_target)
+            
+            _, _, output = self.predict(stretch, F_N[k])
+            Ff_pred = output[no_rupture, 0]
+            SS_res = np.sum((Ff_pred - Ff_target)**2)
+            SS_tot = np.sum((Ff_target - Ff_target_mean)**2)
+            R2 = 1 - SS_res/SS_tot
+            
+            
+            # Produce more smooth stretch curve fore plotting
+            _, _, output = self.predict(stretch_space, F_N[k])
             rupture = output[:,-1] > 0.5
-
-            color = get_color_value(k, colorbar_scale[0][0], colorbar_scale[0][1], scale = colorbar_scale[1], cmap = matplotlib.cm.viridis)
-            axes[0].plot(stretch, output[:, 0], color = color)
+            color = get_color_value(F_N[k], colorbar_scale[0][0], colorbar_scale[0][1], scale = colorbar_scale[1], cmap = matplotlib.cm.viridis)
+            axes[0].plot(stretch_space, output[:, 0], color = color, label = f'R2 = {R2:g}')
         
+        fig.legend(fontsize = 14)
     
     def evaluate_properties(self, stretch = np.linspace(0, 2, 100),  F_N = 5,  show = False):
         image, vals, output = self.predict(stretch, F_N)
@@ -256,17 +274,19 @@ if __name__ == '__main__':
     # name = 'graphene_h_BN/C16C32C64D64D32D16'
     # name = 'training_1/C16C32D32D16'
     
-    # name = 'training_1/C8C16C32C64D32D16D8' 
-    # name = 'training_1/C8C16D16D8' 
-    # name = 'training_1/C16C16D16D16'
-    # name = 'training_1/C16C32C32D32D32D16' 
-    # name = 'training_1/C16C32C64C64D64D32D16'
-    # name = 'training_1/C16C32C64C64D512D128' 
-    # name = 'training_1/C16C32C64C128D64D32D16' 
-    # name = 'training_1/C16C32C64D64D32D16'
-    name = 'training_1/C16C32C64D512D128' # BEST
-    # name = 'training_1/C16C32D32D16'
-    # name = 'training_1/C32C64C128D128D64D32' # BEST
+    folder = 'training_2'
+    
+    # name = f'{folder}/C8C16C32C64D32D16D8' 
+    # name = f'{folder}/C8C16D16D8' 
+    # name = f'{folder}/C16C16D16D16'
+    # name = f'{folder}/C16C32C32D32D32D16' 
+    # name = f'{folder}/C16C32C64C64D64D32D16'
+    # name = f'{folder}/C16C32C64C64D512D128' 
+    # name = f'{folder}/C16C32C64C128D64D32D16' 
+    name = f'{folder}/C16C32C64D64D32D16' # BEST
+    # name = f'{folder}/C16C32C64D512D128' 
+    # name = f'{folder}/C16C32D32D16'
+    # name = f'{folder}/C32C64C128D128D64D32'
     
     # test_model_manual(name)
     test_model_compare(name)

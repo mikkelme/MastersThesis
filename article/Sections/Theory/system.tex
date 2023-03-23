@@ -186,11 +186,13 @@ However, only three of them is categorized as nearest neighbours due to the
 hexgonal structure of the lattice. While $(i, j\pm 1)$ is always a nearest
 neighbour the neighbour in the x-direction flip sides when incrementing either
 x- or y-coordinate. That is the nearest neighbours (NN) is decided as
-
-\begin{align*}
-  (i + j) \ \text{is even} &\rightarrow \text{NN} = \{(i-1, j), (i, j+1), (i, j-1)\}, \\
-  (i + j) \ \text{is odd} &\rightarrow \text{NN} = \{(i+1, j), (i, j+1), (i, j-1)\}.
-\end{align*}
+\begin{equation}
+  \begin{aligned}
+    (i + j) \ \text{is even} &\rightarrow \text{NN} = \{(i-1, j), (i, j+1), (i, j-1)\}, \\
+    (i + j) \ \text{is odd} &\rightarrow \text{NN} = \{(i+1, j), (i, j+1), (i, j-1)\}.
+  \end{aligned}
+  \label{eq:atom_neigh_idx}
+\end{equation}
 
 
 \begin{figure}[H]
@@ -398,12 +400,12 @@ The random walk serves as a method for introducing random patterns into the data
   Bias  & Vector & Bias direction and strength defining the discrete probability for the chocie of the next site. \\ \hline
   Connection  & Atoms / Center elements & Walk between atoms or between center elements (removing all adjecent atoms). \\ \hline
   Avoid unvalid  & True/False & Whether to remove already visited sites from the neighbour list before picking the next site. This prevents jumping to already visited site and lowers the likelihood of early termination.  \\ \hline
-  RN6  & True/False & \\ \hline
-  grid start  & True/False & \\ \hline
-  centering  & True/False & \\ \hline
-  stay or break  & $p = [0,1]$ & \\ \hline
-  avoid clustering  & True/False & \\ \hline
+  Stay or break  & $p = [0,1]$ & \\ \hline
   Periodic  & True/False & \\ \hline
+  Avoid clustering  & True/False & \\ \hline
+  RN6  & True/False & \\ \hline
+  Grid start  & True/False & \\ \hline
+  Centering  & True/False & \\ \hline
   \end{tabular}
   \end{center}
 \end{table}
@@ -472,7 +474,7 @@ previous paragraph. In practice this is done through a recursive algorithm as de
 \end{algorithm}
 
 
-% Show figure of the self.visited shadowing  XXX
+% Show figure of the self.visited shadowing  ???
 
 \subsubsection{Bias} % Bias
 We include the option perform biased random walk through the \text{Bias:
@@ -534,21 +536,29 @@ jumping to site $i$ is given by
 
 
 \subsubsection{Stay or break}
-The \textit{Stay or break} parameter defines the probability $p_{\text{stay}}$ that the walker will keep its direction or otherwise break into a different direction by probability $1-p_{\text{stay}}$ Due to the layout of the atom sites it is not possible to follow the same direction continously. We recall that the nearest neighbours change whether the index sum is even or odd for which the direction change as well as
-
+The \textit{Stay or break} parameter defines the probability $p_{\text{stay}}$ that the walker will keep its direction or otherwise break into a different direction by probability $1-p_{\text{stay}}$. That is we manually substitute in the $p_{\text{stay}}$ in the discrete probability for the direction corresponding to the direction of the last jump. We then shift the remaining probabilities such that the distirbution sum to one again. In this way we can still perform bias random walk in combination. For the center element walk it is trivial to determine which of the neighbour directions correspond to the direction of the last jump. However, due to the layout of the atom sites, it is not possible to follow the same direction continously when performing an atom site type walk. We recall that the nearest atom neighbourindexes alternates for each increment in x or y position ($(i, j)$-index) (see eq.~\eqref{eq:atom_neigh_idx}) which yields alternating directions as
 \begin{align*}
   (i + j) \ \text{is even} &\rightarrow D = \left\{ \frac{a}{2}\left(\frac{-2}{\sqrt{3}}, 0\right), \frac{a}{2}\left(\frac{1}{\sqrt{3}}, 1\right), \frac{a}{2}\left(\frac{1}{\sqrt{3}}, -1\right)\right\}, \\
-  (i + j) \ \text{is odd} &\rightarrow \cdots .
+  (i + j) \ \text{is odd} &\rightarrow D = \left\{ \frac{a}{2}\left(\frac{2}{\sqrt{3}}, 0\right), \frac{a}{2}\left(\frac{-1}{\sqrt{3}}, 1\right), \frac{a}{2}\left(\frac{-1}{\sqrt{3}}, -1\right)\right\}.
 \end{align*}
+Hence, we use the six directions from the center element walk as the common direction to stay or break from. As showcased in figure \ref{fig:stay_or_break}, for each center element direction (black arrows) there are two possible atom directions (red and orange arrows) that are equally close to the center element direction. The red and orange arrows represent $(i+j)$ being even or odd respectively, and we notice that these appear in paris such that we can always determine which of the atom directions are closest to the center element direction. Following this idea we can map each center direction to an atom direction depending on the even or oddness of the position. For $p_{\text{stay}} = 1$ this results in zigzag motion along the center element direction that happens to start on. 
 
-% Writing here...
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.5\linewidth]{figures/system/stay_or_break.pdf}
+  \caption{...}
+  \label{fig:stay_or_break}
+\end{figure}
 
-% What happens if it cannot stay?
-% Or if it would like to break but cannot?
+
+In cases where the site corresponding to following the previous direction is not available we get a break of direction by definition. 
 
 \subsubsection{Deployment schemes}
 
+Write about different ways to deploy the random walkers. 
 
 
 
+\subsubsection{Random walk examples}
 
+Show some flavors here. Maybe more in appendix

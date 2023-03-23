@@ -48,7 +48,8 @@ def plot_center_coordinates(shape, ax, radius, **param):
             x = xs + (1+ 3/2*(i - 1)) * Lx
             y = ys + a*(1/2 + 1/2*j - 1/2*(i%2)) 
             circle = plt.Circle((x, y), radius, **param)
-            ax.add_patch(circle) # direct way
+            if ax is not None:
+                ax.add_patch(circle) # direct way
 
             
     return BL, TR
@@ -398,9 +399,7 @@ def honeycomb_flavors(save = False):
         fig.savefig('../article/figures/system/honeycomb_flavors.pdf', bbox_inches='tight')
     
     
-def bias_prop_distirbution(save = False):
-    
-
+def bias_prop_distribution(save = False):
     green  = color_cycle(3)
     orange = color_cycle(4)
     blue = color_cycle(6)
@@ -440,13 +439,8 @@ def bias_prop_distirbution(save = False):
     bias = np.array((3, 1))
     
     arrowprops = dict(facecolor='black', lw = 1)
-    ax1.annotate('', xy=(to_pos[0]), xytext= (from_pos[0]), textcoords='data', arrowprops=arrowprops)
-    ax1.annotate('', xy=(to_pos[1]), xytext= (from_pos[1]), textcoords='data', arrowprops=arrowprops)
-    ax1.annotate('', xy=(to_pos[2]), xytext= (from_pos[2]), textcoords='data', arrowprops=arrowprops)
-    ax1.annotate('', xy=(to_pos[3]), xytext= (from_pos[3]), textcoords='data', arrowprops=arrowprops)
-    ax1.annotate('', xy=(to_pos[4]), xytext= (from_pos[4]), textcoords='data', arrowprops=arrowprops)
-    ax1.annotate('', xy=(to_pos[5]), xytext= (from_pos[5]), textcoords='data', arrowprops=arrowprops)
-    ax1.annotate('', xy=(center[0] + 0.9*bias[0], center[1] + 0.9*bias[1]), xytext= (center[0] + 0.1*bias[0], center[1] + 0.1*bias[1]), textcoords='data', arrowprops=dict(facecolor='orange', lw = 1))
+    for i in range(len(from_pos)):
+        ax1.annotate('', xy=(to_pos[i]), xytext= (from_pos[i]), textcoords='data', arrowprops=arrowprops)
     ax1.text(center[0] + 0.9*bias[0] - 0.4, center[1] + 0.9*bias[1] - 0.6, 'Bias', fontsize = 15)
     
     ax1.grid(False)
@@ -507,7 +501,84 @@ def bias_prop_distirbution(save = False):
         fig2.savefig('../article/figures/system/bias_prob_b.pdf', bbox_inches='tight')
         
 
+def stay_or_break(save = False):
+    green  = color_cycle(3)
+    orange = color_cycle(4)
+    blue = color_cycle(6)
+    atom_radii = 0.6
+    center_radii = 0.2
     
+    
+    # --- Directions --- #
+    fig1 = plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k'); ax1 = fig1.gca()
+    mat = np.ones((4,6))
+    mat[:, 0] = 0
+    mat[0, [1,2,4,5]] = 0
+    mat[-1, [1,2,4,5]] = 0
+    plot_sheet(mat, ax1, atom_radii, facecolor = 'grey', edgecolor = 'black', alpha = 0.3)
+    BL, TL = plot_center_coordinates(np.shape(mat), None, center_radii, facecolor = blue, edgecolor = None)
+    
+    Cdis = 1.461
+    a = 3*Cdis/np.sqrt(3)
+    Bx = a/(np.sqrt(3)*2)
+    vecax = a*np.sqrt(3)/2
+    vecay = a/2
+    Lx = (vecax + Bx)/2 
+    xs, ys = BL[0], BL[1] # Start
+    i, j = 2, 2
+    center = (xs + (1+ 3/2*(i - 1)) * Lx, ys + a*(1/2 + 1/2*j - 1/2*(i%2)) )
+    neigh, directions = connected_neigh_center_elem((1,1))
+    directions[:2] *= np.linalg.norm(directions[2])
+    
+    # Plot center elements
+    circle = plt.Circle((center[0], center[1]), center_radii, color = blue)
+    ax1.add_patch(circle) # direct way
+    for i, pos in enumerate(center + directions):
+            circle = plt.Circle((pos[0], pos[1]), center_radii, color = blue)
+            ax1.add_patch(circle) # direct way
+    
+    
+    # Directions
+    from_center = center + 0.1*directions 
+    to_center = center + 0.9*directions 
+    arrowprops_center = dict(facecolor='black', lw = 1)
+    
+    arrowprops_atom_even = dict(facecolor=color_cycle(1), width = 2, headwidth = 12, edgecolor = 'None')
+    arrowprops_atom_odd = dict(facecolor=color_cycle(4), width = 2, headwidth = 12, edgecolor = 'None')
+    atom_even = np.array([[-2/np.sqrt(3), 0], [1/np.sqrt(3), 1], [1/np.sqrt(3), -1]])*a/2
+    atom_odd = np.array([[2/np.sqrt(3), 0], [-1/np.sqrt(3), 1], [-1/np.sqrt(3), -1]])*a/2
+    
+    
+    from_atom_even = center + atom_even
+    to_atom_even = center + 2*atom_even
+    from_atom_odd = center + atom_odd
+    to_atom_odd = center + 2*atom_odd
+    
+    
+    # Center directions
+    for i in range(len(from_center)):
+        ax1.annotate('', xy=(to_center[i]), xytext= (from_center[i]), textcoords='data', arrowprops=arrowprops_center) 
+        
+    # Atom directions
+    for i in range(len(from_atom_even)):
+        an_even = ax1.annotate('', xy=(to_atom_even[i]), xytext= (from_atom_even[i]), textcoords='data', arrowprops=arrowprops_atom_even, label = 'Even') 
+        an_odd = ax1.annotate('', xy=(to_atom_odd[i]), xytext= (from_atom_odd[i]), textcoords='data', arrowprops=arrowprops_atom_odd, label = 'Odd') 
+    
+    
+    ax1.grid(False)
+    ax1.set_xticks([])
+    ax1.set_yticks([])
+    ax1.axis('off')
+    ax1.set_facecolor("white")
+    fig1.set_edgecolor("white")
+    fig1.legend([an_even.arrow_patch, an_odd.arrow_patch], (an_even.get_label(), an_odd.get_label()), fontsize = 14)
+    
+    # --- Save --- #
+    fig1.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    if save:
+        fig1.savefig('../article/figures/system/stay_or_break.pdf', bbox_inches='tight')
+        
+
 
     
 def show_min_dis(save = False):
@@ -520,5 +591,6 @@ if __name__ == '__main__':
     # show_honeycomb(save = False)
     # honeycomb_flavors(save = False)
     
-    bias_prop_distirbution(save = True)
+    # bias_prop_distribution(save = False)
+    stay_or_break(save = True)
     plt.show()
