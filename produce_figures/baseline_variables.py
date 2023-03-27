@@ -298,7 +298,7 @@ def multi_FN_force_dist(path, save = False):
         
         
  
-def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yerr = None, axis_scale = ['linear', 'linear'], colorbar_scale = [None, 'log'], equal_axes = [False, True], rupplot = False):
+def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yerr = None, axis_scale = ['linear', 'linear'], colorbar_scale = [None, 'log'], equal_axes = [False, True], rupplot = False, axes = None):
     # Settings
     
     
@@ -312,14 +312,17 @@ def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yer
     cmap = matplotlib.cm.viridis
     
     
-    
-    grid = (1, len(folders)+1)
-    width_ratios = [1 for i in range(len(folders))] + [0.1] # Small width for colorbar
-    
-    
     rupture_stretch = np.full((len(folders), 2), np.nan) 
-    fig, axes = plt.subplots(grid[0], grid[1], num = unique_fignum(), figsize = figsize, gridspec_kw ={'width_ratios': width_ratios})
     
+    if axes is None:
+        grid = (1, len(folders)+1)
+        width_ratios = [1 for i in range(len(folders))] + [0.1] # Small width for colorbar
+        fig, axes = plt.subplots(grid[0], grid[1], num = unique_fignum(), figsize = figsize, gridspec_kw ={'width_ratios': width_ratios})
+        return_early = False
+    else:
+        fig = axes[0].get_figure()
+        return_early = True
+        
     # Loop through data folders
     for f, folder in enumerate(folders):
             axes[f].set_title(names[f])
@@ -373,8 +376,9 @@ def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yer
     else:
         exit(f'scale = \'{colorbar_scale[-1]}\' is not defined.')
         
-    cb = fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax=axes[-1])
+    cb = plt.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax=axes[-1], aspect = 200)
     cb.set_label(label = axis_labels[2], fontsize=14)
+    # cb = plt.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax=axes[-1], pad = 0, use_gridspec = True)
     
         
     # if colorbar_scale == 'linear':
@@ -434,12 +438,15 @@ def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yer
 
     # Axis scale 
     
+    if return_early:
+        return 
          
     # labels and legends
     fig.supxlabel(axis_labels[0], fontsize = 14)
     fig.supylabel(axis_labels[1], fontsize = 14)
     handles, labels = axes[-2].get_legend_handles_labels()
     fig.legend(handles, labels, loc = 'lower right', bbox_to_anchor = (0.0, 0.0, 1, 1), bbox_transform = plt.gcf().transFigure, ncols = 2, fontsize = 13)
+    # fig.legend(handles, labels, loc = 'lower right', bbox_to_anchor = (0.0, -0.1, 1, 1), bbox_transform = plt.gcf().transFigure, ncols = 1, fontsize = 13)
     fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
     return fig, data      
 

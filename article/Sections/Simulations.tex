@@ -749,13 +749,11 @@ Present the configuration and variable choices for the generated dataset. Perhap
 
 
 \section{Rupture}
-Better word might be detched and nondetached as used by Hanakate in Accelerated search article.
+Better word might be detached and nondetached as used by Hanakate in Accelerated search article.
 
-\chapter{Training forward network (Data analysis?)}
-
-\section{Dataset analysis}
-
-A summary of the data points is given in table \ref{yab:dataset_summary}
+\chapter{Machine learning}
+\section{Data analysis}
+A summary of the data points is given in table \ref{tab:dataset_summary}
 
 \begin{table}[H]
   \begin{center}
@@ -841,6 +839,124 @@ In figure \ref{fig:corr_vis} we have visualized the data (excluding the pilot st
 \end{figure}
 
 
+\section{Properties of interest / Stretch profiles}
+\hl{Define somewhere that we will look at low friction, high friction and the biggest (forward) drop in friction corresponding to a significant negative friction coefficient}.
+
+
+
+\begin{table}[H]
+  \begin{center}
+  \caption{Interesting properties}
+  \label{tab:}
+  \begin{tabular}{| c | c | c | c|} \hline
+  \textbf{Tetrahedron} & Configuration & Stretch & Value [nN]  \\ \hline
+  Min $F_{\text{fric}}$ & $(3,9,4)$ &  0.0296 & 0.0067 \\ \hline
+  Max & $(5,3,1)$ & 0.1391 & 1.5875 \\ \hline
+  Max $\Delta F_{\text{fric}}$  & $(5, 3, 1)$ & $[0.0239, 0.1391]$ & 1.5529 \\ \hline
+  Max drop & $(5,3,1)$ & $[0.1391, 0.1999]$ & 0.8841 \\ \hline
+  \multicolumn{4}{c}{} \\ \hline
+  % \textbf{Tetrahedron} & \multicolumn{3}{c|}{} \\ \hline
+  \textbf{Honeycomb} & Configuration & Stretch & Value [nN]  \\ \hline
+  Min $F_{\text{fric}}$ & $(2, 5, 1, 1)$ &  0.0267 & 0.0177 \\ \hline
+  Max & $(2, 1, 1, 1)$ & 1.0654 & 2.8903 \\ \hline
+  Max $\Delta F_{\text{fric}}$  & $(2, 1, 5, 3)$ & $[0.0856, 1.4760]$ & 2.0234 \\ \hline
+  Max drop & $(2, 3, 3, 3)$ & $[0.5410, 1.0100]$ & 1.2785 \\ \hline
+  \multicolumn{4}{c}{} \\ \hline
+  \textbf{Random walk} & Configuration & Stretch & Value [nN]  \\ \hline
+  Min $F_{\text{fric}}$ & 12 &  0.0562 & 0.0024\\ \hline
+  Max & 96 & 0.2375 & 0.5758 \\ \hline
+  Max $\Delta F_{\text{fric}}$  & 96 & $[0.0364, 0.2375]$ & 0.5448 \\ \hline
+  Max drop & 01 & $[0.0592, 0.1127]$ & 0.1818 \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+
+% Popup
+% ['(3, 9, 4)', 0.0296407442523106, 0.006738434728040425]
+% ['(5, 3, 1)', 0.139120019152679, 1.5874991413277917]
+% ['(5, 3, 1)', 0.0238700191526787, 0.139120019152679, 1.5529155085058322]
+% ['(5, 3, 1)', 0.139120019152679, 0.199920019152683, 0.8840614643066859]
+
+% Honeycomb
+% ['(2, 5, 1, 1)', 0.0267215709876031, 0.01771035812444661]
+% ['(2, 1, 1, 1)', 1.06536290170726, 2.8903313732271183]
+% ['(2, 1, 5, 3)', 0.085589883539189, 1.47601988353919, 2.023377918411005]
+% ['(2, 3, 3, 3)', 0.541004661720013, 1.01001466172002, 1.278541503443495]
+
+% RW
+% ['12', 0.0562087686350666, 0.002350782025058632]
+% ['96', 0.237523191134115, 0.5757864994802119]
+% ['96', 0.0363631911341175, 0.237523191134115, 0.5447910475168634]
+% ['01', 0.0591598822685843, 0.112739882268582, 0.18175926264779968]
+
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[t]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_pop_27.pdf}
+      \caption{}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_pop_31.pdf}
+      \caption{}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_hon_6.pdf}
+      \caption{}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_hon_12.pdf}
+      \caption{}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_hon_28}
+      \caption{}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_hon_42.pdf}
+      \caption{}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_RW01.pdf}
+      \caption{}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_RW12.pdf}
+      \caption{}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_RW96.pdf}
+      \caption{}
+  \end{subfigure}
+  \hfill
+     \caption{}
+     \label{fig:}
+\end{figure}
+
+
+
+
+
+
+The stretch profiles for all the configurations are shown in appendix \ref{sec:data_stretch_profiles}.
 
 
 
