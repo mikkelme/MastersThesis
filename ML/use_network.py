@@ -325,7 +325,7 @@ if __name__ == '__main__':
     
     # test_model_manual(name)
     # test_model_compare(name)
-    show_CNN_layers(name)
+    # show_CNN_layers(name)
     
     
     

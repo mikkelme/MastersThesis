@@ -300,7 +300,7 @@ if __name__ == '__main__':
     # plot_corr_scatter(save = False)
     
     # model_performance('training_1')
-    model_performance('training_2')
+    model_performance('training_3')
     
     plt.show()
     pass
