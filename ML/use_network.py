@@ -1,5 +1,5 @@
-from ML.ML_utils import *
-from ML.networks import *
+from ML_utils import *
+from networks import *
 import ast
 
 
@@ -324,11 +324,11 @@ if __name__ == '__main__':
     # name = f'{folder}/C32C64C128D128D64D32'
     
     # test_model_manual(name)
-    # test_model_compare(name)
+    test_model_compare(name)
     # show_CNN_layers(name)
     
     
-    
+    plt.show()
     pass
     
     # model_weights = f'{name}_model_dict_state'

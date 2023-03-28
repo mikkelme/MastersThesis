@@ -322,9 +322,9 @@ if __name__ == '__main__':
     # model_performance('training_1')
     # model_performance('training_3')
 
-    get_rupture_count()
+    # get_rupture_count()
     
-    plt.show()
+    # plt.show()
     pass
     
     # data_root = ['../Data/ML_data/honeycomb', '../Data/ML_data/popup'] 

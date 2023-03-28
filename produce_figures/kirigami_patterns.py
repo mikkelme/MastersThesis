@@ -1,4 +1,5 @@
 from indexing import *
+from stretch_profiles import *
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 def plot_sheet(mat, ax, radius, **param):
@@ -709,9 +710,88 @@ def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
         cmap(np.linspace(minval, maxval, n)))
     return new_cmap
     
-def show_min_dis(save = False):
-    pass
+
+def show_all_conf():
+    root = '../config_builder/'
+    data_root = [root+'popup', root+'honeycomb', root+'RW']
+    atom_radii = 0.6
     
+    for path in data_root:
+        if path == data_root[0]:
+            print('Skip Popup')
+            continue
+        if path == data_root[1]:
+            print('Skip Honeycomb')
+            continue
+        # if path == data_root[2]:
+        #     print('Skip RW')
+        #     continue
+        files = np.sort(get_files_in_folder(path, ext = '.npy'))
+        shape = (6, 5)
+        num_files = len(files)
+        num_axes = shape[0]*shape[1]
+        
+        figs = [plt.subplots(shape[0], shape[1], num = unique_fignum(), figsize = (shape[1],shape[0])) for i in range(num_files//num_axes)]
+        axes_left = num_files - num_axes*len(figs)
+        last_shape = (int(np.ceil(axes_left/shape[0])), 5)
+        total_num_axes = num_axes*len(figs) + last_shape[0]*last_shape[1]
+        figs.append(plt.subplots(last_shape[0], last_shape[1], num = unique_fignum(), figsize = (last_shape[1],last_shape[0])))
+        
+        for i in range(total_num_axes):
+            if i%num_axes == 0:
+                fig, axes = figs[i//num_axes]
+                offset = num_axes*(i//num_axes)
+                
+            # if i < int(np.floor(num_files/num_axes)*num_axes):
+            #     continue # Only go to last fig
+            
+            if i < int((np.floor(num_files/num_axes)-1)*num_axes):
+                continue # Only go to last fig
+            
+            idx = (i - offset)//shape[1], (i - offset)%shape[1]
+            ax = axes[idx]
+            print(i, idx)
+            
+            if i < num_files:
+                file = files[i]
+                # if i%6 == 0: # TMP
+                mat = np.load(file)
+                plot_sheet(mat, ax, atom_radii, facecolor = 'black', edgecolor = 'black', linewidth = 0.1, alpha = 1)
+                name, pattern_type = get_name(path, file)
+                ax.set_title(name, pad = -0.1, fontsize = 5)
+                
+            ax.axis('equal')
+            ax.axis('off')
+            ax.axis('equal')
+                
+            # ax.grid(False)
+            # ax.set_xticks([])
+            # ax.set_yticks([])
+            # ax.set_facecolor("white")
+            
+        for i, fig in enumerate(figs):
+            fig[0].supxlabel(r"$x$ (armchair direction)", fontsize = 14)
+            fig[0].supylabel(r"$y$ (zigzag direction)", fontsize = 14)
+            if i == len(figs)-1:
+                f = figs[len(figs)-2][0] # XXX
+                left = f.subplotpars.left
+                bottom = f.subplotpars.bottom
+                right = f.subplotpars.right
+                top = f.subplotpars.top
+                wspace = f.subplotpars.wspace
+                hspace = f.subplotpars.hspace
+                print(left, bottom, right, top, wspace, hspace)
+                fig[0].subplots_adjust(left, bottom, right, top, wspace, hspace)
+            else:
+                fig[0].tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2,)
+            
+            fig[0].savefig(f'../article/figures/dataset/{path.split("/")[-1]}_{i}_FIX.pdf', bbox_inches='tight')
+        # plt.show()
+    
+        # exit()
+    
+    pass
+
 
 if __name__ == '__main__':
     # show_pop_up(save = False)
@@ -722,5 +802,7 @@ if __name__ == '__main__':
     # bias_prop_distribution(save = False)
     # stay_or_break(save = False)
     # grid_start(save = False)
-    RW_flavors(save = True)
-    plt.show()
+    # RW_flavors(save = True)
+    
+    show_all_conf()
+    # plt.show()
