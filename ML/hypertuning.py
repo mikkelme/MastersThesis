@@ -37,10 +37,13 @@ class Architectures:
   
 def train_architectures(A_instance, data_root, ML_setting, save_folder):
     for i, (model, criterion) in enumerate(A_instance):
-        coach = Trainer(model, data_root, criterion, **ML_setting)
-        coach.learn()
-        coach.save_history(os.path.join(save_folder, model.name))
-        coach.plot_history(show = False, save = os.path.join(save_folder, model.name, 'loss.pdf'))
+        try:
+            coach = Trainer(model, data_root, criterion, **ML_setting)
+            coach.learn()
+            coach.save_history(os.path.join(save_folder, model.name))
+            coach.plot_history(show = False, save = os.path.join(save_folder, model.name, 'loss.pdf'))
+        except: # weights exploted inside or something
+            continue
       
       
   

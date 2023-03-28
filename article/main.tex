@@ -38,16 +38,14 @@
 
 \mainmatter{}
 %%%%%%%%%%%% Introduction %%%%%%%%%%%%
-\input{Sections/Introduction}
+% \input{Sections/Introduction} % Chapter 1
 
 %%%%%%%%%%%%%%% THEORY %%%%%%%%%%%%%%%
 \newpage
 \part{Background Theory}
-
-% \input{Sections/Theory/intro}
-% \input{Sections/Theory/tribology}
-% \input{Sections/Theory/MD}
-% \input{Sections/Theory/remaining}
+% \input{Sections/Theory/tribology} % Chapter 2
+% \input{Sections/Theory/MD} % Chapter 3
+% \input{Sections/Theory/remaining} % Chapter 4
 
 
 % \input{Sections/Method}
@@ -56,60 +54,21 @@
 %%%%%%%%%%%% SIMULATIONS %%%%%%%%%%%%%
 \newpage
 \part{Simulations}
-\input{Sections/Simulations/system}
-\input{Sections/Simulations/pilot_study}
-\input{Sections/Simulations/dataset_study}
-\input{Sections/Simulations/negative_coef}
-% \input{Sections/Simulations}
+% \input{Sections/Simulations/system} % Chapter 5
+\input{Sections/Simulations/pilot_study} % Chapter 6
+\input{Sections/Simulations/dataset_study} % Chapter 7
+% \input{Sections/Simulations/negative_coef} % Chapter 8
 
 
 %%%%%%%%%%%%%% SUMMARY %%%%%%%%%%%%%%%
 \input{Sections/Summary}
 
 
-
-
-
-
-
-
-%%%%%%%%%%%% QFT %%%%%%%%%%%%%%%%%%%%%%%%%
-% \input{Sections/QFT/Axiomatic}
-% \input{Sections/QFT/Pertubationtheory}
-% %\input{Sections/QFT/StandardModel}
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \input{Sections/QFT/MathematicalFormulationGaugeTheories}
-% \input{Sections/QFT/WilsonGeometry}
-
-%%%%%%%%%%%%% Wilson Line Properties %%%%%%%%%%%%%%%%%%%%%%%%
-%\chapter{Wilson Line Properties}
-%\input{Sections/WilsonLineProperties/CuspAnomalous}
-
-%\chapter{Supersymmetry}
-%\input{Sections/SUSY/Supersymmetry}                
-
-%%%%%%%%%%%%% QCD %%%%%%%%%%%%%%%%%%%%%%%%
-% \chapter{Perturbative Quantum Chromodynamics}\label{Chap:pQCD}
-% \input{Sections/QCD/LagrangianQCD}
-% \input{Sections/QCD/DIS}
-% \input{Sections/QCD/DrellYan}
-
-
-%%%%%%%%%%%%% Resummation %%%%%%%%%%%%%%%%%%%%%%%%
-% \input{Sections/Resummation/Exponentiation}
-% %\input{Sections/Resummation/NEWfactorizationDrell} 
-% \input{Sections/Resummation/FacResDY}  
-% \input{Sections/Resummation/EikonalApprox}
-% \input{Sections/Resummation/SoftWilsonLines}
-% \input{Sections/Resummation/HadronicMellin}
-
-%%%%%%%%%%%%% Conclusion %%%%%%%%%%%%%%%%%%%%%%%%%%
-% \input{Sections/Conclusion/Conclusion}
 \backmatter{}
 %%%%%%%%%%%%% Appendix %%%%%%%%%%%%%%%%%%%%%%%%
-
 \begin{appendices}
-% \numberwithin{equation}{section}
+    % \numberwithin{equation}{section}
+
 
 \appendix
 \chapter{Appendix A}
@@ -120,31 +79,9 @@
 \chapter{Appendix B}
 \renewcommand{\thechapter}{B}
 \renewcommand{\theequation}{\thechapter.\arabic{equation}}
-\input{Sections/Appendix/data_stretch_profiles.tex}
-
-
-% \appendix
-% \renewcommand{\thechapter}{B}
-% \chapter{Appendix B}
-% %\renewcommand{\theequation}{\thechapter.\arabic{equation}}
-% \input{Sections/Appendix/Appendix2}
-
-% \appendix
-% \renewcommand{\thechapter}{C}
-% \chapter{Appendix C}
-% \renewcommand{\theequation}{\thechapter.\arabic{equation}}
-% \input{Sections/Appendix/Appendix3}
-
-% \appendix
-% \renewcommand{\thechapter}{D}
-% \chapter{Appendix D}
-% \renewcommand{\theequation}{\thechapter.\arabic{equation}}
-% \input{Sections/Appendix/Appendix4}
-
+% \input{Sections/Appendix/data_stretch_profiles.tex}
 
 \end{appendices}
-
-
 
 
 \bibliography{bibliography.bib}

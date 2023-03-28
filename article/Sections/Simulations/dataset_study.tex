@@ -1,33 +1,40 @@
 \chapter{Dataset study}
 
 \section{Generating data}
-
-Present the configuration and variable choices for the generated dataset. Perhaps include appendix with all the configurations shown in a grid
-
-
-% \section{Rupture}
-% Better word might be detached and nondetached as used by Hanakate in Accelerated search article.
-
-\section{Data analysis}
-A summary of the data points is given in table \ref{tab:dataset_summary}
+We generate the dataset by simulating various sheet cut configuratations under
+multiple combinations of normal load and stretch. For each configuration we
+sample 15 pseudo uniform (\hl{refer to relevant section here}) strech values
+between zero and the rupture stretch found in the rupture test. The normal force
+is uniformly sampled in the range $[0.1, 10]$ nN. In total this gives $3\times
+15$ data points for each configuration. For the remaining parameters we use the
+values presented in the pilot study (see table \ref{tab:param}). We generate 68
+configurations of the Tetrahedron pattern type, 45 of the Honeycomb type and 100
+of the Random walk type which is shown in \hl{Appendix C?}. A summary of the
+data points is given in table \ref{tab:dataset_summary}. The table shows that
+not all submitted data points ``makes it'' to the final dataset. This is due to
+the combination of our numerical procedure and small variations in the rupture
+stretch point. After performing the rupture test the simulation is restarted
+with a new substrate size corresponding to the measured rupture stretch limit
+and also with new random velocity and thermostat initializations values. The sheet is then stretched and checkpoints of the simulation state (LAMMPS restart files) are saved for each of the targeted stretch samples. However, if the rupture points arrives slightly early than syggested by the rupture test, some sampled stretch values might not get a corresponding checkpoint file. Thus, these data points are not included in the data set even though they ideally should have been noted as a rupture event. This could quite easily have been mittigated by a rewrite of that part of the code, but it was first discovered after the dataset had been created. However, the dataset still includeds 11.57 \% rupture events and it most likely that the most cases with a lost rupturer event have a rupture event stored for the preeceding stretch value instead which captures the information of the sheet stretch limit on its own. 
 
 \begin{table}[H]
   \begin{center}
-  \caption{Summary of the number of generated data points used for machine learning. Due to random stretch values not all submitted simulations makes it through the framework to become a data point (\hl{explain this somewhere})  Notice that the Tetrahedon (7, 5, 2) and Honeycomb (2, 2, 1, 5) from the pilot study is rerun as a part fo the Tetrahedon and Honeycomb dataset seperately. In the latter the reference point for the pattern is randomized and thus theese configurations is included twice. This is the reason for the total configuration count summing up to two less than otherwise expected. }
+  \caption{Summary of the number of generated data points in the dataset. Due to slight deviations in the rupture stretch and the specific numerical procedure not all submitted simulations ``makes it'' to the final dataset. Notice that the Tetrahedon (7, 5, 2) and Honeycomb (2, 2, 1, 5) from the pilot study is rerun as a part of the Tetrahedon and the Honeycomb datasets seperately. In the latter datasets the reference point for the pattern is randomized and thus theese configurations is not fully identical. This is the idea behind the difference of 2 in the total sum.}
   \label{tab:dataset_summary}
-  \begin{tabular}{ | c | c | c | c |} \hline
-  \textbf{Type} & \textbf{Configurations} & \textbf{Submitted data points} & \textbf{Final data points} \\ \hline
-  Pilot study & 3 & 270 & 261    \\ \hline
-  Tetrahedon & 68 & 3060 & 3015  \\ \hline
-  Honeycomb & 45 & 2025 & 1983  \\ \hline
-  Random walk & 100 & 4500 & 4401 \\ \hline \hline
-  Total & 214 (216) & 9855 & 9660 \\ \hline
+  \begin{tabular}{ | c | c | c | c | c |} \hline
+  \textbf{Type} & \textbf{Configurations} & \textbf{Submitted data points} & \textbf{Final data points} & \textbf{Ruptures} \\ \hline
+  Pilot study & 3 & 270 & 261 & \: 25 \: (9.58 \%)\\ \hline
+  Tetrahedon & 68 & 3060 & 3015 & 391 (12.97 \%)\\ \hline
+  Honeycomb & 45 & 2025 & 1983 & \: 80 \: (4.03 \%)\\ \hline
+  Random walk & 100 & 4500 & 4401 & 622 (14.13 \%) \\ \hline \hline
+  Total & 214 (216) & 9855 & 9660 & 1118 (11.57 \%) \\ \hline
   \end{tabular}
   \end{center}
 \end{table}
 
-% Reason for some missing sims is that if restart file is set to be produced close to rupture point
-% it might rupture a bit before and not submit the restart file. 
+
+\section{Data analysis}
+
 
 In order to gain insight into the correlations between variables associated to the simulations we calculate the correlations coefficients between all variable combinations. More specific, we are going to calculate the Pearson product-moment correlation coefficient (PPMCC) for which is defined, between data set $X$ and $Y$, as
 \begin{align*}
@@ -217,7 +224,7 @@ The stretch profiles for all the configurations are shown in appendix \ref{sec:d
 
 \section{Machine learning}
 
-Staircase architecture tuning. 
+Staircase architecture tuning.
 
 
 

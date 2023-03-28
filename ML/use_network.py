@@ -1,5 +1,5 @@
-from ML_utils import *
-from networks import *
+from ML.ML_utils import *
+from ML.networks import *
 import ast
 
 

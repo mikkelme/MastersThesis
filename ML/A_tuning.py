@@ -56,6 +56,6 @@ if __name__ == '__main__':
     
     
     A = A_staircase(mode = 0, batchnorm = True)
-    print(A)
-    # train_architectures(A, data_root, ML_setting, save_folder = 'staircase_1')
+    A.A = A[15:]
+    train_architectures(A, data_root, ML_setting, save_folder = 'staircase_1')
     

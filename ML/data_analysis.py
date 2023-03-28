@@ -4,7 +4,7 @@ from plot_set import *
 from analysis.analysis_utils import *
 import ast
 
-from dataloaders import *
+from ML.dataloaders import *
 import seaborn as sns
 
 
@@ -117,8 +117,6 @@ class Data_fetch():
     
 
 
-
-
 def plot_corrcoef(save = False):
     root = '../Data/ML_data/'
     data_root = [root+'baseline', root+'popup', root+'honeycomb', root+'RW']
@@ -143,7 +141,6 @@ def plot_corrcoef(save = False):
                                'Ff_mean_std': r'std $\langle F_\parallel \rangle$',
                                'contact_std': 'std contact'
                                }, save = savename)
-    
     
     
 def plot_corr_scatter(save = False):
@@ -295,12 +292,37 @@ def model_performance(path, save = False):
     for i in range(len(name)):
         print(f'{i:2d} | name = {name[i]:30s}, #params = {int(num_params[i]):8d}, best epoch = {int(epoch[i]):4d}, R2 = {R2[i]}')
 
+
+
+def get_rupture_count():
+    root = '../Data/ML_data/'
+    data_root = [root+'baseline', root+'popup', root+'honeycomb', root+'RW']
+    tot_rup = 0
+    tot_tot = 0
+    for path in data_root:
+        obj = Data_fetch(path)
+        data = obj.get_data(['is_ruptured'], obj[:], exclude_rupture = False)
+        is_rup = data['is_ruptured']
+        rup = int(np.sum(is_rup))
+        total = np.sum(is_rup > -1)
+        pct = 100*rup/total
+        print(f'path = {path}, rup = {rup}/{total} ({pct:0.2f}%)')
+        tot_rup += rup
+        tot_tot += total
+
+    tot_pct = 100*tot_rup/tot_tot
+    print(f'Total, rup = {tot_rup}/{tot_tot} ({tot_pct:0.2f}%)')
+    
+        
+        
 if __name__ == '__main__':
     # plot_corrcoef(save = False)
     # plot_corr_scatter(save = False)
     
     # model_performance('training_1')
-    model_performance('training_3')
+    # model_performance('training_3')
+
+    get_rupture_count()
     
     plt.show()
     pass
