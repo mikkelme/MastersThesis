@@ -47,9 +47,9 @@ if __name__ == '__main__':
         'lr': 0.01, 
         'batchsize_train': 32,
         'batchsize_val': 64,
-        'max_epochs': 2000,
+        'max_epochs': 1000,
         'max_file_num': None,
-        'scheduler_stepsize': 200,
+        'scheduler_stepsize': 100,
         'scheduler_factor': 0.5
     }
     
