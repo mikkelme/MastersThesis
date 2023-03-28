@@ -256,7 +256,12 @@
 #### Week 11 (20/03/2023 - 26/03/2023) - Working from Pisa
 - Made nice plots of tetrahedron (pop-up) and honeycomb for dataset part in article
 - Included data analysis of RW data
-- 
+- Written a lot on patterns 
+
+#### Week 12 (27/03/2023 - 02/04/2023) - Working from Pisa
+- Continued writing on data analysis and dataset
+- Looked at architecture staircase type tuning and submitted a new extended search
+
 
 ## Things to remember 
 
