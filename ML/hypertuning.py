@@ -1,49 +1,6 @@
-
 from train_network import *
 
 
-
-# class Architectures:
-#     def __init__(self, mode = 0, batchnorm = True):
-#         """
-#             Architectures suggested in article on 
-#             graphene/h-BN interface https://doi.org/10.1063/5.0131576
-#         """
-#         # --- Shared settings --- #
-#         # Model
-#         self.mode = mode
-#         self.batchnorm = batchnorm
-        
-#         # Common data settings
-#         self.common_settings()
-        
-        
-#         # Count number of methods starting with 'A' corresponding to architectures
-#         self.a = []
-#         for d in (d for d in dir(self) if d[0] == 'A'):
-#             self.a.append(eval('self.'+d))
-            
-        
-#     def common_settings(self):
-#         pass
-       
-    
-#     def __str__(self):
-#         if len(self) == 0:
-#             return 'No architecture methods implemented.'
-        
-#         s = f'Architecture(s) implemented = {len(self)}:\n'
-#         for i, (model, criterion) in enumerate(self):
-#             s += f'{i} | {model.name} (#params = {model.get_num_params()})\n'
-#         return s
-        
-#     def __len__(self):
-#         return len(self.a)
-
-#     def __getitem__(self, idx):
-#         return self.a[idx]()
-        
-        
 
 class Architectures:
     def __init__(self, mode = 0, batchnorm = True):
