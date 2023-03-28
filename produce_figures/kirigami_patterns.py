@@ -717,15 +717,9 @@ def show_all_conf():
     atom_radii = 0.6
     
     for path in data_root:
-        if path == data_root[0]:
-            print('Skip Popup')
-            continue
-        if path == data_root[1]:
-            print('Skip Honeycomb')
-            continue
-        # if path == data_root[2]:
-        #     print('Skip RW')
-        #     continue
+        if path == data_root[0]: print('Skip Popup') ;continue
+        if path == data_root[1]: print('Skip Honeycomb'); continue
+        if path == data_root[2]: print('Skip RW'); continue
         files = np.sort(get_files_in_folder(path, ext = '.npy'))
         shape = (6, 5)
         num_files = len(files)
@@ -804,5 +798,6 @@ if __name__ == '__main__':
     # grid_start(save = False)
     # RW_flavors(save = True)
     
-    show_all_conf()
+    # show_all_conf()
+    pass
     # plt.show()

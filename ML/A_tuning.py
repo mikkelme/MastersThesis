@@ -15,8 +15,8 @@ class A_staircase(Architectures):
         criterion = Loss(alpha = alpha, out_features = criterion_out_features)
     
         # Fill with architectures
-        start = [8, 16, 32, 64] # Number of channels for first layer
-        depth = [4, 6, 8, 10, 12] # Number of CNN and FC layers (excluding final FC to output)
+        start = [2, 4, 8, 16, 32, 64, 128, 256] # Number of channels for first layer
+        depth = [4, 6, 8, 10, 12, 14] # Number of CNN and FC layers (excluding final FC to output)
         for s in start:
             for d in depth:
                 name = f'S{s}D{d}'
@@ -47,15 +47,33 @@ if __name__ == '__main__':
         'lr': 0.01, 
         'batchsize_train': 32,
         'batchsize_val': 64,
-        'max_epochs': 500,
+        'max_epochs': 2000,
         'max_file_num': None,
-        'scheduler_stepsize': 50,
+        'scheduler_stepsize': 200,
         'scheduler_factor': 0.5
     }
     
     
+    ########## Testing ############### 
+    # root = '../Data/ML_data/' # Relative (local)
+    # data_root = [root+'popup']
+
+    # ML_setting = {
+    #     'use_gpu': False,
+    #     'lr': 0.01, 
+    #     'batchsize_train': 32,
+    #     'batchsize_val': 64,
+    #     'max_epochs': 5,
+    #     'max_file_num': None,
+    #     'scheduler_stepsize': 200,
+    #     'scheduler_factor': 0.5
+    # }
+    ################################### 
+    
     
     A = A_staircase(mode = 0, batchnorm = True)
-    A.A = A[15:]
-    train_architectures(A, data_root, ML_setting, save_folder = 'staircase_1')
+    train_architectures(A, data_root, ML_setting, save_folder = 'staircase_2')
+    
+    
+    
     

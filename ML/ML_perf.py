@@ -2,6 +2,7 @@ import sys
 sys.path.append('../') # parent folder: MastersThesis
 from plot_set import *
 from data_analysis import *
+from use_network import *
 import ast
 
 
@@ -38,6 +39,11 @@ def staircase_perf(path, save = False):
             P['num_params'].append(info['Model_info']['num_params'])
         except KeyError:
             P['num_params'] = [info['Model_info']['num_params']]
+            
+        try:
+            P['path'].append(os.path.join(path, folder))
+        except KeyError:
+            P['path'] = [os.path.join(path, folder)]
                 
 
     # --- Organize into matrix (D, S, P) --- #
@@ -58,8 +64,65 @@ def staircase_perf(path, save = False):
         P[key] = np.flip(np.array(P[key])[sort].reshape(shape), 0)
     
 
+
+    # Evaluation on selected configurations
+    compare_folder = ['../Data/Baseline_fixmove/honeycomb/multi_stretch', '../Data/Baseline_fixmove/popup/multi_stretch']
+    if len(compare_folder) > 0:
+        paths = P['path']
+        R2 = np.zeros((len(compare_folder), paths.shape[0], paths.shape[1]))
+        for f, folder in enumerate(compare_folder):
+            # Get compare data
+            data = read_multi_folder(folder)
+            config_path = find_single_file(folder, '.npy')
+            stretch = data['stretch_pct']
+            F_N = data['F_N']    
+            Ff = data['Ff'][:, :, 0, 1]
+            
+            for i in range(paths.shape[0]):
+                for j in range(paths.shape[1]):
+                    model_weights = os.path.join(paths[i,j], 'model_dict_state')
+                    model_info = os.path.join(paths[i,j], 'best_scores.txt')
+                    EV = Evaluater(model_weights, model_info)
+                    EV.load_config(config_path)
+                    
+            
+                    
+                    # Predict for different F_N
+                        
+                    Ff_pred = np.zeros((len(stretch), len(F_N)))
+                    no_rupture = np.zeros((len(stretch), len(F_N))) == -1
+                    for k in range(len(F_N)):
+                        no_rupture[:, k] = ~np.isnan(Ff[:, k]) 
+                        _, _, output = EV.predict(stretch, F_N[k])
+                        Ff_pred[no_rupture[:, k], k] = output[no_rupture[:, k], 0]
+                    
+                    Ff_target = Ff[no_rupture].flatten()
+                    Ff_pred = Ff_pred[no_rupture].flatten()
+                    
+                    Ff_target_mean = np.mean(Ff_target)
+                    SS_res = np.sum((Ff_pred - Ff_target)**2)
+                    SS_tot = np.sum((Ff_target - Ff_target_mean)**2)
+                    R2[f, i, j] = 1 - SS_res/SS_tot
+        
+        
+            # R2 test
+            fig, ax = plt.subplots(num = unique_fignum(), figsize=(10, 6))
+            mat = R2[f]
+            vmin = np.max((0.96, np.min(mat)))
+            vmax = np.max(mat)
+            sns.heatmap(mat, xticklabels = D[0, :], yticklabels = S[:, 0], cbar_kws={'label': fr'$R_2$ test {f}'}, annot=True, fmt='.4g', vmin=vmin, vmax=vmax, ax=ax)
+            ax.set_xlabel('Depth', fontsize=14)
+            ax.set_ylabel('Start num. channels', fontsize=14)
+            fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+          
+
+        # P['R2_test'] = R2
+            
+
+
+
     # --- Plotting --- #
-    # R2
+    # R2 Val
     fig, ax = plt.subplots(num = unique_fignum(), figsize=(10, 6))
     mat = P['R2_0']
     vmin = np.max((0.96, np.min(mat)))
@@ -68,6 +131,8 @@ def staircase_perf(path, save = False):
     ax.set_xlabel('Depth', fontsize=14)
     ax.set_ylabel('Start num. channels', fontsize=14)
     fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    
+
 
     # Loss
     fig, ax = plt.subplots(num = unique_fignum(),  figsize=(10, 6))
@@ -97,18 +162,11 @@ def staircase_perf(path, save = False):
 
 
 
-    # Evaluation on selected configurations
-    compare_folder = ['../Data/Baseline_fixmove/honeycomb/multi_stretch']
-    # '../Data/Baseline_fixmove/popup/multi_stretch'
-    for folder in compare_folder:
-        model_weights = os.path.join(path, 'model_dict_state')
-        model_info = os.path.join(path, 'best_scores.txt')
-        EV = Evaluater(model_weights, model_info)
-        
-        read_multi_folder(folder):
+            
+            
         
         
-        EV.compare_to_folder(folder)
+        
     
 
     if save:

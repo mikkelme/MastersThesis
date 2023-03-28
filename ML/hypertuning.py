@@ -1,6 +1,5 @@
 from train_network import *
-
-
+from time import perf_counter
 
 class Architectures:
     def __init__(self, mode = 0, batchnorm = True):
@@ -23,8 +22,10 @@ class Architectures:
         
         s = f'Architecture(s) implemented = {len(self)}:\n'
         for i, (model, criterion) in enumerate(self):
-            num_params = model.get_num_params()*1e-3 # in thousands
-            s += f'{i} | {model.name} (#params = {num_params:5.3f}k)\n'
+            # num_params = model.get_num_params()*1e-3 # in thousands
+            # s += f'{i} | {model.name} (#params = {num_params:5.3f}k)\n'
+            num_params = model.get_num_params()
+            s += f'{i} | {model.name} (#params = {num_params:1.2e})\n'
         return s
         
     def __len__(self):
@@ -36,21 +37,41 @@ class Architectures:
         
   
 def train_architectures(A_instance, data_root, ML_setting, save_folder):
+    timer_file = os.path.join(save_folder, 'timings.txt')
     for i, (model, criterion) in enumerate(A_instance):
+        timer_start = perf_counter() 
+        
         try:
             coach = Trainer(model, data_root, criterion, **ML_setting)
             coach.learn()
             coach.save_history(os.path.join(save_folder, model.name))
             coach.plot_history(show = False, save = os.path.join(save_folder, model.name, 'loss.pdf'))
         except: # weights exploted inside or something
-            continue
-      
-      
-  
+            print(f'Crashed at architecture {i}')
+            pass
+        
+        timer_stop = perf_counter()
+        elapsed_time = timer_stop - timer_start
+        h = int(elapsed_time // 3600)
+        m = int((elapsed_time % 3600) // 60)
+        s = int(elapsed_time % 60)
+        
+
+        if i == 0: # Create file
+            outfile = open(timer_file, 'w')
+            outfile.write('# Architecture | time [h:m:s]\n')
+            outfile.write(f'{i} | {h:02d}:{m:02d}:{s:02d}\n')
+        else: # Append to file
+            outfile = open(timer_file, 'a')
+            outfile.write(f'{i} | {h:02d}:{m:02d}:{s:02d}\n')
+        outfile.close()
+            
+
 
 if __name__ == '__main__':
     root = '../Data/ML_data/'
     data_root = [root+'baseline', root+'popup', root+'honeycomb']
+
 
 
 
