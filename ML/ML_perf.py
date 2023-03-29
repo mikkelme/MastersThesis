@@ -7,7 +7,7 @@ import ast
 
 
 
-def staircase_perf(path, save = False):
+def staircase_perf(path, compare_folder = [], save = False):
     
     folders = os.listdir(path)
     
@@ -15,7 +15,7 @@ def staircase_perf(path, save = False):
     D = [] # Depth
     P = {}
     for folder in folders:
-        if '.DS_Store' in folder:
+        if '.DS_Store' in folder or '.txt' in folder:
             continue 
         
         file = os.path.join(path, folder, 'best_scores.txt')
@@ -48,25 +48,54 @@ def staircase_perf(path, save = False):
 
     # --- Organize into matrix (D, S, P) --- #
     # Get unique axis
-    D_axis =  list(set(D))
-    S_axis =  list(set(S))
-    shape = (len(S_axis), len(D_axis))
+    D_axis =  np.sort(list(set(D)))
+    S_axis =  np.sort(list(set(S)))
+    shape = (len(D_axis), len(S_axis))
     
-    # Sort 
-    D = np.array(D); S = np.array(S)
-    S_sort = np.argsort(S)
-    D_sort = np.concatenate([np.argsort(D[S_sort][i:i+shape[1]])+i for i in range(0, len(D), shape[1])])
-    sort = S_sort[D_sort]
+    # Get 1D -> 2D mapping
+    D_mat, S_mat = np.meshgrid(D_axis, S_axis)
+    map = np.full(np.shape(D_mat), -1)
+    for i in range(D_mat.shape[0]):
+        for j in range(D_mat.shape[1]):
+            D_hit = D_mat[i, j] == D
+            S_hit = S_mat[i, j] == S
+            full_hit = np.logical_and(D_hit, S_hit)
+            if np.sum(full_hit) == 1:
+                map[i,j] = int(np.argmax(full_hit))
+            elif np.sum(full_hit) > 1:
+                exit('This should not happen')
+                
+    # Flip axis for increasing y-axis
+    map = np.flip(map, axis = 0)
+    S_axis = np.flip(S_axis) 
     
-    D = np.flip(D[sort].reshape(shape), 0)
-    S = np.flip(S[sort].reshape(shape), 0)
+    # Perform mapping
+    D = np.array(D + [np.nan])[map]
+    S = np.array(S + [np.nan])[map]
     for key in P:  
-        P[key] = np.flip(np.array(P[key])[sort].reshape(shape), 0)
+        P[key] = np.array(P[key]+[np.nan])[map]
+    
+   
+    # # Get unique axis
+    # D_axis =  list(set(D))
+    # S_axis =  list(set(S))
+    # shape = (len(S_axis), len(D_axis))
+    
+    # # Sort 
+    # D = np.array(D); S = np.array(S)
+    # S_sort = np.argsort(S)
+    # D_sort = np.concatenate([np.argsort(D[S_sort][i:i+shape[1]])+i for i in range(0, len(D), shape[1])])
+    # sort = S_sort[D_sort]
+    
+    # D = np.flip(D[sort].reshape(shape), 0)
+    # S = np.flip(S[sort].reshape(shape), 0)
+    # for key in P:  
+    #     P[key] = np.flip(np.array(P[key])[sort].reshape(shape), 0)
     
 
+ 
 
     # Evaluation on selected configurations
-    compare_folder = ['../Data/Baseline_fixmove/honeycomb/multi_stretch', '../Data/Baseline_fixmove/popup/multi_stretch']
     if len(compare_folder) > 0:
         paths = P['path']
         R2 = np.zeros((len(compare_folder), paths.shape[0], paths.shape[1]))
@@ -80,6 +109,7 @@ def staircase_perf(path, save = False):
             
             for i in range(paths.shape[0]):
                 for j in range(paths.shape[1]):
+                    if paths[i,j] == 'nan': continue
                     model_weights = os.path.join(paths[i,j], 'model_dict_state')
                     model_info = os.path.join(paths[i,j], 'best_scores.txt')
                     EV = Evaluater(model_weights, model_info)
@@ -88,7 +118,6 @@ def staircase_perf(path, save = False):
             
                     
                     # Predict for different F_N
-                        
                     Ff_pred = np.zeros((len(stretch), len(F_N)))
                     no_rupture = np.zeros((len(stretch), len(F_N))) == -1
                     for k in range(len(F_N)):
@@ -108,16 +137,13 @@ def staircase_perf(path, save = False):
             # R2 test
             fig, ax = plt.subplots(num = unique_fignum(), figsize=(10, 6))
             mat = R2[f]
-            vmin = np.max((0.96, np.min(mat)))
-            vmax = np.max(mat)
-            sns.heatmap(mat, xticklabels = D[0, :], yticklabels = S[:, 0], cbar_kws={'label': fr'$R_2$ test {f}'}, annot=True, fmt='.4g', vmin=vmin, vmax=vmax, ax=ax)
+            vmin = np.nanmax((0.96, np.nanmin(mat)))
+            vmax = np.nanmax(mat)
+            sns.heatmap(mat, xticklabels = D_axis, yticklabels = S_axis, cbar_kws={'label': fr'$R_2$ test {f}'}, annot=True, fmt='.4g', vmin=vmin, vmax=vmax, ax=ax)
             ax.set_xlabel('Depth', fontsize=14)
             ax.set_ylabel('Start num. channels', fontsize=14)
             fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
           
-
-        # P['R2_test'] = R2
-            
 
 
 
@@ -125,9 +151,10 @@ def staircase_perf(path, save = False):
     # R2 Val
     fig, ax = plt.subplots(num = unique_fignum(), figsize=(10, 6))
     mat = P['R2_0']
-    vmin = np.max((0.96, np.min(mat)))
-    vmax = np.max(mat)
-    sns.heatmap(mat, xticklabels = D[0, :], yticklabels = S[:, 0], cbar_kws={'label': r'$R_2$ $\langle F_{\parallel} \rangle$ '}, annot=True, fmt='.4g', vmin=vmin, vmax=vmax, ax=ax)
+    vmin = np.nanmax((0.96, np.nanmin(mat)))
+    vmax = np.nanmax(mat)
+    print(vmin, vmax)
+    sns.heatmap(mat, xticklabels = D_axis, yticklabels = S_axis, cbar_kws={'label': r'$R_2$ $\langle F_{\parallel} \rangle$ '}, annot=True, fmt='.4g', vmin=vmin, vmax=vmax, ax=ax)
     ax.set_xlabel('Depth', fontsize=14)
     ax.set_ylabel('Start num. channels', fontsize=14)
     fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
@@ -137,9 +164,9 @@ def staircase_perf(path, save = False):
     # Loss
     fig, ax = plt.subplots(num = unique_fignum(),  figsize=(10, 6))
     mat = P['val_tot_loss']
-    vmin = np.min(mat)
-    vmax = np.min((0.03, np.max(mat)))
-    sns.heatmap(mat, xticklabels = D[0, :], yticklabels = S[:, 0], cbar_kws={'label': 'Validation loss'}, annot=True, fmt='.4g', vmin=vmin, vmax=vmax, ax=ax)
+    vmin = np.nanmin(mat)
+    vmax = np.nanmin((0.03, np.nanmax(mat)))
+    sns.heatmap(mat, xticklabels = D_axis, yticklabels = S_axis, cbar_kws={'label': 'Validation loss'}, annot=True, fmt='.4g', vmin=vmin, vmax=vmax, ax=ax)
     ax.set_xlabel('Depth', fontsize=14)
     ax.set_ylabel('Start num. channels', fontsize=14)
     fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
@@ -147,7 +174,7 @@ def staircase_perf(path, save = False):
     # Epoch
     fig, ax = plt.subplots(num = unique_fignum(),  figsize=(10, 6))
     mat = P['epoch']
-    sns.heatmap(mat, xticklabels = D[0, :], yticklabels = S[:, 0], cbar_kws={'label': 'Epoch'}, annot=True, fmt='.4g', vmin=None, vmax=None, ax=ax)
+    sns.heatmap(mat, xticklabels = D_axis, yticklabels = S_axis, cbar_kws={'label': 'Epoch'}, annot=True, fmt='.4g', vmin=None, vmax=None, ax=ax)
     ax.set_xlabel('Depth', fontsize=14)
     ax.set_ylabel('Start num. channels', fontsize=14)
     fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
@@ -155,7 +182,7 @@ def staircase_perf(path, save = False):
     # Num. Params
     fig, ax = plt.subplots(num = unique_fignum(),  figsize=(10, 6))
     mat = P['num_params']
-    sns.heatmap(mat, xticklabels = D[0, :], yticklabels = S[:, 0], cbar_kws={'label': 'Num. params'}, annot=True, fmt='.4g', vmin=None, vmax=None, ax=ax)
+    sns.heatmap(mat, xticklabels = D_axis, yticklabels = S_axis, cbar_kws={'label': 'Num. params'}, annot=True, fmt='.4g', vmin=None, vmax=None, ax=ax)
     ax.set_xlabel('Depth', fontsize=14)
     ax.set_ylabel('Start num. channels', fontsize=14)
     fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
@@ -175,6 +202,9 @@ def staircase_perf(path, save = False):
 
 
 if __name__ == '__main__':
-    path = '../ML/staircase_1'
-    staircase_perf(path)
+    # path = '../ML/staircase_1'
+    path = '../ML/staircase_2'
+    
+    compare_folder = ['../Data/Baseline_fixmove/honeycomb/multi_stretch', '../Data/Baseline_fixmove/popup/multi_stretch']
+    staircase_perf(path, compare_folder, save = False)
     plt.show()
