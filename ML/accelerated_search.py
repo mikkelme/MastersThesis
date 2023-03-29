@@ -5,8 +5,8 @@ from ase.visualize.plot import plot_atoms
 from graphene_sheet.build_utils import *
 
 
-
-class Accelerated_search:
+# TODO: Change name to GA = genetic algorithm 
+class Accelerated_search: # Genetic algorithm 
     def __init__(self, model_weights, model_info, N = 100, image_shape = (62, 106), expand = None, repair = False):
 
         # Settings        

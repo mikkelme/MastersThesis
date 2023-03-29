@@ -168,23 +168,20 @@ class Evaluater():
         Ff = output[:, 0]
         rupture = output[:,-1] > 0.5
         
-        
-        
+    
         
         # --- Property metrics
         metrics = {}
-        # Practical rupture stretch
-        
+    
+        # Practical rupture stretch    
         if np.any(rupture):
             prac_rup_stretch_idx = np.min(np.argwhere(rupture))
         else:
             prac_rup_stretch_idx = -1
       
-        
         # Min and max friction (before any rupture prediction)
         Ffmin_idx = np.argmin(Ff[:prac_rup_stretch_idx])
         Ffmax_idx = np.argmax(Ff[:prac_rup_stretch_idx])
-        
         
         # Biggest forward drop in Ff
         loc_max = argrelextrema(Ff[:prac_rup_stretch_idx], np.greater_equal)[0]
@@ -204,7 +201,8 @@ class Evaluater():
         metrics['prac_rup_stretch'] = stretch[prac_rup_stretch_idx]
         metrics['Ff_min'] = (stretch[Ffmin_idx], Ff[Ffmin_idx])
         metrics['Ff_max'] = (stretch[Ffmax_idx], Ff[Ffmax_idx])
-        metrics['max_drop'] = (stretch[drop_start], stretch[drop_end], max_drop)
+        metrics['Ff_max_diff'] = (stretch[Ffmin_idx], stretch[Ffmax_idx], Ff[Ffmax_idx]-Ff[Ffmin_idx])
+        metrics['Ff_max_drop'] = (stretch[drop_start], stretch[drop_end], max_drop)
                  
 
         if show:

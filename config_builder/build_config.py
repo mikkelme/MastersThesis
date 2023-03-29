@@ -615,9 +615,7 @@ if __name__ == "__main__":
     
     
     
-    # # mat = honeycomb((60, 106), 3, 2, 1, 5)
-    # # mat = pop_up((60, 106), (7,5), 1)
-    mat = pop_up((20, 26), (7,5), 1)
+    mat = pop_up((62, 106), (3,1), 0)
     # mat[:] = 1
     # mat[mat == 1] = 2
     # mat[mat == 0] = 1
