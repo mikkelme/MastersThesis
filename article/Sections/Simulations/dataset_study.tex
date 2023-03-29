@@ -102,8 +102,26 @@ In figure \ref{fig:corr_vis} we have visualized the data (excluding the pilot st
 \end{figure}
 
 
-\section{Properties of interest / Stretch profiles}
-\hl{Define somewhere that we will look at low friction, high friction and the biggest (forward) drop in friction corresponding to a significant negative friction coefficient}.
+\section{Properties of interest} % Properties of interest / Stretch profiles
+From the Pilot study we discovered that it might be possible to achieve a negative friction coefficient  for the kirigami cut configuration under the assumption of a system with coupled normal force $F_N$ and stretch $S$. Thus, this stands as the main property of interest to explore further in the dataset. However, it is not obvious how one should quanity this in rigorous manner. The friction coefficeint is by our definition given as the slope of the friction vs. normal force curve (\hl{see theory sec XXX}). That is for two points $(F_{N,1}, F_{f,1}), (F_{N,2}, F_{f,2})$, $F_{N,1} < F_{N,2}$ we calculate the friction coefficeint $\mu_{1,2}$ as 
+\begin{align*}
+  \mu_{1,2} = \frac{F_{f,2} - F_{f,1}}{F_{N,2} - F_{N,1}} = \frac{\Delta F_f}{\Delta F_N}
+\end{align*}
+In the pilot study it became clear that the effects on the friction force when varying the normal force were neglible in comparison to that when varying the stretch. Thus, we use the assumption $F_f(S)$ such that for a coupling bestween stretch and normal force $F_N = RS + C$ with coupling ratio $R$ we get 
+\begin{align*}
+  \mu_{1,2}(S_1, S_2) = \frac{\Delta F_{f}(S_1, S_2)}{R(S_2 - S_1) + C} \underset{\sim}{\propto} \frac{\Delta F_{f}(S_1, S_2)}{\Delta S}.
+\end{align*}
+Thus, we practically exchange the normal force with the stretch for the purpose of evaluating the friction coefficient. \hl{How should we evaluate. Steepest curve might be risky due to datapoint with small fluctuations but very close on the stretch axis which gives a big slope. Instead, we use biggest forward drop. }
+
+% Working here. 
+
+% Hence, by assuming a one to one ratio couopling between normal force and stretch and otherwise neglect the effect of the normal force we find that the friction coefficient is gi
+
+% far less ... in comparision to the effect of stretching the sheet. By the assumption that we can couple the stretch and the normal force we can use the friction force vs. stretch curve to determine the friction coefficient instead. With some uncertainty in either the dataset points 
+
+% most negative friction coefficeint is by our definition given the steepest declining slope of the 
+
+% \hl{Define somewhere that we will look at low friction, high friction and the biggest (forward) drop in friction corresponding to a significant negative friction coefficient}.
 
 
 
