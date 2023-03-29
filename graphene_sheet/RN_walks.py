@@ -3,6 +3,7 @@ sys.path.append('../') # parent folder: MastersThesis
 sys.setrecursionlimit(10000)
 
 from graphene_sheet.build_utils import *
+from ML.accelerated_search import *
 import random
 
 
@@ -12,7 +13,7 @@ class RW_Generator:
                         max_steps = 6,
                         min_dis = 2,
                         bias = [(0, 0), 0],
-                        center_elem = True,
+                        center_elem = False,
                         avoid_unvalid = False,
                         RN6 = False,
                         grid_start = True,
@@ -175,6 +176,15 @@ class RW_Generator:
                 
         # --- Avoid isolated clusters --- #
         if self.avoid_clustering is not False:
+            
+            if self.avoid_clustering == 'repair':
+                AS = Accelerated_search(model_weights = None,
+                                        model_info = None,
+                                        N = 1,
+                                        image_shape = self.size)
+                self.mat = AS.repair_sheet(self.mat)
+            
+            
             self.vertical_spanning = None
             
             # Create binary matrix for visited sites (1 = visited)
@@ -576,18 +586,18 @@ class RW_Generator:
     
         return grid
         
-    def __str__(self):
+    def __str__(self, fmt = '0.2f'):
         s = f'size = {self.size}, \
-num_walks = {self.num_walks}, \
-max_steps = {self.max_steps}, \
-min_dis = {self.min_dis}, \
-bias = {self.bias}, \
+num_walks = {self.num_walks:d}, \
+max_steps = {self.max_steps:d}, \
+min_dis = {self.min_dis:d}, \
+bias = [({self.bias[0][0]:{fmt}}, {self.bias[0][1]:{fmt}}), {self.bias[1]:{fmt}}], \
 center_elem = {self.center_elem}, \
 avoid_unvalid = {self.avoid_unvalid}, \
 RN6 = {self.RN6}, \
 grid_start = {self.grid_start}, \
 centering = {self.centering}, \
-stay_or_break{self.stay_or_break}, \
+stay_or_break = {self.stay_or_break:{fmt}}, \
 avoid_clustering = {self.avoid_clustering}, \
 periodic = {self.periodic}, \
 seed = {self.seed}'

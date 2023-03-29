@@ -1,6 +1,5 @@
 from accelerated_search import *
-
-
+from scipy.stats import loguniform
 
 class Search:
     def __init__(self, model_path, topN, pattern):
@@ -22,16 +21,7 @@ class Search:
         self.extrema['Ff_max_drop'] = np.array([['name', np.zeros(self.shape), 'stretch_start', 'stretch_end', 0] for n in range(topN)], dtype = 'object')
         self.patterns_evaluated = 0
 
-        # print(self.extrema['Ff_max_drop'][0])
-        # exit()
-        
-        # self.extrema = {'Ff_min': ['name', np.zeros(self.shape), 'stretch', 1e3],
-        #                 'Ff_max': ['name', np.zeros(self.shape), 'stretch', 0],
-        #                 'Ff_max_diff': ['name', np.zeros(self.shape), 'stretch_start', 'stretch_end', 0],
-        #                 'Ff_max_drop': ['name', np.zeros(self.shape), 'stretch_start', 'stretch_end', 0]
-        #                 }
-       
-
+    
     def get_next_combination(self):
         """ Get next combinaiton integer style """
         last = self.counter
@@ -79,78 +69,62 @@ class Search:
         condition = metrics['Ff_max_drop'][-1] > self.extrema['Ff_max_drop'][:,-1]
         self.insert(condition, name, mat, metrics, 'Ff_max_drop')
         
-   
-        
-        
-        # if metrics['Ff_min'][-1] < self.extrema['Ff_min'][-1]:
-        #     self.extrema['Ff_min'][0] = name 
-        #     self.extrema['Ff_min'][1] = mat  
-        #     self.extrema['Ff_min'][2] = metrics['Ff_min'][0] # stretch
-        #     self.extrema['Ff_min'][3] = metrics['Ff_min'][1] # min Ff
-            
-        
-        # # Maximum Ff
-        # if metrics['Ff_max'][-1] > self.extrema['Ff_max'][-1]:
-        #     self.extrema['Ff_max'][0] = name 
-        #     self.extrema['Ff_max'][1] = mat  
-        #     self.extrema['Ff_max'][2] = metrics['Ff_max'][0] # stretch
-        #     self.extrema['Ff_max'][3] = metrics['Ff_max'][1] # max Ff
-               
-            
-        # # Maximum Ff diff
-        # if np.abs(metrics['Ff_max_diff'][-1]) > np.abs(self.extrema['Ff_max_diff'][-1]):
-        #     self.extrema['Ff_max_diff'][0] = name 
-        #     self.extrema['Ff_max_diff'][1] = mat  
-        #     self.extrema['Ff_max_diff'][2] = metrics['Ff_max_diff'][0] # stretch start
-        #     self.extrema['Ff_max_diff'][3] = metrics['Ff_max_diff'][1] # stretch end
-        #     self.extrema['Ff_max_diff'][4] = metrics['Ff_max_diff'][2] # max diff (with sign)
-            
-        # # Maximum Ff drop
-        # if metrics['Ff_max_drop'][-1] > self.extrema['Ff_max_drop'][-1]:
-        #     self.extrema['Ff_max_drop'][0] = name 
-        #     self.extrema['Ff_max_drop'][1] = mat  
-        #     self.extrema['Ff_max_drop'][2] = metrics['Ff_max_drop'][0] # stretch start
-        #     self.extrema['Ff_max_drop'][3] = metrics['Ff_max_drop'][1] # stretch end
-        #     self.extrema['Ff_max_drop'][4] = metrics['Ff_max_drop'][2] # max drop
-        
         
     def translate_input(self):
         pattern_name = self.pattern.__name__
         if pattern_name == 'honeycomb':
             name = f'{((1+self.current[0]//2), self.current[1], self.current[2], self.current[3])}' 
             return name, self.current
-        if pattern_name == 'pop_up':
+        elif pattern_name == 'pop_up':
             size = (self.current[0], self.current[1])
             sp = self.current[2]
             name = str(self.current)
             return name, [size, sp]
+        elif pattern_name == 'RW_MC':
+            name = 'RN'
+            return name, self.current[:-1]
         else:
             exit(f'\nPattern function {pattern_name} is not yet implemented.')
 
     def search(self, max_params = [1, 2, 2, 2]): # [3, 5, 5, 5]
-        self.max_params = np.array(max_params) # xwidth, ywidth, bridge_thickness, bridge_len
-        self.prod = [np.prod(self.max_params[p:]+1) for p in range(len(self.max_params))]
-       
-        # Go through all combinations [0, 0, ..., 0] --> max_params
+        self.max_params = np.array(max_params) 
         self.current = np.zeros(len(self.max_params), dtype = 'int')
+        
+        if self.pattern.__name__ == 'RW_MC':
+            self.prod = [max_params[-1]]
+            self.current[:-1] = self.max_params[:-1]
+        else:
+            self.prod = [np.prod(self.max_params[p:]+1) for p in range(len(self.max_params))]
+        
+            
+    
+        # Go through all combinations [0, 0, ..., 0] --> max_params
         self.counter = 0
         for i in range(self.prod[0]):
-            self.get_next_combination()
-            print(f'\r{self.current} | ({self.patterns_evaluated}/{self.counter})         ', end = '')
-            self.counter += 1
-            
             try:
-                # print(self.current)
-                # exit()
-                name, input = self.translate_input()
-                mat = self.pattern(self.shape, *input, ref = None)
-            except AssertionError: # Shape not allowed
-                continue
-            
-            metrics = self.evaluate(mat)
-            self.update_best(name, mat, metrics)
+                self.get_next_combination()
+                print(f'\r{self.current} | ({self.patterns_evaluated}/{self.counter})  ', end = '')
+                self.counter += 1
+                
+                try:
+                    name, input = self.translate_input()
+                    out = self.pattern(self.shape, *input, ref = None)
+                    if self.pattern.__name__ == 'RW_MC':
+                        mat, RW = out
+                        name = str(RW)[18:]
+                    else:
+                        mat = out
+                    
+                    assert mat is not None
+                except AssertionError: # Shape not allowed
+                    continue
+                
+                metrics = self.evaluate(mat)
+                self.update_best(name, mat, metrics)
+            except KeyboardInterrupt:
+                break
         print()
-            
+                
     
     
     def get_extrema_string(self, fmt = '0.2f'):
@@ -189,43 +163,97 @@ class Search:
         
         for key in self.extrema:
             for top, mat in enumerate(self.extrema[key][:, 1]):
-                np.save(os.path.join(save_path, f'{key}{top}_conf'), mat)
+                name = f'{key}{top}_conf'
+                np.save(os.path.join(save_path, name), mat)
+                builder = config_builder(mat)
+                builder.build()
+                builder.save_view(save_path, 'sheet', name)
+                # dir, 'sheet', name, overwrite
                 
-       
-        # outfile.write(f'Pattern = {self.pattern.__name__}\n')
-        # outfile.write(f'Max params = {self.max_params}\n')
-        # for key in self.extrema:
-        #     outfile.write(f'{key:11s} | ')
-        #     for val in self.extrema[key]:
-                
-                
-        #         if isinstance(val, (np.ndarray)):
-        #             np.save(os.path.join(save_path, f'{key}_conf'), val)
-        #         else:
-        #             if isinstance(val, str):
-        #                 outfile.write(f'{val} ')
-        #             else:
-        #                 outfile.write(f'{val:0.2f} ')
-        #     outfile.write('\n')
-                    
+      
             
         
 # TODO: Implement repeat functionality ?
+
+def RW_MC(size, max_num_walks = 10, max_max_steps = 10, max_min_dis = 4, bias_max_temp = 10, ref = None):
+    """ Random walk with monte carlo chosen parameters """
+    
+    # --- Get random sample --- #
+    num_walks = random.randint(1, max_num_walks)
+    max_steps = random.randint(1, max_max_steps)
+    min_dis = random.randint(0, max_min_dis)
+    
+    RN_dir = np.random.uniform(0.0, 2*np.pi)
+    RN_temp = random.choice([0, loguniform.rvs(0.1, bias_max_temp)])
+    bias = [(np.cos(RN_dir), np.sin(RN_dir)), RN_temp]
+    
+    center_elem = random.choice(['full', False])
+    avoid_unvalid = random.choice([True, False])
+    RN6 = random.choice([True, False])
+    grid_start = random.choice([True, False])
+    # centering = np.random.choice([True, False]) #?? XXX
+    stay_or_break = np.random.choice([np.random.uniform(0.0, 1.0), False])
+    
+    
+    # --- Generate --- #
+    RW = RW_Generator(size = size,
+                        num_walks = num_walks,
+                        max_steps = max_steps,
+                        min_dis = min_dis,
+                        bias = bias,
+                        center_elem = center_elem,
+                        avoid_unvalid = avoid_unvalid,
+                        RN6 = RN6,
+                        grid_start = grid_start,
+                        centering = False,
+                        stay_or_break = stay_or_break,
+                        avoid_clustering = 'repair', 
+                        periodic = True
+                    )
+
+    mat = RW.generate()
+    return mat, RW
+
+
 
 if __name__ == '__main__':
     folder = 'training_2'
     model_name = f'{folder}/C16C32C64D64D32D16'
     
     
-    S = Search(model_name, topN = 5, pattern = honeycomb)
+    
+    # RW = RW_Generator(  size = (62, 106),
+    #                     num_walks = 50,
+    #                     max_steps = 10,
+    #                     min_dis = 0,
+    #                     bias = [(0,0), 0],
+    #                     center_elem = 'full',
+    #                     avoid_unvalid = True,
+    #                     RN6 = False,
+    #                     grid_start = False,
+    #                     centering = False,
+    #                     stay_or_break = False,
+    #                     avoid_clustering = 'repair', # = Repair() XXX
+    #                     periodic = True
+    #                 )
+    # mat = RW.generate()
+    # builder = config_builder(mat)
+    # builder.build()
+    # builder.view()
+    # exit()
+
     # S = Search(model_name, topN = 1, pattern = pop_up)
-    # S = Search(model_name, topN = 1, pop_up)
+    # S = Search(model_name, topN = 5, pattern = honeycomb)
+    S = Search(model_name, topN = 3, pattern = RW_MC)
+    
+    
+    
     # S.search([9, 13, 4])
     
     # S.search([3, 5, 5, 5])
-    S.search([1, 2, 2, 2])
     
+    S.search([30, 30, 4, 10, 1000])
     
-    
+
     S.print_extrema()
     S.save_extrema('./extrema_folder')
