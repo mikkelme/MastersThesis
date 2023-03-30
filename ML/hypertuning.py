@@ -39,7 +39,7 @@ class Architectures:
 def train_architectures(A_instance, data_root, ML_setting, save_folder):
     timer_file = os.path.join(save_folder, 'timings.txt')
     for i, (model, criterion) in enumerate(A_instance):
-        if i < 27: continue
+        if i < 28: continue
         num_params = model.get_num_params()
         print(f'{i} | {model.name} (#params = {num_params:1.2e})')
         timer_start = perf_counter() 
@@ -49,7 +49,7 @@ def train_architectures(A_instance, data_root, ML_setting, save_folder):
             coach.learn()
             coach.save_history(os.path.join(save_folder, model.name))
             coach.plot_history(show = False, save = os.path.join(save_folder, model.name, 'loss.pdf'))
-            plt.figure().close('all') 
+            # plt.figure().close('all') # XXX Doesn't work yet
         except: # weights exploted inside or something
             print(f'Crashed at architecture {i}')
             pass

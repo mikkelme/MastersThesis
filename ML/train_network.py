@@ -1,6 +1,16 @@
-from dataloaders import *
-from ML_utils import *
-from networks import *
+import sys
+sys.path.append('../') # parent folder: MastersThesis
+
+if 'MastersThesis' in sys.path[0]: # Local 
+    from ML.dataloaders import *
+    from ML.ML_utils import *
+    from ML.networks import *
+else: # Cluster
+    from dataloaders import *
+    from ML_utils import *
+    from networks import *
+    
+
 from collections import OrderedDict
 
 class Loss: # Maybe find better name: 'Criterion' or 'Loss_func'

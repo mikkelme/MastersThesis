@@ -615,7 +615,7 @@ if __name__ == "__main__":
     
     
     
-    mat = pop_up((62, 106), (3,1), 0)
+    mat = pop_up((62, 106), (3,5), 0)
     # mat[:] = 1
     # mat[mat == 1] = 2
     # mat[mat == 0] = 1

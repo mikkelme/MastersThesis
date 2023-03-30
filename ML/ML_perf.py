@@ -7,6 +7,13 @@ import ast
 
 
 
+def get_vmin_max(mat):
+    p = 0.5
+    # High scores = good
+    vmin = np.nanmax((p*np.nanmax(mat), np.nanmin(mat)))
+    vmax = np.nanmax(mat)
+    return vmin, vmax
+
 def staircase_perf(path, compare_folder = [], save = False):
     
     folders = os.listdir(path)
@@ -137,8 +144,7 @@ def staircase_perf(path, compare_folder = [], save = False):
             # R2 test
             fig, ax = plt.subplots(num = unique_fignum(), figsize=(10, 6))
             mat = R2[f]
-            vmin = np.nanmax((0.96, np.nanmin(mat)))
-            vmax = np.nanmax(mat)
+            vmin, vmax = get_vmin_max(mat)
             sns.heatmap(mat, xticklabels = D_axis, yticklabels = S_axis, cbar_kws={'label': fr'$R_2$ test {f}'}, annot=True, fmt='.4g', vmin=vmin, vmax=vmax, ax=ax)
             ax.set_xlabel('Depth', fontsize=14)
             ax.set_ylabel('Start num. channels', fontsize=14)
@@ -151,9 +157,7 @@ def staircase_perf(path, compare_folder = [], save = False):
     # R2 Val
     fig, ax = plt.subplots(num = unique_fignum(), figsize=(10, 6))
     mat = P['R2_0']
-    vmin = np.nanmax((0.96, np.nanmin(mat)))
-    vmax = np.nanmax(mat)
-    print(vmin, vmax)
+    vmin, vmax = get_vmin_max(mat)
     sns.heatmap(mat, xticklabels = D_axis, yticklabels = S_axis, cbar_kws={'label': r'$R_2$ $\langle F_{\parallel} \rangle$ '}, annot=True, fmt='.4g', vmin=vmin, vmax=vmax, ax=ax)
     ax.set_xlabel('Depth', fontsize=14)
     ax.set_ylabel('Start num. channels', fontsize=14)

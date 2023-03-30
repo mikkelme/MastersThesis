@@ -16,55 +16,7 @@ from torch.nn import BatchNorm2d
 from torch import flatten
 from torchinfo import summary
 
-
 import numpy as np
-class LeNet(Module):
-    def __init__(self, numChannels):
-        super(LeNet, self).__init__()
-        
-        # Inialize 1. set of CONV => RELU => POOL layers
-        self.conv1 = Conv2d(in_channels=numChannels, out_channels=20, kernel_size=(11, 11))
-        self.relu1 = ReLU()
-        self.maxpool1 = MaxPool2d(kernel_size=(4, 4), stride=(4, 4))
-        
-        # Inialize 2. set of CONV => RELU => POOL layers
-        self.conv2 = Conv2d(in_channels=20, out_channels=50, kernel_size=(4, 5))
-        self.relu2 = ReLU()
-        self.maxpool2 = MaxPool2d(kernel_size=(2, 2), stride=(2, 2))
-        
-		# Initialize FC ==> RELU layers
-        self.fc1 = Linear(in_features=2500, out_features=500)
-        # self.fc1 = Linear(in_features=2500, out_features=500)
-        self.relu3 = ReLU()
-        
-        # Intialize FC output
-        self.fc2 = Linear(in_features=500, out_features=2)
-        self.sigmoid = Sigmoid()
-        
-    def forward(self, x):
-        # x-shape = (1-3, 63 x 106)
-    
-        # 1. set
-        x = self.conv1(x) # (20, 52 x 96)
-        x = self.relu1(x)
-        x = self.maxpool1(x) # (20, 13 x 24)
-        
-        # 2. set
-        x = self.conv2(x) # (50, 10 x 20)
-        x = self.relu2(x)
-        x = self.maxpool2(x) # (50, 5 x 10 )
-        
-        # 3. set
-        x = flatten(x, 1)
-        x = self.fc1(x)
-        x = self.relu3(x)
-        
-        # Output
-        x = self.fc2(x)
-        x[:,1] = self.sigmoid(x[:,1]) # sigmoid for is_ruptured
-        
-        return x
-        
   
 
 class VGGNet(Module):

@@ -108,7 +108,7 @@ def get_data(data_root, ML_setting, max_file_num = None):
     
     # Data augmentations
     data_transforms = transforms.Compose([transforms.RandomVerticalFlip(p=0.5)]) 
-
+    data_transforms = None # XXX
     # Datasets
     datasets={}
     datasets['train'] = KirigamiDataset(data_root, trvaltest = 'train', transform = data_transforms, max_file_num = max_file_num)
@@ -119,7 +119,7 @@ def get_data(data_root, ML_setting, max_file_num = None):
     # https://medium.com/analytics-vidhya/training-deep-neural-networks-on-a-gpu-with-pytorch-2851ccfb6066
 
     if ML_setting['use_gpu']:
-        num_workers = 4 # or maybe just 2?
+        num_workers = 2
         print(f'num_workers = {num_workers}')
         pin_memory = True
     else:

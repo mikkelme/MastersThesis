@@ -1,10 +1,17 @@
 import sys
 sys.path.append('../') # parent folder: MastersThesis
+
+if 'MastersThesis' in sys.path[0]: # Local 
+    from ML.dataloaders import *
+    from analysis.analysis_utils import *
+else: # Cluster
+    from dataloaders import *
+    from analysis_utils import *
+    
+
 from plot_set import *
-from analysis.analysis_utils import *
 import ast
 
-from ML.dataloaders import *
 import seaborn as sns
 
 

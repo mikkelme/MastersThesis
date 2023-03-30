@@ -1,14 +1,21 @@
-from ML_utils import *
-from networks import *
-import ast
-
-
 import sys
 sys.path.append('../') # parent folder: MastersThesis
-from plot_set import *
 
-# from analysis.analysis_utils import *
-from produce_figures.baseline_variables import *
+if 'MastersThesis' in sys.path[0]: # Local 
+    from produce_figures.baseline_variables import *
+    from ML.ML_utils import *
+    from ML.networks import *
+    from config_builder.build_config import *
+    
+else: # Cluster
+    from baseline_variables import *
+    from ML_utils import *
+    from networks import *
+    from build_config import *
+    
+
+import ast
+from plot_set import *
 from scipy.signal import argrelextrema
 
 
@@ -83,6 +90,7 @@ class Evaluater():
         
         if len(stretch_torch.size()) == 0:
             image = self.image # .copy() XXX?
+            assert False, 'Does this happen'
         else:
             image  = self.image.unsqueeze(0).repeat(len(stretch_torch), 1, 1) 
     
@@ -155,9 +163,10 @@ class Evaluater():
             
             # Produce more smooth stretch curve fore plotting
             _, _, output = self.predict(stretch_space, F_N[k])
-            rupture = output[:,-1] > 0.5
+            no_rupture = output[:,-1] < 0.5
             color = get_color_value(F_N[k], colorbar_scale[0][0], colorbar_scale[0][1], scale = colorbar_scale[1], cmap = matplotlib.cm.viridis)
-            axes[0].plot(stretch_space, output[:, 0], color = color, label = f'R2 = {R2:g}')
+            # axes[0].plot(stretch_space, output[:, 0], color = color, label = f'R2 = {R2:g}')
+            axes[0].plot(stretch_space[no_rupture], output[no_rupture, 0], color = color, label = f'R2 = {R2:g}')
         
         fig.legend(fontsize = 14)
     
@@ -221,28 +230,78 @@ class Evaluater():
     
     
     def get_feature_maps(self):
-        # XXX WORKING HERE XXX
-        # TODO: Plot the feature map for different images
         model_children = list(self.model.children())
-        
-        model_weights = []
-        conv_layers = []
-        
-        for i in range(len(model_children)):
-            if type(model_children[i]) == nn.Conv2d:
-                model_weights.append(model_children[i].weight)
-                conv_layers.append(model_children[i])
-        
-        print(model_children)
+        module_list = model_children[0]
         
         
-        # https://ravivaishnav20.medium.com/visualizing-feature-maps-using-pytorch-12a48cd1e573
         
+        conv_weights = []
+        conv_part = []
+        for module in module_list:
+            if type(module) == nn.Linear: break
+            conv_part.append(module)
+            if type(module) == nn.Conv2d:
+                conv_weights.append(module.weight)
+        
+        # XXX Hardcoded
+        stretch_val = 0.5
+        F_N_val = 5.0
+        
+        # Get input
+        image = self.image.unsqueeze(0).repeat(1, 1, 1, 1)
+        stretch = torch.tensor(stretch_val).view(1, 1, 1, 1).expand(-1, -1, image.shape[2], image.shape[3])
+        F_N = torch.tensor(F_N_val).view(1, 1, 1, 1).expand(-1, -1, image.shape[2], image.shape[3])
+        x = torch.cat((image, stretch, F_N), dim = 1)
+      
+      
+      
+        outputs = [] 
+        for layer in conv_part:
+            x = layer(x)
+            if type(layer) == nn.Conv2d:
+                outputs.append(x)
+            
+        print(len(outputs))
+        print(len(conv_weights))
+      
+      
+        # Plo feature maps
+        shape = (4,4)
+        for depth in reversed(range(len(outputs))):
+            layer = outputs[depth]
+            print(np.shape(layer))
+            fig, axes = plt.subplots(*shape, num = unique_fignum(), figsize = (10,6))
+            
+            N = np.min((np.prod(np.shape(axes)), layer.shape[1]))
+            for i in range(N):
+                ax = axes[i//axes.shape[1], i%axes.shape[1]]
+                ax.imshow(np.array(layer[0, i].detach()), cmap='viridis')
+                ax.axis('off')
+            fig.suptitle(f'Depth = {depth}')
+            fig.supxlabel(r"$x$ (armchair direction)", fontsize = 14)
+            fig.supylabel(r"$y$ (zigzag direction)", fontsize = 14)
+            fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)        
+            
+        # TODO: Maybe plot on lines like shown here: 
+        # https://towardsdatascience.com/convolutional-neural-network-feature-map-and-filter-visualization-f75012a5a49c
+      
+        plt.show()
+      
+        # atom_radii = 0.6
+        # fig1 = plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k'); ax1 = fig1.gca()
+        # plot_feature_map(test, ax1, atom_radii, cmap = 'gray', edgecolor = 'black') # Pattern   
+
+     
     
-    def explainable_AI_methods(self):
+    def explainable_AI_methods(self):        
         # TODO: Use some kind of linearization method to show which pixels 
         # it is most sensitive to in order to reveal information about attention behind prediciton 
         pass
+    
+        # TODO: Activation maps XXX
+        
+        
+        
     
 def test_model_manual(name = None):
     # Model 
@@ -279,9 +338,9 @@ def test_model_compare(name = None):
     # folder = '../Data/CONFIGS/popup/pop_4'
 
     # folder = '../Data/CONFIGS/honeycomb/hon_1' # hon3215 used in ML data
-    # folder = '../Data/Baseline_fixmove/honeycomb/multi_stretch' # hon3215 used in Baseline
+    folder = '../Data/Baseline_fixmove/honeycomb/multi_stretch' # hon3215 used in Baseline
     # folder = '../Data/CONFIGS/popup/pop_35' # pop1_7_5 used in ML data
-    folder = '../Data/Baseline_fixmove/popup/multi_stretch' # pop1_7_5 used in Baseline
+    # folder = '../Data/Baseline_fixmove/popup/multi_stretch' # pop1_7_5 used in Baseline
 
     # --- Compare --- #
     EV = Evaluater(model_weights, model_info)
@@ -295,19 +354,47 @@ def show_CNN_layers(model_path):
 
 
     # folder = '../Data/CONFIGS/honeycomb/hon_1' # hon3215 used in ML data
-    # folder = '../Data/Baseline_fixmove/honeycomb/multi_stretch' # hon3215 used in Baseline
+    folder = '../Data/Baseline_fixmove/honeycomb/multi_stretch' # hon3215 used in Baseline
     # folder = '../Data/CONFIGS/popup/pop_35' # pop1_7_5 used in ML data
-    folder = '../Data/Baseline_fixmove/popup/multi_stretch' # pop1_7_5 used in Baseline
-    EV = Evaluater(model_weights, model_info)
-    EV.get_feature_maps()
+    # folder = '../Data/Baseline_fixmove/popup/multi_stretch' # pop1_7_5 used in Baseline
+    # folder = '../Data/CONFIGS/RW/RW50'
     
+    config_path = find_single_file(folder, '.npy')
+    EV = Evaluater(model_weights, model_info)
+    EV.load_config(config_path)
+    EV.get_feature_maps() 
+    
+    
+
+def plot_feature_map(mat, ax, radius, cmap, **param):
+    full = build_graphene_sheet(np.ones(np.shape(mat)))
+    
+    pos = full.get_positions().reshape(*np.shape(mat), 3)
+    on = mat > 0.5
+    xmin = np.min(pos[on, 0])
+    ymin = np.min(pos[on, 1])
+    xmax = np.max(pos[on, 0])
+    ymax = np.max(pos[on, 1])
+    
+    colors = get_color_value(mat, np.min(mat), np.max(mat), scale = 'linear', cmap=cmap)
+    for i in range(mat.shape[0]):
+        for j in range(mat.shape[1]):
+            x, y = pos[i, j, 0:2]
+            circle = plt.Circle((x, y), radius, facecolor = colors[i, j],  **param)
+            ax.add_patch(circle)
+                
+    ax.axis('equal')
+    
+    return xmin, ymin, xmax, ymax
+
+
 
 if __name__ == '__main__':
     
     # name = 'graphene_h_BN/C16C32C64D64D32D16'
     # name = 'training_1/C16C32D32D16'
     
-    folder = 'training_2'
+    folder = 'staircase_2'
     
     # name = f'{folder}/C8C16C32C64D32D16D8' 
     # name = f'{folder}/C8C16D16D8' 
@@ -316,14 +403,19 @@ if __name__ == '__main__':
     # name = f'{folder}/C16C32C64C64D64D32D16'
     # name = f'{folder}/C16C32C64C64D512D128' 
     # name = f'{folder}/C16C32C64C128D64D32D16' 
-    name = f'{folder}/C16C32C64D64D32D16' # BEST
+    # name = f'{folder}/C16C32C64D64D32D16' # BEST
     # name = f'{folder}/C16C32C64D512D128' 
     # name = f'{folder}/C16C32D32D16'
     # name = f'{folder}/C32C64C128D128D64D32'
     
+    
+    name = f'{folder}/S32D8'
+    # name = f'{folder}/S4D14'
+    
     # test_model_manual(name)
-    test_model_compare(name)
+    # test_model_compare(name)
     # show_CNN_layers(name)
+    show_CNN_layers(name)
     
     
     plt.show()

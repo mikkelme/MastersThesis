@@ -1,8 +1,19 @@
-from use_network import *
+import sys
+sys.path.append('../') # parent folder: MastersThesis
 
-from config_builder.build_config import *
+if 'MastersThesis' in sys.path[0]: # Local 
+    from ML.use_network import *
+    from config_builder.build_config import *
+    from graphene_sheet.build_utils import *
+else: # Cluster
+    from build_config import *
+    from build_utils import *
+    from use_network import *
+    
+
+
+
 from ase.visualize.plot import plot_atoms
-from graphene_sheet.build_utils import *
 
 
 # TODO: Change name to GA = genetic algorithm 
