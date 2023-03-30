@@ -6,7 +6,7 @@ pyenv activate env
 
 # Run on GPU x (Only works when staying logged in)
 
-CUDA_VISIBLE_DEVICES=0 python yourscript.py
+CUDA_VISIBLE_DEVICES=0 python speed_test.py
 
 # Run on GPU x (With possibility to logout)
 CUDA_VISIBLE_DEVICES=0 nohup python A_tuning.py > out1.log 2> error1.log &

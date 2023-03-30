@@ -111,7 +111,8 @@ def get_data(data_root, ML_setting, max_file_num = None):
     # https://medium.com/analytics-vidhya/training-deep-neural-networks-on-a-gpu-with-pytorch-2851ccfb6066
 
     if ML_setting['use_gpu']:
-        num_workers = 1
+        num_workers = 4
+        print(f'num_workers = {num_workers}')
         pin_memory = True
     else:
         num_workers = 0
