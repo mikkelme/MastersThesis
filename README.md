@@ -261,6 +261,9 @@
 #### Week 12 (27/03/2023 - 02/04/2023) - Working from Pisa
 - Continued writing on data analysis and dataset
 - Looked at architecture staircase type tuning and submitted a new extended search
+- Got nice plot of coupled stretch and normal force showing negative friction coefficients!
+- Made code for visualization of feature map activation
+- Implemented data augmentation: Flipping the sheet configuration across the y-axis (not yet used in training)
 
 
 ## Things to remember 
