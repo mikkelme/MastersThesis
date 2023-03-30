@@ -39,6 +39,9 @@ class Architectures:
 def train_architectures(A_instance, data_root, ML_setting, save_folder):
     timer_file = os.path.join(save_folder, 'timings.txt')
     for i, (model, criterion) in enumerate(A_instance):
+        if i < 27: continue
+        num_params = model.get_num_params()
+        print(f'{i} | {model.name} (#params = {num_params:1.2e})')
         timer_start = perf_counter() 
         
         try:
@@ -46,6 +49,7 @@ def train_architectures(A_instance, data_root, ML_setting, save_folder):
             coach.learn()
             coach.save_history(os.path.join(save_folder, model.name))
             coach.plot_history(show = False, save = os.path.join(save_folder, model.name, 'loss.pdf'))
+            plt.figure().close('all') 
         except: # weights exploted inside or something
             print(f'Crashed at architecture {i}')
             pass
@@ -55,15 +59,15 @@ def train_architectures(A_instance, data_root, ML_setting, save_folder):
         h = int(elapsed_time // 3600)
         m = int((elapsed_time % 3600) // 60)
         s = int(elapsed_time % 60)
-        
+    
 
         if i == 0: # Create file
             outfile = open(timer_file, 'w')
             outfile.write('# Architecture | time [h:m:s]\n')
-            outfile.write(f'{i} | {h:02d}:{m:02d}:{s:02d}\n')
+            outfile.write(f'{i} | {model.name} (#params = {num_params:1.2e}) {h:02d}:{m:02d}:{s:02d}\n')
         else: # Append to file
             outfile = open(timer_file, 'a')
-            outfile.write(f'{i} | {h:02d}:{m:02d}:{s:02d}\n')
+            outfile.write(f'{i} | {model.name} (#params = {num_params:1.2e}) {h:02d}:{m:02d}:{s:02d}\n')
         outfile.close()
             
 

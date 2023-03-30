@@ -18,6 +18,7 @@ class KirigamiDataset(Dataset):
         
         
         self.data_root = data_root
+        self.transform = transform
         self.data_dir = []
         random_seed = 0 # Independent seed for tweeking train-val-split
        
@@ -83,7 +84,10 @@ class KirigamiDataset(Dataset):
         sample = {} # Sample dictionary 
         
         # Cut configuration
-        sample['config'] = torch.from_numpy(np.load(os.path.join(self.data_dir[idx], 'config.npy')).astype(np.float32))
+        config = torch.from_numpy(np.load(os.path.join(self.data_dir[idx], 'config.npy')).astype(np.float32))
+        if self.transform: 
+            config = self.transform(config)
+        sample['config'] = config
         
         # Get numerics
         with open(os.path.join(self.data_dir[idx], 'val.csv'), newline='') as csvfile:
@@ -100,18 +104,22 @@ def get_data(data_root, ML_setting, max_file_num = None):
     """Get datasets and dataloaders from Kirigami dataset. """
 
     max_file_num = ML_setting['max_file_num']
+    
+    
+    # Data augmentations
+    data_transforms = transforms.Compose([transforms.RandomVerticalFlip(p=0.5)]) 
 
     # Datasets
     datasets={}
-    datasets['train'] = KirigamiDataset(data_root, trvaltest = 'train', max_file_num = max_file_num)
-    datasets['val']   = KirigamiDataset(data_root, trvaltest = 'val',   max_file_num = max_file_num)
+    datasets['train'] = KirigamiDataset(data_root, trvaltest = 'train', transform = data_transforms, max_file_num = max_file_num)
+    datasets['val']   = KirigamiDataset(data_root, trvaltest = 'val',   transform = data_transforms, max_file_num = max_file_num)
 
 
     
     # https://medium.com/analytics-vidhya/training-deep-neural-networks-on-a-gpu-with-pytorch-2851ccfb6066
 
     if ML_setting['use_gpu']:
-        num_workers = 4
+        num_workers = 4 # or maybe just 2?
         print(f'num_workers = {num_workers}')
         pin_memory = True
     else:
@@ -156,36 +164,35 @@ if __name__ == "__main__":
     ML_setting = get_ML_setting()
     
     
-    KirigamiDataset(data_root, trvaltest = 'train')
+    # KirigamiDataset(data_root, trvaltest = 'train')
+    
     
     # datasets, dataloaders = get_data(data_root, ML_setting, max_file_num = None)
     # datasets, dataloaders = get_data(data_root, ML_setting, max_file_num = None)
-    # trainloader = dataloaders['train']
     
     
     
     
-
+    datasets, dataloaders = get_data('../Data/ML_data/RW', ML_setting, max_file_num = 200)
+    trainloader = dataloaders['train']
     
-    # test_loader = KirigamiDataset(data_root, 'train')
-    # for i in range(len(test_loader)):
-    #     print(test_loader[i]['stretch'])
-    
-    # list of vowels
-    # phones = ['apple', 'samsung', 'oneplus']
-    # phones_iter = iter(phones)
-
-    
+    print("go")
+    loader_iter = iter(trainloader)
+    for i in range(10):
+        out = next(loader_iter)
+        print(out)
+        
+    exit()
+        
+        
     # print("go")
     # loader_iter = iter(trainloader)
     # for i in range(10):
     #     out = next(loader_iter)
     #     print(out)
-    # print("go")
-    # loader_iter = iter(trainloader)
-    # for i in range(10):
-    #     out = next(loader_iter)
-    #     print(out)
+    
+     
+ 
         
         
         

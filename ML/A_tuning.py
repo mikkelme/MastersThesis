@@ -72,9 +72,9 @@ if __name__ == '__main__':
     
     
     A = A_staircase(mode = 0, batchnorm = True)
-    A.A = A.A[:2]
-    print(A)
-    # train_architectures(A, data_root, ML_setting, save_folder = 'staircase_2')
+    train_architectures(A, data_root, ML_setting, save_folder = 'staircase_2')
+    # print(A)
+    # A.A = A.A[:2]
     
     
     
