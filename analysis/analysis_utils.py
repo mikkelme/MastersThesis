@@ -21,7 +21,10 @@ def read_friction_file(filename):
     header = infile.readline().strip('#\n ').split(' ')
     infile.close()
     
-    data = np.loadtxt(filename)
+    try:
+        data = np.loadtxt(filename)
+    except ValueError:
+        data = np.genfromtxt(filename, invalid_raise=False) # Ignore rows with missing columns  
     outdict = dict(zip(header, data.T))
     
     return outdict
