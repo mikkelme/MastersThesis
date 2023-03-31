@@ -70,12 +70,12 @@ if __name__ == '__main__':
     # ################################### 
     
     
-    
+    ML_setting['use_gpu'] = False
     A = A_staircase(mode = 0, batchnorm = True)
     # A.A = A.A[16:]
     
-    # LR_range_test(A, data_root, ML_setting, save_folder = 'staircase_lr')
-    train_architectures(A, data_root, ML_setting, save_folder = 'staircase_3')
+    LR_range_test(A, data_root, ML_setting, save_folder = 'staircase_lr')
+    # train_architectures(A, data_root, ML_setting, save_folder = 'staircase_3')
     
     # print(A)
     

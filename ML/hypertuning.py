@@ -123,7 +123,7 @@ class Find_optimal_LR:
 
     
 def LR_range_test(A_instance, data_root, ML_setting, save_folder):
-    start_lr = 1e-6
+    start_lr = 1e-7
     end_lr = 10.0
 
     # optimizer = optim.Adam(model.parameters(), lr = 1e-6)
@@ -176,7 +176,6 @@ def plot_LR_range_test(path):
         lr.append(float(line.split('lr = ')[-1]))
         if name == 'S64D4': break
 
-# 1 | S2D6 (#params = 9.17e+03) suggested lr = 0.008587846980686325
     
     # --- Organize into matrix (D, S, lr) --- #
     # Get unique axis
