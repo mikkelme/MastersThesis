@@ -131,10 +131,13 @@ class Trainer:
         
         
     
-        self.optimizer = optim.SGD(model.parameters(), lr = self.ML_setting['lr'], momentum = 0.9)
+        # self.optimizer = optim.SGD(model.parameters(), lr = self.ML_setting['lr'], momentum = 0.9)
+        self.optimizer = optim.Adam(model.parameters(), lr = self.ML_setting['lr'])
+        
+        
+        
         if self.ML_setting['scheduler_stepsize'] is None or self.ML_setting['scheduler_factor'] is None:
             self.lr_scheduler = None
-            # exit(f'lr_scheduler is None | This is not yet implemented')
         else:
             self.lr_scheduler = torch.optim.lr_scheduler.StepLR(self.optimizer, 
                                                         step_size = self.ML_setting['scheduler_stepsize'], 
@@ -155,7 +158,7 @@ class Trainer:
             self.ML_setting['max_file_num'] = max_file_num
         
         
-        # Data and device
+        # Data 
         self.datasets, self.dataloaders = get_data(self.data_root, self.ML_setting)
         
         
@@ -391,7 +394,7 @@ class Trainer:
         # --- Evaluate --- #    
         image, vals = get_inputs(data, self.device)
         labels = get_labels(data, self.model.keys, self.device)
-        outputs = self.model(image, vals)
+        outputs = self.model((image, vals))
         loss, Ff_loss, other_loss, rup_loss = self.criterion(outputs, labels)
         return loss, Ff_loss, other_loss, rup_loss, outputs, labels 
     

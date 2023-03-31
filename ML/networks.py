@@ -112,8 +112,10 @@ class VGGNet(Module):
         # self.apply(self. init_weights)
         # exit()
 
-    def f_mix(self, image, vals):
+    def f_mix(self, x):
         """ Image and numerical input (on indivual channels) all go through convolution """
+        image, vals = x
+        
         # --- Gather input into channels --- #
         # Unsqueeze numerical valuess and expand channels into mathing image dimensions
         vals = vals.view(vals.shape[0], vals.shape[1], 1, 1).expand(vals.shape[0], vals.shape[1], image.shape[1], image.shape[2])
@@ -140,8 +142,11 @@ class VGGNet(Module):
          
         return x
         
-    def f_insert(self, image, vals):
+    def f_insert(self, x):
         """ Image through convolution and numerical values input directly to FC """
+        
+        image, vals = x
+        
         x = torch.unsqueeze(image, 1)
         
         # Convolutional 

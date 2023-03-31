@@ -67,51 +67,73 @@ forced linear fit on the data. We clearly observed a non-linear relationship bet
 In figure \ref{fig:corr_vis} we have visualized the data (excluding the pilot study) for chosen pairs of variables on the axes. In addition to a visual confirmation of how the given correlations look in a 2D plot we also get a feeling for the coverage in various areas of the parameter space that we are eventually going to feed the neural network. The honeycomb pattern is spanning a significant larger range of stretch, contact and mean friction makes the data rather biased towards the Honeycomb pattern in thoose areas. 
 % Judging form the combinned information of the pilot study and the data distribution shown in figure \ref{fig:corr_vis} it would not be surprising if the machine learning were to learn that the honeycomb pattern is superiour for 
 
-\begin{figure}[H]
-  \centering
-  \begin{subfigure}[t]{0.49\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/ML/corr_stretch_Ff.pdf}
-      \caption{}
-      % \label{fig:}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.49\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/ML/corr_stretch_contact.pdf}
-      \caption{}
-      % \label{fig:}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.49\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/ML/corr_contact_Ff.pdf}
-      \caption{}
-      % \label{fig:}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.49\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/ML/corr_porosity_Ff.pdf}
-      \caption{}
-      % \label{fig:}
-  \end{subfigure}
-  \hfill
-     \caption{Scatter plot of the data sets Tetrahedron, Honeycomb and Random Walk (excluding the pilot study) for various variable combinations in order to visualize some chosen  correlations of interest and distributions in the data}
-     \label{fig:corr_vis}
-\end{figure}
+% Uncommented to decrease loading time
+% \begin{figure}[H]
+%   \centering
+%   \begin{subfigure}[t]{0.49\textwidth}
+%       \centering
+%       \includegraphics[width=\textwidth]{figures/ML/corr_stretch_Ff.pdf}
+%       \caption{}
+%       % \label{fig:}
+%   \end{subfigure}
+%   \hfill
+%   \begin{subfigure}[t]{0.49\textwidth}
+%       \centering
+%       \includegraphics[width=\textwidth]{figures/ML/corr_stretch_contact.pdf}
+%       \caption{}
+%       % \label{fig:}
+%   \end{subfigure}
+%   \hfill
+%   \begin{subfigure}[t]{0.49\textwidth}
+%       \centering
+%       \includegraphics[width=\textwidth]{figures/ML/corr_contact_Ff.pdf}
+%       \caption{}
+%       % \label{fig:}
+%   \end{subfigure}
+%   \hfill
+%   \begin{subfigure}[t]{0.49\textwidth}
+%       \centering
+%       \includegraphics[width=\textwidth]{figures/ML/corr_porosity_Ff.pdf}
+%       \caption{}
+%       % \label{fig:}
+%   \end{subfigure}
+%   \hfill
+%      \caption{Scatter plot of the data sets Tetrahedron, Honeycomb and Random Walk (excluding the pilot study) for various variable combinations in order to visualize some chosen  correlations of interest and distributions in the data}
+%      \label{fig:corr_vis}
+% \end{figure}
 
 
 \section{Properties of interest} % Properties of interest / Stretch profiles
-From the Pilot study we discovered that it might be possible to achieve a negative friction coefficient  for the kirigami cut configuration under the assumption of a system with coupled normal force $F_N$ and stretch $S$. Thus, this stands as the main property of interest to explore further in the dataset. However, it is not obvious how one should quanity this in rigorous manner. The friction coefficeint is by our definition given as the slope of the friction vs. normal force curve (\hl{see theory sec XXX}). That is for two points $(F_{N,1}, F_{f,1}), (F_{N,2}, F_{f,2})$, $F_{N,1} < F_{N,2}$ we calculate the friction coefficeint $\mu_{1,2}$ as 
+From the Pilot study we found promising prospects regarding the achievement of a negative friction coefficient for certain kirigami cut configurations under the assumption of a system with coupled normal force $F_N$ and stretch $S$. This stands as the main property of interest to explore further in the dataset. However, it is not obvious how one should quanity this in a rigorous manner. The friction coefficient is by our definition (\hl{see theory sec XXX}) given as the slope of the friction vs. normal force curve. That is, for two data points $(F_{N,1}, F_{f,1}), (F_{N,2}, F_{f,2})$, $F_{N,1} < F_{N,2}$ we calculate the friction coefficient $\mu_{1,2}$ as 
 \begin{align*}
   \mu_{1,2} = \frac{F_{f,2} - F_{f,1}}{F_{N,2} - F_{N,1}} = \frac{\Delta F_f}{\Delta F_N}
 \end{align*}
-In the pilot study it became clear that the effects on the friction force when varying the normal force were neglible in comparison to that when varying the stretch. Thus, we use the assumption $F_f(S)$ such that for a coupling bestween stretch and normal force $F_N = RS + C$ with coupling ratio $R$ we get 
+In the pilot study it became clear that the effects on the friction force when varying the normal force were neglible in comparison to that of varying the stretch. Thus, we assume $F(F_N, S) = F(F_N) + F(S) \approx F(S)$ such that for a coupling between stretch and normal force $F_N = RS + C$ with coupling ratio $R$ we get 
 \begin{align*}
-  \mu_{1,2}(S_1, S_2) = \frac{\Delta F_{f}(S_1, S_2)}{R(S_2 - S_1) + C} \underset{\sim}{\propto} \frac{\Delta F_{f}(S_1, S_2)}{\Delta S}.
+  \mu_{1,2}(S_1, S_2) = \frac{\Delta F_{f}(S_1, S_2)}{R(S_2 - S_1) + C} \underset{\sim}{\propto} \frac{\Delta F_{f}(S_1, S_2)}{\Delta S},
 \end{align*}
-Thus, we practically exchange the normal force with the stretch for the purpose of evaluating the friction coefficient. \hl{How should we evaluate. Steepest curve might be risky due to datapoint with small fluctuations but very close on the stretch axis which gives a big slope. Instead, we use biggest forward drop. }
+where the last proportionality is achieved by assumping $C \ll 0$.  From the
+above reasoning we practically exchanged $F_N$ with $S$ in the formula for
+calculating the friction coefficient. This means that we should look at the
+friction vs. stretch curve for which a steep decline indicates a strong negative
+coefficient for the assumed coupled system which we will work with later. By
+definition, the minimum slope value would give the lowest friction coefficient.
+However, this is also a uncertain measure as two data points with a small
+difference in stretch can easily achieve extreme slope values by very little
+error or noise in friction value. Even if such an extreme slope existed locally
+it would not be very interesting since the negative coefficient woud only be
+valid in that small range. We are essentially looking for the lowest coefficient
+in the longest possible stretch range. One way to capture a bit from both of
+these concepts is by looking for the biggest drop in friction when increasing
+stretch. By scanning over all local maxima we evaluate the difference in friction to all of the following local minema. The biggest drop will serve as our indicator for good prospects of showcasing a negative friction coefficient. By doing so we do not guarantee a monotonic decrease of friciton in the range that got the biggest drop, but we believe that this is a good evaluation function to target interesting properties in general. 
+
+In addition to the biggest forward drop in friction we also look a minimum abnd maximum friction along with the difference between theese extrema.
+
+
+
+% \hl{The above argumentation is purely to motivate the interpretation of a negative friction coefficient.}
+
+% \hl{How should we evaluate. Steepest curve might be risky due to datapoint with small fluctuations but very close on the stretch axis which gives a big slope. Instead, we use biggest forward drop. }
 
 % Working here. 
 
@@ -119,7 +141,7 @@ Thus, we practically exchange the normal force with the stretch for the purpose 
 
 % far less ... in comparision to the effect of stretching the sheet. By the assumption that we can couple the stretch and the normal force we can use the friction force vs. stretch curve to determine the friction coefficient instead. With some uncertainty in either the dataset points 
 
-% most negative friction coefficeint is by our definition given the steepest declining slope of the 
+% most negative friction coefficient is by our definition given the steepest declining slope of the 
 
 % \hl{Define somewhere that we will look at low friction, high friction and the biggest (forward) drop in friction corresponding to a significant negative friction coefficient}.
 
@@ -151,8 +173,6 @@ Thus, we practically exchange the normal force with the stretch for the purpose 
 \end{tabular}
 \end{center}
 \end{table}
-
-
 % Popup
 % ['(3, 9, 4)', 0.0296407442523106, 0.006738434728040425]
 % ['(5, 3, 1)', 0.139120019152679, 1.5874991413277917]
@@ -172,65 +192,66 @@ Thus, we practically exchange the normal force with the stretch for the purpose 
 % ['01', 0.0591598822685843, 0.112739882268582, 0.18175926264779968]
 
 
-\begin{figure}[H]
-  \centering
-  \begin{subfigure}[t]{0.49\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_pop_27.pdf}
-      \caption{}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.49\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_pop_31.pdf}
-      \caption{}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.49\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_hon_6.pdf}
-      \caption{}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.49\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_hon_12.pdf}
-      \caption{}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.49\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_hon_28}
-      \caption{}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.49\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_hon_42.pdf}
-      \caption{}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.49\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_RW01.pdf}
-      \caption{}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.49\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_RW12.pdf}
-      \caption{}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.49\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_RW96.pdf}
-      \caption{}
-  \end{subfigure}
-  \hfill
-     \caption{}
-     \label{fig:}
-\end{figure}
+% Uncommented to decrease loading time
+% \begin{figure}[H]
+%   \centering
+%   \begin{subfigure}[t]{0.49\textwidth}
+%       \centering
+%       \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_pop_27.pdf}
+%       \caption{}
+%   \end{subfigure}
+%   \hfill
+%   \begin{subfigure}[t]{0.49\textwidth}
+%       \centering
+%       \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_pop_31.pdf}
+%       \caption{}
+%   \end{subfigure}
+%   \hfill
+%   \begin{subfigure}[t]{0.49\textwidth}
+%       \centering
+%       \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_hon_6.pdf}
+%       \caption{}
+%   \end{subfigure}
+%   \hfill
+%   \begin{subfigure}[t]{0.49\textwidth}
+%       \centering
+%       \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_hon_12.pdf}
+%       \caption{}
+%   \end{subfigure}
+%   \hfill
+%   \begin{subfigure}[t]{0.49\textwidth}
+%       \centering
+%       \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_hon_28}
+%       \caption{}
+%   \end{subfigure}
+%   \hfill
+%   \begin{subfigure}[t]{0.49\textwidth}
+%       \centering
+%       \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_hon_42.pdf}
+%       \caption{}
+%   \end{subfigure}
+%   \hfill
+%   \begin{subfigure}[t]{0.49\textwidth}
+%       \centering
+%       \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_RW01.pdf}
+%       \caption{}
+%   \end{subfigure}
+%   \hfill
+%   \begin{subfigure}[t]{0.49\textwidth}
+%       \centering
+%       \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_RW12.pdf}
+%       \caption{}
+%   \end{subfigure}
+%   \hfill
+%   \begin{subfigure}[t]{0.49\textwidth}
+%       \centering
+%       \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_RW96.pdf}
+%       \caption{}
+%   \end{subfigure}
+%   \hfill
+%      \caption{}
+%      \label{fig:}
+% \end{figure}
 
 
 
@@ -242,14 +263,31 @@ The stretch profiles for all the configurations are shown in appendix \ref{sec:d
 
 \section{Machine learning}
 
-Staircase architecture tuning.
+Choices to make
+\begin{itemize}
+  \item Learning rate: increasing LR to locate minimum in loss gradient (fastest learning) (LR range test) % https://arxiv.org/pdf/1803.09820.pdf % consider cycling learning rates maybe?
+  \item Architecture: VGGNet staircase type search
+  \item Optimizers: Just try some different ones and look at convergence
+  \item weight decay
+\end{itemize}
 
+Suggestion for hyperparameter tuning 
+\begin{enumerate}
+  \item Select complexity range of VGGNet staircase type architectures
+  \item Start with Adam optimizer at default settings
+  \item Perform LR range test to get information of a suitable LR and choose one that will work for most of the architectures. 
+  \item Perform architecture grid search over depth and start number of channels (complexity). Choose best architecture from this. 
+  \item Additionally add weight decay to further optimize learning for that architecture choice. Perhaps cyclic learning rates. 
+\end{enumerate}
 
+Start by mentioning the related articles using a VGGNet tyep network (and maybe also their learning rates). 
 
  
+Either submit with best lr for each or choose something that works for all. 0.0005 seemed as a good middle ground but the complex networks crash with these learning rates. It looks like 0.0001 (like Hanakata used) will do the job for all. 
+
 \section{Accelerated Search}
 
-Having a network model that can predict friction force for a given configuration are able to search for some desired properties. Low and high friction and maximal negative friction coefficeints
+Having a network model that can predict friction force for a given configuration are able to search for some desired properties. Low and high friction and maximal negative friction coefficients
 
 
 Here we pursue two different approaches for finding 

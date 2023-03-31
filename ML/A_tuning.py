@@ -34,8 +34,7 @@ class A_staircase(Architectures):
                 # Add to list of architectures
                 self.A.append((model, criterion)) 
               
-            
-    
+
     
 if __name__ == '__main__':
     # root = '../Data/ML_data/' # Relative (local)
@@ -44,37 +43,41 @@ if __name__ == '__main__':
     
     ML_setting = {
         'use_gpu': True,
-        'lr': 0.01, 
+        'lr': 0.0001, # 0.0005 
         'batchsize_train': 32,
         'batchsize_val': 64,
-        'max_epochs': 1000,
+        'max_epochs': 300,
         'max_file_num': None,
-        'scheduler_stepsize': 100,
-        'scheduler_factor': 0.5
+        'scheduler_stepsize': None, #100,
+        'scheduler_factor': None #0.5
     }
     
     
-    ########## Testing ############### 
+    # ########## Testing ############### 
     # root = '../Data/ML_data/' # Relative (local)
-    # data_root = [root+'popup']
-
+    # data_root = [root+'baseline', root+'popup', root+'honeycomb', root+'RW']
+    # # data_root = [root+'popup']
     # ML_setting = {
     #     'use_gpu': False,
-    #     'lr': 0.01, 
+    #     'lr': 0.0005, 
     #     'batchsize_train': 32,
     #     'batchsize_val': 64,
     #     'max_epochs': 5,
     #     'max_file_num': None,
-    #     'scheduler_stepsize': 200,
-    #     'scheduler_factor': 0.5
+    #     'scheduler_stepsize': None,#100,
+    #     'scheduler_factor': None#0.5
     # }
-    ################################### 
+    # ################################### 
+    
     
     
     A = A_staircase(mode = 0, batchnorm = True)
-    train_architectures(A, data_root, ML_setting, save_folder = 'staircase_2')
+    # A.A = A.A[16:]
+    
+    # LR_range_test(A, data_root, ML_setting, save_folder = 'staircase_lr')
+    train_architectures(A, data_root, ML_setting, save_folder = 'staircase_3')
+    
     # print(A)
-    # A.A = A.A[:2]
     
     
     

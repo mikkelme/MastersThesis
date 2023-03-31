@@ -97,7 +97,7 @@ class Evaluater():
         vals = torch.stack((stretch_torch, F_N_torch), -1)
 
         # Get output
-        self.output = self.model(image, vals).detach().numpy()
+        self.output = self.model((image, vals)).detach().numpy()
         return image.detach().numpy(), vals.detach().numpy(), self.output
 
 

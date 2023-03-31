@@ -14,8 +14,9 @@ def get_vmin_max(mat):
     vmax = np.nanmax(mat)
     return vmin, vmax
 
-def staircase_perf(path, compare_folder = [], save = False):
-    
+
+def get_staircase_perf(path):
+
     folders = os.listdir(path)
     
     S = [] # Start
@@ -83,24 +84,12 @@ def staircase_perf(path, compare_folder = [], save = False):
         P[key] = np.array(P[key]+[np.nan])[map]
     
    
-    # # Get unique axis
-    # D_axis =  list(set(D))
-    # S_axis =  list(set(S))
-    # shape = (len(S_axis), len(D_axis))
-    
-    # # Sort 
-    # D = np.array(D); S = np.array(S)
-    # S_sort = np.argsort(S)
-    # D_sort = np.concatenate([np.argsort(D[S_sort][i:i+shape[1]])+i for i in range(0, len(D), shape[1])])
-    # sort = S_sort[D_sort]
-    
-    # D = np.flip(D[sort].reshape(shape), 0)
-    # S = np.flip(S[sort].reshape(shape), 0)
-    # for key in P:  
-    #     P[key] = np.flip(np.array(P[key])[sort].reshape(shape), 0)
-    
+    return D_axis, S_axis, P
+   
 
- 
+
+def staircase_heatmap(path, compare_folder = [], save = False):
+    D_axis, S_axis, P = get_staircase_perf(path)
 
     # Evaluation on selected configurations
     if len(compare_folder) > 0:
@@ -191,12 +180,6 @@ def staircase_perf(path, compare_folder = [], save = False):
     ax.set_ylabel('Start num. channels', fontsize=14)
     fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
 
-
-
-            
-            
-        
-        
         
     
 
@@ -205,10 +188,37 @@ def staircase_perf(path, compare_folder = [], save = False):
         # plt.savefig('../article/figures/figure.pdf', bbox_inches='tight')
 
 
+def staircase_complexity(path):
+    D_axis, S_axis, P = get_staircase_perf(path)
+    
+    
+    # train_loss = P['train_tot_loss'].flatten()
+    # val_loss = P['val_tot_loss'].flatten()
+    num_params = P['num_params']
+    sort = np.argsort(num_params.flatten())
+    for key in P:
+        P[key] = (P[key].flatten())[sort]
+    
+    
+    # plt.plot(P['num_params'], P['train_tot_loss'], label = 'train tot loss')
+    # plt.plot(P['num_params'], P['val_tot_loss'], label = 'val tot loss')
+    plt.plot(P['num_params'], P['train_Ff_loss'], label = 'train Ff loss')
+    plt.plot(P['num_params'], P['val_Ff_loss'], label = 'val Ff loss')
+    
+    # diff_tot_loss = P['val_tot_loss'] - P['train_tot_loss']
+    # diff_Ff_loss = P['val_Ff_loss'] - P['train_Ff_loss']
+    # plt.plot(P['num_params'], diff_tot_loss, label = 'diff tot loss')
+    # plt.plot(P['num_params'], diff_Ff_loss, label = 'diff Ff loss')
+    plt.xscale('log')
+    plt.legend()
+    
+    
+    
 if __name__ == '__main__':
     # path = '../ML/staircase_1'
     path = '../ML/staircase_2'
     
     compare_folder = ['../Data/Baseline_fixmove/honeycomb/multi_stretch', '../Data/Baseline_fixmove/popup/multi_stretch']
-    staircase_perf(path, compare_folder, save = False)
+    # staircase_heatmap(path, compare_folder, save = False)
+    staircase_complexity(path)
     plt.show()

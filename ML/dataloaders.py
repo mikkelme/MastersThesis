@@ -108,7 +108,8 @@ def get_data(data_root, ML_setting, max_file_num = None):
     
     # Data augmentations
     data_transforms = transforms.Compose([transforms.RandomVerticalFlip(p=0.5)]) 
-    data_transforms = None # XXX
+    # data_transforms = None # XXX
+    
     # Datasets
     datasets={}
     datasets['train'] = KirigamiDataset(data_root, trvaltest = 'train', transform = data_transforms, max_file_num = max_file_num)
