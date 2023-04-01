@@ -365,27 +365,25 @@ def manual_coupling(path, compare_path = None, save = False, add_path = None, ad
     
 
 def manual_coupling_free(save = False):        
-    # path = '../Data/negative_coef/multi_coupling_free_popup'
-    # compare_path = '../Data/Baseline_fixmove/popup/multi_stretch'
-    # if save is not False:
-    #     save = 'manual_coupling_free_pop1_7_5.pdf'
-    # manual_coupling(path, compare_path, save)
+    path = '../Data/negative_coef/multi_coupling_free_popup'
+    compare_path = '../Data/Baseline_fixmove/popup/multi_stretch'
+    if save is not False:
+        save = 'manual_coupling_free_pop1_7_5.pdf'
+    manual_coupling(path, compare_path, save)
         
     
-    path = '../Data/negative_coef/multi_coupling_free_honeycomb'
-    add_path = '../Data/negative_coef/multi_coupling_free_honeycomb_zoom'
-    add_stretch_range = [0.1, 0.65]
-    compare_path = '../Data/Baseline_fixmove/honeycomb/multi_stretch'
-    if save is not False:
-        save = 'manual_coupling_free_hon3215.pdf'
-    # add_path = '../Data/negative_coef/multi_coupling_free_popup'
-    # add_path = None
-    manual_coupling(path, compare_path, save, add_path, add_stretch_range)
+    # path = '../Data/negative_coef/multi_coupling_free_honeycomb'
+    # add_path = '../Data/negative_coef/multi_coupling_free_honeycomb_zoom'
+    # add_stretch_range = [0.1, 0.65]
+    # compare_path = '../Data/Baseline_fixmove/honeycomb/multi_stretch'
+    # if save is not False:
+    #     save = 'manual_coupling_free_hon3215.pdf'
+ 
+    # manual_coupling(path, compare_path, save, add_path, add_stretch_range)
         
     
     
  
-    
     # path = '../Data/negative_coef/multi_coupling_honeycomb'
     # compare_path = '../Data/Baseline_fixmove/honeycomb/multi_stretch'
     # manual_coupling(path, compare_path, save = 'manual_coupling_hon3215.pdf')

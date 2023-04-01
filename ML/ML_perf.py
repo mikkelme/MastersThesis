@@ -216,9 +216,9 @@ def staircase_complexity(path):
     
 if __name__ == '__main__':
     # path = '../ML/staircase_1'
-    path = '../ML/staircase_2'
+    path = '../ML/staircase_3'
     
     compare_folder = ['../Data/Baseline_fixmove/honeycomb/multi_stretch', '../Data/Baseline_fixmove/popup/multi_stretch']
-    # staircase_heatmap(path, compare_folder, save = False)
-    staircase_complexity(path)
+    staircase_heatmap(path, compare_folder, save = False)
+    # staircase_complexity(path)
     plt.show()

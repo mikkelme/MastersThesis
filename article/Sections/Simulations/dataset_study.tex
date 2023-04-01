@@ -103,18 +103,24 @@ In figure \ref{fig:corr_vis} we have visualized the data (excluding the pilot st
 % \end{figure}
 
 
-\section{Properties of interest} % Properties of interest / Stretch profiles
-From the Pilot study we found promising prospects regarding the achievement of a negative friction coefficient for certain kirigami cut configurations under the assumption of a system with coupled normal force $F_N$ and stretch $S$. This stands as the main property of interest to explore further in the dataset. However, it is not obvious how one should quanity this in a rigorous manner. The friction coefficient is by our definition (\hl{see theory sec XXX}) given as the slope of the friction vs. normal force curve. That is, for two data points $(F_{N,1}, F_{f,1}), (F_{N,2}, F_{f,2})$, $F_{N,1} < F_{N,2}$ we calculate the friction coefficient $\mu_{1,2}$ as 
+\section{Properties of interest} 
+From the Pilot study we discovered that it might be possible a negative friction coefficient for certain kirigami cut configurations under the assumption of a system with coupled normal force $F_N$ and stretch $S$. This stands as the main property of interest to explore further in the dataset. However, it is not obvious how one should quanity this in a rigorous manner. The friction coefficient is by our definition (\hl{see theory sec XXX}) given as the slope of the friction vs. normal force curve. For two data points $(F_{N,1}, F_{f,1}), (F_{N,2}, F_{f,2})$, $F_{N,1} < F_{N,2}$ we evaluate the friction coefficient $\mu_{1,2}$ as 
 \begin{align*}
   \mu_{1,2} = \frac{F_{f,2} - F_{f,1}}{F_{N,2} - F_{N,1}} = \frac{\Delta F_f}{\Delta F_N}
 \end{align*}
-In the pilot study it became clear that the effects on the friction force when varying the normal force were neglible in comparison to that of varying the stretch. Thus, we assume $F(F_N, S) = F(F_N) + F(S) \approx F(S)$ such that for a coupling between stretch and normal force $F_N = RS + C$ with coupling ratio $R$ we get 
+In the pilot study it became clear that the effects on friction under the change of $F_N$ is neglible in comparison to the effects under the change of $S$. Thus, by working under the assumtion $F(F_N, S) \sim F(S)$ and a coupling $F_N \propto R\cdot S$ with coupling ratio $R$ we get 
 \begin{align*}
-  \mu_{1,2}(S_1, S_2) = \frac{\Delta F_{f}(S_1, S_2)}{R(S_2 - S_1) + C} \underset{\sim}{\propto} \frac{\Delta F_{f}(S_1, S_2)}{\Delta S},
+  \mu_{1,2}(S_1, S_2) = \frac{\Delta F_{f}(S_1, S_2)}{R(S_2 - S_1)} \propto \frac{\Delta F_{f}(S_1, S_2)}{\Delta S},
 \end{align*}
-where the last proportionality is achieved by assumping $C \ll 0$.  From the
-above reasoning we practically exchanged $F_N$ with $S$ in the formula for
-calculating the friction coefficient. This means that we should look at the
+With the above reasoning we have in practive exchanged $F_N$ with $S$ in the expression for 
+the friction coefficient. This means that we should search for a negative slope on friction vs.\ stretch curve to achieve the negative friction coefficient in out proposed coupled system. 
+
+The next question that remain is how to consider this slope. 
+
+% Working here.
+
+
+should look at the
 friction vs. stretch curve for which a steep decline indicates a strong negative
 coefficient for the assumed coupled system which we will work with later. By
 definition, the minimum slope value would give the lowest friction coefficient.

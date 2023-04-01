@@ -46,7 +46,7 @@ if __name__ == '__main__':
         'lr': 0.0001, # 0.0005 
         'batchsize_train': 32,
         'batchsize_val': 64,
-        'max_epochs': 300,
+        'max_epochs': 1000,
         'max_file_num': None,
         'scheduler_stepsize': None, #100,
         'scheduler_factor': None #0.5
@@ -70,12 +70,12 @@ if __name__ == '__main__':
     # ################################### 
     
     
-    ML_setting['use_gpu'] = False
+    # ML_setting['use_gpu'] = False
     A = A_staircase(mode = 0, batchnorm = True)
     # A.A = A.A[16:]
     
-    LR_range_test(A, data_root, ML_setting, save_folder = 'staircase_lr')
-    # train_architectures(A, data_root, ML_setting, save_folder = 'staircase_3')
+    # LR_range_test(A, data_root, ML_setting, save_folder = 'staircase_lr')
+    train_architectures(A, data_root, ML_setting, save_folder = 'staircase_4', LR_range = 'lr_staircase.txt')
     
     # print(A)
     

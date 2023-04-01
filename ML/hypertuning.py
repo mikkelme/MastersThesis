@@ -42,13 +42,32 @@ class Architectures:
         
         
   
-def train_architectures(A_instance, data_root, ML_setting, save_folder):
+def train_architectures(A_instance, data_root, ML_setting, save_folder, LR_range = None):
     timer_file = os.path.join(save_folder, 'timings.txt')
+    
+    if LR_range:
+        name = []; num_params = []; lr = []
+        infile = open(LR_range, 'r')
+        for line in infile:
+            if line[0] == '#': continue
+            
+            name.append(line.split('|')[-1].split('(')[0].strip(' '))
+            num_params.append(float(line.split('params = ')[1].split(')')[0]))
+            lr.append(float(line.split('lr = ')[-1]))
+        assert len(lr) == len(A_instance), f'Number of provided lr ({len(lr)}) is not matching the number of architectures ({len(A_instance)})'
+        
+        
+        
     for i, (model, criterion) in enumerate(A_instance):
+        
+        if LR_range:
+            assert model.name == name[i], f'model name {model.name} does not match model name {name[i]} corresponding to LR_range test.'
+            ML_setting['lr'] = lr[i]
+
         # if i < 41: continue
         crashed = False
         num_params = model.get_num_params()
-        print(f'{i} | {model.name} (#params = {num_params:1.2e})')
+        print(f'{i} | {model.name} (#params = {num_params:1.2e}), lr = {ML_setting["lr"]}')
         timer_start = perf_counter() 
         
         try:
@@ -241,7 +260,7 @@ if __name__ == '__main__':
     data_root = [root+'baseline', root+'popup', root+'honeycomb', root+'RW']
     data_root = [root+'honeycomb']
     
-    plot_LR_range_test('staircase_lr/lr.txt')
+    plot_LR_range_test('staircase_lr/lr_staircase.txt')
 
     # ML_setting = {
     #     'use_gpu': False,
