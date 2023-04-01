@@ -1,19 +1,14 @@
 \chapter{Dataset study}
 
 \section{Generating data}
-We generate the dataset by simulating various sheet cut configuratations under
-multiple combinations of normal load and stretch. For each configuration we
+The dataset consist of friction simulations of various cut configurations and combinations of normal load and stretch. For each configuration we
 sample 15 pseudo uniform (\hl{refer to relevant section here}) strech values
 between zero and the rupture stretch found in the rupture test. The normal force
 is uniformly sampled in the range $[0.1, 10]$ nN. In total this gives $3\times
 15$ data points for each configuration. For the remaining parameters we use the
 values presented in the pilot study (see table \ref{tab:param}). We generate 68
 configurations of the Tetrahedron pattern type, 45 of the Honeycomb type and 100
-of the Random walk type which is shown in \hl{Appendix C?}. A summary of the
-data points is given in table \ref{tab:dataset_summary}. The table shows that
-not all submitted data points ``makes it'' to the final dataset. This is due to
-the combination of our numerical procedure and small variations in the rupture
-stretch point. After performing the rupture test the simulation is restarted
+of the Random walk type. A summary of the dataset is given in table \ref{tab:dataset_summary} while all configurations are shown explicitly in \ref{sec:dataset_conf}. Notice that not all submitted data points ``makes it'' to the final dataset. This is due a small variation in rupture stretch points which were not anticipated during the creation of the numerical framework for submitting multiple simulation. After performing the rupture test the simulation is restarted
 with a new substrate size corresponding to the measured rupture stretch limit
 and also with new random velocity and thermostat initializations values. The sheet is then stretched and checkpoints of the simulation state (LAMMPS restart files) are saved for each of the targeted stretch samples. However, if the rupture points arrives slightly early than syggested by the rupture test, some sampled stretch values might not get a corresponding checkpoint file. Thus, these data points are not included in the data set even though they ideally should have been noted as a rupture event. This could quite easily have been mittigated by a rewrite of that part of the code, but it was first discovered after the dataset had been created. However, the dataset still includeds 11.57 \% rupture events and it most likely that the most cases with a lost rupturer event have a rupture event stored for the preeceding stretch value instead which captures the information of the sheet stretch limit on its own. 
 
@@ -67,96 +62,66 @@ forced linear fit on the data. We clearly observed a non-linear relationship bet
 In figure \ref{fig:corr_vis} we have visualized the data (excluding the pilot study) for chosen pairs of variables on the axes. In addition to a visual confirmation of how the given correlations look in a 2D plot we also get a feeling for the coverage in various areas of the parameter space that we are eventually going to feed the neural network. The honeycomb pattern is spanning a significant larger range of stretch, contact and mean friction makes the data rather biased towards the Honeycomb pattern in thoose areas. 
 % Judging form the combinned information of the pilot study and the data distribution shown in figure \ref{fig:corr_vis} it would not be surprising if the machine learning were to learn that the honeycomb pattern is superiour for 
 
-% Uncommented to decrease loading time
-% \begin{figure}[H]
-%   \centering
-%   \begin{subfigure}[t]{0.49\textwidth}
-%       \centering
-%       \includegraphics[width=\textwidth]{figures/ML/corr_stretch_Ff.pdf}
-%       \caption{}
-%       % \label{fig:}
-%   \end{subfigure}
-%   \hfill
-%   \begin{subfigure}[t]{0.49\textwidth}
-%       \centering
-%       \includegraphics[width=\textwidth]{figures/ML/corr_stretch_contact.pdf}
-%       \caption{}
-%       % \label{fig:}
-%   \end{subfigure}
-%   \hfill
-%   \begin{subfigure}[t]{0.49\textwidth}
-%       \centering
-%       \includegraphics[width=\textwidth]{figures/ML/corr_contact_Ff.pdf}
-%       \caption{}
-%       % \label{fig:}
-%   \end{subfigure}
-%   \hfill
-%   \begin{subfigure}[t]{0.49\textwidth}
-%       \centering
-%       \includegraphics[width=\textwidth]{figures/ML/corr_porosity_Ff.pdf}
-%       \caption{}
-%       % \label{fig:}
-%   \end{subfigure}
-%   \hfill
-%      \caption{Scatter plot of the data sets Tetrahedron, Honeycomb and Random Walk (excluding the pilot study) for various variable combinations in order to visualize some chosen  correlations of interest and distributions in the data}
-%      \label{fig:corr_vis}
-% \end{figure}
+Uncommented to decrease loading time
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[t]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/ML/corr_stretch_Ff.pdf}
+      \caption{}
+      % \label{fig:}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/ML/corr_stretch_contact.pdf}
+      \caption{}
+      % \label{fig:}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/ML/corr_contact_Ff.pdf}
+      \caption{}
+      % \label{fig:}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/ML/corr_porosity_Ff.pdf}
+      \caption{}
+      % \label{fig:}
+  \end{subfigure}
+  \hfill
+     \caption{Scatter plot of the data sets Tetrahedron, Honeycomb and Random Walk (excluding the pilot study) for various variable combinations in order to visualize some chosen  correlations of interest and distributions in the data}
+     \label{fig:corr_vis}
+\end{figure}
 
 
 \section{Properties of interest} 
-From the Pilot study we discovered that it might be possible a negative friction coefficient for certain kirigami cut configurations under the assumption of a system with coupled normal force $F_N$ and stretch $S$. This stands as the main property of interest to explore further in the dataset. However, it is not obvious how one should quanity this in a rigorous manner. The friction coefficient is by our definition (\hl{see theory sec XXX}) given as the slope of the friction vs. normal force curve. For two data points $(F_{N,1}, F_{f,1}), (F_{N,2}, F_{f,2})$, $F_{N,1} < F_{N,2}$ we evaluate the friction coefficient $\mu_{1,2}$ as 
+From the Pilot study we discovered that it might be possible to achieve a negative friction coefficient for certain kirigami cut configurations under the assumption of a system with coupled normal force $F_N$ and stretch $S$. This stands as the main property of interest to explore further in the dataset. However, it is not obvious how one should quanity this in a rigorous manner. The friction coefficient is by our definition (\hl{see theory sec XXX}) given as the slope of the friction vs.\ normal force curve. For two data points $(F_{N,1}, F_{f,1}), (F_{N,2}, F_{f,2})$, $F_{N,1} < F_{N,2}$ we would evaluate the associated friction coefficient $\mu_{1,2}$ as 
 \begin{align*}
   \mu_{1,2} = \frac{F_{f,2} - F_{f,1}}{F_{N,2} - F_{N,1}} = \frac{\Delta F_f}{\Delta F_N}
 \end{align*}
-In the pilot study it became clear that the effects on friction under the change of $F_N$ is neglible in comparison to the effects under the change of $S$. Thus, by working under the assumtion $F(F_N, S) \sim F(S)$ and a coupling $F_N \propto R\cdot S$ with coupling ratio $R$ we get 
-\begin{align*}
+In the pilot study it became clear that the effects on friction under the change of $F_N$ is neglible in comparison to the effects under change of $S$. Thus, by working under the assumption $F(F_N, S) \sim F(S)$ and a coupling $F_N \propto R\cdot S$ with coupling ratio $R$ we get 
+\begin{align}
   \mu_{1,2}(S_1, S_2) = \frac{\Delta F_{f}(S_1, S_2)}{R(S_2 - S_1)} \propto \frac{\Delta F_{f}(S_1, S_2)}{\Delta S},
-\end{align*}
-With the above reasoning we have in practive exchanged $F_N$ with $S$ in the expression for 
-the friction coefficient. This means that we should search for a negative slope on friction vs.\ stretch curve to achieve the negative friction coefficient in out proposed coupled system. 
+  \label{eq:mu_stretch}
+\end{align}
+With the above reasoning we have in practive exchanged $F_N$ with $S$ in the
+expression for the friction coefficient. This means that we are interested in  a
+negative slope on the friction vs.\ stretch curve which corresponds to a
+negative friction coefficient in our proposed coupled system. The next question
+remaining is then how to evaluate the strength of this property. By definition,
+the minimum slope value would give the lowest friction coefficient. However, for two data points with a small $\Delta S$, corresponding to small denominator in eq.~\eqref{eq:mu_stretch}, would potentially result in big $|\mu|$ without any signifiant decrease in friction. Hence, we choose to consider the drop in friction with increasing stretch. For a discrete dataset we can locate all local maxima and evaluate the difference to all succeeding local minema. The biggest drop will serve as our indicator for a signifcant negative friction coefficient. In this evaluation we do not guarantee a monotonic decrease of friciton in the range of the biggest drop, but when seearching among multiple configurations this is considered a descent strategy to highlight configurations of interest worthy of further investigation. 
 
-The next question that remain is how to consider this slope. 
-
-% Working here.
-
-
-should look at the
-friction vs. stretch curve for which a steep decline indicates a strong negative
-coefficient for the assumed coupled system which we will work with later. By
-definition, the minimum slope value would give the lowest friction coefficient.
-However, this is also a uncertain measure as two data points with a small
-difference in stretch can easily achieve extreme slope values by very little
-error or noise in friction value. Even if such an extreme slope existed locally
-it would not be very interesting since the negative coefficient woud only be
-valid in that small range. We are essentially looking for the lowest coefficient
-in the longest possible stretch range. One way to capture a bit from both of
-these concepts is by looking for the biggest drop in friction when increasing
-stretch. By scanning over all local maxima we evaluate the difference in friction to all of the following local minema. The biggest drop will serve as our indicator for good prospects of showcasing a negative friction coefficient. By doing so we do not guarantee a monotonic decrease of friciton in the range that got the biggest drop, but we believe that this is a good evaluation function to target interesting properties in general. 
-
-In addition to the biggest forward drop in friction we also look a minimum abnd maximum friction along with the difference between theese extrema.
-
-
-
-% \hl{The above argumentation is purely to motivate the interpretation of a negative friction coefficient.}
-
-% \hl{How should we evaluate. Steepest curve might be risky due to datapoint with small fluctuations but very close on the stretch axis which gives a big slope. Instead, we use biggest forward drop. }
-
-% Working here. 
-
-% Hence, by assuming a one to one ratio couopling between normal force and stretch and otherwise neglect the effect of the normal force we find that the friction coefficient is gi
-
-% far less ... in comparision to the effect of stretching the sheet. By the assumption that we can couple the stretch and the normal force we can use the friction force vs. stretch curve to determine the friction coefficient instead. With some uncertainty in either the dataset points 
-
-% most negative friction coefficient is by our definition given the steepest declining slope of the 
-
-% \hl{Define somewhere that we will look at low friction, high friction and the biggest (forward) drop in friction corresponding to a significant negative friction coefficient}.
-
+In addition to the biggest drop in friction we also look at minimum abnd maximum friction along with the difference between theese extrema. In table \ref{tab:data_properties} we summarized the extrema of these properties. The corresponding friction vs.\ stretch profiles and configurations are visualized for each property category in figure \ref{fig:PP_min} - \ref{fig:PP_max_drop}.The stretch profiles for all the configurations are shown in appendix \ref{sec:data_stretch_profiles}.
 
 
 \begin{table}[H]
   \begin{center}
-  \caption{Interesting properties}
-  \label{tab:}
+  \caption{Evaluation of the properties of interest for our dataset.}
+  \label{tab:data_properties}
   \begin{tabular}{| c | c | c | c|} \hline
   \textbf{Tetrahedron} & Configuration & Stretch & Value [nN]  \\ \hline
   Min $F_{\text{fric}}$ & $(3,9,4)$ &  0.0296 & 0.0067 \\ \hline
@@ -197,8 +162,40 @@ In addition to the biggest forward drop in friction we also look a minimum abnd 
 % ['96', 0.0363631911341175, 0.237523191134115, 0.5447910475168634]
 % ['01', 0.0591598822685843, 0.112739882268582, 0.18175926264779968]
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{figures/stretch_profiles/PP_min.pdf}
+  \caption{Minimum friction: Configurations corresponding to the minimum friction.}
+  \label{fig:PP_min}
+\end{figure}
 
-% Uncommented to decrease loading time
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{figures/stretch_profiles/PP_max.pdf}
+  \caption{Maximum friction: Configurations corresponding to the maximum friction.}
+  \label{fig:PP_max}
+\end{figure}
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{figures/stretch_profiles/PP_max_diff.pdf}
+  \caption{Maximum Difference: Configurations corresponding to the biggest difference in friction in the dataset for each pattern.}
+  \label{fig:PP_max_diff}
+\end{figure}  
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{figures/stretch_profiles/PP_max_drop.pdf}
+  \caption{Maximum drop: Configuratiosn corresponding to the biggest friction drop in the dataset for each pattern.}
+  \label{fig:PP_max_drop}
+\end{figure}  
+
+
+
+
+
 % \begin{figure}[H]
 %   \centering
 %   \begin{subfigure}[t]{0.49\textwidth}
@@ -264,7 +261,6 @@ In addition to the biggest forward drop in friction we also look a minimum abnd 
 
 
 
-The stretch profiles for all the configurations are shown in appendix \ref{sec:data_stretch_profiles}.
 
 
 \section{Machine learning}

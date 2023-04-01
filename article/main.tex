@@ -1,16 +1,16 @@
 \documentclass[UKenglish]{book}  
-\newcommand\hmmax{0}
-\newcommand\bmmax{0}
+% \newcommand\hmmax{0}
+% \newcommand\bmmax{0}
 
 \counterwithout{footnote}{chapter}
 \usepackage{Setup/style}
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
 \raggedbottom %reduces the gaps between the paragraphs
-\usepackage{jheppub}
+% \usepackage{jheppub}
 
-\title{Title}       
-\subtitle{Subtitle}
-\subsubtitle{by}
+\title{Tuning Frictional Properties of Kirigami Graphene Sheets using Molecular Dynamics and Machine Learning}       
+\subtitle{Designing a Negative Friction Coefficient}
+% \subsubtitle{by}
 \author{Mikkel Metzsch Jensen}              
 \thesistext{THESIS}
 \thesistextt{for the degree of}
@@ -23,7 +23,12 @@
 %\DeclareUnicodeCharacter{03B1}{-}
 
 \begin{document}
-\duoforside[dept={Department of Physics}, program={Master's Program Name},long]
+\duoforside[dept={Department of Physics}, 
+            program={Master's Program Name},
+            option={Difficult Computations},
+            long]
+
+
 % Get some cool cut configuration on the second frontpage?
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -37,8 +42,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \mainmatter{}
-%%%%%%%%%%%% Introduction %%%%%%%%%%%%
-% \input{Sections/Introduction} % Chapter 1
+%%%%%%%%%%%% INTRODUCTION %%%%%%%%%%%%
+\input{Sections/Introduction} % Chapter 1
 
 %%%%%%%%%%%%%%% THEORY %%%%%%%%%%%%%%%
 \newpage
@@ -56,7 +61,7 @@
 \part{Simulations}
 % \input{Sections/Simulations/system} % Chapter 5
 % \input{Sections/Simulations/pilot_study} % Chapter 6
-\input{Sections/Simulations/dataset_study} % Chapter 7
+% \input{Sections/Simulations/dataset_study} % Chapter 7
 % \input{Sections/Simulations/negative_coef} % Chapter 8
 
 

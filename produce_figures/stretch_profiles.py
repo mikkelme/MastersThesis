@@ -185,7 +185,108 @@ def plot_profiles_together(path, save = False):
             fig.savefig(f'../article/figures/stretch_profiles/SP_{fig.number}_{name}.pdf', bbox_inches='tight')
 
 
+
+def patterns_and_profiles_2(save = False):
+    # # --- Max drop --- #
+    # patterns = [
+    #             '../Data/CONFIGS/popup/pop_27', # (5,3,1)
+    #             '../Data/CONFIGS/honeycomb/hon_28', # (2,3,3,3) 
+    #             '../Data/CONFIGS/RW/RW01', 
+    #             ]
+    
+    # names = ['Tetrahedron (5,3,1)', 'Honeycomb (2,3,3,3)', 'Random walk 01']
+    # PP(patterns, names, save = ' PP_max_drop.pdf')
+    
+    # # --- Max diff --- #
+    # patterns = [
+    #             '../Data/CONFIGS/popup/pop_27', # (5,3,1)
+    #             '../Data/CONFIGS/honeycomb/hon_42', # (2,1,5,3) 
+    #             '../Data/CONFIGS/RW/RW96', 
+    #             ]
+    
+    # names = ['Tetrahedron (5,3,1)', 'Honeycomb (2,1,5,3)', 'Random walk 96']
+    # PP(patterns, names, save = 'PP_max_diff.pdf')
+    
+    
+    # # --- Max diff --- #
+    # patterns = [
+    #             '../Data/CONFIGS/popup/pop_27', # (5,3,1)
+    #             '../Data/CONFIGS/honeycomb/hon_42', # (2,1,5,3) 
+    #             '../Data/CONFIGS/RW/RW96', 
+    #             ]
+    
+    # names = ['Tetrahedron (5,3,1)', 'Honeycomb (2,1,5,3)', 'Random walk 96']
+    # PP(patterns, names, save = 'PP_max_diff.pdf')
+    
+    # # --- Min fric --- #
+    # patterns = [
+    #             '../Data/CONFIGS/popup/pop_31', # (3,9,4)
+    #             '../Data/CONFIGS/honeycomb/hon_6', # (2,5,1,1) 
+    #             '../Data/CONFIGS/RW/RW12',
+    #             ]
+    
+    # names = ['Tetrahedron (3,9,4)', 'Honeycomb (2,5,1,1)', 'Random walk 12']
+    # PP(patterns, names, save = 'PP_min.pdf')
+
+    # --- Max fric --- #
+    patterns = [
+                '../Data/CONFIGS/popup/pop_27', # (5,3,1)
+                '../Data/CONFIGS/honeycomb/hon_12', # (2,1,1,1) 
+                '../Data/CONFIGS/RW/RW96',
+                ]
+    
+    names = ['Tetrahedron (5,3,1)', 'Honeycomb (2,1,1,1)', 'Random walk 96']
+    PP(patterns, names, save = 'PP_max.pdf')
+    
+    
+    
+def PP(patterns, names, save = None):
+    
+    # Figure
+    figsize = (10,6)
+    width_ratios = [1, 1, 1, 0.05] # Small width for colorbar
+    height_ratios = [0.8, 1]
+    fig, axes = plt.subplots(2, 4, num = unique_fignum(), figsize = figsize, gridspec_kw ={'width_ratios': width_ratios, 'height_ratios': height_ratios})
+    atom_radii = 0.6
         
+    # Stretch profiles
+    vars = ['data[\'stretch_pct\']', 'data[\'Ff\'][:, :, 0, 1]', 'data[\'F_N\']']
+    axis_labels = [r'Stretch', r'$\langle F_\parallel \rangle$ [nN]', r'$F_N$ [nN]']
+    multi_plot_compare(patterns, names, vars, axis_labels, figsize, axes = axes[0])
+    
+
+    # Patterns
+    for i, path in enumerate(patterns):
+        ax = axes[1, i]
+        
+        config_path = find_single_file(path, '.npy')
+        mat = np.load(config_path)
+        
+        plot_sheet(mat, ax, atom_radii, facecolor = 'grey', edgecolor = 'black') # Pattern   
+        plot_sheet(1-mat, ax, atom_radii, facecolor = 'None', edgecolor = 'black', alpha = 0.2)  # Background
+        # ax.axis('off')
+        
+        ax.grid(False)
+        ax.set_xticks([])
+        ax.set_yticks([])
+        ax.set_facecolor("white")
+        ax.spines[:].set_color('white')
+    
+    axes[0,1].set_xlabel(axis_labels[0], fontsize = 14)
+    axes[0,0].set_ylabel(axis_labels[1], fontsize = 14)
+    axes[1,1].set_xlabel(r"$x$ (armchair direction)", fontsize = 14)
+    axes[1,0].set_ylabel(r"$y$ (zigzag direction)", fontsize = 14)
+    
+    
+    axes[-1, -1].axis('off')
+    
+    fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    if save is not None:
+        fig.savefig(f'../article/figures/stretch_profiles/{save}', bbox_inches='tight')
+    
+
+
+
 def patterns_and_profiles(save = False):
     
     patterns = ['../Data/CONFIGS/popup/pop_31', # (3,9,4)
@@ -262,7 +363,8 @@ if __name__ == "__main__":
     # path = '../Data/CONFIGS/honeycomb'
     # path = '../Data/CONFIGS/RW'
     
-    patterns_and_profiles(save = True)
+    # patterns_and_profiles(save = False)
+    # patterns_and_profiles_2(save = False)
     plt.show()
     
     

@@ -298,7 +298,7 @@ def multi_FN_force_dist(path, save = False):
         
         
  
-def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yerr = None, axis_scale = ['linear', 'linear'], colorbar_scale = [None, 'log'], equal_axes = [False, True], rupplot = False, axes = None):
+def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yerr = None, axis_scale = ['linear', 'linear'], colorbar_scale = [[0.1, 10], 'log'], equal_axes = [False, True], rupplot = False, axes = None):
     # Settings
     
     
@@ -340,8 +340,10 @@ def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yer
             for k in range(len(z)):
                 if len(z) > 1:
                     # color = get_color_value(z[k], np.min(z), np.max(z), scale = colorbar_scale[-1], cmap = cmap)
+                    
                     color = get_color_value(z[k], colorbar_scale[0][0], colorbar_scale[0][1], scale = colorbar_scale[-1], cmap = cmap)
                     axes[f].plot(x, y[:,k], **line_and_marker, color = color)
+                
                 else:
                     exit("Handle this")
                     color = get_color_value(0.5, 0, 1, scale = colorbar_scale[-1], cmap = cmap)
