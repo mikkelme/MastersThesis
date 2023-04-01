@@ -21,7 +21,7 @@ synchronization. The substrate is equally divided into three parts: The
 \textit{upper layers} (NVE) responsible for the sheet-substrate interaction, the
 \textit{middle layers} being a thermostat (NVT), and the \textit{bottom layers}
 is frozen (rigid and fixed) in the initial lattice structure to ensure that the
-substrate stays in place. In figure \ref{fig:system} the system is displayed
+substrate stays in place. In \cref{fig:system} the system is displayed
 with colors matching the three distinct roles:
 \begin{enumerate}
   \item Red: NVE parts which is governing the frictional behaviour of interest.
@@ -29,9 +29,9 @@ with colors matching the three distinct roles:
   \item Blue: Parts that is initially or eventually turned in to rigid objects. For the substrate this is additionally locked off and immobile. 
 \end{enumerate}
 
-The total system size in terms of atom count is given in table \ref{tab:system_count} while the sheet length dimension is given in table \ref{tab}
+The total system size in terms of atom count is given in \cref{tab:system_count} while the sheet length dimension is given in \cref{tab}
 
-The total system size (without cuts in the sheet) is 27456 atoms, and the distribution into the various regions is shown in table \ref{tab:system_count}. The length dimensions of the sheet is given in table \ref{tab:sheet_dim}.
+The total system size (without cuts in the sheet) is 27456 atoms, and the distribution into the various regions is shown in \cref{tab:system_count}. The length dimensions of the sheet is given in \cref{tab:sheet_dim}.
 
 \begin{figure}[H]
   \centering
@@ -176,7 +176,7 @@ of the atoms as we eventually want to pass a binary matrix, containing 0 for
 removed atoms and 1 for present atoms, that uniquely describes the sheet. We do
 this by letting the x-coordinate point to zigzag chains and the y-coordinate to
 the position along that chain. This is illustrated in figure
-\ref{fig:atom_indexing}. Other solutions might naturally invole the lattice
+\cref{fig:atom_indexing}. Other solutions might naturally invole the lattice
 vectors, but as these are used to translate between similar basis atoms
 unfortunate duality is introduced as one need to include the basis atom of
 choice into the indexing system. Additionally, we want a system where the
@@ -208,7 +208,7 @@ x- or y-coordinate. That is the nearest neighbours (NN) is decided as
 
 As a mean to ease the formulation of cut patterns we introduce pseudo center
 element in each gap of the hexagonal honeycombs, see figure
-\ref{fig:center_indexing}. 
+\cref{fig:center_indexing}. 
 
 \begin{figure}[H]
   \centering
@@ -226,7 +226,7 @@ direction we can denote them: ``up'', ``upper right'', ``lower right'',
 accesed as $(i,j\pm 1)$, but for even $i$ the $(i+1,j)$ index corresponds to the
 ``lower right'' neighbour while for odd $i$ this corresponds to the ``upper
 right'' neighbour. This shifting applies for all left or right neighbours and
-the full neighbour list is illustrated in figure \ref{fig:center_directions}. 
+the full neighbour list is illustrated in \cref{fig:center_directions}. 
 
 
 \begin{figure}[H]
@@ -269,7 +269,7 @@ Illustrate some delete path?
 
 \section{Kirigami patterns}
 
-We propose a series of kirigami inspired cut patterns for the altering of the graphene sheet. We seek inspiration from macroscale patterns that showcases a considerable amount of out of plane buckling when stretched. We choose to imitate two different designs: 1$)$ An alternating repeating series of perpendicular cuts as shown in figure \ref{fig:kirigami_inspiration_a} commonly used in studies of morphable metematerials \cite{new_pop_up}. This patteren produce surface buckling with a tetrahedron (three sided pyramid) shape when stretched. 2$)$ A more intricate pattern shown in figure \ref{fig:kirigami_inspiration_b} which is used Scotch\textsuperscript{TM} Cushion Lock\textsuperscript{TM} \cite{cushion_wrap} as protective wrap for items during shipping. This pattern buckles into a hexagoal honeycomb structure when stretched. In addition to the modeling of the so-called \textit{tetrahedron} and \textit{honeycomb} patterns we also create a series of random walk styled cut patterns.
+We propose a series of kirigami inspired cut patterns for the altering of the graphene sheet. We seek inspiration from macroscale patterns that showcases a considerable amount of out of plane buckling when stretched. We choose to imitate two different designs: 1$)$ An alternating repeating series of perpendicular cuts as shown in \cref{fig:kirigami_inspiration_a} commonly used in studies of morphable metematerials \cite{new_pop_up}. This patteren produce surface buckling with a tetrahedron (three sided pyramid) shape when stretched. 2$)$ A more intricate pattern shown in \cref{fig:kirigami_inspiration_b} which is used Scotch\textsuperscript{TM} Cushion Lock\textsuperscript{TM} \cite{cushion_wrap} as protective wrap for items during shipping. This pattern buckles into a hexagoal honeycomb structure when stretched. In addition to the modeling of the so-called \textit{tetrahedron} and \textit{honeycomb} patterns we also create a series of random walk styled cut patterns.
 
 
 \begin{figure}[H]
@@ -306,7 +306,7 @@ direction between the ``lower'' and ``lower right'' center elements
 corresponding to the direction $(1/\sqrt{3}, -1)$. We define variations of the
 pattern by the number of center elements $L_1$ and $L_2$ in line 1 and 2
 respectively together with the spacing between the lines $d$ as the tuple $(L_1,
-L_2, d)$. The pattern is constructed by translating the two lines to thew whole sheet while according to the spacing. Due to the alignment criterias of having one line point to the center of the other line we can only have odd line length to have a clearly defined center element in the center of each line. Furthermore, in order to ensure that each translated center element stays on the same odd or even type center element we must in practice require that $|L_2 - L_1| = 2, 6, 10, \cdots$. In figure \ref{fig:pop_up} we see a visual representation of the pattern components for the $(7, 5, 2)$ patteren. 
+L_2, d)$. The pattern is constructed by translating the two lines to thew whole sheet while according to the spacing. Due to the alignment criterias of having one line point to the center of the other line we can only have odd line length to have a clearly defined center element in the center of each line. Furthermore, in order to ensure that each translated center element stays on the same odd or even type center element we must in practice require that $|L_2 - L_1| = 2, 6, 10, \cdots$. In \cref{fig:pop_up} we see a visual representation of the pattern components for the $(7, 5, 2)$ patteren. 
 
 
 \begin{figure}[H]
@@ -329,7 +329,7 @@ L_2, d)$. The pattern is constructed by translating the two lines to thew whole 
      \label{fig:pop_up}
 \end{figure}
 
-In addition to the three parameters $L_1, L_2, d$, the pattern is also anchored to a reference point which describes the position of line 1 and 2 before translating to the whole sheet. Due to the repeating structure of the pattern there exist a small finite number of unique reference positions. For the pattern $(7, 5, 2)$ used as an example in figure \ref{fig:pop_up} there are 140 \footnote{The calculation of this is rather complicated in comparision of the importance in this context. Thus, we exclude the formula for this calculation as the derivation is rather handwavy and the number stated here is numerically backed for this specific parameter set.} Some additional variation of the pattern deviaiton from the example in \ref{fig:pop_up} is showcased in figure \ref{fig:pop_up_flavors}
+In addition to the three parameters $L_1, L_2, d$, the pattern is also anchored to a reference point which describes the position of line 1 and 2 before translating to the whole sheet. Due to the repeating structure of the pattern there exist a small finite number of unique reference positions. For the pattern $(7, 5, 2)$ used as an example in \cref{fig:pop_up} there are 140 \footnote{The calculation of this is rather complicated in comparision of the importance in this context. Thus, we exclude the formula for this calculation as the derivation is rather handwavy and the number stated here is numerically backed for this specific parameter set.} Some additional variation of the pattern deviaiton from the example in \cref{fig:pop_up} is showcased in \cref{fig:pop_up_flavors}
 
 \begin{figure}[H]
   \centering
@@ -348,9 +348,9 @@ cuts remniscient of a roman numeral one put on its side
 (\rotatebox[origin=c]{90}{\MakeUppercase{\romannumeral 1}}). With a given spacing these are put next to each other in the x-direction (\rotatebox[origin=c]{90}{\MakeUppercase{\romannumeral 1}}
 \rotatebox[origin=c]{90}{\MakeUppercase{\romannumeral 1}}
 \rotatebox[origin=c]{90}{\MakeUppercase{\romannumeral 1}}) to achieve a row
-where only a thin \textit{bridge} in between each cut is left to connect the sheet in the y-direction. By placing multiple rows along the y-direction with alternating x-offsett we get the class of honeycomb patterns as visualized in figure \ref{fig:honeycomb}. The pattern
+where only a thin \textit{bridge} in between each cut is left to connect the sheet in the y-direction. By placing multiple rows along the y-direction with alternating x-offsett we get the class of honeycomb patterns as visualized in \cref{fig:honeycomb}. The pattern
 is described in terms of the parameters: (x-width, y-width, bridge thickness,
-bridge length) which is annotated in figure \ref{fig:honeycomb_a} where the parameters (2, 2, 1, 5) is used as an example. Some additional variations of the pattern class is showcased in figure \ref{fig:honeycomb_flavors}
+bridge length) which is annotated in \cref{fig:honeycomb_a} where the parameters (2, 2, 1, 5) is used as an example. Some additional variations of the pattern class is showcased in \cref{fig:honeycomb_flavors}
 
 
 \begin{figure}[H]
@@ -385,7 +385,7 @@ bridge length) which is annotated in figure \ref{fig:honeycomb_a} where the para
 
 
 \subsection{Random walk}
-The random walk serves as a method for introducing random patterns into the dataset with the scope of populating the configuration space more broadly than achieved with the more systematic patterns classes described above. By this argument a more straightforward way to create random configurations could be achieved by random noise, either uniform or gaussian. However, this would often leave the sheet detached with lots of non-connected atom clusters, and intuitively we do not find this promising for the generation of large scale organized structures which is hypothesized to be of interest. The random walk pattern generation is characterized by the parameters summarized in table \ref{tab:RW_params} which will be introduced throughout the following paragraphs. 
+The random walk serves as a method for introducing random patterns into the dataset with the scope of populating the configuration space more broadly than achieved with the more systematic patterns classes described above. By this argument a more straightforward way to create random configurations could be achieved by random noise, either uniform or gaussian. However, this would often leave the sheet detached with lots of non-connected atom clusters, and intuitively we do not find this promising for the generation of large scale organized structures which is hypothesized to be of interest. The random walk pattern generation is characterized by the parameters summarized in \cref{tab:RW_params} which will be introduced throughout the following paragraphs. 
 
 
 \begin{table}[H]
@@ -444,7 +444,7 @@ the maximum limits of steps, all sites within a walking distance of the minimum
 distance is marked as visited, allthough they are not removed from the sheet.
 This prevents any subsequent walkers to visit those sites in their walk
 according to the general behaviour described in the
-previous paragraph. In practice this is done through a recursive algorithm as described in algorithm \ref{algo:walk_dis}. For a given path the function walk\_distance() is called with the input being a list of all sites in the given paths. The function will then for each site gather all site neighbours (regardless of their state on the sheet) and call itself using this neighbour list as input while incrementing a distance counter passed along. This will result in an expansion along all possible outgoing paths from the initial path of interest which is terminated when the distance counter hits the minimum distance limit. The function will then return the final neighbour lists which is cummulated into a final output corresponding to a list of all sites within the minimum distance to the path.
+previous paragraph. In practice this is done through a recursive algorithm as described in algorithm \cref{algo:walk_dis}. For a given path the function walk\_distance() is called with the input being a list of all sites in the given paths. The function will then for each site gather all site neighbours (regardless of their state on the sheet) and call itself using this neighbour list as input while incrementing a distance counter passed along. This will result in an expansion along all possible outgoing paths from the initial path of interest which is terminated when the distance counter hits the minimum distance limit. The function will then return the final neighbour lists which is cummulated into a final output corresponding to a list of all sites within the minimum distance to the path.
 
 \begin{algorithm}[H]
   \caption{Recursive algorithm implemented as class method to mark sites within a distance of the class attribute self.min\_dis.}
@@ -511,7 +511,7 @@ jumping to site $i$ is given by
  calculation of $p_i$ initially and then enforced at the final stage as a
  divition by the sum of all $p_i$. In the numerical implementation we then pick
  the step destination weighted by the discrete probability distribtion $p_i$. In
- figure \ref{fig:bias_prob} we have illustrated how a bias of different strength impacts the probability disitrbution for a random walk between center elements. We can visually confirm that the bias will favorise the directions that lies closes to the bias direction. This favorization is more distinct at high bias strenghs while at low strength $B\to0$ we get a uniform distribution whichi alligns with the default unbiased random walk. 
+ \cref{fig:bias_prob} we have illustrated how a bias of different strength impacts the probability disitrbution for a random walk between center elements. We can visually confirm that the bias will favorise the directions that lies closes to the bias direction. This favorization is more distinct at high bias strenghs while at low strength $B\to0$ we get a uniform distribution whichi alligns with the default unbiased random walk. 
 
 
 \begin{figure}[H]
@@ -541,7 +541,7 @@ The \textit{Stay or break} parameter defines the probability $p_{\text{stay}}$ t
   (i + j) \ \text{is even} &\rightarrow D = \left\{ \frac{a}{2}\left(\frac{-2}{\sqrt{3}}, 0\right), \frac{a}{2}\left(\frac{1}{\sqrt{3}}, 1\right), \frac{a}{2}\left(\frac{1}{\sqrt{3}}, -1\right)\right\}, \\
   (i + j) \ \text{is odd} &\rightarrow D = \left\{ \frac{a}{2}\left(\frac{2}{\sqrt{3}}, 0\right), \frac{a}{2}\left(\frac{-1}{\sqrt{3}}, 1\right), \frac{a}{2}\left(\frac{-1}{\sqrt{3}}, -1\right)\right\}.
 \end{align*}
-Hence, we use the six directions from the center element walk as the common direction to stay or break from. As showcased in figure \ref{fig:stay_or_break}, for each center element direction (black arrows) there are two possible atom directions (red and orange arrows) that are equally close to the center element direction. The red and orange arrows represent $(i+j)$ being even or odd respectively, and we notice that these appear in paris such that we can always determine which of the atom directions are closest to the center element direction. Following this idea we can map each center direction to an atom direction depending on the even or oddness of the position. For $p_{\text{stay}} = 1$ this results in zigzag motion along the center element direction that happens to start on. 
+Hence, we use the six directions from the center element walk as the common direction to stay or break from. As showcased in \cref{fig:stay_or_break}, for each center element direction (black arrows) there are two possible atom directions (red and orange arrows) that are equally close to the center element direction. The red and orange arrows represent $(i+j)$ being even or odd respectively, and we notice that these appear in paris such that we can always determine which of the atom directions are closest to the center element direction. Following this idea we can map each center direction to an atom direction depending on the even or oddness of the position. For $p_{\text{stay}} = 1$ this results in zigzag motion along the center element direction that happens to start on. 
 
 \begin{figure}[H]
   \centering
@@ -567,7 +567,7 @@ if with a random starting corner, but this is not considered to be of great
 importance for the way we used this feature in the dataset generation.} is then choosen as a default starting place for the first
 walker for which the remaining sites are filled according to the order that
 maximizes the minimum distance between a new starting point and the ones already
-used. The population of the grid is visualized in figure \ref{fig:grid_start} for 1-9 walkers in total. 
+used. The population of the grid is visualized in \cref{fig:grid_start} for 1-9 walkers in total. 
 
 
 \begin{figure}[H]

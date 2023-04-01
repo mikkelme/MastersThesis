@@ -139,23 +139,21 @@ The model parameters $A$, $\epsilon$, $B$, $\sigma$, $p$, $q$ and $a$ comes with
 $i,j$ indices to indicate that theese parameters should be specified for each
 unique pair of atom types. However, in our case we will only provide a single
 value for each model parameter as we are exclusively dealing with Si-Si bonds.
-We see that the first term in eq.~\eqref{eq:sw_2} is reminiscent of the LJ model
-in eq.~\eqref{eq:LJ} while the last term effectively drives the potential to
+We see that the first term in \cref{eq:sw_2} is reminiscent of the LJ model
+in \cref{eq:LJ} while the last term effectively drives the potential to
 zero at $r=a\sigma$, which is thus the chosen cut-off distance for the potential
-evaluation. With the model parameters for the Si-Si modelling (see table
-\ref{tab:sw_param}) the cut-off becomes $\sim 3.8$ Å. \\
+evaluation. With the model parameters for the Si-Si modelling (see \cref{tab:sw_param}) the cut-off becomes $\sim 3.8$ Å. \\
 The three body term includes an angle dependency as
 \begin{align}
   \phi_3(r_{ij}, r_{ik}, \theta_{ijk}) &= \lambda_{ijk} \ \epsilon_{ijk} \Big[\cos \theta_{ijk}-\cos \theta_{0,ijk}\Big]^2 \exp (\frac{\gamma_{ij} \sigma_{ij}}{r_{ij} - a_{ij} \sigma_{ij}}) \exp (\frac{\gamma_{ik} \sigma_{ik}}{r_{ik} - a_{ik} \sigma_{ik}}),
   \label{eq:sw_3}
 \end{align}
 where $\theta_{0,ijk}$ is the equilibrium angle. The first term of
-eq.~\eqref{eq:sw_3} includes an angle dependency analog to a harmonic oscillator
+\cref{eq:sw_3} includes an angle dependency analog to a harmonic oscillator
 based on a cosine angle distance from the equilibrium angle. The final two terms
 act again as a cut-off function by driving the potential to zero at $r_{ij} =
 a_{ij}\sigma_{ij}$ and $r_{ik} = a_{ik}\sigma_{ik}$ respectively. \\ 
-The parameters used for the Si-Si bond modeling is displayed in table
-\ref{tab:sw_param} along with an interpretation of each model parameter.
+The parameters used for the Si-Si bond modeling is displayed in \cref{tab:sw_param} along with an interpretation of each model parameter.
 
 
 
@@ -265,11 +263,10 @@ the cut-off $r_{ik} < R + D$ as shown in the following.
   \label{eq:tersoff_bond_order}
 \end{align}
 
-In eq.~\eqref{eq:tersoff_bond_order} $\zeta_{i,j}$ is an effective coordination
+In \cref{eq:tersoff_bond_order} $\zeta_{i,j}$ is an effective coordination
 and $g(\theta)$ captures angle dependency as it is minimized at the equilibrium
 angle $\theta = \theta_0$. \\
-The parameters used to model the graphene C-C bonds is summarized in table
-\ref{tab:tersoff_param}
+The parameters used to model the graphene C-C bonds is summarized in \cref{tab:tersoff_param}
 
 
 
@@ -319,7 +316,7 @@ z_i)$ the position, $t$ is time,  $\nabla_i = (\frac{\partial}{\partial x_i},
 potential energy. The potential energy is a function of the particle
 positions of nearby particles depending on the specefic potential in use. Since
 the forces defined by the potentials is conservative we expect the energy of the
-solution to be conserved. We can redefine eq.~\eqref{eq:NE} in terms of two coupled
+solution to be conserved. We can redefine \cref{eq:NE} in terms of two coupled
 first order differential equations 
 \begin{align}
   \dot{\vec{v}}_i(t) = \frac{\vec{F}}{m_i}, \qquad \dot{\vec{r}}_i(t) = \vec{v}_i(t),
@@ -339,7 +336,7 @@ temporal steps $t_k = t_0 + k\Delta t$ with start time $t_0$ and time-step $\Del
 % ttps://www2.ph.ed.ac.uk/~dmarendu/MVP/MVP03.pdf
 
 A common algorithm to integrate Newtons equation of motion (as formulated in
-eq.~\eqref{eq:NE_2}) is the \textit{velocity verlet}. We can derive the algorithm
+\cref{eq:NE_2}) is the \textit{velocity verlet}. We can derive the algorithm
 by the use of Taylor expansions. We begin by expanding the next-step position
 vector $\vec{r}_i(t + \Delta t)$ at time $t$
 \begin{align}
@@ -353,7 +350,7 @@ velocity vector $\vec{v}_i(t+\Delta t)$ at time $t$
   \label{eq:tay_v1}
 \end{align}
 Finnally, by taking the expansion of $\dot{\vec{v}}_i(t+\Delta t)$ we can
-eliminate the $\ddot{\vec{v}}_i$-term in eq.~\eqref{eq:tay_v1} and simplify it
+eliminate the $\ddot{\vec{v}}_i$-term in \cref{eq:tay_v1} and simplify it
 as shown in the following.
 \begin{align}
   \dot{\vec{v}}_i(t+\Delta t) &= \dot{\vec{v}}_i(t) + \ddot{\vec{v}}_i(t) \Delta t + \mathcal{O}(\Delta t^2) \nonumber \\
@@ -363,7 +360,7 @@ as shown in the following.
   &=  \vec{v}_i(t) + \frac{\Delta t}{2}\Big( \dot{\vec{v}}_i(t) +  \dot{\vec{v}}_i(t+\Delta t)\Big) + \mathcal{O}(\Delta t^3).
   \label{eq:vv_comp2}
 \end{align}
-By combining eq.~\eqref{eq:vv_comp1} and eq.~\eqref{eq:vv_comp2} and using
+By combining \cref{eq:vv_comp1} and \cref{eq:vv_comp2} and using
 Newton's second equation $\dot{\vec{v}} = \vec{F}_i(t)/m_i = $ and $\vec{v} =
 \dot{\vec{r}}$ we arrive at the final scheme
 \begin{align*}
@@ -471,7 +468,7 @@ where $m$ is the particle mass. This effectively describes the particle of
 interest, the brownian particle, as being suspendend in a sea of smaller
 particles. The collision with these smaller particles is modelled by the drag
 force and the fluctuation force. We notice that if the fluctuation force is
-excluded eq.~\eqref{eq:Langevin} becomes 
+excluded \cref{eq:Langevin} becomes 
 \begin{align*}
   m \frac{d \vec{v}}{dt} = -\gamma \vec{v} \quad \Rightarrow \quad 
   \vec{v}_i(t) = v(0)e^{- \frac{\gamma t}{m}},
@@ -549,7 +546,7 @@ it is) and determine the relationship between the drag coefficient $\gamma$ and
 the random force $R$.
 
 
-From the Langevin equation eq.~\eqref{eq:Langevin} we can compute the velocity
+From the Langevin equation \cref{eq:Langevin} we can compute the velocity
 autocorrelation function (Move to appendix?). We do this in one dimension for
 simplicity. We begin by multiplying by $(e^{\gamma t /m})/m$
 
@@ -570,7 +567,7 @@ then calculate the autocorrelation
   &= \int_{-\infty}^t dt_1 \ \int_{-\infty}^0 dt_2 \ e^{\frac{t - t_1 - t_2}{m}} \frac{a \delta(t_1 - t_2)}{m^2} \\
   &= \int_{-\infty}^0 dt_2 \ e^{\frac{t - 2t_2}{m}} \frac{a}{m^2} = \frac{a}{2m\gamma}e^{-\frac{\gamma t}{m}},
 \end{align*}
-where we used eq.~\eqref{eq:F_corr} and the fact that the integration commutes
+where we used \cref{eq:F_corr} and the fact that the integration commutes
 with the average (we are allowed to flip the order). By comparing this with the
 equipartition theorem we get 
 \begin{align*}
@@ -646,13 +643,13 @@ inter-particle interactions described by the potential $U$, $\vec{F}_f$ is the
 drag force and $\vec{F}_r$ is the random fluctuation force where $\vec{h}$ is a
 random vector drawn from a normal distribution with zero mean and unit variance.
 Notice that this generalized description of the Langevin equation deviates from
-the presentation in eq.~\eqref{eq:Langevin} since we have added the conservative
+the presentation in \cref{eq:Langevin} since we have added the conservative
 force $\vec{F_c}$, but also by the appearance of the mass in both the drag force
 and the fluctuation force due to the introduction of damping. It is beyond out
 scope to comprehend this. However, the fact that $\Delta t$ now appears in the
 denomiator for the random force variance $2k_B T m \gamma / \Delta t$ is due to
 the fact that we have discretized time. This in agreement with the formulation
-in eq.~\eqref{eq:disc_corr}. By applying eq.~\eqref{eq:Langevin_generalized} we
+in \cref{eq:disc_corr}. By applying \cref{eq:Langevin_generalized} we
 get the refined velocity verlet scheme
 
 
@@ -696,7 +693,7 @@ thermostat on.
 % where $\delta_{\cdot\cdot}$ is the Kronecker Delta function and
 % $\delta(\cdot)$ is the Dirac Delta function. It can be shown that a trajectory
 % generated by integrating the Langevin equations of motion
-% (eq.~\eqref{eq:langevin_old}) maps a cononical distribution of microstates at
+% (\cref{eq:langevin_old}) maps a cononical distribution of microstates at
 % temperature $T$. \cite{Hunenberger2005}(p.121). (Can I say something more
 % about the relationship between the friction froce and the random force - How
 % to the balance to give NVT. Is the proof complicated?)\\
@@ -712,7 +709,7 @@ thermostat on.
 %   k_B T}{dt \ \text{damp}}} \end{align*}
 
 % where $v = \dot[r]$ is the velocity. The definition of $f_f$ falls straight
-% out of the definition above in eq.~\eqref{eq:Langevin} while the
+% out of the definition above in \cref{eq:Langevin} while the
 % proportionality of $f_r$ comes from
 
 % \begin{align*} \sqrt{\langle R(t)^2 \rangle} = \sqrt{2m\gamma k_B T} \propto

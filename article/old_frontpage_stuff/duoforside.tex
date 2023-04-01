@@ -22,12 +22,13 @@
 %% The main command:
 
 \newcommand{\duoforside}[1][]{{%
+  \parindent = 0pt   \parskip = 0pt
   \@ifundefined{hypersetup}{}{\hypersetup{pageanchor=false}}
   \setkeys{duo@keys}{#1}
   \duo@page@i
   \@ifundefined{duo@thesisname@eng}
     {\if@twoside \duo@blankpage \fi}
-    {\duo@page@ii \duo@page@iii \duo@page@iv}
+    {\duo@page@ii \duo@page@iii \duo@page@iv \duo@page@v \duo@page@vi}
   \setcounter{page}{1}
   \@ifundefined{hypersetup}{}{\hypersetup{pageanchor=true}}
 }}
@@ -39,39 +40,64 @@
     \fontfamily{\duo@font}\fontencoding{T1}
     \def \and {\\}
     \centering
-    \fontsize{16}{19pt}\selectfont
+    \fontsize{15}{15pt}\selectfont
     \null\par
-    \vspace*{-2cm}
+    %\vspace*{-2cm}
+    %\vspace{0.5cm}
     {\fontsize{24}{28pt}\selectfont \duo@title\par}
     \vspace{1\baselineskip}
     \ifx \duo@subtitle = \duo@empty
     \else
-        {\fontsize{20}{23pt}\fontshape{sl}\selectfont \duo@subtitle\par}
+        {\fontsize{20}{23pt}\fontshape{lmr}\selectfont \duo@subtitle\par}
         \vspace{1\baselineskip}
     \fi
+    \vspace{1\baselineskip}
+    \ifx \duo@subsubtitle = \duo@empty
+    \else
+        {\fontsize{10}{10pt}\fontshape{lmr}\selectfont \duo@subsubtitle\par}
+        \vspace{0.3cm}
+    \fi
+    \vspace{0.3cm}
     \duo@author\par
-    \vspace{1\baselineskip plus 3fill}
+    \vspace{1\baselineskip plus 0.4fill}
+    \ifx \duo@thesistext = \duo@empty
+    \else
+        {\fontsize{12}{12pt}\fontshape{lmr}\selectfont \duo@thesistext\par}
+        \vspace{0.5cm}
+    \fi
+    \ifx \duo@thesistextt = \duo@empty
+    \else
+        {\fontsize{10}{10pt}\fontshape{lmr}\selectfont \duo@thesistextt\par}
+        \vspace{0.5cm}
+    \fi
+    \ifx \duo@thesistexttt = \duo@empty
+    \else
+        {\fontsize{12}{12pt}\fontshape{lmr}\selectfont \duo@thesistexttt\par}
+        \vspace{1cm}
+    \fi
+    
+    %\ifx \duo@kind = \duo@empty
+    %\else
+    %  \duo@kind\par
+    %  \vspace{1\baselineskip}
+    %\fi
     \includegraphics[width=6cm]{DUO_UiO_segl}\par
-    \vspace{1\baselineskip plus 4fill}
-    \ifx \duo@kind = \duo@empty
-    \else
-      \duo@kind\par
-      \vspace{1\baselineskip}
-    \fi
-    \ifx \duo@dept = \duo@empty
-    \else
-      \duo@dept\par
-    \fi
+    \vspace{1\baselineskip plus 0.2fill}
+    %\ifx \duo@dept = \duo@empty
+    %\else
+    %  \duo@dept\par
+    %\fi
     \ifx \duo@fac = \duo@empty
     \else
       \duo@fac\par
-      \vspace{1\baselineskip}
+      \vspace{0.1cm}
     \fi
-    \MakeUppercase{\csname duo@uio@\duo@lang\endcsname}\par
+    \csname duo@uio@\duo@lang\endcsname\par
     \vspace{1\baselineskip}
     {\fontsize{12}{14pt}\selectfont \duo@date\par}
-    \vspace{-2cm}
-    \null
+    \vspace{1\baselineskip plus 1fill}
+    %\vspace{-2cm}
+    %\null
   \end{titlepage}
 }
 
@@ -84,9 +110,9 @@
     \def \and {\\}
     \centering
     \null\vfill
-    {\fontsize{24}{28pt}\fontseries{bx}\selectfont \@title\par}
+    {\fontsize{24}{28pt}\fontseries{lmr}\selectfont \@title\par}
     \vfill
-    {\fontsize{20}{23pt}\fontshape{sl}\selectfont \duo@subtitle\par}
+    {\fontsize{20}{23pt}\fontshape{lmr}\selectfont \duo@subtitle\par}
     \vfill
     {\fontsize{16}{18pt}\selectfont \@author\par}
     \vfill\vfill\vfill
@@ -96,6 +122,10 @@
 }
 
 \newcommand{\duo@page@iv}{%
+  \duo@blankpage
+}
+
+\newcommand{\duo@page@v}{%
   \begin{titlepage}
     \null
     \vfill
@@ -110,6 +140,9 @@
   \end{titlepage}
 }
 
+\newcommand{\duo@page@vi}{%
+  \duo@blankpage
+}
 
 %% The options:
 
@@ -119,23 +152,29 @@
 \define@key{duo@keys}{fac}{\def \duo@fac {#1}}
 \define@key{duo@keys}{image}{\def \duo@image {#1}}
 \define@key{duo@keys}{kind}{\def \duo@kind {#1}}
-\define@key{duo@keys}{long}[60]{\def \duo@sp {#1}}
+\define@key{duo@keys}{nosp}[0]{\def \duo@sp {#1}}
 \define@key{duo@keys}{option}{\def \duo@opt {(#1)}}
 \define@key{duo@keys}{printer}{\def \duo@printer {#1}}
 \define@key{duo@keys}{program}{\def \duo@program{#1}}
 \define@key{duo@keys}{short}[30]{\def \duo@sp {#1}}
+\define@key{duo@keys}{long}[60]{\def \duo@sp {#1}}
 \define@key{duo@keys}{subtitle}{\def \duo@subtitle {#1}}
+\define@key{duo@keys}{subsubtitle}{\def \duo@subsubtitle {#1}}
 \define@key{duo@keys}{title}{\def \duo@title {#1}}
+\define@key{duo@keys}{thesistext}{\def \duo@thesistext {#1}}
+\define@key{duo@keys}{thesistext2}{\def \duo@thesistext {#1}}
+\define@key{duo@keys}{thesistext3}{\def \duo@thesistext {#1}}
 
 \newcommand{\duo@uio@eng}{University of Oslo}
 \newcommand{\duo@uio@bm}{Universitetet i Oslo}
 \newcommand{\duo@uio@nn}{Universitetet i Oslo}
 
-\newcommand{\duo@fac@eng}{Faculty of mathematics and natural sciences}
+\newcommand{\duo@fac@eng}{Faculty of Mathematics and Natural Sciences}
 \newcommand{\duo@fac@bm}{Det matematisk-naturvitenskapelige fakultet}
 \newcommand{\duo@fac@nn}{Det matematisk-naturvitenskaplege fakultet}
 
 \def \duo@author {\@author}
+\def \duo@authorr {\@authorr}
 \providecommand{\duo@date}{\today}
 \def \duo@dept {}
 \def \duo@fac {\csname duo@fac@\duo@lang \endcsname}
@@ -147,17 +186,27 @@
 \def \duo@sp {60}
 \def \duo@title {\@title}
 
-
 %% Additional commands:
 
 \newcommand{\subtitle}[1]{\def \duo@subtitle{#1}}
 \subtitle{}
 
+\newcommand{\subsubtitle}[1]{\def \duo@subsubtitle{#1}}
+\subsubtitle{}
+
+\newcommand{\thesistext}[1]{\def \duo@thesistext{#1}}
+\subsubtitle{}
+
+\newcommand{\thesistextt}[1]{\def \duo@thesistextt{#1}}
+\thesistextt{}
+
+\newcommand{\thesistexttt}[1]{\def \duo@thesistexttt{#1}}
+\thesistexttt{}
 
 %% Find the best font:
 
-\newcommand{\duo@font}{phv}  % Helvetica is always available, but use
-\IfFileExists{t1ua1.fd}{\renewcommand{\duo@font}{ua1}}{} % Arial if possible.
+\newcommand{\duo@font}{lmr}  % Helvetica is always available, but use
+\IfFileExists{t1ua1.fd}{\renewcommand{\duo@font}{lmr}}{} % Arial if possible.
 
 
 %% Determine the term (as in "Spring 2016"):

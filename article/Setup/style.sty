@@ -4,21 +4,21 @@
 
 %----------------- packages ------------------------
 
-%-------- standalone ---------
-%\RequirePackage{standalone} %[subpreambles=true]
 
 %--------- encoding ----------
-\usepackage[utf8]{inputenc}        % Source file encoding
-\usepackage[UKenglish]{babel} % typographic rules
-\usepackage{duomasterforside}
+\usepackage[utf8]{inputenc} % allows special characters (including æøå)
+\usepackage[english]{babel} % typographic rules
+\usepackage{duomasterforside} % frontpage
 
 
 %--------- color ------------
-%\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage{xcolor, soul}  % set colors
+
+
+
 %----- document formatting ---- 
 % Begin paragraphs with an empty line rather than an indent:
 %\usepackage[parfill]{parskip} 
-%Set document margin (1 inch = 2.54cm):
 \usepackage[margin=0.9in]{geometry}
 % prevent orphan and widow lines
 \clubpenalty = 10000
@@ -37,8 +37,6 @@
 \usepackage{fontawesome} % Github icon, etc. \faGithub
 \usepackage{hologo}      % Logos, such as BibTeX
 \usepackage{romannum}
-
-\usepackage{xcolor, soul}
 \sethlcolor{yellow}
 
 %------ header and foot --------
@@ -46,17 +44,9 @@
 
 %------ sections layout --------
 \usepackage{sectsty}
-%\addtokomafont{section}{\huge}
-%\addtokomafont{subsection}{\Large}
-%\addtokomafont{subsubsection}{\large}
-%\sectionfont{\fontsize{20}{20}\selectfont}
-%\subsectionfont{\fontsize{10}{15}\selectfont}
-% \sectionfont{\centering \color{black}} %centering and color
 \sectionfont{\color{black}} %centering and color
 \subsectionfont{\color{black}}  % sets color of subsections
 \subsubsectionfont{\color{black}}
-% \usepackage{lipsum}
-% \usepackage{ntheorem}
 
 
 %---------- figure & tables ---------------
@@ -68,6 +58,7 @@
 \usepackage[format=hang,font=small,labelfont=bf]{caption} % figure & table caption
 %\captionsetup{labelfont={normal, bf}, font={sl}}  
 % \usepackage{chngcntr}
+\counterwithout{footnote}{chapter} % Don't reset counter after each chapter
 \usepackage{longtable}
 
 \usepackage{caption}
@@ -83,83 +74,31 @@
 \usepackage{amssymb}
 \usepackage{amsfonts}
 \usepackage{mathtools}  % also loads amsmath
-% \usepackage{braket}
-% \usepackage{xfrac}      % provides \sfrac
-% \usepackage{bm} 
-% \usepackage{bbm}
-% \usepackage{slashed}
-% \usepackage{physics}
-
 \usepackage{cancel}
 \renewcommand{\vec}[1]{\mathbf{#1}} % bold text instead of arrow
 
 
-\let\ket\relax % undefine \ket
-\let\bra\relax % undefine bra
-\DeclarePairedDelimiter{\ket}{\lvert}{\rangle}
-\DeclarePairedDelimiter{\bra}{\langle}{\rvert}
-\newtheorem{definition}{Definition}[section]
-\usepackage{tcolorbox}
-\tcbuselibrary{theorems}
-\newtcbtheorem[number within=section]{mytheo}{Theorem}%
-{colback=yellow!5,colframe=blue!35!black,fonttitle=\bfseries}{th}
-\newtcbtheorem[number within=section]{mydef}{Definition}%
-{colback=red!5,colframe=blue!35!black,fonttitle=\bfseries}{th}
-
-\newtcbtheorem{defbox}{Wilson Line Properties}%
-{colback=blue!5,colframe=blue!35!black,fonttitle=\bfseries}{th}
-%\newtcbexternalizetcolorbox{extcolorbox}{tcolorbox}{}{}
-%---------- tikz environment --------------
-%\usepackage{tikz}
-%\usetikzlibrary{shapes.geometric, arrows}
-%\usepackage{tikz-feynman}
-%\usepackage[com pat=1.1.0]{tikz-feynman} 
-
-
-
-%------------- physics++ -----------------
-% \usepackage{xparse}
-% \usepackage{physics}
-% \usepackage{chemformula} % Formula subscripts using \ch{}
-% \usepackage{chemfig}
-% \usepackage{feynmp-auto}
-%------------ frames -------------------
-% \usepackage[framemethod=TikZ]{mdframed}
-% \mdfsetup{skipabove=4pt,skipbelow=1pt}
-% \mdfdefinestyle{MyFrame}{%
-%     linecolor=black,
-%     outerlinewidth=1pt,
-%     roundcorner=10pt,
-%     innertopmargin=\baselineskip,
-%     innerbottommargin=\baselineskip,
-%     innerrightmargin=10pt,
-%     innerleftmargin=10pt,
-%     backgroundcolor=gray!10!white}
-
-% \usepackage{tikz}
-
-%\usepackage[listings,theorems,skins,breakable]{tcolorbox}
-%\tcbset{highlight math style={enhanced,
-%  colframe=red,colback=white,arc=0pt,boxrule=2pt}}
-  
 %--------- referencing ----------------
 %\usepackage[obeyspaces, spaces, hyphens]{url} % typesetting URLs
 %\urlstyle{sf}
 
 \usepackage{hyperref} % create hyperlinks within the document
-\hypersetup{          % set color of referenced items
-    colorlinks=true,
-    linkcolor=blue,
-    citecolor=red,
-    filecolor=blue,      
-    urlcolor=blue,}
+
+\hypersetup{ % Anders Kvellestad
+    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}}
+
     
 \usepackage[capitalize]{cleveref}
 \crefdefaultlabelformat{\textbf{#2}}
-\crefname{equation}{Eq.}{Eq.}
+\crefname{equation}{Eq.}{Eq.} % {Type}{Singular}{Plural}
 \crefname{section}{Sec.}{Sec.}
 \crefname{figure}{Fig.}{Fig.}
 \crefdefaultlabelformat{#2#1#3}
+
+
 %\addto\extrasenglish{
 %  \renewcommand{\sectionautorefname}{\textbf{Sec.}}%
 %  \renewcommand{\subsectionautorefname}{\text{Sec.}}%
@@ -171,6 +110,8 @@
 % \newcommand{\ar}[1]{\textbf{\color{red}RMR: #1}}
 % \newcommand{\are}[1]{\textbf{\color{pink}Are: #1}}
 % \newcommand{\Me}{\tilde}
+
+
 %---------------- algorithm -------------------
 % \usepackage{algorithm}
 % \usepackage{algorithmic}
@@ -185,13 +126,53 @@
 
 %--------- bibliography -----------
 
-%\usepackage[
+% \usepackage[
 %    backend=biber,
 %    style=numeric,
 %    sorting=none,
 %    backref,
 %    natbib,
 %    hyperref
-%]{biblatex}
+% ]{biblatex}
+% \usepackage{biblatex}
+
+% \usepackage{jheppub}
+% \bibliographystyle{JHEP}
+
+\usepackage[backend=bibtex,
+            style=phys]{biblatex}
+
+
+
+% -------- Nomenclature --------
+
+\usepackage{nomencl}
+
+% List of symbols
+\makenomenclature
+\renewcommand{\nomname}{List of Symbols}
+\renewcommand{\nompreamble}{The next list describes several symbols that will be later used within the body of the document}
+
+% Acronyms / abbreviations
+\usepackage[acronym]{glossaries}
+\input{Setup/Acronyms}
+
+% \makeglossaries
+
+
+
+
+
+% \newglossaryentry{latex}
+% {
+%     name=latex,
+%     description={Is a markup language specially suited for 
+% scientific documents}
+% }
+
+
+% \raggedbottom %reduces the gaps between the paragraphs
+
 
 %-------------------- end style ---------------------------
+

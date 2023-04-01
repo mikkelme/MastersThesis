@@ -6,9 +6,9 @@ sample 15 pseudo uniform (\hl{refer to relevant section here}) strech values
 between zero and the rupture stretch found in the rupture test. The normal force
 is uniformly sampled in the range $[0.1, 10]$ nN. In total this gives $3\times
 15$ data points for each configuration. For the remaining parameters we use the
-values presented in the pilot study (see table \ref{tab:param}). We generate 68
+values presented in the pilot study (see \cref{tab:param}). We generate 68
 configurations of the Tetrahedron pattern type, 45 of the Honeycomb type and 100
-of the Random walk type. A summary of the dataset is given in table \ref{tab:dataset_summary} while all configurations are shown explicitly in \ref{sec:dataset_conf}. Notice that not all submitted data points ``makes it'' to the final dataset. This is due a small variation in rupture stretch points which were not anticipated during the creation of the numerical framework for submitting multiple simulation. After performing the rupture test the simulation is restarted
+of the Random walk type. A summary of the dataset is given in \cref{tab:dataset_summary} while all configurations are shown explicitly in \cref{sec:dataset_conf}. Notice that not all submitted data points ``makes it'' to the final dataset. This is due a small variation in rupture stretch points which were not anticipated during the creation of the numerical framework for submitting multiple simulation. After performing the rupture test the simulation is restarted
 with a new substrate size corresponding to the measured rupture stretch limit
 and also with new random velocity and thermostat initializations values. The sheet is then stretched and checkpoints of the simulation state (LAMMPS restart files) are saved for each of the targeted stretch samples. However, if the rupture points arrives slightly early than syggested by the rupture test, some sampled stretch values might not get a corresponding checkpoint file. Thus, these data points are not included in the data set even though they ideally should have been noted as a rupture event. This could quite easily have been mittigated by a rewrite of that part of the code, but it was first discovered after the dataset had been created. However, the dataset still includeds 11.57 \% rupture events and it most likely that the most cases with a lost rupturer event have a rupture event stored for the preeceding stretch value instead which captures the information of the sheet stretch limit on its own. 
 
@@ -35,16 +35,16 @@ In order to gain insight into the correlations between variables associated to t
 \begin{align*}
   \mathrm{corr}(X,Y) = \frac{\mathrm{Cov}(X,Y)}{\sigma_X \sigma_Y} = \frac{\langle (X - \mu_X)(Y - \mu_Y)\rangle}{\sigma_X \sigma_Y} \ \in [-1, 1]
 \end{align*}
-where $\mathrm{Cov}(X,Y)$ is the covariance, $\mu$ the mean value and $\sigma$ the standard deviation. The correlation coefficients ranges from perfect negative correlation $(-1)$ through no correlation $(0)$ to a perfect positive correlation $(1)$. The correlation coefficients is shown in figure \ref{fig:corrcoef_matrix}
+where $\mathrm{Cov}(X,Y)$ is the covariance, $\mu$ the mean value and $\sigma$ the standard deviation. The correlation coefficients ranges from perfect negative correlation $(-1)$ through no correlation $(0)$ to a perfect positive correlation $(1)$. The correlation coefficients is shown in \cref{fig:corrcoef_matrix}
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{figures/ML/corrcoef_matrix.pdf}
-  \caption{Pearson product-moment correlation coefficients for the full datset (see table \ref{tab:dataset_summary}).}
+  \caption{Pearson product-moment correlation coefficients for the full datset (see \cref{tab:dataset_summary}).}
   \label{fig:corrcoef_matrix}
 \end{figure}
 
-From figure \ref{fig:corrcoef_matrix} we especially notice that the mean
+From \cref{fig:corrcoef_matrix} we especially notice that the mean
 friction force $\langle F_{\parallel} \rangle$ has a signifciant positively
 correlation with stretch $(0.77)$ and porosity $(0.60)$ (void fraction).
 However, the relative stretch, which is scaled by the rupture stretch, has a
@@ -52,15 +52,15 @@ weaker correlation of only 0.25 which indicates that it is the absolute stretch
 value that has the most significant impact on the friction force increase during
 stretching. This is further supported by the fact that the mean friction and the
 rupture stretch is also strongly positively correlated $(0.78)$. From figure
-\ref{fig:corrcoef_matrix} we also observe that the contact bond count is
+\cref{fig:corrcoef_matrix} we also observe that the contact bond count is
 negatively correlated with the mean friction $(-0.67)$ and the stretch value
-$(-0.74)$ which is consistent with the trend observed in the pilot study (figure \ref{fig:multi_stretch_contact} and \ref{fig:multi_stretch_mean_fric}) of the
+$(-0.74)$ which is consistent with the trend observed in the pilot study  \cref{fig:multi_stretch_contact} and \cref{fig:multi_stretch_mean_fric}) of the
 contact decreasing with increasing stretch and mean friction. However, we must
 take note that the correlation coefficients is a measure of the strength and slope of a
-forced linear fit on the data. We clearly observed a non-linear relationship between stretch and mean friction for the tetrahedron and honeycomb pattern used in the pilot study (figure \ref{fig:multi_stretch_mean_fric}) where the relationship was partwise characterized by a postive correlation for some stretch ranges and partwise negative correlation for other stretch ranges. Hence, interesting strong regime-specific correlations might not be accurately highlighted by the correlation coefficients shown in figure \ref{fig:corrcoef_matrix}.
+forced linear fit on the data. We clearly observed a non-linear relationship between stretch and mean friction for the tetrahedron and honeycomb pattern used in the pilot study  \cref{fig:multi_stretch_mean_fric}) where the relationship was partwise characterized by a postive correlation for some stretch ranges and partwise negative correlation for other stretch ranges. Hence, interesting strong regime-specific correlations might not be accurately highlighted by the correlation coefficients shown in \cref{fig:corrcoef_matrix}.
 
-In figure \ref{fig:corr_vis} we have visualized the data (excluding the pilot study) for chosen pairs of variables on the axes. In addition to a visual confirmation of how the given correlations look in a 2D plot we also get a feeling for the coverage in various areas of the parameter space that we are eventually going to feed the neural network. The honeycomb pattern is spanning a significant larger range of stretch, contact and mean friction makes the data rather biased towards the Honeycomb pattern in thoose areas. 
-% Judging form the combinned information of the pilot study and the data distribution shown in figure \ref{fig:corr_vis} it would not be surprising if the machine learning were to learn that the honeycomb pattern is superiour for 
+In \cref{fig:corr_vis} we have visualized the data (excluding the pilot study) for chosen pairs of variables on the axes. In addition to a visual confirmation of how the given correlations look in a 2D plot we also get a feeling for the coverage in various areas of the parameter space that we are eventually going to feed the neural network. The honeycomb pattern is spanning a significant larger range of stretch, contact and mean friction makes the data rather biased towards the Honeycomb pattern in thoose areas. 
+% Judging form the combinned information of the pilot study and the data distribution shown in \cref{fig:corr_vis} it would not be surprising if the machine learning were to learn that the honeycomb pattern is superiour for 
 
 Uncommented to decrease loading time
 \begin{figure}[H]
@@ -113,9 +113,9 @@ expression for the friction coefficient. This means that we are interested in  a
 negative slope on the friction vs.\ stretch curve which corresponds to a
 negative friction coefficient in our proposed coupled system. The next question
 remaining is then how to evaluate the strength of this property. By definition,
-the minimum slope value would give the lowest friction coefficient. However, for two data points with a small $\Delta S$, corresponding to small denominator in eq.~\eqref{eq:mu_stretch}, would potentially result in big $|\mu|$ without any signifiant decrease in friction. Hence, we choose to consider the drop in friction with increasing stretch. For a discrete dataset we can locate all local maxima and evaluate the difference to all succeeding local minema. The biggest drop will serve as our indicator for a signifcant negative friction coefficient. In this evaluation we do not guarantee a monotonic decrease of friciton in the range of the biggest drop, but when seearching among multiple configurations this is considered a descent strategy to highlight configurations of interest worthy of further investigation. 
+the minimum slope value would give the lowest friction coefficient. However, for two data points with a small $\Delta S$, corresponding to small denominator in \cref{eq:mu_stretch}, would potentially result in big $|\mu|$ without any signifiant decrease in friction. Hence, we choose to consider the drop in friction with increasing stretch. For a discrete dataset we can locate all local maxima and evaluate the difference to all succeeding local minema. The biggest drop will serve as our indicator for a signifcant negative friction coefficient. In this evaluation we do not guarantee a monotonic decrease of friciton in the range of the biggest drop, but when seearching among multiple configurations this is considered a descent strategy to highlight configurations of interest worthy of further investigation. 
 
-In addition to the biggest drop in friction we also look at minimum abnd maximum friction along with the difference between theese extrema. In table \ref{tab:data_properties} we summarized the extrema of these properties. The corresponding friction vs.\ stretch profiles and configurations are visualized for each property category in figure \ref{fig:PP_min} - \ref{fig:PP_max_drop}.The stretch profiles for all the configurations are shown in appendix \ref{sec:data_stretch_profiles}.
+In addition to the biggest drop in friction we also look at minimum abnd maximum friction along with the difference between theese extrema. In \cref{tab:data_properties} we summarized the extrema of these properties. The corresponding friction vs.\ stretch profiles and configurations are visualized for each property category in \crefrange{fig:PP_min}{fig:PP_max_drop}. The stretch profiles for all the configurations are shown in appendix \cref{sec:data_stretch_profiles}.
 
 
 \begin{table}[H]

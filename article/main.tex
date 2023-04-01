@@ -1,51 +1,47 @@
-\documentclass[UKenglish]{book}  
-% \newcommand\hmmax{0}
-% \newcommand\bmmax{0}
-
-\counterwithout{footnote}{chapter}
+\documentclass[english]{book}  
 \usepackage{Setup/style}
-\DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
-\raggedbottom %reduces the gaps between the paragraphs
-% \usepackage{jheppub}
+\addbibresource{bibliography.bib}
 
-\title{Tuning Frictional Properties of Kirigami Graphene Sheets using Molecular Dynamics and Machine Learning}       
+% ------ Setup front page ------ #
+\title{Tuning Frictional Properties of Graphene Sheets Through Kirigami Inspired Cuts using Molecular Dynamics and Machine Learning}       
 \subtitle{Designing a Negative Friction Coefficient}
-% \subsubtitle{by}
 \author{Mikkel Metzsch Jensen}              
-\thesistext{THESIS}
-\thesistextt{for the degree of}
-\thesistexttt{MASTER OF SCIENCE}
-
-
-\bibliographystyle{JHEP}
-% \addbibresource{bibliography.bib}         
-%\DeclareUnicodeCharacter{2212}{-}
-%\DeclareUnicodeCharacter{03B1}{-}
-
 \begin{document}
 \duoforside[dept={Department of Physics}, 
-            program={Master's Program Name},
-            option={Difficult Computations},
+            program={Computational Science: Materials Science},
+            image={figures/frontpage/frontpage2.png},
             long]
 
 
-% Get some cool cut configuration on the second frontpage?
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% ------ Front matter ------ %
 \frontmatter{}
 \input{Sections/Abstract}
 \input{Sections/Acknow}
+% \chapter*{Preface}
 \setcounter{tocdepth}{3} % Show subsubsections in TOC for now
 \setcounter{secnumdepth}{3} % Show subsubsections in TOC for now
-\tableofcontents{}
-\input{Sections/ListOfSymbols}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+{
+    \hypersetup{linkcolor=black}
+    \tableofcontents
+    }
+    % \listoffigures{}
+    % \listoftables{}
+    
+    \printnomenclature
+    \printnoidxglossaries
+    
+    
+    
+% ------ Main matter ------ %
 \mainmatter{}
-%%%%%%%%%%%% INTRODUCTION %%%%%%%%%%%%
+
+%%% INTRODUCTION %%%
 \input{Sections/Introduction} % Chapter 1
 
-%%%%%%%%%%%%%%% THEORY %%%%%%%%%%%%%%%
+%%% THEORY %%%
 \newpage
 \part{Background Theory}
 % \input{Sections/Theory/tribology} % Chapter 2
@@ -56,7 +52,7 @@
 % \input{Sections/Method}
 % \input{Sections/Theory_old.tex}
 
-%%%%%%%%%%%% SIMULATIONS %%%%%%%%%%%%%
+%%% SIMULATIONS %%%
 \newpage
 \part{Simulations}
 % \input{Sections/Simulations/system} % Chapter 5
@@ -65,15 +61,15 @@
 % \input{Sections/Simulations/negative_coef} % Chapter 8
 
 
-%%%%%%%%%%%%%% SUMMARY %%%%%%%%%%%%%%%
+%%% SUMMARY %%%
 \input{Sections/Summary}
 
 
+% ------ Back matter ------ %
 \backmatter{}
-%%%%%%%%%%%%% Appendix %%%%%%%%%%%%%%%%%%%%%%%%
+%%% Appendix %%%
 \begin{appendices}
 % \numberwithin{equation}{section}
-
 
 \appendix
 \chapter{Appendix A}
@@ -94,5 +90,7 @@
 \end{appendices}
 
 
-\bibliography{bibliography.bib}
+
+%%% Bibliography %%%
+\printbibliography
 \end{document}
