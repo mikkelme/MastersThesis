@@ -1,175 +1,144 @@
 \chapter{Introduction}
 \section{Motivation}
-
-Friction is a fundamental force that takes part in almost all interactions with
+Friction is a fundamental force that takes part in most of all interactions with
 physical matter. Even though the everyday person might not be familiar with the
-term ``friction'' we would undoubtedly notice its disappearing. Without
-friction, it would not be possible to walk across a flat surface, lean against
-the wall or secure an object by the use of nails or screws [p. 5]
-\cite{gnecco_meyer_2015}. Similarly, we expect a moving object to eventually
-come to a stop if not supplied with new energy, and we know intuitively that
-sliding down a snow covered hill is much more exciting than its grassy
-counterpart. It is probably safe to say that the concept of friction is well
-integrated in our everyday life to such an extent that most people take it for
-granted. However, the efforts to control friction dates back to the early
-civilization (3500 B.C.) with the use of the wheel and lubricants to reduce
-friction in translational motion \cite{bhushan_2013}. 
+term \textit{friction} we recognize it as the inherent resistance to sliding
+motion. Some surfaces appear slippery and some rough, and we know intuitively
+that sliding down a snow covered hill is much more exciting than its grassy
+counterpart. Without friction, it would not be possible to walk across a flat
+surface, lean against the wall with falling over or secure an object by the use
+of nails or screws [p. 5] \cite{gnecco_meyer_2015}. Handling objects, hitting
+the breakes in the car and getting around in general would be a completely
+different story in a frictionless world. It is probably safe to say that the
+concept of friction is integrated in our everyday life to such an extent that
+most people take it for granted. However, the efforts to control friction dates
+back to the early civilization (3500 B.C.) with the use of the wheel and
+lubricants to reduce friction in translational motion \cite{bhushan_2013}. 
 
-Friction is a part of the wider field tribology derived from the Greek word
-\textit{Tribos} meaning rubbing and includes the science of friction, wear and
-lubrication \cite{bhushan_2013}. To this day, one of the most important motivations to study
-tribology is ultimately to gain full control of friction and wear for various
-technical applications. Especially, reducing friction is of great interest as
-this has tremendous advantages regarding energy effeciency. It has been reported
-that that monetary value of tribological problems has significant potential for
-economic and environmental improvements \cite{kim_nano-scale_2009}:
+Today, friction is considered a part of the wider field \textit{tribology}
+derived from the Greek word \textit{Tribos} meaning ``rubbing'' and includes the
+science of friction, wear and lubrication \cite{bhushan_2013}. The most
+compelling motivation to study tribology is ultimately to gain full control of
+friction and wear for various technical applications. Especially, reducing
+friction is of great interest as this has tremendous advantages for energy
+effeciency. It has been reported that tribological problems have a significant
+potential for economic and environmental improvements
+\cite{kim_nano-scale_2009}:
 \begin{quote}
     ``On global scale, these savings would amount to 1.4\% of the GDP annually
     and 8.7\% of the total energy consumption in the long term.''
     \cite{holmberg_influence_2017}. 
 \end{quote}
-On the other side, the reduction of friction is not the only sensible application for tribological studies. Increasing friction by demand might be of interest in the development of grasping robots where a finetuned object handling is required. In the recent years an increasing amount of interest has gone into the understanding of the microscopic origin of friction, due to the increased possibilities in surface preperation and the development of nanoscale experimental methods. Nano-friction is also of great concern for the field of nano-machining where the frictional properties between the tool and the workpiece dictates machining charascteristics \cite{kim_nano-scale_2009}. With the progress in computational power and devolpment of Molecular Dynamics (\acrshort{MD}) a numerical approach gives new insight in the nanoscale behaviour of friction.
+On the other hand, the reduction of friction is not the only sensible
+application for tribological studies. Controlling frictional properties in ranges apart from minimization might be
+of interest in the development of grasping robots where a finetuned object
+handling is required. While achieving a certain baseline friction is rather easily obtained through appropiate material during manufacturing, we are yet to unlock the capabilities to
+alter friction dynamically on the go. One example from nature inspiring us to think along theese lines is the Gekko foot. More precisely, the Tokay gecko have recieved a lot
+of attention in scientific studies trying to unravel the underlying mechanism
+of its extrodinary properties. The Gekko is able to produce an
+adhesive force on the order of $\SI{20}{nN}$ between the feet and a wide range of smooth and rough surfaces, but it retains the ability to remove
+its feet from an attachment surface at will \cite{Gekko}. This makes the Gekko
+able to achieve a high adhesion and friction force on the feet when climbing up a vertical surface while lifting it for the next step remains reletively effortless. For a grasping robot we might consider an analog concept of a skin material that can change
+from slippery to rough on demand depending on the specific task of the robot; Slippery and smooth when in contact with people and rough and firmly gripping when moving heavy objects.
+
+In the recent years an increasing amount of interest has gone into the studies of the microscopic origin of friction, due to the increased
+possibilities in surface preperation and the development of nanoscale
+experimental methods. Nano-friction is also of great concern for the field of
+nano-machining where the frictional properties between the tool and the
+workpiece dictates machining charascteristics \cite{kim_nano-scale_2009}. With concurrent progress in computational power and devolpment of Molecular Dynamics
+(\acrshort{MD}), numerical investigations now serves as an extremely useful way of
+achieving a greater insight into the nanoscale mechanics associated with
+friction. By proposing a variation of system with approximating physical properties we can evaluate and refine our physical models through a simulation based approach. These ``numerical experiments'' enable us to probe systems of high complexity which is still out of reach for experimental approaches.
+
+Recent numerical studies in material science have explored the concept of
+creating so-called \textit{metamaterials} where materials compositions are
+designed to enhance certain physical properties
+\cite{PhysRevLett.121.255304}\cite{PhysRevResearch.2.042006}\cite{graphene/hBN}\cite{Mao}\cite{Yang}\cite{Forte}.
+This is often achieved by either intertwining different material types or
+removing material in certain configuration. In recent papers by Hanakata et al.\
+\cite{PhysRevLett.121.255304}(2018) and \cite{PhysRevResearch.2.042006}(2020)
+numerical investigations has showcased that mechanical properties of a graphene
+sheet, in this case yield stress and yield strain, can be altered through the
+introduction of so-called \textit{Kirigami} inspired cuts into the sheet. That
+is, by removing atoms at certain locations on the sheet it is possible to alter the stretchability and resitance to tearing apart under tension. Having found such a design space with prospects of changing a set of physical properties a new questoin emerges: How do we optimize the design for certain properties? 
+
+Earlier architecture design approaches such as
+bioinspiration, looking at Gekko feet for instance, and Edisonian, also known as trial and error, generally rely on prioir
+knowdelegde of an experienced designer \cite{Mao}. While the Edisonian approach
+is certainly more feasible through  numerical studies in comparison to real world
+experiments, the number of possible kirigami configurations are still overwhelming in combination with a realistic simmulation time on modern hardware. The complexity of metamaterials like the graphene sheet studied by Hanakata et al.\ makes for a seemingly intractable problem making analytic solutions impossible. However, such problems can be mittigated by the use of machine learning \acrshort{ML} which have proved successful in the establishment of a connection between kirigami configurations and physical
+properties. The recent advancements in this field makes it possible to capture
+ever more complex patterns in data yielding reletively accurate predictions of
+physical properties for a given design. This give rise to two different main design frameworks. One, by utilizing the prediction from a trained network we can skip the \acrshort{MD} simulations all together resulting in an accelerated search of configurations. This can be further improved by targeting the search dynamically as for instance done through a genetic algorithm where on creates new design configurations based on the best attempts so far. This can be used to further expand the dataset which the \acrshort{ML} network was trained upon which constritute a so-called \textit{active learing} search loop \cite{PhysRevLett.121.255304}. An even more sophisticated approach is the through generative methods such
+as Generative Adversarial Networks (GAN). By working with a so-called \textit{encoder-decoder} network structure one can build a network that reverses the prediction process. That is, we predict a design given a set of physical target properties. In the papers by Hanakata et al.\ both the
+\textit{accelerated search} and the \textit{inverse design} was proven
+successful to create novel metamaterial designs. 
+
+
+% % Materials-by-design is a paradigm to develop previously unknown
+% high-performance materials. However, finding materials with superior
+% properties is often computationally or experimentally intractable because of
+% the astronomical number of combinations in design space. from: Deep learning
+% model to predict complex stress and strain fields in hierarchical composites
+
+
+Hanakata et al.\ attributes the variety in yield properties to the non-linear
+effects arrising from the out-of-plane buckling. Since it is generally accepted
+that the surface roughness is of great importance for fritional properties it
+can be hypothesized that the cut and stretch procedure can be exploited for the
+design of fricitonal metamaterials as well. If successfull, any connection
+between stretch and friction properties might give rise to a metamaterial with
+dynamic friction properties after the point of manufacturing. For instance, the
+grasping robot might apply such a material as skin for which stretching or
+relaxing the surface could result in a changeable friction; Slippery and smooth
+in contact with people and rough and firmly gripping when moving heavy objects.
+In addition, a possible coupling between stretch and the normal load through a
+nanomachine design would allow for an altered friction coefficient. This invites
+the idea of non-linear friction coeffcients which might in theory take on
+negative values for certain ranges. To the best of our knowledge, kirigami has
+not yet been implemented to alter the frictional properties on a nanoscale.
+However, in a recent paper by Liefferink et al.\
+\cite{LIEFFERINK2021101475}(2021) it is reported that macroscale kirigami can be
+used to dynamically control the macroscale roughness of a surface by stretching
+which can be used to change the frictional coeffcient by more than one order of
+magnitude. This support the idea that kirigami designs can in fact be used to
+alter friction, but we believe that taking this concept to a nanoscale would
+maximize the probabilities for the discovering of excotic frictional properties,
+not to mention the contribution to the understanding of the underlying mechanics
+associated to friction. 
 
 
 
 
-In recent papers by Hanakata et al.\ \cite{PhysRevLett.121.255304}(2018),
-\cite{PhysRevResearch.2.042006}(2020) numerical investigations has showcased
-that the mehcanical properties of a graphene sheet, yield stress and yield
-strain, can be altered through the introduction of so-called kirigami inspired
-cuts into the sheet. By the use of machine learning through accelerated search
-\cite{PhysRevLett.121.255304} and inverse design
-\cite{PhysRevResearch.2.042006}, they are able to extract cut pattern proposals
-which optimizes the mechanical properties in certain ways, e.g.\ stretchability
-or resistance to yield. This kind of study shows how numerical modelling and
-machine learning can extremely usefull for the designing of metamaterials, i.e.\
-materials with properties not found in naturally occurring materials. Hanakate
-et al.\ assert the complexity of the mehcanical properties of the kirigami cut
-sheet to the out of plane buckling accouring when the sheet is stretched. 
-
-Since it is generally accepted that the surface roughness is of great importance
-for fritional properties it can be hypothesized that the cut and stretch
-procedure can be exploited for the design of fricitonal metamaterials as well.
-If successfull, the link between stretch and friction properties might also rise
-to a metamaterial with tunable friction properties after the point of
-manufacturing. That is, a material which fricitonal properties will change
-during stretch and relaxtion. For such a material, coupling the normal load and
-stretch of the sheet through a nanomachine design would allow for an altered
-friction coefficient which in theory might take negative values in certain
-ranges of normal load. To the best of our knowledge kirigami has not yet been
-implemented to alter the frictional properties on a nanoscale. However, in a
-recent paper by Liefferink et al.\ \cite{LIEFFERINK2021101475}(2021) it is
-reported that macroscale kirigami can be used to dynamically control the macroscale roughness of a surface by stretching which can be used to change the frictional coeffcient by more than one order of magnitude.
-\\
-\\
-\hl{Something about machine learning and inverse design.}
 
 
 
-
-
-
-% \subsection{Friction}
-
-% % We are just going to talk about $F_N$. We also use the acronym  \acrshort{ML} which is short for \acrlong{GA}? Do I need to mention \acrshort{GA} which is short for \acrlong{GA}?
-
-
-% Friction is a fundamental force that takes part in almost all interactions with
-% physical matter. Even though the everyday person might not be familiar with the
-% term ``friction'' we would undoubtedly notice its disappearing. Without
-% friction, it would not be possible to walk across a flat surface, lean against
-% the wall or secure an object by the use of nails or screws [p. 5]
-% \cite{gnecco_meyer_2015}. Similarly, we expect a moving object to eventually
-% come to a stop if not supplied with new energy, and we know intuitively that
-% sliding down a snow covered hill is much more exciting than its grassy
-% counterpart. It is probably safe to say that the concept of friction is well
-% integrated in our everyday life to such an extent that most people take it for
-% granted. However, the efforts to control friction dates back to the early
-% civilization (3500 B.C.) with the use of the wheel and lubricants to reduce
-% friction in translational motion \cite{bhushan_2013}. 
-
-% Friction is a part of the wider field tribology derived from the Greek word
-% \textit{Tribos} meaning rubbing and includes the science of friction, wear and
-% lubrication \cite{bhushan_2013}. The most important motivation to study
-% tribology is ultimately to gain full control of friction and wear for various
-% technical applications. Especially, reducing friction is of great interest as
-% this has tremendous advantages regarding energy effeciency. It has been reported
-% that that monetary value of tribological problems has significant potential for
-% economic and environmental improvements \cite{kim_nano-scale_2009}:
-% \begin{quote}
-%     ``On global scale, these savings would amount to 1.4\% of the GDP annually
-%     and 8.7\% of the total energy consumption in the long term.''
-%     \cite{holmberg_influence_2017}. 
-% \end{quote}
-% On the other side, the reduction of friction is not the only sensible application for tribological studies. Increasing friction might be of interest in the development of grasping robots or perhaps breaking system (\hl{get some sourced examples maybe}), and ideally being able to turn friction up or down would be a groundbreaking step forward (\hl{to much?}).
-
-% In the recent years an increasing amount of interest has gone into the understanding of the microscopic origin of friction, due to the increased possibilities in surface preperation and the development of nanoscale experimental methods such as the Friction Force Mircoscopy \cite{FK2D}. Nano-friction is also of great concern for the field of nano-machining where the frictional properties between the tool and the workpiece dictates machining charascteristics \cite{kim_nano-scale_2009}.
-
-
-% % Electrostatic micromotors, for instance, might need complicated and costly
-% % antistiction layers to prevent permanent adhesion and reduce drag forces
-% % (Sundararajan and Bhushan, 2001). \cite{CARBONE20082555}
-
-% % Nano-friction is of great concern in the field of nano-machining since the
-% % frictional interaction between the tool and the workpiece dictates the
-% % machining characteristics. Belak and Stowers (1990) performed an MD simulation
-% % of orthogonal cutting process.49 The atomic interaction between the atoms of
-% % the tool and the workpiece could be better understood from the simulation
-% % results.\cite{kim_nano-scale_2009}
-
-
-
-% % Materials-by-design is a paradigm to develop previously unknown high-performance materials. However, finding materials with superior properties is often computationally or experimentally intractable because of the astronomical number of combinations in design space. from: Deep learning model to predict complex stress and strain fields in hierarchical composites
-
-% % The usual approach is to perform “active learning” where the model is trained incrementally with data proposed by the ML [8, 11], or by training the model with a significant amount of data to predict top candidates [12]. For both approaches, ML (the “forward solver”) must be applied to the entire library. Even when the computational cost of the ML approach is much lower than the ground truth data generator (physics-based simulations or experimental data), in a highly complex system with many degrees of freedom, it is not practical to use ML to calculate the properties of all candidates to find the best candidates. \cite{PhysRevResearch.2.042006}
-
-% \cite{PhysRevResearch.2.042006}
-% \subsection{Thesis}
-% In recent papers by Hanakata et al.\ \cite{PhysRevLett.121.255304}(2018),
-% \cite{PhysRevResearch.2.042006}(2020) numerical investigations has showcased
-% that the mehcanical properties of a graphene sheet, yield stress and yield
-% strain, can be altered through the introduction of so-called kirigami inspired
-% cuts into the sheet. By the use of machine learning through accelerated search
+% By the use of machine learning through accelerated search
 % \cite{PhysRevLett.121.255304} and inverse design
-% \cite{PhysRevResearch.2.042006}, they are able to extract cut pattern proposals
-% which optimizes the mechanical properties in certain ways, e.g.\ stretchability
-% or resistance to yield. This kind of study shows how numerical modelling and
-% machine learning can extremely usefull for the designing of metamaterials, i.e.\
+% \cite{PhysRevResearch.2.042006}, they are able to extract cut pattern
+% proposals which optimizes the mechanical properties in certain ways, e.g.\
+% stretchability or resistance to yield. This kind of study shows how numerical
+% modelling and machine learning can extremely usefull for the designing of
+% metamaterials, i.e.\
 % materials with properties not found in naturally occurring materials. Hanakate
 % et al.\ assert the complexity of the mehcanical properties of the kirigami cut
 % sheet to the out of plane buckling accouring when the sheet is stretched. 
 
-% Since it is generally accepted that the surface roughness is of great importance
-% for fritional properties it can be hypothesized that the cut and stretch
-% procedure can be exploited for the design of fricitonal metamaterials as well.
-% If successfull, the link between stretch and friction properties might also rise
-% to a metamaterial with tunable friction properties after the point of
-% manufacturing. That is, a material which fricitonal properties will change
-% during stretch and relaxtion. For such a material, coupling the normal load and
-% stretch of the sheet through a nanomachine design would allow for an altered
-% friction coefficient which in theory might take negative values in certain
-% ranges of normal load. To the best of our knowledge kirigami has not yet been
-% implemented to alter the frictional properties on a nanoscale. However, in a
-% recent paper by Liefferink et al.\ \cite{LIEFFERINK2021101475}(2021) it is
-% reported that macroscale kirigami can be used to dynamically control the macroscale roughness of a surface by stretching which can be used to change the frictional coeffcient by more than one order of magnitude.
-% \\
-% \\
-% \hl{Something about machine learning and inverse design.}
 
 
 
-% In this thesis we investigate the possibility to control the frictional
-% properties of a graphene sheet by applying strategically positioned cuts to the
-% sheet inspired by kirigami patterns. Kirigami is a variation of origami where the paper is cut additionally to being folded. Hanakata et al.\
-% \cite{PhysRevResearch.2.042006} has shown that kirigami inspired cuts on a
-% graphene sheet can be used to alter the yield strain and yield stress of the
-% sheet. They observed that the stretching of the cutted sheet induced a
-% out-of-plane buckling which serves as a key observation for the motivation of
-% this thesis. It is currently well established/believed that the friction between
-% two surfaces is proportional to the real microscopic contact area (source
-% here?). Hence, one can hypothesize that the buckling of the sheet will affect
-% the contact area and consequently the frictional properties. 
 
+
+
+% % The usual approach is to perform “active learning” where the model is
+% trained incrementally with data proposed by the ML [8, 11], or by training the
+% model with a significant amount of data to predict top candidates [12]. For
+% both approaches, ML (the “forward solver”) must be applied to the entire
+% library. Even when the computational cost of the ML approach is much lower
+% than the ground truth data generator (physics-based simulations or
+% experimental data), in a highly complex system with many degrees of freedom,
+% it is not practical to use ML to calculate the properties of all candidates to
+% find the best candidates. \cite{PhysRevResearch.2.042006}
 
 
 % Graphite is undoubtedly the most common so- lid lubricant.Mainly used as flaky
@@ -182,19 +151,26 @@ reported that macroscale kirigami can be used to dynamically control the macrosc
 % \cite{DIENWIEBEL2005197}
 
 
-
-% Definition on frictional coefficient using the derivative:
-% \cite{gao_frictional_2004}
-
 \section{Approach}
 
-Explain my specific approach in more detail one this is settled in completely. 
 
-What if I use the acronym \acrshort{ML} on this page as well?
+In this thesis we investigate the possibility to control the frictional
+properties of a graphene sheet by applying strategically positioned cuts to the
+sheet inspired by kirigami patterns. Kirigami is a variation of origami where
+the paper is cut additionally to being folded. Hanakata et al.\
+\cite{PhysRevResearch.2.042006} has shown that kirigami inspired cuts on a
+graphene sheet can be used to alter the yield strain and yield stress of the
+sheet. They observed that the stretching of the cutted sheet induced a
+out-of-plane buckling which serves as a key observation for the motivation of
+this thesis. It is currently well established/believed that the friction between
+two surfaces is proportional to the real microscopic contact area (source
+here?). Hence, one can hypothesize that the buckling of the sheet will affect
+the contact area and consequently the frictional properties. 
+
 
 % In the study by Hanakata et al.\ \cite{PhysRevResearch.2.042006} they used a
 % machine learning (ML) approach to overcome the complexity of the nonlinear
-% effects arrising from the out-of-plane buckling which made them succesfully map
+% effects arrising from the out-of-plane buckling which made them successfuly map
 % the cutting patterns to the mechanical properties of yield and stress. The
 % dataset used for the ML training was generated by molecular dynamics (MD)
 % simulations for a limited set of cut configuration. By training a neural network the MD simiulaitons could effectively be skipped all together making for an
@@ -233,8 +209,6 @@ What if I use the acronym \acrshort{ML} on this page as well?
 % bridge is that of the MD simulation and real life implementations. 
 
 
-
-
 % The good thing about the process of inverse design is that the uncertainty and
 % missing information from the network (black box) is not important if we are
 % able to locate a working design. Thus we can test the suggested design and
@@ -248,7 +222,7 @@ What if I use the acronym \acrshort{ML} on this page as well?
 % proposed designs is determined by the simulation quality. 
 
 
-% On the topic of theoretical/physical understanding benefit using ML for design proposals. Since a successful ML search or inverse design procedure will not immediately grant any physical insight this does not nessecarily exclude physical understanding as a possible benefit. When solving design problems scientist often seek inspiration from nature, i.e.\ biological solutions build from the greatest and probably most complex parameter optimzation search ever recorded, evolution. Let it be that of Gekko feet or XXX. By styding the working mechanism of biologcial system we can unravel exotic mechanism which can be exploited for artifcal/human build contraptions. Similar, we can consider the output of a succesfull ML framework similar to that of evolution. We are not immediately granted a physical explanaiton for its working, but we now have a case study for which we can seek to understand this behaviour. 
+% On the topic of theoretical/physical understanding benefit using ML for design proposals. Since a successful ML search or inverse design procedure will not immediately grant any physical insight this does not nessecarily exclude physical understanding as a possible benefit. When solving design problems scientist often seek inspiration from nature, i.e.\ biological solutions build from the greatest and probably most complex parameter optimzation search ever recorded, evolution. Let it be that of Gekko feet or XXX. By styding the working mechanism of biologcial system we can unravel exotic mechanism which can be exploited for artifcal/human build contraptions. Similar, we can consider the output of a successful ML framework similar to that of evolution. We are not immediately granted a physical explanaiton for its working, but we now have a case study for which we can seek to understand this behaviour. 
 
 % \section{Applications}
 
@@ -258,6 +232,9 @@ What if I use the acronym \acrshort{ML} on this page as well?
 % for the thesis and state which is completed, which is perhaps not conslusive
 % and which I did not answer at all. Perhaps also make a list of
 % problems/questions to answer (also state which one I actually answer here).
+
+
+Generally we want to contribute to the understadning of nanoscale friction while finding kirigami designs associated with excotic friction properties. This also serves as a proof of concept for the future work in this direction, perhaps with some more clear defined applications in mind. 
 
 \begin{enumerate}
     \item Design a MD simulation to evaluate the frictional properties of the
