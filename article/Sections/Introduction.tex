@@ -6,10 +6,11 @@
     \item \hl{Motives for friction control using a grasping robot as example.}
     \item \hl{Analog to gecko feet where adhesive properties are turned on and off.}
     \item \hl{Interest in origin of friction through nanoscale studies which further motivates the use of MD.}
-    \item \hl{Intro to metamaterials and the use of kirigami (/origami) design}
+    \item \hl{Intro to metamaterials and the use of kirigami designs,}
     \item \hl{How to optimize kirigami designs with reference to Hanakata and motivating the use of ML.}
     \item \hl{Out-of-plane buckling motivates the use of kirigami for frictional properties.}
 \end{enumerate}
+\hl{Does some of the latter paragraphs belong to the approach section?}
 
 \section{Motivation}
 Friction is a fundamental force that takes part in most of all interactions with
@@ -27,10 +28,10 @@ wheel and lubricants to reduce friction in translational motion
 \cite{bhushan_2013}. Today, friction is considered a part of the wider field
 \textit{tribology} derived from the Greek word \textit{Tribos} meaning
 ``rubbing'' and includes the science of friction, wear and lubrication
-\cite{bhushan_2013}. The most compelling motivation to study tribology in
-general is ultimately to gain full control of friction and wear for various
-technical applications. Especially, reducing friction is of great interest as
-this has tremendous advantages for energy effeciency. It has been reported that
+\cite{bhushan_2013}. The most compelling motivation to study tribology is
+ultimately to gain full control of friction and wear for various technical
+applications. Especially, reducing friction is of great interest as this has
+tremendous advantages for energy effeciency. It has been reported that
 tribological problems have a significant potential for economic and
 environmental improvements \cite{kim_nano-scale_2009}:
 \begin{quote}
@@ -39,9 +40,9 @@ environmental improvements \cite{kim_nano-scale_2009}:
     \cite{holmberg_influence_2017}. 
 \end{quote}
 On the other hand, the reduction of friction is not the only sensible
-application for tribological studies. Controlling frictional properties besides
-minimization might be of interest in the development of a grasping robot where a
-finetuned object handling is required. While achieving a certain ``constant''
+application for tribological studies. Controlling frictional properties, besides
+minimization, might be of interest in the development of a grasping robot where
+a finetuned object handling is required. While achieving a certain ``constant''
 friction response is readily obtained through appropiate material choices during
 manufacturing, we are yet to unlock the capabilities to alter friction
 dynamically on the go. One example from nature inspiring us to think along
@@ -64,29 +65,52 @@ Nano-friction is also of great concern for the field of nano-machining where the
 frictional properties between the tool and the workpiece dictates machining
 charascteristics \cite{kim_nano-scale_2009}. With concurrent progress in
 computational power and devolopment of Molecular Dynamics (\acrshort{MD}),
-numerical investigations serve as an extremely useful tool for getting
-insight into the nanoscale mechanics associated with friction. This simulation
-based approach can be considered as a ``numerical experiment'' enabling us to create and
-probe a variety of high complexity system which are still out of reach for modern experimental approaches.
+numerical investigations serve as an extremely useful tool for getting insight
+into the nanoscale mechanics associated with friction. This simulation based
+approach can be considered as a ``numerical experiment'' enabling us to create
+and probe a variety of high complexity systems which are still out of reach for
+modern experimental methods.
 
-In materials science such \acrshort{MD}-based numerical studies have been used to explore the concept of so-called \textit{metamaterials} where material compositions are
-designed meticulously to enhance certain physical properties
+In materials science such \acrshort{MD}-based numerical studies have been used
+to explore the concept of so-called \textit{metamaterials} where material
+compositions are designed meticulously to enhance certain physical properties
 \cite{PhysRevLett.121.255304}\cite{PhysRevResearch.2.042006}\cite{graphene/hBN}\cite{Mao}\cite{Yang}\cite{Forte}.
 This is often achieved either by intertwining different material types or
 removing certain regions completely. In recent papers by Hanakata et al.\
 \cite{PhysRevLett.121.255304}(2018) \cite{PhysRevResearch.2.042006}(2020)
-numerical studies have showcased that mechanical properties of a graphene
-sheet, in this case yield stress and yield strain, can be altered through the
-introduction of so-called \textit{Kirigami} inspired cuts into the sheet. That
-is, by removing atoms at certain locations on the sheet it is possible to alter
-the stretchability and resistance to rupturing under tension. Kirigami is a
-variation of origami where the paper is cut additionally to being folded. While
-these originate as an art form aiming to produce various artistic objects, they
-have proven to be applicable in a wide range of fields such as optics, physics,
-biology, chemistry and engineering \cite{chen_kirigamiorigami_2020}. Various
-forms of stimuli enable direct 2D to 3D transformations through folding,
-bending, and twisting of microstructures. While orginal human designs may have contributed to specific scientiffic applications, the use of kirigami and
-origami driven designs are highly driven by the question of how to generate new designs with optimize certain physical properties.
+numerical studies have showcased that mechanical properties of a graphene sheet,
+in this case yield stress and yield strain, can be altered through the
+introduction of so-called \textit{kirigami} inspired cuts into the sheet.
+Kirigami is a variation of origami where the paper is cut additionally to being
+folded. While these methods originate as an art form, aiming to produce various
+artistic objects, they have proven to be applicable in a wide range of fields
+such as optics, physics, biology, chemistry and engineering
+\cite{chen_kirigamiorigami_2020}. Various forms of stimuli enable direct 2D to
+3D transformations through folding, bending, and twisting of microstructures.
+While orginal human designs have contributed to specific scientiffic
+applications in the past, the future of this field is highly driven by the
+question of how to generate new designs optimized for certain physical
+properties. However, the complexity of such systems and the associated design
+space makes for seemingly intractable problems ruling out analytic solutions.
+
+
+% kirigami is a variation of origami where the paper is cut additionally to
+% being folded, and in this case the precut sheet produced a variety of
+% out-of-plane buckling when stretched, which lead to the change in
+% stretchability and resistance to rupturing under tension.
+
+% That is, by removing atoms at certain locations on the sheet it is possible to
+% alter the stretchability and resistance to rupturing under tension. Kirigami
+% is a variation of origami where the paper is cut additionally to being folded.
+% While these originate as an art form aiming to produce various artistic
+% objects, they have proven to be applicable in a wide range of fields such as
+% optics, physics, biology, chemistry and engineering
+% \cite{chen_kirigamiorigami_2020}. Various forms of stimuli enable direct 2D to
+% 3D transformations through folding, bending, and twisting of microstructures.
+% While orginal human designs may have contributed to specific scientiffic
+% applications, the use of kirigami and origami driven designs are highly driven
+% by the question of how to generate new designs with optimize certain physical
+% properties.
 
 
 % % Materials-by-design is a paradigm to develop previously unknown
@@ -97,62 +121,66 @@ origami driven designs are highly driven by the question of how to generate new 
 
 
 Earlier architecture design approaches such as bioinspiration, looking at gecko
-feet for instance, and Edisonian, based on trial and error, generally rely
-on prioir knowdelegde and an experienced designer \cite{Mao}. While the
-Edisonian approach is certainly more feasible through numerical studies real world experiments, the number of combinations in the design space rather quickly becomes too large to search systematically, even when considering the simmulation time of modern hardware. The complexity of metamaterials like the kirigami graphene sheet additionally makes for a seemingly intractable problem meaning that analytic solutions are of the table. However, such problems can be mittigated
-by the use of machine learning (\acrshort{ML}) which have proven successful in the
-establishment of a connection between kirigami designs and physical
-properties (\hl{Cite again?}). The recent advancements in the field of
-\acrshort{ML} makes it possible to capture ever more complex patterns in data
-which can be used to learn a mapping from the design space to physcial properties of interest. This gives rise to two different design approaches: One, by utilizing the prediction from a trained network we can skip
-the \acrshort{MD} simulations all together resulting in an accelerated search of
-designs. This can be further improved by guiding the search as for instance through a genetic algorithm where one creates new designs based
-on the best candidates so far. Optinally, one could perform \acrshort{MD} simulations on the top candidates at regularly intervales to expand the dataset and improve the \acrshort{ML} model which constritute a so-called
-\textit{active learing} search loop as used in \cite{PhysRevLett.121.255304}.
-Secondly, an even more sophisticated approach is through generative methods such
-as Generative Adversarial Networks (GAN). By working with a so-called
-\textit{encoder-decoder} network structure, one can build a network that reverses
-the prediction process. That is, the network predict a corresponding
-design given a set of physical target properties. In the papers by Hanakata et
-al.\ both the \textit{accelerated search} and the \textit{inverse design} was
-proven successful to create novel metamaterial designs. 
+feet for instance, and Edisonian, based on trial and error, generally rely on
+prioir knowdelegde and an experienced designer \cite{Mao}. While the Edisonian
+approach is certainly more feasible through numerical studies than real world
+experiments, the number of combinations in the design space rather quickly
+becomes too large for a systematic search, even when considering the simulation
+time on modern day hardware. However, this computational time constraint can be
+relaxed by the use of machine learning (\acrshort{ML}) which have proven
+successful in the establishment of a mapping from the design space to physical properties of interest. This gives rise to two new styles of design
+approaches: One, by utilizing the prediction from a trained network we can skip
+the \acrshort{MD} simulations all together resulting in an \textit{accelerated
+search} of designs. This can be further improved by guiding the search
+accordingly to the most promising candidates, as for instance done with the
+\textit{genetic algorithm} which suggest new designs based on mutation and
+crossing of the best candidates so far. Another, even more sophisticated
+approach, is through generative methods such as \textit{Generative Adversarial
+Networks} (GAN). By working with a so-called \textit{encoder-decoder} network
+structure, one can build a model that reverses the prediction process. That is,
+the model predicts a design from a set of physical target properties. In the
+papers by Hanakata et al.\ both the \textit{accelerated search} and the
+\textit{inverse design} approach was proven successful to create novel
+metamaterial kirigami designs with the graphene sheet. 
 
 
 Hanakata et al.\ attributes the variety in yield properties to the non-linear
 effects arrising from the out-of-plane buckling of the sheet. Since it is
 generally accepted that the surface roughness is of great importance for
-fritional properties it can be hypothesized that the cut and stretch procedure
-applied by Hanakata et al.\ can also be exploited for the design of fricitonal
-metamaterials. For certain designs we might hope to find a relationship between
-stretching of the sheet and frictional properties which give rise to a
-contrable friction after the point of
-manufacturing. For instance, the grasping robot might apply such a material as artifical skin for which stretching or relaxing of the surface could result in a changeable friction; Slippery and smooth in contact with people and rough and firmly
-gripping when moving heavy objects. In addition, a possible coupling between
-stretch and the normal load through a nanomachine design would allow for an
-altered friction coefficient. This invites the idea of non-linear friction
-coeffcients which might in theory take on negative values as well given the
-right sign of the effect from stretching. The latter would constitute an
-extremely rare property. This has been reported indirectly for bulk graphite by
-Deng et al.\ \cite{deng_adhesion-dependent_2012} where the friction kept
-increasing during the unloading phase. \hl{Check for other cases}.
+frictional properties it can be hypothesized that the kirigami cut and stretch
+procedure can also be exploited for the design of frictional metamaterials. For
+certain designs we might hope to find a relationship between stretching of the
+sheet and frictional properties. If signifciant, this could give rise to a
+variability of the friction reponse beyond manufacturing material choice. For
+instance, the grasping robot might apply such a material as artifical skin for
+which stretching or relaxing of the surface could result in a changeable
+friction strength; Slippery and smooth when in contact with people and rough and
+firmly gripping when moving heavy objects. In addition, a possible coupling
+between stretch and the normal load through a nanomachine design would allow for
+an altered friction coefficient. This invites the idea of non-linear friction
+coeffcients which might in theory also take on negative values given the right
+response from stretching. The latter would constitute an extremely rare
+property. This has (\hl{only?}) been reported indirectly for bulk graphite by Deng
+et al.\ \cite{deng_adhesion-dependent_2012} where the friction kept increasing
+during the unloading phase. \hl{Check for other cases and what I can really say
+here}.
 
 To the best of our knowledge, kirigami has not yet been implemented to alter the
-frictional properties on a nanoscale. In a recent paper by Liefferink
-et al.\ \cite{LIEFFERINK2021101475}(2021) it is reported that macroscale
-kirigami can be used to dynamically control the macroscale roughness of a
-surface by stretching which was used to change the frictional coeffcient by
-more than one order of magnitude. This support the idea that kirigami designs
-can in fact be used to alter friction, but we believe that taking this concept
-to the nanoscale would envolve a different set of underlying mechanisms and thus
+frictional properties of a nanoscale system. In a recent paper by Liefferink et
+al.\ \cite{LIEFFERINK2021101475}(2021) it is reported that macroscale kirigami
+can be used to dynamically control the macroscale roughness of a surface through
+stretching which was used to change the frictional coeffcient by more than one
+order of magnitude. This support the idea that kirigami designs can in fact be
+used to alter friction, but we believe that taking this concept to the nanoscale
+regime would envolve a different set of underlying mechanisms and thus
 contribute to new insight in this field.
 
-% maximize the probabilities for the discovering of excotic frictional properties,
-% not to mention the contribution to the understanding of the underlying mechanics
-% associated to friction. 
 
-
-
-
+% Additionally, one can perform
+% \acrshort{MD} simulations on the top candidate designs regularly in order to
+% improve the dataset which the \acrshort{ML} model is trained on which
+% constritute a so-called \textit{active learing} search loop as used in
+% \cite{PhysRevLett.121.255304}.
 
 
 
@@ -193,14 +221,40 @@ contribute to new insight in this field.
 
 
 \section{Approach}
+In this thesis we investigate the possibility to alter and control the frictional
+properties of a graphene sheet through application of kirigami inspired cuts and stretching of the sheet. With the use of \acrshort{MD} simulations we evaluate the friction properties under different physical conditions in order to get insight into the prospects of this field. By evaluating variations of two kirigami inspired patterns and a series of random walk generated patterns we create a dataset containing information of the frictional properties associated with each design under different load and stretch conditions. We apply \acrshort{ML} to the dataset and use an accelerated search approach to optimize for different properties of interest. The subtask of the thesis are presented more comprehensively in the following.
+\begin{enumerate}
+    \item Define a sheet indexing that allows for an unqiue mapping of patterns between a hexagonal graphene lattice representation to a matrix representation suited for numerical analysis. 
+    \item  Design a \acrshort{MD} simulation procedure to evaluate the frictional properties of a given graphene sheet under specified physical conditions such as load, stretch, temperature etc. 
+    \item Find and implement suitable kirigami patterns which exhibit out-of-plane buckling under tensile load. This includes the creation of a framework for creating variations within each pattern class. Additionally create a procedure for generating different styles of random walk patterns.
+    \item Perform a pilot study of a representative subset of patterns in order to determine appropriate simulation parameters to use for the further study along with an analysis of the frictional properties shown in the subset.
+    \item Create a dataset consisting of the chosen kirigami variations and random walk patterns and analyse data trends.
+    \item Train a neural network to map from the design space to physical properties such as mean friction, maximum friction, contact area etc.\ and evaluate the performance.
+    \item Perform an accelerated search optimizing for interesting frictional properties using the \acrshort{ML} model. This should be done both through the pattern generation procedures and by following a genetic algorithm approach. 
+    \item Use the most promising candidtes from the accelerated search to investigate the prospects of creating a nanomachine setup which exhibits a negative friction coefficient. 
+    \item Study certain designs of interest with the scope of revealing underling mechanism. This includes simple correlation analysis but also a visualization of feature and gradient maps of the \acrshort{ML} network.
+\end{enumerate}
+
+\hl{Is the list of subtask to specific? Some of the details here might be better suited for the thesis structure section.}
+
+% replace the MD simulation completely.
+% \item (Variation 1) Do an accelerated search using the ML network for exotic
+% frictional properties such as low and friction coeffcients and a strong
+% coupling between stretch and friction. 
+% \item (Variation 2) Make a GAN network using the forward network in order to extract cut configuration proposals for above frictional properties.
+% \item Make a nanomachine or artifical numerical setup which couples normal load and stretch with the intention of making a proof of concept for negative friction coefficients. 
+% \item Create a procedure for generating variaiton of the selected kirigami patterns along with random walk based cut patterns in order to create a dataset for ML training. 
+% \item Train a neural network to replace the MD simulation completely.
+% \item (Variation 1) Do an accelerated search using the ML network for exotic
+% frictional properties such as low and friction coeffcients and a strong
+% coupling between stretch and friction. 
+% \item (Variation 2) Make a GAN network using the forward network in order to extract cut configuration proposals for above frictional properties.
+% \item Make a nanomachine or artifical numerical setup which couples normal load and stretch with the intention of making a proof of concept for negative friction coefficients. 
 
 
 
 
-% In this thesis we investigate the possibility to control the frictional
-% properties of a graphene sheet by applying strategically positioned cuts to the
-% sheet inspired by kirigami patterns. Kirigami is a variation of origami where
-% the paper is cut additionally to being folded. Hanakata et al.\
+% Hanakata et al.\
 % \cite{PhysRevResearch.2.042006} has shown that kirigami inspired cuts on a
 % graphene sheet can be used to alter the yield strain and yield stress of the
 % sheet. They observed that the stretching of the cutted sheet induced a
@@ -267,31 +321,15 @@ contribute to new insight in this field.
 
 % On the topic of theoretical/physical understanding benefit using ML for design proposals. Since a successful ML search or inverse design procedure will not immediately grant any physical insight this does not nessecarily exclude physical understanding as a possible benefit. When solving design problems scientist often seek inspiration from nature, i.e.\ biological solutions build from the greatest and probably most complex parameter optimzation search ever recorded, evolution. Let it be that of Gekko feet or XXX. By styding the working mechanism of biologcial system we can unravel exotic mechanism which can be exploited for artifcal/human build contraptions. Similar, we can consider the output of a successful ML framework similar to that of evolution. We are not immediately granted a physical explanaiton for its working, but we now have a case study for which we can seek to understand this behaviour. 
 
-% \section{Applications}
-
-%
-\section{Objective of the study}
 % Defining the goal of the thesis and restrictions Make bullet point objectives
 % for the thesis and state which is completed, which is perhaps not conslusive
 % and which I did not answer at all. Perhaps also make a list of
 % problems/questions to answer (also state which one I actually answer here).
 
 
-Generally we want to contribute to the understadning of nanoscale friction while finding kirigami designs associated with excotic friction properties. This also serves as a proof of concept for the future work in this direction, perhaps with some more clear defined applications in mind. 
+% Generally we want to contribute to the understadning of nanoscale friction while finding kirigami designs associated with excotic friction properties. This also serves as a proof of concept for the future work in this direction, perhaps with some more clear defined applications in mind. 
 
-\begin{enumerate}
-    \item Design a MD simulation to evaluate the frictional properties of the
-    grapehene sheet under different variations of cut patterns, stretching and
-    loading, among other physical variables.
-    \item Find suitable kirigami patterns which exhibit out of plane buckling under tensile load.
-    \item Create a procedure for generating variaiton of the selected kirigami patterns along with random walk based cut patterns in order to create a dataset for ML training. 
-    \item Train a neural network to replace the MD simulation completely.
-    \item (Variation 1) Do an accelerated search using the ML network for exotic
-    frictional properties such as low and friction coeffcients and a strong
-    coupling between stretch and friction. 
-    \item (Variation 2) Make a GAN network using the forward network in order to extract cut configuration proposals for above frictional properties.
-    \item Make a nanomachine or artifical numerical setup which couples normal load and stretch with the intention of making a proof of concept for negative friction coefficients. 
-\end{enumerate}
+
 
 
 \section{Contributions}
