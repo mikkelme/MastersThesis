@@ -4,9 +4,9 @@
 \begin{enumerate}
     \item \hl{Introduce and motivate friction broadly.}
     \item \hl{Motives for friction control using a grasping robot as example.}
-    \item \hl{Analog to Gekko feet where adhesive properties are turned on and off.}
-    \item \hl{Interest in nanoscale friction which motivates the use of MD.}
-    \item \hl{Intro to metmaterials and the use of kirigami (/origami) design}
+    \item \hl{Analog to gecko feet where adhesive properties are turned on and off.}
+    \item \hl{Interest in origin of friction through nanoscale studies which further motivates the use of MD.}
+    \item \hl{Intro to metamaterials and the use of kirigami (/origami) design}
     \item \hl{How to optimize kirigami designs with reference to Hanakata and motivating the use of ML.}
     \item \hl{Out-of-plane buckling motivates the use of kirigami for frictional properties.}
 \end{enumerate}
@@ -18,21 +18,21 @@ term \textit{friction} we recognize it as the inherent resistance to sliding
 motion. Some surfaces appear slippery and some rough, and we know intuitively
 that sliding down a snow covered hill is much more exciting than its grassy
 counterpart. Without friction, it would not be possible to walk across a flat
-surface, lean against the wall without falling over or secure an object by the use
-of nails or screws [p. 5] \cite{gnecco_meyer_2015}. It is probably safe to say that the concept of friction is integrated in our everyday life to such an extent that
-most people take it for granted. However, the efforts to control friction dates
-back to the early civilization (3500 B.C.) with the use of the wheel and
-lubricants to reduce friction in translational motion \cite{bhushan_2013}. 
-
-Today, friction is considered a part of the wider field \textit{tribology}
-derived from the Greek word \textit{Tribos} meaning ``rubbing'' and includes the
-science of friction, wear and lubrication \cite{bhushan_2013}. The most
-compelling motivation to study tribology is ultimately to gain full control of
-friction and wear for various technical applications. Especially, reducing
-friction is of great interest as this has tremendous advantages for energy
-effeciency. It has been reported that tribological problems have a significant
-potential for economic and environmental improvements
-\cite{kim_nano-scale_2009}:
+surface, lean against the wall without falling over or secure an object by the
+use of nails or screws [p. 5] \cite{gnecco_meyer_2015}. It is probably safe to
+say that the concept of friction is integrated in our everyday life to such an
+extent that most people take it for granted. However, the efforts to control
+friction dates back to the early civilization (3500 B.C.) with the use of the
+wheel and lubricants to reduce friction in translational motion
+\cite{bhushan_2013}. Today, friction is considered a part of the wider field
+\textit{tribology} derived from the Greek word \textit{Tribos} meaning
+``rubbing'' and includes the science of friction, wear and lubrication
+\cite{bhushan_2013}. The most compelling motivation to study tribology in
+general is ultimately to gain full control of friction and wear for various
+technical applications. Especially, reducing friction is of great interest as
+this has tremendous advantages for energy effeciency. It has been reported that
+tribological problems have a significant potential for economic and
+environmental improvements \cite{kim_nano-scale_2009}:
 \begin{quote}
     ``On global scale, these savings would amount to 1.4\% of the GDP annually
     and 8.7\% of the total energy consumption in the long term.''
@@ -42,14 +42,15 @@ On the other hand, the reduction of friction is not the only sensible
 application for tribological studies. Controlling frictional properties besides
 minimization might be of interest in the development of a grasping robot where a
 finetuned object handling is required. While achieving a certain ``constant''
-friction response is readily obtained through appropiate material choices
-during manufacturing, we are yet to unlock the capabilities to alter friction
+friction response is readily obtained through appropiate material choices during
+manufacturing, we are yet to unlock the capabilities to alter friction
 dynamically on the go. One example from nature inspiring us to think along
 theese lines are the gecko feet. More precisely, the Tokay gecko has recieved a
 lot of attention in scientific studies aiming to unravel the underlying
-mechanism of its ``togglable'' adhesion properties. Although geckos are able
-to produce large adhesive forces, they retain the ability to remove their feet from an attachment surface at will \cite{Gekko}. This makes the gecko able to achieve a
-high adhesion on the feet when climbing a vertical surface while lifting it
+mechanism of its ``togglable'' adhesion properties. Although geckos are able to
+produce large adhesive forces, they retain the ability to remove their feet from
+an attachment surface at will \cite{Gekko}. This makes the gecko able to achieve
+a high adhesion on the feet when climbing a vertical surface while lifting it
 for the next step remains reletively effortless. For a grasping robot we might
 consider an analog frictional concept of a surface material that can change from
 slippery to rough on demand depending on specific tasks.
@@ -63,18 +64,18 @@ Nano-friction is also of great concern for the field of nano-machining where the
 frictional properties between the tool and the workpiece dictates machining
 charascteristics \cite{kim_nano-scale_2009}. With concurrent progress in
 computational power and devolopment of Molecular Dynamics (\acrshort{MD}),
-numerical investigations now serve as an extremely useful tool for getting
+numerical investigations serve as an extremely useful tool for getting
 insight into the nanoscale mechanics associated with friction. This simulation
-based approach serves as a ``numerical experiment'' enabling us to create and
+based approach can be considered as a ``numerical experiment'' enabling us to create and
 probe a variety of high complexity system which are still out of reach for modern experimental approaches.
 
-In materials science such \acrshort{MD}-based numerical studies have been used to explore the concept of so-called \textit{metamaterials} where materials compositions are
-designed to enhance certain physical properties
+In materials science such \acrshort{MD}-based numerical studies have been used to explore the concept of so-called \textit{metamaterials} where material compositions are
+designed meticulously to enhance certain physical properties
 \cite{PhysRevLett.121.255304}\cite{PhysRevResearch.2.042006}\cite{graphene/hBN}\cite{Mao}\cite{Yang}\cite{Forte}.
 This is often achieved either by intertwining different material types or
 removing certain regions completely. In recent papers by Hanakata et al.\
-\cite{PhysRevLett.121.255304}(2018) and \cite{PhysRevResearch.2.042006}(2020)
-numerical investigations has showcased that mechanical properties of a graphene
+\cite{PhysRevLett.121.255304}(2018) \cite{PhysRevResearch.2.042006}(2020)
+numerical studies have showcased that mechanical properties of a graphene
 sheet, in this case yield stress and yield strain, can be altered through the
 introduction of so-called \textit{Kirigami} inspired cuts into the sheet. That
 is, by removing atoms at certain locations on the sheet it is possible to alter
