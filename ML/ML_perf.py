@@ -1,17 +1,25 @@
 import sys
 sys.path.append('../') # parent folder: MastersThesis
-from plot_set import *
-from data_analysis import *
-from use_network import *
-import ast
 
+if 'MastersThesis' in sys.path[0]: # Local 
+    from ML.data_analysis import *
+    from ML.use_network import *
+else: # Cluster
+    from data_analysis import *
+    from use_netwrok import *
+    
+
+from plot_set import *
+import ast
 from matplotlib.colors import LogNorm
 
-def get_vmin_max(mat):
-    p = 0.5
-    # High scores = good
-    vmin = np.nanmax((p*np.nanmax(mat), np.nanmin(mat)))
-    vmax = np.nanmax(mat)
+def get_vmin_max(mat, p = 0.5, increasing = True):
+    if increasing:
+        vmin = np.nanmax((p*np.nanmax(mat), np.nanmin(mat)))
+        vmax = np.nanmax(mat)
+    else:
+        vmin = np.nanmin(mat)
+        vmax = np.nanmin((np.nanmin(mat)/p, np.nanmax(mat)))
     return vmin, vmax
 
 
@@ -152,8 +160,7 @@ def staircase_heatmap(path, compare_folder = [], save = False):
     ax.set_ylabel('Start num. channels', fontsize=14)
     fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
     
-
-
+    
     # Loss
     fig, ax = plt.subplots(num = unique_fignum(),  figsize=(10, 6))
     mat = P['val_tot_loss']
@@ -230,6 +237,6 @@ if __name__ == '__main__':
     
     compare_folder = ['../Data/Baseline_fixmove/honeycomb/multi_stretch', '../Data/Baseline_fixmove/popup/multi_stretch']
     compare_folder = []
-    # staircase_heatmap(path, compare_folder, save = False)
-    staircase_complexity(path)
+    staircase_heatmap(path, compare_folder, save = False)
+    # staircase_complexity(path)
     plt.show()

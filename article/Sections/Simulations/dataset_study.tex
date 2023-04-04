@@ -265,8 +265,14 @@ In addition to the biggest drop in friction we also look at minimum abnd maximum
 
 \section{Machine learning}
 
-LR range test
+\subsection{Hypertuning}
 
+We build a series of models by VGGNet type. The first part consist of convolutional layers and then final part of fully connected layers. Each convolutional layer is followed by a Batchnorm, then a Relu and finally a maxpool. As we go deeper into the network we increase the number of channels in the convolutional layers, and similary we decrease the number of nodes in the fully connected layers towards the end. We choose an even distribution of C and FC layers. We do so in a staircase kind of way such, as for instance 
+\begin{align*}
+  \text{Input} \to \underbrace{\overbrace{C4}^{S \ = \ 4}C8 \ C16 \ C32 \ D32 \ D16 \ D8 \ D4}_{D \ = \ 8} \to \text{Output}
+\end{align*} 
+
+By varying the number of start channels $S$ and the depth $D$ we perform a architecture search. However, the appropiate learning rate will depend on the specific architecture. Hence, we perform a learning rate range test for each of the suggested model architectures before doing the search. This is shown in figure \cref{fig:LR_range}.
 
 \begin{figure}[H]
   \centering
@@ -277,16 +283,63 @@ LR range test
       % \label{fig:}
   \end{subfigure}
   \hfill
-  % \begin{subfigure}[t]{0.49\textwidth}
-  %     \centering
-  %     \includegraphics[width=\textwidth]{figures/ML/corr_stretch_contact.pdf}
-  %     \caption{}
-  %     % \label{fig:}
-  % \end{subfigure}
-  % \hfill
-  % \caption{...}
-  \label{fig:}
+  \begin{subfigure}[t]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/ML/LR_range_full.pdf}
+      \caption{}
+      % \label{fig:}
+  \end{subfigure}
+  \hfill
+  \caption{Learning rate range test. $(a)$ show a few examples of how the test ran. $(b)$ show the complete result from the test.}
+  \label{fig:LR_range}
 \end{figure}
+
+We then use these suggested learning rates for the architecture search. We look at the total validation loss and the validation R2 score for the mean friction. 
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{figures/ML/A_search_perf.pdf}
+  \caption{Architecture search}
+  \label{fig:}
+\end{figure}  
+
+
+
+
+% \begin{figure}[H]
+%   \centering
+%   \begin{subfigure}[t]{0.49\textwidth}
+%       \centering
+%       \includegraphics[width=\textwidth]{figures/ML/A_search_R2.pdf}
+%       \caption{}
+%       % \label{fig:}
+%   \end{subfigure}
+%   \hfill
+%   \begin{subfigure}[t]{0.49\textwidth}
+%       \centering
+%       \includegraphics[width=\textwidth]{figures/ML/A_search_val_loss.pdf}
+%       \caption{}
+%       % \label{fig:}
+%   \end{subfigure}
+%   \hfill
+%   \begin{subfigure}[t]{0.49\textwidth}
+%       \centering
+%       \includegraphics[width=\textwidth]{figures/ML/A_search_epoch.pdf}
+%       \caption{}
+%       % \label{fig:}
+%   \end{subfigure}
+%   \hfill
+%   \begin{subfigure}[t]{0.49\textwidth}
+%       \centering
+%       \includegraphics[width=\textwidth]{figures/ML/A_search_num_param.pdf}
+%       \caption{}
+%       % \label{fig:}
+%   \end{subfigure}
+%   \hfill
+%   \caption{Architecture search.}
+% \end{figure}
+
+Now look at the result for the more difficult patterns as a pseudo validaiotn (these is actually expected to be partly in the training set already).
 
 \clearpage
 
