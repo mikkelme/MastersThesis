@@ -1,4 +1,11 @@
-from ML_utils import *
+import sys
+sys.path.append('../') # parent folder: MastersThesis
+
+if 'MastersThesis' in sys.path[0]: # Local 
+    from ML.ML_utils import *
+else: # Cluster
+    from ML_utils import *
+    
 seed_everything(2023) # TODO: Keep here? Or put elsewhere?
 
 

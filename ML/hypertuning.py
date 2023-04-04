@@ -1,10 +1,20 @@
-from train_network import *
+import sys
+sys.path.append('../') # parent folder: MastersThesis
+
+if 'MastersThesis' in sys.path[0]: # Local 
+    from ML.train_network import *
+else: # Cluster
+    from train_network import *
+    
+    
 from time import perf_counter
-
-
 from ignite.engine import create_supervised_trainer, create_supervised_evaluator
 from ignite.handlers import FastaiLRFinder
 from matplotlib.colors import LogNorm
+
+
+
+
 
 
 class Architectures:

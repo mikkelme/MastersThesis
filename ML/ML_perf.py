@@ -5,7 +5,7 @@ from data_analysis import *
 from use_network import *
 import ast
 
-
+from matplotlib.colors import LogNorm
 
 def get_vmin_max(mat):
     p = 0.5
@@ -175,7 +175,7 @@ def staircase_heatmap(path, compare_folder = [], save = False):
     # Num. Params
     fig, ax = plt.subplots(num = unique_fignum(),  figsize=(10, 6))
     mat = P['num_params']
-    sns.heatmap(mat, xticklabels = D_axis, yticklabels = S_axis, cbar_kws={'label': 'Num. params'}, annot=True, fmt='.4g', vmin=None, vmax=None, ax=ax)
+    sns.heatmap(mat, xticklabels = D_axis, yticklabels = S_axis, cbar_kws={'label': 'Num. params'}, annot=True, fmt='.4g', vmin=None, vmax=None, ax=ax, norm=LogNorm())
     ax.set_xlabel('Depth', fontsize=14)
     ax.set_ylabel('Start num. channels', fontsize=14)
     fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
@@ -191,34 +191,45 @@ def staircase_heatmap(path, compare_folder = [], save = False):
 def staircase_complexity(path):
     D_axis, S_axis, P = get_staircase_perf(path)
     
+    # Overfitting heatmnap
+    fig, ax = plt.subplots(num = unique_fignum(),  figsize=(10, 6))
+    diff = np.abs(P['val_tot_loss'] - P['train_tot_loss'])
+    sns.heatmap(diff, xticklabels = D_axis, yticklabels = S_axis, cbar_kws={'label': 'Loss diff: Val - Train'}, annot=True, fmt='.4g', vmin=None, vmax=None, ax=ax)
+    ax.set_xlabel('Depth', fontsize=14)
+    ax.set_ylabel('Start num. channels', fontsize=14)
+    fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+
+
     
-    # train_loss = P['train_tot_loss'].flatten()
-    # val_loss = P['val_tot_loss'].flatten()
     num_params = P['num_params']
     sort = np.argsort(num_params.flatten())
     for key in P:
         P[key] = (P[key].flatten())[sort]
     
     
-    # plt.plot(P['num_params'], P['train_tot_loss'], label = 'train tot loss')
-    # plt.plot(P['num_params'], P['val_tot_loss'], label = 'val tot loss')
-    plt.plot(P['num_params'], P['train_Ff_loss'], label = 'train Ff loss')
-    plt.plot(P['num_params'], P['val_Ff_loss'], label = 'val Ff loss')
+    fig = plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
+    ax = fig.gca()
+    
+    plt.plot(P['num_params'], P['train_tot_loss'], label = 'train tot loss')
+    plt.plot(P['num_params'], P['val_tot_loss'], label = 'val tot loss')
+    # ax.plot(P['num_params'], P['train_Ff_loss'], label = 'train Ff loss')
+    # ax.plot(P['num_params'], P['val_Ff_loss'], label = 'val Ff loss')
     
     # diff_tot_loss = P['val_tot_loss'] - P['train_tot_loss']
     # diff_Ff_loss = P['val_Ff_loss'] - P['train_Ff_loss']
     # plt.plot(P['num_params'], diff_tot_loss, label = 'diff tot loss')
     # plt.plot(P['num_params'], diff_Ff_loss, label = 'diff Ff loss')
-    plt.xscale('log')
-    plt.legend()
+    ax.set_xscale('log')
+    fig.legend()
     
     
     
 if __name__ == '__main__':
     # path = '../ML/staircase_1'
-    path = '../ML/staircase_3'
+    path = '../ML/staircase_4'
     
     compare_folder = ['../Data/Baseline_fixmove/honeycomb/multi_stretch', '../Data/Baseline_fixmove/popup/multi_stretch']
-    staircase_heatmap(path, compare_folder, save = False)
-    # staircase_complexity(path)
+    compare_folder = []
+    # staircase_heatmap(path, compare_folder, save = False)
+    staircase_complexity(path)
     plt.show()
