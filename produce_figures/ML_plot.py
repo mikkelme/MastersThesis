@@ -149,7 +149,7 @@ def LR_range_momentum(save = False):
         lr_max.append(lr[div_idx])
         
         
-    print('momentum', lr_max)
+    print('momentum', momentum)
     print('lr_max', lr_max)
         
     diff = ymax - ymin
@@ -165,7 +165,7 @@ def LR_range_momentum(save = False):
     plt.plot(momentum[:len(lr_max)], lr_max, '-o')
     plt.xlabel(r'Momentum ($\beta_1$)', fontsize=14)
     plt.ylabel('Maximum learning rate', fontsize=14)
-
+    plt.yscale('log')
 
     fig1.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
     fig2.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
