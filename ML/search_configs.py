@@ -244,7 +244,7 @@ if __name__ == '__main__':
 
     # S = Search(model_name, topN = 1, pattern = pop_up)
     # S = Search(model_name, topN = 5, pattern = honeycomb)
-    S = Search(model_name, topN = 3, pattern = RW_MC)
+    # S = Search(model_name, topN = 3, pattern = RW_MC)
     
     
     

@@ -149,13 +149,15 @@ def get_ML_setting(use_gpu = None):
     
     ML_setting = {
         'use_gpu': use_gpu,
-        'lr': 0.0005,  # Learning rate
+        'lr': 1e-4, 
         'batchsize_train': 32,
         'batchsize_val': 64,
         'max_epochs': 300,
         'max_file_num': None,
-        'scheduler_stepsize': None, # 10
-        'scheduler_factor': None # 0.3
+        'weight_decay': 0,
+        'cyclic_lr': (20.0, 1e-3, 1e4), # [div_factor, max_lr, final_div_factor]
+        'cyclic_momentum': (0.85, 0.95), # base_momentum, max_momentum
+        'scheduler': None # [step size, factor], [10, 3]
     }
     
 

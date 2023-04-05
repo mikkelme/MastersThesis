@@ -11,6 +11,8 @@ from time import perf_counter
 from ignite.engine import create_supervised_trainer, create_supervised_evaluator
 from ignite.handlers import FastaiLRFinder
 from matplotlib.colors import LogNorm
+from scipy.signal import argrelextrema
+
 
 
 
@@ -51,6 +53,37 @@ class Architectures:
         return self.A[idx]
         
         
+        
+class best_model(Architectures):    
+  
+  
+        
+    def initialize(self):
+        # Data outputs
+        alpha = [[1/2, 1/10, 1/10], [1/10], [1/10, 1/10]]
+        criterion_out_features = [['R', 'R', 'R'], ['R'], ['R', 'C']]
+        keys = ['Ff_mean', 'Ff_max', 'contact', 'porosity', 'rupture_stretch', 'is_ruptured']
+        model_out_features = [item for sublist in criterion_out_features for item in sublist]   
+        criterion = Loss(alpha = alpha, out_features = criterion_out_features)
+    
+    
+        s = 32; d = 12    
+        name = f'S{s}D{d}'
+        conv_layers = [(1, s*2**x) for x in range(d//2)]
+        FC_layers = [(1, s*2**x) for x in reversed(range(d//2))] 
+        model = VGGNet( name = name,
+                        mode = self.mode, 
+                        input_num = 2, 
+                        conv_layers = conv_layers, 
+                        FC_layers = FC_layers,
+                        out_features = model_out_features,
+                        keys = keys,
+                        batchnorm = self.batchnorm)
+    
+        # Add to list of architectures
+        self.A.append((model, criterion)) 
+        
+
   
 def train_architectures(A_instance, data_root, ML_setting, save_folder, LR_range = None):
     timer_file = os.path.join(save_folder, 'timings.txt')
@@ -68,8 +101,7 @@ def train_architectures(A_instance, data_root, ML_setting, save_folder, LR_range
         
         
         
-    for i, (model, criterion) in enumerate(A_instance):
-        
+    for i, (model, criterion) in enumerate(A_instance):  
         if LR_range:
             assert model.name == name[i], f'model name {model.name} does not match model name {name[i]} corresponding to LR_range test.'
             ML_setting['lr'] = lr[i]
@@ -136,6 +168,11 @@ class Find_optimal_LR:
         self.lr_finder = FastaiLRFinder()
         trainer = create_supervised_trainer(self.model, self.optimizer, self.criterion, device=self.device, prepare_batch=self.prepare_batch_fn)
         
+        # epoch_length = trainer.state.epoch_length
+        # max_epochs = trainer.state.max_epochs
+        # print(epoch_length, max_epochs)
+        # exit()
+        
         # To restore the model's and optimizer's states after running the LR Finder
         to_save = {"model": self.model, "optimizer": self.optimizer}
         
@@ -187,9 +224,77 @@ def LR_range_test(A_instance, data_root, ML_setting, save_folder):
             
         print(f'{i} | {model.name} (#params = {num_params:1.2e}), suggestion = {suggestion}')
     
+
+def lr_momentum_cyclic_grid_search():
+    pass
+
     
-def plot_LR_range_test(path):
+def LR_range_test_momentum(model, criterion, data_root, ML_setting):
+    start_lr = 1e-7
+    end_lr = 10.0
+    momentum = [0.99, 0.97, 0.95, 0.9]
+    filename = 'lr_momentum_test.txt'
     
+    fig = plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
+    ax = plt.gca()
+    ymin = 1e3; ymax = -1e3
+    
+    lr_max = []
+    for i, mom in enumerate(momentum):
+        print(f'{i+1}/{len(momentum)} | momentum = {mom}')
+        optimizer = optim.Adam(model.parameters(), lr = start_lr, betas=(mom, 0.999))
+        foLR = Find_optimal_LR(model, optimizer, criterion, data_root, ML_setting)
+        
+        foLR.find_optimal(end_lr)
+        
+        
+        # Plot
+        results = foLR.lr_finder.get_results()
+        lr = np.array(results['lr'])
+        print('len(lr) = ', len(lr))
+        
+        loss = np.array(results['loss'])
+        minidx = np.argmin(loss)
+        sug_idx = np.argmin(np.abs(lr-foLR.lr_finder.lr_suggestion()))
+        
+        
+        div_idx = sug_idx + np.argmax(loss[sug_idx:][1:] - loss[sug_idx:][:-1] > loss[sug_idx:][:-1]*0.2)
+        
+        diff = loss[sug_idx:][1:] - loss[sug_idx:][:-1]
+        test = np.argwhere(diff > loss[sug_idx:][:-1]*1.5)
+        
+        start_cut = np.argmin(np.abs(lr - 1e-5))
+        
+
+
+        ax.plot(lr[start_cut:], loss[start_cut:], color = color_cycle(i), label = fr'$\beta_1 = ${mom:0.2f}') 
+        ax.plot(lr[div_idx], loss[div_idx], color = color_cycle(i), marker = 'o')
+        
+        ymin = np.min((loss[minidx], ymin))
+        ymax = np.max((np.max(loss[start_cut:minidx]), ymax))
+        ax.set_xlabel('Learning rate', fontsize=14)
+        ax.set_ylabel('Loss', fontsize=14)
+
+
+        # Store
+        lr_max.append(lr[div_idx])
+        
+        # if i == 1: break
+        
+        
+    diff = ymax - ymin
+    sp = 0.025*diff
+    ax.set_ylim([ymin - sp, ymax + sp]) # Adjust ylim
+    ax.set_xscale('log')
+    plt.legend(fontsize = 13)
+    plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+
+
+    fig = plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
+    plt.plot(momentum[:len(lr_max)], lr_max, '-o')
+    
+    
+def plot_LR_range_test(path): 
     infile = open(path, 'r')
     
     D = []
@@ -265,13 +370,24 @@ def plot_LR_range_test(path):
     plt.show()
 
 
+
+
+
+
 if __name__ == '__main__':
     root = '../Data/ML_data/'
     data_root = [root+'baseline', root+'popup', root+'honeycomb', root+'RW']
     data_root = [root+'honeycomb']
     
-    plot_LR_range_test('staircase_lr/lr_staircase.txt')
-
+    # plot_LR_range_test('staircase_lr/lr_staircase.txt')
+    
+    ML_setting = get_ML_setting()
+    model, criterion = best_model(mode = 0, batchnorm = True)[0]
+        
+        
+    LR_range_test_momentum(model, criterion, data_root, ML_setting)
+    plt.show()
+        
     # ML_setting = {
     #     'use_gpu': False,
     #     'lr': 0.01, 

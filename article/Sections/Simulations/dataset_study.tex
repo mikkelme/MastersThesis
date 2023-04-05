@@ -265,6 +265,8 @@ In addition to the biggest drop in friction we also look at minimum abnd maximum
 
 \section{Machine learning}
 
+Remember to mention that we do data augmentation and flip along the y-axis using a symmetry requirement.
+
 \subsection{Hypertuning}
 
 We build a series of models by VGGNet type. The first part consist of convolutional layers and then final part of fully connected layers. Each convolutional layer is followed by a Batchnorm, then a Relu and finally a maxpool. As we go deeper into the network we increase the number of channels in the convolutional layers, and similary we decrease the number of nodes in the fully connected layers towards the end. We choose an even distribution of C and FC layers. We do so in a staircase kind of way such, as for instance 
@@ -294,52 +296,61 @@ By varying the number of start channels $S$ and the depth $D$ we perform a archi
   \label{fig:LR_range}
 \end{figure}
 
-We then use these suggested learning rates for the architecture search. We look at the total validation loss and the validation R2 score for the mean friction. 
+We then use these suggested learning rates for the architecture search. We look at the total validation loss and the validation R2 score for the mean friction. This is shown in \cref{fig:A_search_perf} 
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{figures/ML/A_search_perf.pdf}
   \caption{Architecture search}
-  \label{fig:}
+  \label{fig:A_search_perf}
 \end{figure}  
 
 
 
 
-% \begin{figure}[H]
-%   \centering
-%   \begin{subfigure}[t]{0.49\textwidth}
-%       \centering
-%       \includegraphics[width=\textwidth]{figures/ML/A_search_R2.pdf}
-%       \caption{}
-%       % \label{fig:}
-%   \end{subfigure}
-%   \hfill
-%   \begin{subfigure}[t]{0.49\textwidth}
-%       \centering
-%       \includegraphics[width=\textwidth]{figures/ML/A_search_val_loss.pdf}
-%       \caption{}
-%       % \label{fig:}
-%   \end{subfigure}
-%   \hfill
-%   \begin{subfigure}[t]{0.49\textwidth}
-%       \centering
-%       \includegraphics[width=\textwidth]{figures/ML/A_search_epoch.pdf}
-%       \caption{}
-%       % \label{fig:}
-%   \end{subfigure}
-%   \hfill
-%   \begin{subfigure}[t]{0.49\textwidth}
-%       \centering
-%       \includegraphics[width=\textwidth]{figures/ML/A_search_num_param.pdf}
-%       \caption{}
-%       % \label{fig:}
-%   \end{subfigure}
-%   \hfill
-%   \caption{Architecture search.}
-% \end{figure}
 
 Now look at the result for the more difficult patterns as a pseudo validaiotn (these is actually expected to be partly in the training set already).
+
+We look at the honeycomb and tetrahedron patterns with top 10 scores for maximum drop in friction. This is chosen as a attempt to capture the ones with the most complex non-linear trends in the stretch curve which seems to be both difficult to predict but also of most interest for the study. This is shown in \cref{fig:A_search_compare}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{figures/ML/A_search_compare_perf}
+  \caption{Selected pseudo validation set}
+  \label{fig:A_search_compare}
+\end{figure}  
+
+From \cref{fig:A_search_perf} we found that models like S(8-32)D(8-12) gave reasonble results. When looking at the selected validaiton set in figure \cref{fig:A_search_compare} we godt considerable lower scores, especially for the Tetrahedron pattern. Here the best peforming models were in general more complex with S32D12 be the best candidate for the tetrahedron and S32D12 the best for the honeycomb pattern. This is compatible with the general performance from \cref{fig:A_search_perf} and by favoring the performance on the tetrahedron set (which seemed to be more difficult) we settle on the S32D12 model.
+
+% We then look at weight decay which is connected to an analysis of overfitting. 
+
+We perform a lr range test with different momentum at this time we find the maximum lr at the point where the loss diverges as shown in figure \cref{fig:LR_range_mom}.
+
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[t]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/ML/LR_momentum_test_a.pdf}
+      \caption{}
+      % \label{fig:}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/ML/LR_momentum_test_b.pdf}
+      \caption{}
+      % \label{fig:}
+  \end{subfigure}
+  \hfill
+  \caption{...}
+  \label{fig:LR_range_mom}
+\end{figure}
+
+
+The LR range is done is arround 200 steps (before it diverges). So if I figure out the number of batches I can check how many epochs is default since number of steps is steps per epoch times number of epochs. 
+
+
 
 \clearpage
 

@@ -265,6 +265,12 @@
 - Made code for visualization of feature map activation
 - Implemented data augmentation: Flipping the sheet configuration across the y-axis (not yet used in training)
 
+#### Week 13 (03/03/2023 - 09/04/2023) - Working from Pisa
+- Wrote a draft for introduction
+- Made architecture search and settled on an architecture
+- Now working with further hypertuning to set momentum and weight decay 
+
+
 
 ## Things to remember 
 

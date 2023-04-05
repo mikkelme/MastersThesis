@@ -17,7 +17,9 @@ def plot_individual_profiles(path, save = False):
 
     for f in folders:
         config_path = find_single_file(f, '.npy')
-        name = config_path.split('/')[-1].rstrip('.npy')
+        # name = config_path.split('/')[-1].rstrip('.npy')
+        name, pattern_type = get_name(path, config_path)
+        name = pattern_type + name.strip('()').replace(', ', '_')
         fig = multi_plot_compare([f], [config_path], vars, axis_labels, figsize = (7, 5), axis_scale = ['linear', 'linear'], colorbar_scale = [(0.1, 10), 'linear'], equal_axes = [False, False], rupplot = True)
         if save:
             plt.savefig(f'../article/figures/stretch_profiles/{name}.pdf', bbox_inches='tight')
@@ -78,20 +80,27 @@ def plot_profiles_together(path, save = False):
         using cubic spline to highlight the approximate trend """ 
     
     # Settings
-    # polyorder = 10
-    # lines_per_fig = 12
     lines_per_fig = 10
-    # cmap = 'gist_rainbow'
     cmap = 'Paired'
     
     folders = get_dirs_in_path(path)
     sort = np.argsort(folders)
     figs = []
     # Min, Max, biggest diff, biggest drop
-    extrema = [['name', 'stretch', 1e3], 
-               ['name', 'stretch', 0], 
-               ['name', 'stretch_start', 'stretch_end', 0],
-               ['name', 'stretch_start', 'stretch_end', 0]] 
+    # extrema = [['name', 'stretch', 1e3], 
+    #            ['name', 'stretch', 0], 
+    #            ['name', 'stretch_start', 'stretch_end', 0],
+    #            ['name', 'stretch_start', 'stretch_end', 0]] 
+    
+    
+
+    topN = 10
+    names =     ['Min', 'Max', 'Max diff', 'Max drop']
+    extrema =   [[], [], [], []]
+    sort_cond = [lambda x: np.argsort(x),
+                 lambda x: np.argsort(x)[::-1],
+                 lambda x: np.argsort(np.abs(x))[::-1],
+                 lambda x: np.argsort(x)[::-1]]
     for i, s in enumerate(sort):
         print(f'{i}/{len(sort)}')
         f = folders[s]
@@ -139,40 +148,44 @@ def plot_profiles_together(path, save = False):
         config_path = find_single_file(f, '.npy')
         name, pattern_type = get_name(path, config_path)
             
+
             
         # Add extrema
-        if prop[0][-1] < extrema[0][-1]: # Min Ff
-            extrema[0][0] = name
-            for i in range(1, 3):
-                extrema[0][i] = prop[0][i-1]
-        if prop[1][-1] > extrema[1][-1]: # Max Ff
-            extrema[1][0] = name
-            for i in range(1, 3): 
-                extrema[1][i] = prop[1][i-1]
-        if np.abs(prop[2][-1]) > np.abs(extrema[2][-1]): # Max diff
-            extrema[2][0] = name
-            for i in range(1, 4): 
-                extrema[2][i] = prop[2][i-1]
-        if prop[3][-1] > extrema[3][-1]: # Max drop
-            extrema[3][0] = name
-            for i in range(1, 4):
-                extrema[3][i] = prop[3][i-1]
-        
+        filename = config_path.replace(path + '/', '')
+        extrema[0].append(np.array([name, filename, prop[0][0], prop[0][1]], dtype = object)) # Min Ff
+        extrema[1].append(np.array([name, filename, prop[1][0], prop[1][1]], dtype = object)) # Max
+        extrema[2].append(np.array([name, filename, prop[2][0], prop[2][1], prop[2][2]], dtype = object)) # Max diff
+        extrema[3].append(np.array([name, filename, prop[3][0], prop[3][1], prop[3][2]], dtype = object)) # Max drop
+       
+
         
         if rup_stretch is None:
             name += f', None'
         else:
             name += f', {rup_stretch:0.2f}'
-            
-        print('Extrema')
-        print(extrema[0])
-        print(extrema[1])
-        print(extrema[2])
-        print(extrema[3])
+
         
         plt.scatter(s, Ff, s = 15, color = color)
         plt.plot(x, fit, linewidth = 1, color = color, label = name)
-        
+    
+    
+    # Show top N
+    if len(extrema[0]) < topN:
+        topN = len(extrema[0])
+    for i, ex in enumerate(extrema):
+        print(f'Extrema: {names[i]}')
+        ex = np.array(ex)
+        sort = sort_cond[i](ex[:, -1])[:topN]
+        res = ex[sort]
+        for r in res:
+            for v in r:
+                if isinstance(v, str):
+                    print(f'{v:<20s}', end = ' ')
+                else:
+                    print(f'{v:.4f}', end = ' ')
+            print()
+        print()
+        # print(ex[sort], '\n')
         
     if save: 
         for fig in figs:
@@ -359,18 +372,18 @@ def patterns_and_profiles(save = False):
     
 
 if __name__ == "__main__":
-    # path = '../Data/CONFIGS/popup'
+    path = '../Data/CONFIGS/popup'
     # path = '../Data/CONFIGS/honeycomb'
     # path = '../Data/CONFIGS/RW'
     
     # patterns_and_profiles(save = False)
     # patterns_and_profiles_2(save = False)
-    plt.show()
+    # plt.show()
     
     
     
     
     # plot_individual_profiles(path, save = False)
-    # plot_profiles_together(path, save = False)
+    plot_profiles_together(path, save = False)
     # plt.show()    
     

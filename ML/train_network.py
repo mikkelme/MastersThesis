@@ -131,20 +131,7 @@ class Trainer:
         
         
     
-        # self.optimizer = optim.SGD(model.parameters(), lr = self.ML_setting['lr'], momentum = 0.9)
-        self.optimizer = optim.Adam(model.parameters(), lr = self.ML_setting['lr'])
-        
-        
-        
-        if self.ML_setting['scheduler_stepsize'] is None or self.ML_setting['scheduler_factor'] is None:
-            self.lr_scheduler = None
-        else:
-            self.lr_scheduler = torch.optim.lr_scheduler.StepLR(self.optimizer, 
-                                                        step_size = self.ML_setting['scheduler_stepsize'], 
-                                                        gamma = self.ML_setting['scheduler_factor'], 
-                                                        last_epoch = - 1, 
-                                                        verbose = False)
-        
+        self.optimizer = optim.Adam(model.parameters(), lr = self.ML_setting['lr'], weight_decay = self.ML_setting['weight_decay'])      
         self.history = OrderedDict([('epoch', []), ('train_loss', []), ('val_loss', [])])
              
 
@@ -162,6 +149,38 @@ class Trainer:
         self.datasets, self.dataloaders = get_data(self.data_root, self.ML_setting)
         
         
+        
+             
+        
+        if self.ML_setting['scheduler'] is None:
+            self.lr_scheduler = None
+        else:
+            self.lr_scheduler = torch.optim.lr_scheduler.StepLR(self.optimizer, 
+                                                        step_size = self.ML_setting['scheduler'][0], 
+                                                        gamma = self.ML_setting['scheduler'][1], 
+                                                        last_epoch = - 1, 
+                                                        verbose = False)
+            
+        
+        if self.ML_setting['cyclic_lr'] is None:
+            self.cyclic_lr = none
+        else:
+            
+            self.cyclic_lr = torch.optim.lr_scheduler.OneCycleLR(self.optimizer, 
+                                                max_lr = self.ML_setting['cyclic_lr'][1],
+                                                total_steps=None, 
+                                                epochs = self.ML_setting['max_epochs'], 
+                                                steps_per_epoch=len(self.dataloaders['train']), 
+                                                pct_start=0.3, 
+                                                anneal_strategy='cos', 
+                                                cycle_momentum=True, 
+                                                base_momentum = self.ML_setting['cyclic_momentum'][0], 
+                                                max_momentum = self.ML_setting['cyclic_momentum'][1], 
+                                                div_factor = self.ML_setting['cyclic_lr'][0], 
+                                                final_div_factor = self.ML_setting['cyclic_lr'][2])
+            
+            
+
         
         # --- Pre analyse validation data to get SS_tot --- #
         # Get mean
@@ -245,6 +264,7 @@ class Trainer:
         for i in range(self.num_out_features):
             self.history[f'rel_{i}'] = []
         self.history[f'acc'] = []
+        self.history[f'lr'] = []
 
         print('Training model')
         for epoch in range(num_epochs):
@@ -271,6 +291,8 @@ class Trainer:
                     self.history[f'abs_{i}'].append(abs_error[i])
                     self.history[f'rel_{i}'].append(rel_error[i])
                 self.history[f'acc'].append(accuracy)
+                self.history[f'lr'].append(self.optimizer.param_groups[-1]['lr'])
+                
                 
                 # Print to terminal 
                 print(f'Val_loss: {val_loss[0]:g}')
@@ -320,6 +342,9 @@ class Trainer:
             # --- print progress --- #
             progress = int(((batch_idx+1)/num_batches)*progress_bar_length)
             print(f'\rTrain loss : {np.mean(losses[:batch_idx+1, 0]):.4f} |{progress* "="}>{(progress_bar_length-progress)* " "}| {batch_idx+1}/{num_batches} ({100*(batch_idx+1)/num_batches:2.0f}%)', end = '')
+            
+            if self.cyclic_lr is not None:
+                self.cyclic_lr.step()
 
 
         print()
@@ -484,10 +509,9 @@ class Trainer:
 
 
 if __name__=='__main__':
-    # data_root = ['../Data/ML_data/baseline', '../Data/ML_data/popup', '../Data/ML_data/honeycomb']
-    data_root = [ '../Data/ML_data/baseline']
-    # data_root = [ '../Data/ML_data/honeycomb']
-    # data_root = [ '../Data/ML_data/RW']
+    # root = '../Data/ML_data/' # Relative (local)
+    root = '/home/users/mikkelme/ML_data/' # Absolute path (cluster)
+    data_root = [root+'baseline', root+'popup', root+'honeycomb', root+'RW']
     ML_setting = get_ML_setting()
     
     
@@ -524,28 +548,23 @@ if __name__=='__main__':
     # Training
     model = VGGNet( mode = 0, 
                     input_num = 2, 
-                    conv_layers = [(1, 32), (1, 64), (1, 128)], 
-                    FC_layers = [(1, 512), (1, 128)],
+                    conv_layers = [(1, 32), (1, 64), (1, 128), (1, 256), (1, 512), (1,1024)], 
+                    FC_layers = [(1, 1024), (1,512), (1,256), (1, 128), (1, 64), (1,32)],
                     out_features = model_out_features,
                     keys = keys)
     
-    # model = VGGNet( mode = 0, 
-    #                 input_num = 2, 
-    #                 conv_layers = [(1,16), (1,16), (1,16)], 
-    #                 FC_layers = [(1,16)],
-    #                 out_features = model_out_features,
-    #                 keys = keys)
-    
+
 
     criterion = Loss(alpha = alpha, out_features = criterion_out_features)
     
+    ML_setting['max_epochs'] = 1000
     
     coach = Trainer(model, data_root, criterion, **ML_setting)
-    coach.learn(max_epochs = 50, max_file_num = None)
-    coach.save_history('training/test')
-    coach.plot_history()
-    
-    
+    coach.learn(max_epochs = None, max_file_num = None)
+    coach.save_history('training/test_cyclic_S32D12')
+    coach.plot_history(show = True, save = 'training/test_cyclic_S32D12/loss.pdf')
+
+    # coach.plot_history()
     # coach.get_info()
     
     
