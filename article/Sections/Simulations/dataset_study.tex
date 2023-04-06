@@ -265,16 +265,119 @@ In addition to the biggest drop in friction we also look at minimum abnd maximum
 
 \section{Machine learning}
 
-Remember to mention that we do data augmentation and flip along the y-axis using a symmetry requirement.
+\subsection{Architecture}
+Due to the spatial dependencies in the kirigami configurations we use a convolutional neural network (\acrshort{CNN}). Studies on similar a similar system envolving the graphene sheet have used a VGGNet style of network, Hanakata et al.\ \cite{PhysRevLett.121.255304}\cite{PhysRevResearch.2.042006} and Wan et al.\ \cite{graphene/hBN}, which we adopt for this study as well. The VGGNet-16 architecture illustrated in \cref{fig:VGGNet16} shows the key features; 
+\begin{itemize}
+  \item The image is processed through a series of $3 \times 3$ convolutional filters (the smallest size to capture spatial dependencies) using a stride of 1 with an increasing number of channels throughout the network. Each convolutional layer is followed by a ReLU acitivation. 
+  \item The spatial dimensions are reduced by a max pooling ($2 \times 2$, stride of 2), which half the spatial resolution each time. 
+  \item The latter part of the network consist of fully connected part followed by a ReLU activation. The image is first processed in a $1 \times 1$ which performs a linear mapping to a series of fully connected layers. 
+\end{itemize}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\linewidth]{figures/ML/VGGNet16.jpg}
+  \caption{VGGNet 16. Source \url{https://neurohive.io/en/popular-networks/vgg16/}.}
+  \label{fig:VGGNet16}
+\end{figure}
+
+In contrast to the VGGNet-16 we restrict ourselves to building the convolutional part in terms of blocks of (convolution, ReLU, max pooling), thus not allowing for any connsecutive convolutional filters without performing a max pooling as well. The fully connected blocks is defined as (fully connected, ReLU) similar to that of the VGGNet model. Hanakata et al.\ and Wan et al.\ used a similar construction before settling on the models
+\begin{align*}
+  \text{Hanakata et al.\ \cite{PhysRevLett.121.255304}} & \qquad C16 \ C32 \ C64 \ D64, \\ 
+  \text{Wan et al.\ \cite{graphene/hBN}} & \qquad C16 \ C32 \ D32 \ D16,
+\end{align*}
+Where $C$ denotes a convolutional block with the following number being the number of channels and $D$ a fully conneted (dense) layer with the number denoting number of nodes. For the process of determing a suiting complexity for the architecture we adpot the approach by Wan et al.\ \cite{graphene/hBN} who used a ``staircase'' pattern for combinning convolutional and fully connected blocks. By defining a starting number of channels $S$ and network depth $D$ we fill the first half with convoliutional blocks doubling in channel number for each layer and the latter half with fully connected blocks starting setting the number of nodes as the reverse pattern used for the number of channels. Following this pattern a $(S=4, D=8)$ would take the form
+\begin{align*}
+  \text{Input} \to \underbrace{\overbrace{C4}^{S \ = \ 4}C8 \ C16 \ C32 \ D32 \ D16 \ D8 \ D4}_{D \ = \ 8} \to \text{Output}.
+\end{align*} 
+This provides a simple description where $S$ and $S$ and can be varied systematically for a grid search over architecture complexity. 
+
+
+
+\subsection{Data handling}
+\subsubsection{Input}
+We use three variables as input: Kirigami configuration, stretch of the sheet
+and applied normal load. While the first is a two-dimensional input the latter
+are both scalar values. This gives rise to two main options for the data structure
+\begin{enumerate}
+  \item Expand the scalar values (stretch and load) into 2D matrices of the same
+  size as the kirigami configuration by copying the scaler value to all positions. This can then be merged into an image of three channels used as a single input.  
+  \item Pass only the kirigami configuration through the \acrshort{CNN} part of the network and introduce the remaining scalar values into the \acrshort{FC} part of the network. 
+\end{enumerate}
+Both options utilize the same data, but the first emphasizes that the configurations should be processed in relation to the applied stretch and load, while the latter represent a more independent processing. We implemented the option to do both variations, but it quickly became clear that option 1 was producing the most promising result ({hl{do more rigorous presentation of this?}}).
+
+\subsubsection{Output}
+For the output we are mainly concerned about the mean friction and the rupture
+detection. In combination this let us produce friction vs.\ stretch curves with
+the rupture detection used to predict the stopping point of the curve in terms
+of a maximum stretch value. However, it has often been proven useful to
+introduce more variables in the output in order to strengthen the network
+(\hl{get source}). In addition, this gives us more option for exploring the
+relationship in the data later on. Thus, we include maximum friction, contact
+count, porosity and rupture stretch in the data. Notice that rupture stretch
+refers to the value found in the rupture test without load, but as the sheet
+always ruptures before or just around this point in a loaded state this provides
+some information for the training to lean on, even though it is in the output
+state. In principle we could add a penalty whenever the network predicts the
+sheet to be attatched for stretch values above the rupture stretch, but we found
+the performance of the rupture prediction to be satisficatory without
+introducing such formalities. Notice that we weight the importance of these
+variables differently as explained in the section about the loss function. 
+
+\subsubsection{Data augmentation}
+Due to the symmetry in the configuration, we can flip the configuration by
+relfecting the configuration across the y-axis. We cannot do this across the
+x-axis as the sheet is always slided in a positive y-direction and thus we
+cannot guarantee that the results would be the same whether we slide backwards
+or forward. We definitely expect a snow plow to perform differently when going
+backwards and thus by analogy we would expect the direction of sliding with
+respect to the configuration to be of importance. 
+
+
+
+\subsection{Loss}
+We use a rather standard loss function for the evaluation of our model
+performance during training and validation. For the scalar values we use the
+Mean Squared Error (\acrshort{MSE})
+\begin{align*}
+  L_{\text{MSE}} = \frac{1}{N} \sum_{i = 1}^N (y_i - \hat{y}_i)^2,
+\end{align*}
+where $N$ is the number of data entries and $y$ are the true variables and
+$\hat{y}$ are the predicted values. For the prediction of rupture with
+True/False labels we use binary cross entropy 
+\begin{align*}
+  L_{\text{BCE}} = -\frac{1}{N} \left[\sum_{i = 1}^N [t_i\log{(p_i)} + (1-t_i)\log{(1 - p_i)}]\right],
+\end{align*}
+where $t\in \{0,1\}$ is the truth label. \hl{Does this belong in theory
+entirely?}.
+
+We calculate the total loss as a weighted sum between the loss associated with
+each variable
+\begin{align*}
+  L_{tot} = \sum_{v} W_v\cdot L_v.
+\end{align*}
+We choose the weights to be $1/2$ for the mean friction and $1/10$ for the
+remaining 5 variables thus sharing weight evenly for the remaining 50\% of the
+loss. During the introductionary phase of the training we tried varying these,
+but we found little change in the results and concluded immediately that the
+precise choice of this weighting is not immensely important. 
 
 \subsection{Hypertuning}
-
-We build a series of models by VGGNet type. The first part consist of convolutional layers and then final part of fully connected layers. Each convolutional layer is followed by a Batchnorm, then a Relu and finally a maxpool. As we go deeper into the network we increase the number of channels in the convolutional layers, and similary we decrease the number of nodes in the fully connected layers towards the end. We choose an even distribution of C and FC layers. We do so in a staircase kind of way such, as for instance 
+We build a series of models by VGGNet type. The first part consist of
+convolutional layers and then final part of fully connected layers. Each
+convolutional layer is followed by a Batchnorm, then a Relu and finally a
+maxpool. As we go deeper into the network we increase the number of channels in
+the convolutional layers, and similary we decrease the number of nodes in the
+fully connected layers towards the end. We choose an even distribution of C and
+FC layers. We do so in a staircase kind of way such, as for instance 
 \begin{align*}
   \text{Input} \to \underbrace{\overbrace{C4}^{S \ = \ 4}C8 \ C16 \ C32 \ D32 \ D16 \ D8 \ D4}_{D \ = \ 8} \to \text{Output}
 \end{align*} 
 
-By varying the number of start channels $S$ and the depth $D$ we perform a architecture search. However, the appropiate learning rate will depend on the specific architecture. Hence, we perform a learning rate range test for each of the suggested model architectures before doing the search. This is shown in figure \cref{fig:LR_range}.
+By varying the number of start channels $S$ and the depth $D$ we perform a
+architecture search. However, the appropiate learning rate will depend on the
+specific architecture. Hence, we perform a learning rate range test for each of
+the suggested model architectures before doing the search. This is shown in
+figure \cref{fig:LR_range}.
 
 \begin{figure}[H]
   \centering
@@ -296,7 +399,9 @@ By varying the number of start channels $S$ and the depth $D$ we perform a archi
   \label{fig:LR_range}
 \end{figure}
 
-We then use these suggested learning rates for the architecture search. We look at the total validation loss and the validation R2 score for the mean friction. This is shown in \cref{fig:A_search_perf} 
+We then use these suggested learning rates for the architecture search. We look
+at the total validation loss and the validation R2 score for the mean friction.
+This is shown in \cref{fig:A_search_perf} 
 
 \begin{figure}[H]
   \centering
@@ -309,9 +414,14 @@ We then use these suggested learning rates for the architecture search. We look 
 
 
 
-Now look at the result for the more difficult patterns as a pseudo validaiotn (these is actually expected to be partly in the training set already).
+Now look at the result for the more difficult patterns as a pseudo validaiotn
+(these is actually expected to be partly in the training set already).
 
-We look at the honeycomb and tetrahedron patterns with top 10 scores for maximum drop in friction. This is chosen as a attempt to capture the ones with the most complex non-linear trends in the stretch curve which seems to be both difficult to predict but also of most interest for the study. This is shown in \cref{fig:A_search_compare}.
+We look at the honeycomb and tetrahedron patterns with top 10 scores for maximum
+drop in friction. This is chosen as a attempt to capture the ones with the most
+complex non-linear trends in the stretch curve which seems to be both difficult
+to predict but also of most interest for the study. This is shown in
+\cref{fig:A_search_compare}.
 
 \begin{figure}[H]
   \centering
@@ -320,11 +430,20 @@ We look at the honeycomb and tetrahedron patterns with top 10 scores for maximum
   \label{fig:A_search_compare}
 \end{figure}  
 
-From \cref{fig:A_search_perf} we found that models like S(8-32)D(8-12) gave reasonble results. When looking at the selected validaiton set in figure \cref{fig:A_search_compare} we godt considerable lower scores, especially for the Tetrahedron pattern. Here the best peforming models were in general more complex with S32D12 be the best candidate for the tetrahedron and S32D12 the best for the honeycomb pattern. This is compatible with the general performance from \cref{fig:A_search_perf} and by favoring the performance on the tetrahedron set (which seemed to be more difficult) we settle on the S32D12 model.
+From \cref{fig:A_search_perf} we found that models like S(8-32)D(8-12) gave
+reasonble results. When looking at the selected validaiton set in figure
+\cref{fig:A_search_compare} we godt considerable lower scores, especially for
+the Tetrahedron pattern. Here the best peforming models were in general more
+complex with S32D12 be the best candidate for the tetrahedron and S32D12 the
+best for the honeycomb pattern. This is compatible with the general performance
+from \cref{fig:A_search_perf} and by favoring the performance on the tetrahedron
+set (which seemed to be more difficult) we settle on the S32D12 model.
 
 % We then look at weight decay which is connected to an analysis of overfitting. 
 
-We perform a lr range test with different momentum at this time we find the maximum lr at the point where the loss diverges as shown in figure \cref{fig:LR_range_mom}.
+We perform a lr range test with different momentum at this time we find the
+maximum lr at the point where the loss diverges as shown in figure
+\cref{fig:LR_range_mom}.
 
 
 \begin{figure}[H]
@@ -347,20 +466,25 @@ We perform a lr range test with different momentum at this time we find the maxi
   \label{fig:LR_range_mom}
 \end{figure}
 
-% The results from LR momentum:
-% momentum  [0.99, 0.97, 0.95, 0.9]
-% lr_max [0.19098169151133398, 0.07099694630794687, 0.048523309416493646, 0.0078083987538332695]
+% The results from LR momentum: momentum  [0.99, 0.97, 0.95, 0.9] lr_max
+% [0.19098169151133398, 0.07099694630794687, 0.048523309416493646,
+% 0.0078083987538332695]
 
 
-The LR range is done is arround 200 steps (before it diverges). So if I figure out the number of batches I can check how many epochs is default since number of steps is steps per epoch times number of epochs. 
+The LR range is done is arround 200 steps (before it diverges). So if I figure
+out the number of batches I can check how many epochs is default since number of
+steps is steps per epoch times number of epochs. 
 
-
+Seems like there are 242 batches in the full dataset so it probably just do one
+epoch...
 
 \clearpage
 
 Choices to make
 \begin{itemize}
-  \item Learning rate: increasing LR to locate minimum in loss gradient (fastest learning) (LR range test) % https://arxiv.org/pdf/1803.09820.pdf % consider cycling learning rates maybe?
+  \item Learning rate: increasing LR to locate minimum in loss gradient (fastest
+  learning) (LR range test) % https://arxiv.org/pdf/1803.09820.pdf % consider
+  cycling learning rates maybe?
   \item Architecture: VGGNet staircase type search
   \item Optimizers: Just try some different ones and look at convergence
   \item weight decay
@@ -370,19 +494,28 @@ Suggestion for hyperparameter tuning
 \begin{enumerate}
   \item Select complexity range of VGGNet staircase type architectures
   \item Start with Adam optimizer at default settings
-  \item Perform LR range test to get information of a suitable LR and choose one that will work for most of the architectures. 
-  \item Perform architecture grid search over depth and start number of channels (complexity). Choose best architecture from this. 
-  \item Additionally add weight decay to further optimize learning for that architecture choice. Perhaps cyclic learning rates. 
+  \item Perform LR range test to get information of a suitable LR and choose one
+  that will work for most of the architectures. 
+  \item Perform architecture grid search over depth and start number of channels
+  (complexity). Choose best architecture from this. 
+  \item Additionally add weight decay to further optimize learning for that
+  architecture choice. Perhaps cyclic learning rates. 
 \end{enumerate}
 
-Start by mentioning the related articles using a VGGNet tyep network (and maybe also their learning rates). 
+Start by mentioning the related articles using a VGGNet tyep network (and maybe
+also their learning rates). 
 
  
-Either submit with best lr for each or choose something that works for all. 0.0005 seemed as a good middle ground but the complex networks crash with these learning rates. It looks like 0.0001 (like Hanakata used) will do the job for all. 
+Either submit with best lr for each or choose something that works for all.
+0.0005 seemed as a good middle ground but the complex networks crash with these
+learning rates. It looks like 0.0001 (like Hanakata used) will do the job for
+all. 
 
 \section{Accelerated Search}
 
-Having a network model that can predict friction force for a given configuration are able to search for some desired properties. Low and high friction and maximal negative friction coefficients
+Having a network model that can predict friction force for a given configuration
+are able to search for some desired properties. Low and high friction and
+maximal negative friction coefficients
 
 
 Here we pursue two different approaches for finding 

@@ -5,10 +5,12 @@ if 'MastersThesis' in sys.path[0]: # Local
     from ML.dataloaders import *
     from ML.ML_utils import *
     from ML.networks import *
+    from ML.hypertuning import *
 else: # Cluster
     from dataloaders import *
     from ML_utils import *
     from networks import *
+    from hypertuning import *
     
 
 from collections import OrderedDict
@@ -94,14 +96,19 @@ class Trainer:
         # Default ML settings
         self.ML_setting = {
             'use_gpu': False,
-            'lr': 0.005,  # Learning rate
-            'batchsize_train': 16,
+            'lr': 1e-4, 
+            'batchsize_train': 32,
             'batchsize_val': 64,
-            'max_epochs': 100,
+            'max_epochs': 300,
             'max_file_num': None,
-            'scheduler_stepsize': 10,
-            'scheduler_factor': 0.3
+            'weight_decay': 0,
+            'cyclic_lr': (20.0, 1e-3, 1e4), # [div_factor, max_lr, final_div_factor]
+            'cyclic_momentum': (0.85, 0.95), # base_momentum, max_momentum
+            'scheduler': None # [step
         }
+        
+        
+        
         # Update 
         self.ML_setting.update(ML_setting)
         
@@ -512,7 +519,7 @@ if __name__=='__main__':
     # root = '../Data/ML_data/' # Relative (local)
     root = '/home/users/mikkelme/ML_data/' # Absolute path (cluster)
     data_root = [root+'baseline', root+'popup', root+'honeycomb', root+'RW']
-    ML_setting = get_ML_setting()
+    # ML_setting = get_ML_setting()
     
     
     # Reference: Ff, rup_stretch, is_ruptured
@@ -540,29 +547,45 @@ if __name__=='__main__':
     # model_out_features = [item for sublist in criterion_out_features for item in sublist]        
     
     # Contact + Porosity + Ff max
-    alpha = [[1/2, 1/10, 1/10], [1/10], [1/10, 1/10]]
-    criterion_out_features = [['R', 'R', 'R'], ['R'], ['R', 'C']]
-    keys = ['Ff_mean', 'Ff_max', 'contact', 'porosity', 'rupture_stretch', 'is_ruptured']
-    model_out_features = [item for sublist in criterion_out_features for item in sublist]        
+    # alpha = [[1/2, 1/10, 1/10], [1/10], [1/10, 1/10]]
+    # criterion_out_features = [['R', 'R', 'R'], ['R'], ['R', 'C']]
+    # keys = ['Ff_mean', 'Ff_max', 'contact', 'porosity', 'rupture_stretch', 'is_ruptured']
+    # model_out_features = [item for sublist in criterion_out_features for item in sublist]        
     
-    # Training
-    model = VGGNet( mode = 0, 
-                    input_num = 2, 
-                    conv_layers = [(1, 32), (1, 64), (1, 128), (1, 256), (1, 512), (1,1024)], 
-                    FC_layers = [(1, 1024), (1,512), (1,256), (1, 128), (1, 64), (1,32)],
-                    out_features = model_out_features,
-                    keys = keys)
+    # # Training
+    # model = VGGNet( mode = 0, 
+    #                 input_num = 2, 
+    #                 conv_layers = [(1, 32), (1, 64), (1, 128), (1, 256), (1, 512), (1,1024)], 
+    #                 FC_layers = [(1, 1024), (1,512), (1,256), (1, 128), (1, 64), (1,32)],
+    #                 out_features = model_out_features,
+    #                 keys = keys)
     
 
 
-    criterion = Loss(alpha = alpha, out_features = criterion_out_features)
+    # criterion = Loss(alpha = alpha, out_features = criterion_out_features)
     
-    ML_setting['max_epochs'] = 1000
+    ML_setting = {
+        'use_gpu': torch.cuda.is_available(),
+        'lr': 1e-4, 
+        'batchsize_train': 32,
+        'batchsize_val': 64,
+        'max_epochs': 1000,
+        'max_file_num': None,
+        'weight_decay': 1e-4,
+        'cyclic_lr': [20.0, 0.19098169151133398, 1e4], # [div_factor, max_lr, final_div_factor]
+        'cyclic_momentum': [0.80, 0.99], # base_momentum, max_momentum
+        'scheduler': None # [step size, factor], [10, 3]
+    }
+
+    
+    model, criterion = best_model(mode = 0, batchnorm = True)[0] 
+    
+    
     
     coach = Trainer(model, data_root, criterion, **ML_setting)
     coach.learn(max_epochs = None, max_file_num = None)
     coach.save_history('training/test_cyclic_S32D12')
-    coach.plot_history(show = True, save = 'training/test_cyclic_S32D12/loss.pdf')
+    coach.plot_history(show = False, save = 'training/test_cyclic_S32D12/loss.pdf')
 
     # coach.plot_history()
     # coach.get_info()

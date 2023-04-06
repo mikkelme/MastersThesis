@@ -106,7 +106,6 @@ def save_best_model(name, model, best_weights):
 
 
 def load_weights(model, weight_path, use_gpu = False):
-    
     if use_gpu:
         model.load_state_dict(torch.load(weight_path))
     else:

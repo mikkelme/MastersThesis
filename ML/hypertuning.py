@@ -55,9 +55,6 @@ class Architectures:
         
         
 class best_model(Architectures):    
-  
-  
-        
     def initialize(self):
         # Data outputs
         alpha = [[1/2, 1/10, 1/10], [1/10], [1/10, 1/10]]
@@ -143,6 +140,73 @@ def train_architectures(A_instance, data_root, ML_setting, save_folder, LR_range
         outfile.close()
             
             
+            
+def momentum_weight_search(model, criterion, data_root, ML_setting, max_lr, momentum, weight_decay, save_folder):
+    timer_file = os.path.join(save_folder, 'timings.txt')
+    
+    # max_lr = [0.19098169151133398, 0.07099694630794687, 0.048523309416493646, 0.0078083987538332695]
+    # momentum = [0.99, 0.97, 0.95, 0.9]
+    # weight_decay = [1e-4, 1e-5, 1e-6, 0]    
+
+    # Get settings
+    cyclic_lr_div_factor, _, final_div_factor = ML_setting['cyclic_lr']
+    cyclic_momentum_base, _ = ML_setting['cyclic_momentum']
+    
+    
+    # Get model state for resetting
+    state = model.state_dict()
+    
+    for i in range(len(momentum)):
+        ML_setting['cyclic_lr'] = [cyclic_lr_div_factor, max_lr[i], final_div_factor]
+        ML_setting['cyclic_momentum'] = [cyclic_momentum_base, momentum[i]]
+        
+        for j in range(len(weight_decay)):
+            ML_setting['weight_decay'] = weight_decay[j]
+            crashed = False
+        
+            if i == 0 and j == 0:
+                continue
+        
+            info_string = f'cyclic lr = ({ML_setting["cyclic_lr"][0]:.1f}, {ML_setting["cyclic_lr"][1]:.2e}, {ML_setting["cyclic_lr"][2]:.1e}), cyclic momentum = ({ML_setting["cyclic_momentum"][0]:.1f}, {ML_setting["cyclic_momentum"][1]:.2f}), weight decay = {ML_setting["weight_decay"]}'
+            save_name = f'm{i}w{j}'
+            
+            print(f'{i} | {save_name} | {info_string}')
+            timer_start = perf_counter() 
+            
+            model.load_state_dict(state) # Reset model before training again
+            try:
+                coach = Trainer(model, data_root, criterion, **ML_setting)
+                coach.learn()
+                coach.save_history(os.path.join(save_folder, save_name))
+                coach.plot_history(show = False, save = os.path.join(save_folder, save_name, 'loss.pdf'))
+                # plt.figure().close('all') # XXX Doesn't work yet
+                
+            except: # weights exploted inside or something
+                print(f'Crashed at architecture {i}')
+                crashed = True
+            
+            timer_stop = perf_counter()
+            elapsed_time = timer_stop - timer_start
+            h = int(elapsed_time // 3600)
+            m = int((elapsed_time % 3600) // 60)
+            s = int(elapsed_time % 60)
+            s_timing = f'{h:02d}:{m:02d}:{s:02d}'
+
+            if i == 0 and j == 0: # Create file
+                outfile = open(timer_file, 'w')
+                outfile.write('# Architecture | time [h:m:s]\n')
+                outfile.write(f'{save_name} | {info_string} | {s_timing}')
+            else: # Append to file
+                outfile = open(timer_file, 'a')
+                outfile.write(f'{save_name} | {info_string} | {s_timing}')
+                
+            if crashed:
+                outfile.write(' (crashed)')
+            outfile.write('\n')
+            outfile.close()
+                    
+
+
 class Find_optimal_LR:
     def __init__(self, model, optimizer, criterion, data_root, ML_setting):
         self.model = model
@@ -225,10 +289,6 @@ def LR_range_test(A_instance, data_root, ML_setting, save_folder):
         print(f'{i} | {model.name} (#params = {num_params:1.2e}), suggestion = {suggestion}')
     
 
-def lr_momentum_cyclic_grid_search():
-    pass
-
-    
 
 def plot_LR_range_test(path): 
     infile = open(path, 'r')
@@ -310,15 +370,16 @@ def plot_LR_range_test(path):
 
 
 
+
 if __name__ == '__main__':
     root = '../Data/ML_data/'
     data_root = [root+'baseline', root+'popup', root+'honeycomb', root+'RW']
     data_root = [root+'honeycomb']
     
     # plot_LR_range_test('staircase_lr/lr_staircase.txt')
+    # plt.show()
     
         
-    plt.show()
         
     # ML_setting = {
     #     'use_gpu': False,
