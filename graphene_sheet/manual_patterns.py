@@ -4,7 +4,7 @@ sys.path.append('../') # parent folder: MastersThesis
 from graphene_sheet.build_utils import *
 import random
 
-def pop_up(shape = (50, 100), size = (5,3), sp = 1, ref = None):
+def pop_up(shape = (62, 106), size = (5,3), sp = 1, ref = None):
     """ Generate pop-up cut patteren inspired by:
         https://seas.harvard.edu/news/2017/02/new-pop-strategy-inspired-cuts-not-folds
 
@@ -130,7 +130,7 @@ def capacitor_line(ref, num_gaps = 3, xlen = 5, xsp = 3, ylen = 9):
     
     return delmap
 
-def honeycomb(shape = (50, 100), xwidth = 1, ywidth = 1,  bridge_thickness = 1, bridge_len = 5, ref = None):
+def honeycomb(shape = (62, 106), xwidth = 1, ywidth = 1,  bridge_thickness = 1, bridge_len = 5, ref = None):
     """ Generate honeycomb cut pattern inspired by:
         Scotch Cushion Lock Protective Wrap
     

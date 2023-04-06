@@ -265,6 +265,9 @@ In addition to the biggest drop in friction we also look at minimum abnd maximum
 
 \section{Machine learning}
 
+General stuff to include. Remember to talk about batchnorm, optimizer, stopping at best epoch. 
+
+
 \subsection{Architecture}
 Due to the spatial dependencies in the kirigami configurations we use a convolutional neural network (\acrshort{CNN}). Studies on similar a similar system envolving the graphene sheet have used a VGGNet style of network, Hanakata et al.\ \cite{PhysRevLett.121.255304}\cite{PhysRevResearch.2.042006} and Wan et al.\ \cite{graphene/hBN}, which we adopt for this study as well. The VGGNet-16 architecture illustrated in \cref{fig:VGGNet16} shows the key features; 
 \begin{itemize}
@@ -292,6 +295,7 @@ Where $C$ denotes a convolutional block with the following number being the numb
 This provides a simple description where $S$ and $S$ and can be varied systematically for a grid search over architecture complexity. 
 
 
+% We also throw in a batchnorm!
 
 \subsection{Data handling}
 \subsubsection{Input}
@@ -307,77 +311,56 @@ Both options utilize the same data, but the first emphasizes that the configurat
 
 \subsubsection{Output}
 For the output we are mainly concerned about the mean friction and the rupture
-detection. In combination this let us produce friction vs.\ stretch curves with
-the rupture detection used to predict the stopping point of the curve in terms
-of a maximum stretch value. However, it has often been proven useful to
-introduce more variables in the output in order to strengthen the network
-(\hl{get source}). In addition, this gives us more option for exploring the
-relationship in the data later on. Thus, we include maximum friction, contact
-count, porosity and rupture stretch in the data. Notice that rupture stretch
+detection. In combination this make us able to produce a friction vs.\ stretch curve with an estimated stopping point as well.  However, it has often been proven useful to introduce more variables in the output in order to strengthen the network training
+(\hl{get source}). In addition, this gives us more options for exploring the
+relationship in the data later on. Therefore, we include maximum friction, contact
+count, porosity and rupture stretch in the output as well. Notice that rupture stretch
 refers to the value found in the rupture test without load, but as the sheet
 always ruptures before or just around this point in a loaded state this provides
 some information for the training to lean on, even though it is in the output
-state. In principle we could add a penalty whenever the network predicts the
+state. In principle, we could add a penalty whenever the network predicts the
 sheet to be attatched for stretch values above the rupture stretch, but we found
-the performance of the rupture prediction to be satisficatory without
-introducing such formalities. Notice that we weight the importance of these
-variables differently as explained in the section about the loss function. 
+the performance of the rupture prediction to be satisficatory without such penalties. Notice that we weight the importance of these
+variables differently as explained in the section regarding the loss. 
 
 \subsubsection{Data augmentation}
-Due to the symmetry in the configuration, we can flip the configuration by
-relfecting the configuration across the y-axis. We cannot do this across the
-x-axis as the sheet is always slided in a positive y-direction and thus we
-cannot guarantee that the results would be the same whether we slide backwards
-or forward. We definitely expect a snow plow to perform differently when going
-backwards and thus by analogy we would expect the direction of sliding with
-respect to the configuration to be of importance. 
-
-
+In order to increase the ulility of the limited data availble, one can introduce data augmentation. For classification task this includes distortions such as color shift, zoom, flip etc. However, such distorions are only valid since the classification network should still classify a cat as a cat even though it is suddenly a bit brigther or flipped upside down. For our problem we can only use augmentation that matches a physical symmetry. Such a symmetry exist only for relfection accross the y-axis. We cannot do this across the
+x-axis as the sheet is translated in a positive y-direction meaning that the reflected version would not be sliding backwards for which we do not expect to be symmetric in results. We definitely expect a snow plow to perform differently when attached in reverse and thus by analogy we would expect the direction of sliding with respect to the configuration to be of importance. 
 
 \subsection{Loss}
-We use a rather standard loss function for the evaluation of our model
-performance during training and validation. For the scalar values we use the
-Mean Squared Error (\acrshort{MSE})
+The output contain two different types of variables: scalar values and binaray values (0: False 1: True)
+
+For the scalar values we use the Mean Squared Error (\acrshort{MSE})
 \begin{align*}
   L_{\text{MSE}} = \frac{1}{N} \sum_{i = 1}^N (y_i - \hat{y}_i)^2,
 \end{align*}
 where $N$ is the number of data entries and $y$ are the true variables and
-$\hat{y}$ are the predicted values. For the prediction of rupture with
-True/False labels we use binary cross entropy 
+$\hat{y}$ are the predicted values. For the binary output we use binary cross entropy 
 \begin{align*}
   L_{\text{BCE}} = -\frac{1}{N} \left[\sum_{i = 1}^N [t_i\log{(p_i)} + (1-t_i)\log{(1 - p_i)}]\right],
 \end{align*}
 where $t\in \{0,1\}$ is the truth label. \hl{Does this belong in theory
-entirely?}.
-
-We calculate the total loss as a weighted sum between the loss associated with
+entirely?}. We calculate the total loss as a weighted sum between the loss associated with
 each variable
 \begin{align*}
   L_{tot} = \sum_{v} W_v\cdot L_v.
 \end{align*}
 We choose the weights to be $1/2$ for the mean friction and $1/10$ for the
-remaining 5 variables thus sharing weight evenly for the remaining 50\% of the
-loss. During the introductionary phase of the training we tried varying these,
-but we found little change in the results and concluded immediately that the
-precise choice of this weighting is not immensely important. 
+remaining 5 variables thus sharing evenly for the remaining 50\% of the weight. During the introductionary phase of the training we tried varying these weights,
+but we found that the results varied little and concluded that the training is not very sensitive to this choice, and disregarded further tuning of this parameter. 
 
 \subsection{Hypertuning}
-We build a series of models by VGGNet type. The first part consist of
-convolutional layers and then final part of fully connected layers. Each
-convolutional layer is followed by a Batchnorm, then a Relu and finally a
-maxpool. As we go deeper into the network we increase the number of channels in
-the convolutional layers, and similary we decrease the number of nodes in the
-fully connected layers towards the end. We choose an even distribution of C and
-FC layers. We do so in a staircase kind of way such, as for instance 
-\begin{align*}
-  \text{Input} \to \underbrace{\overbrace{C4}^{S \ = \ 4}C8 \ C16 \ C32 \ D32 \ D16 \ D8 \ D4}_{D \ = \ 8} \to \text{Output}
-\end{align*} 
+% Batchsize
+% Optimizer
+% Overfitting
+For the tuning of model parameters we focus on architecture complexity, learning rate, momentum and weight decay. Since the learning rate is considered to be one of the most important hyperparameters we evaluate this in connection to the hyperparameter we are testing. We perform the hypertuning in the following order
+\begin{enumerate}
+  \item Architecture complexity gridtest of $S$ vs.\ $D$ with custom learning rate for each combination evaluated by the learing rate ramge test.
+  \item Momentum vs. weight decay gridtest with learning range adjusted for momentum choice. 
+\end{enumerate}
 
-By varying the number of start channels $S$ and the depth $D$ we perform a
-architecture search. However, the appropiate learning rate will depend on the
-specific architecture. Hence, we perform a learning rate range test for each of
-the suggested model architectures before doing the search. This is shown in
-figure \cref{fig:LR_range}.
+
+We consider the architectures in the range $S \times D = \{2,4,8,16,32,64,128,256\} \times \{4,6,8,10,12,14\}$ for which we perform an initial learning rate range test as shown in \cref{LR_range}.
 
 \begin{figure}[H]
   \centering
@@ -399,9 +382,7 @@ figure \cref{fig:LR_range}.
   \label{fig:LR_range}
 \end{figure}
 
-We then use these suggested learning rates for the architecture search. We look
-at the total validation loss and the validation R2 score for the mean friction.
-This is shown in \cref{fig:A_search_perf} 
+We then run a full 100 epoch training on each architecture using the suggested learning rate from \cref{fig:LR_range}. We evaluate both the validation loss and the $R_2$ score for the mean friction output. This is shown in \cref{fig:A_search_perf}. Additionally, we evaluate the $R_2$ score for the mean friction output for a selected set of configurations. This set consist of the top 10 configurations with respect to maximum friction drop in both the Tetrahedron and Honeycomb pattern. This is due to the fact that the non-linear stretch curve seemed to be more difficult to capture when looking a model predictions. This selected evaluation grid search is shown in \cref{fig:A_search_compare}.
 
 \begin{figure}[H]
   \centering
@@ -411,17 +392,14 @@ This is shown in \cref{fig:A_search_perf}
 \end{figure}  
 
 
+% Now look at the result for the more difficult patterns as a pseudo validaiotn
+% (these is actually expected to be partly in the training set already).
 
-
-
-Now look at the result for the more difficult patterns as a pseudo validaiotn
-(these is actually expected to be partly in the training set already).
-
-We look at the honeycomb and tetrahedron patterns with top 10 scores for maximum
-drop in friction. This is chosen as a attempt to capture the ones with the most
-complex non-linear trends in the stretch curve which seems to be both difficult
-to predict but also of most interest for the study. This is shown in
-\cref{fig:A_search_compare}.
+% We look at the honeycomb and tetrahedron patterns with top 10 scores for maximum
+% drop in friction. This is chosen as a attempt to capture the ones with the most
+% complex non-linear trends in the stretch curve which seems to be both difficult
+% to predict but also of most interest for the study. This is shown in
+% \cref{fig:A_search_compare}.
 
 \begin{figure}[H]
   \centering
@@ -430,14 +408,9 @@ to predict but also of most interest for the study. This is shown in
   \label{fig:A_search_compare}
 \end{figure}  
 
-From \cref{fig:A_search_perf} we found that models like S(8-32)D(8-12) gave
-reasonble results. When looking at the selected validaiton set in figure
-\cref{fig:A_search_compare} we godt considerable lower scores, especially for
-the Tetrahedron pattern. Here the best peforming models were in general more
-complex with S32D12 be the best candidate for the tetrahedron and S32D12 the
-best for the honeycomb pattern. This is compatible with the general performance
-from \cref{fig:A_search_perf} and by favoring the performance on the tetrahedron
-set (which seemed to be more difficult) we settle on the S32D12 model.
+From \cref{fig:A_search_perf} we find that models like S(8-32)D(8-12) gives reasonble performance. When looking at the selected validaiton set in
+\cref{fig:A_search_compare} we get considerable lower scores, especially for
+the Tetrahedron pattern, which confirms that the models does not really generalize to the more complex behvaiour the show. Judging from the Tetrahedron grid search we find the best model to be S32D12 with a $R_2$ score of $\sim 87 \%$. This is compatible with the overall performance as this is among the top candidates for the for $R_2$ and loss in \cref{fig:A_search_perf} and the $R_2$ score for the Honeycomb pattern in \cref{fig:A_search_compare}  as well.
 
 % We then look at weight decay which is connected to an analysis of overfitting. 
 
@@ -480,36 +453,36 @@ epoch...
 
 \clearpage
 
-Choices to make
-\begin{itemize}
-  \item Learning rate: increasing LR to locate minimum in loss gradient (fastest
-  learning) (LR range test) % https://arxiv.org/pdf/1803.09820.pdf % consider
-  cycling learning rates maybe?
-  \item Architecture: VGGNet staircase type search
-  \item Optimizers: Just try some different ones and look at convergence
-  \item weight decay
-\end{itemize}
+% Choices to make
+% \begin{itemize}
+%   \item Learning rate: increasing LR to locate minimum in loss gradient (fastest
+%   learning) (LR range test) % https://arxiv.org/pdf/1803.09820.pdf % consider
+%   cycling learning rates maybe?
+%   \item Architecture: VGGNet staircase type search
+%   \item Optimizers: Just try some different ones and look at convergence
+%   \item weight decay
+% \end{itemize}
 
-Suggestion for hyperparameter tuning 
-\begin{enumerate}
-  \item Select complexity range of VGGNet staircase type architectures
-  \item Start with Adam optimizer at default settings
-  \item Perform LR range test to get information of a suitable LR and choose one
-  that will work for most of the architectures. 
-  \item Perform architecture grid search over depth and start number of channels
-  (complexity). Choose best architecture from this. 
-  \item Additionally add weight decay to further optimize learning for that
-  architecture choice. Perhaps cyclic learning rates. 
-\end{enumerate}
+% Suggestion for hyperparameter tuning 
+% \begin{enumerate}
+%   \item Select complexity range of VGGNet staircase type architectures
+%   \item Start with Adam optimizer at default settings
+%   \item Perform LR range test to get information of a suitable LR and choose one
+%   that will work for most of the architectures. 
+%   \item Perform architecture grid search over depth and start number of channels
+%   (complexity). Choose best architecture from this. 
+%   \item Additionally add weight decay to further optimize learning for that
+%   architecture choice. Perhaps cyclic learning rates. 
+% \end{enumerate}
 
-Start by mentioning the related articles using a VGGNet tyep network (and maybe
-also their learning rates). 
+% Start by mentioning the related articles using a VGGNet tyep network (and maybe
+% also their learning rates). 
 
  
-Either submit with best lr for each or choose something that works for all.
-0.0005 seemed as a good middle ground but the complex networks crash with these
-learning rates. It looks like 0.0001 (like Hanakata used) will do the job for
-all. 
+% Either submit with best lr for each or choose something that works for all.
+% 0.0005 seemed as a good middle ground but the complex networks crash with these
+% learning rates. It looks like 0.0001 (like Hanakata used) will do the job for
+% all. 
 
 \section{Accelerated Search}
 
@@ -525,65 +498,65 @@ Here we pursue two different approaches for finding
 \end{enumerate}
 
 
-\subsection{Markov-Chain Accelerated Genetic Algorithms}
-% Following the article:
-% Accelerated Genetic Algorithms with Markov Chains
-% Guan Wang, Chen Chen, and K.Y. Szeto
+% \subsection{Markov-Chain Accelerated Genetic Algorithms}
+% % Following the article:
+% % Accelerated Genetic Algorithms with Markov Chains
+% % Guan Wang, Chen Chen, and K.Y. Szeto
 
-\subsubsection{Talk about traditional method also?}
+% \subsubsection{Talk about traditional method also?}
 
-\subsubsection{Implementing for 1D chromosone (following article closely)}
+% \subsubsection{Implementing for 1D chromosone (following article closely)}
 
-We have the binary population matrix $A(t)$ at time (generation) $t$ consisting of $N$ rows denoting chromosones and with $L$ columns denoting the so-called locus (fixed position on a chromosome where a particular gene or genetic marker is located, wiki). We sort the matrix rowwise by the fitness of each chromosono evaluated by a fitness function $f$ such that $f_i(t) \le f_k(t)$ for $i \ge k$. We assume that there are a transistion probability between the current state $A(t)$ and the next state $A(t+1)$. We consider this transistion probability only to take into account mutation process (mutation only updating scheme). During each generation chromosones are sorted from most to least fitted. The chromosone at the $i$-th fitted place is assigned a row mutation probability $a_i(t)$ by some monotonic increasing function. This is taken to be 
-\begin{align*}
-  a_i(t) = 
-  \begin{cases}
-    (i-1)/N',& i-1 < N' \\
-    1, &\text{else}
-  \end{cases}
-\end{align*}
-for some limit $N'$ (refer to first part of article talking about this). We use $N' = N/2$. We also defines the survival probability $s_i = 1 - a_i$. In thus wau $a_i$ and $s_i$ decide together whether to mutate to the other state (flip binary) or to remain in the current state. We use $s_i$ as the statistical weight for the $i$-th chromosone given it a weight $w_i = s_i$.
-\\
-Now the column mutation. For each locus $j$ we define the count of 0's and 1's as $C_0(j)$ and $C_1(j)$ resepctively. These are normalized as
-\begin{align*}
-  n_0(j, t) = \frac{C_0(j)}{C_0(j) + C_1(j)}, \quad n_1(j, t) = \frac{C_1(j)}{C_0(j) + C_1(j)}.
-\end{align*}
-These are gathered into the vector $\vec{n}(j,t)=(n_0(j, t), n_1(j, t))$ which characterizes the state distribution of $j$-th locus. In order to direct the current population to a preferred state for locus $j$ we look at the highest weight of row $i$ for locus $j$ taking the value 0 and 1 respectively.
-\begin{align*}
-  C'_0(j) &= \max\{W_i | A_{ij} = 0; \ i = 1, \cdots, N\} \\
-  C'_1(j) &= \max\{W_i | A_{ij} = 1; \ i = 1, \cdots, N\}
-\end{align*}
-which is normalized again
-\begin{align*}
-  n_0(j, t+1) = \frac{C'_0(j)}{C'_0(j) + C'_1(j)}, \quad n_1(j, t+1) = \frac{C'_1(j)}{C'_0(j) + C'_1(j)}.
-\end{align*}
-The vector $\vec{n}(j,t+1)=(n_0(j, t+1), n_1(j, t+1))$ then provides a direction for the population to evolve against. This characterizes the target state distribution of the locus $j$ among all the chromosones in the next generation. We have
-\begin{align*}
-  \begin{bmatrix}
-    n_0(j, t+1) \\
-    n_1(j, t+1)
-  \end{bmatrix}
-  = 
-  \begin{bmatrix}
-    P_{00}(j,t) \ P_{10}(j,t) \\
-    P_{01}(j,t) \ P_{11}(j,t)
-  \end{bmatrix}
-  \begin{bmatrix}
-    n_0(j, t) \\
-    n_1(j, t)
-  \end{bmatrix}
-\end{align*}
-Since the probability must sum to one for the rows in the P-matrix we have 
-\begin{align*}
-  P_{00}(j, t) = 1 - P_{01}(j, t), \quad P_{11}(j, t) = 1 - P_{10}(j, t)
-\end{align*}
-These conditions allow us to solve for the transition probability $P_{10}(j,t)$ in terms of the single variable $P_{00}{j,t}$.
-\begin{align*}
-  P_{10}(j,t) &= \frac{n_0(j, t+1) - P_{00}(j,t)n_0(j, t)}{n_1(j,t)} \\
-  P_{01}(j,t) &= 1 - P_{00}(j,t) \\
-  P_{11}(j,t) &= 1 - P_{10}(j,t)
-\end{align*}
-We just need to know $P_{00}(j,t)$. We start from $P_{00}(j, t = 0) = 0.5$ and then choose $P_{00}(j,t) = n_0(j,t)$
+% We have the binary population matrix $A(t)$ at time (generation) $t$ consisting of $N$ rows denoting chromosones and with $L$ columns denoting the so-called locus (fixed position on a chromosome where a particular gene or genetic marker is located, wiki). We sort the matrix rowwise by the fitness of each chromosono evaluated by a fitness function $f$ such that $f_i(t) \le f_k(t)$ for $i \ge k$. We assume that there are a transistion probability between the current state $A(t)$ and the next state $A(t+1)$. We consider this transistion probability only to take into account mutation process (mutation only updating scheme). During each generation chromosones are sorted from most to least fitted. The chromosone at the $i$-th fitted place is assigned a row mutation probability $a_i(t)$ by some monotonic increasing function. This is taken to be 
+% \begin{align*}
+%   a_i(t) = 
+%   \begin{cases}
+%     (i-1)/N',& i-1 < N' \\
+%     1, &\text{else}
+%   \end{cases}
+% \end{align*}
+% for some limit $N'$ (refer to first part of article talking about this). We use $N' = N/2$. We also defines the survival probability $s_i = 1 - a_i$. In thus wau $a_i$ and $s_i$ decide together whether to mutate to the other state (flip binary) or to remain in the current state. We use $s_i$ as the statistical weight for the $i$-th chromosone given it a weight $w_i = s_i$.
+% \\
+% Now the column mutation. For each locus $j$ we define the count of 0's and 1's as $C_0(j)$ and $C_1(j)$ resepctively. These are normalized as
+% \begin{align*}
+%   n_0(j, t) = \frac{C_0(j)}{C_0(j) + C_1(j)}, \quad n_1(j, t) = \frac{C_1(j)}{C_0(j) + C_1(j)}.
+% \end{align*}
+% These are gathered into the vector $\vec{n}(j,t)=(n_0(j, t), n_1(j, t))$ which characterizes the state distribution of $j$-th locus. In order to direct the current population to a preferred state for locus $j$ we look at the highest weight of row $i$ for locus $j$ taking the value 0 and 1 respectively.
+% \begin{align*}
+%   C'_0(j) &= \max\{W_i | A_{ij} = 0; \ i = 1, \cdots, N\} \\
+%   C'_1(j) &= \max\{W_i | A_{ij} = 1; \ i = 1, \cdots, N\}
+% \end{align*}
+% which is normalized again
+% \begin{align*}
+%   n_0(j, t+1) = \frac{C'_0(j)}{C'_0(j) + C'_1(j)}, \quad n_1(j, t+1) = \frac{C'_1(j)}{C'_0(j) + C'_1(j)}.
+% \end{align*}
+% The vector $\vec{n}(j,t+1)=(n_0(j, t+1), n_1(j, t+1))$ then provides a direction for the population to evolve against. This characterizes the target state distribution of the locus $j$ among all the chromosones in the next generation. We have
+% \begin{align*}
+%   \begin{bmatrix}
+%     n_0(j, t+1) \\
+%     n_1(j, t+1)
+%   \end{bmatrix}
+%   = 
+%   \begin{bmatrix}
+%     P_{00}(j,t) \ P_{10}(j,t) \\
+%     P_{01}(j,t) \ P_{11}(j,t)
+%   \end{bmatrix}
+%   \begin{bmatrix}
+%     n_0(j, t) \\
+%     n_1(j, t)
+%   \end{bmatrix}
+% \end{align*}
+% Since the probability must sum to one for the rows in the P-matrix we have 
+% \begin{align*}
+%   P_{00}(j, t) = 1 - P_{01}(j, t), \quad P_{11}(j, t) = 1 - P_{10}(j, t)
+% \end{align*}
+% These conditions allow us to solve for the transition probability $P_{10}(j,t)$ in terms of the single variable $P_{00}{j,t}$.
+% \begin{align*}
+%   P_{10}(j,t) &= \frac{n_0(j, t+1) - P_{00}(j,t)n_0(j, t)}{n_1(j,t)} \\
+%   P_{01}(j,t) &= 1 - P_{00}(j,t) \\
+%   P_{11}(j,t) &= 1 - P_{10}(j,t)
+% \end{align*}
+% We just need to know $P_{00}(j,t)$. We start from $P_{00}(j, t = 0) = 0.5$ and then choose $P_{00}(j,t) = n_0(j,t)$
 
 
 

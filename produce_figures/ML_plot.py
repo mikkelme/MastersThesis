@@ -130,7 +130,8 @@ def LR_range_momentum(save = False):
         loss = np.array(results['loss'])
         minidx = np.argmin(loss)
         sug_idx = np.argmin(np.abs(lr-foLR.lr_finder.lr_suggestion())) 
-        div_idx = sug_idx + np.argmax(loss[sug_idx:][1:] - loss[sug_idx:][:-1] > loss[sug_idx:][:-1]*0.2)
+        # div_idx = sug_idx + np.argmax(loss[sug_idx:][1:] - loss[sug_idx:][:-1] > loss[sug_idx:][:-1]*0.2)
+        div_idx = minidx
         
         diff = loss[sug_idx:][1:] - loss[sug_idx:][:-1]
         test = np.argwhere(diff > loss[sug_idx:][:-1]*1.5)
@@ -360,7 +361,6 @@ def A_search_perf(path, save):
     #     val_loss_fig.savefig("../article/figures/ML/A_search_val_loss.pdf", bbox_inches="tight")
     #     epoch_fig.savefig("../article/figures/ML/A_search_epoch.pdf", bbox_inches="tight")
     #     num_param_fig.savefig("../article/figures/ML/A_search_num_param.pdf", bbox_inches="tight")
-
         
 
 

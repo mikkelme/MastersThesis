@@ -1,23 +1,17 @@
 import sys
 sys.path.append('../') # parent folder: MastersThesis
 
-if 'MastersThesis' in sys.path[0]: # Local 
-    from ML.use_network import *
-    from config_builder.build_config import *
-    from graphene_sheet.build_utils import *
-else: # Cluster
-    from build_config import *
-    from build_utils import *
-    from use_network import *
-    
-
-
-
+from ML.use_network import *
+from config_builder.build_config import *
+from graphene_sheet.build_utils import *
 from ase.visualize.plot import plot_atoms
+
+# from graphene_sheet.RN_walks import *
+
 
 
 # TODO: Change name to GA = genetic algorithm 
-class Accelerated_search: # Genetic algorithm 
+class Genetic_algorithm: # Genetic algorithm 
     def __init__(self, model_weights, model_info, N = 100, image_shape = (62, 106), expand = None, repair = False):
         if model_weights is None:
             return # when used to get repair function
@@ -643,25 +637,33 @@ def ising_max(conf):
 
 if __name__ == '__main__':
     
+    test = RW_Generator()
+    exit()
+
+
+
     # Initialize instance
-    name = 'graphene_h_BN/C16C32C64D64D32D16'
-    model_weights = f'{name}_model_dict_state'
-    model_info = f'{name}_best_scores.txt'
-    # AS = Accelerated_search(model_weights, model_info, N = 50, image_shape = (62,106))
-    AS = Accelerated_search(model_weights, model_info, N = 50, image_shape = (10, 10), expand = (62,106), repair = True)
-    # AS = Accelerated_search(model_weights, model_info, N = 10, image_shape = (10, 10), expand = None)
+    name = 'staircase_4/S32D10'
+    model_weights = f'{name}/model_dict_state'
+    model_info = f'{name}/best_scores.txt'
     
+    
+    # GA = Genetic_algorithm(model_weights, model_info, N = 50, image_shape = (62,106))
+    GA = Genetic_algorithm(model_weights, model_info, N = 50, image_shape = (10, 10), expand = (62,106), repair = True)
+    # GA = Genetic_algorithm(model_weights, model_info, N = 10, image_shape = (10, 10), expand = None)
+    
+    exit()
     # --- Define fitness --- #
-    AS.stretch = np.linspace(0, 2, 100)
-    AS.F_N = 5
-    AS.set_fitness_func(AS.max_drop)
-    # AS.set_fitness_func(ising_max)
-    # AS.init_population(['../config_builder/baseline/hon3215.npy', '../config_builder/baseline/pop1_7_5.npy', 0, 0.25, 0.5, 0.75, 1])
-    AS.init_population([0.25, 0.5, 0.75, 1])
-    AS.evolution(num_generations = 100)
-    AS.show_sheet(AS.A[0])
-    AS.show_sheet(AS.A_ex[0])
-    AS.show_status()
+    GA.stretch = np.linspace(0, 2, 100)
+    GA.F_N = 5
+    GA.set_fitness_func(GA.max_drop)
+    # GA.set_fitness_func(ising_max)
+    # GA.init_population(['../config_builder/baseline/hon3215.npy', '../config_builder/baseline/pop1_7_5.npy', 0, 0.25, 0.5, 0.75, 1])
+    GA.init_population([0.25, 0.5, 0.75, 1])
+    GA.evolution(num_generations = 100)
+    GA.show_sheet(GA.A[0])
+    GA.show_sheet(GA.A_ex[0])
+    GA.show_status()
     plt.show()
     
     # TODO: Reparing sheet A before expanding to A_ex does not guarantee spanning,

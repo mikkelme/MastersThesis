@@ -1,17 +1,17 @@
 import sys
 sys.path.append('../') # parent folder: MastersThesis
 
-if 'MastersThesis' in sys.path[0]: # Local 
-    from produce_figures.baseline_variables import *
-    from ML.ML_utils import *
-    from ML.networks import *
-    from config_builder.build_config import *
+# if 'MastersThesis' in sys.path[0]: # Local 
+from produce_figures.baseline_variables import *
+from ML.ML_utils import *
+from ML.networks import *
+from config_builder.build_config import *
     
-else: # Cluster
-    from baseline_variables import *
-    from ML_utils import *
-    from networks import *
-    from build_config import *
+# else: # Cluster
+#     from baseline_variables import *
+#     from ML_utils import *
+#     from networks import *
+#     from build_config import *
     
 
 import ast

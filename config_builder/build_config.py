@@ -565,72 +565,40 @@ def RW_dataset(shape = (62,106)):
     
 
 if __name__ == "__main__":
-    
+    # --- Generate datasets --- #
     # pop_up_dataset(shape = (62, 106), min_sp = 1, max_sp = 4, max_cut = (9,13))
     # honeycomb_dataset(shape = (62, 106), min_val = (2, 1, 1, 1), max_val = (3, 5, 5, 5))
     # baseline_dataset()
     # RW_dataset()
-    # exit()
-    
-    # pass
-    
     
 
-    
-    
-    
-    # RW = RW_Generator(size = (62, 106), stay_or_break = 0, num_walks = 50,  max_steps = 50, min_dis = 0, bias = [(0, 1), 0], RN6 = False, periodic = True, avoid_unvalid = True, grid_start = True, center_elem = False,  centering = False, avoid_clustering = 5)
-    # mat = RW.generate()
-    # builder = config_builder(mat)
-    # builder.view()
-    
-    # builder = config_builder(RW.visit)
-    # builder.view()
-    
-    
-    # builder = config_builder(RW.visit)
-    # builder.view()
-    
-    
-    
-    
-    # mat[mat == 1] = 2
-    # mat[mat == 0] = 1
-    # mat[mat == 2] = 0
-    # valid[valid == 1] = 2
-    # valid[valid == 0] = 1
-    # valid[valid == 2] = 0
-    # builder = config_builder(mat)
-    # builder.view()
-    
-    
-    # RW = RW_Generator(size = (62, 106), num_walks = 16, max_steps = 10, min_dis = 3, bias = [(1, -1), 1], RN6 = True, periodic = True, avoid_unvalid = False, grid_start = True, center_elem = False)
   
+    #######################################################
     
     # 
     
     
     
+    # mat = pop_up(shape = (62, 106), size = (5,3), sp = 1, ref = None)
+    # mat = honeycomb(shape = (62, 106), xwidth = 1, ywidth = 1,  bridge_thickness = 1, bridge_len = 5, ref = None)
     
     
+    # mat = honeycomb(shape = (62, 106), xwidth = 1, ywidth = 0,  bridge_thickness = 1, bridge_len = 1, ref = None)
+    mat = pop_up(shape = (62, 106), size = (53,3), sp = 1, ref = None)
     
     
-    mat = pop_up((62, 106), (3,5), 0)
-    # mat[:] = 1
-    # mat[mat == 1] = 2
-    # mat[mat == 0] = 1
-    # mat[mat == 2] = 0
     builder = config_builder(mat)
     # builder.add_pullblocks()
     builder.build()
     builder.view()
-    # # print(builder)
-    # builder.save_lammps("sheet", ext = f"pop_20x26_1_7_5", path = '../friction_simulation')
     
     
   
+    # mat[:] = 1
+    # mat[mat == 1] = 2
+    # mat[mat == 0] = 1
+    # mat[mat == 2] = 0
   
-    #######################################################
     
 
     

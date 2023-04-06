@@ -1,12 +1,12 @@
 import sys
 sys.path.append('../') # parent folder: MastersThesis
 
-if 'MastersThesis' in sys.path[0]: # Local 
-    from ML.data_analysis import *
-    from ML.use_network import *
-else: # Cluster
-    from data_analysis import *
-    from use_netwrok import *
+# if 'MastersThesis' in sys.path[0]: # Local 
+from ML.data_analysis import *
+from ML.use_network import *
+# else: # Cluster
+#     from data_analysis import *
+#     from use_netwrok import *
     
 
 from plot_set import *

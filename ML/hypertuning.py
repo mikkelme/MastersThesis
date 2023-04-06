@@ -1,10 +1,10 @@
 import sys
 sys.path.append('../') # parent folder: MastersThesis
 
-if 'MastersThesis' in sys.path[0]: # Local 
-    from ML.train_network import *
-else: # Cluster
-    from train_network import *
+# if 'MastersThesis' in sys.path[0]: # Local 
+from ML.train_network import *
+# else: # Cluster
+#     from train_network import *
     
     
 from time import perf_counter
@@ -164,8 +164,8 @@ def momentum_weight_search(model, criterion, data_root, ML_setting, max_lr, mome
             ML_setting['weight_decay'] = weight_decay[j]
             crashed = False
         
-            if i == 0 and j == 0:
-                continue
+            # if i == 0 and j == 0:
+            #     continue
         
             info_string = f'cyclic lr = ({ML_setting["cyclic_lr"][0]:.1f}, {ML_setting["cyclic_lr"][1]:.2e}, {ML_setting["cyclic_lr"][2]:.1e}), cyclic momentum = ({ML_setting["cyclic_momentum"][0]:.1f}, {ML_setting["cyclic_momentum"][1]:.2f}), weight decay = {ML_setting["weight_decay"]}'
             save_name = f'm{i}w{j}'
@@ -179,11 +179,13 @@ def momentum_weight_search(model, criterion, data_root, ML_setting, max_lr, mome
                 coach.learn()
                 coach.save_history(os.path.join(save_folder, save_name))
                 coach.plot_history(show = False, save = os.path.join(save_folder, save_name, 'loss.pdf'))
+                best_loss = coach.best["loss"]
                 # plt.figure().close('all') # XXX Doesn't work yet
                 
             except: # weights exploted inside or something
                 print(f'Crashed at architecture {i}')
                 crashed = True
+                best_loss = ''
             
             timer_stop = perf_counter()
             elapsed_time = timer_stop - timer_start
@@ -195,10 +197,10 @@ def momentum_weight_search(model, criterion, data_root, ML_setting, max_lr, mome
             if i == 0 and j == 0: # Create file
                 outfile = open(timer_file, 'w')
                 outfile.write('# Architecture | time [h:m:s]\n')
-                outfile.write(f'{save_name} | {info_string} | {s_timing}')
+                outfile.write(f'{save_name} | {info_string} | {s_timing} | {best_loss}')
             else: # Append to file
                 outfile = open(timer_file, 'a')
-                outfile.write(f'{save_name} | {info_string} | {s_timing}')
+                outfile.write(f'{save_name} | {info_string} | {s_timing} | {best_loss}')
                 
             if crashed:
                 outfile.write(' (crashed)')

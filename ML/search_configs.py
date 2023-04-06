@@ -1,4 +1,9 @@
-from accelerated_search import *
+import sys
+sys.path.append('../') # parent folder: MastersThesis
+
+from graphene_sheet.RN_walks import *
+from ML.accelerated_search import *
+
 from scipy.stats import loguniform
 
 class Search:
@@ -86,9 +91,31 @@ class Search:
         else:
             exit(f'\nPattern function {pattern_name} is not yet implemented.')
 
-    def search(self, max_params = [1, 2, 2, 2]): # [3, 5, 5, 5]
-        self.max_params = np.array(max_params) 
+    def get_total_combinations(self, mp, sf):
+        
+        pattern_name = self.pattern.__name__
+        if pattern_name == 'honeycomb':
+            factors = [(mp[0]+1)//2 - (sf)//2, mp[1]+1-sf,(mp[2]+1)//2 - (sf)//2, (mp[3]+1)//2 - (sf)//2]
+            return  np.prod(factors)
+        elif pattern_name == 'pop_up':
+            size_factor = 0
+            for s0 in range(sf + 1 - sf%2, mp[0]+1, 2):
+                for s1 in range(sf + 1 - sf%2, mp[1]+1, 2):
+                    if (np.abs(s0 - s1) - 2)%4 == 0:
+                        print(s0, s1)
+                        size_factor += 1
+            return size_factor * mp[2]+1-sf
+        elif pattern_name == 'RW_MC':
+            return mp[-1]
+        else:
+            exit(f'\nPattern function {pattern_name} is not yet implemented.')
+
+        
+
+    def search(self, max_params = [1, 2, 2, 2], start_from = 1): # [3, 5, 5, 5]
+        self.max_params = np.array(max_params) - start_from
         self.current = np.zeros(len(self.max_params), dtype = 'int')
+        total_comb = self.get_total_combinations(max_params, start_from)
         
         if self.pattern.__name__ == 'RW_MC':
             self.prod = [max_params[-1]]
@@ -96,14 +123,14 @@ class Search:
         else:
             self.prod = [np.prod(self.max_params[p:]+1) for p in range(len(self.max_params))]
         
-            
     
         # Go through all combinations [0, 0, ..., 0] --> max_params
         self.counter = 0
         for i in range(self.prod[0]):
             try:
                 self.get_next_combination()
-                print(f'\r{self.current} | ({self.patterns_evaluated}/{self.counter})  ', end = '')
+                self.current += start_from
+                print(f'\r{self.current} | ({self.patterns_evaluated+1}/{total_comb})     ', end = '')
                 self.counter += 1
                 
                 try:
@@ -217,43 +244,25 @@ def RW_MC(size, max_num_walks = 10, max_max_steps = 10, max_min_dis = 4, bias_ma
 
 
 if __name__ == '__main__':
-    folder = 'training_2'
-    model_name = f'{folder}/C16C32C64D64D32D16'
+    model_name = 'staircase_4/S32D10'
     
     
+    # Pop up
+    # S = Search(model_name, topN = 5, pattern = pop_up)
+    # S.search([60, 60, 30], start_from = 1) # XXX
+    # S.print_extrema()
+    # S.save_extrema('./pop_search')
     
-    # RW = RW_Generator(  size = (62, 106),
-    #                     num_walks = 50,
-    #                     max_steps = 10,
-    #                     min_dis = 0,
-    #                     bias = [(0,0), 0],
-    #                     center_elem = 'full',
-    #                     avoid_unvalid = True,
-    #                     RN6 = False,
-    #                     grid_start = False,
-    #                     centering = False,
-    #                     stay_or_break = False,
-    #                     avoid_clustering = 'repair', # = Repair() XXX
-    #                     periodic = True
-    #                 )
-    # mat = RW.generate()
-    # builder = config_builder(mat)
-    # builder.build()
-    # builder.view()
-    # exit()
-
-    # S = Search(model_name, topN = 1, pattern = pop_up)
+    # Honeycomb
     # S = Search(model_name, topN = 5, pattern = honeycomb)
-    # S = Search(model_name, topN = 3, pattern = RW_MC)
+    # S.search([30, 30, 30, 60], start_from = 1) XXX
+    # S.print_extrema()
+    # S.save_extrema('./hon_search')
     
+    # Random walk
+    # S = Search(model_name, topN = 5, pattern = RW_MC)
+    # S.search([30, 30, 4, 10, 1000], start_from = 0) # XXX
+    # S.print_extrema()
+    # S.save_extrema('./RW_search')
     
-    
-    # S.search([9, 13, 4])
-    
-    # S.search([3, 5, 5, 5])
-    
-    S.search([30, 30, 4, 10, 1000])
-    
-
-    S.print_extrema()
-    S.save_extrema('./extrema_folder')
+        

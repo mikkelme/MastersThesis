@@ -3,7 +3,13 @@ sys.path.append('../') # parent folder: MastersThesis
 sys.setrecursionlimit(10000)
 
 from graphene_sheet.build_utils import *
-from ML.accelerated_search import *
+from ML.accelerated_search import * 
+    
+    
+
+# try: 
+
+# from ML.accelerated_search import Genetic_algorithm
 import random
 
 
@@ -178,11 +184,11 @@ class RW_Generator:
         if self.avoid_clustering is not False:
             
             if self.avoid_clustering == 'repair':
-                AS = Accelerated_search(model_weights = None,
+                GA = Genetic_algorithm( model_weights = None,
                                         model_info = None,
                                         N = 1,
                                         image_shape = self.size)
-                self.mat = AS.repair_sheet(self.mat)
+                self.mat = GA.repair_sheet(self.mat)
             
             
             self.vertical_spanning = None
@@ -607,9 +613,9 @@ if __name__ == "__main__":
     
     RW = RW_Generator()
     print(RW)
+    mat = RW.generate()
 
     
-    # mat = RN.generate()
     
     
     

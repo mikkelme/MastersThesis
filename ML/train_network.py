@@ -1,16 +1,16 @@
 import sys
 sys.path.append('../') # parent folder: MastersThesis
 
-if 'MastersThesis' in sys.path[0]: # Local 
-    from ML.dataloaders import *
-    from ML.ML_utils import *
-    from ML.networks import *
-    from ML.hypertuning import *
-else: # Cluster
-    from dataloaders import *
-    from ML_utils import *
-    from networks import *
-    from hypertuning import *
+# if 'MastersThesis' in sys.path[0]: # Local 
+from ML.dataloaders import *
+from ML.ML_utils import *
+from ML.networks import *
+from ML.hypertuning import *
+# else: # Cluster
+#     from dataloaders import *
+#     from ML_utils import *
+#     from networks import *
+#     from hypertuning import *
     
 
 from collections import OrderedDict
