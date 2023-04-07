@@ -105,19 +105,22 @@ def LR_range_momentum(save = False):
     
     start_lr = 1e-7
     end_lr = 10.0
-    momentum = [0.99, 0.97, 0.95, 0.9]
-    filename = 'lr_momentum_test.txt'
+    momentum = [0.85, 0.88, 0.91, 0.93, 0.95, 0.97, 0.99]
+    lr_sug = []
+    lr_max = []
+    # filename = 'lr_momentum_test.txt'
     ML_setting = get_ML_setting()
     model, criterion = best_model(mode = 0, batchnorm = True)[0]
+    state = model.state_dict() # Get model state for resetting
     
     
     fig1 = plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
     ax = plt.gca()
     ymin = 1e3; ymax = -1e3
-    lr_max = []
     for i, mom in enumerate(momentum):
         print(f'{i+1}/{len(momentum)} | momentum = {mom}')
         optimizer = optim.Adam(model.parameters(), lr = start_lr, betas=(mom, 0.999))
+        model.load_state_dict(state) # Reset model before training again
         foLR = Find_optimal_LR(model, optimizer, criterion, data_root, ML_setting)
         
         foLR.find_optimal(end_lr)
@@ -133,11 +136,13 @@ def LR_range_momentum(save = False):
         # div_idx = sug_idx + np.argmax(loss[sug_idx:][1:] - loss[sug_idx:][:-1] > loss[sug_idx:][:-1]*0.2)
         div_idx = minidx
         
-        diff = loss[sug_idx:][1:] - loss[sug_idx:][:-1]
-        test = np.argwhere(diff > loss[sug_idx:][:-1]*1.5)
+        # diff = loss[sug_idx:][1:] - loss[sug_idx:][:-1]
+        # test = np.argwhere(diff > loss[sug_idx:][:-1]*1.5)
+        
         start_cut = np.argmin(np.abs(lr - 1e-5))
         
         ax.plot(lr[start_cut:], loss[start_cut:], color = color_cycle(i), label = fr'$\beta_1 = ${mom:0.2f}') 
+        ax.plot(lr[sug_idx], loss[sug_idx], color = color_cycle(i), marker = 'o')
         ax.plot(lr[div_idx], loss[div_idx], color = color_cycle(i), marker = 'o')
         
         ymin = np.min((loss[minidx], ymin))
@@ -146,11 +151,13 @@ def LR_range_momentum(save = False):
         ax.set_ylabel('Loss', fontsize=14)
 
 
-        # Store
+        # Store values
+        lr_sug.append(lr[sug_idx])
         lr_max.append(lr[div_idx])
         
         
     print('momentum', momentum)
+    print('lr_sug', lr_sug)
     print('lr_max', lr_max)
         
     diff = ymax - ymin
@@ -163,10 +170,12 @@ def LR_range_momentum(save = False):
 
 
     fig2 = plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
-    plt.plot(momentum[:len(lr_max)], lr_max, '-o')
+    plt.plot(momentum[:len(lr_sug)], lr_sug, '-o', label = 'Constant suggestion')
+    plt.plot(momentum[:len(lr_max)], lr_max, '-o', label = 'Max suggestion')
     plt.xlabel(r'Momentum ($\beta_1$)', fontsize=14)
-    plt.ylabel('Maximum learning rate', fontsize=14)
+    plt.ylabel('Learning rate', fontsize=14)
     plt.yscale('log')
+    plt.legend(fontsize = 13)
 
     fig1.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
     fig2.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)

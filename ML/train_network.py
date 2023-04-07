@@ -137,8 +137,14 @@ class Trainer:
                 exit()
         
         
+        beta1 = 0.9 # Default
+        if 'momentum' in self.ML_setting:
+            mom = self.ML_setting['momentum']
+            if mom is not None:
+                beta1 = mom
     
-        self.optimizer = optim.Adam(model.parameters(), lr = self.ML_setting['lr'], weight_decay = self.ML_setting['weight_decay'])      
+
+        self.optimizer = optim.Adam(model.parameters(), lr = self.ML_setting['lr'], betas=(beta1, 0.999), weight_decay = self.ML_setting['weight_decay'])      
         self.history = OrderedDict([('epoch', []), ('train_loss', []), ('val_loss', [])])
              
 
@@ -170,7 +176,7 @@ class Trainer:
             
         
         if self.ML_setting['cyclic_lr'] is None:
-            self.cyclic_lr = none
+            self.cyclic_lr = None
         else:
             
             self.cyclic_lr = torch.optim.lr_scheduler.OneCycleLR(self.optimizer, 

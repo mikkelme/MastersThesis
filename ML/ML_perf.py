@@ -24,7 +24,6 @@ def get_vmin_max(mat, p = 0.5, increasing = True):
 
 
 def get_staircase_perf(path):
-
     folders = os.listdir(path)
     
     S = [] # Start
@@ -94,6 +93,166 @@ def get_staircase_perf(path):
    
     return D_axis, S_axis, P
    
+   
+def get_mom_weight_perf(path):
+    folders = os.listdir(path)
+    
+    M = [] # Momentum
+    W = [] # Weight decay
+    P = {}
+    for folder in folders:
+        if '.DS_Store' in folder or '.txt' in folder:
+            continue 
+        
+        file = os.path.join(path, folder, 'best_scores.txt')
+        info, data = read_best_scores(file)
+        ML_settings = info['ML_settings']
+        # M.append(float(ML_settings['weight_decay']))
+        # W.append(float(ML_settings['cyclic_momentum'][1]))
+        M.append(float(ML_settings['cyclic_momentum'][1]))
+        W.append(float(ML_settings['weight_decay']))
+        
+        for key in data:
+            try:
+                P[key].append(data[key])
+            except KeyError:
+                P[key] = [data[key]]    
+        try:
+            P['num_params'].append(info['Model_info']['num_params'])
+        except KeyError:
+            P['num_params'] = [info['Model_info']['num_params']]
+            
+        try:
+            P['path'].append(os.path.join(path, folder))
+        except KeyError:
+            P['path'] = [os.path.join(path, folder)]
+                
+
+
+    # --- Organize into matrix (M, W, P) --- #
+    # Get unique axis
+    M_axis =  np.sort(list(set(M)))
+    W_axis =  np.sort(list(set(W)))
+    shape = (len(M_axis), len(W_axis))
+    
+    
+    
+    
+    # Get 1D -> 2D mapping
+    M_mat, W_mat = np.meshgrid(M_axis, W_axis)
+        
+    map = np.full(np.shape(M_mat), -1)
+    for i in range(M_mat.shape[0]):
+        for j in range(M_mat.shape[1]):
+            M_hit = M_mat[i, j] == M
+            W_hit = W_mat[i, j] == W
+            full_hit = np.logical_and(M_hit, W_hit)
+            if np.sum(full_hit) == 1:
+                map[i,j] = int(np.argmax(full_hit))
+            elif np.sum(full_hit) > 1:
+                exit('This should not happen')
+    
+   
+    
+    # Flip axis for increasing y-axis
+    map = np.flip(map, axis = 0)
+    W_axis = np.flip(W_axis) 
+    
+    # Perform mapping
+    M = np.array(M + [np.nan])[map]
+    W = np.array(W + [np.nan])[map]
+    for key in P:  
+        P[key] = np.array(P[key]+[np.nan])[map]
+    
+
+    return M_axis, W_axis, P
+   
+
+def mom_weight_heatmap(path, compare_folder = [], save = False):
+    M_axis, W_axis, P = get_mom_weight_perf(path)
+    
+    
+    # Evaluation on selected configurations
+    if len(compare_folder) > 0:
+        paths = P['path']
+        R2 = np.zeros((len(compare_folder), paths.shape[0], paths.shape[1]))
+        for f, folder in enumerate(compare_folder):
+            # Get compare data
+            data = read_multi_folder(folder)
+            config_path = find_single_file(folder, '.npy')
+            stretch = data['stretch_pct']
+            F_N = data['F_N']    
+            Ff = data['Ff'][:, :, 0, 1]
+            
+            for i in range(paths.shape[0]):
+                for j in range(paths.shape[1]):
+                    if paths[i,j] == 'nan': continue
+                    model_weights = os.path.join(paths[i,j], 'model_dict_state')
+                    model_info = os.path.join(paths[i,j], 'best_scores.txt')
+                    EV = Evaluater(model_weights, model_info)
+                    EV.load_config(config_path)
+                    
+            
+                    
+                    # Predict for different F_N
+                    Ff_pred = np.zeros((len(stretch), len(F_N)))
+                    no_rupture = np.zeros((len(stretch), len(F_N))) == -1
+                    for k in range(len(F_N)):
+                        no_rupture[:, k] = ~np.isnan(Ff[:, k]) 
+                        _, _, output = EV.predict(stretch, F_N[k])
+                        Ff_pred[no_rupture[:, k], k] = output[no_rupture[:, k], 0]
+                    
+                    Ff_target = Ff[no_rupture].flatten()
+                    Ff_pred = Ff_pred[no_rupture].flatten()
+                    
+                    Ff_target_mean = np.mean(Ff_target)
+                    SS_res = np.sum((Ff_pred - Ff_target)**2)
+                    SS_tot = np.sum((Ff_target - Ff_target_mean)**2)
+                    R2[f, i, j] = 1 - SS_res/SS_tot
+        
+        
+            # R2 test
+            fig, ax = plt.subplots(num = unique_fignum(), figsize=(10, 6))
+            mat = R2[f]
+            vmin, vmax = get_vmin_max(mat)
+            sns.heatmap(mat, xticklabels = M_axis, yticklabels = W_axis, cbar_kws={'label': fr'$R_2$ test {f}'}, annot=True, fmt='.4g', vmin=vmin, vmax=vmax, ax=ax)
+            ax.set_xlabel('Momentum', fontsize=14)
+            ax.set_ylabel('Weight decay', fontsize=14)
+            fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+          
+
+
+
+    # --- Plotting --- #
+    # R2 Val
+    fig, ax = plt.subplots(num = unique_fignum(), figsize=(10, 6))
+    mat = P['R2_0']
+    vmin, vmax = get_vmin_max(mat)
+    sns.heatmap(mat, xticklabels = M_axis, yticklabels = W_axis, cbar_kws={'label': r'$R_2$ $\langle F_{\parallel} \rangle$ '}, annot=True, fmt='.4g', vmin=vmin, vmax=vmax, ax=ax)
+    ax.set_xlabel('Momentum', fontsize=14)
+    ax.set_ylabel('Weight decay', fontsize=14)
+    fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    
+    
+    # Loss
+    fig, ax = plt.subplots(num = unique_fignum(),  figsize=(10, 6))
+    mat = P['val_tot_loss']
+    vmin = np.nanmin(mat)
+    vmax = np.nanmin((0.03, np.nanmax(mat)))
+    sns.heatmap(mat, xticklabels = M_axis, yticklabels = W_axis, cbar_kws={'label': 'Validation loss'}, annot=True, fmt='.4g', vmin=vmin, vmax=vmax, ax=ax, cmap = sns.cm.rocket_r)
+    ax.set_xlabel('Momentum', fontsize=14)
+    ax.set_ylabel('Weight decay', fontsize=14)
+    fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    
+    # Epoch
+    fig, ax = plt.subplots(num = unique_fignum(),  figsize=(10, 6))
+    mat = P['epoch']
+    sns.heatmap(mat, xticklabels = M_axis, yticklabels = W_axis, cbar_kws={'label': 'Epoch'}, annot=True, fmt='.4g', vmin=None, vmax=None, ax=ax)
+    ax.set_xlabel('Momentum', fontsize=14)
+    ax.set_ylabel('Weight decay', fontsize=14)
+    fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    
+
 
 
 def staircase_heatmap(path, compare_folder = [], save = False):
@@ -233,10 +392,13 @@ def staircase_complexity(path):
     
 if __name__ == '__main__':
     # path = '../ML/staircase_1'
-    path = '../ML/staircase_4'
+    # path = '../ML/staircase_4'
+    path = '../ML/mom_weight_search'
     
     compare_folder = ['../Data/Baseline_fixmove/honeycomb/multi_stretch', '../Data/Baseline_fixmove/popup/multi_stretch']
-    compare_folder = []
-    staircase_heatmap(path, compare_folder, save = False)
+    # compare_folder = []
+    # staircase_heatmap(path, compare_folder, save = False)
     # staircase_complexity(path)
+    
+    mom_weight_heatmap(path, compare_folder, save = False)
     plt.show()

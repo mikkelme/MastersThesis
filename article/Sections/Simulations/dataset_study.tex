@@ -419,6 +419,8 @@ maximum lr at the point where the loss diverges as shown in figure
 \cref{fig:LR_range_mom}.
 
 
+For the momentum test we use the minimum of the curve as an estimate of the point where it starts to diverge. This is a bit conservative choice, but the early approach where we tried numbers a bit closer to the step point, the training often exploded. 
+
 \begin{figure}[H]
   \centering
   \begin{subfigure}[t]{0.49\textwidth}
@@ -435,7 +437,7 @@ maximum lr at the point where the loss diverges as shown in figure
       % \label{fig:}
   \end{subfigure}
   \hfill
-  \caption{...}
+  \caption{Right now the points located on $(a)$ is the minimum point used as an estimate for the max result. }
   \label{fig:LR_range_mom}
 \end{figure}
 

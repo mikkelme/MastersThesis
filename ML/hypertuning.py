@@ -141,35 +141,46 @@ def train_architectures(A_instance, data_root, ML_setting, save_folder, LR_range
             
             
             
-def momentum_weight_search(model, criterion, data_root, ML_setting, max_lr, momentum, weight_decay, save_folder):
+def momentum_weight_search(model, criterion, data_root, ML_setting, lr, momentum, weight_decay, save_folder, mode = 'cyclic_lr'):
     timer_file = os.path.join(save_folder, 'timings.txt')
     
-    # max_lr = [0.19098169151133398, 0.07099694630794687, 0.048523309416493646, 0.0078083987538332695]
-    # momentum = [0.99, 0.97, 0.95, 0.9]
-    # weight_decay = [1e-4, 1e-5, 1e-6, 0]    
-
+   
     # Get settings
-    cyclic_lr_div_factor, _, final_div_factor = ML_setting['cyclic_lr']
-    cyclic_momentum_base, _ = ML_setting['cyclic_momentum']
+    if mode == 'constant_lr':
+        ML_setting['cyclic_lr'] = None
+        ML_setting['cyclic_momentum'] = None
+    elif mode == 'cyclic_lr':
+        cyclic_lr_div_factor, _, final_div_factor = ML_setting['cyclic_lr']
+        cyclic_momentum_base, _ = ML_setting['cyclic_momentum']
+    else:
+        exit(f'mode = {mode} not understood')
+    
+
     
     
     # Get model state for resetting
     state = model.state_dict()
     
     for i in range(len(momentum)):
-        ML_setting['cyclic_lr'] = [cyclic_lr_div_factor, max_lr[i], final_div_factor]
-        ML_setting['cyclic_momentum'] = [cyclic_momentum_base, momentum[i]]
-        
+        # Set momentum
+        if mode == 'constant_lr':
+            ML_setting['lr'] = lr[i]
+            ML_setting['momentum'] = momentum[i]
+        elif mode == 'cyclic_lr':
+            ML_setting['cyclic_lr'] = [cyclic_lr_div_factor, lr[i], final_div_factor]
+            ML_setting['cyclic_momentum'] = [cyclic_momentum_base, momentum[i]]
+            
         for j in range(len(weight_decay)):
             ML_setting['weight_decay'] = weight_decay[j]
             crashed = False
         
-            # if i == 0 and j == 0:
-            #     continue
-        
-            info_string = f'cyclic lr = ({ML_setting["cyclic_lr"][0]:.1f}, {ML_setting["cyclic_lr"][1]:.2e}, {ML_setting["cyclic_lr"][2]:.1e}), cyclic momentum = ({ML_setting["cyclic_momentum"][0]:.1f}, {ML_setting["cyclic_momentum"][1]:.2f}), weight decay = {ML_setting["weight_decay"]}'
+            # if i == 0 and j == 0: continue
+
+            if mode == 'constant_lr':
+                info_string = f'lr = {ML_setting["lr"]}, momentum = {ML_setting["momentum"]}, weight decay = {ML_setting["weight_decay"]}'
+            elif mode == 'cyclic_lr':
+                info_string = f'cyclic lr = ({ML_setting["cyclic_lr"][0]:.1f}, {ML_setting["cyclic_lr"][1]:.2e}, {ML_setting["cyclic_lr"][2]:.1e}), cyclic momentum = ({ML_setting["cyclic_momentum"][0]:.1f}, {ML_setting["cyclic_momentum"][1]:.2f}), weight decay = {ML_setting["weight_decay"]}'
             save_name = f'm{i}w{j}'
-            
             print(f'{i} | {save_name} | {info_string}')
             timer_start = perf_counter() 
             
@@ -179,13 +190,15 @@ def momentum_weight_search(model, criterion, data_root, ML_setting, max_lr, mome
                 coach.learn()
                 coach.save_history(os.path.join(save_folder, save_name))
                 coach.plot_history(show = False, save = os.path.join(save_folder, save_name, 'loss.pdf'))
-                best_loss = coach.best["loss"]
-                # plt.figure().close('all') # XXX Doesn't work yet
+                best_loss = f'{coach.best["loss"]:0.4g}'
+                best_epoch = coach.best["epoch"]
+                plt.close('all') 
                 
             except: # weights exploted inside or something
                 print(f'Crashed at architecture {i}')
                 crashed = True
                 best_loss = ''
+                best_epoch = ''
             
             timer_stop = perf_counter()
             elapsed_time = timer_stop - timer_start
@@ -197,10 +210,10 @@ def momentum_weight_search(model, criterion, data_root, ML_setting, max_lr, mome
             if i == 0 and j == 0: # Create file
                 outfile = open(timer_file, 'w')
                 outfile.write('# Architecture | time [h:m:s]\n')
-                outfile.write(f'{save_name} | {info_string} | {s_timing} | {best_loss}')
+                outfile.write(f'{save_name} | {s_timing} | {info_string} | best: loss = {best_loss}, epoch = {best_epoch}')
             else: # Append to file
                 outfile = open(timer_file, 'a')
-                outfile.write(f'{save_name} | {info_string} | {s_timing} | {best_loss}')
+                outfile.write(f'{save_name} | {s_timing} | {info_string} | best: loss = {best_loss}, epoch = {best_epoch}')
                 
             if crashed:
                 outfile.write(' (crashed)')
