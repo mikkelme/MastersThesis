@@ -319,58 +319,6 @@ def A_search_perf(path, save):
     if save:
         fig.savefig("../article/figures/ML/A_search_perf.pdf", bbox_inches="tight")
         
-   
-    # return
-
-
-    # # R2 Val
-    # R2_fig, ax = plt.subplots(num = unique_fignum(), figsize=figsize)
-    # mat = P['R2_0']
-    # vmin, vmax = get_vmin_max(mat, p = 0.98)
-    # cmap = sns.cm.rocket
-    # sns.heatmap(mat, xticklabels = D_axis, yticklabels = S_axis, cbar_kws={'label': r'$R_2$ $\langle F_{\parallel} \rangle$ '}, annot=True, fmt='.3g', vmin=vmin, vmax=vmax, cmap = cmap, ax=ax)
-    # ax.set_xlabel('Depth', fontsize=14)
-    # ax.set_ylabel('Start num. channels', fontsize=14)
-    # R2_fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
-    
-    # # Val loss
-    # val_loss_fig, ax = plt.subplots(num = unique_fignum(),  figsize=figsize)
-    # mat = P['val_tot_loss']
-    # vmin, vmax = get_vmin_max(mat, p = 0.70, increasing = False)
-    # cmap = sns.cm.rocket_r
-    # sns.heatmap(mat, xticklabels = D_axis, yticklabels = S_axis, cbar_kws={'label': 'Validation loss'}, annot=True, fmt='.3g', vmin=vmin, vmax=vmax, cmap = cmap, ax=ax)
-    # ax.set_xlabel('Depth', fontsize=14)
-    # ax.set_ylabel('Start num. channels', fontsize=14)
-    # val_loss_fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
-    
-    # # Epoch
-    # epoch_fig, ax = plt.subplots(num = unique_fignum(),  figsize=figsize)
-    # mat = P['epoch']
-    # vmin, vmax = 0, 1000
-    # cmap = sns.cm.rocket
-    # sns.heatmap(mat, xticklabels = D_axis, yticklabels = S_axis, cbar_kws={'label': 'Best epoch'}, annot=True, fmt='.3g', vmin=vmin, vmax=vmax, cmap = cmap, ax=ax)
-    # ax.set_xlabel('Depth', fontsize=14)
-    # ax.set_ylabel('Start num. channels', fontsize=14)
-    # epoch_fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
-    
-    # # Num. Params
-    # num_param_fig, ax = plt.subplots(num = unique_fignum(),  figsize=figsize)
-    # mat = P['num_params']
-    # vmin, vmax = None, None
-    # cmap = sns.cm.rocket
-    # sns.heatmap(mat, xticklabels = D_axis, yticklabels = S_axis, cbar_kws={'label': 'Num. parameters'}, annot=True, fmt='.2g', vmin=vmin, vmax=vmax, cmap=cmap, ax=ax, norm=LogNorm())
-    # ax.set_xlabel('Depth', fontsize=14)
-    # ax.set_ylabel('Start num. channels', fontsize=14)
-    # num_param_fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
-
-        
-   
-    # if save:
-    #     R2_fig.savefig("../article/figures/ML/A_search_R2.pdf", bbox_inches="tight")
-    #     val_loss_fig.savefig("../article/figures/ML/A_search_val_loss.pdf", bbox_inches="tight")
-    #     epoch_fig.savefig("../article/figures/ML/A_search_epoch.pdf", bbox_inches="tight")
-    #     num_param_fig.savefig("../article/figures/ML/A_search_num_param.pdf", bbox_inches="tight")
-        
 
 
 def A_search_compare_perf(path, save = False):
@@ -483,19 +431,254 @@ def A_search_compare_perf(path, save = False):
 
 
     
+def mom_weight_search_perf(path, save):
+    M_axis, W_axis, P = get_mom_weight_perf(path)
+
+
+    # --- Plotting --- #
+    figsize = (10, 4)
+    
+    fig, axes = plt.subplots(1, 2,  figsize = figsize)
+
+
+    # R2 Val
+    mat = 100*P['R2_0']
+    vmin, vmax = get_vmin_max(mat, p = 0.98)
+    # vmax = 100
+    cmap = sns.cm.rocket
+    ax = axes[0]
+    annot = annotation_array(mat, fmt = '.02f', mask_swap = [mat < 0.01, '< 0.01'])
+    sns.heatmap(mat, xticklabels = M_axis, yticklabels = W_axis, cbar_kws={'label': r'$R_2$ $\langle F_{\parallel} \rangle$ [$10^2$] '}, annot=annot, fmt='', vmin=vmin, vmax=vmax, cmap = cmap, ax=ax)
+
+
+    # Val loss
+    mat = 100*P['val_tot_loss']
+    vmin, vmax = get_vmin_max(mat, p = 0.70, increasing = False)
+    cmap = sns.cm.rocket_r
+    ax = axes[1]
+    sns.heatmap(mat, xticklabels = M_axis, yticklabels = W_axis, cbar_kws={'label': r'Validation loss [$10^2$]'}, annot=True, fmt='.4g', vmin=vmin, vmax=vmax, cmap = cmap, ax=ax)
+    
+   
+    fig.supxlabel('Momentum', fontsize = 14)
+    fig.supylabel('Weight decay', fontsize = 14)
+    fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    
+    if save:
+        fig.savefig("../article/figures/ML/mom_weight_search_perf.pdf", bbox_inches="tight")
+        
+ 
+
+
+
+def mom_weight_search_compare_perf(path, save = False):
+    # --- Compare set --- #
+    honeycomb = '../Data/CONFIGS/honeycomb/'
+    popup = '../Data/CONFIGS/popup/'
+    
+    honeycomb_folder = [honeycomb + 'hon_28',
+                        honeycomb + 'hon_29',
+                        honeycomb + 'hon_21',
+                        honeycomb + 'hon_42',
+                        honeycomb + 'hon_6',
+                        honeycomb + 'hon_8',
+                        honeycomb + 'hon_12',
+                        honeycomb + 'hon_20',
+                        honeycomb + 'hon_4',
+                        honeycomb + 'hon_17']
+
+    popup_folder =     [popup + 'pop_27',
+                        popup + 'pop_25',
+                        popup + 'pop_35',
+                        popup + 'pop_48',
+                        popup + 'pop_43',
+                        popup + 'pop_46',
+                        popup + 'pop_50',
+                        popup + 'pop_28',
+                        popup + 'pop_1',
+                        popup + 'pop_58']
+    
+    compare_folder = honeycomb_folder + popup_folder
+
+
+    # --- Get R2 Ff scores --- #
+    # Get architecture data
+    M_axis, W_axis, P = get_mom_weight_perf(path)
+    
+    # Evaluation on selected configurations
+    paths = P['path']
+    R2 = np.zeros((len(compare_folder), paths.shape[0], paths.shape[1]))
+    for f, folder in enumerate(compare_folder):
+        print(f'{f+1}/{len(compare_folder)}')
+        
+        # Get compare data
+        data = read_multi_folder(folder)
+        config_path = find_single_file(folder, '.npy')
+        stretch = data['stretch_pct']
+        F_N = data['F_N']    
+        Ff = data['Ff'][:, :, 0, 1]
+        
+        for i in range(paths.shape[0]):
+            for j in range(paths.shape[1]):
+                if paths[i,j] == 'nan': continue
+                model_weights = os.path.join(paths[i,j], 'model_dict_state')
+                model_info = os.path.join(paths[i,j], 'best_scores.txt')
+                EV = Evaluater(model_weights, model_info)
+                EV.load_config(config_path)
+                
+        
+                # Predict for different F_N
+                Ff_pred = np.zeros((len(stretch), len(F_N)))
+                no_rupture = np.zeros((len(stretch), len(F_N))) == -1
+                for k in range(len(F_N)):
+                    no_rupture[:, k] = ~np.isnan(Ff[:, k]) 
+                    _, _, output = EV.predict(stretch, F_N[k])
+                    Ff_pred[no_rupture[:, k], k] = output[no_rupture[:, k], 0]
+                
+                Ff_target = Ff[no_rupture].flatten()
+                Ff_pred = Ff_pred[no_rupture].flatten()
+                
+                Ff_target_mean = np.mean(Ff_target)
+                SS_res = np.sum((Ff_pred - Ff_target)**2)
+                SS_tot = np.sum((Ff_target - Ff_target_mean)**2)
+                R2[f, i, j] = 1 - SS_res/SS_tot
+    
+    # --- Plotting --- #
+    figsize = (10, 4)
+    fig, axes = plt.subplots(1, 2,  figsize = figsize)
+    vmin, vmax = 60, 100
+    
+    # Tetrahedron
+    ax = axes[0]
+    ax.set_title('Tetrahedron')
+    mat = 100*np.mean(R2[10:], axis = 0)
+    # vmin, vmax = get_vmin_max(mat, p = 0.98)
+    cmap = sns.cm.rocket
+    annot = annotation_array(mat, fmt = '.02f', mask_swap = [mat < 0.01, '< 0.01'])
+    sns.heatmap(mat, xticklabels = M_axis, yticklabels = W_axis, cbar_kws={'label': r'$R_2$ $\langle F_{\parallel} \rangle$ [$10^2$] '}, annot=annot, fmt='', vmin=vmin, vmax=vmax, cmap = cmap, ax=ax)
+    
+    # Honeycomb
+    ax = axes[1]
+    ax.set_title('Honeycomb')
+    mat = 100*np.mean(R2[:10], axis = 0)
+    # vmin, vmax = get_vmin_max(mat, p = 0.98)
+    cmap = sns.cm.rocket
+    annot = annotation_array(mat, fmt = '.02f', mask_swap = [mat < 0.01, '< 0.01'])
+    sns.heatmap(mat, xticklabels = M_axis, yticklabels = W_axis, cbar_kws={'label': r'$R_2$ $\langle F_{\parallel} \rangle$ [$10^2$] '}, annot=annot, fmt='', vmin=vmin, vmax=vmax, cmap = cmap, ax=ax)
+    
+    
+    # Suplot settings
+    fig.supxlabel('Momentum', fontsize = 14)
+    fig.supylabel('Weight decay', fontsize = 14)
+    fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+
+    
+    if save:
+        fig.savefig("../article/figures/ML/mom_weight_search_compare_perf.pdf", bbox_inches="tight")
+        
 
     
 
+def final_model_evaluation(model_path, save = False):
+    """ Evaluate the final model on pilot study tetrehedron and honeycomb """
+
+    model_weights = os.path.join(model_path, 'model_dict_state')
+    model_info = os.path.join(model_path, 'best_scores.txt')
+    EV = Evaluater(model_weights, model_info)
+
+
+    # Pilot study patterns
+    folders = ['../Data/Baseline_fixmove/honeycomb/multi_stretch' ,
+               '../Data/Baseline_fixmove/popup/multi_stretch' ]
+    
+    colorbar_scale = [(0.1, 10), 'log']
+    num_points = 100
+    
+    mean_window_pct = 0.5 # relative length of the mean window [% of total duration]
+    std_window_pct = 0.35  # relative length of the std windoe [% of mean window]
+    cmap = matplotlib.cm.viridis
+    line_and_marker = {'linestyle': '', 
+                       'marker': 'o',
+                       'linewidth': 1.5,
+                       'markersize': 2.5}
+    
+
+
+    for folder in folders:
+        data = read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.35)
+        stretch = data['stretch_pct']
+        FN = data['F_N']
+        Ff_mean = data['Ff'][0, 1]
+        Ff_max = data['Ff'][0, 0]
+        contact = data['contact']
+        rup = data['rup']
+        rupture_stretch = (data['rupture_stretch'], data['practical_rupture_stretch'])
+        
+        fig_Ff_mean = plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k'); ax_Ff_mean = fig_Ff_mean.gca()
+        fig_contact = plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k'); ax_contact = fig_contact.gca()
+        
+        
+        # Plot simulation data
+        for k in range(len(FN)):    
+            color = get_color_value(F_N[k], colorbar_scale[0][0], colorbar_scale[0][1], scale = colorbar_scale[-1], cmap = cmap)
+            ax_Ff_mean.plot(stretch, Ff_mean[:,k], **line_and_marker, color = color)
+            
+                    
+        # # Plot comparison
+        # config_path = find_single_file(folder, '.npy')
+        # vars = ['data[\'stretch_pct\']', 'data[\'Ff\'][:, :, 0, 1]', 'data[\'F_N\']']
+        # axis_labels = [r'Stretch', r'$\langle F_\parallel \rangle$ [nN]', r'$F_N$ [nN]']
+        # fig, data = multi_plot_compare([folder], [config_path], vars, axis_labels, figsize = (7, 5), axis_scale = ['linear', 'linear'], colorbar_scale = colorbar_scale, equal_axes = [False, False], rupplot = True)
+        # axes = fig.axes
+
+        # # Get input data range
+        # stretch = data['stretch_pct']
+        # F_N = data['F_N']    
+        # Ff = data['Ff'][:, :, 0, 1]
+
+        # Plot ML prediction XXX
+
+        # Make ML input
+        stretch_space = np.linspace(np.min(stretch), np.max(stretch), num_points)
+        EV.load_config(config_path)
+        
+        for k in range(len(F_N)): # Predict for different F_N    
+            # Get R2
+            no_rupture = ~np.isnan(Ff[:, k]) 
+            Ff_target = Ff[no_rupture, k]
+            Ff_target_mean = np.mean(Ff_target)
+            
+            _, _, output = EV.predict(stretch, F_N[k])
+            Ff_pred = output[no_rupture, 0]
+            SS_res = np.sum((Ff_pred - Ff_target)**2)
+            SS_tot = np.sum((Ff_target - Ff_target_mean)**2)
+            R2 = 1 - SS_res/SS_tot
+            
+            
+            # Produce more smooth stretch curve fore plotting
+            _, _, output = EV.predict(stretch_space, F_N[k])
+            no_rupture = output[:,-1] < 0.5
+            color = get_color_value(F_N[k], colorbar_scale[0][0], colorbar_scale[0][1], scale = colorbar_scale[1], cmap = matplotlib.cm.viridis)
+            axes[0].plot(stretch_space[no_rupture], output[no_rupture, 0], color = color, label = f'R2 = {R2:g}')
+        
+        fig.legend(fontsize = 14)
+        break
+    
 
 
 if __name__ == '__main__':
     # LR_range_specific(A_staircase_subset(mode = 0, batchnorm = True), save = False)
     # LR_range_full(filename = '../ML/staircase_lr/lr.txt', save = False)
-    LR_range_momentum(save = True)
+    # LR_range_momentum(save = True)
     
     # A_search_perf(path = '../ML/staircase_4', save = True)
     # A_search_compare_perf(path = '../ML/staircase_4', save = True)
     
+    
+    # mom_weight_search_perf(path = '../ML/mom_weight_search', save =  False)
+    # mom_weight_search_compare_perf(path = '../ML/mom_weight_search', save =  False)
+    
+    
+    final_model_evaluation(model_path = '../ML/staircase_4/S32D12', save = False)
     plt.show()
 
 
