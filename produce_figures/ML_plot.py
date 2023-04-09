@@ -6,8 +6,7 @@ import numpy as np
 from ML.hypertuning import *
 from ML.ML_perf import *
 from analysis.analysis_utils import*
-
-
+from matplotlib.gridspec import GridSpec
 
 class A_staircase_subset(Architectures):    
 
@@ -587,14 +586,13 @@ def final_model_evaluation(model_path, save = False):
 
 
     # Pilot study patterns
-    folders = ['../Data/Baseline_fixmove/honeycomb/multi_stretch' ,
-               '../Data/Baseline_fixmove/popup/multi_stretch' ]
+    folders = ['../Data/Baseline_fixmove/popup/multi_stretch',
+               '../Data/Baseline_fixmove/honeycomb/multi_stretch']
+    patterns = ['Tetrahedron', 'Honeycomb']
     
     colorbar_scale = [(0.1, 10), 'log']
-    num_points = 100
+    num_points = 100 # ML
     
-    mean_window_pct = 0.5 # relative length of the mean window [% of total duration]
-    std_window_pct = 0.35  # relative length of the std windoe [% of mean window]
     cmap = matplotlib.cm.viridis
     line_and_marker = {'linestyle': '', 
                        'marker': 'o',
@@ -603,66 +601,95 @@ def final_model_evaluation(model_path, save = False):
     
 
 
-    for folder in folders:
+    # fig, axes = plt.subplots(3, 2, num = unique_fignum(), figsize = (10,8))
+    
+    nrow = 3; ncol = 2
+    fig = plt.figure(figsize = (10, 8), constrained_layout=True)
+    gs = GridSpec(nrow, ncol + 1, figure=fig, width_ratios=[1,1,0.05])
+    axes = []
+    for i in range(nrow):
+        axes.append([fig.add_subplot(gs[i, j]) for j in range(ncol)])
+
+    
+    
+
+    for f, folder in enumerate(folders):
+        # Data
         data = read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.35)
         stretch = data['stretch_pct']
-        FN = data['F_N']
-        Ff_mean = data['Ff'][0, 1]
-        Ff_max = data['Ff'][0, 0]
-        contact = data['contact']
+        F_N = data['F_N']
+        Ff_mean = data['Ff'][:, :, 0, 1]
+        Ff_max = data['Ff'][:, :, 0, 0]
+        contact = data['contact_mean'][:, :, 0]
         rup = data['rup']
         rupture_stretch = (data['rupture_stretch'], data['practical_rupture_stretch'])
         
-        fig_Ff_mean = plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k'); ax_Ff_mean = fig_Ff_mean.gca()
-        fig_contact = plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k'); ax_contact = fig_contact.gca()
-        
-        
-        # Plot simulation data
-        for k in range(len(FN)):    
-            color = get_color_value(F_N[k], colorbar_scale[0][0], colorbar_scale[0][1], scale = colorbar_scale[-1], cmap = cmap)
-            ax_Ff_mean.plot(stretch, Ff_mean[:,k], **line_and_marker, color = color)
-            
-                    
-        # # Plot comparison
-        # config_path = find_single_file(folder, '.npy')
-        # vars = ['data[\'stretch_pct\']', 'data[\'Ff\'][:, :, 0, 1]', 'data[\'F_N\']']
-        # axis_labels = [r'Stretch', r'$\langle F_\parallel \rangle$ [nN]', r'$F_N$ [nN]']
-        # fig, data = multi_plot_compare([folder], [config_path], vars, axis_labels, figsize = (7, 5), axis_scale = ['linear', 'linear'], colorbar_scale = colorbar_scale, equal_axes = [False, False], rupplot = True)
-        # axes = fig.axes
-
-        # # Get input data range
-        # stretch = data['stretch_pct']
-        # F_N = data['F_N']    
-        # Ff = data['Ff'][:, :, 0, 1]
-
-        # Plot ML prediction XXX
-
-        # Make ML input
-        stretch_space = np.linspace(np.min(stretch), np.max(stretch), num_points)
-        EV.load_config(config_path)
-        
-        for k in range(len(F_N)): # Predict for different F_N    
-            # Get R2
-            no_rupture = ~np.isnan(Ff[:, k]) 
-            Ff_target = Ff[no_rupture, k]
-            Ff_target_mean = np.mean(Ff_target)
-            
-            _, _, output = EV.predict(stretch, F_N[k])
-            Ff_pred = output[no_rupture, 0]
-            SS_res = np.sum((Ff_pred - Ff_target)**2)
-            SS_tot = np.sum((Ff_target - Ff_target_mean)**2)
-            R2 = 1 - SS_res/SS_tot
-            
-            
-            # Produce more smooth stretch curve fore plotting
-            _, _, output = EV.predict(stretch_space, F_N[k])
-            no_rupture = output[:,-1] < 0.5
-            color = get_color_value(F_N[k], colorbar_scale[0][0], colorbar_scale[0][1], scale = colorbar_scale[1], cmap = matplotlib.cm.viridis)
-            axes[0].plot(stretch_space[no_rupture], output[no_rupture, 0], color = color, label = f'R2 = {R2:g}')
-        
-        fig.legend(fontsize = 14)
-        break
     
+        # Prepare ML 
+        stretch_space = np.linspace(np.min(stretch), np.max(stretch), num_points)
+        config_path = find_single_file(folder, '.npy')
+        EV.load_config(config_path)
+    
+    
+        # Go through different outputs    
+        Z = [Ff_mean, Ff_max, contact]
+        ylabel = [r'$\langle F_\parallel \rangle$ [nN]', 
+                  r'$\max \ F_\parallel$ [nN]',
+                  r'Rel. $\langle$ Bond $\rangle$']
+        
+        
+        axes[0][f].set_title(f'{patterns[f]}')
+        axes[-1][f].set_xlabel('Stretch', fontsize = 14)     
+        for o in range(3): # Ff_mean, Ff_max, contact
+            ax = axes[o][f]
+            if f == 0:
+                ax.set_ylabel(ylabel[o], fontsize = 14)
+            
+                
+            # Go through load 
+            z = Z[o]
+            no_rupture_data = ~np.isnan(z[:, 0]) 
+            for k in range(len(F_N)):    
+                color = get_color_value(F_N[k], colorbar_scale[0][0], colorbar_scale[0][1], scale = colorbar_scale[-1], cmap = cmap)
+                
+                # --- Simulation --- #
+                ax.plot(stretch, z[:,k], **line_and_marker, color = color)
+                
+                # Prepare R2
+                target = z[no_rupture_data, k]
+                target_mean = np.mean(target)
+                
+                
+                # --- ML --- #
+                _, _, output = EV.predict(stretch, F_N[k]) # ['Ff_mean', 'Ff_max', 'contact', 'porosity', 'rupture_stretch', 'is_ruptured']
+                pred = output[no_rupture_data, o]
+                SS_res = np.sum((pred - target)**2)
+                SS_tot = np.sum((target - target_mean)**2)
+                R2 = 1 - SS_res/SS_tot
+            
+            
+                # Produce more smooth stretch curve fore plotting
+                _, _, output = EV.predict(stretch_space, F_N[k])
+                no_rupture = output[:,-1] < 0.5
+                color = get_color_value(F_N[k], colorbar_scale[0][0], colorbar_scale[0][1], scale = colorbar_scale[1], cmap = cmap)
+                ax.plot(stretch_space[no_rupture], output[no_rupture, o], color = color, label = rf'$R_2$ = {R2:0.4f}', zorder = -1)
+                ax.legend(fontsize = 13)
+   
+    # Colorbar 
+    norm = matplotlib.colors.LogNorm(colorbar_scale[0][0], colorbar_scale[0][1])
+    axes.append(fig.add_subplot(gs[:, ncol]))
+    cb = fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax = axes[-1])
+    cb.set_label(label = r'$F_N$ [nN]', fontsize=14)
+    
+    
+    # Adjust 
+    # fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    
+    if save:
+        fig.savefig("../article/figures/ML/final_model_evaluation.pdf", bbox_inches="tight")
+        
+
+        
 
 
 if __name__ == '__main__':
@@ -674,11 +701,11 @@ if __name__ == '__main__':
     # A_search_compare_perf(path = '../ML/staircase_4', save = True)
     
     
-    # mom_weight_search_perf(path = '../ML/mom_weight_search', save =  False)
-    # mom_weight_search_compare_perf(path = '../ML/mom_weight_search', save =  False)
+    mom_weight_search_perf(path = '../ML/mom_weight_search', save =  True)
+    mom_weight_search_compare_perf(path = '../ML/mom_weight_search', save =  True)
     
     
-    final_model_evaluation(model_path = '../ML/staircase_4/S32D12', save = False)
+    # final_model_evaluation(model_path = '../ML/staircase_4/S32D12', save = True)
     plt.show()
 
 

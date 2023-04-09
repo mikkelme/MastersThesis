@@ -441,17 +441,59 @@ For the momentum test we use the minimum of the curve as an estimate of the poin
   \label{fig:LR_range_mom}
 \end{figure}
 
-% The results from LR momentum: momentum  [0.99, 0.97, 0.95, 0.9] lr_max
-% [0.19098169151133398, 0.07099694630794687, 0.048523309416493646,
-% 0.0078083987538332695]
 
 
-The LR range is done is arround 200 steps (before it diverges). So if I figure
-out the number of batches I can check how many epochs is default since number of
-steps is steps per epoch times number of epochs. 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{figures/ML/mom_weight_search_perf.pdf}
+  \caption{\hl{UPDATE FIGURE WITH RIGHT DATA}}
+  \label{fig:mom_weight_search_perf}
+\end{figure}  
 
-Seems like there are 242 batches in the full dataset so it probably just do one
-epoch...
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{figures/ML/mom_weight_search_compare_perf}
+  \caption{\hl{UPDATE FIGURE WITH RIGHT DATA}}
+  \label{fig:mom_weight_search_compare}
+\end{figure}  
+
+
+
+
+% The LR range is done is arround 200 steps (before it diverges). So if I figure
+% out the number of batches I can check how many epochs is default since number of
+% steps is steps per epoch times number of epochs. 
+
+% Seems like there are 242 batches in the full dataset so it probably just do one
+% epoch...
+
+
+\subsection{Final model}
+
+
+\begin{table}[H]
+  \begin{center}
+  \caption{Caption}
+  \label{tab:final_model_eval}
+  \begin{tabular}{ | c | c | c | c | c | c | c | c |} \hline
+  Mode & Loss & $R_2 Ff$ & Max Ff & Contact & Porosity & Rup.\ Stretch & Rupture \\ \hline
+  Validation & 1 & 2 & 3 & 4 & 5 & 6 & 7 \\ \hline
+  Tetrahedron set & 1 & 2 & 3 & 4 & 5 & 6 & 7 \\ \hline
+  Honeycomb set & 1 & 2 & 3 & 4 & 5 & 6 & 7 \\ \hline
+  \end{tabular}
+  \end{center}
+\end{table}
+
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{figures/ML/final_model_evaluation.pdf}
+  \caption{Final model evaluation \hl{Used S32D12 for now}.}
+  \label{fig:final_model_eval}
+\end{figure}  
+
 
 \clearpage
 
