@@ -102,7 +102,6 @@ class Search:
             for s0 in range(sf + 1 - sf%2, mp[0]+1, 2):
                 for s1 in range(sf + 1 - sf%2, mp[1]+1, 2):
                     if (np.abs(s0 - s1) - 2)%4 == 0:
-                        print(s0, s1)
                         size_factor += 1
             return size_factor * mp[2]+1-sf
         elif pattern_name == 'RW_MC':
@@ -244,23 +243,23 @@ def RW_MC(size, max_num_walks = 10, max_max_steps = 10, max_min_dis = 4, bias_ma
 
 
 if __name__ == '__main__':
-    model_name = 'staircase_4/S32D10'
-    
+    model_name = 'mom_weight_search_cyclic/m0w0'
+    topN = 5
     
     # Pop up
-    # S = Search(model_name, topN = 5, pattern = pop_up)
+    # S = Search(model_name, topN, pattern = pop_up)
     # S.search([60, 60, 30], start_from = 1) # XXX
     # S.print_extrema()
     # S.save_extrema('./pop_search')
     
     # Honeycomb
-    # S = Search(model_name, topN = 5, pattern = honeycomb)
-    # S.search([30, 30, 30, 60], start_from = 1) XXX
+    # S = Search(model_name, topN, pattern = honeycomb)
+    # S.search([30, 30, 30, 60], start_from = 1) # XXX
     # S.print_extrema()
     # S.save_extrema('./hon_search')
     
     # Random walk
-    # S = Search(model_name, topN = 5, pattern = RW_MC)
+    # S = Search(model_name, topN, pattern = RW_MC)
     # S.search([30, 30, 4, 10, 1000], start_from = 0) # XXX
     # S.print_extrema()
     # S.save_extrema('./RW_search')
