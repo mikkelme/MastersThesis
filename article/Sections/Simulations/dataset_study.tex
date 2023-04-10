@@ -407,15 +407,38 @@ related to these patterns are most likely present in both the training and the v
   \label{fig:A_search_compare}
 \end{figure}  
 
-From the validation scores in \cref{fig:A_search_perf} we find that models S(8-32)D(8-12) gives reasonble performance. When looking at the selected validaiton set in
-\cref{fig:A_search_compare} we get considerable lower scores, especially for
-the Tetrahedron pattern, which confirms that the models does not really generalize to the more complex behvaiour the show. Judging from the Tetrahedron grid search we find the best model to be S32D12 with a $R_2$ score of $\sim 87 \%$. This is compatible with the overall performance as this is among the top candidates for the for $R_2$ and loss in \cref{fig:A_search_perf} and the $R_2$ score for the Honeycomb pattern in \cref{fig:A_search_compare}  as well.
+From the validation scores in \cref{fig:A_search_perf} we find that models
+S(8-32)D(8-12) gives reasonble performance. When looking at the best epoch we
+find that  models of low depth result in a later best epoch which is compatible
+with underfitting. As the depth is increased we find more models with a lower
+best epoch, in the range $\sim [300, 600]$, which on the other hand suggest
+cases of overfitting. Since our training stores the best model during training,
+we do not have to worry too much about overfitting, but we can take this
+transistion from underfitting to overfitting as a sign that out search is
+conducted in an appropiate complexity range. When consulting evaluation on the
+selected set in \cref{fig:A_search_compare} we notice in general that we get
+lower $R_2$ scores, especially for the Tetrahedron pattern, which shows that these constitute a challenge for the network. Considering that some of these datapoints is also present in the training data makes it even more clear that the network is not capturing the complexity in the data here. While the peak $R_2$ value for the validation score was found for the S16D10 model we see slightly preference for more complexity in the model with regard to the selected test. In the Tetrahedron grid search we find the best model to be S32D12, with a $R_2$ score of $\sim 87 \%$. This model choice is more or less compatible with the overall performance as this is among the top candidates for the for $R_2$ and loss in \cref{fig:A_search_perf} and the $R_2$ score for the Honeycomb pattern in \cref{fig:A_search_compare} as well. Hence, we settle on this model moving on to the setting of the momentum and weight decay parameter. 
 
-% We then look at weight decay which is connected to an analysis of overfitting. 
+We consider momentum $m$ and weight decays $wd$ in the range $m \in [0.85,
+0.99]$ and $wd \in [0, 1e-2]$. An increased momentum is expected to decrease the
+appropiate learning rate choice, and thus we perform a new learning rate range
+test to determine a suitable choice for the learning rate in this grid search.
+We propose two learning rate schemes: A constant learning rate as used until
+this point and one cycle policy. The one cycle policy starts from a $1/20$ part
+of the set learning rate and increase towards that during the first 30\% of
+training. It then decreases towards a $1e-4$ factor of the set learing rate
+during the remaining 70\% of training. The increase and increase is done by a
+cosine function. The suggested learning rate for the constant learning rate
+scheme/policy is determine by the steepest slope on the loss curve as earlier,
+while for the one cycle policy the choice serve as max bound of a stable
+learning rate. We find that the minimum point in the loss curve is as suitable
+choice that approaches the diverging point without getting to close and causing
+diverging learing. The learning rate range test for momentum is shown in \cref{fig:LR_range_mom}.
 
-We perform a lr range test with different momentum at this time we find the
-maximum lr at the point where the loss diverges as shown in figure
-\cref{fig:LR_range_mom}.
+
+% Working here 
+% Working here 
+% Working here 
 
 
 For the momentum test we use the minimum of the curve as an estimate of the point where it starts to diverge. This is a bit conservative choice, but the early approach where we tried numbers a bit closer to the step point, the training often exploded. 

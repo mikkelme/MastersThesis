@@ -260,7 +260,7 @@ if __name__ == '__main__':
     
     # Random walk
     # S = Search(model_name, topN, pattern = RW_MC)
-    # S.search([30, 30, 4, 10, 1000], start_from = 0) # XXX
+    # S.search([30, 30, 4, 10, int(1e5)], start_from = 0) # XXX
     # S.print_extrema()
     # S.save_extrema('./RW_search')
     
