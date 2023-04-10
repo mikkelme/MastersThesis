@@ -107,10 +107,13 @@ def get_mom_weight_perf(path):
         file = os.path.join(path, folder, 'best_scores.txt')
         info, data = read_best_scores(file)
         ML_settings = info['ML_settings']
-        # M.append(float(ML_settings['weight_decay']))
-        # W.append(float(ML_settings['cyclic_momentum'][1]))
-        M.append(float(ML_settings['cyclic_momentum'][1]))
+        if ML_settings['cyclic_momentum'] == 'None':
+            M.append(float(ML_settings['momentum']))
+        else:
+            M.append(float(ML_settings['cyclic_momentum'][1]))
+            
         W.append(float(ML_settings['weight_decay']))
+        
         
         for key in data:
             try:

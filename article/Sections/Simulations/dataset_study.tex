@@ -350,17 +350,16 @@ remaining 5 variables thus sharing evenly for the remaining 50\% of the weight. 
 but we found that the results varied little and concluded that the training is not very sensitive to this choice, and disregarded further tuning of this parameter. 
 
 \subsection{Hypertuning}
-% Batchsize
-% Optimizer
 % Overfitting
-For the tuning of model parameters we focus on architecture complexity, learning rate, momentum and weight decay. Since the learning rate is considered to be one of the most important hyperparameters we evaluate this in connection to the hyperparameter we are testing. We perform the hypertuning in the following order
+For the hypertuning of \acrshort{ML} parameters we focus on architecture complexity, learning rate, momentum and weight decay. We train with the adam optimizer with the default values of $beta_1 = 0.9, \beta_2 = 0.999$ and zero weight decay. For the batch size we use 32 for training and 64 for validation. We train the network for a maximum of 1000 epochs, but we save the best model during training based on lowest validation loss. Since the learning rate is considered to be one of the most important hyperparameters we will determine a suitable choice for the learning individually throughout the two major grid searches:
 \begin{enumerate}
-  \item Architecture complexity gridtest of $S$ vs.\ $D$ with custom learning rate for each combination evaluated by the learing rate ramge test.
-  \item Momentum vs. weight decay gridtest with learning range adjusted for momentum choice. 
+  \item Architecture complexity grid search of $S$ vs.\ $D$ with individually chosen learning rates for each complexity combination.
+  \item Momentum vs.\ weight decay grid search with learning range chosen with regard to the momentum setting. 
 \end{enumerate}
-
-
-We consider the architectures in the range $S \times D = \{2,4,8,16,32,64,128,256\} \times \{4,6,8,10,12,14\}$ for which we perform an initial learning rate range test as shown in \cref{LR_range}.
+We consider first the architectures in the range $S \times D =
+\{2,4,8,16,32,64,128,256\} \times \{4,6,8,10,12,14\}$. For each architecture
+complexity we perform an initial learning rate range test, increaing the
+learning rate for each batch iteration until the training loss diverges. the suggested learning rate is then determined as the point for which the training loss decreases most rapidly. The learning rate is increased exponentially from \num{e-7} to 10 with increments for each training batch iteration. This is done for just a single epoch where a training batch size of 32 yields a total of 242 batches in the training data. This corresponds to an exponent increment of approximately $1/30$ giving a relative increase $10^{1/30} \sim 108\%$ per batch iteration. The learning rate range test is presented in \cref{fig:LR_range}. We notice that the suggested learning rate decreases with increasing number of model parameters. This decrease is further independent on the specific relationship between $S$ and $D$. % Looks a bit like power functions, but I do not really think this is important to say since it is not backed by a fit. 
 
 \begin{figure}[H]
   \centering
@@ -378,37 +377,37 @@ We consider the architectures in the range $S \times D = \{2,4,8,16,32,64,128,25
       % \label{fig:}
   \end{subfigure}
   \hfill
-  \caption{Learning rate range test. $(a)$ show a few examples of how the test ran. $(b)$ show the complete result from the test.}
+  \caption{Learning rate range test for various model complexities. We increase the learning rate exponentially from num{e-7} to 10 during one epoch corresponding to an exponent increment of roughly $1/30$ per batch iteration. $(a)$ shows a few examples of the training loss history as a function of learning rate. The examplatory architectures are S[2, 16]D8 with the corresponding number of model parameters shown in parentheses in the legend. The dot indicates the suggested learning rate at the steepest decline of the slope. $(b)$ shows the full results of suggested learning rates depending on the number of model parameters with color coding differentiating the number of start channels and marker types differentiating different model depths. }
   \label{fig:LR_range}
 \end{figure}
-
-We then run a full 100 epoch training on each architecture using the suggested learning rate from \cref{fig:LR_range}. We evaluate both the validation loss and the $R_2$ score for the mean friction output. This is shown in \cref{fig:A_search_perf}. Additionally, we evaluate the $R_2$ score for the mean friction output for a selected set of configurations. This set consist of the top 10 configurations with respect to maximum friction drop in both the Tetrahedron and Honeycomb pattern. This is due to the fact that the non-linear stretch curve seemed to be more difficult to capture when looking a model predictions. This selected evaluation grid search is shown in \cref{fig:A_search_compare}.
+With the use of the suggested learning rates from \cref{fig:LR_range} we perform
+a grid search over the corresponding $S$ and $D$ parameters. We evaluate both
+the validation loss and the mean friction $R_2$ score which is shown in
+\cref{fig:A_search_perf} together with the best epoch and the number of model
+parameters. Additionally, we evaluate the mean friction $R_2$ score for a
+selected set of configurations. This set consist of the top 10 configurations
+with respect to maximum friction drop for the Tetrahedron and Honeycomb pattern
+resepctively. This is done as a way of evaluating the performance on the
+non-linear stretch curve which showed to be the more difficult patterns to
+learn. The selected evaluation is shown in \cref{fig:A_search_compare}. Note
+that these patterns are already a part of the full datset and thus the data points
+related to these patterns are most likely present in both the training and the validation data set. Hence we cannot regard this as a validation set and the performance must be considered in conjuntion with the actual validation performance in \cref{fig:A_search_perf}.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{figures/ML/A_search_perf.pdf}
-  \caption{Architecture search}
+  \caption{Architecture search.}
   \label{fig:A_search_perf}
 \end{figure}  
-
-
-% Now look at the result for the more difficult patterns as a pseudo validaiotn
-% (these is actually expected to be partly in the training set already).
-
-% We look at the honeycomb and tetrahedron patterns with top 10 scores for maximum
-% drop in friction. This is chosen as a attempt to capture the ones with the most
-% complex non-linear trends in the stretch curve which seems to be both difficult
-% to predict but also of most interest for the study. This is shown in
-% \cref{fig:A_search_compare}.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{figures/ML/A_search_compare_perf}
-  \caption{Selected pseudo validation set}
+  \caption{Selected pseudo validation set. \hl{Fix the missing grey fields in the top which are replaced by < 0.01.}}
   \label{fig:A_search_compare}
 \end{figure}  
 
-From \cref{fig:A_search_perf} we find that models like S(8-32)D(8-12) gives reasonble performance. When looking at the selected validaiton set in
+From the validation scores in \cref{fig:A_search_perf} we find that models S(8-32)D(8-12) gives reasonble performance. When looking at the selected validaiton set in
 \cref{fig:A_search_compare} we get considerable lower scores, especially for
 the Tetrahedron pattern, which confirms that the models does not really generalize to the more complex behvaiour the show. Judging from the Tetrahedron grid search we find the best model to be S32D12 with a $R_2$ score of $\sim 87 \%$. This is compatible with the overall performance as this is among the top candidates for the for $R_2$ and loss in \cref{fig:A_search_perf} and the $R_2$ score for the Honeycomb pattern in \cref{fig:A_search_compare}  as well.
 
@@ -442,23 +441,125 @@ For the momentum test we use the minimum of the curve as an estimate of the poin
 \end{figure}
 
 
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[t]{1.0\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/ML/mom_weight_search_constant_perf.pdf}
+      \caption{Performance}
+      % \label{fig:}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{1.0\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/ML/mom_weight_search_compare_constant_perf.pdf}
+      \caption{Compare}
+      % \label{fig:}
+  \end{subfigure}
+  \hfill
+  \caption{Constant learing rate and momentum scheme}
+  \label{fig:mom_weight_search_constant}
+\end{figure}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth]{figures/ML/mom_weight_search_perf.pdf}
-  \caption{\hl{UPDATE FIGURE WITH RIGHT DATA}}
-  \label{fig:mom_weight_search_perf}
-\end{figure}  
+  \begin{subfigure}[t]{1.0\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/ML/mom_weight_search_cyclic_perf.pdf}
+      \caption{Performance}
+      % \label{fig:}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{1.0\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/ML/mom_weight_search_compare_cyclic_perf.pdf}
+      \caption{Compare}
+      % \label{fig:}
+  \end{subfigure}
+  \hfill
+  \caption{Cyclic learing rate and momentum scheme}
+  \label{fig:mom_weight_search_cyclic}
+\end{figure}
+
+% \begin{figure}[H]
+%   \centering
+%   \begin{subfigure}[t]{1.0\textwidth}
+%       \centering
+%       \includegraphics[width=\textwidth]{figures/ML/mom_weight_search_constant_perf.pdf}
+%       \caption{Constant}
+%       % \label{fig:}
+%   \end{subfigure}
+%   \hfill
+%   \begin{subfigure}[t]{1.0\textwidth}
+%       \centering
+%       \includegraphics[width=\textwidth]{figures/ML/mom_weight_search_cyclic_perf.pdf}
+%       \caption{Cyclic}
+%       % \label{fig:}
+%   \end{subfigure}
+%   \hfill
+%   \caption{Momentum and weight decay grid search for $(a)$ constant learning rate and momentum and $(b)$ cyclic learning rate and momentum.}
+%   \label{fig:mom_weight_search}
+% \end{figure}
+
+% The previous scores for the S32D12 network were a validation loss of 0.02124 and
+% a $R_2$ score for the mean friction output of 0.9816. By varying momentum and
+% weight decay we are able to improve the performance metrics only slightly for
+% the constant learning rate scheme and even more for the cyclic scheme. The
+% constant scheme shows good results for a wide range, roughly momentum $m \in
+% [0.85, 0.99]$ and weight decay $wd \in [\num{e-4, 0}]$, with the best scores
+% being a validation loss of 0.02038 ($m = 0.95, wd = \num{e-4}$) and friction
+% $R_2$ of 0.9818 ($m = 0.93, wd = 0$). For the cyclic scheme the performance
+% peaks at a smaller range, roughly $m \in [0.85, 0.93]$ and $wd \in [\num{e-4,
+% 0}]$, with the best scores being a loss of 0.01761 ($m = 0.85, w = \num{e-4}$)
+% and $R_2$ 0f 0.9831 ($m = 0.93, w = \num{1e-5}$). Notice that the best loss and
+% $R_2$ does not allign with the same hypersetting here. By evaluating the
+% performance of the selected set we get the results shown in
+% \cref{fig:mom_weight_search_compare}. The previous performance were 0.8707 for the Tetrahedron pattern and 0.9478 for the Honeycomb pattern. Now we find for the constant scheme top scores of Tetrahedron: 0.8731 ($m = 0.85, wd = \num{e-5}$) and Honeycomb: 0.9567 ($m = 0.93, wd = 0$) which is only a small improvement on the previous performance. However (hopefully), we find
 
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{figures/ML/mom_weight_search_compare_perf}
-  \caption{\hl{UPDATE FIGURE WITH RIGHT DATA}}
-  \label{fig:mom_weight_search_compare}
-\end{figure}  
+% \begin{figure}[H]
+%   \centering
+%   \begin{subfigure}[t]{1.0\textwidth}
+%       \centering
+%       \includegraphics[width=\textwidth]{figures/ML/mom_weight_search_compare_constant_perf.pdf}
+%       \caption{Constant}
+%       % \label{fig:}
+%   \end{subfigure}
+%   \hfill
+%   \begin{subfigure}[t]{1.0\textwidth}
+%       \centering
+%       \includegraphics[width=\textwidth]{figures/ML/mom_weight_search_compare_cyclic_perf.pdf}
+%       \caption{Cyclic}
+%       % \label{fig:}
+%   \end{subfigure}
+%   \hfill
+%   \caption{Momentum and weight decay grid search comapred to selected set for $(a)$ constant learning rate and momentum and $(b)$ cyclic learning rate and momentum.}
+%   \label{fig:mom_weight_search_compare}
+% \end{figure}
 
 
+
+\begin{table}[H]
+  \begin{center}
+  \caption{Momentum and weight decay grid search using S32D12 model.}
+  \label{tab:mom_weight_search}
+  \begin{tabular}{|c|c|c|c|c|} \hline
+     &  & Score [\num{e2}] & Momentum & Weight decay \\ \hline
+     \multirow{3}{*}{Validation loss} & Original & 2.124 & 0.9 & 0  \\ 
+      & Constant & 2.038 & 0.97 & \num{e-4} \\ 
+      & Cyclic & 1.761 & 0.85 & \num{e-4} \\ \hline
+     \multirow{3}{*}{Validation $R_2$} & Original & 98.16 & 0.9 & 0  \\ 
+      & Constant & 98.23 & 0.93 & 0 \\ 
+      & Cyclic & 98.31 & 0.93 & \num{e-5} \\ \hline
+     \multirow{3}{*}{Tetrahedron $R_2$} & Original & 87.07 & 0.9 & 0  \\ 
+      & Constant & 87.31 & 0.85 & \num{e-5} \\ 
+      & Cyclic & 88.12 & 0.85 & 0 \\ \hline
+     \multirow{3}{*}{Honeycomb $R_2$} & Original & 94.78 & 0.9 & 0  \\ 
+      & Constant & 95.67 & 0.93 & 0 \\ 
+      & Cyclic & 96.37 & 0.85 & 0 \\ \hline
+  \end{tabular}
+  \end{center}
+\end{table}
 
 
 % The LR range is done is arround 200 steps (before it diverges). So if I figure
@@ -470,6 +571,8 @@ For the momentum test we use the minimum of the curve as an estimate of the poin
 
 
 \subsection{Final model}
+
+We try S32D12 cylic scheme with momentum 0.85 and weight decay 0. 
 
 
 \begin{table}[H]

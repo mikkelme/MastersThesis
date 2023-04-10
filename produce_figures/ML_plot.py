@@ -48,7 +48,10 @@ def LR_range_specific(A_instance, save = False):
     data_root = [root+'baseline', root+'popup', root+'honeycomb', root+'RW']
     # data_root = [root+'honeycomb']
     
-    ML_setting = {'use_gpu': False}
+    ML_setting = {'use_gpu': False,
+                  'batchsize_train': 32,
+                  'batchsize_val': 64, 
+                  'max_file_num': None}
 
 
     fig = plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
@@ -426,8 +429,6 @@ def A_search_compare_perf(path, save = False):
         
 
     
-    
-
 
     
 def mom_weight_search_perf(path, save):
@@ -463,7 +464,8 @@ def mom_weight_search_perf(path, save):
     fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
     
     if save:
-        fig.savefig("../article/figures/ML/mom_weight_search_perf.pdf", bbox_inches="tight")
+        mode = path.split('_')[-1]
+        fig.savefig(f"../article/figures/ML/mom_weight_search_{mode}_perf.pdf", bbox_inches="tight")
         
  
 
@@ -570,10 +572,11 @@ def mom_weight_search_compare_perf(path, save = False):
     fig.supylabel('Weight decay', fontsize = 14)
     fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
 
-    
     if save:
-        fig.savefig("../article/figures/ML/mom_weight_search_compare_perf.pdf", bbox_inches="tight")
+        mode = path.split('_')[-1]
+        fig.savefig(f"../article/figures/ML/mom_weight_search_compare_{mode}_perf.pdf", bbox_inches="tight")
         
+ 
 
     
 
@@ -594,10 +597,13 @@ def final_model_evaluation(model_path, save = False):
     num_points = 100 # ML
     
     cmap = matplotlib.cm.viridis
-    line_and_marker = {'linestyle': '', 
-                       'marker': 'o',
-                       'linewidth': 1.5,
-                       'markersize': 2.5}
+    # plot_data_points = {'linestyle': '', 
+    #                     'marker': 'o',
+    #                     'edgecolor'
+    #                     'linewidth': 1.5,
+    #                     'markersize': 2.5}
+    plot_data_points = {'s': None,
+                        'edgecolors': 'black'}
     
 
 
@@ -653,7 +659,7 @@ def final_model_evaluation(model_path, save = False):
                 color = get_color_value(F_N[k], colorbar_scale[0][0], colorbar_scale[0][1], scale = colorbar_scale[-1], cmap = cmap)
                 
                 # --- Simulation --- #
-                ax.plot(stretch, z[:,k], **line_and_marker, color = color)
+                ax.scatter(stretch, z[:,k], **plot_data_points, color = color)
                 
                 # Prepare R2
                 target = z[no_rupture_data, k]
@@ -695,17 +701,20 @@ def final_model_evaluation(model_path, save = False):
 if __name__ == '__main__':
     # LR_range_specific(A_staircase_subset(mode = 0, batchnorm = True), save = False)
     # LR_range_full(filename = '../ML/staircase_lr/lr.txt', save = False)
-    # LR_range_momentum(save = True)
+    # LR_range_momentum(save = False)
     
-    # A_search_perf(path = '../ML/staircase_4', save = True)
-    # A_search_compare_perf(path = '../ML/staircase_4', save = True)
-    
-    
-    mom_weight_search_perf(path = '../ML/mom_weight_search', save =  True)
-    mom_weight_search_compare_perf(path = '../ML/mom_weight_search', save =  True)
+    # A_search_perf(path = '../ML/staircase_4', save = False)
+    # A_search_compare_perf(path = '../ML/staircase_4', save = False)
     
     
-    # final_model_evaluation(model_path = '../ML/staircase_4/S32D12', save = True)
+    # mom_weight_search_perf(path = '../ML/mom_weight_search_constant', save =  True)
+    # mom_weight_search_perf(path = '../ML/mom_weight_search_cyclic', save =  True)
+    
+    # mom_weight_search_compare_perf(path = '../ML/mom_weight_search_constant', save = False)
+    # mom_weight_search_compare_perf(path = '../ML/mom_weight_search_cyclic', save = False)
+    
+    
+    final_model_evaluation(model_path = '../ML/mom_weight_search_cyclic/m0w0', save = True)
     plt.show()
 
 

@@ -247,24 +247,14 @@ class Find_optimal_LR:
         self.lr_finder = FastaiLRFinder()
         trainer = create_supervised_trainer(self.model, self.optimizer, self.criterion, device=self.device, prepare_batch=self.prepare_batch_fn)
         
-        # epoch_length = trainer.state.epoch_length
-        # max_epochs = trainer.state.max_epochs
-        # print(epoch_length, max_epochs)
-        # exit()
-        
         # To restore the model's and optimizer's states after running the LR Finder
         to_save = {"model": self.model, "optimizer": self.optimizer}
         
         with self.lr_finder.attach(trainer, to_save, end_lr = end_lr) as trainer_with_lr_finder:
             trainer_with_lr_finder.run(train_loader)
         
-        # results = lr_finder.get_results()
-        # sugestion = lr_finder.lr_suggestion()
-        # return results, sugestion
-    
-        # lr_finder.plot()
+        # results = self.lr_finder.get_results()
         
-        # print("Suggested LR", self.lr_finder.lr_suggestion())
 
     
 def LR_range_test(A_instance, data_root, ML_setting, save_folder):
