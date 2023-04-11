@@ -622,7 +622,7 @@ by changing the orientation of the sheet relative to the substrate. Dienwiebel e
 % Consequently, the FK model is the simplest model in which dynamic friction is emergent, while in other models some form of heuristic damping must be included.\cite{FK2D}
 
 In the FK model the kinetic friction is primarily caused by resonance between
-the sliding induced vibrations and phonon modes in the chain \cite{FK2D}. The specific dynamics is found to be highly model and dimension specific, and even for the 1D case this is rather complex. However, we make a simplified analysis of the 1D case to showcase the reasoning behind the phenomena.
+the sliding induced vibrations and phonon modes in the chain \cite{FK2D}. The specific dynamics is found to be highly model and dimension specific, and even for the 1D case this is rather complex. However, we make a simplified analysis of the 1D rigig chain case to showcase the reasoning behind the phenomena.
 
 When all atoms are sliding rigidly with center of mass velocity $v_{{\text{CM}}}$ the atoms will pass the potential maxima with the so-called \textit{washboard frequency} $\Omega = 2\pi v_{{\text{CM}}} / a_b$. For a weak coupling between the chain and the potential we can use the zero potential case as an approximation for which the known dispersion relation for the 1D harmonic chain is given \cite[p. 92]{Kittel2004}
 \begin{align*}
@@ -833,31 +833,39 @@ sensitive to model parameters.
 \subsection{Experimental procedures}
 % \cite{gnecco_meyer_2015}
 
-Experimentally, the study of nanoscale friction is challenging due to the low forces on the scale of nano-newtons along with difficulties of mapping nanoscale topography \cite[p. ?]{gnecco_meyer_2015}. Numercially, simulations provide full transparency regarding atomic-scale structures and sampling of forces, velocities and temperature. Of course, thise comes with a possible cost of realisme as we will adress later (\hl{do we actually}). In order to compare numerical and experimental results, the experimental procedures are often mirrored in simulations. Thus, it is relevant to adress the most common experimental techniques before designing a simulation. 
+Experimentally, the study of nanoscale friction is challenging due to the low
+forces on the scale of nano-newtons along with difficulties of mapping the
+nano-scale topography of the sample. In opposition to numerical simulations, which provides full
+transparency regarding atomic-scale structures, sampling of forces, velocities
+and temperature, the experimental results are limited by the state-of-the-art
+experimental methods. In order to compare numerical and experimental results it is useful to adress the most common experimental.
 
-%  Not many nanoflake studies. 
+\subsubsection{Scanning Probe Microscopy}\label{sec:SPM} Scanning probe
+microscopy (\acrshort{SPM}) includes a variety of experimental methods which is used to
+examine surfaces with atomic resolution \cite[pp. 6-27]{BHUSHAN20051507}. This was
+orginally developed for surface topography imaging, but today it plays a crucial
+role in nanoscale science as it is used for probe-sampling regarding
+tribological, electronic, magnetic, biological and chemical character. The
+famility of methods involving the measurement of forces is generally referred to
+as \textit{scanning force microscopies} (\acrshort{SFM}) or for friction purposes
+\textit{friction force microscopes} (\acrshort{FFM}).
 
-\subsubsection{Scanning Probe Microscopy}\label{sec:SPM}
-Scanning probe microscopy (SPM) includes a variety of experimental methods which
-is used to examine surfaces with atomic resolution \cite[p.
-6-?]{BHUSHAN20051507}. This was orginally developed for surface topography
-imaging, but today it plays a crucial role in nanoscale science as it is used
-for probe-sampling regarding tribological, electronic, magnetic, biological and
-chemical character. The famility of methods involving the measurement of forces
-is generally referred to as \textit{scanning force microscopies} (SFM) or for friction purposes \textit{friction force microscopes} (FFM).
-
-One such method arose from the \textit{atomic force microscope}, which consist
+One such method arose from the \textit{atomic force microscope} \acrshort{AFM}, which consist
 of a sharp micro-fabricated tip attacthed to a contilever force sensor, usually
 with a sensitivy below 1 nN. The force is measured by recording the bending of
 the cantilever, either as a change in electrical conduction or more commonly, by
 a light beam reflected from the back of the cantilever into a photodetector
-\cite{gnecco_meyer_2015}. By adjusting the tip-sample height to keep a constant
+\cite[p. 183]{gnecco_meyer_2015}. By adjusting the tip-sample height to keep a constant
 normal force while scanning accross the surface this can be used to produce a
-surface topography map. By tapping the material (dynamic force microscopy) with sinusoidally vibrated tip the effects from friction and other disturbing forces can be minimized in order to produce an even clearer image (\hl{include example, preferable showing the surface structure of graphene}). However, when scanning perpendicularly to the cantilever
-axis, one is also able to measure the frictional force as torsion of the
-cantilever. By having four quadrants in the photodetector (as shown in figure
-\cref{fig:AFM}), one can simultaneously measure the normal force and friction
-force as the probes scans accross the surface. 
+surface topography map. By tapping the material (dynamic force microscopy) with
+sinusoidally vibrated tip the effects from friction and other disturbing forces
+can be minimized in order to produce an even clearer image (\hl{include example,
+preferable showing the surface structure of graphene}). However, when scanning
+perpendicularly to the cantilever axis, one is also able to measure the
+frictional force as torsion of the cantilever. By having four quadrants in the
+photodetector (as shown in figure \cref{fig:AFM}), one can simultaneously
+measure the normal force and friction force as the probes scans accross the
+surface. 
 
 \begin{figure}[H]
   \centering
@@ -867,7 +875,10 @@ force as the probes scans accross the surface.
 \end{figure}
 
 
-AFM can also be used to drag a nanoflake accross the substrate as done by Dienwiebel et al.\ \cite{DIENWIEBEL2005197}, where a graphene flake was attahced to a FFM tip and dragged accross graphite. However, this makes the normal loading concentrated to a single point on the flake. 
+\acrshort{AFM} can also be used to drag a nanoflake accross the substrate as done by
+Dienwiebel et al.\ \cite{DIENWIEBEL2005197}, where a graphene flake was attahced
+to a \acrshort{FFM} tip and dragged accross graphite. Notice that this makes the normal
+loading concentrated to a single point on the flake rather than achieving an evenly distributed load. 
 
 
 
@@ -904,9 +915,24 @@ AFM can also be used to drag a nanoflake accross the substrate as done by Dienwi
 % in the physics of nanoscale friction)
 
 
+\subsection{Numerical procedures}
 
 
-\subsection{(summary of) Expected frictional properties}\label{sec:expected_prop}
+
+\subsection{Expected frictional properties}\label{sec:expected_prop}
+
+Various simulation methods such as Molecular Dynamics (MD), Monte Carlo and ab initio calculations have been applied to investigate the diverse characteristics of graphene \cite{penkov_tribology_2014}. Especially \acrshort{MD} simulations for tribological properties have been used in the recent years.
+
+One of the earlist tribological simulations \cite{penkov_tribology_2014} of graphene was Bonelli et al. \cite{bonelli_atomistic_2009} in 2009 tight-binding... 
+
+% Working here
+% Working here
+% Working here
+% Working here
+% Working here
+% Working here
+% Working here
+
 
 % Articles to compare with
 % https://www.mdpi.com/1996-1944/12/9/1425
