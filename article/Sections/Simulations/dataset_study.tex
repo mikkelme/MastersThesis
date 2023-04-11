@@ -421,27 +421,10 @@ lower $R_2$ scores, especially for the Tetrahedron pattern, which shows that the
 
 We consider momentum $m$ and weight decays $wd$ in the range $m \in [0.85,
 0.99]$ and $wd \in [0, 1e-2]$. An increased momentum is expected to decrease the
-appropiate learning rate choice, and thus we perform a new learning rate range
-test to determine a suitable choice for the learning rate in this grid search.
-We propose two learning rate schemes: A constant learning rate as used until
-this point and one cycle policy. The one cycle policy starts from a $1/20$ part
-of the set learning rate and increase towards that during the first 30\% of
-training. It then decreases towards a $1e-4$ factor of the set learing rate
-during the remaining 70\% of training. The increase and increase is done by a
-cosine function. The suggested learning rate for the constant learning rate
-scheme/policy is determine by the steepest slope on the loss curve as earlier,
-while for the one cycle policy the choice serve as max bound of a stable
-learning rate. We find that the minimum point in the loss curve is as suitable
-choice that approaches the diverging point without getting to close and causing
-diverging learing. The learning rate range test for momentum is shown in \cref{fig:LR_range_mom}.
-
-
-% Working here 
-% Working here 
-% Working here 
-
-
-For the momentum test we use the minimum of the curve as an estimate of the point where it starts to diverge. This is a bit conservative choice, but the early approach where we tried numbers a bit closer to the step point, the training often exploded. 
+appropiate learning rate, and thus we perform a new learning rate range
+test to determine a suitable choice for the learning rate for each momentum choice. We propose two learning rate schemes: A constant learning rate as used until this point and a one cycle policy. In the one cycle policy we set a maximum bound for the learning rate and start from a factor $1/20$ of this bound and increase towards the maximum bound during the first 30\% of the
+training. We then decreases towards a final minimum being a factor $1e-4$ of the maximum bound during the remaining 70\% of training. The increase and decrease is done by a cosine function. The suggested learning rate for the constant learning rate scheme is once again determined by the steepest slope on the loss curve while the maximum bound used for the one cycle policy is determined as the point of diverging. We find that the minimum point on the loss curve is as suitable choice that approaches the diverging point without getting to close and causing
+diverging learing. The learning rate range test for momentum is shown in \cref{fig:LR_range_mom}. Using the results for the momentum learning rate range test we perform a grid search of momentum and weight decay. We examine again the validation loss and validation mean friction $R_2$ score in addition to the friciton mean $R_2$ score for the selected set of Tetrahedron and Honeycomb patterns. This is shown for the constant learning rate scheme in \cref{fig:mom_weight_search_constant} and for the cyclic scheme in \cref{fig:mom_weight_search_cyclic}.
 
 \begin{figure}[H]
   \centering
@@ -459,7 +442,7 @@ For the momentum test we use the minimum of the curve as an estimate of the poin
       % \label{fig:}
   \end{subfigure}
   \hfill
-  \caption{Right now the points located on $(a)$ is the minimum point used as an estimate for the max result. }
+  \caption{Momentum learning rate range tets}
   \label{fig:LR_range_mom}
 \end{figure}
 
@@ -504,63 +487,12 @@ For the momentum test we use the minimum of the curve as an estimate of the poin
   \label{fig:mom_weight_search_cyclic}
 \end{figure}
 
-% \begin{figure}[H]
-%   \centering
-%   \begin{subfigure}[t]{1.0\textwidth}
-%       \centering
-%       \includegraphics[width=\textwidth]{figures/ML/mom_weight_search_constant_perf.pdf}
-%       \caption{Constant}
-%       % \label{fig:}
-%   \end{subfigure}
-%   \hfill
-%   \begin{subfigure}[t]{1.0\textwidth}
-%       \centering
-%       \includegraphics[width=\textwidth]{figures/ML/mom_weight_search_cyclic_perf.pdf}
-%       \caption{Cyclic}
-%       % \label{fig:}
-%   \end{subfigure}
-%   \hfill
-%   \caption{Momentum and weight decay grid search for $(a)$ constant learning rate and momentum and $(b)$ cyclic learning rate and momentum.}
-%   \label{fig:mom_weight_search}
-% \end{figure}
-
-% The previous scores for the S32D12 network were a validation loss of 0.02124 and
-% a $R_2$ score for the mean friction output of 0.9816. By varying momentum and
-% weight decay we are able to improve the performance metrics only slightly for
-% the constant learning rate scheme and even more for the cyclic scheme. The
-% constant scheme shows good results for a wide range, roughly momentum $m \in
-% [0.85, 0.99]$ and weight decay $wd \in [\num{e-4, 0}]$, with the best scores
-% being a validation loss of 0.02038 ($m = 0.95, wd = \num{e-4}$) and friction
-% $R_2$ of 0.9818 ($m = 0.93, wd = 0$). For the cyclic scheme the performance
-% peaks at a smaller range, roughly $m \in [0.85, 0.93]$ and $wd \in [\num{e-4,
-% 0}]$, with the best scores being a loss of 0.01761 ($m = 0.85, w = \num{e-4}$)
-% and $R_2$ 0f 0.9831 ($m = 0.93, w = \num{1e-5}$). Notice that the best loss and
-% $R_2$ does not allign with the same hypersetting here. By evaluating the
-% performance of the selected set we get the results shown in
-% \cref{fig:mom_weight_search_compare}. The previous performance were 0.8707 for the Tetrahedron pattern and 0.9478 for the Honeycomb pattern. Now we find for the constant scheme top scores of Tetrahedron: 0.8731 ($m = 0.85, wd = \num{e-5}$) and Honeycomb: 0.9567 ($m = 0.93, wd = 0$) which is only a small improvement on the previous performance. However (hopefully), we find
 
 
-% \begin{figure}[H]
-%   \centering
-%   \begin{subfigure}[t]{1.0\textwidth}
-%       \centering
-%       \includegraphics[width=\textwidth]{figures/ML/mom_weight_search_compare_constant_perf.pdf}
-%       \caption{Constant}
-%       % \label{fig:}
-%   \end{subfigure}
-%   \hfill
-%   \begin{subfigure}[t]{1.0\textwidth}
-%       \centering
-%       \includegraphics[width=\textwidth]{figures/ML/mom_weight_search_compare_cyclic_perf.pdf}
-%       \caption{Cyclic}
-%       % \label{fig:}
-%   \end{subfigure}
-%   \hfill
-%   \caption{Momentum and weight decay grid search comapred to selected set for $(a)$ constant learning rate and momentum and $(b)$ cyclic learning rate and momentum.}
-%   \label{fig:mom_weight_search_compare}
-% \end{figure}
 
-
+The original validation scores, before varying momentum and weight decay, were a validation loss of 0.02124 and a mean friction $R_2$ score of 0.9816. By varying momentum and weight decay we are able to improve the performance metrics slightly for the constant learning rate scheme (loss: 0.02038, $R_2$: 0.9823) and even more for the cyclic scheme (loss: 0.0176, $R_2$: 0.9831), however notice that these scores a taking for their individual optimial hypersettings. The comparison among best scores are summarized in \cref{tab:mom_weight_search}. In general the
+constant scheme shows reasonble stable results for all momentum settings $m \in
+[0.85, 0.99]$ in combination with a low weight decay $wd \le \num{e-4}$. For the cyclic scheme the performance peaks towards a low momentum $m \le 0.93$ and low weight decay $wd \le \num{e-4}$. Looking at the summary in \cref{tab:mom_weight_search} we see that the cyclic scheme is able to produce a high score among all four performance metrics, however since these do not share common hyperparameters we need to make a choice here. 
 
 \begin{table}[H]
   \begin{center}
@@ -584,6 +516,8 @@ For the momentum test we use the minimum of the curve as an estimate of the poin
   \end{center}
 \end{table}
 
+Look at overfitting via training history. 
+
 
 % The LR range is done is arround 200 steps (before it diverges). So if I figure
 % out the number of batches I can check how many epochs is default since number of
@@ -595,64 +529,30 @@ For the momentum test we use the minimum of the curve as an estimate of the poin
 
 \subsection{Final model}
 
-We try S32D12 cylic scheme with momentum 0.85 and weight decay 0. 
-
+From the hypertuning study we choose the S32D12 model with a cylic training scheme with momentum 0.85 and weight decay 0. The mainperformance metrics are shown in \cref{tab:final_model_eval}. Since the porosity is a number between $0$ and $1$ we can interpret the absolute error as the percentage error similar to the relativ error for the rupture stretch. The rupture stretch is generally within a 13 \% margin, but the metrics for the selected set might indicate that the relative error might be boosted due to some low stretch rupture cases in the data. The stretch curves for mean friction, max friction and contact is shown in \cref{fig:final_model_eval} for the Tetrahedron (7, 5, 1) and Honeycomb (2,2,1,5) used in the pilot study. This gives a visual interpretation of how well the fits are for given $R_2$ scores, and we notice that a $R_2$ score above 0.98 is certainly promising for capturing the non-linear in the data. 
 
 \begin{table}[H]
   \begin{center}
-  \caption{Caption}
+  \caption{Mean values are used over different configurations.}
   \label{tab:final_model_eval}
   \begin{tabular}{ | c | c | c | c | c | c | c | c |} \hline
-  Mode & Loss & $R_2 Ff$ & Max Ff & Contact & Porosity & Rup.\ Stretch & Rupture \\ \hline
-  Validation & 1 & 2 & 3 & 4 & 5 & 6 & 7 \\ \hline
-  Tetrahedron set & 1 & 2 & 3 & 4 & 5 & 6 & 7 \\ \hline
-  Honeycomb set & 1 & 2 & 3 & 4 & 5 & 6 & 7 \\ \hline
+    & Loss [\num{e2}] & \multicolumn{3}{c|}{$R_2$ [\num{e2}]} & Abs. [\num{e2}] & Rel. [\num{e2}]  & Acc. [\num{e2}] \\ \hline
+    & Total & Mean $F_f$ & Max $F_f$ & Contact & Porosity & Rup.\ Stretch & Rupture \\ \hline
+  Validation  & 2.1488 & 98.067 & 93.558 & 94.598 & 02.325 & 12.958 & 96.102 \\ \hline
+  Tetrahedron & 4.0328 & 88.662 & 85.836 & 64.683 & 01.207 & 05.880 & 99.762 \\ \hline
+  Honeycomb   & 8.6867 & 96.627 & 89.696 & 97.171 & 01.040 & 01.483 & 99.111 \\ \hline
   \end{tabular}
   \end{center}
 \end{table}
 
 
-
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{figures/ML/final_model_evaluation.pdf}
-  \caption{Final model evaluation \hl{Used S32D12 for now}.}
+  \caption{With \num{e3} points in the stretch range [0, 1.5] and stopping after first rupture True prediction.}
   \label{fig:final_model_eval}
 \end{figure}  
 
-
-\clearpage
-
-% Choices to make
-% \begin{itemize}
-%   \item Learning rate: increasing LR to locate minimum in loss gradient (fastest
-%   learning) (LR range test) % https://arxiv.org/pdf/1803.09820.pdf % consider
-%   cycling learning rates maybe?
-%   \item Architecture: VGGNet staircase type search
-%   \item Optimizers: Just try some different ones and look at convergence
-%   \item weight decay
-% \end{itemize}
-
-% Suggestion for hyperparameter tuning 
-% \begin{enumerate}
-%   \item Select complexity range of VGGNet staircase type architectures
-%   \item Start with Adam optimizer at default settings
-%   \item Perform LR range test to get information of a suitable LR and choose one
-%   that will work for most of the architectures. 
-%   \item Perform architecture grid search over depth and start number of channels
-%   (complexity). Choose best architecture from this. 
-%   \item Additionally add weight decay to further optimize learning for that
-%   architecture choice. Perhaps cyclic learning rates. 
-% \end{enumerate}
-
-% Start by mentioning the related articles using a VGGNet tyep network (and maybe
-% also their learning rates). 
-
- 
-% Either submit with best lr for each or choose something that works for all.
-% 0.0005 seemed as a good middle ground but the complex networks crash with these
-% learning rates. It looks like 0.0001 (like Hanakata used) will do the job for
-% all. 
 
 \section{Accelerated Search}
 
@@ -668,66 +568,9 @@ Here we pursue two different approaches for finding
 \end{enumerate}
 
 
-% \subsection{Markov-Chain Accelerated Genetic Algorithms}
-% % Following the article:
-% % Accelerated Genetic Algorithms with Markov Chains
-% % Guan Wang, Chen Chen, and K.Y. Szeto
+\subsection{Generation search}
 
-% \subsubsection{Talk about traditional method also?}
-
-% \subsubsection{Implementing for 1D chromosone (following article closely)}
-
-% We have the binary population matrix $A(t)$ at time (generation) $t$ consisting of $N$ rows denoting chromosones and with $L$ columns denoting the so-called locus (fixed position on a chromosome where a particular gene or genetic marker is located, wiki). We sort the matrix rowwise by the fitness of each chromosono evaluated by a fitness function $f$ such that $f_i(t) \le f_k(t)$ for $i \ge k$. We assume that there are a transistion probability between the current state $A(t)$ and the next state $A(t+1)$. We consider this transistion probability only to take into account mutation process (mutation only updating scheme). During each generation chromosones are sorted from most to least fitted. The chromosone at the $i$-th fitted place is assigned a row mutation probability $a_i(t)$ by some monotonic increasing function. This is taken to be 
-% \begin{align*}
-%   a_i(t) = 
-%   \begin{cases}
-%     (i-1)/N',& i-1 < N' \\
-%     1, &\text{else}
-%   \end{cases}
-% \end{align*}
-% for some limit $N'$ (refer to first part of article talking about this). We use $N' = N/2$. We also defines the survival probability $s_i = 1 - a_i$. In thus wau $a_i$ and $s_i$ decide together whether to mutate to the other state (flip binary) or to remain in the current state. We use $s_i$ as the statistical weight for the $i$-th chromosone given it a weight $w_i = s_i$.
-% \\
-% Now the column mutation. For each locus $j$ we define the count of 0's and 1's as $C_0(j)$ and $C_1(j)$ resepctively. These are normalized as
-% \begin{align*}
-%   n_0(j, t) = \frac{C_0(j)}{C_0(j) + C_1(j)}, \quad n_1(j, t) = \frac{C_1(j)}{C_0(j) + C_1(j)}.
-% \end{align*}
-% These are gathered into the vector $\vec{n}(j,t)=(n_0(j, t), n_1(j, t))$ which characterizes the state distribution of $j$-th locus. In order to direct the current population to a preferred state for locus $j$ we look at the highest weight of row $i$ for locus $j$ taking the value 0 and 1 respectively.
-% \begin{align*}
-%   C'_0(j) &= \max\{W_i | A_{ij} = 0; \ i = 1, \cdots, N\} \\
-%   C'_1(j) &= \max\{W_i | A_{ij} = 1; \ i = 1, \cdots, N\}
-% \end{align*}
-% which is normalized again
-% \begin{align*}
-%   n_0(j, t+1) = \frac{C'_0(j)}{C'_0(j) + C'_1(j)}, \quad n_1(j, t+1) = \frac{C'_1(j)}{C'_0(j) + C'_1(j)}.
-% \end{align*}
-% The vector $\vec{n}(j,t+1)=(n_0(j, t+1), n_1(j, t+1))$ then provides a direction for the population to evolve against. This characterizes the target state distribution of the locus $j$ among all the chromosones in the next generation. We have
-% \begin{align*}
-%   \begin{bmatrix}
-%     n_0(j, t+1) \\
-%     n_1(j, t+1)
-%   \end{bmatrix}
-%   = 
-%   \begin{bmatrix}
-%     P_{00}(j,t) \ P_{10}(j,t) \\
-%     P_{01}(j,t) \ P_{11}(j,t)
-%   \end{bmatrix}
-%   \begin{bmatrix}
-%     n_0(j, t) \\
-%     n_1(j, t)
-%   \end{bmatrix}
-% \end{align*}
-% Since the probability must sum to one for the rows in the P-matrix we have 
-% \begin{align*}
-%   P_{00}(j, t) = 1 - P_{01}(j, t), \quad P_{11}(j, t) = 1 - P_{10}(j, t)
-% \end{align*}
-% These conditions allow us to solve for the transition probability $P_{10}(j,t)$ in terms of the single variable $P_{00}{j,t}$.
-% \begin{align*}
-%   P_{10}(j,t) &= \frac{n_0(j, t+1) - P_{00}(j,t)n_0(j, t)}{n_1(j,t)} \\
-%   P_{01}(j,t) &= 1 - P_{00}(j,t) \\
-%   P_{11}(j,t) &= 1 - P_{10}(j,t)
-% \end{align*}
-% We just need to know $P_{00}(j,t)$. We start from $P_{00}(j, t = 0) = 0.5$ and then choose $P_{00}(j,t) = n_0(j,t)$
-
+\subsection{Genetic algorithm search}
 
 
 

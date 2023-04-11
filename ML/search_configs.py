@@ -146,7 +146,8 @@ class Search:
                     continue
                 
                 metrics = self.evaluate(mat)
-                self.update_best(name, mat, metrics)
+                if metrics is not None:
+                    self.update_best(name, mat, metrics)
             except KeyboardInterrupt:
                 break
         print()
@@ -265,3 +266,4 @@ if __name__ == '__main__':
     # S.save_extrema('./RW_search')
     
         
+    # TODO: Use RANDOM ref not CENTER 

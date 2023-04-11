@@ -594,14 +594,8 @@ def final_model_evaluation(model_path, save = False):
     patterns = ['Tetrahedron', 'Honeycomb']
     
     colorbar_scale = [(0.1, 10), 'log']
-    num_points = 100 # ML
     
     cmap = matplotlib.cm.viridis
-    # plot_data_points = {'linestyle': '', 
-    #                     'marker': 'o',
-    #                     'edgecolor'
-    #                     'linewidth': 1.5,
-    #                     'markersize': 2.5}
     plot_data_points = {'s': None,
                         'edgecolors': 'black'}
     
@@ -632,7 +626,8 @@ def final_model_evaluation(model_path, save = False):
         
     
         # Prepare ML 
-        stretch_space = np.linspace(np.min(stretch), np.max(stretch), num_points)
+        # stretch_space = np.linspace(np.min(stretch), np.max(stretch), num_points)
+        stretch_space = np.linspace(0, 1.5, int(1e3))
         config_path = find_single_file(folder, '.npy')
         EV.load_config(config_path)
     
@@ -676,11 +671,12 @@ def final_model_evaluation(model_path, save = False):
             
                 # Produce more smooth stretch curve fore plotting
                 _, _, output = EV.predict(stretch_space, F_N[k])
-                no_rupture = output[:,-1] < 0.5
+                # no_rupture = output[:,-1] < 0.5
+                rup_start = np.argmin(output[:,-1] < 0.5)
+                
                 color = get_color_value(F_N[k], colorbar_scale[0][0], colorbar_scale[0][1], scale = colorbar_scale[1], cmap = cmap)
-                ax.plot(stretch_space[no_rupture], output[no_rupture, o], color = color, label = rf'$R_2$ = {R2:0.4f}', zorder = -1)
+                ax.plot(stretch_space[:rup_start], output[:rup_start, o], color = color, label = rf'$R_2$ = {R2:0.4f}', zorder = -1)
                 ax.legend(fontsize = 13)
-   
     # Colorbar 
     norm = matplotlib.colors.LogNorm(colorbar_scale[0][0], colorbar_scale[0][1])
     axes.append(fig.add_subplot(gs[:, ncol]))
@@ -695,9 +691,130 @@ def final_model_evaluation(model_path, save = False):
         fig.savefig("../article/figures/ML/final_model_evaluation.pdf", bbox_inches="tight")
         
 
+def final_model_compare_scores(model_path):
+    # --- Model --- #
+    model_weights = os.path.join(model_path, 'model_dict_state')
+    model_info = os.path.join(model_path, 'best_scores.txt')
+    info, _ = read_best_scores(model_info)
+    criterion =  Loss(alpha = info['Criterion']['alpha'], out_features = info['Criterion']['out_features'])
+    EV = Evaluater(model_weights, model_info)
+    
+    # --- Compare set --- #
+    honeycomb = '../Data/CONFIGS/honeycomb/'
+    popup = '../Data/CONFIGS/popup/'
+    
+    honeycomb_folder = [honeycomb + 'hon_28',
+                        honeycomb + 'hon_29',
+                        honeycomb + 'hon_21',
+                        honeycomb + 'hon_42',
+                        honeycomb + 'hon_6',
+                        honeycomb + 'hon_8',
+                        honeycomb + 'hon_12',
+                        honeycomb + 'hon_20',
+                        honeycomb + 'hon_4',
+                        honeycomb + 'hon_17']
+
+    popup_folder =     [popup + 'pop_27',
+                        popup + 'pop_25',
+                        popup + 'pop_35',
+                        popup + 'pop_48',
+                        popup + 'pop_43',
+                        popup + 'pop_46',
+                        popup + 'pop_50',
+                        popup + 'pop_28',
+                        popup + 'pop_1',
+                        popup + 'pop_58']
+    
+    compare_folders = honeycomb_folder + popup_folder
+    R2 = np.zeros((len(compare_folders), 3)) # Ff_mean, Ff_max, contact
+    porosity_abs_error = np.zeros(len(compare_folders)) 
+    rup_stretch_rel_error = np.zeros(len(compare_folders)) 
+    acc = np.zeros(len(compare_folders)) # Rupture 
+    tot_loss = np.zeros(len(compare_folders)) # Tot loss
+    for f, folder in enumerate(compare_folders):
+        # --- Data --- #
+        # Get data
+        data = read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.35)
+        config_path = find_single_file(folder, '.npy')
+        mat = np.load(config_path)
+        EV.load_config(config_path) # Prepare ML
         
-
-
+        # Retrieve variables
+        stretch = data['stretch_pct']
+        F_N = data['F_N']
+        Ff_mean = data['Ff'][:, :, 0, 1]
+        Ff_max = data['Ff'][:, :, 0, 0]
+        contact = data['contact_mean'][:, :, 0]
+        porosity = np.sum(mat < 0.5)/np.sum(mat)
+        rupture_stretch = data['rupture_stretch']
+        rup = data['rup']
+        Z = [Ff_mean, Ff_max, contact]
+    
+        # Loop through output
+        counter = 0
+        for o, z in enumerate(Z):
+            # Loop through load 
+            no_rupture_data = ~np.isnan(z[:, 0]) 
+            for k in range(len(F_N)): 
+                # --- ML --- #
+                _, _, output = EV.predict(stretch, F_N[k]) # ['Ff_mean', 'Ff_max', 'contact', 'porosity', 'rupture_stretch', 'is_ruptured']
+                
+                # R2    
+                target = z[no_rupture_data, k]
+                target_mean = np.mean(target)
+                pred = output[no_rupture_data, o]
+                SS_res = np.sum((pred - target)**2)
+                SS_tot = np.sum((target - target_mean)**2)    
+                R2[f, o] += 1 - SS_res/SS_tot
+                
+                
+                if o == 0: # porosity, rup. stretch and rupture bool
+                    # Loss
+                    labels = np.stack((Ff_mean[:, k], Ff_max[:, k], contact[:, k], np.full(Ff_mean.shape[0], porosity), np.full(Ff_mean.shape[0], porosity), rup[:, k]), axis=1).astype('float32')
+                    loss, Ff_loss, other_loss, rup_loss = criterion(torch.from_numpy(output), torch.from_numpy(labels))
+                    tot_loss[f] += loss.item()
+                    
+                    
+                    porosity_abs_error[f] += np.sum(np.abs(porosity - output[:, 3]))
+                    rup_stretch_rel_error[f] += np.sum(np.abs((rupture_stretch - output[:, 4])/rupture_stretch))
+                    rup_label = rup[:, k] > 0.5
+                    rup_pred = output[:, -1] > 0.5
+                    acc[f] += np.sum(rup_label == rup_pred)            
+                    counter += len(output[:, -1])
+        
+        R2[f] /= len(F_N)     
+        porosity_abs_error[f] /= counter
+        rup_stretch_rel_error[f] /= counter
+        acc[f] /= counter
+        tot_loss[f] /= len(F_N)
+    
+    print(tot_loss)
+    
+    print("Tetrahedron")
+    print(f'R2 = {np.mean(R2[10:], axis = 0)}')
+    print(f'Porosity abs. = {np.mean(porosity_abs_error[10:])}')
+    print(f'rup. stretch rel. = {np.mean(rup_stretch_rel_error[10:])}')
+    print(f'tot loss = {np.mean(tot_loss[10:])}')
+    print(f'rup. acc. = {np.mean(acc[10:])}\n')
+    
+    print("Honeycomb")
+    print(f'R2 = {np.mean(R2[:10], axis = 0)}')
+    print(f'Porosity abs. = {np.mean(porosity_abs_error[:10])}')
+    print(f'rup. stretch rel. = {np.mean(rup_stretch_rel_error[:10])}')
+    print(f'tot loss = {np.mean(tot_loss[:10])}')
+    print(f'rup. acc. = {np.mean(acc[:10])}\n')
+    
+    print("Total")
+    print(f'R2 = {np.mean(R2, axis = 0)}')
+    print(f'Porosity abs. = {np.mean(porosity_abs_error)}')
+    print(f'rup. stretch rel. = {np.mean(rup_stretch_rel_error)}')
+    print(f'tot loss = {np.mean(tot_loss)}')
+    print(f'rup. acc. = {np.mean(acc)}')
+    
+    
+    
+    
+    
 if __name__ == '__main__':
     # LR_range_specific(A_staircase_subset(mode = 0, batchnorm = True), save = False)
     # LR_range_full(filename = '../ML/staircase_lr/lr.txt', save = False)
@@ -715,6 +832,7 @@ if __name__ == '__main__':
     
     
     final_model_evaluation(model_path = '../ML/mom_weight_search_cyclic/m0w0', save = True)
+    # final_model_compare_scores(model_path = '../ML/mom_weight_search_cyclic/m0w0')
     plt.show()
 
 

@@ -189,6 +189,16 @@ class Evaluater():
             prac_rup_stretch_idx = -1
       
         # Min and max friction (before any rupture prediction)
+        if prac_rup_stretch_idx < 2: # If early rupture
+            return None
+            # metrics['prac_rup_stretch'] = np.nan
+            # metrics['Ff_min'] = (np.nan, np.nan)
+            # metrics['Ff_max'] = (np.nan, np.nan)
+            # metrics['Ff_max_diff'] = (np.nan, np.nan, np.nan)
+            # metrics['Ff_max_drop'] = (np.nan, np.nan, np.nan)
+            # return metrics
+                 
+            
         Ffmin_idx = np.argmin(Ff[:prac_rup_stretch_idx])
         Ffmax_idx = np.argmax(Ff[:prac_rup_stretch_idx])
         
