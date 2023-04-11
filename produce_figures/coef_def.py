@@ -35,7 +35,7 @@ def coef_example(save = False):
     ax = plt.gca()
     plt.plot(F_N, Ff_lin, color = color_cycle(0), linestyle = '-', label = 'Linear')  
     plt.plot(F_N, Ff_lin_shift, color = color_cycle(1), linestyle = '-', label = 'Linear + shift')  
-    plt.plot(F_N, Ff_nonlin, color = color_cycle(2), linestyle = '-', label = 'Non linear')  
+    plt.plot(F_N, Ff_nonlin, color = color_cycle(2), linestyle = '-', label = 'Non-linear')  
     
     ax.annotate('', xy=(1, 0), xytext=(0, 0), textcoords='data', arrowprops=arrowprops)
     ax.annotate('', xy=(0, 1.55), xytext=(0, 0), textcoords='data', arrowprops=arrowprops)
@@ -79,7 +79,7 @@ def coef_example(save = False):
     # vline(ax, 0, color = 'black')
     
     plt.xlabel(r'$F_N$', fontsize=30)
-    plt.ylabel(r'$\mu$', fontsize=30)
+    plt.ylabel(r'$\mu_1$', fontsize=30)
     plt.ylim(bottom = -1.3, top = 5)
     ax.set_facecolor("white")
     ax.set_xticks([0.0])
@@ -92,12 +92,12 @@ def coef_example(save = False):
         plt.gca().spines[pos].set_visible(False)
     plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
     
-    
+    # mu 2
     fig3 = plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
     ax = plt.gca()
     plt.ylim(bottom = -1.3, top = 5)
     plt.plot(F_N[1:-1], mu2_lin, color = color_cycle(0), linestyle = '-', label = r'Linear')
-    plt.plot(F_N[1:-1], mu2_lin_shift, color = color_cycle(1), linestyle = '--', label = r'Linear + shift')
+    plt.plot(F_N[1:-1], mu2_lin_shift, color = color_cycle(1), linestyle = '--', dashes=(20, 20), label = r'Linear + shift')
     plt.plot(F_N[1:-1], mu2_nonlin, color = color_cycle(2), linestyle = '-', label = r'Non linear')
     ax.annotate('', xy=(1, 0), xytext=(0, 0), textcoords='data', arrowprops=arrowprops)
     ax.annotate('', xy=(0, 5), xytext=(0, -1.3), textcoords='data', arrowprops=arrowprops)
@@ -105,7 +105,7 @@ def coef_example(save = False):
     # vline(ax, 0, color = 'black')
     
     plt.xlabel(r'$F_N$', fontsize=30)
-    plt.ylabel(r'$\mu$', fontsize=30)
+    plt.ylabel(r'$\mu_2$', fontsize=30)
     ax.set_facecolor("white")
     ax.set_xticks([0.0])
     ax.set_yticks([0.0, 1.0])

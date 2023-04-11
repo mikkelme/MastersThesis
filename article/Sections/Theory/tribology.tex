@@ -111,7 +111,7 @@ Our working definition of the \textit{macroscale} is everything on the scale of 
  corresponds to the tangential force needed to sustain such a sliding at steady
  speed. The work of Leonardo da Vinci (1452–1519), Guillaume Amontons (1663-705)
  and Charles de Coulomb (1736-1806) all contributed to the empirical law,
- commonly known as Amontons’ law, which serves as a common base for macroscale
+ commonly known as \textit{Amontons’ law}, which serves as a common base for macroscale
  friction. Amontons’ law states that the fricitonal forces is entirely
  independent of contact area and sliding velocity. Instead, it relies only on
  the normal force $F_N$, acting perpendicular to the surface, and the material specific friction coefficient $\mu$ as
@@ -120,11 +120,13 @@ Our working definition of the \textit{macroscale} is everything on the scale of 
   \label{eq:amonton}
 \end{align}
 Notice that the term \textit{Normal force} is often used interchangeably
-with \textit{load} and \textit{normal load} allthough the latter terms refer to the applied force, ``pushing'' the object into the surface, and the first is the corresponding reaction force acting from the surface on the object. In equilibrium, these forces are exactly equal in magnitude and hence we will not make a distinction between these terms in this thesis. On the same note, the frictional force is different from a conventional force which in the Newtonian definition acts on a body from the outside and make it accelerate \cite{gao_frictional_2004}. Rather than being an independent external force the friction force is an internal \textit{reaction} force opposing the externally applied ``sliding'' force. 
+with \textit{load} and \textit{normal load} allthough the latter two terms refer to the applied force, ``pushing'' the object into the surface, and the first is the reaction force acting from the surface on the object. In equilibrium, these forces are equal in magnitude and hence we will not make a distinction between these terms. On the same note, the frictional force is different from a conventional force which in the Newtonian definition acts on a body from the outside and make it accelerate \cite{gao_frictional_2004}. Rather than being an independent external force the friction force is an internal \textit{reaction} force opposing the externally applied ``sliding'' force. 
 
-
-The friction coeffcient $\mu$ is typically different for the cases of static ($\mu_s$)
-and kinetic ($\mu_k$) friction, usually both with values lower than one and $\mu_s \ge \mu_k$ in all cases \cite[p. 6]{gnecco_meyer_2015}. The friction coefficient is taken to be a constant defined by either \cite{gao_frictional_2004} \\
+The friction coeffcient $\mu$ is typically different for the cases of static
+($\mu_s$) and kinetic ($\mu_k$) friction, usually both with values lower than
+one and $\mu_s \ge \mu_k$ in all cases \cite[p. 6]{gnecco_meyer_2015}. The
+friction coefficient is taken to be a constant defined by either
+\cite{gao_frictional_2004} \\
 \vspace{0.1cm}
 \begin{subequations}
 \noindent\begin{minipage}{.2\linewidth}
@@ -132,7 +134,7 @@ and kinetic ($\mu_k$) friction, usually both with values lower than one and $\mu
 \end{minipage}
 \begin{minipage}[b]{0.2\linewidth}
   \begin{align}
-    \mu = \frac{F_{\text{fric}}}{F_N},
+    \mu_1 = \frac{F_{\text{fric}}}{F_N},
     \label{eq:mu_def1}
   \end{align}
 \end{minipage}
@@ -143,7 +145,7 @@ and kinetic ($\mu_k$) friction, usually both with values lower than one and $\mu
 \end{minipage}
 \begin{minipage}[b]{0.2\linewidth}
   \begin{align}
-    \mu = \frac{dF_{\text{fric}}}{dF_N}.
+    \mu_2 = \frac{dF_{\text{fric}}}{dF_N}.
     \label{eq:mu_def2}
   \end{align}
 \end{minipage}
@@ -153,9 +155,16 @@ and kinetic ($\mu_k$) friction, usually both with values lower than one and $\mu
 \end{subequations}
 \vspace{0.1cm}
 \\
-\noindent The first definition \cref{eq:mu_def1} requires zero friction at zero load, i.e.\ $F_{\text{fric}} = 0 at F_N = 0$, while the second definition (\cref{eq:mu_def2}) allows for a finite friction force at zero load since the coefficient is instead given by the slope of the $F_{\text{fric}}$ versus $F_N$ curve. However, in reality the friction coeffcient is not truly a material specific constant as it is often found to vary under different conditions such as humidity or smooth and rough morphologies of the sliding surfaces \cite{gao_frictional_2004}. 
+\noindent The first definition \cref{eq:mu_def1} requires zero friction at zero
+load, i.e.\ $F_{\text{fric}} = 0$ at $F_N = 0$, while the second definition
+(\cref{eq:mu_def2}) allows for a finite friction force at zero load since the
+coefficient is instead given by the slope of the $F_{\text{fric}}$ vs.\ $F_N$
+curve. The consequences of the two different definitions are illustrated in
+\cref{fig:fric_coef_example}. Usually the friction force is not zero under
+zero load (red curve: Linear + shift) due to adhesive forces \hl{source}, which
+constitutes an additional constant added to Amontons’ law in \cref{eq:amonton}. Using the first definition (\cref{eq:mu_def1}) would make the friction coefficient diverge for low load as illustrated in \cref{fig:fric_coef_example}, and thus we will use the second definition (\cref{eq:mu_def2}) moving forward. This also allows for a better interpretation in cases where Amontons’ law does not hold true and the friction force change non-linear with load (Purple curve in \cref{fig:fric_coef_example}).
 
-\hl{Talk about the figures here}
+% In reality the friction coeffcient is not truly a material specific constant as it is often found to vary under different conditions such as humidity or smooth and rough morphologies of the sliding surfaces \cite{gao_frictional_2004}. 
 
 
 \begin{figure}[H]
@@ -181,19 +190,9 @@ and kinetic ($\mu_k$) friction, usually both with values lower than one and $\mu
       % \label{fig:}
   \end{subfigure}
   \hfill
-  \caption{...}
+  \caption{\hl{CAPTION}}
   \label{fig:fric_coef_example}
 \end{figure}
-
-
-
-%  \cref{eq:mu_def}
-
-% In addition, for adhesive suraces the friction force is usually not zero under
-% zero load which makes the definition in \cref{eq:mu_def2} the common
-% choice. Especially, if the amontos break down and the linearity is not present
-% we might talk about a changing COF and thus \cref{eq:mu_def2} is the only
-% reasonable choice.  
 
 
 Although Amontons' law has been successful in is description of the majority of
@@ -205,12 +204,12 @@ down for atomically smooth surfaces in strongly adhesive contact
 \cite{gao_frictional_2004}. The independency of sliding velocity dissapears at
 low velocities as thermal effects becomes important and for high velocities due
 to intertial effetcs \cite[pp. 5-6]{gnecco_meyer_2015}. For the case of static
-friction, it was later discovered to be dependent on the so-called contact
+friction, it was discovered to be dependent on the so-called contact
 history with increasing friction as the logarithm of time of stationary contact.
 
 In cases where amontons' law breaks down we might still use the conceptual
 definition of the friction coefficient as defined by (\cref{eq:mu_def2}).
-Especially, in the context of achieving negative friction coefficients (in certain load ranges) we would refer to this definition, since (\cref{eq:mu_def1}) would imply a truly unphysical situation of the frictional force acting in the same direction as the sliding motion which would accelerate the object indefinitelly\footnote{You would most likely have a good shot at the Nobel Prize with that paper.}.
+Especially, in the context of achieving negative friction coefficients (in certain load ranges) we would refer to this definition, since (\cref{eq:mu_def1}) would imply a truly unphysical situation of the frictional force acting in the same direction as the sliding motion. This would accelerate the object indefinitelly\footnote{You would most likely have a good shot at the Nobel Prize with that paper.}.
 
 Due to the emperical foundation of Amontons’ law it does not provide
 any physical insight into the underlying mechanisms of friction. However, as we
@@ -222,10 +221,10 @@ is sliding in a given direction it is clearly not in equilibrium since one of
 its degrees of freedom carriers considerable more kinetic energy. Thus, the
 system will have a tendency to transfer that kinetic energy to the remaining
 degrees of freedom as heat. This heat will dissipate to the sourroundings and
-the object will slow down as a result. Hence, we can understand friction simply the tendency of going toward equilibrium energy equipartitioning among many
+the object will slow down as a result. Hence, we can understand friction simply as the tendency of going toward equilibrium energy equipartitioning among many
 interacting degrees of freedom \cite{Manini_2016}. From this point of view it is
 clear that friction is an inevitable part of contact physics, but even though
-friction cannot be removed alltogether, we are still capable of manipulating it in
+friction cannot be removed altogether, we are still capable of manipulating it in
 usefull ways. \\
 \\
 The attentive reader might point out that we have already moved the discussion
@@ -262,13 +261,13 @@ highlight the nessecity to consider smaller scales in order to achieve a more fu
 
 
 \section{Microscopic scale}
-Going from a macro- to microscale perspective, a length scale of order
+Going from a macro- to microscale perspective, to a length scale of order
 \SI{e-6}{m}, it was realized that most surfaces is in fact rough
 \cite{mo_friction_2009}. The contact between two surfaces consist of numerous
 smaller contact point, so-called asperities, for which the friction between two
 opposing surfaces involves interlocking of those asperities as visualized in
 \cref{fig:asperity_contact}. Small junctions of asperities are formed due
-to contact pressure and adhesion \cite{kim_nano-scale_2009}
+to contact pressure and adhesion \cite{kim_nano-scale_2009}.
 
 In the macroscale perspective of Amonton's law we refer to time- and
 space-averaged values, i.e.\ the ``apparent'' contact area and the average
@@ -284,21 +283,16 @@ with an energy loss attributed to deformations of the asperity. While plastic
 deformations, corresponding to wear, gives rise to an obvious attribution for
 the energy loss, elastic deformations is also sufficient in explaining energy
 loss due to phonon excitations. In fact the assumption of plastic deformations
-has been critizised as this is theorized only to be present in the beginning of
-surface contact \cite{CARBONE20082555}. When machine parts slide against each
+has been critizised as this is theorized only to be present in the beginning of a
+surface contact while it is neglible for prolonged or repeated contact of the same surfaces \cite{CARBONE20082555}. That is, when machine parts slide against each
 other for millions of cycle the plastic deformation would only take place in the
-beginning until the system reaches a steady state with only elastic deformation
-taking place. The chemical friction arrises from adhesion between microscopic
+beginning for which the system then reaches a steady state with only elastic deformations. The chemical friction arrises from adhesion between microscopic
 contacting surfaces, with an energy loss attributed to breaking and forming of
 bonds. 
 
 
 
-
-
-
-
-\subsection{Surface roughness - Asperity theories}
+\subsection{Surface roughness --- Asperity theories}
 % Sources in general: \cite{mo_friction_2009}, \cite{kim_nano-scale_2009} \\
 
 Asperity theories are based on the observation that microscopic rough surfaces,
@@ -309,8 +303,10 @@ force has been shown to be proportional to the true contact area as
 \begin{align*}
   F_\text{fric} = \vec{\tau} \sum A_{\text{asp}},
 \end{align*}
+
+% Adhesion model by Bowden and Tabor. Adhesion is propoertional to asperity contact area giving rise to a proportionality between aperity contact area and interfacial shear strength. \cite{C2NR30691C}
 where $\vec{\tau}$ is an effective shear strength of the contacting bodies. Note
-that this is compatible with Amontons’ law in \cref{eq:amonton} by having a linear relatioship between the real contact area and the
+that this is still compatible with Amontons’ law in \cref{eq:amonton} by having a linear relatioship between the real contact area and the
 applied load. In \cref{fig:asperity_contact} we see a
 visualization on how the contact area might intuitively increase with load as the asperity tips is deformed (plastically or elastically) into broader contact points.
 \begin{figure}[H]
@@ -330,31 +326,29 @@ visualization on how the contact area might intuitively increase with load as th
   \end{subfigure}
   \hfill
      \caption{Qualitatively illustration of the microscopic asperity deformation
-     under increasing load from frame (a) to (b) \cite{wiki:asperities}. While this figure evidently portrays plastic deformation the concept of increased contact area under increased load applies for elastic deformation as well.}
+     under increasing load from frame (a) to (b) \cite{wiki:asperities}. While this figure seemingly portrays plastic deformation the concept of increased contact area under increased load applies for elastic deformation as well.}
      \label{fig:asperity_contact}
 \end{figure}
 
 Many studies have focused on single asperity contacts to reveal the relationship
-between the contact area and $F_N$ (13-15 from \cite{mo_friction_2009}). By
+between the contact area and load
+\cite{Szlufarska_2008}\cite{PhysRevLett.56.930}\cite{perry_scanning_2004}. By
 assuming perfectly smooth asperities, with radii of curvature from micrometers
 all the way down to nanometers, continuum mechanics can be used to predict the
-deformation of asperities as load is applied. A model for non-adhesive
-contact between homogenous, isotropic, linear elastic spheres was first
-developed by Hertz (17 from \cite{mo_friction_2009}), which predicted
-$A_{\text{asp}} \propto F_N^{2/3}$. Later adhesion effects were included in a
-number of subsequent models, including Maugis-Dugdale theory (18 from
-\cite{mo_friction_2009}), which also predicts a sublinear relatinship between
-$A_{\text{asp}}$ and $F_N$. Thus, the common feature of all single-asperity
-theories is that $A_{\text{asp}}$ is a sublinear function of $F_N$, leading to a
-similar sublinear relationship for $F_\text{fric}(F_N)$, which fails to align
-with the macroscale observations modelled by Amontons’ law (eq.
-\eqref{eq:amonton}).
-
-
+deformation of asperities as load is applied. A model for non-adhesive contact
+between homogenous, isotropic, linear elastic spheres was first developed by
+Hertz \cite{HertzOnTC}, which predicted $A_{\text{asp}} \propto F_N^{2/3}$.
+Later adhesion effects were included in a number of subsequent models, including
+Maugis-Dugdale theory \cite{MAUGIS1992243}, which also predicts a sublinear
+relatinship between $A_{\text{asp}}$ and $F_N$. Thus, the common feature of all
+single-asperity theories is that $A_{\text{asp}}$ is a sublinear function of
+$F_N$, leading to a similar sublinear relationship for $F_\text{fric}(F_N)$,
+which fails to align with the macroscale observations modelled by Amontons’ law
+(eq. \eqref{eq:amonton}).
 
 % Concurrently with single-asperity studies, roughness contact theories are being developed8–10,16 to bridge the gap between the mechanics of single asperities and that of macroscopic contacts.\cite{mo_friction_2009}
 
-Concurrently wiht single-asperity studies, roughness contact theories are being developed \cite[8-10, 16 in ]{mo_friction_2009} to bridge the gap between single asperities and macroscopic contacts \cite{mo_friction_2009}. A variety of multi-asperity theories has attempted to combine single asperity
+Concurrently with single-asperity studies, roughness contact theories are being developed \cite{PhysRevLett.100.055504}\cite{Persson}\cite{GW}\cite{BUSH197587} to bridge the gap between single asperities and macroscopic contacts \cite{mo_friction_2009}. A variety of multi-asperity theories has attempted to combine single asperity
 mechanics by statistical modelling of the asperity height and spatial
 distributions \cite{CARBONE20082555}. This has led to a partially success in the establishment of a linear relationship between $A_{\text{asp}}$ and $F_N$. Unfortunately, these results are restricted
 in terms of the magnitude of the load and contact area, where multi-asperity
@@ -364,7 +358,6 @@ works for more reasonable loads but only up to 10-15 \% of the macroscale
 contact area. However, as the load is furhter increased all multi-asperity models
 predict the contact area to fall into the sublinear dependency of normal force
 as seen for single aperity theories as well \cite{CARBONE20082555}.
-
 
 
 % Da Vinci-Amontons law – friction independent of area – is not confirmed at the
@@ -427,17 +420,14 @@ while adding van der Waals adhesion to the simulation gave a sublinear
 relatinship, even though the $F_{\text{fric}} \propto A_{\text{real}}$ was
 maintained. This result emphasizes that the contact area is still expected to be play an important role at the nanoscale for asperity theory. It is simply the definition of the contact area that undergoes a change when transistioning from micro- to nanoscale. 
 
-However, considering the simulation setup of our numerical study, a flat sheet
-on a flat substrate, the lack of asperities make it unfounded to rely on
-asperity theories. Although both numerical and experimental research have been
-done for so-called nanoflakes sliding on a substrate, no investigation is
-reported on the dependence of friction force on contact area (\hl{to the best of
-my knowledge at least}). One reasonable explanation is that the contact
-area is already maxed out for atomic smooth surfaces. Since a dependency on
-normal load is still reported in most nanoflake studies (see section
-\cref{sec:expected_prop} \hl{or give details on studies here?}), this suggests
-that some other mechanisms are governing friction at this level. Before diving
-into alternative theoretical approaches to adress this issue we point out that exactly this transistion, between nanoscale asperities and atomic smooth surfaces, is of outermost importance for the objective of the thesis. By introducing kirigami cuts and stretching the sheet we expect to see an out of plane buckling which induce an ensemble of asperities on the sheet. Hence, we might hypothesize that such a transsition will contribute to a significant change in the goverening mechanism of friction bridgering two (poorly understood) theoretical domains 
+While the study by Mo et al.\ \cite{mo_friction_2009} considers a single
+asperity on a nanoscale, we are going to study a nanoscale system with no
+initial asperities present. Our system of interest, an initially atomically flat graphene sheet imposed on a flat silicon substrate, make it unfounded to rely on asperity theories. Although both numerical \cite{zhu_study_2018}\cite{ma12091425}\cite{bonelli_atomistic_2009} and experimental \cite[2005]{DIENWIEBEL2005197}\cite{feng_superlubric_2013} studies have been done for so-called nanoflakes
+sliding on a substrate, the dependence of friction force on contact area is not investigated.  One reasonable explanation is that the contact area is already at its maximum for atomically smooth contacting surfaces and hence does not play an important role. In a numerical study of atomic-scale frictional behavior of corrugated nano-structured surfaces \cite{C2NR30691C} they reported that the contact area only affected the friction significantly for big corrugations as opposed to small. Since an increasing friction is still reported under increasing load in most nanoflake studies (see
+\cref{sec:expected_prop} for a more detailed dicussion), this suggests
+that some other mechanisms are governing friction at this level. 
+
+Before diving into alternative theoretical approaches to adress this issue we point out that exactly this transistion, between nanoscale asperities and atomically smooth surfaces, is of outermost importance for the objective of the thesis. By introducing kirigami cuts and stretching the sheet we expect to see an out of plane buckling which induce an ensemble of asperities on the sheet. Hence, we might hypothesize that such a transition will contribute to a significant change in the goverening mechanism of friction bridgering the two domains of nanoscale asperity and smooth surface theory. 
 \\
 \\
 In the lack of noteworthy structural asperities, friction can instead be
@@ -447,13 +437,12 @@ to interact interatomically, with the moving body, and the substrate. In figure
 \cref{fig:PT_FK_FKT} three of the most common 1D models is displayed. The
 time-honered Prandtl-Tomlinson (PT) model describes a point-like tip sliding
 over a space-periodic fixed crystalline surface with a harmonic coupling to the
-\textit{moving body}. This is analog to that of an experimental cantilever used
-for Atomic Force Microscopy (see section \cref{sec:SPM}). Further extensions was
+moving body. This is analog to that of an experimental cantilever used
+for Atomic Force Microscopy (see \cref{sec:SPM}). Further extensions was
 added in the Frenkel-Kontorova (FK) model by substituting the tip with a chain
-of harmonic coupled atoms dragged from the end (\hl{I am not sure that the
-figure is 100\% correct by drawing a spring like that}), and finally combinned
+of harmonic coupled atoms dragged from the end (\hl{I am not sure that the figure is 100\% correct by drawing a spring like that}), and finally combinned
 in the Frenkel-Kontorova-Tomlinson (FKT) with the addition of a harmonic
-coupling between the chain and the moving body. In the following we will disucss the FK model as this gives provides a sufficient foundation for the understanding of smooth nanoscale friction.
+coupling between the chain and the moving body. In the following we will disucss the FK model as the underlying basis for the understanding of smooth nanoscale friction.
 
 \begin{figure}[H]
   \centering
@@ -516,9 +505,9 @@ particles of equal mass, representing atoms, interacting via hamornic forces and
   \label{eq:H_FK}
 \end{align}
 where the atoms are labelled sequently $i = 1, \hdots, N$. The first term $p_i^2/2m$ represents the kinetic energy with momentum $p_i$
-and mass $m$. Often the effetcs of inertia are neglected, reffered to as the static FK model, while the inclusion, as shown here in \cref{eq:H_FK}, is known as the dynamic FK model \cite{FK2D}. The next term describes the harmonic interaction with elastic
+and mass $m$. Often the effetcs of inertia are neglected, reffered to as the static FK model, while the inclusion in \cref{eq:H_FK} is known as the dynamic FK model \cite{FK2D}. The next term describes the harmonic interaction with elastic
 constant $K$, nearest neighbour distance $\Delta x = x_{i+1} - x_i$ and 
-corresponding nearest neighbour equilibrium distance $a_c$. The final term represents the periodic substrate potential (external potential on site) with amplitude $U_0$ and period $a_b$. Different boundary choices can be made where both free ends and periodic conditions gives similar results. The choice of fixed ends however makes the chain incapable of sliding.
+corresponding nearest neighbour equilibrium distance $a_c$. The final term represents the periodic substrate potential, serving as the external potential on site, with amplitude $U_0$ and period $a_b$. Different boundary choices can be made where both free ends and periodic conditions gives similar results. The choice of fixed ends however makes the chain incapable of sliding.
 
 \begin{figure}[H]
   \centering
@@ -529,15 +518,12 @@ corresponding nearest neighbour equilibrium distance $a_c$. The final term repre
 
 To probe static friction one can apply an external adiabatically increasing force until sliding accours. This corresponds to the static FK model, and it turns out that the sliding properties are entirely governed by its topological excitations referred to as so-called \textit{kinks} and \textit{antikinks}
 
-\subsubsection{Commensurability} We can subdivide the frictional behaviour in terms of commensurability, that is, how well the spacing of the atoms match the periodic substrate potential. We describe this by the length ratio $\theta = a_b / a_c = N / M$ where $M$ denotes the number of minemas in the potential (within the length of the chain). A rational number for $\theta$ means that we can align the atoms in the chain perfectly with the minemas, without stretching the chain, corresponding to a \textit{commensurate} case. If $\theta$ is irrational the chain and substrate cannot fully align without stretching of the chain, and we denote this as being \textit{incommensurate}.
+\subsubsection{Commensurability} We can subdivide the frictional behaviour in terms of commensurability, that is, how well the spacing of the atoms match the periodic substrate potential. We describe this by the length ratio $\theta = a_b / a_c = N / M$ where $M$ denotes the number of minemas in the potential (within the length of the chain). A rational number for $\theta$ means that we can achieve a perfect alignment between the atoms in the chain and the potential minemas, without stretching the chain, corresponding to a \textit{commensurate} case. If $\theta$ is irrational the chain and substrate cannot fully align without some stretching of the chain, and we denote this as being \textit{incommensurate}.
 
 We begin with the simplest commensurate case of $\theta = 1$ where the spacing
 of the atoms matches perfectly with the substrate potential periodicity, i.e.\
-$a_c = a_b$, $N = M$. The ground state (GS) is the configuration where each atom
-fits in one of the substrate minema. By adding an extra atom we would
-effectively shift over some atoms, away from this ideal state, giving rise to a
-kink excitation, i.e.\ two atoms will have to ``share'' the same potential
-corrugation as sketched in \cref{fig:incommensurable_example}.  On the
+$a_c = a_b$, $N = M$. The ground state (\acrshort{GS}) is the configuration where each atom
+is aligned with one of the substrate minema. By adding an extra atom to the chain we would effectively shift some of the atoms out of this ideal state, giving rise to a kink excitation. This leads to the case where two atoms will have to ``share'' the same potential corrugation as sketched in \cref{fig:incommensurable_example}.  On the
 other hand, removing an atom from the chain results in an antikink excitation
 where one potential corrugation will be left ``atomless''. In order to reach a
 local minimum the kink (antikink) will expand in space over a finite length such
@@ -551,7 +537,7 @@ represententing the fundamental mechanism for mass transport. These
 displacements are responsible for the mobility, diffusivity and conductivity
 within this model. 
 
-In the ideal zero temperature commensurable case with an adiabatical increase in force, all atoms would be put into an accelerating motion as soon as the potential barrier energy is present ($\sim NU_0$ for sufficiently stiff springs). However, in reality any thermal excitation would excite the system before this point is reached resulting in kink-antikink pairs traveling down the chain. For a chain of finite length these often accour at the end of the chain running in opposite direction. As a kink travels down the chain the atoms is advanced by one lattice spacing $a_b$ along the substrate potential. This cascade of kink-antikink exications is shown in \cref{fig:kink_antikink}
+In the zero temperature commensurable case with an adiabatical increase in force, all atoms would be put into an accelerating motion as soon as the potential barrier energy is present. However, in reality any thermal excitation would excite the system before this point is reached resulting in kink-antikink pairs traveling down the chain. For a chain of finite length these often accour at the end of the chain running in opposite direction. As a kink travels down the chain the atoms are advanced by one lattice spacing $a_b$ along the substrate potential. This cascade of kink-antikink exications is shown in \cref{fig:kink_antikink}
 
 \begin{figure}[H]
   \centering
@@ -563,11 +549,12 @@ In the ideal zero temperature commensurable case with an adiabatical increase in
 For the 2D case where an island (or flake) is deposited on a surface, in our case the graphene sheet on the Si substrate, we generally also expect the sliding to be initated by kink-antikink pairs at the boundary. 
 
 For the case of incommensurability, i.e.\ $\theta = a_b/a_c$ is irrational, the
-GS is characterized by a sort of ´´staircase'' deformation. That is, the chain
-will exhibit regular periods of regions where the chain is slightly compressed
+\acrshort{GS} is characterized by a sort of ´´staircase'' deformation. That is, the chain will exhibit regular periods of regions where the chain is slightly compressed
 (expanded) to match the substrate potential, seperated by kinks (antikinks),
-where the increased stress is eventually released through a localized expansion
-(compression) as illustrated in \cref{fig:incommensurable_example} \hl{Go through this last part  again. Even though this is what the source says I'm not quite sure I understand why it is not opposite ``...released through a localized compression (expansion)''?}.
+where the increased stress is eventually released 
+% through a localized expansion (compression) 
+as illustrated in \cref{fig:incommensurable_example} 
+% \hl{Go through this last part  again. Even though this is what the source says I'm not quite sure I understand why it is not opposite ``...released through a localized compression (expansion)''?}.
 
 \begin{figure}[H]
   \centering
@@ -593,7 +580,7 @@ potential. However, when sliding freely a single atom will eventually occupy a
 maximum of the potential. When increasing the potential magnitude $U_0$ or
 softning the chain stiffness, lowering $K$, the possibility to occupy such a
 maximum dissapears. This marks the so-called \text{Aubry transition}
-at the critical elasric constant $K = K_c(U_0, \theta)$ where the chain goes
+at the critical elastic constant $K = K_c(U_0, \theta)$ where the chain goes
 from a free sliding to a \textit{pinned state} with a nonzero static friction.
 $K_c$ is a discontinuous function of the ratio $\theta$, due to the reliance on
 irrational numbers for incommensurability. The minimal
@@ -602,18 +589,15 @@ the golden-mean ratio $\theta = (1+\sqrt{5}/2)$. Notice that the pinning is
 provided despite translational invariance due to the inaccessibility to move
 past the energy barrier which act as a dynamical constraint. The Aubry transistion
 can be invistigated as a first-order phase transistion for which power laws can be
-defined for the order parameter. This is beyond the scope of this thesis as we
-merely are going to point to the FK model for the understanding of stick-slip
-behvaiour and the concept of commensurability.
+defined for the order parameter, but this is beyond the scope of this thesis.
+%  This is beyond the scope of this thesis as we
+% merely are going to point to the FK model for the understanding of stick-slip behvaiour and the concept of commensurability.
 
 The phenonema of non-pinned configurations is named \textit{superlubricity} in
 tribological context. Despite the misleadning name this referes to the case
 where the static friction is zero while the kinetic friction is nonzero but
-reduced. For the case of a 2D sheet it is possible to alter the commensurability
-by changing the orientation of the sheet relative to the substrate. This has
-been shown for a graphene flake sliding over a graphite surface
-(multiple layers of graphene) \cite{DIENWIEBEL2005197} as shown in \cref{fig:graphene_rot}. We clearly see that friction changes as a function of orientation angles with only two spikes of considerable friction force.
-
+reduced. For the case of a 2D sheet it is possible to alter the commensurability, not only by changing the lattice spacing through material choice, but also
+by changing the orientation of the sheet relative to the substrate. Dienwiebel et al.\ \cite{DIENWIEBEL2005197} have shown that the kinetic friction, for a graphene flake sliding over a graphite surface (multiple layers of graphene), exhibits extremely low friction at certain orientations as shown in \cref{fig:graphene_rot}. We clearly see that friction changes as a function of orientation angles with only two spikes of considerable friction force.
 
 \begin{figure}[H]
   \centering
@@ -624,8 +608,11 @@ been shown for a graphene flake sliding over a graphite surface
 
 
 
+
+
 \subsubsection{Kinetic friction}
 % Maybe check out for more info on the 1D model: Y. S. Kivshar O. M. Braun. The Frenkel-Kontorova Model. Springer, 1st edition, 2004.
+% The Frenkel-Kontorova Model.pdf p. 38 3.2 Dynamics of Kinks <---------
 
 %Based on \cite{FK2D}
 
@@ -637,11 +624,11 @@ been shown for a graphene flake sliding over a graphite surface
 In the FK model the kinetic friction is primarily caused by resonance between
 the sliding induced vibrations and phonon modes in the chain \cite{FK2D}. The specific dynamics is found to be highly model and dimension specific, and even for the 1D case this is rather complex. However, we make a simplified analysis of the 1D case to showcase the reasoning behind the phenomena.
 
-When all atoms are sliding rigidly width center of mass velocity $v_{{\text{CM}}}$ the atoms will pass the potential maxima with the so-called \textit{washboard frequency} $\Omega = 2\pi v_{{\text{CM}}} / a_b$. For a weak coupling between the chain and the potential we can use the zero potential case as an approximation for which the known dispersion relation for the 1D harmonic chain is given [Kittel (\hl{add to bibliography})]
+When all atoms are sliding rigidly with center of mass velocity $v_{{\text{CM}}}$ the atoms will pass the potential maxima with the so-called \textit{washboard frequency} $\Omega = 2\pi v_{{\text{CM}}} / a_b$. For a weak coupling between the chain and the potential we can use the zero potential case as an approximation for which the known dispersion relation for the 1D harmonic chain is given \cite[p. 92]{Kittel2004}
 \begin{align*}
   \omega_k = \sqrt{\frac{4 K}{m}} \left|\sin{\left(\frac{k}{2}\right)}\right|,
 \end{align*}
-where $\omega_k$ is the phonon frequency and $k = 2\pi i / N$ the wavenumber with $i\in [N/2, N/2)$. Resonance will accour when the washboard frequency $\Omega$ is close to the frequency of the phonon modes $\omega_q$ in the chain with wavenumber $q = 2\pi a_c / a_b = 2\pi \theta^{-1}$ or its harmonics $nq$ for $n = 1, 2, 3, \hdots$ \cite{van_den_Ende_2012}. Thus, we can approximate the resonance COM speed as
+where $\omega_k$ is the phonon frequency and $k = 2\pi i / N$ the wavenumber with $i\in [N/2, N/2)$. Resonance will accour when the washboard frequency $\Omega$ is close to the frequency of the phonon modes $\omega_q$ in the chain with wavenumber $q = 2\pi a_c / a_b = 2\pi \theta^{-1}$ or its harmonics $nq$ for $n = 1, 2, 3, \hdots$ \cite{van_den_Ende_2012}. Thus, we can approximate the resonance center of mass speed as
 \begin{align*}
     n \Omega &\sim \omega_{nq} \\
     n \frac{2\pi v_{\text{CM}}}{a_b} &\sim \sqrt{\frac{4K}{m}} \left| \sin{\left(\frac{2n \pi \theta^{-1}}{2}\right)}\right| \\
@@ -651,11 +638,11 @@ When the chain slides with a velocity around resonance speed, the washboard
 frequency can excite acoustic phonons which will dissipate to other phonon modes
 as well. At zero temperature the energy will transform back and forth between
 internal degrees of freedom and center of mass movement of the chain. Hence, at
-zero temperature this is in fact theorized to speed up the translational decay.
+zero temperature this is in fact theorized to speed up the translational decay \cite{FK2D}.
 However, for the more realistic case of a non-zero temperature the substrate
 serves as a thermostat, for which energy will dissipate from the chain to the
 substrate degrees of freedom, giving rise to kintetic friction. This suggets
-that certain sliding speeds will exhibit relatively big kinetic friction while
+that certain sliding speeds will exhibit relatively high kinetic friction while
 others will be subject to extremely low kinetic friction. Simulations of
 concentric nanotubes in relative motion (telescopic sliding) have revealed the
 occurence of certain velocities at which the friction is enhanced, corresponding
@@ -670,11 +657,8 @@ approached.
 A common way to model the non-zero temperature case is by the use of a Langevin
 thermostat, which models the dissipation of heat by adding a viscous damping
 force and thermal fluctuations by the addition of Gaussian random forces with
-variance proportional to the temperature (This is covered in more details in
-section \cref{sec:langevin}). In combination, this gives rise to a kinetic
-friction that is both velocity and temperature dependent. 
-
-By extending the FK model into 2D \cite{FK2D} it can be shown numerically that
+variance proportional to the temperature (see \cref{sec:langevin} for more details). In combination, this gives rise to a kinetic
+friction that is both velocity and temperature dependent. By extending the FK model into 2D \cite{FK2D} it can be shown numerically that
 the friction coefficient generally increases with increasing velocity and
 temperature resepectively, although the specific of the trend is highly
 sensitive to model parameters. 
@@ -839,14 +823,12 @@ sensitive to model parameters.
 % \section{Multi scale models?}
 % \cite{Manini_2016} p. 24.
 
-\subsubsection{Temperature depence}
 
-Might find something interesting here \cite{zhao_thermally_2007} or \cite{PhysRevE.71.065101}.
+% \subsubsection{Temperature depence}
+% Might find something interesting here \cite{zhao_thermally_2007} or \cite{PhysRevE.71.065101}.
 
-
-\subsubsection{Smooth sliding}
-
-Find a suitable place to introduce smooth sliding. Above certain velocities the stick-slip motion dissapear. \cite[p. 142-ish]{gnecco_meyer_2015}
+% \subsubsection{Smooth sliding}
+% Find a suitable place to introduce smooth sliding. Above certain velocities the stick-slip motion dissapear. \cite[p. 142-ish]{gnecco_meyer_2015}
 
 \subsection{Experimental procedures}
 % \cite{gnecco_meyer_2015}
@@ -932,6 +914,10 @@ AFM can also be used to drag a nanoflake accross the substrate as done by Dienwi
 
 % Maybe read ``Tribology of Graphene: A Review'' (in zotero already).
 % Also \cite{gao_frictional_2004} might be usefull to go through again
+
+% Maybe rememeber to talk about the properties of asperity systems as the sheet creates asperities as it buckles. 
+
+% Include "Molecular dynamics simulation of atomic-scale frictional behavior of corrugated nano-structured surfaces" somewhere.
 
 The structural setup of our simulation is most reminiscent a graphene flake sliding on a substrate. This has been studied numerically in molecular dynamic simulations by Zhu and Li \cite[2018]{zhu_study_2018} for a graphene flake on a gold substrate and by Zhang et al.\ \cite{ma12091425}(2019) on a diamond substrate, and in a tight-binding simulation by Bonelli et al.\ \cite{bonelli_atomistic_2009}(2009) for graphene on graphite. Experimental studies of a graphene flake attatched to an AFM is done by Dienwiebel et al.\ \cite[2005]{DIENWIEBEL2005197} and Feng et al.\ \cite[2013]{feng_superlubric_2013} sliding on graphite, but these are mainly concerned with superlubricity due to flake oreientation commensurability. 
 
