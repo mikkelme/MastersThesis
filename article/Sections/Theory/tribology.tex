@@ -923,67 +923,40 @@ loading concentrated to a single point on the flake rather than achieving an eve
 
 
 \section{Expected frictional properties of graphene}\label{sec:expected_prop}
-In general we find three types of systems being studies for the frictional properties of graphene: 1) An \acrshort{AFM} type setup where the graphene, either resting on a substrate or in bulk graphite form, is probed by tip scanning across the surface. 2) Graphene sandwhiched between two substarte layers moving relative to each other using the graphene as a solid lubricant. 3) A graphene flake sliding on a substrate, either being dragged by an \acrshort{AFM} tip or by a similar applied force in numerical simulations. Only the latter matches our simulation setup, but we will consider results from all three categories due to a few amounts of studies following this approach. The relevant studies are listed as follows (maybe just tmp for my own sake).
 
-\begin{enumerate}
-  \item Setup % 1: AFM style (asperity related)
-    \begin{enumerate}
-      \item \cite{zhang_tuning_2019}: Exp., Straining sheet
-      \item \cite{li_evolving_2016}: Num., Increasing layers,
-      \item \cite{Yoon2015MolecularDS}: Num, silicon tip on graphene
-      \item \cite{Paolicelli_2015}: Exp., graphene placed on SiO2 and Ni(111)substrates.
-      \item \cite{Vazirisereshk_2019}: Exp., tip on graphene, MoS2 and Graphene/MoS2 heterostructure.
-    \end{enumerate}
-  \item Setup % 2: Sandwhich 
-    \begin{enumerate}
-      \item \cite{C2NR30691C}: Num., Corrugated nano-structured surfaces
-      \item \cite{Wijn_2011}: Num., Rotational dynamics superlubricity
-    \end{enumerate}
-  \item Setup % 3: Flake on substrate
-    \begin{enumerate}
-      \item \cite{zhu_study_2018}: Num., graphene flake on gold substrate
-      \item \cite{ma12091425}: Num., graphene on diamond, Orientation (Anisotropy)
-      \item \cite{DIENWIEBEL2005197}: Exp., graphene on graphite, orientation and superlubricity
-      \item \cite{feng_superlubric_2013}: Exp., graphene on graphite, orientation and superlubricity
-      \item \cite{bonelli_atomistic_2009}: Num. (tight-binding), graphene on graphite.
-      \item \cite{Reguzzoni_2012}, Num, graphene on graphite, varying layers (graphite thickness).
-      \item \cite{liu_high-speed_2014}, Num, graphene on graphite, high speed 
-    \end{enumerate}
-\end{enumerate}
-
-
+Several studies have investigated the frictional behaviour of graphene by varying different parameters such as normal force, sliding velocity, temperature, commensurability and graphene thickness \cite{penkov_tribology_2014}. In general, we find three types of systems being studied: 1) An \acrshort{FFM} type setup where the graphene, either resting on a substrate or suspended, is probed by a \acrshort{AFM} tip scanning across the surface. 2) Graphene ``sandwiched'' in between two substrate layers moving relative to each other using the graphene as a solid lubricant. 3) A graphene flake sliding on a substrate, either being dragged by an \acrshort{AFM} tip or by more complex arrangements in numerical simulations. While only the latter cases matches our intended system setup, we will consider results from all three categories due to the sparse results availble. The relevant studies which we consider are listed in \cref{tab:friction_ref}. 
 
 \begin{table}[H]
-  \begin{center}
-  \caption{...}
+  % \begin{center}
+  \centering
+  \caption{\hl{Update multirow line span after completing the table...}}
   \label{tab:friction_ref}
-  \begin{tabular}{ |c|c|c|l|l|l| } \hline
-    System & Type & Year & Researcher & materials & Info \\ \hline
-  \multirow{5}{*}{1} & \multirow{3}{*}{Exp.} & 2019\cite{zhang_tuning_2019} & & Monolayer graphene  & Straining sheet \\ \cline{3-6} 
-   & & 2015\cite{Paolicelli_2015} & & & graphene placed on SiO2 and Ni(111)substrates. \\ \cline{3-6} 
-   & & 2019\cite{Vazirisereshk_2019} & & graphene, MoS2 and Graphene/MoS2 heterostructure & --- \\ \cline{2-6} 
-   & \multirow{2}{*}{Num.}& 2016\cite{li_evolving_2016} & & Si tip on graphene (on a-Si substrate) & Increasing layers, \\ \cline{3-6} 
-   & & 2015\cite{Yoon2015MolecularDS} & & silicon tip on graphene & --- \\ \cline{1-6} 
+  \begin{tabular}{ |M{1cm}|M{1cm}|M{1.5cm}|X{2.5cm}|X{4cm}|X{4cm}| } \hline
+    System & Type & Year & Researcher & Materials & Key words \\ \hline
+  \multirow{11}{*}{1} & \multirow{3}{*}{Exp.} & 2019 \cite{zhang_tuning_2019} & Zhang et al.\ & Monolayer graphene  & Straining sheet \\ \cline{3-6} 
+  & & 2015 \cite{Paolicelli_2015} & G. Paolicelli et al.\ & Graphene on SiO2 and Ni(111) substrate  & Layers, load, shear strength \\ \cline{2-6} 
+  & Mix & 2019 \cite{Vazirisereshk_2019} & Vazirisereshk et al.\ & Graphene,  MoS\textsubscript{2} and Graphene/MoS\textsubscript{2} heterostructure & Low friction? \\ \cline{2-6} 
+  & \multirow{5}{*}{Num.}& 2016 \cite{li_evolving_2016} & Li et al.\ & Si tip, graphene on a-Si substrate & Increasing layers \\ \cline{3-6} 
+  & & 2015 \cite{Yoon2015MolecularDS} & Yoon et al.\ & Si tip, graphene on SiO\textsubscript{2} & Stick-slip: tip size, scan angle, layer thickness, substrate flexibility \\ \cline{1-6} 
+  \multirow{5}{*}{2} & \multirow{5}{*}{Num.} & 2012 \cite{Kim_2012} & H.\ J.\ Kim and D.\ E.\ Kim. & Carbon sheet  & Corrugated nano-structured surfaces  \\ \cline{3-6} 
+  & & 2011 \cite{Wijn_2011} & Wijn et al.\ & Graphene flakes between graphite  & Rotational dynamics, superlubricity, temperature  \\ \cline{1-6} 
+  \multirow{12}{*}{3} & \multirow{3}{*}{Exp} & 2005 \cite{DIENWIEBEL2005197} & Dienwiebel et al.\ & Graphene on graphite & Commensurability, superlubricity  \\ \cline{3-6} 
+   &  & 2013 \cite{feng_superlubric_2013}  & Feng et al.\ & Graphene on graphite &  Free sliding (relevant?)  \\ \cline{2-6} 
+   & \multirow{9}{*}{Num.} & 2018 \cite{zhu_study_2018} & P. Zhu and Li & Graphene on gold & Flake size, commensurability  \\ \cline{3-6} 
+   &  & 2019 \cite{ma12091425} & Zhang et al.\  & Graphene on diamond & Temperature, sliding angle, friction coeffcient  \\ \cline{3-6} 
+   &  & 2009 \cite{bonelli_atomistic_2009} & Bonelli et al.\ & Graphene on graphite  & Tight-binding, commensurability \\ \cline{3-6} 
+   &  & 2012 \cite{Reguzzoni_2012} & Reguzzoni et al.\ & Graphene on graphite & Graphite thickness  \\ \cline{3-6} 
+   &  & 2014 \cite{liu_high-speed_2014} & Liu et al.\ & Graphene on graphite & Thickness, deformations, high speed \\ \cline{1-6} 
   \end{tabular}
-  \end{center}
+  % \end{center}
 \end{table}
 
 
 
-
-
-% Maybe open with a clarification on simulation /experimental setups.
-
-Various simulation methods such as Molecular Dynamics (MD), Monte Carlo and ab initio calculations have been applied to investigate the diverse characteristics of graphene \cite{penkov_tribology_2014}. Especially \acrshort{MD} simulations for tribological properties have been used in the recent years.
-
-
-% "Several studies have revealed the frictional behavior of graphene by varying different parameters such as the normal force, sliding velocity and graphene thickness."  \cite{penkov_tribology_2014}
-
-
 % --- SIMULATIONS --- %
-One of the earlist tribological simulations \cite{penkov_tribology_2014} of
-graphene was Bonelli et al. \cite{bonelli_atomistic_2009} in 2009 using a
-tight-binding method to simulate a graphene flake on an infinite graphene sheet.
+One of the earlist tribological simulations of
+graphene was carried out by Bonelli et al. \cite{bonelli_atomistic_2009} in 2009 using a
+tight-binding method to simulate a graphene flake on an infinite graphene sheet \cite{penkov_tribology_2014}.
 Non rigid flake which could deform and rotate, but(?) the graphene flake was
 fixed at a certain angle after applying normal force to reproduce \acrshort{AFM}
 experiments. They found stick-slip behvaiour. The flake size and ``stacking
@@ -1004,9 +977,18 @@ Reguzzoni et al. \cite[33]{penkov_tribology_2014} carried out a MD simulation of
 Smolyanitsky et al. \cite[34]{penkov_tribology_2014} performed a \acrshort{MD} simulation of a CNT probing a suspended graphene sheet. They found that for a positive normal force the friction generally increased with normal force, while for a negative normal force (as the tip pulled the suspended graphene due to adhesion) the friction increased for a decreasing normal force. This is in practive signs of a negative friction coefficient the negative range of normal load.  
 
 
-% --- Experiments --- %
 
-Maybe comment on the fact that most experiment use an FFM tip on a graphene sheet and not a graphene flake sliding on something else. 
+
+
+
+% Various simulation methods such as Molecular Dynamics (MD), Monte Carlo and ab initio calculations have been applied to investigate the diverse characteristics of graphene \cite{penkov_tribology_2014}. Especially \acrshort{MD} simulations for tribological properties have been used in the recent years.
+
+
+
+
+% % --- Experiments --- %
+
+% Maybe comment on the fact that most experiment use an FFM tip on a graphene sheet and not a graphene flake sliding on something else. 
 
 
 
@@ -1017,18 +999,13 @@ Maybe comment on the fact that most experiment use an FFM tip on a graphene shee
 
 
 
-
-% Articles to compare with
-% https://www.mdpi.com/1996-1944/12/9/1425 Anisotropy of Graphene Nanoflake Diamond Interface Frictional Properties
-% https://pubs.acs.org/doi/10.1021/nn305722d Superlubric Sliding of Graphene Nanoflakes on Graphene
-
 % Also \cite{gao_frictional_2004} might be usefull to go through again
 
 % Maybe rememeber to talk about the properties of asperity systems as the sheet creates asperities as it buckles. 
 
 % Include "Molecular dynamics simulation of atomic-scale frictional behavior of corrugated nano-structured surfaces" somewhere.
 
-The structural setup of our simulation is most reminiscent a graphene flake sliding on a substrate. This has been studied numerically in molecular dynamic simulations by Zhu and Li \cite[2018]{zhu_study_2018} for a graphene flake on a gold substrate and by Zhang et al.\ \cite{ma12091425}(2019) on a diamond substrate, and in a tight-binding simulation by Bonelli et al.\ \cite{bonelli_atomistic_2009}(2009) for graphene on graphite. Experimental studies of a graphene flake attatched to an AFM is done by Dienwiebel et al.\ \cite[2005]{DIENWIEBEL2005197} and Feng et al.\ \cite[2013]{feng_superlubric_2013} sliding on graphite, but these are mainly concerned with superlubricity due to flake oreientation commensurability. 
+% The structural setup of our simulation is most reminiscent a graphene flake sliding on a substrate. This has been studied numerically in molecular dynamic simulations by Zhu and Li \cite[2018]{zhu_study_2018} for a graphene flake on a gold substrate and by Zhang et al.\ \cite{ma12091425}(2019) on a diamond substrate, and in a tight-binding simulation by Bonelli et al.\ \cite{bonelli_atomistic_2009}(2009) for graphene on graphite. Experimental studies of a graphene flake attatched to an AFM is done by Dienwiebel et al.\ \cite[2005]{DIENWIEBEL2005197} and Feng et al.\ \cite[2013]{feng_superlubric_2013} sliding on graphite, but these are mainly concerned with superlubricity due to flake oreientation commensurability. 
 
 In our study we simmulate a graphene flake on a silicon substrate which deviates slightly from the above-mentioned references by having a different material combination. Additionally, the normal force is only applied to the ends of the sheet which might have an important effect. Obviously stretching and cutting the sheet will seperate our study dramatically from the references, but we aim to compare the frictional properties to the references before applying stretch or cuts. 
 \\
