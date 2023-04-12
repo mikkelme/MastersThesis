@@ -14,7 +14,7 @@ Friction is a part of the wider field tribology which includes the study of
 friction, wear and lubrication between two surfaces in relative motion \cite[p.
 1]{gnecco_meyer_2015}. In this thesis we will only concern ourselves with so-called wearless dry friction. That is, without any use of lubrication and without any resulting wear of the contacting surfaces. 
 
-\section{Scaling?}
+\section{Friction across scales}
 Tribological systems take place across a broad
 range of time and length scales, ranging from geological stratum layers involved
 in earthquakes \cite{kim_nano-scale_2009} to microscopic atomistic processes, as
@@ -420,6 +420,9 @@ while adding van der Waals adhesion to the simulation gave a sublinear
 relatinship, even though the $F_{\text{fric}} \propto A_{\text{real}}$ was
 maintained. This result emphasizes that the contact area is still expected to be play an important role at the nanoscale for asperity theory. It is simply the definition of the contact area that undergoes a change when transistioning from micro- to nanoscale. 
 
+
+% Refer to the system introduced in Introduction
+
 While the study by Mo et al.\ \cite{mo_friction_2009} considers a single
 asperity on a nanoscale, we are going to study a nanoscale system with no
 initial asperities present. Our system of interest, an initially atomically flat graphene sheet imposed on a flat silicon substrate, make it unfounded to rely on asperity theories. Although both numerical \cite{zhu_study_2018}\cite{ma12091425}\cite{bonelli_atomistic_2009} and experimental \cite[2005]{DIENWIEBEL2005197}\cite{feng_superlubric_2013} studies have been done for so-called nanoflakes
@@ -498,14 +501,14 @@ coupling between the chain and the moving body. In the following we will disucss
 \subsection{Frenkel-Kontorova}
 % Based on \cite{Manini_2016} and \cite{FK2D}.
 
-The standard Frenkel-Kontorova (FK) model consists of a 1D chain of $N$ classical
+The standard Frenkel-Kontorova (\acrshort{FK}) model consists of a 1D chain of $N$ classical
 particles of equal mass, representing atoms, interacting via hamornic forces and moving in a sinusoidal potential as sketched in \cref{fig:FK_model} \cite{Manini_2016}. The hamiltonian is 
 \begin{align}
   H = \sum_{i=1}^N \left[\frac{p_i^2}{2m} + \frac{1}{2}K(x_{i+1} - x_i - a_c)^2 + \frac{1}{2}U_0 \cos{\left(\frac{2\pi x_i}{a_b}\right)}\right],
   \label{eq:H_FK}
 \end{align}
 where the atoms are labelled sequently $i = 1, \hdots, N$. The first term $p_i^2/2m$ represents the kinetic energy with momentum $p_i$
-and mass $m$. Often the effetcs of inertia are neglected, reffered to as the static FK model, while the inclusion in \cref{eq:H_FK} is known as the dynamic FK model \cite{FK2D}. The next term describes the harmonic interaction with elastic
+and mass $m$. Often the effetcs of inertia are neglected, reffered to as the static \acrshort{FK} model, while the inclusion in \cref{eq:H_FK} is known as the dynamic \acrshort{FK} model \cite{FK2D}. The next term describes the harmonic interaction with elastic
 constant $K$, nearest neighbour distance $\Delta x = x_{i+1} - x_i$ and 
 corresponding nearest neighbour equilibrium distance $a_c$. The final term represents the periodic substrate potential, serving as the external potential on site, with amplitude $U_0$ and period $a_b$. Different boundary choices can be made where both free ends and periodic conditions gives similar results. The choice of fixed ends however makes the chain incapable of sliding.
 
@@ -516,7 +519,7 @@ corresponding nearest neighbour equilibrium distance $a_c$. The final term repre
   \label{fig:FK_model}
 \end{figure}
 
-To probe static friction one can apply an external adiabatically increasing force until sliding accours. This corresponds to the static FK model, and it turns out that the sliding properties are entirely governed by its topological excitations referred to as so-called \textit{kinks} and \textit{antikinks}
+To probe static friction one can apply an external adiabatically increasing force until sliding accours. This corresponds to the static \acrshort{FK} model, and it turns out that the sliding properties are entirely governed by its topological excitations referred to as so-called \textit{kinks} and \textit{antikinks}
 
 \subsubsection{Commensurability} We can subdivide the frictional behaviour in terms of commensurability, that is, how well the spacing of the atoms match the periodic substrate potential. We describe this by the length ratio $\theta = a_b / a_c = N / M$ where $M$ denotes the number of minemas in the potential (within the length of the chain). A rational number for $\theta$ means that we can achieve a perfect alignment between the atoms in the chain and the potential minemas, without stretching the chain, corresponding to a \textit{commensurate} case. If $\theta$ is irrational the chain and substrate cannot fully align without some stretching of the chain, and we denote this as being \textit{incommensurate}.
 
@@ -570,7 +573,7 @@ as illustrated in \cref{fig:incommensurable_example}
 
 % Maybe use the strength $\lambda = U_0 / (K a_b^2)$ with critical strength $\lambda_c$ instead of critical $K$?
 
-The incommensurable FK model contains a critical elastic constant $K_c$, such
+The incommensurable \acrshort{FK} model contains a critical elastic constant $K_c$, such
 that for $K > K_c$ the static friction $F_s$ drops to zero, making the chain able to initiate a slide at no energy cost, while the low-velocity kinetic friction is dramatically reduced. This can be explained by the
 fact that the displacement accouring in the incommensurable case will yield just
 as many atoms climbing up a corrugation as there are atoms climbing down. For a big (infinite) chain this will exactly balance the forces making it
@@ -591,7 +594,7 @@ past the energy barrier which act as a dynamical constraint. The Aubry transisti
 can be invistigated as a first-order phase transistion for which power laws can be
 defined for the order parameter, but this is beyond the scope of this thesis.
 %  This is beyond the scope of this thesis as we
-% merely are going to point to the FK model for the understanding of stick-slip behvaiour and the concept of commensurability.
+% merely are going to point to the \acrshort{FK} model for the understanding of stick-slip behvaiour and the concept of commensurability.
 
 The phenonema of non-pinned configurations is named \textit{superlubricity} in
 tribological context. Despite the misleadning name this referes to the case
@@ -617,11 +620,11 @@ by changing the orientation of the sheet relative to the substrate. Dienwiebel e
 %Based on \cite{FK2D}
 
 
-% The FK model can also describe phonons and heat in the lattices, which absorb the kinetic energy of the sliding[4]. \cite{FK2D}
+% The \acrshort{FK} model can also describe phonons and heat in the lattices, which absorb the kinetic energy of the sliding[4]. \cite{FK2D}
 
-% Consequently, the FK model is the simplest model in which dynamic friction is emergent, while in other models some form of heuristic damping must be included.\cite{FK2D}
+% Consequently, the \acrshort{FK} model is the simplest model in which dynamic friction is emergent, while in other models some form of heuristic damping must be included.\cite{FK2D}
 
-In the FK model the kinetic friction is primarily caused by resonance between
+In the \acrshort{FK} model the kinetic friction is primarily caused by resonance between
 the sliding induced vibrations and phonon modes in the chain \cite{FK2D}. The specific dynamics is found to be highly model and dimension specific, and even for the 1D case this is rather complex. However, we make a simplified analysis of the 1D rigig chain case to showcase the reasoning behind the phenomena.
 
 When all atoms are sliding rigidly with center of mass velocity $v_{{\text{CM}}}$ the atoms will pass the potential maxima with the so-called \textit{washboard frequency} $\Omega = 2\pi v_{{\text{CM}}} / a_b$. For a weak coupling between the chain and the potential we can use the zero potential case as an approximation for which the known dispersion relation for the 1D harmonic chain is given \cite[p. 92]{Kittel2004}
@@ -658,7 +661,7 @@ A common way to model the non-zero temperature case is by the use of a Langevin
 thermostat, which models the dissipation of heat by adding a viscous damping
 force and thermal fluctuations by the addition of Gaussian random forces with
 variance proportional to the temperature (see \cref{sec:langevin} for more details). In combination, this gives rise to a kinetic
-friction that is both velocity and temperature dependent. By extending the FK model into 2D \cite{FK2D} it can be shown numerically that
+friction that is both velocity and temperature dependent. By extending the \acrshort{FK} model into 2D \cite{FK2D} it can be shown numerically that
 the friction coefficient generally increases with increasing velocity and
 temperature resepectively, although the specific of the trend is highly
 sensitive to model parameters. 
@@ -672,7 +675,7 @@ sensitive to model parameters.
 % As the system is Hamiltonian (no heuristic damping) the total energy is conserved. Nevertheless, energy can be transferred from the centre of mass to the internal degrees of freedom, leading to the arrest of the chain in time. This effect can be interpreted as an effective friction. \cite{van_den_Ende_2012}
 
 
-% The majority [6–12] examines the steady state of the dynamical FK model in the presence of dissipation, rep- resenting the coupling of phonons to other, undescribed degrees of freedom. \cite{PhysRevLett.85.302}
+% The majority [6–12] examines the steady state of the dynamical \acrshort{FK} model in the presence of dissipation, rep- resenting the coupling of phonons to other, undescribed degrees of freedom. \cite{PhysRevLett.85.302}
 
 
 % Static friciton behvaiour is robust and remains similar in 2D but dynamical friction is strongly influenced. 
@@ -919,26 +922,106 @@ loading concentrated to a single point on the flake rather than achieving an eve
 
 
 
-\subsection{Expected frictional properties}\label{sec:expected_prop}
+\section{Expected frictional properties of graphene}\label{sec:expected_prop}
+In general we find three types of systems being studies for the frictional properties of graphene: 1) An \acrshort{AFM} type setup where the graphene, either resting on a substrate or in bulk graphite form, is probed by tip scanning across the surface. 2) Graphene sandwhiched between two substarte layers moving relative to each other using the graphene as a solid lubricant. 3) A graphene flake sliding on a substrate, either being dragged by an \acrshort{AFM} tip or by a similar applied force in numerical simulations. Only the latter matches our simulation setup, but we will consider results from all three categories due to a few amounts of studies following this approach. The relevant studies are listed as follows (maybe just tmp for my own sake).
+
+\begin{enumerate}
+  \item Setup % 1: AFM style (asperity related)
+    \begin{enumerate}
+      \item \cite{zhang_tuning_2019}: Exp., Straining sheet
+      \item \cite{li_evolving_2016}: Num., Increasing layers,
+      \item \cite{Yoon2015MolecularDS}: Num, silicon tip on graphene
+      \item \cite{Paolicelli_2015}: Exp., graphene placed on SiO2 and Ni(111)substrates.
+      \item \cite{Vazirisereshk_2019}: Exp., tip on graphene, MoS2 and Graphene/MoS2 heterostructure.
+    \end{enumerate}
+  \item Setup % 2: Sandwhich 
+    \begin{enumerate}
+      \item \cite{C2NR30691C}: Num., Corrugated nano-structured surfaces
+      \item \cite{Wijn_2011}: Num., Rotational dynamics superlubricity
+    \end{enumerate}
+  \item Setup % 3: Flake on substrate
+    \begin{enumerate}
+      \item \cite{zhu_study_2018}: Num., graphene flake on gold substrate
+      \item \cite{ma12091425}: Num., graphene on diamond, Orientation (Anisotropy)
+      \item \cite{DIENWIEBEL2005197}: Exp., graphene on graphite, orientation and superlubricity
+      \item \cite{feng_superlubric_2013}: Exp., graphene on graphite, orientation and superlubricity
+      \item \cite{bonelli_atomistic_2009}: Num. (tight-binding), graphene on graphite.
+      \item \cite{Reguzzoni_2012}, Num, graphene on graphite, varying layers (graphite thickness).
+      \item \cite{liu_high-speed_2014}, Num, graphene on graphite, high speed 
+    \end{enumerate}
+\end{enumerate}
+
+
+
+\begin{table}[H]
+  \begin{center}
+  \caption{...}
+  \label{tab:friction_ref}
+  \begin{tabular}{ |c|c|c|l|l|l| } \hline
+    System & Type & Year & Researcher & materials & Info \\ \hline
+  \multirow{5}{*}{1} & \multirow{3}{*}{Exp.} & 2019\cite{zhang_tuning_2019} & & Monolayer graphene  & Straining sheet \\ \cline{3-6} 
+   & & 2015\cite{Paolicelli_2015} & & & graphene placed on SiO2 and Ni(111)substrates. \\ \cline{3-6} 
+   & & 2019\cite{Vazirisereshk_2019} & & graphene, MoS2 and Graphene/MoS2 heterostructure & --- \\ \cline{2-6} 
+   & \multirow{2}{*}{Num.}& 2016\cite{li_evolving_2016} & & Si tip on graphene (on a-Si substrate) & Increasing layers, \\ \cline{3-6} 
+   & & 2015\cite{Yoon2015MolecularDS} & & silicon tip on graphene & --- \\ \cline{1-6} 
+  \end{tabular}
+  \end{center}
+\end{table}
+
+
+
+
+
+% Maybe open with a clarification on simulation /experimental setups.
 
 Various simulation methods such as Molecular Dynamics (MD), Monte Carlo and ab initio calculations have been applied to investigate the diverse characteristics of graphene \cite{penkov_tribology_2014}. Especially \acrshort{MD} simulations for tribological properties have been used in the recent years.
 
-One of the earlist tribological simulations \cite{penkov_tribology_2014} of graphene was Bonelli et al. \cite{bonelli_atomistic_2009} in 2009 tight-binding... 
 
-% Working here
-% Working here
-% Working here
-% Working here
-% Working here
-% Working here
-% Working here
+% "Several studies have revealed the frictional behavior of graphene by varying different parameters such as the normal force, sliding velocity and graphene thickness."  \cite{penkov_tribology_2014}
+
+
+% --- SIMULATIONS --- %
+One of the earlist tribological simulations \cite{penkov_tribology_2014} of
+graphene was Bonelli et al. \cite{bonelli_atomistic_2009} in 2009 using a
+tight-binding method to simulate a graphene flake on an infinite graphene sheet.
+Non rigid flake which could deform and rotate, but(?) the graphene flake was
+fixed at a certain angle after applying normal force to reproduce \acrshort{AFM}
+experiments. They found stick-slip behvaiour. The flake size and ``stacking
+angle'' affected the frictional behaviour, such that a large area resulted in
+experienced less friciton due the idea that the reactive atoms at the boundary
+were dominant in increasing friction. The influence of the stacking angle was
+attributed to the commensurability effect highlighted by the \acrshort{FK}
+model. Similar bahviour in various structures such as carbon nano tubes CNT and
+mice (what is mice) have previously been reported
+\cite[41-42]{penkov_tribology_2014}. It has also been found that graphene (the
+ideal nano-structure) exhibits superlubricity in cases of lattice mismatch.
+
+% Thickness of graphene substrate
+Reguzzoni et al. \cite[33]{penkov_tribology_2014} carried out a MD simulation of a graphene flake sliding sliding over a multi-layer (1-4) graphite substrate. They found that out-of-plane deformation of the graphene sheet (which one) increased with an increasing number of graphene layers. Meaning, that the vertical contatc stifness decreased with graphene thickness. Because frictional force and stick-slip motion were found to increase with decreasing stifness if was concluded that the single layer graphene were the best candidate for a solid nano-lubricant film. Moreover, the authors reported that the out-of-plane deformation nd the shear deformation induced by the stick-slip motion were the dominant factors incluencing friction.  
+
+
+%CNT probing suspended graphene sheet
+Smolyanitsky et al. \cite[34]{penkov_tribology_2014} performed a \acrshort{MD} simulation of a CNT probing a suspended graphene sheet. They found that for a positive normal force the friction generally increased with normal force, while for a negative normal force (as the tip pulled the suspended graphene due to adhesion) the friction increased for a decreasing normal force. This is in practive signs of a negative friction coefficient the negative range of normal load.  
+
+
+% --- Experiments --- %
+
+Maybe comment on the fact that most experiment use an FFM tip on a graphene sheet and not a graphene flake sliding on something else. 
+
+
+
+% --- Lowering friction with strain --- %
+% Tuning friction to a superlubric state via in-plane straining
+
+
+
+
 
 
 % Articles to compare with
-% https://www.mdpi.com/1996-1944/12/9/1425
-% https://pubs.acs.org/doi/10.1021/nn305722d
+% https://www.mdpi.com/1996-1944/12/9/1425 Anisotropy of Graphene Nanoflake Diamond Interface Frictional Properties
+% https://pubs.acs.org/doi/10.1021/nn305722d Superlubric Sliding of Graphene Nanoflakes on Graphene
 
-% Maybe read ``Tribology of Graphene: A Review'' (in zotero already).
 % Also \cite{gao_frictional_2004} might be usefull to go through again
 
 % Maybe rememeber to talk about the properties of asperity systems as the sheet creates asperities as it buckles. 
@@ -970,6 +1053,7 @@ In the following we summarize the qualitative expections for the nanofriction be
   origin of the pinning effects suggest that static friction can increase with
   sheet size up to a factor $A\propto A^{1/2}$, but this is also reported to be specific of the contact shape \cite{Manini_2016}.
   
+  % Talk about size effects?
 
   % Concerning stick-slip friction, another problem is that, unlike simulations, real experiments contain mesoscale or macroscale component intrinsically involved in the mechanical instabilities of which stick-slip consists. Here the comforting observation is that stick-slip is nearly independent of speed, so that so long as a simulation is long enough to realize a sufficient number of slip events, the results may already be good enough [148]  \cite{Manini_2016}.
 
@@ -1161,3 +1245,7 @@ By consulting with the most related numerical and experimental studies, while al
 % nanomechanics studies.
 
 
+
+\section{Research questions}
+
+% Formulate the research questions guiding the reading of the thesis moving on. 
