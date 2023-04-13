@@ -958,6 +958,7 @@ Several studies have investigated the frictional behaviour of graphene by varyin
   \end{tabular}
   % \end{center}
 \end{table}
+% ---> Add \cite{zhao_thermally_2007}
 
 % ---- Qualitative-ish --- %
 One of the earlist tribological simulations of graphene was carried out by
@@ -1012,6 +1013,8 @@ al. \cite{zhang_tuning_2019} additionally found that straining a suspended
 stretch, modulating the flexibility which consequently change the local pinning
 capability of the contact interface and lowers the dynamic friction. Another surface manipulating study was performed by H.\ J.\ Kim and D.\ E.\ Kim. \cite{Kim_2012} where the investigated the effects of corrugated
 nano-structured surfaces which altered the contact area and structural stiffness resulting in both increased and slightly decreased friction under certain load ranges. 
+
+% The high-speed sliding friction of graphene and novel routes to persistent superlubricity talks about achieving superlubricity by stretching the graphite substrate.
 
 Negative friction coefficients \hl{TO-DO}.
 
@@ -1129,6 +1132,7 @@ Having considered some qualitative expectations we take a look at the
 quantitative expectations for the variables such as load, valocity, temperature
 and contact area.
 
+% Normal load
 The dependency on friction of normal load turns out to be a complex matter and
 has proven to be highly system dependent. As already mentioned, asperity theory
 mainly point to a sublinear relationship between friction and load, while the
@@ -1141,12 +1145,22 @@ relationship while, \acrshort{FFM} study by G. Paolicelli et al.\
 \cite{Paolicelli_2015} found a great fit with the sublinear predictions of
 Maugis-Dugdale theory $(F_f \propto (F_N - F_{N,0})^{2/3})$. Here the discrepancy might lie in the difference between a spherical tip indenting the graphene sheet as opposed to two flat graphene/graphite sheets in contact. However, numerical studies still find both sublinear \cite{bonelli_atomistic_2009} and linear \cite{ma12091425} load dependencies.
 
+% Look at Vazirisereshk
+% maybe Zhang tuning
 
-% FFM analog to the single asperity setup have yielded both linear relationship \cite{gao_frictional_2004} (silicon tip on gold) while Schwarz et al.\ \cite{PhysRevB.56.6987} found that FFM with well-defined spherical tips mathed with theoretical results (DMT, elastic spheres pressed together \cite[p. 200]{gnecco_meyer_2015}), yielding a power law $F_{\text{fric}} = F_N^{2/3}$. 
+% Velocity 
+Generally a increasing logarithmic velocity dependence is found in experimental \acrshort{AFM} studies  \cite[p. 201]{gnecco_meyer_2015} associated to thermally activated hopping of the scanning tip. At higher velocities thermally activated processes are less important and friction becomes independent of velocity. This has been observed for Si tips and diamond, graphite and amorphous carbon surfaces with scan velocities above \SI{1}{\mu/s}. Guerra et al.\ \cite{Guerra_2010} have studied gold clusters on graphite using \acrshort{MD} simulations. They found a viscous friction, friction is proportional to sliding velocity, response in both low and high speed domains. However, thermal effects reversed: at low speed (diffusive) friction decreased with increased temperature while at high speed (ballistic) speed friction increases with temperature. In the \acrshort{MD} simlations the crossover from ballistic to diffusive occour between 10 and 1 m/s. 
+
+% Temperature
+Experimentally Zhao et al.\ observed in a series of \acrshort{AFM} on MATERIAL  that friction decreases strongly with temperature as $F_{\text{fric}} \propto \exp{(1/T)}$. This matches theoretical predictions by Krylov et al.\ \cite{PhysRevE.71.065101} which attributes this to thermal activation inhibiting stick-slip behaviour. 
+
+
+Wijn et al.\ \cite{Wijn_2011} find that friction commensurability can be lost at higher temperature (above 200K) were the found a power law behaviour $F_k \propto T^{-1.13 \pm0.04}$.
+
+Zhang et al.\ \cite{ma12091425} found that friction increased with temperature, using a velocity of 10 m/s. Considering the findings of \cite{Guerra_2010} this discrepancy might be due to low speed diffisuve behvaiour as opposed to high speed ballistic behaviour. 
 
 
 
-% Zhang et al.\ \cite{ma12091425} finds a seemingly linear relationship $F_{\text{fric}} \propto F_N$ while Bonelli et al.\ \cite{bonelli_atomistic_2009} reports a sublinear relationship. The latter corresponds with that of nanosasperity simulations where Mo et al.\ \cite{mo_friction_2009}, using an amorphous carbon tip on a diamond sample, also found a sublinear relationship when including adhesion and linear without adhesion.
 
 
 \begin{table}[H]
@@ -1154,7 +1168,9 @@ Maugis-Dugdale theory $(F_f \propto (F_N - F_{N,0})^{2/3})$. Here the discrepanc
   \caption{Qualitative trends}
   \label{tab:qual_exp}
   \begin{tabular}{  M{5cm}  X{12cm} } \hline
-  \textbf{Normal load} & Generally an increasing friction force is expected with increasing load. Both non-dependent, sublinear and linear relationship can be expecteded here. \\
+  \textbf{Normal load} & Generally an increasing friction force is expected with increasing load. Both non-dependent, sublinear and linear relationship can be expecteded here. \\ \\
+  \textbf{Velocity} & Generally an increasing friction force is expected with increased sliding velocity. Experimental results suggest that kinetic friction goes as $F_k\propto \ln{(v)}$, with the expectation that friction become independent of velocity at ´´high'' velocities above \SI{1}{\mu/s}. Numerically a viscous $F_k \propto v$ is expected for all velocity ranges. \\ \\
+  \textbf{Temperature} & . \\
   \hline
   \end{tabular}
   \end{center}
@@ -1199,7 +1215,6 @@ Maugis-Dugdale theory $(F_f \propto (F_N - F_{N,0})^{2/3})$. Here the discrepanc
 \end{table}
 
 
-% As anticipated in Sec. 4.2, MD simulation is an ideal tool for the study of friction in fast-sliding of nanosized systems. Using gold clusters on graphite as test system, simulation has explored high-speed friction, and especially differences and similarities from low speed, examining the slowing down of a ballistically kicked cluster. Both kinetic frictions are similarly viscous – proportional to velocity. However, they show just the opposite thermal dependence. Whereas low speed (diffusive) friction decreases upon heating, when diffusion increases, the high speed (ballistic) friction rises with temperature, when thermal fluctuations of the contact increase [200]. \cite{Manini_2016}
 
 % \begin{table}[H]
 %   \begin{center}
