@@ -430,6 +430,10 @@ sliding on a substrate, the dependence of friction force on contact area is not 
 \cref{sec:expected_prop} for a more detailed dicussion), this suggests
 that some other mechanisms are governing friction at this level. 
 
+
+``Load-independent friction has also been observed in FFM experiments on thermally oxidized MoS2, and it was proposed that MoO3 nanocrystals, that grew during the oxidation process on the MoS2 surface [35], acted as a spacer between the tip and the sample, such that the contact area remained unchanged upon loading.In the present case, the contact area would be completely determined by the flake size, which would be independent of the loading force.Hence, the friction would only increase slightly with normal load as the result of the increase in contact pressure.'' \cite{DIENWIEBEL2005197}
+
+
 Before diving into alternative theoretical approaches to adress this issue we point out that exactly this transistion, between nanoscale asperities and atomically smooth surfaces, is of outermost importance for the objective of the thesis. By introducing kirigami cuts and stretching the sheet we expect to see an out of plane buckling which induce an ensemble of asperities on the sheet. Hence, we might hypothesize that such a transition will contribute to a significant change in the goverening mechanism of friction bridgering the two domains of nanoscale asperity and smooth surface theory. 
 \\
 \\
@@ -955,8 +959,7 @@ Several studies have investigated the frictional behaviour of graphene by varyin
   % \end{center}
 \end{table}
 
-% \subsection{Qualitative observations}
-
+% ---- Qualitative --- %
 One of the earlist tribological simulations of graphene was carried out by
 Bonelli et al. \cite{bonelli_atomistic_2009} in 2009 using a tight-binding
 method to simulate a graphene flake on an infinite graphene sheet
@@ -966,7 +969,11 @@ however excluding thermal excitations. They recovered the stick-slip behaviour
 which is also observed in \acrshort{FFM} setups both experimentally
 \cite{zhang_tuning_2019} and numerically \cite{li_evolving_2016}, and they found an agreement with the qualitative observation that soft spring allows for clean stick-slip while hard springs inhibit it (below 40 nN/m?). In \acrshort{AFM} and SFA \hl{Not mentioned before} experiemnts, the stick-slip motion tend to transistion into smooth sliding when the speed exceeds $\sim \SI{1}{\mu/s}$ while in MD modelling the same transistion is observed in the $\sim \SI{1}{m/s}$ region \cite{Manini_2016}. This 6 order of magnitude discrepancy has been largely discussed in connection to simplifying assumptions in MD simulations Moreover, Bonelli et al.\ \cite{bonelli_atomistic_2009} found that commensurability, through orientation of the support and the angle of pulling, to be of high importance for the frictional behaviour which generally alligns with the predictions of the \acrshort{FK} type
 models. They confirmed qualitatively the experimental observation of
-superlubricity for certain incommensurable orientations as shown experimentally by Dienwiebel et al.\cite{DIENWIEBEL2005197} and further supported by experimental measurements of interaction energies by Feng et al.\ \cite{feng_superlubric_2013}. Although, the friction froce and friction coefficeint is found to be one order of magnitude higher than that of the experimental results which is attributed to the details of the numerical modelling (the quantative expectations is further discussed in \hl{XXX}). % Talk about which direction is most likely to give superlubricity.
+superlubricity for certain incommensurable orientations as shown experimentally by Dienwiebel et al.\cite{DIENWIEBEL2005197} and further supported by experimental measurements of interaction energies by Feng et al.\ \cite{feng_superlubric_2013}. Although, the friction froce and friction coefficeint is found to be one order of magnitude higher than that of the experimental results which is attributed to the details of the numerical modelling. Experimental studies. Generally the experimental found coefficients between graphite and most materials lies in the range 0.08-0.18 \cite{DIENWIEBEL2005197} and while Dienwiebel et al. \cite{DIENWIEBEL2005197} reported very different frictional forces on the order 0.01-0.45 nN (all the way down to inmeasureable by their equipment) in a load range of roughly 30 nN, the change in friction with applied load was as low as 0.05-0.4 \% (coef of 0.0005-0.004). 
+
+The experimental studies generally give coefficients in the range $\sim [0.01, 0.2]$ \cite{penkov_tribology_2014} \cite{DIENWIEBEL2005197} (what definition?)
+
+% Talk about which direction is most likely to give superlubricity.
 
 Furthermore, Bonelli et al.\ \cite{bonelli_atomistic_2009} found friction to decrease with flake size which is mainly attributed to the idea that boundary
 atoms are dominant in increasing friction, but also due to their system setup
@@ -975,7 +982,6 @@ by Varini et al.\ \cite{Varini_2015}, based on Kr islands adsorbed on Pb(111), t
 the edge (preventing otherwise superlubricity due to incommensurability). They reported a relationship $F_s \sim A^{\gamma_s}$ not only sublinear $\gamma_s <
 1$ but also sublinear with respect to the island perimeter $P \propto A^{1/2}$ by having $\gamma_s = 0.25$ for a hexagonal edge and $\gamma_s = 0.37$ when circular, indicating that only a subset of
 the edge is responsible for the pinning effect. Additionally, the edge pinning effect was found to decrease with increasing temperature as the edge energy barriers are reduced. In general this alligns with the \acrshort{FK} models prediction a lowering of friction due to thermal activation of the atoms overcoming the energy barriers which is also found the numerical study by Wijn et al.\ \cite{Wijn_2011} 
-
 
 
 Evolution effects, or fiction strengthening, were observed experimentally by Zhang et al.\ \cite{zhang_tuning_2019} (only when on substrate) and numcerically by Li et al.\ \cite{li_evolving_2016}, meaning that the friction force will increase during the initial period of sliding. This is atrributed to ... and was found to dimish for an increasing number of layers in the substrate and was observed only when the two-dimensional material was loosely adhering to a substrate. On the same note they found in general that the friction between graphene and graphite increased with increasing layers which is also supported by the findings in \hl{XXX}
@@ -1000,6 +1006,7 @@ In the following we summarize the qualitative expections for the nanofriction be
   \textbf{Commensurability} & Both static and dynamic friction is expected to be highly sensitive to commensurability, both through lattice spacing and orientation but also by the path the flake is forced along. A low spring stiffness will effect the freedom to shift around which affects commensurability. \\ \\
    \textbf{Friction evolution} & For a monolayer graphene sheet on a substrate \\ \\
   \textbf{Thickness} & Friction increase with increasing graphite layers (\hl{Is this relevant?}) \\ \hline
+  \textbf{Negative coef} & Observed, or only with subtracting force \\ \hline
   \end{tabular}
   \end{center}
 \end{table}
@@ -1044,6 +1051,9 @@ In the following we summarize the qualitative expections for the nanofriction be
 
 % In our study we simmulate a graphene flake on a silicon substrate which deviates slightly from the above-mentioned references by having a different material combination. Additionally, the normal force is only applied to the ends of the sheet which might have an important effect. Obviously stretching and cutting the sheet will seperate our study dramatically from the references, but we aim to compare the frictional properties to the references before applying stretch or cuts. 
 
+
+
+% ---- Quantitative --- %
 
 % See comparison on friction coef in the one with diamond study 
 
