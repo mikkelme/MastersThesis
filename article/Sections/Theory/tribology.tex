@@ -930,7 +930,7 @@ loading concentrated to a single point on the flake rather than achieving an eve
 
 \section{Expected frictional properties of graphene}\label{sec:expected_prop}
 
-Several studies have investigated the frictional behaviour of graphene by varying different parameters such as normal force, sliding velocity, temperature, commensurability and graphene thickness \cite{penkov_tribology_2014}. In general, we find three types of systems being studied: 1) An \acrshort{FFM} type setup where the graphene, either resting on a substrate or suspended, is probed by a \acrshort{AFM} tip scanning across the surface. 2) Graphene ``sandwiched'' (=SFA) in between two substrate layers moving relative to each other using the graphene as a solid lubricant. 3) A graphene flake sliding on a substrate, either being dragged by an \acrshort{AFM} tip or by more complex arrangements in numerical simulations. While only the latter cases matches our intended system setup, we will consider results from all three categories due to the sparse results availble. The relevant studies which we consider are listed in \cref{tab:friction_ref}. 
+Several studies have investigated the frictional behaviour of graphene by varying different parameters such as normal force, sliding velocity, temperature, commensurability and graphene thickness \cite{penkov_tribology_2014}. In general, we find three types of systems being studied: 1) An \acrshort{FFM} type setup where the graphene, either resting on a substrate or suspended, is probed by an \acrshort{AFM} tip scanning across the surface. 2) \acrshort{SFA} approach with the graphene ``sandwicheded'' in between two substrate layers moving relative to each other using the graphene as a solid lubricant. 3) A graphene flake sliding on a substrate, either being dragged by an \acrshort{AFM} tip or by more complex arrangements in numerical simulations. While only the latter case matches our intended system setup, we consider all three categories due to the sparse results availble. The relevant studies which we consider are listed in \cref{tab:friction_ref}. 
 
 
 
@@ -941,7 +941,7 @@ Several studies have investigated the frictional behaviour of graphene by varyin
   \label{tab:friction_ref}
   \begin{tabular}{ |M{1cm}|M{1cm}|M{1.5cm}|X{2.5cm}|X{4cm}|X{4cm}| } \hline
   System & Type & Year & Researcher & Materials & Key words \\ \hline
-  \parbox[t]{2mm}{\multirow{11}{*}{\rotatebox[origin=c]{90}{AFM}}} & \multirow{1}{*}{Exp.} & 2015 \cite{Paolicelli_2015} & G. Paolicelli et al.\ & Graphene on SiO2 and Ni(111) substrate  & Layers, load, shear strength \\ \cline{2-6} 
+  \parbox[t]{2mm}{\multirow{11}{*}{\rotatebox[origin=c]{90}{FFM}}} & \multirow{1}{*}{Exp.} & 2015 \cite{Paolicelli_2015} & G. Paolicelli et al.\ & Si tip, graphene on SiO2 and Ni(111) substrate  & Layers, load, shear strength \\ \cline{2-6} 
   & \multirow{4}{*}{Mix }& 2019 \cite{zhang_tuning_2019} & Zhang et al.\ & Monolayer graphene  & Straining sheet \\ \cline{3-6} 
   &  & 2019 \cite{Vazirisereshk_2019} & Vazirisereshk et al.\ & Graphene,  MoS\textsubscript{2} and Graphene/MoS\textsubscript{2} heterostructure & Low friction? \\ \cline{2-6} 
   & \multirow{4}{*}{Num.} & 2015 \cite{Yoon2015MolecularDS} & Yoon et al.\ & Si tip, graphene on SiO\textsubscript{2} & Stick-slip: tip size, scan angle, layer thickness, substrate flexibility \\ \cline{3-6} 
@@ -959,54 +959,78 @@ Several studies have investigated the frictional behaviour of graphene by varyin
   % \end{center}
 \end{table}
 
-% ---- Qualitative --- %
+% ---- Qualitative-ish --- %
 One of the earlist tribological simulations of graphene was carried out by
 Bonelli et al. \cite{bonelli_atomistic_2009} in 2009 using a tight-binding
-method to simulate a graphene flake on an infinite graphene sheet
-\cite{penkov_tribology_2014}. They implemented a FKT-like setup where each atom
-in the flake is coupled horizontally to a rigid support by elastic springs,
-however excluding thermal excitations. They recovered the stick-slip behaviour
-which is also observed in \acrshort{FFM} setups both experimentally
-\cite{zhang_tuning_2019} and numerically \cite{li_evolving_2016}, and they found an agreement with the qualitative observation that soft spring allows for clean stick-slip while hard springs inhibit it (below 40 nN/m?). In \acrshort{AFM} and SFA \hl{Not mentioned before} experiemnts, the stick-slip motion tend to transistion into smooth sliding when the speed exceeds $\sim \SI{1}{\mu/s}$ while in MD modelling the same transistion is observed in the $\sim \SI{1}{m/s}$ region \cite{Manini_2016}. This 6 order of magnitude discrepancy has been largely discussed in connection to simplifying assumptions in MD simulations Moreover, Bonelli et al.\ \cite{bonelli_atomistic_2009} found that commensurability, through orientation of the support and the angle of pulling, to be of high importance for the frictional behaviour which generally alligns with the predictions of the \acrshort{FK} type
-models. They confirmed qualitatively the experimental observation of
-superlubricity for certain incommensurable orientations as shown experimentally by Dienwiebel et al.\cite{DIENWIEBEL2005197} and further supported by experimental measurements of interaction energies by Feng et al.\ \cite{feng_superlubric_2013}. Although, the friction froce and friction coefficeint is found to be one order of magnitude higher than that of the experimental results which is attributed to the details of the numerical modelling. Experimental studies. Generally the experimental found coefficients between graphite and most materials lies in the range 0.08-0.18 \cite{DIENWIEBEL2005197} and while Dienwiebel et al. \cite{DIENWIEBEL2005197} reported very different frictional forces on the order 0.01-0.45 nN (all the way down to inmeasureable by their equipment) in a load range of roughly 30 nN, the change in friction with applied load was as low as 0.05-0.4 \% (coef of 0.0005-0.004). 
+method (excluding thermal excitations) to simulate a graphene flake on an
+infinite graphene sheet \cite{penkov_tribology_2014}. They implemented a
+FKT-like setup where each atom in the flake is coupled horizontally to a rigid
+support by elastic springs. They recovered the stick-slip behaviour, which is
+also observed in \acrshort{FFM} setups both experimentally
+\cite{zhang_tuning_2019} and numerically
+\cite{li_evolving_2016}\cite{zhu_study_2018}, and they found an agreement with
+the qualitative observation that soft springs allows for a clean stick-slip
+motion while hard springs inhibit it ($\lesssim$ 40 N/m). In \acrshort{AFM} and
+\acrshort{SFA}  experiemnts, the stick-slip motion tend to transistion into
+smooth sliding when the speed exceeds $\sim \SI{1}{\mu/s}$ while in MD modelling
+the same transistion is observed in the $\sim \SI{1}{m/s}$ region
+\cite{Manini_2016}. This 6 order of magnitude discrepancy has been largely
+discussed in connection to simplifying assumptions in MD simulations. 
 
-The experimental studies generally give coefficients in the range $\sim [0.01, 0.2]$ \cite{penkov_tribology_2014} \cite{DIENWIEBEL2005197} (what definition?)
-
-% Talk about which direction is most likely to give superlubricity.
+Bonelli et al.\ \cite{bonelli_atomistic_2009} also found that commensurability,
+through orientation of the flake and the direction of sliding, to be of high
+importance for the frictional behaviour which generally alligns with the
+predictions of the \acrshort{FK} type models. They confirmed qualitatively the
+experimental observation of superlubricity for certain incommensurable
+orientations as shown experimentally by Dienwiebel et
+al.\cite{DIENWIEBEL2005197} and further supported by experimental measurements
+of interaction energies by Feng et al.\ \cite{feng_superlubric_2013}. This commensurability importance is also reported for \acrshort{MD} simulations \cite{ma12091425}\cite{zhu_study_2018}\cite{Wijn_2011}. Bonelli et al.\ \cite{bonelli_atomistic_2009} found the friction force and coefficient to be one order of magnitude higher than that of the experimental results which they attribute to the details of the numerical modelling. Generally the experimental
+coefficients between graphite and most materials lies in the range 0.08-0.18
+\cite{DIENWIEBEL2005197} and while Dienwiebel et al.\ \cite{DIENWIEBEL2005197}
+reported a wide range of frictional forces all the way from $28 \pm 16$ pN to $453 \pm 16$ pN in a load range $\sim [-10, 20] nN$ the change in friction with applied load was as low as 0.05-0.4 \% (coef. of 0.0005-0.004). This indicates an almost independent relationship between friction and load which is attributed to the lack of change in contact area. 
 
 Furthermore, Bonelli et al.\ \cite{bonelli_atomistic_2009} found friction to decrease with flake size which is mainly attributed to the idea that boundary
 atoms are dominant in increasing friction, but also due to their system setup
-decreasing the rotational freedom as size increases. However, a numerical \acrshort{MD} study of monolayer islands of krypton on copper by Reguzzoni and Righi \cite{PhysRevB.85.201412} reports that the effective commensurability drastically below a critical flake radius on the order of $10$ Å. This supports the idea that increasing flake size will decrease friction though a reduction in commensurability, which is also in agreement with numerical studies by Zhu and Li \cite{zhu_study_2018}. In a numerical study
+decreasing the rotational freedom as size increases. However, the decreasing friction with increasing flake size is also found for the graphene on gold \acrshort{MD} simulation \cite{zhu_study_2018}. This can however be attributed to commensurability as a numerical \acrshort{MD} study of monolayer islands of krypton on copper by Reguzzoni and Righi \cite{PhysRevB.85.201412} reports that the effective commensurability increase drastically below a critical flake radius on the order of $10$ Å.  In a numerical study
 by Varini et al.\ \cite{Varini_2015}, based on Kr islands adsorbed on Pb(111), this is further elaborated as they found that finite size effects are especally important for static friction as a pinning barrier rise from
 the edge (preventing otherwise superlubricity due to incommensurability). They reported a relationship $F_s \sim A^{\gamma_s}$ not only sublinear $\gamma_s <
 1$ but also sublinear with respect to the island perimeter $P \propto A^{1/2}$ by having $\gamma_s = 0.25$ for a hexagonal edge and $\gamma_s = 0.37$ when circular, indicating that only a subset of
-the edge is responsible for the pinning effect. Additionally, the edge pinning effect was found to decrease with increasing temperature as the edge energy barriers are reduced. In general this alligns with the \acrshort{FK} models prediction a lowering of friction due to thermal activation of the atoms overcoming the energy barriers which is also found the numerical study by Wijn et al.\ \cite{Wijn_2011} 
+the edge is responsible for the pinning effect. This alligns with the general change in friction found by \cite{zhu_study_2018} for different flake geometries (square, triangle, circle). Additionally, Varini et al.\ also found the edge pinning effect to decrease with increasing temperature as the edge energy barriers are reduced. In general this alligns with the \acrshort{FK} models prediction of a reduction of friction due to thermal activation of the atoms overcoming the energy barriers which is also in agreement with the numerical study by Wijn et al.\ \cite{Wijn_2011}. 
 
 
-Evolution effects, or fiction strengthening, were observed experimentally by Zhang et al.\ \cite{zhang_tuning_2019} (only when on substrate) and numcerically by Li et al.\ \cite{li_evolving_2016}, meaning that the friction force will increase during the initial period of sliding. This is atrributed to ... and was found to dimish for an increasing number of layers in the substrate and was observed only when the two-dimensional material was loosely adhering to a substrate. On the same note they found in general that the friction between graphene and graphite increased with increasing layers which is also supported by the findings in \hl{XXX}
+Evolution effects, or so-called friction strengthening, is also observed
+experimentally by Zhang et al.\ \cite{zhang_tuning_2019} (only when on
+substrate) and numcerically by Li et al.\ \cite{li_evolving_2016}, meaning that
+the friction force increase during the initial stick-slip cycles. However, this
+is only found when having the graphene sheet resting on a substrate
+\cite{zhang_tuning_2019} opposed to a suspended sheet, and it was found to
+dimish when increasing the number of graphene layers stacked (graphite)
+\cite{li_evolving_2016}. In general the friction was found to decrease with
+increasing number of layers which is also supported by the findings in
+\cite{Yoon2015MolecularDS} but dissagree with \cite{Reguzzoni_2012}?? Zhang et
+al. \cite{zhang_tuning_2019} additionally found that straining a suspended
+stretch, modulating the flexibility which consequently change the local pinning
+capability of the contact interface and lowers the dynamic friction. Another surface manipulating study was performed by H.\ J.\ Kim and D.\ E.\ Kim. \cite{Kim_2012} where the investigated the effects of corrugated
+nano-structured surfaces which altered the contact area and structural stiffness resulting in both increased and slightly decreased friction under certain load ranges. 
 
-In an experimental study of suspended monolayer graphene by Zhang et al. \cite{zhang_tuning_2019} they found that straining the graphene sheet increased the dynamic friction 
+Negative friction coefficients \hl{TO-DO}.
 
-% straning the sheet effectively modulating the flexibility which consequently change the local pinning capability of the contact interface resulting in a strain dependent frictional behvaiour. "suggesting a strategy for dynamic friction tuning via regulating atomic scale interface contact quality". The dynamic friction was reduced by increasing strain. 
-
-
-% "The evolution effect, or friction strengthening, was proposed to originate from the evolving contact quality as the tip slid on 2D materials loosely adhered to a substrate (19)" \cite{zhang_tuning_2019}
+The main qualitative expections regarding our system are summarized in \cref{qual_exp}
 
 
-In the following we summarize the qualitative expections for the nanofriction behaviour for the unstretched and non-cut graphene sheet.
 
+% Textwidth = 484,20988 pt*0,035146 pt/cm = 17,02 % \the\textwidth
 \begin{table}[H]
   \begin{center}
   \caption{Qualitative trends}
-  \label{tab:}
-  \begin{tabular}{  M{3cm}  X{10cm} } \hline
-  \textbf{Stick slip} & Generally we expect to observe periodic stick-slip motion with a period mathing the lattice constant(s) involved \cite{mo_friction_2009}. This is however inhibited for high stifness of the springs to the coupled support and at large sliding velocity. Flake size and temperature? \\ \\
-  \textbf{Static friction} & The static friciton is highly related to the presence of stick-slip motion. The static friction is most pronounced for commensurable configurations. Reduce with friction? \\ \\
-  \textbf{Commensurability} & Both static and dynamic friction is expected to be highly sensitive to commensurability, both through lattice spacing and orientation but also by the path the flake is forced along. A low spring stiffness will effect the freedom to shift around which affects commensurability. \\ \\
-   \textbf{Friction evolution} & For a monolayer graphene sheet on a substrate \\ \\
-  \textbf{Thickness} & Friction increase with increasing graphite layers (\hl{Is this relevant?}) \\ \hline
-  \textbf{Negative coef} & Observed, or only with subtracting force \\ \hline
+  \label{tab:qual_exp}
+  \begin{tabular}{  M{5cm}  X{12cm} } \hline
+  \textbf{Stick slip} & Generally we expect to observe periodic stick-slip motion with a period mathing the lattice constant(s) involved \cite{mo_friction_2009}. This is however inhibited for high stiffness of the spring coupling to a driving support and at large sliding velocity. \\ \\
+  % Flake size and temperature? 
+  \textbf{Static friction} & The static friciton is highly related to the presence of stick-slip motion. The static friction is most pronounced for commensurable configurations and will decrease drastically for incommensurability. However, further reducton of static friction is expected for an increasing flake size and increasing temperature. \\ \\
+  \textbf{Commensurability} & Both static and dynamic friction is expected to be highly sensitive to commensurability, through lattice spacing, orientation of the flake relative to the substrate and by the path of sliding along the substrate. By changing the spring stiffness of the coupled driving support we expect to get a response in commensurability due to a change in translational freedom. \\ \\
+  \textbf{Friction evolution} \linebreak \textbf{(Friction strengthening)} & Friction evolution is found to be present in mono layer graphene resting on a substrate, and thus we expect this to be present in our simulaiton setup as well.  \\ \\
+  \textbf{Negative coef} & \hl{TO-DO} \\ \hline
   \end{tabular}
   \end{center}
 \end{table}
@@ -1098,6 +1122,43 @@ In the following we summarize the qualitative expections for the nanofriction be
 
 % By consulting with the most related numerical and experimental studies, while also considering the theoretical gap between smooth atomic contact and asperity theory, we have summarized an evaluation of the most important quantative trends expected from our numerical results in \cref{var_dep}. 
 
+
+
+
+Having considered some qualitative expectations we take a look at the
+quantitative expectations for the variables such as load, valocity, temperature
+and contact area.
+
+The dependency on friction of normal load turns out to be a complex matter and
+has proven to be highly system dependent. As already mentioned, asperity theory
+mainly point to a sublinear relationship between friction and load, while the
+\acrshort{FK} models gives no direct answers other that this might affect the
+energy barriers and thus phonon dissipation. Experimentally rather different
+trends have been observed, although the majority agree on increasing friction
+with increasing load \cite[p. 200]{gnecco_meyer_2015}. For the graphene flake
+Dienwiebel et al.\ \cite{DIENWIEBEL2005197} found a seemingly non-dependent
+relationship while, \acrshort{FFM} study by G. Paolicelli et al.\
+\cite{Paolicelli_2015} found a great fit with the sublinear predictions of
+Maugis-Dugdale theory $(F_f \propto (F_N - F_{N,0})^{2/3})$. Here the discrepancy might lie in the difference between a spherical tip indenting the graphene sheet as opposed to two flat graphene/graphite sheets in contact. However, numerical studies still find both sublinear \cite{bonelli_atomistic_2009} and linear \cite{ma12091425} load dependencies.
+
+
+% FFM analog to the single asperity setup have yielded both linear relationship \cite{gao_frictional_2004} (silicon tip on gold) while Schwarz et al.\ \cite{PhysRevB.56.6987} found that FFM with well-defined spherical tips mathed with theoretical results (DMT, elastic spheres pressed together \cite[p. 200]{gnecco_meyer_2015}), yielding a power law $F_{\text{fric}} = F_N^{2/3}$. 
+
+
+
+% Zhang et al.\ \cite{ma12091425} finds a seemingly linear relationship $F_{\text{fric}} \propto F_N$ while Bonelli et al.\ \cite{bonelli_atomistic_2009} reports a sublinear relationship. The latter corresponds with that of nanosasperity simulations where Mo et al.\ \cite{mo_friction_2009}, using an amorphous carbon tip on a diamond sample, also found a sublinear relationship when including adhesion and linear without adhesion.
+
+
+\begin{table}[H]
+  \begin{center}
+  \caption{Qualitative trends}
+  \label{tab:qual_exp}
+  \begin{tabular}{  M{5cm}  X{12cm} } \hline
+  \textbf{Normal load} & Generally an increasing friction force is expected with increasing load. Both non-dependent, sublinear and linear relationship can be expecteded here. \\
+  \hline
+  \end{tabular}
+  \end{center}
+\end{table}
 
 \begin{table}[H]
   \begin{center}
