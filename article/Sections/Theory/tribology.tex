@@ -459,6 +459,158 @@ coupling between the chain and the moving body. In the following we will disucss
 \end{figure}
 
 
+% Analytical Models for Atomic Friction \cite{Yalin_2011}
+% \textbf{Analytical Models for Atomic Friction}
+\subsection{PT}
+An alternative to experimental and atomistic simulation such as \acrshort{MD} is
+an analytical or reduced-order model that simplifies the system
+\cite{Yalin_2011}. While it cannot provide the same level of detail as atomistic
+simulations it enables investigations of atomic friction under almost all
+experimental conditions, some of which are in inaccessible to \acrshort{MD}.
+Here we consider the reduced-order models that is the Prandtl–Tomlinson (PT) and
+extensions. This simple model consist of a point mass coupled via a harmonic
+spring to a driven support which captures the combination of stiffness of the
+tip, cantilever torsion (first eigenmode) and effective mass of the... These
+models simply single asperity friction into one or more point-masses (contact
+area atoms) pulled via an elastic tether (corresponding to a cantilever and a
+tip) along a period potential energy profile (the substrate). There are many
+extensions: adding thermal activation proposed by Gnecco et al.
+\cite{PhysRevLett.84.1172}. Other related are Frenkel–Kontorova (\acrshort{FK})
+\cite{Frenkel_1938} and Frenkel–Kontorova–Tomlinson (\acrshort{FKT})
+\cite{weiss_dry_1997} illustrated in \cref{fig:PT_FK_FKT}. An advantage is that
+they can be easily implemented and investigated with respect to isloating the
+effects from individual parameters. 
+
+
+% Mathematical formulation 
+1D PT model assumes a ball-tip coupled harmonically to a support moving at constant speed making the tip slide along a rigid substrate. The interaction between tip and substrate is modelled by a sinusoidal corrugation potential mimicking the periodicty and a crystaline substrate. The total potential energy can be written as 
+\begin{align*}
+  V(x, t) = - \frac{U}{2} \cos\left(\frac{2 \pi x}{a}\right)+\frac{1}{2} k(v t-x)^2.
+\end{align*}
+The first term describes the corrugation potential with amplitude $U$, $x$ is tip displacement and $a$ is lattice spacing. The second term is the elastic poential resulting from the harmonic coupling of tip and support with spring constant $k$ constant velocity of support $v$ and time $t$. The dynamics of the tip can be described by the Langevin equations 
+\begin{align}
+  m \ddot{x}+m \mu \dot{x}=-\frac{\partial V(x, t)}{\partial x}+\xi(t),
+  \label{eq:Langevin_PT}
+\end{align}
+where $m$ is the mass of the tip $\mu$ the viscous friction and $\xi(t)$ the thermal activation. The equation is solved for $x$ and the friction force is calculated as the force acting on the support 
+\begin{align*}
+  F = k(vt -x).
+\end{align*}
+The governing equation \cref{eq:Langevin_PT} belongs to a family of stochastic differential equations composed of deterministic dynamics and stochastic processes. In this case the deterministic term is the viscous friction to resist the movement of the tip and the force acting from the corrugation potential. The stochastic term is a random force field modelling thermal noise according to the fluctuation–dissipation relation. Thus there is no single path but rather multiple paths the tip can take. While the Langevin equations is one of the most common ways to handle thermal activaiton other methods exist like Monte Carlo Methods. 
+
+% Comment that we solce this numerically (the article present a specific algorithm, but this a bit overkill for now since we also talk about the implementation for MD.)
+
+\subsubsection{Temperature}
+The introduced numerical (note that we solve it numerically) method to address
+the problem of thermal activation. Generally when the energy barrier comes close
+to $k_B T$ (0.026 eV at room temperature) thermal effects can not be neglected.
+In the case of a single asperoity contact the energy barrier is on the order 1
+eV which make thermal activation significant. A direct result of thermal
+activation, contribution of thermal energy overcoming energy barriers, is that
+the increase in temperature will decrease friction \cite[7, 21]{Yalin_2011}.
+Similar friction will increase with speed \cite[4, 22–24]{Yalin_2011} due to the
+decrease in time between slips making it less likely to get a thermal
+activation. In the \acrshort{PT} model the potential energy, consiting of the
+corrugation potential and the elastic energy of the spring, will increase
+steadily in time as the support moves with constant speed. Without thermal
+activation $T = 0$, the slip will only accour when the energy barrier between the current potential well (i) and the adjacent (j) is zero $\Delta V_{i\to j} = 0$. However, in the presence of thermal activation the slip can occour sooner  $\Delta V_{i\to j} > 0$. Provided that the sliding speed is slow (\hl{what is that and why?}) enough the transistion rate $\kappa$ for a slip from current to the next well is given
+\begin{align*}
+  \kappa = f_0 e^{-\Delta V / k_B T},
+\end{align*}
+(\hl{This is statistical in the canonical ensemble right?}) with $/Delta V$ being the energy barrier that most be overcome and $f_0$ the attempt rate, the frequency which the tip attempts to overcome the barrier (\hl{ohhh?}). See \cref{fig:PT_slip}. The probability $p_i$ that the tip occupies the current well $i$ relative to the adjacent well $j$ is governed by 
+\begin{align*}
+  \frac{dp_i}{dt} = -\kappa_{i\to j}p_i + \kappa_{j\to i}p_j.
+\end{align*}
+
+
+``This probability is related to the temperature, speed, and mass dependence of frictional behavior.'' \cite{Yalin_2011}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\linewidth]{figures/theory/PT_slip.png}
+  \caption{\hl{Temporary} figure from \cite{Yalin_2011}}
+  \label{fig:PT_slip}
+\end{figure}
+
+
+\cref{fig:PT_temp} shows the effect of temperature on mean friction and illustrates two regimes: thermal activation and thermal drift. Force traces for these regimes are shown in \cref{fig:PT_temp_force}. At lower temperature the system is subject to standard thermal activation with $\Delta V_{i \to j} \gg \Delta V_{j \to i}$,   $\kappa V_{i \to j} \gg \kappa V_{j \to i}$ resulting in effectivley no backwards slips. This yields 
+\begin{align*}
+  \frac{dp_i}{dt} = -\kappa_{i\to j}p_i,
+\end{align*}
+which make the relationship between friction, temperature and speed follow Sang et al.’s prediction \cite{Sang_2001}
+\begin{align}
+  F=F_c-\left|\beta k_B T \ln \left(\frac{v_c}{v}\right)\right|^{2 / 3},
+  \label{eq:F_thermal_ac}
+\end{align}
+where $F_c$ is the maximum friction at $T = 0$ and critical velocity $v_c = 2f_0
+\beta k_B T / 3 C_{eff} \sqrt{F_c}$, $f_0$ is the attempt rate, $c_{eff}$ is the
+effective stifness, and $\beta$ is a parameter determined by the shape of the
+corrugation well. \cref{eq:F_thermal_ac} characterizes the decrease in friction
+with temperature in the thermal activation regime shown in \cref{fig:PT_temp} at
+low temperature with the assumption of only forward slips. When the temperatuere
+is high enough that the system is consistenly close to thermal equilibrium it
+enters the regime of thermal drift \cite{PhysRevE.71.065101}. The transistion
+from the thermal activation to thermal drift regime can be understood by the
+comparison of two time scales: The time it takes for the support to travel one
+lattice spacing $t_v = a/v$ and the average time for the tip to slip due to a
+thermal activation $\tau = 1/\kappa = f^{-1}\exp(\Delta V / k_BT)$. IF $t_v \gg
+\tau$ the system is in the thermal drift regime and the friction follows the
+prediction of Krylov et al. \cite{Krylow_2007, PhysRevE.71.065101, Jinesh_2008}
+\begin{align*}
+  F \propto \frac{v}{T}e^{1/T}
+\end{align*}
+This regime is governed by both forward and backwards slips. \hl{Include comment about initial rise in friction with temperature due to thermally activated formation and rupturing of mul- tiple contacts?}
+
+
+
+  
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\linewidth]{figures/theory/PT_temp.png}
+  \caption{\hl{Temporary} figure from \cite{Yalin_2011}}
+  \label{fig:PT_temp}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\linewidth]{figures/theory/PT_temp_force.png}
+  \caption{\hl{Temporary} figure from \cite{Yalin_2011}}
+  \label{fig:PT_temp_force}
+\end{figure}
+
+
+\subsubsection{Sliding speed}
+At low speeds (\hl{why? What about temp?}) the relation follow
+\cref{eq:F_thermal_ac} that friction scales logarithmically with speed.
+Following this prediction when $v > v_c$ (and only thermal effects are
+considered) the friction increase will eventually saturate and come to a
+plateau. The mean friction (under certain circumstances) is shown in
+\cref{fig:PT_speed} with this prediction shown as a dotted-line. The reason for
+the deviance is that in this reduced-order model the damping term $v\sqrt{mk}$
+will dominate over thermal effects for which this athermial regime will yield $F
+\propto v$. The athermal regime is often observedin reduced model if the system
+is overdamped or at high speeds. This is interesting in relation to
+\acrshort{MD} simulations where the accesible speeds often fall into the
+athermal regime \cite{Li_2011}. It is unclear how this effects real physical systems as there exist more dissipation channels than just viscous friction a single viscous term \cite{Dong_2013}.
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\linewidth]{figures/theory/PT_speed.png}
+  \caption{\hl{Temporary} figure from \cite{Yalin_2011}}
+  \label{fig:PT_speed}
+\end{figure}
+
+
+\subsubsection{Mass}
+% Include this
+In short the mass of the tip affects the dynamics due to the change in inertia. A smaller intertia leads to an larger attempt rate a causes an earlier (lower temp.) transition in temperature regime (to the thermal drift regime) and later speed saturation meaning a later (at larger speed) transistion into the athermal regime. 
+
+
+\subsubsection{Friction Regimes: Smooth Sliding, Single Slip, and Multiple Slip}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 
 % Our results confirm the conclusions of other authors that single-asperity theories break down at the nanoscale1,5. \cite{mo_friction_2009}
@@ -619,7 +771,8 @@ by changing the orientation of the sheet relative to the substrate. Dienwiebel e
 % ´´strongly dissipative stick-slip motion'' \cite{bonelli_atomistic_2009}
 
 
-\subsubsection{Kinetic friction}
+\subsubsection{Kinetic friction} % Velocity resosnance 
+
 % Maybe check out for more info on the 1D model: Y. S. Kivshar O. M. Braun. The Frenkel-Kontorova Model. Springer, 1st edition, 2004.
 % The Frenkel-Kontorova Model.pdf p. 38 3.2 Dynamics of Kinks <---------
 
@@ -671,6 +824,28 @@ friction that is both velocity and temperature dependent. By extending the \acrs
 the friction coefficient generally increases with increasing velocity and
 temperature resepectively, although the specific of the trend is highly
 sensitive to model parameters. 
+
+
+\subsection{Dependence}
+% based mainly on  \cite{Yalin_2011}
+% + Variris. article 
+
+They look at Prandtl–Tomlinson (PT) models. Is this already covered? \acrshort{FK}?.
+
+
+
+Frictional regimes: 
+
+´´Atomic friction can be divided into different regimes: smooth sliding where the AFM tip slides smoothly on the substrate, single slip where the tip sticks at one point and then jumps over one lattice spacing to another point, and multiple slip where the tip jumps over a few (more than one) lattice spacings. Stick-slip motion is a very important instability mechanism and is associated with high friction and energy dissipation. Finding ways to control transitions from smooth sliding to stick-slip has been thought to be a key to prescribing friction at the atomic scale.'' \cite{Yalin_2011}
+
+
+Dynamic parameters \cite{Yalin_2011}:
+\begin{itemize}
+  \item Damping: Strong damping means high transfer of kinetic energy as heat which only allows single slip (not multiple slips, cannot jump multiple minema at once).
+  \item Sliding speed: In increased speed can lead to multiple slips due to increased kinetic energy to transverse multiple potential energy barriers. 
+  \item Temperature: Thermal activation can trigger slip at an early stage. Higher temperature will result in less potential energy accumulated and so less kinetic energy transferred in slips
+\end{itemize}
+
 
 
 % Simulations of concentric nanotubes in relative motion (telescopic sliding), have revealed the occurrence of well-defined velocities at which friction is enhanced, corresponding to a washboard frequency resonating with longitudinal [172] or circular [173] phonon modes, leading to enhanced energy dissipation. The frictional response becomes highly non-linear while approaching the critical velocity and, contrary to macroscopic systems, washboard resonances can arise at multiple velocities, especially for incommensurate interfaces where more than one length scale may be in common to the contacting surfaces [172] \cite{Manini_2016}.
@@ -841,6 +1016,9 @@ sensitive to model parameters.
 
 \subsection{Experimental procedures}
 % \cite{gnecco_meyer_2015}
+% Check out this \cite{Dong_2013} parameter choices for MD
+
+
 
 Experimentally, the study of nanoscale friction is challenging due to the low
 forces on the scale of nano-newtons along with difficulties of mapping the
@@ -1136,17 +1314,24 @@ and contact area.
 The dependency on friction of normal load turns out to be a complex matter and
 has proven to be highly system dependent. As already mentioned, asperity theory
 mainly point to a sublinear relationship between friction and load, while the
-\acrshort{FK} models gives no direct answers other that this might affect the
+\acrshort{FK} models gives no direct predictions other than this affect the
 energy barriers and thus phonon dissipation. Experimentally rather different
 trends have been observed, although the majority agree on increasing friction
 with increasing load \cite[p. 200]{gnecco_meyer_2015}. For the graphene flake
 Dienwiebel et al.\ \cite{DIENWIEBEL2005197} found a seemingly non-dependent
 relationship while, \acrshort{FFM} study by G. Paolicelli et al.\
 \cite{Paolicelli_2015} found a great fit with the sublinear predictions of
-Maugis-Dugdale theory $(F_f \propto (F_N - F_{N,0})^{2/3})$. Here the discrepancy might lie in the difference between a spherical tip indenting the graphene sheet as opposed to two flat graphene/graphite sheets in contact. However, numerical studies still find both sublinear \cite{bonelli_atomistic_2009} and linear \cite{ma12091425} load dependencies.
+Maugis-Dugdale theory $(F_f \propto (F_N - F_{N,0})^{2/3})$. Here the discrepancy might lie in the difference between a spherical tip indenting the graphene sheet (matching asperity theory) as opposed to two flat graphene/graphite sheets in contact (matching \acrshort{FK} models). However, numerical studies with graphene in contact with graphite still find both sublinear \cite{bonelli_atomistic_2009} and linear \cite{ma12091425} load dependencies.
 
 % Look at Vazirisereshk
 % maybe Zhang tuning
+
+% Real contact area $A$ 
+% $F_{\text{fric}} \propto A$ 
+% Mo et al.\ \cite{mo_friction_2009} found that $F_{\text{fric}} \propto A$ where $A$ is the real contact area defined by atoms within chemical range. This is not studied for the case of a nanoflake where the contact area is presumingly rather constant.
+
+
+% In general look at intro from  Vazirisereshk
 
 % Velocity 
 Generally a increasing logarithmic velocity dependence is found in experimental \acrshort{AFM} studies  \cite[p. 201]{gnecco_meyer_2015} associated to thermally activated hopping of the scanning tip. At higher velocities thermally activated processes are less important and friction becomes independent of velocity. This has been observed for Si tips and diamond, graphite and amorphous carbon surfaces with scan velocities above \SI{1}{\mu/s}. Guerra et al.\ \cite{Guerra_2010} have studied gold clusters on graphite using \acrshort{MD} simulations. They found a viscous friction, friction is proportional to sliding velocity, response in both low and high speed domains. However, thermal effects reversed: at low speed (diffusive) friction decreased with increased temperature while at high speed (ballistic) speed friction increases with temperature. In the \acrshort{MD} simlations the crossover from ballistic to diffusive occour between 10 and 1 m/s. 
@@ -1158,7 +1343,6 @@ Experimentally Zhao et al.\ observed in a series of \acrshort{AFM} on MATERIAL  
 Wijn et al.\ \cite{Wijn_2011} find that friction commensurability can be lost at higher temperature (above 200K) were the found a power law behaviour $F_k \propto T^{-1.13 \pm0.04}$.
 
 Zhang et al.\ \cite{ma12091425} found that friction increased with temperature, using a velocity of 10 m/s. Considering the findings of \cite{Guerra_2010} this discrepancy might be due to low speed diffisuve behvaiour as opposed to high speed ballistic behaviour. 
-
 
 
 
