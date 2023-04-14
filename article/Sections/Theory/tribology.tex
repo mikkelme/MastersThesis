@@ -484,9 +484,10 @@ effects from individual parameters.
 
 % Mathematical formulation 
 1D PT model assumes a ball-tip coupled harmonically to a support moving at constant speed making the tip slide along a rigid substrate. The interaction between tip and substrate is modelled by a sinusoidal corrugation potential mimicking the periodicty and a crystaline substrate. The total potential energy can be written as 
-\begin{align*}
+\begin{align}
   V(x, t) = - \frac{U}{2} \cos\left(\frac{2 \pi x}{a}\right)+\frac{1}{2} k(v t-x)^2.
-\end{align*}
+  \label{eq:H_PT}
+\end{align}
 The first term describes the corrugation potential with amplitude $U$, $x$ is tip displacement and $a$ is lattice spacing. The second term is the elastic poential resulting from the harmonic coupling of tip and support with spring constant $k$ constant velocity of support $v$ and time $t$. The dynamics of the tip can be described by the Langevin equations 
 \begin{align}
   m \ddot{x}+m \mu \dot{x}=-\frac{\partial V(x, t)}{\partial x}+\xi(t),
@@ -608,6 +609,60 @@ In short the mass of the tip affects the dynamics due to the change in inertia. 
 
 
 \subsubsection{Friction Regimes: Smooth Sliding, Single Slip, and Multiple Slip}
+Atomic friction can be divided into three regimes: smooth sliding where the tip slides smoothly on the substrate, single slip where the tip stick at one potential well and then slip to next by a jump of one lattice spacing, and multiple slip where multiple lattice spacing is jumped. Stick-slip mottion is a crucial instability mechanism associated with high energy dissipation and high friction and thus controlling the transistion between smooth sliding and stick-slip has is considered key to control friction. The underlying mechanism behind these regimes can be divided in static and dynamic mechanism. To understand the static mechanism we can consider a quasistatic process for which temperature, speed and damping can be neglected and where we must have $\partial(V)/\partial x = 0$ which simiplifies \cref{eq:H_PT} to 
+\begin{align}
+  \frac{\pi U}{a} \sin\left(\frac{2\pi x}{a}\right) \frac{2 \pi}{a} = k(vt - x),
+  \label{eq:static_H}
+\end{align}
+with $vt$ being the support position. The friction regime is determined by the
+number of solutions $x$ to \cref{eq:static_H}. One solution corresponds to
+smooth sliding, two solutions to a single slip and so on. It turns out that the
+regimes can be defined by the parameter $\eta = 2\pi^2U/a^2k$ yielding the first
+transistions at $\eta = 1, 4.6, 7.79$ and 10.95 such that $\eta \le 1$
+corresponds to smooth sliding, $1<\eta \le 4.6$ to a single slip and so on
+\cite{Johnson_1998, Medyanik_2006}. These statics derivation lays out the
+foundation for the probability. Considering the dynamics on top we find that
+damping, speed and temperature will affect this. A high damping, high transfer
+of kinetic energy to heat, will result in less energy available for making
+multiple slips. Similar we find that increasing the speed will contribute to
+more kinetic energy that will increase the changes of multiple slips. Finally
+temperature will contribute to earlier slips due to thermal activation such that
+less potential energy can accumulate, and will result in fewer multiple slips. The effects of damping, speed and temperature is illustrated in \cref{fig:PT_slip_var}
+
+
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[t]{0.32\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/theory/PT_slip_damping.png}
+      \caption{}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.32\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/theory/PT_slip_speed.png}
+      \caption{}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.32\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/theory/PT_slip_temp.png}
+      \caption{}
+  \end{subfigure}
+  \hfill
+     \caption{\hl{Temporary} figure from \cite{Yalin_2011}}
+     \label{fig:PT_slip_var}
+\end{figure}
+
+
+
+
+
+
+
+\subsubsection{2D nature}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
