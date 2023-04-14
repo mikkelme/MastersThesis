@@ -404,57 +404,61 @@ as seen for single aperity theories as well \cite{CARBONE20082555}.
 
 \section{Nanoscale - Atomic scale}
 Going from a micro- to a nanoscale, on the order of \SI{e-9}{m}, it has been
-predicted that continnum mechanics will break down \cite{luan_breakdown_2005}
-due to the discreteness of individual atoms. Note that atom spacing lies in the
-domain of a few ångströms Å (\SI{e-10}{m}) and thus we take the so-called atomic-scale to be a part of the nanoscale regime. In a numerical
-study by Mo et al.\ \cite{mo_friction_2009} (considering asperity radii of 5-30
-nm) it has been shown that the asperity area $A_{\text{asp}}$, defined by the
-circumfereance of the contact zone, is sublinear with
-$F_N$. This is accommodated by the observation that not all atoms within the
-circumfereance make chemical contact with the substrate. By
-modelling the real contact area $A_{\text{real}} = NA_{\text{atom}}$, where $N$ is the amount of atoms within the range of chemical interaction and
-$A_{\text{atom}}$ the associated surface area for an atom, they found a consistent
-linear relationship between friction and the real contact area. Without adhesive
-forces this lead to a similar linear relationship $F_{\text{fric}} \propto F_N$,
-while adding van der Waals adhesion to the simulation gave a sublinear
-relatinship, even though the $F_{\text{fric}} \propto A_{\text{real}}$ was
-maintained. This result emphasizes that the contact area is still expected to be play an important role at the nanoscale for asperity theory. It is simply the definition of the contact area that undergoes a change when transistioning from micro- to nanoscale. 
-
-
-% Refer to the system introduced in Introduction
+predicted that continnum mechanics will start to break down \cite{luan_breakdown_2005} due to the discreteness of individual atoms. In a numerical study by Mo et
+al.\ \cite{mo_friction_2009} (considering asperity radii of 5-30 nm) it has been
+shown that the asperity area $A_{\text{asp}}$, defined by the circumfereance of
+the contact zone, is sublinear with $F_N$. This is accommodated by the
+observation that not all atoms within the circumference make chemical contact
+with the substrate. By modelling the real contact area $A_{\text{real}} =
+NA_{\text{atom}}$, where $N$ is the amount of atoms within the range of chemical
+interaction and $A_{\text{atom}}$ the associated surface area for an atom, they
+found a consistent linear relationship between friction and the real contact
+area. Without adhesive forces this lead to a similar linear relationship
+$F_{\text{fric}} \propto F_N$, while adding van der Waals adhesion to the
+simulation gave a sublinear relationship, even though the $F_{\text{fric}}
+\propto A_{\text{real}}$ was maintained. This result emphasizes that the predictions of continuum mechanchs might still apply as the contact
+area is still expected to be play an important role at the nanoscale for
+asperity theory. It is simply the definition of the contact area that undergoes
+a change when transistioning from micro- to nanoscale. 
 
 While the study by Mo et al.\ \cite{mo_friction_2009} considers a single
-asperity on a nanoscale, we are going to study a nanoscale system with no
-initial asperities present. Our system of interest, an initially atomically flat graphene sheet imposed on a flat silicon substrate, make it unfounded to rely on asperity theories. Although both numerical \cite{zhu_study_2018}\cite{ma12091425}\cite{bonelli_atomistic_2009} and experimental \cite[2005]{DIENWIEBEL2005197}\cite{feng_superlubric_2013} studies have been done for so-called nanoflakes
-sliding on a substrate, the dependence of friction force on contact area is not investigated.  One reasonable explanation is that the contact area is already at its maximum for atomically smooth contacting surfaces and hence does not play an important role. In a numerical study of atomic-scale frictional behavior of corrugated nano-structured surfaces \cite{C2NR30691C} they reported that the contact area only affected the friction significantly for big corrugations as opposed to small. Since an increasing friction is still reported under increasing load in most nanoflake studies (see
-\cref{sec:expected_prop} for a more detailed dicussion), this suggests
-that some other mechanisms are governing friction at this level. 
+asperity on a nanoscale, some models take this even further to what we might denote the atomic-scale. Our system of interest, is an atomically flat graphene sheet imposed on a flat silicon substrate, which lacks the present of any nanoscale asperities in its inital uncut underformed state.
 
 
-``Load-independent friction has also been observed in FFM experiments on thermally oxidized MoS2, and it was proposed that MoO3 nanocrystals, that grew during the oxidation process on the MoS2 surface [35], acted as a spacer between the tip and the sample, such that the contact area remained unchanged upon loading.In the present case, the contact area would be completely determined by the flake size, which would be independent of the loading force.Hence, the friction would only increase slightly with normal load as the result of the increase in contact pressure.'' \cite{DIENWIEBEL2005197}
 
 
-Before diving into alternative theoretical approaches to adress this issue we point out that exactly this transistion, between nanoscale asperities and atomically smooth surfaces, is of outermost importance for the objective of the thesis. By introducing kirigami cuts and stretching the sheet we expect to see an out of plane buckling which induce an ensemble of asperities on the sheet. Hence, we might hypothesize that such a transition will contribute to a significant change in the goverening mechanism of friction bridgering the two domains of nanoscale asperity and smooth surface theory. 
-\\
-\\
+% Although both numerical \cite{zhu_study_2018}\cite{ma12091425}\cite{bonelli_atomistic_2009} and experimental \cite[2005]{DIENWIEBEL2005197}\cite{feng_superlubric_2013} studies have been done for so-called nanoflakes
+% sliding on a substrate, the dependence of friction force on contact area is not investigated.  One reasonable explanation is that the contact area is already at its maximum for atomically smooth contacting surfaces and hence does not play an important role. In a numerical study of atomic-scale frictional behavior of corrugated nano-structured surfaces \cite{C2NR30691C} they reported that the contact area only affected the friction significantly for big corrugations as opposed to small. Since an increasing friction is still reported under increasing load in most nanoflake studies (see
+% \cref{sec:expected_prop} for a more detailed dicussion), this suggests
+% that some other mechanisms are governing friction at this level. 
+% we are going to study a nanoscale system with no
+% initial asperities present.
+
+% make it unfounded to rely on asperity theories.
+
+% Note that atom spacing lies in the
+% domain of a few ångströms Å (\SI{e-10}{m}) and thus we take the so-called
+% atomic-scale to be a part of the nanoscale regime. 
+
+% ``Load-independent friction has also been observed in FFM experiments on thermally oxidized MoS2, and it was proposed that MoO3 nanocrystals, that grew during the oxidation process on the MoS2 surface [35], acted as a spacer between the tip and the sample, such that the contact area remained unchanged upon loading.In the present case, the contact area would be completely determined by the flake size, which would be independent of the loading force.Hence, the friction would only increase slightly with normal load as the result of the increase in contact pressure.'' \cite{DIENWIEBEL2005197}
+
+% Before diving into alternative theoretical approaches to adress this issue we point out that exactly this transistion, between nanoscale asperities and atomically smooth surfaces, is of outermost importance for the objective of the thesis. By introducing kirigami cuts and stretching the sheet we expect to see an out of plane buckling which induce an ensemble of asperities on the sheet. Hence, we might hypothesize that such a transition will contribute to a significant change in the goverening mechanism of friction bridgering the two domains of nanoscale asperity and smooth surface theory. 
+
+
 In the lack of noteworthy structural asperities, friction can instead be
-modelled as a consequencse of the rough potential of the atomic landscape. A
-series of models builds on this idea by considering different ways for the atoms
-to interact interatomically, with the moving body, and the substrate. In figure
-\cref{fig:PT_FK_FKT} three of the most common 1D models is displayed. The
-time-honered Prandtl-Tomlinson (PT) model describes a point-like tip sliding
-over a space-periodic fixed crystalline surface with a harmonic coupling to the
+modelled as a consequencse of the ´´rough'' potential layed out by the atomic landscape. A series of so-called reduced-order models builds on a simplified system of atomic-scale contact which builds on three essential parts: 1) A periodic potential modelling a rigid crystaline substrate. 2) An interacting particle, or chain of particles, placed in the potential with a spring-like coupling to 3) a moving body moving at steady speed. In figure
+\cref{fig:PT_FK_FKT} three of the most common 1D models is displayed which we will adress in the following sections. The time-honered Prandtl-Tomlinson (PT) model describes a point-like tip sliding over a space-periodic fixed crystalline surface with a harmonic coupling to the
 moving body. This is analog to that of an experimental cantilever used
-for Atomic Force Microscopy (see \cref{sec:SPM}). Further extensions was
-added in the Frenkel-Kontorova (FK) model by substituting the tip with a chain
-of harmonic coupled atoms dragged from the end (\hl{I am not sure that the figure is 100\% correct by drawing a spring like that}), and finally combinned
-in the Frenkel-Kontorova-Tomlinson (FKT) with the addition of a harmonic
-coupling between the chain and the moving body. In the following we will disucss the FK model as the underlying basis for the understanding of smooth nanoscale friction.
+for Atomic Force Microscopy which we will introduce in more details in \cref{sec:SPM}. Further extensions was added in the Frenkel-Kontorova \acrshort{FK} model by substituting the tip with a chain of harmonic coupled atoms dragged from the end, and finally combinned in the Frenkel-Kontorova-Tomlinson (\acrshort{FKT}) with the addition of a harmonic coupling for each of the atoms in the chain with the moving body. While these models cannot provide the same level of details as atomistic simulations such as \acrshort{MD} it enables investigation of atomic friction under most conditions, some of which are inaccessible to \acrshort{MD} \cite{Yalin_2011}. This makes for an understanding of the inidvidual parameters and mechanisms affecting friction as a whole. 
+
+
+
+
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.4\linewidth]{figures/theory/PT_FK_FKT.png}
-  \caption{\hl{Temporary} figure from \url{https://www.researchgate.net/figure/llustrations-of-the-1D-PT-FK-and-FKT-models-Large-solid-spheres-represent-tip-atoms_fig1_257670317}}
+  \caption{\hl{Temporary} figure from \cite{Yalin_2011}}
   \label{fig:PT_FK_FKT}
 \end{figure}
 
@@ -462,45 +466,49 @@ coupling between the chain and the moving body. In the following we will disucss
 % Analytical Models for Atomic Friction \cite{Yalin_2011}
 % \textbf{Analytical Models for Atomic Friction}
 \subsection{PT}
-An alternative to experimental and atomistic simulation such as \acrshort{MD} is
-an analytical or reduced-order model that simplifies the system
-\cite{Yalin_2011}. While it cannot provide the same level of detail as atomistic
-simulations it enables investigations of atomic friction under almost all
-experimental conditions, some of which are in inaccessible to \acrshort{MD}.
-Here we consider the reduced-order models that is the Prandtl–Tomlinson (PT) and
-extensions. This simple model consist of a point mass coupled via a harmonic
-spring to a driven support which captures the combination of stiffness of the
-tip, cantilever torsion (first eigenmode) and effective mass of the... These
-models simply single asperity friction into one or more point-masses (contact
-area atoms) pulled via an elastic tether (corresponding to a cantilever and a
-tip) along a period potential energy profile (the substrate). There are many
-extensions: adding thermal activation proposed by Gnecco et al.
-\cite{PhysRevLett.84.1172}. Other related are Frenkel–Kontorova (\acrshort{FK})
-\cite{Frenkel_1938} and Frenkel–Kontorova–Tomlinson (\acrshort{FKT})
-\cite{weiss_dry_1997} illustrated in \cref{fig:PT_FK_FKT}. An advantage is that
-they can be easily implemented and investigated with respect to isloating the
-effects from individual parameters. 
+We start with the Prandtl–Tomlinson (\acrshort{PT}) \cite[2,3]{Yalin_2011} for which we generally refer to \cite{Yalin_2011} for the theoretical walkthrough. \hl{more intro perhaps}.
 
+
+
+% An alternative to experimental and atomistic simulation such as \acrshort{MD} is
+% an analytical or reduced-order model that simplifies the system
+% \cite{Yalin_2011}. While it cannot provide the same level of detail as atomistic
+% simulations it enables investigations of atomic friction under almost all
+% experimental conditions, some of which are in inaccessible to \acrshort{MD}.
+% Here we consider the reduced-order models that is the Prandtl–Tomlinson (PT) and
+% extensions. This simple model consist of a point mass coupled via a harmonic
+% spring to a driven support which captures the combination of stiffness of the
+% tip, cantilever torsion (first eigenmode) and effective mass of the... These
+% models simply single asperity friction into one or more point-masses (contact
+% area atoms) pulled via an elastic tether (corresponding to a cantilever and a
+% tip) along a period potential energy profile (the substrate). There are many
+% extensions: adding thermal activation proposed by Gnecco et al.
+% \cite{PhysRevLett.84.1172}. Other related are Frenkel–Kontorova (\acrshort{FK})
+% \cite{Frenkel_1938} and Frenkel–Kontorova–Tomlinson (\acrshort{FKT})
+% \cite{weiss_dry_1997} illustrated in \cref{fig:PT_FK_FKT}. An advantage is that
+% they can be easily implemented and investigated with respect to isloating the
+% effects from individual parameters. 
 
 % Mathematical formulation 
-1D PT model assumes a ball-tip coupled harmonically to a support moving at constant speed making the tip slide along a rigid substrate. The interaction between tip and substrate is modelled by a sinusoidal corrugation potential mimicking the periodicty and a crystaline substrate. The total potential energy can be written as 
+The 1D \acrshort{PT} model assumes a single ball-tip coupled harmonically to a support moving at constant speed which makes the tip slide along the rigid substrate. The interaction between tip and substrate is modelled as a sinusoidal corrugation potential mimicking the periodicity found in a crystaline substrate. The total potential energy is given as
 \begin{align}
-  V(x, t) = - \frac{U}{2} \cos\left(\frac{2 \pi x}{a}\right)+\frac{1}{2} k(v t-x)^2.
-  \label{eq:H_PT}
+  V(x,t) = \frac{1}{2}K(vt - x)^2 - \frac{1}{2}U_0 \cos \left(\frac{2\pi x}{a} \right).
+  \label{eq:V_PT}
 \end{align}
-The first term describes the corrugation potential with amplitude $U$, $x$ is tip displacement and $a$ is lattice spacing. The second term is the elastic poential resulting from the harmonic coupling of tip and support with spring constant $k$ constant velocity of support $v$ and time $t$. The dynamics of the tip can be described by the Langevin equations 
+The first term describes the harmonic coupling at time $t$, with spring constant $K$, between the tip at position $x$ and the moving body at position $vt$ given by its constant speed $v$. The second term describs the corrugation potential with amplitude $U_0$ and period $a$ representing the lattice spacing of the substrate. The dynamics of the tip can be described by the Langevin equations 
 \begin{align}
   m \ddot{x}+m \mu \dot{x}=-\frac{\partial V(x, t)}{\partial x}+\xi(t),
   \label{eq:Langevin_PT}
 \end{align}
-where $m$ is the mass of the tip $\mu$ the viscous friction and $\xi(t)$ the thermal activation. The equation is solved for $x$ and the friction force is calculated as the force acting on the support 
+\hl{Match notation with later use}. \\
+where $m$ is the mass of the tip, $\mu$ the viscous friction and $\xi(t)$ the thermal activation term. The equation is solved for tip position $x$ and the friction force is retrieved as the force acting on the moving body
 \begin{align*}
-  F = k(vt -x).
+  F_{\text{fric}} = K(vt - x).
 \end{align*}
-The governing equation \cref{eq:Langevin_PT} belongs to a family of stochastic differential equations composed of deterministic dynamics and stochastic processes. In this case the deterministic term is the viscous friction to resist the movement of the tip and the force acting from the corrugation potential. The stochastic term is a random force field modelling thermal noise according to the fluctuation–dissipation relation. Thus there is no single path but rather multiple paths the tip can take. While the Langevin equations is one of the most common ways to handle thermal activaiton other methods exist like Monte Carlo Methods. 
+The governing equation \cref{eq:Langevin_PT} belongs to a family of stochastic differential equations composed of deterministic dynamics and stochastic processes. In this case the deterministic term is the viscous friction to resist the movement of the tip and the force acting from the corrugation potential. The stochastic term is a random force field modelling thermal noise according to the fluctuation–dissipation relation. Thus, there is no single path but rather multiple paths the tip can take. While the Langevin equations is one of the most common ways to handle thermal activaiton other methods exist to solve this problem such as Monte Carlo sampling methods. We ommit the numerical scheme for solving this and refer to a more in depth discussion of the Langevin equations with respect to \acrshort{MD} simulations in \cref{sec:langevin}. 
 
-% Comment that we solce this numerically (the article present a specific algorithm, but this a bit overkill for now since we also talk about the implementation for MD.)
 
+% Working here
 \subsubsection{Temperature}
 The introduced numerical (note that we solve it numerically) method to address
 the problem of thermal activation. Generally when the energy barrier comes close
@@ -609,7 +617,7 @@ In short the mass of the tip affects the dynamics due to the change in inertia. 
 
 
 \subsubsection{Friction Regimes: Smooth Sliding, Single Slip, and Multiple Slip}
-Atomic friction can be divided into three regimes: smooth sliding where the tip slides smoothly on the substrate, single slip where the tip stick at one potential well and then slip to next by a jump of one lattice spacing, and multiple slip where multiple lattice spacing is jumped. Stick-slip mottion is a crucial instability mechanism associated with high energy dissipation and high friction and thus controlling the transistion between smooth sliding and stick-slip has is considered key to control friction. The underlying mechanism behind these regimes can be divided in static and dynamic mechanism. To understand the static mechanism we can consider a quasistatic process for which temperature, speed and damping can be neglected and where we must have $\partial(V)/\partial x = 0$ which simiplifies \cref{eq:H_PT} to 
+Atomic friction can be divided into three regimes: smooth sliding where the tip slides smoothly on the substrate, single slip where the tip stick at one potential well and then slip to next by a jump of one lattice spacing, and multiple slip where multiple lattice spacing is jumped. Stick-slip mottion is a crucial instability mechanism associated with high energy dissipation and high friction and thus controlling the transistion between smooth sliding and stick-slip has is considered key to control friction. The underlying mechanism behind these regimes can be divided in static and dynamic mechanism. To understand the static mechanism we can consider a quasistatic process for which temperature, speed and damping can be neglected and where we must have $\partial(V)/\partial x = 0$ which simiplifies \cref{eq:V_PT} to 
 \begin{align}
   \frac{\pi U}{a} \sin\left(\frac{2\pi x}{a}\right) \frac{2 \pi}{a} = k(vt - x),
   \label{eq:static_H}
@@ -662,7 +670,7 @@ less potential energy can accumulate, and will result in fewer multiple slips. T
 
 
 \subsubsection{2D nature}
-
+?
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -1162,6 +1170,9 @@ loading concentrated to a single point on the flake rather than achieving an eve
 
 
 \section{Expected frictional properties of graphene}\label{sec:expected_prop}
+
+
+% Quick thought: All the three methods in the following is essentialy the same, but the differ in area of contact and force distribution. Even the sharpest AFM tip consist of a few atoms which is just like a small sheet. The SFA takes on a bigger area with even load while the flake is in AFM experiments loaded at a small area while our is loaded at to areas making it less free to rotate. But all in all, they are not so different in the end. The asperity aspect is however a bit different with the AFM tip being able to deform elastically. 
 
 Several studies have investigated the frictional behaviour of graphene by varying different parameters such as normal force, sliding velocity, temperature, commensurability and graphene thickness \cite{penkov_tribology_2014}. In general, we find three types of systems being studied: 1) An \acrshort{FFM} type setup where the graphene, either resting on a substrate or suspended, is probed by an \acrshort{AFM} tip scanning across the surface. 2) \acrshort{SFA} approach with the graphene ``sandwicheded'' in between two substrate layers moving relative to each other using the graphene as a solid lubricant. 3) A graphene flake sliding on a substrate, either being dragged by an \acrshort{AFM} tip or by more complex arrangements in numerical simulations. While only the latter case matches our intended system setup, we consider all three categories due to the sparse results availble. The relevant studies which we consider are listed in \cref{tab:friction_ref}. 
 
