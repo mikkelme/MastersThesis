@@ -283,51 +283,39 @@ highlight the nessecity to consider smaller scales in order to achieve a more fu
 % pursued and new discoveries are being made. \cite{Manini_2016}
 
 
-\section{Microscopic scale} \label{sec:microscale}
-Going from a macro- to microscale perspective, to a length scale of order
-\SI{e-6}{m}, it was realized that most surfaces is in fact rough
+\section{Microscopic scale}\label{sec:microscale}
+Going from a macro- to a microscale perspective, at a length scale on the order
+\SI{e-6}{m}, it was realised that most surfaces is in fact rough
 \cite{mo_friction_2009}. The contact between two surfaces consist of numerous
-smaller contact point, so-called asperities, for which the friction between two
-opposing surfaces involves interlocking of those asperities as visualized in
-\cref{fig:asperity_contact}. Small junctions of asperities are formed due
-to contact pressure and adhesion \cite{kim_nano-scale_2009}.
+smaller contact points, so-called \textit{asperities}, which form junctions due to contact pressure and adhesion as visualized in \cref{fig:asperity_contact} \cite{kim_nano-scale_2009}. In the macroscale perspective of Amonton's law we refer to time- and space-averaged values, i.e.\ the apparent contact area and the average
+sliding speed \cite{gao_frictional_2004}. However, microscopically we find the
+real contact area to be much smaller than the apparent area \cite{kim_nano-scale_2009}, and the shearing motion of local microjunctions to happen at large fluctuations rather than as one syncronized movement throughout the surface. 
 
-In the macroscale perspective of Amonton's law we refer to time- and
-space-averaged values, i.e.\ the ``apparent'' contact area and the average
-sliding speed \cite{gao_frictional_2004}. However, microspocially we find the
-real contact area to be smaller than the macroscale apparent area and the
-shearing of local microjunctions can happen at large fluctuations or in a
-stick-slip fashion. 
-
-It is generally accepted that friction is caused by two mechanism: mechanical
+It is generally accepted that friction is caused by two mechanism: Mechanical
 friction and chemical friction \cite{kim_nano-scale_2009}. The mechanical
 friction is the ``plowing'' of the surface by hard particles or said asperities
 with an energy loss attributed to deformations of the asperity. While plastic
 deformations, corresponding to wear, gives rise to an obvious attribution for
 the energy loss, elastic deformations is also sufficient in explaining energy
 loss due to phonon excitations. In fact the assumption of plastic deformations
-has been critizised as this is theorized only to be present in the beginning of a
-surface contact while it is neglible for prolonged or repeated contact of the same surfaces \cite{CARBONE20082555}. That is, when machine parts slide against each
-other for millions of cycle the plastic deformation would only take place in the
-beginning for which the system then reaches a steady state with only elastic deformations. The chemical friction arrises from adhesion between microscopic
-contacting surfaces, with an energy loss attributed to breaking and forming of
-bonds. 
+has been critizised as this is theorized only to be present in the beginning of
+a surface contact while it is neglible for prolonged or repeated contacts
+\cite{CARBONE20082555}. That is, when machine parts slide against each other for
+millions of cycles, the plastic deformation would only take place in the beginning for which the system then reaches a steady state with only elastic deformations.
+The chemical friction arrises from adhesion between microscopic contacting
+surfaces, with an energy loss attributed to the breaking and forming of bonds. 
 
 
 
-\subsection{Surface roughness --- Asperity theories}
+\subsection{Asperity theories} % Surface roughness --- Asperity theories
 % Sources in general: \cite{mo_friction_2009}, \cite{kim_nano-scale_2009} \\
 
-Asperity theories are based on the observation that microscopic rough surfaces,
-with contacting asperities each with a contact area of $A_{\text{asp}}$, will
-have a true contact area $\sum A_{\text{asp}}$ much smaller than the apperent
-macroscopic area \cite{kim_nano-scale_2009}. The adhesion model proposed by Bowden and Tabor \cite{bowden2001friction} is based on the fundamental reasoning that friction is governed by the adhesion between two surfaces. Since adhesion is proportional to the real contact area, the model predics that friciton is proportional to the area and the interfacial shear strength $\vec{\tau}$ between two contacting junctions \cite{Kim_2012}
+Asperity theories have its foundations in the adhesion model proposed by Bowden and Tabor \cite{bowden2001friction} which is based on the fundamental reasoning that friction is governed by the adhesion between two surfaces \cite{Kim_2012}. Adhesion is proportional to the real contact area defined by asperity junctions and interfacial shear strength $\vec{\tau}$ between such contacting junctions. For an asperity contact area $A_{\text{asp}}$ we get a true contact area $\sum A_{\text{asp}}$ leading to 
 \begin{align*}
-  F_\text{fric} = \vec{\tau} \sum A_{\text{asp}},
+  F_\text{fric} = \vec{\tau} \sum A_{\text{asp}}.
 \end{align*}
 Note that this is still compatible with Amontons’ law in \cref{eq:amonton} by having a linear relatioship between the real contact area and the
-applied load. In \cref{fig:asperity_contact} we see a
-visualization on how the contact area might intuitively increase with load as the asperity tips is deformed (plastically or elastically) into broader contact points.
+applied load. In fact, this is exactly how the theoretical model explains the friction dependency of load. By increasing the normal load it is hypothesized that the real contact area will increase as the asperity tips are deformed (plastically or elastically) into broader contact points as visualized qualitatively in \cref{fig:asperity_contact}.
 
 \begin{figure}[H]
   \centering
@@ -352,7 +340,7 @@ visualization on how the contact area might intuitively increase with load as th
 
 Many studies have focused on single asperity contacts to reveal the relationship
 between the contact area and load
-\cite{Szlufarska_2008}\cite{PhysRevLett.56.930}\cite{perry_scanning_2004}. By
+\cite{Szlufarska_2008,PhysRevLett.56.930,perry_scanning_2004}. By
 assuming perfectly smooth asperities, with radii of curvature from micrometers
 all the way down to nanometers, continuum mechanics can be used to predict the
 deformation of asperities as load is applied. A model for non-adhesive contact
@@ -360,7 +348,7 @@ between homogenous, isotropic, linear elastic spheres was first developed by
 Hertz \cite{HertzOnTC}, which predicted $A_{\text{asp}} \propto F_N^{2/3}$.
 Later adhesion effects were included in a number of subsequent models, including
 Maugis-Dugdale theory \cite{MAUGIS1992243}, which also predicts a sublinear
-relatinship between $A_{\text{asp}}$ and $F_N$. Thus, the common feature of all
+relationship between $A_{\text{asp}}$ and $F_N$. Thus, the common feature of all
 single-asperity theories is that $A_{\text{asp}}$ is a sublinear function of
 $F_N$, leading to a similar sublinear relationship for $F_\text{fric}(F_N)$,
 which fails to align with the macroscale observations modelled by Amontons’ law
@@ -368,14 +356,12 @@ which fails to align with the macroscale observations modelled by Amontons’ la
 
 % Concurrently with single-asperity studies, roughness contact theories are being developed8–10,16 to bridge the gap between the mechanics of single asperities and that of macroscopic contacts.\cite{mo_friction_2009}
 
-Concurrently with single-asperity studies, roughness contact theories are being developed \cite{PhysRevLett.100.055504}\cite{Persson}\cite{GW}\cite{BUSH197587} to bridge the gap between single asperities and macroscopic contacts \cite{mo_friction_2009}. A variety of multi-asperity theories has attempted to combine single asperity
+Concurrently with single-asperity studies, roughness contact theories are being developed \cite{PhysRevLett.100.055504,Persson,GW,BUSH197587} to bridge the gap between single asperities and macroscopic contacts \cite{mo_friction_2009}. A variety of multi-asperity theories has attempted to combine single asperity
 mechanics by statistical modelling of the asperity height and spatial
 distributions \cite{CARBONE20082555}. This has led to a partially success in the establishment of a linear relationship between $A_{\text{asp}}$ and $F_N$. Unfortunately, these results are restricted
 in terms of the magnitude of the load and contact area, where multi-asperity
 contact models based on the original ideas of Greenwood and Williamson \cite{GW}
-only predicts linearity at vanhising low loads, or Persson \cite{Persson} which
-works for more reasonable loads but only up to 10-15 \% of the macroscale
-contact area. However, as the load is furhter increased all multi-asperity models
+only predicts linearity at vanhising low loads, or Persson \cite{Persson} which predicts linearity for more reasonable loads but only up to 10-15 \% of the macroscale contact area. However, as the load is further increased all multi-asperity models
 predict the contact area to fall into the sublinear dependency of normal force
 as seen for single aperity theories as well \cite{CARBONE20082555}.
 
@@ -422,29 +408,21 @@ as seen for single aperity theories as well \cite{CARBONE20082555}.
 % on physical properties \cite{Szlufarska_2008}.
 
 
-\section{Nanoscale - Atomic scale}\label{sec:nanoscale}
+\section{Nanoscale --- Atomic scale}\label{sec:nanoscale}
 Going from a micro- to a nanoscale, on the order of \SI{e-9}{m}, it has been
-predicted that continnum mechanics will start to break down \cite{luan_breakdown_2005} due to the discreteness of individual atoms. In a numerical study by Mo et
-al.\ \cite{mo_friction_2009} (considering asperity radii of 5-30 nm) it has been
+predicted that continnum mechanics will start to break down \cite{luan_breakdown_2005} due to the discreteness of individual atoms. In a numerical \acrshort{MD} study by Mo et
+al.\ \cite{mo_friction_2009}, considering asperity radii of 5-30 nm, it has been
 shown that the asperity area $A_{\text{asp}}$, defined by the circumfereance of
 the contact zone, is sublinear with $F_N$. This is accommodated by the
 observation that not all atoms within the circumference make chemical contact
 with the substrate. By modelling the real contact area $A_{\text{real}} =
 NA_{\text{atom}}$, where $N$ is the amount of atoms within the range of chemical
-interaction and $A_{\text{atom}}$ the associated surface area for an atom, they
+interaction and $A_{\text{atom}}$ the associated surface area for a contacting atom, they
 found a consistent linear relationship between friction and the real contact
 area. Without adhesive forces this lead to a similar linear relationship
 $F_{\text{fric}} \propto F_N$, while adding van der Waals adhesion to the
-simulation gave a sublinear relationship, even though the $F_{\text{fric}}
-\propto A_{\text{real}}$ was maintained. This result emphasizes that the predictions of continuum mechanchs might still apply as the contact
-area is still expected to be play an important role at the nanoscale for
-asperity theory. It is simply the definition of the contact area that undergoes
-a change when transistioning from micro- to nanoscale. 
-
-While the study by Mo et al.\ \cite{mo_friction_2009} considers a single
-asperity on a nanoscale, some models take this even further to what we might denote the atomic-scale. Our system of interest, is an atomically flat graphene sheet imposed on a flat silicon substrate, which lacks the present of any nanoscale asperities in its inital uncut underformed state.
-
-
+simulation gave a sublinear relationship matching microscale single asperity theory, even though the $F_{\text{fric}}
+\propto A_{\text{real}}$ was maintained. This result emphasizes that the predictions of continuum mechanchs might still apply at the nanoscale and that the contact area can still be expected to be play an important role for nanoscale asperity contact. It is simply the definition of the contact area that undergoes a change when transistioning from micro- to nanoscale. 
 
 
 % Although both numerical \cite{zhu_study_2018}\cite{ma12091425}\cite{bonelli_atomistic_2009} and experimental \cite[2005]{DIENWIEBEL2005197}\cite{feng_superlubric_2013} studies have been done for so-called nanoflakes
@@ -464,15 +442,34 @@ asperity on a nanoscale, some models take this even further to what we might den
 
 % Before diving into alternative theoretical approaches to adress this issue we point out that exactly this transistion, between nanoscale asperities and atomically smooth surfaces, is of outermost importance for the objective of the thesis. By introducing kirigami cuts and stretching the sheet we expect to see an out of plane buckling which induce an ensemble of asperities on the sheet. Hence, we might hypothesize that such a transition will contribute to a significant change in the goverening mechanism of friction bridgering the two domains of nanoscale asperity and smooth surface theory. 
 
-
-In the lack of noteworthy structural asperities, friction can instead be
-modelled as a consequencse of the ´´rough'' potential layed out by the atomic landscape. A series of so-called reduced-order models builds on a simplified system of atomic-scale contact which builds on three essential parts: 1) A periodic potential modelling a rigid crystaline substrate. 2) An interacting particle, or chain of particles, placed in the potential with a spring-like coupling to 3) a moving body moving at steady speed. In figure
-\cref{fig:PT_FK_FKT} three of the most common 1D models is displayed which we will adress in the following sections. The time-honered Prandtl-Tomlinson (PT) model describes a point-like tip sliding over a space-periodic fixed crystalline surface with a harmonic coupling to the
-moving body. This is analog to that of an experimental cantilever used
-for Atomic Force Microscopy which we will introduce in more details in \cref{sec:SPM}. Further extensions was added in the Frenkel-Kontorova \acrshort{FK} model by substituting the tip with a chain of harmonic coupled atoms dragged from the end, and finally combinned in the Frenkel-Kontorova-Tomlinson (\acrshort{FKT}) with the addition of a harmonic coupling for each of the atoms in the chain with the moving body. While these models cannot provide the same level of details as atomistic simulations such as \acrshort{MD} it enables investigation of atomic friction under most conditions, some of which are inaccessible to \acrshort{MD} \cite{Yalin_2011}. This makes for an understanding of the inidvidual parameters and mechanisms affecting friction as a whole. 
-
-
-
+While the study by Mo et al.\ \cite{mo_friction_2009} considers a single
+asperity on a nanoscale, some models take this even further to what we will
+denote as the atomic-scale. This final leap is motivated by the fact that our
+system of interest, an atomically flat graphene sheet imposed on a flat silicon
+substrate, lacks the presence of nanoscale asperities in its inital uncut
+underformed state. In the lack of noteworthy structural asperities, friction can
+instead be modelled as a consequencse of the ``rough'' potential layed out by
+the atomic landscape. A series of so-called reduced-order models builds on a
+simplified system of atomic-scale contacts based on three essential parts: 1) A
+periodic potential modelling the substrate as rigid crystaline surface. 2) An
+interacting particle, or collection of particles, placed in the potential. 3) A
+moving body, moving at steady speed, and connected to the particles through a
+harmonic coupling. In figure \cref{fig:PT_FK_FKT} three of the most common 1D
+models is displayed which we will adress in the following sections. The
+time-honered Prandtl-Tomlinson (PT) model describes a point-like tip sliding
+over a space-periodic fixed crystalline surface with a harmonic coupling to the
+moving body. This is analog to that of an experimental cantilever used for
+Atomic Force Microscopy which we will introduce in more details in
+\cref{sec:SPM}. Further extensions was added in the Frenkel-Kontorova
+(\acrshort{FK}) model by substituting the tip with a chain of harmonic coupled
+particles dragged from the end, and finally combinned in the
+Frenkel-Kontorova-Tomlinson (\acrshort{FKT}) with the addition of a more
+rigorous harmonic coupling between the moving body and each of the atoms in the
+chain. While these models cannot provide the same level of details as atomistic
+simulations such as \acrshort{MD} it enables investigation of atomic friction
+under most conditions, some of which are inaccessible to \acrshort{MD}
+\cite{Yalin_2011}. This makes these models an appropiate tool for investigating
+inidvidual parameters and mechanisms governing affecting friction.
 
 
 \begin{figure}[H]
@@ -486,7 +483,7 @@ for Atomic Force Microscopy which we will introduce in more details in \cref{sec
 % Analytical Models for Atomic Friction \cite{Yalin_2011}
 % \textbf{Analytical Models for Atomic Friction}
 \subsection{Prandtl–Tomlinson}
-We start with the Prandtl–Tomlinson (\acrshort{PT}) \cite[2,3]{Yalin_2011} with added thermal activation as proposed by Gnecco et al. \cite{PhysRevLett.84.1172}. For the theoretical foundation of this section  we generally refer to  \cite{Yalin_2011}.
+We consider the Prandtl–Tomlinson model (\acrshort{PT}) \cite[2,3]{Yalin_2011} with added thermal activation as proposed by Gnecco et al. \cite{PhysRevLett.84.1172}. For the theoretical foundation of this section  we generally refer to  \cite{Yalin_2011}.
 
 
 
