@@ -966,34 +966,69 @@ The analysis of the phonon dynamics is highly simplfied here, and a numerical st
 
 
 \subsection{Frenkel-Kontorova-Tomlinson}
-A final extension of the atomic models worth mentioning here is the Frenkel-Kontorova-Tomlinson \acrshort{FKT} model. 
+A final extension of the atomic models worth mentioning here is the
+Frenkel-Kontorova-Tomlinson (\acrshort{FKT}) model \cite{weiss_dry_1997}, which
+introduces a harmonic coupling of the sliding atom chain to the driving moving
+body, effectively combining \acrshort{PT} and \acrshort{FK} (see \cref{fig:PT_FK_FKT}). This introduces
+more degrees of freedom to the model based on the intention of getting a more realistic connection between the moving body and the chain. 
+modelling of a broad contact point. Dong et al.\ carried out a numerical
+analysis using the 1D \acrshort{FKT} model investigating the effect of chain
+length. They observed that the friction increased linearly with number of atoms
+in the chain on a long range, but certain lattice mismatch resulted in local non-linear relationship as shown in \cref{fig:FKT_contact}. Similar, taking the
+\acrshort{FKT} model to 2D they were able to achieve a similar sensitivity to
+commensurability as observed experimentally by \cite{DIENWIEBEL2005197} (shown in
+\cref{fig:graphene_rot}) with the numerical result shown in \cref{fig:FKT_2D_rot}. Besides a recreation of the commensurability effect they also observed increasing friction with an increasing flake size. Combinned, the 1D and 2D results supports the idea of an increasing friction with contact size although it might showcase non-linear behvaiour depending on commensurability.
 
-% Due to the lack of connection between the chain and the moving body the \acrshort{PT} and \acrshort{FK} model was merged by including a harmonic coupling between each of the atoms to the moving body \cite{kim_nano-scale_2009}. 
-
-The \acrshort{FKT} model [61, 62]\cite{Manini_2016} introduces a harmonic coupling of the sliding atom chain to the driving moving body, effectively combining \acrshort{PT} and \acrshort{FK}, thus makig it possible to investigate stick-slip features. The $\acrshort{FKT}$ made it possible to study the combinned interface incommensurability, finite-size effects, mechanical stiffness of the contacting materials and normal load variations \cite{Manini_2016}. 
-
-
-
-1D FKT: By increasing flake size for different lattice mismatch we observe that only $\theta = 1$ gives a linear relationship between contact area and friction \cref{fig:FK_contact}. But over a long range it increaes linearly with size. 
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.5\linewidth]{figures/theory/FKT_contact}
-  \caption{\hl{Temporary} figure from \cite{Yalin_2011} }
-  \label{fig:FKT_contact}
+  \begin{subfigure}[t]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/theory/FKT_contact}
+      \label{fig:FKT_contact}
+      \caption{\hl{Temporary} figure from \cite{Yalin_2011} }
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/theory/FKT_2D_rot.png}
+      \label{fig:FKT_2D_rot}
+      \caption{\hl{Temporary} figure from \cite{Yalin_2011} }
+  \end{subfigure}
+  \hfill
+    %  \caption{}
+    %  \label{fig:FKT_size}
 \end{figure}
 
 
 
-\subsection{Shortcomings of atomic models}
 
-Shortcomings of PT-based reduced-models \cite{Yalin}. 
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.5\linewidth]{figures/theory/FKT_contact}
+%   \caption{\hl{Temporary} figure from \cite{Yalin_2011} }
+%   \label{fig:FKT_contact}
+% \end{figure}
+
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.5\linewidth]{figures/theory/FKT_2D_rot.png}
+%   \caption{\hl{Temporary} figure from \cite{Yalin_2011} }
+%   \label{fig:FKT_2D_rot}
+% \end{figure}
+
+% thus makig it possible to investigate stick-slip features ??. The $\acrshort{FKT}$ made it possible to study the combinned interface incommensurability, finite-size effects, mechanical stiffness of the contacting materials and normal load variations \cite{Manini_2016}. 
+
+% Due to the lack of connection between the chain and the moving body the \acrshort{PT} and \acrshort{FK} model was merged by including a harmonic coupling between each of the atoms to the moving body \cite{kim_nano-scale_2009}. 
+
+
+\subsection{Shortcomings of atomic models}
+\hl{To-DO: Shortcomings of PT-based reduced-models} % \cite{Yalin_2011}. 
 \begin{itemize}
   \item Assummes a rigid substrate with a simplified potential shape. 
   \item Energy dissipation is added through a viscous term $-m\mu \dot{x}$ being the only dissipation channel availble. Does not capture a more complex real life electron and phonon dissipation. Taking phonon dissipation as an example there are many virbaiton modes (3N). This will effect the thermal activationm derivation. 
   \item The moving body is simplified as constant moving rigid body, while in fact this will also be subject to a more complex dynamic behavior.
 \end{itemize}
-
 
 
 % However, Weiss and Elmer (1995) proposed that the model had a deficiency. They suggested that in the FK model, there was no connection between the atoms and the sliding body. Therefore, Frenkel-Kontorova-Tomlinson (FKT) model that combines the FK model with the Tomlinson model was proposed. \cite{kim_nano-scale_2009}
@@ -1085,10 +1120,8 @@ Shortcomings of PT-based reduced-models \cite{Yalin}.
 % \cite{Manini_2016} p. 24.
 
 
-% \subsubsection{Temperature depence}
 % Might find something interesting here \cite{zhao_thermally_2007} or \cite{PhysRevE.71.065101}.
 
-% \subsubsection{Smooth sliding}
 % Find a suitable place to introduce smooth sliding. Above certain velocities the stick-slip motion dissapear. \cite[p. 142-ish]{gnecco_meyer_2015}
 
 \subsection{Experimental procedures}
@@ -1176,16 +1209,26 @@ The Surface force apparatus \acrshort{SFA} is based on two curved molecuraly smo
 % in the physics of nanoscale friction)
 
 
-\subsection{Numerical procedures}
-
 
 
 \section{Expected frictional properties of graphene}\label{sec:expected_prop}
-
-
 % Quick thought: All the three methods in the following is essentialy the same, but the differ in area of contact and force distribution. Even the sharpest AFM tip consist of a few atoms which is just like a small sheet. The SFA takes on a bigger area with even load while the flake is in AFM experiments loaded at a small area while our is loaded at to areas making it less free to rotate. But all in all, they are not so different in the end. The asperity aspect is however a bit different with the AFM tip being able to deform elastically. 
 
-Several studies have investigated the frictional behaviour of graphene by varying different parameters such as normal force, sliding velocity, temperature, commensurability and graphene thickness \cite{penkov_tribology_2014}. In general, we find three types of systems being studied: 1) An \acrshort{FFM} type setup where the graphene, either resting on a substrate or suspended, is probed by an \acrshort{AFM} tip scanning across the surface. 2) \acrshort{SFA} approach with the graphene ``sandwicheded'' in between two substrate layers moving relative to each other using the graphene as a solid lubricant. 3) A graphene flake sliding on a substrate, either being dragged by an \acrshort{AFM} tip or by more complex arrangements in numerical simulations. While only the latter case matches our intended system setup, we consider all three categories due to the sparse results availble. The relevant studies which we consider are listed in \cref{tab:friction_ref}. 
+Several studies have investigated the frictional behaviour of graphene by
+varying different parameters such as normal force, sliding velocity,
+temperature, commensurability and graphene thickness
+\cite{penkov_tribology_2014}. In general, we find three types of relevant
+systems being studied: 1) An \acrshort{FFM} type setup where the graphene,
+either resting on a substrate or suspended, is probed by an \acrshort{AFM} tip
+scanning across the surface. 2) \acrshort{SFA} approach with the graphene
+``sandwicheded'' in between two substrate layers moving relative to each other
+using the graphene as a solid lubricant. 3) A graphene flake sliding on a
+substrate, either being dragged by an \acrshort{AFM} tip or by more complex
+arrangements in numerical simulations. Considering that even the sharpest
+\acrshort{AFM} tip will effectively put multiple atoms in contact with the test
+sample, all methods relates to a nanoscale contact involving graphene but differs on contact area. However, the \acrshort{FFM} type suggest a basis in asperity theory as we expect it to deform with increasing load, while the latter two is more alligned with the \acrshort{PT} type models and our system our interest which is an atomic flat sheet on a flat substrate. Having said that, we consider all
+three types with the purpose of gaining a more comprehensive insight. The relevant studies considered in the following are are listed in \cref{tab:friction_ref}
+for convenience. 
 
 
 
@@ -1196,7 +1239,8 @@ Several studies have investigated the frictional behaviour of graphene by varyin
   \label{tab:friction_ref}
   \begin{tabular}{ |M{1cm}|M{1cm}|M{1.5cm}|X{2.5cm}|X{4cm}|X{4cm}| } \hline
   System & Type & Year & Researcher & Materials & Key words \\ \hline
-  \parbox[t]{2mm}{\multirow{11}{*}{\rotatebox[origin=c]{90}{FFM}}} & \multirow{1}{*}{Exp.} & 2015 \cite{Paolicelli_2015} & G. Paolicelli et al.\ & Si tip, graphene on SiO2 and Ni(111) substrate  & Layers, load, shear strength \\ \cline{2-6} 
+  \parbox[t]{2mm}{\multirow{12}{*}{\rotatebox[origin=c]{90}{FFM}}} & \multirow{2}{*}{Exp.} & 2007 \cite{zhao_thermally_2007} & Zhao et al.\ & Si\textsubscript{3}N\textsubscript{4} tip on graphite. & Temperature dependence \\ \cline{3-6} 
+  & & 2015 \cite{Paolicelli_2015} & G. Paolicelli et al.\ & Si tip, graphene on SiO2 and Ni(111) substrate  & Layers, load, shear strength \\ \cline{2-6} 
   & \multirow{4}{*}{Mix }& 2019 \cite{zhang_tuning_2019} & Zhang et al.\ & Monolayer graphene  & Straining sheet \\ \cline{3-6} 
   &  & 2019 \cite{Vazirisereshk_2019} & Vazirisereshk et al.\ & Graphene,  MoS\textsubscript{2} and Graphene/MoS\textsubscript{2} heterostructure & Low friction? \\ \cline{2-6} 
   & \multirow{4}{*}{Num.} & 2015 \cite{Yoon2015MolecularDS} & Yoon et al.\ & Si tip, graphene on SiO\textsubscript{2} & Stick-slip: tip size, scan angle, layer thickness, substrate flexibility \\ \cline{3-6} 
@@ -1213,7 +1257,8 @@ Several studies have investigated the frictional behaviour of graphene by varyin
   \end{tabular}
   % \end{center}
 \end{table}
-% ---> Add \cite{zhao_thermally_2007}
+
+% Recent AFM experiments on metals revealed that friction varies little with increase of normal load in the low load regime [24, 74]. In addition, a newly invented AFM technique referred to as tip-on-top mode that enables researchers to manipulate nanoparticles of different size showed that in some cases friction increased linearly with interface area while in other cases near fric- tionless sliding was observed [75]. These conflicting results suggest that there may be a non-linear relationship between real contact area and friction. \cite{Yalin_2011}
 
 % ---- Qualitative-ish --- %
 One of the earlist tribological simulations of graphene was carried out by
