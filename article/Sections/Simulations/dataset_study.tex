@@ -555,13 +555,15 @@ From the hypertuning study we choose the S32D12 model with a cylic training sche
 \end{figure}  
 
 
+We take a look at how the ranking of the four properties of interest is ranked with the \acrshort{ML} model. Generally the ranking for the minimum friciton is deviating the most. We also see negative values in the \acrshort{ML} prediction which hints that the sensitivity to the low values is not good enough. Otherwise, the \acrshort{ML} is pretty much able to get the top 5 rights for the remaning categories for the tetrehedron and honeycomb pattern. For the random walk it struggles a bit more. Looking at the values for the top candidates in the max-types properties we see that it is generally within a $\sim 0.2$ nN range. 
+
 \begin{table}[H]
   \begin{center}
   \caption{Tetrahedon}
   \label{tab:}
   \begin{tabular}{|c|c|c?{0.3mm}c|c|c|} \hline
     ML & \multicolumn{2}{c?{0.3mm}}{Data} &  \multicolumn{2}{c|}{\acrshort{ML}} & Data \\ \cline{2-5}
-    Rank & Name & Val & Name & Val & Rank \\ \hline
+    Rank & Config & Value [nN] & Config & Value [nN] & Rank \\ \hline
     \multicolumn{6}{|c|}{Min $F_{\text{fric}}$} \\ \hline
     20 & (3, 9, 4) & 0.0067 & (3, 1, 2) & 0.0041 & 5  \\ \hline
     5 & (3, 1, 3) & 0.0075 & (1, 3, 4) & 0.0049 & 11 \\ \hline
@@ -590,14 +592,13 @@ From the hypertuning study we choose the S32D12 model with a cylic training sche
   \end{center}
 \end{table}
 
-
 \begin{table}[H]
   \begin{center}
   \caption{Honeycomb}
   \label{tab:}
   \begin{tabular}{|c|c|c?{0.3mm}c|c|c|} \hline
     ML & \multicolumn{2}{c?{0.3mm}}{Data} &  \multicolumn{2}{c|}{\acrshort{ML}} & Data \\ \cline{2-5}
-    Rank & Name & Val & Name & Val & Rank \\ \hline
+    Rank & Config & Value [nN] & Config & Value [nN] & Rank \\ \hline
     \multicolumn{6}{|c|}{Min $F_{\text{fric}}$} \\ \hline
     1 & (2, 5, 1, 1) & 0.0177 & (2, 5, 1, 1) & 0.0113 & 1 \\ \hline 
     9 & (2, 4, 5, 1) & 0.0187 & (2, 5, 5, 3) & 0.0149 & 7 \\ \hline 
@@ -633,7 +634,7 @@ From the hypertuning study we choose the S32D12 model with a cylic training sche
   \label{tab:}
   \begin{tabular}{|c|c|c?{0.3mm}c|c|c|} \hline
     ML & \multicolumn{2}{c?{0.3mm}}{Data} &  \multicolumn{2}{c|}{\acrshort{ML}} & Data \\ \cline{2-5}
-    Rank & Name & Val & Name & Val & Rank \\ \hline
+    Rank & Config & Value [nN] & Config & Value [nN] & Rank \\ \hline
     \multicolumn{6}{|c|}{Min $F_{\text{fric}}$} \\ \hline
     1 & 12 & 0.0024 & 12 & -0.0011 & 1 \\ \hline 
     24 & 76 & 0.0040 & 06 & 0.0036  & 27 \\ \hline 

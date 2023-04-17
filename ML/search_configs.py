@@ -152,8 +152,8 @@ class Search:
                 
                 try:
                     name, input = self.translate_input()
-                    # print(name, i, self.current, self.patterns_evaluated)
-                    out = self.pattern(self.shape, *input, ref = None)
+                    # out = self.pattern(self.shape, *input, ref = None)
+                    out = self.pattern(self.shape, *input, ref = 'RAND')
                     if self.pattern.__name__ == 'RW_MC':
                         mat, RW = out
                         name = str(RW)[18:]
@@ -162,7 +162,6 @@ class Search:
                     
                     assert mat is not None
                 except AssertionError: # Shape not allowed
-                    print('assertion error')
                     continue
                 
                 
@@ -236,7 +235,7 @@ class Search:
       
             
         
-# TODO: Implement repeat functionality ?
+# TODO: Implement repeat functionality ? XXX
 
 def RW_MC(size, max_num_walks = 10, max_max_steps = 10, max_min_dis = 4, bias_max_temp = 10, ref = None):
     """ Random walk with monte carlo chosen parameters """
@@ -330,9 +329,9 @@ if __name__ == '__main__':
     # S.print_extrema()
     
     # Honeycomb
-    S = Search(model_name, topN = 45, pattern = get_honeycomb_conf)
-    S.search([45-1], start_from = 0) 
-    S.print_extrema()
+    # S = Search(model_name, topN = 45, pattern = get_honeycomb_conf)
+    # S.search([45-1], start_from = 0) 
+    # S.print_extrema()
   
     # RW
     # S = Search(model_name, topN = 100, pattern = get_RW_conf)
@@ -341,10 +340,12 @@ if __name__ == '__main__':
     # S.extrema['Ff_max']
     
     
+    # --- Extended search --- #
     # Pop up
-    # S = Search(model_name, topN, pattern = pop_up)
+    S = Search(model_name, topN, pattern = pop_up)
     # S.search([60, 60, 30], start_from = 1) # XXX
-    # S.print_extrema()
+    S.search([3,13, 13], start_from = 1) # XXX
+    S.print_extrema()
     # S.save_extrema('./pop_search')
     
     # Honeycomb

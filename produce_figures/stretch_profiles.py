@@ -95,7 +95,7 @@ def plot_profiles_together(path, save = False):
     
 
     # topN = 10
-    topN = 30
+    topN = 90
     names =     ['Min', 'Max', 'Max diff', 'Max drop']
     extrema =   [[], [], [], []]
     sort_cond = [lambda x: np.argsort(x),
