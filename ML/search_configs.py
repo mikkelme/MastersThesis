@@ -61,22 +61,24 @@ class Search:
     def update_best(self, name, mat, metrics):
     
         # Minimum Ff
-        condition = metrics['Ff_min'][-1] < self.extrema['Ff_min'][:, -1]
+        condition = metrics['Ff_min'][-1] <= self.extrema['Ff_min'][:, -1]
         self.insert(condition, name, mat, metrics, 'Ff_min')
         
         # Maximum Ff
-        condition = metrics['Ff_max'][-1] > self.extrema['Ff_max'][:, -1]
+        condition = metrics['Ff_max'][-1] >= self.extrema['Ff_max'][:, -1]
         self.insert(condition, name, mat, metrics, 'Ff_max')
         
         
-        print(name, np.argmax(self.extrema['Ff_max'][:, 0] == 'name'))
+        # print(name, np.argmax(self.extrema['Ff_max'][:, 0] == 'name'))
+        
+        
         
         # Maximum Ff diff
-        condition = np.abs(metrics['Ff_max_diff'][-1]) > np.abs(self.extrema['Ff_max_diff'][:, -1])
+        condition = np.abs(metrics['Ff_max_diff'][-1]) >= np.abs(self.extrema['Ff_max_diff'][:, -1])
         self.insert(condition, name, mat, metrics, 'Ff_max_diff')
         
         # Maximum Ff drop
-        condition = metrics['Ff_max_drop'][-1] > self.extrema['Ff_max_drop'][:,-1]
+        condition = metrics['Ff_max_drop'][-1] >= self.extrema['Ff_max_drop'][:,-1]
         self.insert(condition, name, mat, metrics, 'Ff_max_drop')
         
         
@@ -164,13 +166,17 @@ class Search:
                     continue
                 
                 
+                
                 metrics = self.evaluate(mat)
+             
                 if metrics is not None:
                     self.update_best(name, mat, metrics)
                 else:
                     print(name)
                     print('metrics is None')
                     exit()
+                    
+          
             except KeyboardInterrupt:
                 break
         
@@ -189,12 +195,11 @@ class Search:
                 s += f'{i} | name = {self.extrema[key][i, 0]} '
                 
                 for val in self.extrema[key][i, 2:]:
-                    print(self.extrema[key][i, 0], self.extrema[key][i, 2:])
+                    # print(self.extrema[key][i, 0], self.extrema[key][i, 2:])
                     try:
                         s += f'{val:{fmt}} '
                     except ValueError:
-                        print(val)
-                        exit()
+                        print(f'error at key = {key}: {val}')
                 s += '\n'
                 
         return s
@@ -325,14 +330,15 @@ if __name__ == '__main__':
     # S.print_extrema()
     
     # Honeycomb
-    # S = Search(model_name, topN = 44, pattern = get_honeycomb_conf)
-    # S.search([45-1], start_from = 0) 
-    # S.print_extrema()
+    S = Search(model_name, topN = 45, pattern = get_honeycomb_conf)
+    S.search([45-1], start_from = 0) 
+    S.print_extrema()
   
     # RW
-    S = Search(model_name, topN = 80, pattern = get_RW_conf)
-    S.search([100-1], start_from = 0) 
-    S.print_extrema()
+    # S = Search(model_name, topN = 100, pattern = get_RW_conf)
+    # S.search([100-1], start_from = 0) 
+    # S.print_extrema()
+    # S.extrema['Ff_max']
     
     
     # Pop up
