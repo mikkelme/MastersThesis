@@ -37,6 +37,7 @@ class Search:
         
 
     def evaluate(self, mat):
+        
         self.EV.set_config(mat)
         metrics = self.EV.evaluate_properties(self.stretch, self.F_N)
         
@@ -128,10 +129,10 @@ class Search:
 
         
 
-    def search(self, max_params = [1, 2, 2, 2], start_from = 1): # [3, 5, 5, 5]
+    def search(self, max_params = [1, 2, 2, 2], start_from = 1, repeat = 1): # [3, 5, 5, 5]
         self.max_params = np.array(max_params) - start_from
         self.current = np.zeros(len(self.max_params), dtype = 'int')
-        total_comb = self.get_total_combinations(max_params, start_from)
+        total_comb = self.get_total_combinations(max_params, start_from)*repeat
         
         if self.pattern.__name__ == 'RW_MC':
             self.prod = [max_params[-1]]
@@ -147,35 +148,37 @@ class Search:
             try:
                 self.get_next_combination()
                 self.current += start_from
-                print(f'\r{self.current} | ({self.patterns_evaluated+1}/{total_comb})     ', end = '')
                 self.counter += 1
                 
-                try:
-                    name, input = self.translate_input()
-                    # out = self.pattern(self.shape, *input, ref = None)
-                    out = self.pattern(self.shape, *input, ref = 'RAND')
-                    if self.pattern.__name__ == 'RW_MC':
-                        mat, RW = out
-                        name = str(RW)[18:]
+                for r in range(repeat):
+                    # print(f'\r{self.current} ({r+1}) | ({self.patterns_evaluated+1}/{total_comb})     ', end = '')
+                    print(f'{self.current} ({r+1}) | ({self.patterns_evaluated+1}/{total_comb})')
+                    try:
+                        name, input = self.translate_input()
+                        out = self.pattern(self.shape, *input, ref = 'RAND')
+                        
+                        if self.pattern.__name__ == 'RW_MC':
+                            mat, RW = out
+                            name = str(RW)[18:]
+                        else:
+                            mat = out
+                        
+                        assert mat is not None
+                    except AssertionError: # Shape not allowed
+                        continue
+                    
+                    
+                    
+                    metrics = self.evaluate(mat)
+                
+                    if metrics is not None:
+                        self.update_best(name, mat, metrics)
                     else:
-                        mat = out
-                    
-                    assert mat is not None
-                except AssertionError: # Shape not allowed
-                    continue
-                
-                
-                
-                metrics = self.evaluate(mat)
-             
-                if metrics is not None:
-                    self.update_best(name, mat, metrics)
-                else:
-                    print(name)
-                    print('metrics is None')
-                    exit()
-                    
-          
+                        print(name)
+                        print('metrics is None')
+                        exit()
+                        
+            
             except KeyboardInterrupt:
                 break
         
@@ -319,7 +322,7 @@ def get_RW_conf(shape, idx, return_name = False, ref = None):
 
 if __name__ == '__main__':
     model_name = 'mom_weight_search_cyclic/m0w0'
-    topN = 5
+    topN = 50
     
     
     # --- Test against data --- #
@@ -343,14 +346,13 @@ if __name__ == '__main__':
     # --- Extended search --- #
     # Pop up
     S = Search(model_name, topN, pattern = pop_up)
-    # S.search([60, 60, 30], start_from = 1) # XXX
-    S.search([3,13, 13], start_from = 1) # XXX
+    S.search([60, 60, 30], start_from = 1, repeat = 10) # XXX
     S.print_extrema()
-    # S.save_extrema('./pop_search')
+    S.save_extrema('./pop_search')
     
     # Honeycomb
     # S = Search(model_name, topN, pattern = honeycomb)
-    # S.search([30, 30, 30, 60], start_from = 1) # XXX
+    # S.search([30, 30, 30, 60], start_from = 1, repeat = 10) # XXX
     # S.print_extrema()
     # S.save_extrema('./hon_search')
     
@@ -361,4 +363,3 @@ if __name__ == '__main__':
     # S.save_extrema('./RW_search')
     
         
-    # TODO: Use RANDOM ref not CENTER 

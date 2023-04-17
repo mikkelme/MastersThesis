@@ -665,7 +665,9 @@ We take a look at how the ranking of the four properties of interest is ranked w
 
 
 
+When trying to do a search with the generator class we discovered that is it very sensitive to the reference element choice. This seems like an overfitting or lacking data problem, but since a translation of the pattern is not guaranteed to give similar result we have know way of knowing whether this is actually physical valid.  
 
+We perform a search through the pattern generator class. For the tetrahedron and honeycomb we repeat each pattern 10? times with random reference element choice to get variations there. For the random walk we take a monte carlo approach by doing random sampling in a parameter range. Here we use the repair functions for the sheet
 
 
 
