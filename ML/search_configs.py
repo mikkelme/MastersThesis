@@ -173,10 +173,10 @@ class Search:
                 
                     if metrics is not None:
                         self.update_best(name, mat, metrics)
-                    else:
-                        print(name)
-                        print('metrics is None')
-                        exit()
+                    # else:
+                    #     print(name)
+                    #     print('metrics is None')
+                    #     exit()
                         
             
             except KeyboardInterrupt:

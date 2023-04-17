@@ -10,7 +10,6 @@ from ase.visualize.plot import plot_atoms
 
 
 
-# TODO: Change name to GA = genetic algorithm 
 class Genetic_algorithm: # Genetic algorithm 
     def __init__(self, model_weights, model_info, N = 100, image_shape = (62, 106), expand = None, repair = False):
         if model_weights is None:
@@ -90,7 +89,7 @@ class Genetic_algorithm: # Genetic algorithm
     def max_drop(self, conf): 
         self.EV.set_config(conf)
         metrics = self.EV.evaluate_properties(self.stretch, self.F_N)
-        score = metrics['max_drop'][-1] 
+        score = metrics['Ff_max_drop'][-1] 
         return score
     
     def max_fric(self, conf): 
@@ -248,7 +247,6 @@ class Genetic_algorithm: # Genetic algorithm
         for generation in range(num_generations):
             try:
                 best_porosity = 1-np.mean(self.A[0])
-                
                 print(f'Gen = {self.gen} | Min score = {self.min_score:g}, Mean score = {self.mean_score:g}, Max score = {self.max_score:g}, mean P01 = {np.mean(self.P[:, :, 0, 1]):g}, mean P10 = {np.mean(self.P[:, :, 1, 0]):g}, porosity = {best_porosity:g}')
                 
                 if self.gen % 10 == 0:
@@ -273,8 +271,6 @@ class Genetic_algorithm: # Genetic algorithm
         builder.view()
         
     def show_status(self):
-        
-
         fig, axes = plt.subplots(3, 2, num = unique_fignum(), figsize = (12, 8))
 
         if self.gen == 0:
@@ -289,9 +285,9 @@ class Genetic_algorithm: # Genetic algorithm
             else:
                 A = self.A[0]
             builder = config_builder(A)
-            AS.EV.set_config(A)
+            GA.EV.set_config(A)
             plot_atoms(builder.sheet, axes[0, 0], radii = 0.8, show_unit_cell = 0, scale = 1, offset = (0,0))
-            AS.EV.stretch_profile(AS.stretch, AS.F_N, axes[0, 1])
+            GA.EV.stretch_profile(GA.stretch, GA.F_N, axes[0, 1])
             axes[0, 1].set_ylim(top=3.0)
         else:
             if self.expand is not None:
@@ -614,6 +610,56 @@ class Genetic_algorithm: # Genetic algorithm
             if self.visit[pos[0], pos[1]] == 0: # Atom is present
                 self.DFS(pos, label)
                 
+      
+      
+    def get_top_string(self, topN, fmt = '0.4f'):
+        s = '#--- Genetic algorithm --- #\n'
+        s += f'Num. population = {self.A.shape[0]}\n'
+        s += f'Generation = {self.gen}\n'
+        s += f'Min score = {self.min_score:g}\n'
+        s += f'Mean score = {self.mean_score:g}\n'
+        s += f'Max score = {self.max_score:g}\n'
+        s += f'porosity = {1-np.mean(self.A[0]):g}\n'
+        s += f'\n# Top {topN} scores \n'
+        for top in range(np.min((topN, self.A.shape[0]))):
+            s += f'top{top} | '
+            s += f'{self.scores[top]:{fmt}}\n'
+        
+        return s          
+    
+
+    def print_top(self, topN, fmt = '0.4f'):
+        print(self.get_top_string(topN, fmt))
+      
+      
+        
+    
+    def save_top(self, save_path, topN = 5):
+        filename = os.path.join(save_path, 'genetic_top.txt')
+
+        try:
+            outfile = open(filename, 'w')
+        except FileNotFoundError:
+            path = filename.split('/')
+            os.makedirs(os.path.join(*path[:-1]))
+            outfile = open(filename, 'w')
+        
+        # Write summary to file
+        s = self.get_top_string(topN, fmt = '0.4f')
+        outfile.write(s)
+        outfile.close()
+        
+        # Save each top
+        for top in range(np.min((topN, self.A.shape[0]))):
+            name = f'top{top}'
+            mat = self.A[top]
+            np.save(os.path.join(save_path, name), mat)
+            builder = config_builder(mat)
+            builder.build()
+            builder.save_view(save_path, 'sheet', name)
+            
+        
+  
                
         
 def porosity_target(conf):
@@ -635,36 +681,48 @@ def ising_max(conf):
 
 
 
-if __name__ == '__main__':
-    
-    test = RW_Generator()
-    exit()
-
-
-
-    # Initialize instance
-    name = 'staircase_4/S32D10'
-    model_weights = f'{name}/model_dict_state'
-    model_info = f'{name}/best_scores.txt'
+if __name__ == '__main__': 
+    model_name = 'mom_weight_search_cyclic/m0w0'
+    model_weights = f'{model_name}/model_dict_state'
+    model_info = f'{model_name}/best_scores.txt'
     
     
-    # GA = Genetic_algorithm(model_weights, model_info, N = 50, image_shape = (62,106))
-    GA = Genetic_algorithm(model_weights, model_info, N = 50, image_shape = (10, 10), expand = (62,106), repair = True)
+    # # --- Genetic algorithm search: Max drop --- #
+    GA = Genetic_algorithm(model_weights, model_info, N = 100, image_shape = (62,106), repair = True)
+    GA.stretch = np.linspace(0, 2, 100)
+    GA.F_N = 5
+    GA.set_fitness_func(GA.max_drop)
+    GA.init_population([0.01, 0.05, 0.1, 0.2, 0.3])
+    GA.evolution(num_generations = 100)
+    
+    topN = 5
+    GA.print_top(topN)
+    GA.save_top('./GA_RN_start', topN)
+    
+    # ## TEST
+    # GA = Genetic_algorithm(model_weights, model_info, N = 5, image_shape = (62,106), repair = False)
+    # GA.stretch = np.linspace(0, 2, 100)
+    # GA.F_N = 5
+    # GA.set_fitness_func(GA.max_drop)
+    # GA.init_population([0.01, 0.05, 0.1, 0.2, 0.3])
+    # GA.evolution(num_generations = 1)
+    
+    # GA.print_top(topN)
+    # GA.save_top('./GA_test', topN)
+    
+    # GA = Genetic_algorithm(model_weights, model_info, N = 50, image_shape = (10, 10), expand = (62,106), repair = True)
     # GA = Genetic_algorithm(model_weights, model_info, N = 10, image_shape = (10, 10), expand = None)
     
     exit()
     # --- Define fitness --- #
-    GA.stretch = np.linspace(0, 2, 100)
-    GA.F_N = 5
-    GA.set_fitness_func(GA.max_drop)
     # GA.set_fitness_func(ising_max)
     # GA.init_population(['../config_builder/baseline/hon3215.npy', '../config_builder/baseline/pop1_7_5.npy', 0, 0.25, 0.5, 0.75, 1])
-    GA.init_population([0.25, 0.5, 0.75, 1])
-    GA.evolution(num_generations = 100)
-    GA.show_sheet(GA.A[0])
-    GA.show_sheet(GA.A_ex[0])
-    GA.show_status()
-    plt.show()
+    # GA.init_population([0.25, 0.5, 0.75, 1])
+    # GA.evolution(num_generations = 100)
+    # GA.show_sheet(GA.A[0])
+    # GA.show_sheet(GA.A_ex[0])
+    # GA.show_status()
+    # plt.show()
     
     # TODO: Reparing sheet A before expanding to A_ex does not guarantee spanning,
     # but is probably much faster. When running on cluster feel free to repair on expanded sheet.
@@ -687,27 +745,27 @@ if __name__ == '__main__':
     # mat[4, 0:2] = 1
     # mat[4, 7] = 1
     # mat[4, 9] = 1
-    # AS.init_population([mat])
+    # GA.init_population([mat])
   
   
     # np.random.seed(1235)
-    # AS.init_population([0.35])
-    # AS.show_sheet()
-    # mat = AS.repair(AS.A[0])
-    # AS.init_population([mat])
-    # AS.show_sheet()
+    # GA.init_population([0.35])
+    # GA.show_sheet()
+    # mat = GA.repair(GA.A[0])
+    # GA.init_population([mat])
+    # GA.show_sheet()
     # exit()
-    # AS.get_clusters(mat)
+    # GA.get_clusters(mat)
     
     
-    # AS.show_status()
+    # GA.show_status()
     # plt.show()
     
     
     
     
     
-    # plt.imshow(AS.A[0])
+    # plt.imshow(GA.A[0])
     # plt.show()
         
 
