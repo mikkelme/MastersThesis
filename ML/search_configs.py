@@ -186,7 +186,7 @@ class Search:
                 
     
     
-    def get_extrema_string(self, fmt = '0.2f'):
+    def get_extrema_string(self, fmt = '0.4f'):
         s = f'Pattern = {self.pattern.__name__}\n'
         s += f'Max params = {self.max_params}\n'
         s += f'Top N = {self.topN}\n'
@@ -223,7 +223,7 @@ class Search:
             outfile = open(filename, 'w')
         
         
-        s = self.get_extrema_string(fmt = '0.3f')
+        s = self.get_extrema_string(fmt = '0.4f')
         outfile.write(s)
         
         for key in self.extrema:

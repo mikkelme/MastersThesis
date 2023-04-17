@@ -249,11 +249,11 @@ class Genetic_algorithm: # Genetic algorithm
                 best_porosity = 1-np.mean(self.A[0])
                 print(f'Gen = {self.gen} | Min score = {self.min_score:g}, Mean score = {self.mean_score:g}, Max score = {self.max_score:g}, mean P01 = {np.mean(self.P[:, :, 0, 1]):g}, mean P10 = {np.mean(self.P[:, :, 1, 0]):g}, porosity = {best_porosity:g}')
                 
-                if self.gen % 10 == 0:
-                    fig = self.show_status()
-                    fig.savefig(f'AS/gen{self.gen}.pdf', bbox_inches='tight')
-                    # plt.show()
-                    fig.clf()
+                # if self.gen % 10 == 0:
+                #     fig = self.show_status()
+                #     fig.savefig(f'AS/gen{self.gen}.pdf', bbox_inches='tight')
+                #     # plt.show()
+                #     fig.clf()
                     
                     # self.show_sheet()
                 # if self.gen % 100 == 1:
