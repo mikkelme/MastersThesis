@@ -94,7 +94,8 @@ def plot_profiles_together(path, save = False):
     
     
 
-    topN = 10
+    # topN = 10
+    topN = 30
     names =     ['Min', 'Max', 'Max diff', 'Max drop']
     extrema =   [[], [], [], []]
     sort_cond = [lambda x: np.argsort(x),
@@ -372,9 +373,9 @@ def patterns_and_profiles(save = False):
     
 
 if __name__ == "__main__":
-    path = '../Data/CONFIGS/popup'
+    # path = '../Data/CONFIGS/popup'
     # path = '../Data/CONFIGS/honeycomb'
-    # path = '../Data/CONFIGS/RW'
+    path = '../Data/CONFIGS/RW'
     
     # patterns_and_profiles(save = False)
     # patterns_and_profiles_2(save = False)

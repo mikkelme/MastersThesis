@@ -185,19 +185,18 @@ class Evaluater():
         # Practical rupture stretch    
         if np.any(rupture):
             prac_rup_stretch_idx = np.min(np.argwhere(rupture))
+            if prac_rup_stretch_idx < 2: # If early rupture
+                return None
+                # metrics['Ff_min'] = (np.nan, np.nan)
+                # metrics['Ff_max'] = (np.nan, np.nan)
+                # metrics['Ff_max_diff'] = (np.nan, np.nan, np.nan)
+                # metrics['Ff_max_drop'] = (np.nan, np.nan, np.nan)
+                # return metrics
+                    
         else:
             prac_rup_stretch_idx = -1
       
         # Min and max friction (before any rupture prediction)
-        if prac_rup_stretch_idx < 2: # If early rupture
-            return None
-            # metrics['prac_rup_stretch'] = np.nan
-            # metrics['Ff_min'] = (np.nan, np.nan)
-            # metrics['Ff_max'] = (np.nan, np.nan)
-            # metrics['Ff_max_diff'] = (np.nan, np.nan, np.nan)
-            # metrics['Ff_max_drop'] = (np.nan, np.nan, np.nan)
-            # return metrics
-                 
             
         Ffmin_idx = np.argmin(Ff[:prac_rup_stretch_idx])
         Ffmax_idx = np.argmax(Ff[:prac_rup_stretch_idx])
@@ -404,7 +403,7 @@ if __name__ == '__main__':
     # name = 'graphene_h_BN/C16C32C64D64D32D16'
     # name = 'training_1/C16C32D32D16'
     
-    folder = 'staircase_2'
+    # folder = 'staircase_2'
     
     # name = f'{folder}/C8C16C32C64D32D16D8' 
     # name = f'{folder}/C8C16D16D8' 
@@ -419,20 +418,27 @@ if __name__ == '__main__':
     # name = f'{folder}/C32C64C128D128D64D32'
     
     
-    name = f'{folder}/S32D8'
+    # name = f'{folder}/S32D8'
     # name = f'{folder}/S4D14'
     
     # test_model_manual(name)
     # test_model_compare(name)
     # show_CNN_layers(name)
-    show_CNN_layers(name)
+    # show_CNN_layers(name)
     
     
+    # plt.show()
+    # pass
+    model_name = 'mom_weight_search_cyclic/m0w0/'
+    model_weights = f'{model_name}/model_dict_state'
+    model_info = f'{model_name}/best_scores.txt'
+    EV = Evaluater(model_weights, model_info, config_path = '../config_builder/honeycomb/hon3131.npy')
+    stretch = np.linspace(0, 2, 100)
+    F_N = 5
+    EV.stretch_profile(stretch, F_N)
     plt.show()
-    pass
     
-    # model_weights = f'{name}_model_dict_state'
-    # model_info = f'{name}_best_scores.txt'
+    
     # EV = Evaluater(model_weights, model_info, config_path = '../config_builder/baseline/hon3215.npy')
     # EV.load_config('../config_builder/baseline/pop1_7_5.npy')
     # EV.evaluate_properties(show = True)

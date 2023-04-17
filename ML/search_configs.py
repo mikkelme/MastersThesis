@@ -39,6 +39,7 @@ class Search:
     def evaluate(self, mat):
         self.EV.set_config(mat)
         metrics = self.EV.evaluate_properties(self.stretch, self.F_N)
+        
         self.patterns_evaluated += 1
         return metrics
 
@@ -58,6 +59,7 @@ class Search:
         
 
     def update_best(self, name, mat, metrics):
+    
         # Minimum Ff
         condition = metrics['Ff_min'][-1] < self.extrema['Ff_min'][:, -1]
         self.insert(condition, name, mat, metrics, 'Ff_min')
@@ -80,14 +82,23 @@ class Search:
         if pattern_name == 'honeycomb':
             name = f'{((1+self.current[0]//2), self.current[1], self.current[2], self.current[3])}' 
             return name, self.current
+        elif pattern_name == 'get_honeycomb_conf':
+            name = self.pattern(None, *self.current, return_name = True)
+            return name, self.current
         elif pattern_name == 'pop_up':
             size = (self.current[0], self.current[1])
             sp = self.current[2]
             name = str(self.current)
             return name, [size, sp]
+        elif pattern_name == 'get_pop_up_conf':
+            name = self.pattern(None, *self.current, return_name = True)
+            return name, self.current
         elif pattern_name == 'RW_MC':
             name = 'RN'
             return name, self.current[:-1]
+        elif pattern_name == 'get_RW_conf':
+            name = self.pattern(None, *self.current, return_name = True)
+            return name, self.current
         else:
             exit(f'\nPattern function {pattern_name} is not yet implemented.')
 
@@ -104,10 +115,11 @@ class Search:
                     if (np.abs(s0 - s1) - 2)%4 == 0:
                         size_factor += 1
             return size_factor * mp[2]+1-sf
-        elif pattern_name == 'RW_MC':
-            return mp[-1]
         else:
-            exit(f'\nPattern function {pattern_name} is not yet implemented.')
+            return mp[-1]
+        # elif pattern_name == 'RW_MC':
+        # else:
+        #     exit(f'\nPattern function {pattern_name} is not yet implemented.')
 
         
 
@@ -123,6 +135,7 @@ class Search:
             self.prod = [np.prod(self.max_params[p:]+1) for p in range(len(self.max_params))]
         
     
+    
         # Go through all combinations [0, 0, ..., 0] --> max_params
         self.counter = 0
         for i in range(self.prod[0]):
@@ -134,6 +147,7 @@ class Search:
                 
                 try:
                     name, input = self.translate_input()
+                    # print(name, i, self.current, self.patterns_evaluated)
                     out = self.pattern(self.shape, *input, ref = None)
                     if self.pattern.__name__ == 'RW_MC':
                         mat, RW = out
@@ -143,13 +157,20 @@ class Search:
                     
                     assert mat is not None
                 except AssertionError: # Shape not allowed
+                    print('assertion error')
                     continue
+                
                 
                 metrics = self.evaluate(mat)
                 if metrics is not None:
                     self.update_best(name, mat, metrics)
+                else:
+                    print(name)
+                    print('metrics is None')
+                    exit()
             except KeyboardInterrupt:
                 break
+        
         print()
                 
     
@@ -163,14 +184,21 @@ class Search:
             s += f'\n# --- {key} --- #\n'
             for i in range(np.min((self.topN, self.patterns_evaluated))):
                 s += f'{i} | name = {self.extrema[key][i, 0]} '
+                
                 for val in self.extrema[key][i, 2:]:
-                    s += f'{val:{fmt}} '
+                    print(self.extrema[key][i, 0], self.extrema[key][i, 2:])
+                    try:
+                        s += f'{val:{fmt}} '
+                    except ValueError:
+                        print(val)
+                        exit()
                 s += '\n'
                 
         return s
        
     def print_extrema(self):
-        print(self.get_extrema_string(fmt = '0.2f'))
+        print(self.get_extrema_string(fmt = '0.4f'))
+      
       
         
     
@@ -243,9 +271,66 @@ def RW_MC(size, max_num_walks = 10, max_max_steps = 10, max_min_dis = 4, bias_ma
 
 
 
+def get_pop_up_conf(shape, idx, return_name = False, ref = None):
+    # shape, ref used as dummy variables to fit the format
+    path = '../config_builder/popup' # len = 68
+    filenames = get_files_in_folder(path, ext = '.npy')
+    file = filenames[idx]
+    n = file.strip('.npy').split('pop')[-1].replace('_','')
+    name = f'({n[1]}, {n[2]}, {n[0]})'
+    if return_name:
+        return name
+    else:
+        mat = np.load(file)
+        return mat
+    
+def get_honeycomb_conf(shape, idx, return_name = False, ref = None):
+    # shape, ref used as dummy variables to fit the format
+    path = '../config_builder/honeycomb' # len = 45
+    filenames = get_files_in_folder(path, ext = '.npy')
+    file = filenames[idx]
+    n = file.strip('.npy').split('hon')[-1]
+    name = f'{((1+int(n[0])//2), int(n[1]), int(n[2]), int(n[3]))}'     
+    if return_name:
+        return name
+    else:
+        mat = np.load(file)
+        return mat
+    
+def get_RW_conf(shape, idx, return_name = False, ref = None):
+    # shape, ref used as dummy variables to fit the format
+    path = '../config_builder/RW' # len = 100
+    filenames = get_files_in_folder(path, ext = '.npy')
+    file = filenames[idx]
+    name = file.strip('.npy').split('/')[-1]
+    if return_name:
+        return name
+    else:
+        mat = np.load(file)
+        return mat
+
+
 if __name__ == '__main__':
     model_name = 'mom_weight_search_cyclic/m0w0'
     topN = 5
+    
+    
+    # --- Test against data --- #
+    # Pop up
+    # S = Search(model_name, topN = 50, pattern = get_pop_up_conf)
+    # S.search([68-1], start_from = 0) 
+    # S.print_extrema()
+    
+    # Honeycomb
+    # S = Search(model_name, topN = 44, pattern = get_honeycomb_conf)
+    # S.search([45-1], start_from = 0) 
+    # S.print_extrema()
+  
+    # RW
+    S = Search(model_name, topN = 80, pattern = get_RW_conf)
+    S.search([100-1], start_from = 0) 
+    S.print_extrema()
+    
     
     # Pop up
     # S = Search(model_name, topN, pattern = pop_up)
