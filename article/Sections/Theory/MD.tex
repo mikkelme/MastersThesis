@@ -183,6 +183,7 @@ more intuitive interpration of $\sigma$ as the parameter which sets the
 equilirbium distance between atoms, i.e.\ the dividing line for which the force
 is repulsive or attractive.
 
+\hl{Refer to choosen parameters}.
 
 % While the LJ model in many ways is an oversimplified model that is
 % insufficient in its description of ... (\hl{get source and concrete examples})
@@ -261,7 +262,6 @@ a_{ij}\sigma_{ij}$ and $r_{ik} = a_{ik}\sigma_{ik}$ respectively. We adopt the p
 \end{table}
 
 
-
 \subsection{Tersoff}
 % Add figure similar to:
 % https://en.wikipedia.org/wiki/Bond_order_potential#/media/File:Bond-order_interatomic_potential.png,
@@ -271,38 +271,37 @@ a_{ij}\sigma_{ij}$ and $r_{ik} = a_{ik}\sigma_{ik}$ respectively. We adopt the p
 % https://interatomic-potentials.readthedocs.io/en/latest/doc/tersoff.html
 % https://chem.libretexts.org/Bookshelves/
 % Physical_and_Theoretical_Chemistry_Textbook_Maps/Supplemental_Modules_(Physical_and_Theoretical_Chemistry)/Chemical_Bonding/Fundamentals_of_Chemical_Bonding/Bond_Order_and_Lengths
-This section is based on [\cite{docs_lammps_tersoff}, \cite{PhysRevB.37.6991}].
+This theoretical background in this subsection is based on
+\cite{docs_lammps_tersoff,PhysRevB.37.6991}.
 
-
-The tersoff potential abandon the idea of a general $n$-body form and attempts
+The Tersoff potential abandon the idea of a general $n$-body form and attempts
 instead to build the model on a more physics informed approach; The more
 neighbours an atom has the weaker the bonds will be. Thus it introduces the bond
 order (bond strentgh), that is environment specific and decrease with increasing
 bond coordination (number of neighbours for a given atom). The potential energy
 is taken to have the form
-
 \begin{align*}
   E &= \sum_i E_i = \frac{1}{2}\sum_{i \ne j} V_{ij}, \\
   V_{ij} &= f_C(r_{ij}) \big[f_R(r_{ij}) + b_{ij}f_A(r_{ij})  \big],
 \end{align*}
-
 % where the total potential energy is decomposed into an atom site energy $E_i$
 % and a bond energy $v_{ij}$. 
-where the total potential energy is decomposed into a bond energy $V_{ij}$. The
-indices $i$ and $j$ run over the atoms of the system with $r_{ij}$ denoting the
-distance between atom $i$ and $j$. Notice that the sum includes all combinations
-of $i,j$ where $i\ne j$ meaning that the same bond is double counted which is
-the reason for the additional factor $1/2$. The reasoning behind comes from the
+where the total potential energy $E$ is decomposed into a bond energy $V_{ij}$.
+The indices $i$ and $j$ run over the atoms of the system with $r_{ij}$ denoting
+the distance between atom $i$ and $j$. Notice that the sum includes all
+combinations of $i,j$ but $i\ne j$, meaning that an atom cannot bond to itself,
+but we do count other bonds twice, e.g.\ ($(1,2)$ and $(2,1)$), which is the
+explanation for the additional factor $1/2$. The reasoning behind comes from the
 asymmetry of the bond order $b_{ij}\ne b_{ji}$ leading to a $V_{ij}\ne V_{ji}$.
 The bond energy is composed of a repulsive term $f_R$, arising from overlapping
-wave functions, and an attractive term $f_A$ associated with bonding. $f_c$ is
+wave functions, and an attractive term $f_A$ associated with bonding. $f_C$ is
 simply a smooth cut-off function to increase computational efficiency. $b_{ij}$
 represent the bond order, i.e. the strength of the bonds, which depends
 inversely on the number of bonds, the bond angles ($\theta_{ijk}$) and
-optionally the relative bonds lengths ($r_{ij}$, $r{jk}$). Notice that an
+optionally the relative bonds lengths ($r_{ij}$, $r_{jk}$). Notice that an
 additional cut-off term $a_{ij}$ was orginally multiplied to $f_R$ as a way of
 including terms that limit the range of the interactions to the first neighbour
-shell. These kind of limitations is already included in $b_{ij}$ for the
+shell. This kind of limitation is already included in $b_{ij}$ for the
 attractive term $f_A$ but is often omitted for the repulsive term $f_R$, and we
 do so to by setting $a_{ij} = 1$. \\
 The cut-off function $f_C$ goes from 1 to 0 over a small interval range $R \pm
@@ -323,10 +322,9 @@ function, similar to a morse potential,
  f_R(r) &= A \exp(-\lambda_1 r), \\
  f_A(r) &= -B \exp \big(-\lambda_2 r\big).
 \end{align*}
-
-The novel feature of the model lies in modeling of the bond order $b_{ij}$ which
-includes three-body interactions by summing over a third atom $k \ne i,j$ within
-the cut-off $r_{ik} < R + D$ as shown in the following.
+The novel feature of the Tersoff model lies in modeling of the bond order
+$b_{ij}$ which includes three-body interactions by summing over a third atom $k
+\ne i,j$ within the cut-off $r_{ik} < R + D$ as shown in the following.
 
 \begin{align}
   b_{i j} & =\big(1+\beta^n \zeta_{i j}^n\big)^{-\frac{1}{2 n}} \\
@@ -334,11 +332,10 @@ the cut-off $r_{ik} < R + D$ as shown in the following.
   g(\theta) & =\gamma_{i j k}\left(1+\frac{c^2}{d^2}-\frac{c^2}{\left[d^2+\left(\cos \theta-\cos \theta_0\right)^2\right]}\right).
   \label{eq:tersoff_bond_order}
 \end{align}
-
 In \cref{eq:tersoff_bond_order} $\zeta_{i,j}$ is an effective coordination and
 $g(\theta)$ captures angle dependency as it is minimized at the equilibrium
-angle $\theta = \theta_0$. \\
-The parameters used to model the graphene C-C bonds is summarized in
+angle $\theta = \theta_0$. The parameters used to model the graphene C-C bonds
+is adopted from J. Tersoff \cite{PhysRevB.39.5566} and summarized in
 \cref{tab:tersoff_param}
 
 
@@ -347,56 +344,50 @@ The parameters used to model the graphene C-C bonds is summarized in
   \begin{center}
   \caption{Parameters for the tersoff potential used for intermolecular interations in the graphene sheet}
   \label{tab:tersoff_param}
-  \begin{tabular}{ | c | c | L{9cm} |} \hline
+  \begin{tabular}{ | M{2cm} | M{2cm} | X{9cm} |} \hline
     Parameter & Value & Description \\ \hline 
-    $m$ & 3.0 & Default (not used since $\lambda_3 = 0$ ) \\ \hline
-    $\gamma$ & 1.0 & ... \\ \hline
-    $\lambda_3$ & 0.0 Å$^{-1}$ & ... \\ \hline
-    $c$ & \num{3.8049e4} & Strength of the angular effect \\ \hline
-    $d$ & 4.3484 & Determines the ``sharpness'' of the angular dependency \\
+    $R$ & 1.95 Å & Center distance for cut-off. \\ \hline
+    $D$  & 0.15 Å & Thickness of cut-off region. \\ \hline
+    $\lambda_1$ & 3.4879 Å$^{-1}$ & Decay of repulsion potential term $f_R$. \\ \hline
+    $\lambda_2$ & 2.2119 Å$^{-1}$ & Decay of attractive potential term $f_A$. \\ \hline
+    $A$ & 1393.6 eV & Repulsion potential maximum at the core ($f_R(r_{ij} = 0)$). \\ \hline
+    $B$ & 346.74 eV & Attractive potential minimum at core ($f_A(r_{ij} = 0)$). \\ \hline
+    $\beta$ & \num{1.5724e-7} & Base for the exponetial scaling of the effective coordination effect on bond strength $b_{ij}$. \\ \hline
+    $n$ & 0.72751 & Power law exponent for the bond order dependency. \\ \hline
+    $\lambda_3$ & 0.0 Å$^{-1}$ & Base for the exponential cut-off of the effective coordination $\zeta_{i,j}$. \\ \hline
+    $m$ & --- & Exponent for the exponential cut-off of the effective coordination $\zeta_{i,j}$. Not relevant since $\lambda_3 = 0$. \\ \hline
+    $\gamma$ & 1.0 & Linear scaling of the angle dependecny term. \\ \hline
+    $c$ & \num{3.8049e4} & Strength of the angular effect. \\ \hline
+    $d$ & 4.3484 & Determines the ``sharpness'' of the angular dependency. \\
     \hline
-    $\cos{(\theta_0)}$ & -0.57058 & Cosine of the equilibrium angle \\ \hline
-    $n$ & 0.72751 & Power law exponent for the bond order dependency \\ \hline
-    $\beta$ & \num{1.5724e-7} & ... \\ \hline
-    $\lambda_2$ & 2.2119 Å$^{-1}$ & Decay of repulsion potential term \\ \hline
-    $B$ & 346.74 eV & Attractive potential term minimum at core ($ r_{ij} = 0$).
-    \\ \hline
-    $R$ & 1.95 Å & Center distance for cut-off \\ \hline
-    $D$  & 0.15 Å & Thickness of cut-off layers \\ \hline
-    $\lambda_1$ & 3.4879 Å$^{-1}$ & Decay of repulsion potential term \\ \hline
-    $A$ & 1393.6 eV & Repulsion potential term at core ($ r_{ij} = 0$) \\ \hline
+    $\cos{(\theta_0)}$ & $-0.57058$ & Cosine of the equilibrium angle. \\ \hline
   \end{tabular}
   \end{center}
 \end{table}
 
 
-
 \section{Integration}
 % https://www.eng.uc.edu/~beaucag/Classes/AdvancedMaterialsThermodynamics/Books/%5BComputational%20science%20(San%20Diego,%20Calif.)%5D%20Daan%20Frenkel_%20Berend%20Smit%20-%20Understanding%20molecular%20simulation%20_%20from%20algorithms%20to%20applications%20(2002,%20Academic%20Press%20)%20-%20libgen.lc.pdf
 
-Having defined a system of particles governed by interartomic potentials we need
-to move the system forward in time. By solving Newtons equations of motion we
-effectively sample the microcanonical ensemble characterized by a constant
+Assuming that one has defined a system of particles, setting the atom types, initial positions and velocties, and interartomic potentials, we need
+to move the system forward in time. By solving Newtons equations of motion we achieve this by effectively sampling the microcanonical ensemble characterized by a constant
 number of particles $N$, volume $V$ and energy $E$, hence denoted NVE. Newtons
 equaitons of motion read
 \begin{align}
-  m_i \frac{d^2 \vec{r}_i}{dt^2} = \vec{F}_i = -\nabla U_i
+  m_i \frac{d^2 \vec{r}_i}{dt^2} = \vec{F}_i = -\nabla U_i,
   \label{eq:NE}
 \end{align}
-where $i$ is the particle index and $m_i$ its mass, $\vec{r}_i = (x_i, y_i,
+where $i$ is the particle index, $m_i$ its mass, $\vec{r}_i = (x_i, y_i,
 z_i)$ the position, $t$ is time,  $\nabla_i = (\frac{\partial}{\partial x_i},
 \frac{\partial}{\partial y_i}, \frac{\partial}{\partial z_i})$ and $U_i$ the
-potential energy. The potential energy is a function of the particle positions
-of nearby particles depending on the specefic potential in use. Since the forces
-defined by the potentials is conservative we expect the energy of the solution
+potential energy. The potential energy is defined by the interatomic potentials and any external forces applied to the system. Since the forces defined by the potentials is conservative we expect the energy of the solution
 to be conserved. We can redefine \cref{eq:NE} in terms of two coupled first
 order differential equations 
 \begin{align}
   \dot{\vec{v}}_i(t) = \frac{\vec{F}}{m_i}, \qquad \dot{\vec{r}}_i(t) = \vec{v}_i(t),
   \label{eq:NE_2}
 \end{align}
-where $\dot{x} = dx/dt$ (Newton's notation) and $\vec{v} = (v_x, v_y, v_z)$ is
-velocity. Numerically we can solve the coupled equations by integrating over
+where $\dot{x} = dx/dt$ is Newton's notation for the time derivative and $\vec{v} = (v_x, v_y, v_z)$ is velocity. Numerically we can solve the coupled equations by integrating over
 discrete timnesteps. That is, we discretize the solution into temporal steps
 $t_k = t_0 + k\Delta t$ with start time $t_0$ and time-step $\Delta t$. 
 
@@ -408,15 +399,14 @@ $t_k = t_0 + k\Delta t$ with start time $t_0$ and time-step $\Delta t$.
 % http://www.physics.drexel.edu/~valliere/PHYS305/Diff_Eq_Integrators/Verlet_Methods/Diffrntleqn3.pdf
 % ttps://www2.ph.ed.ac.uk/~dmarendu/MVP/MVP03.pdf
 
-A common algorithm to integrate Newtons equation of motion (as formulated in
-\cref{eq:NE_2}) is the \textit{velocity verlet}. We can derive the algorithm by
+A popular approach to the numerical integration of Newtons equations of motion, when written as two coupled first order differential equations \cref{eq:NE_2}, is the \textit{velocity verlet} algorithm. We can derive the algorithm by
 the use of Taylor expansions. We begin by expanding the next-step position
 vector $\vec{r}_i(t + \Delta t)$ at time $t$
 \begin{align}
   \vec{r}_i(t + \Delta t) &= \vec{r}_i(t) + \dot{\vec{r}}_i(t) \Delta t + \frac{\ddot{\vec{r}}_i(t)}{2} \Delta t^2 + \mathcal{O}(\Delta t^3) \label{eq:vv_comp1},
 \end{align}
 where $\ddot{\vec{r}} = d^2\vec{r}/dt^2$ and $\Delta t^n$ is simply the relaxed
-notation for $(\Delta t)^n$. Similar we take the expansions of the next-step
+notation for $(\Delta t)^n$. Thus, the remaning $\mathcal{O}(\Delta t^3)$ term is big O notation for the truncation including a dependence of $\Delta t^3$ and higher order. Similarly, we take the expansions of the next-step
 velocity vector $\vec{v}_i(t+\Delta t)$ at time $t$ 
 \begin{align}
   \vec{v}_i(t+\Delta t) = \vec{v}_i(t) + \dot{\vec{v}}_i(t) \Delta t + \frac{\ddot{\vec{v}}_i(t)}{2}\Delta t^2 + \mathcal{O}(\Delta t^3).
@@ -433,14 +423,13 @@ shown in the following.
   &=  \vec{v}_i(t) + \frac{\Delta t}{2}\Big( \dot{\vec{v}}_i(t) +  \dot{\vec{v}}_i(t+\Delta t)\Big) + \mathcal{O}(\Delta t^3).
   \label{eq:vv_comp2}
 \end{align}
-By combining \cref{eq:vv_comp1} and \cref{eq:vv_comp2} and using Newton's second
-equation $\dot{\vec{v}} = \vec{F}_i(t)/m_i = $ and $\vec{v} = \dot{\vec{r}}$ we
+By combining \cref{eq:vv_comp1} and \cref{eq:vv_comp2}, and $\dot{\vec{v}} = \vec{F}_i(t)/m_i$ and $\vec{v} = \dot{\vec{r}}$ we
 arrive at the final scheme
 \begin{align*}
   \vec{r}_i(t + \Delta t) &= \vec{r}_i(t) + \vec{v}_i(t) \Delta t + \frac{\vec{F}_i(t)}{2m_i}\Delta t^2 + \mathcal{O}(\Delta t^3), \\
   \vec{v}_i(t+\Delta t)  &= \vec{v}_i(t) + \frac{\vec{F}_i(t) + \vec{F}_i(t+\Delta t)}{2m_i}  \Delta t + \mathcal{O}(\Delta t^3).
 \end{align*}
-The scheme will give a local error of order $\Delta t^3$ corresponding to a
+This scheme will give a local error on the order $\Delta t^3$ corresponding to a
 global error of $\Delta t^2$. One of the most popular ways to implement this
 numerically is as stated in the following steps.
 \begin{enumerate}
