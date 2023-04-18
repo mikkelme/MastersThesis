@@ -379,13 +379,13 @@ label skip_dump
 
 # Visualize groups: Freeze/Semifreeze, NVT, Only NVE
 # #########################################################################################################
-# group pure_NVE subtract NVE_atoms PB_tot NVT_atoms                                                      #
-# group locked subtract all NVT_atoms pure_NVE                                                            #
-# dump view1 NVT_atoms custom $(v_dump_freq) NVT_atoms.data id type x y z                                 #
-# dump view2 pure_NVE custom $(v_dump_freq) pure_NVE.data id type x y z                                   #
-# dump view3 locked custom $(v_dump_freq) locked.data id type x y z                                       #
-# run 1
-# quit
+group pure_NVE subtract NVE_atoms PB_tot NVT_atoms                                                      #
+group locked subtract all NVT_atoms pure_NVE                                                            #
+dump view1 NVT_atoms custom $(v_dump_freq) NVT_atoms.data id type x y z                                 #
+dump view2 pure_NVE custom $(v_dump_freq) pure_NVE.data id type x y z                                   #
+dump view3 locked custom $(v_dump_freq) locked.data id type x y z                                       #
+run 1
+quit
 #########################################################################################################
 
 

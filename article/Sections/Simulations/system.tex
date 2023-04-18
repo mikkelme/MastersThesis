@@ -1,29 +1,33 @@
 \chapter{Defining the system}
-
-The definition of the system plays a crucial role as it essentially sets the
-scene for the whole study. With the general goal of investigating the frictional
-behvaiour of a graphene sheet as we alter it through kirigami cuts and stretch,
-two different approaches was considered as sketched in
-\cref{fig:system_variations}. One apprach is simply to mimic a \acrshort{FFM}
-type experiment as done in most other numerical studies of friction. In this
-case, we can probe the graphene sheet, resting on a substrate, with some sort of
-indenting tip connected to a moving body representing a cantilever setup.
+The definition of the system plays an essential role as it sets the scene for
+the whole study. With the general goal of investigating the frictional behvaiour
+of a graphene sheet, as we alter it through kirigami cuts and stretch, two
+different approaches was considered as sketched in \cref{fig:system_variations}.
+One approach is simply to mimic a \acrshort{FFM} type experiment as done in most
+other numerical friction studies. In this case, we probe the graphene sheet,
+resting on a substrate, with an indenting tip connected to a moving body.
 Friction is then measured by making the tip scan across the graphene surface.
-This setup alows for for a variety tip shapes and sizes, and alternatively it
-could bed broadened a flat surface making the setup resemble a \acrshort{SFA}
-experiment. However, this approach seemmingly call for a fixed amount of
-streching of the graphene sheet as it is pre-stretch before being attatched to
-the substrate. Another option is therefore to attatch the graphene sheet to the moving body instead. The key different is then, that introduce some sort of nanomachine in the moving body which convert a normal load into a stretching motion. This gives more design room to utilize any stretch-related friciton effects that require a dynamical changing of the stretch amout as opposed to only being applied to keep the sheet and a certain stretch amount throughout the loading.
+This setup allows for a variety of tip shapes and sizes, and alternatively the
+tip can be substituted with a flat surface making the setup resemble a
+\acrshort{SFA} experiment. It is not obvious how one would achieve the
+stretching of the sheet, but a simple solution is to pre-stretch the sheet to a
+given amount and then fixating it, by the ends, on the substrate. We are then
+able to investigate the frictional behaviour at different amounts of stretching
+between simulations. If any interesting behvaiour is found, at a certain stretch
+amount, a possible application would call for the attatchment of a pre-stretched
+sheet as a surface coating. Another option is to attatch the graphene sheet to
+the moving body instead and introduce some sort of nanomachine in the moving
+body coupling the normal load with a stretching motion. This gives more
+design room to utilize any stretch-related friciton effects that require a
+dynamical changing of the stretch amount throughout the loading. While both
+methods serve as novel approaches with prospects of providing valuable insight
+into a sparsly covered field, we choose the latter option due the increased
+application design freedom. Hence, our system of choice
+consists of two seperate parts: A 2D graphene sheet and a 3D Silicon ``bulk''
+substrate. Note, that we do attempt to model the nanomachine explicitly in this
+study, but we will consider the prospects of adding this in
+\cref{chap:negative_coef}. 
 
-
-% Thus, if any interesting effects from stretch is found this can be utilized through such a nanomachine and be coupled to the loading which makes for a more complete metamaterial design. 
-
-% . Now the contact surface is exclusively between the graphene sheet and the substrate, and we can stretch the sheet to different lengths before running the simulation. However, the key difference lies in the prospect for how we can utilize any interesting behvaiour related to the stretching of the sheet. By imagening that the moving body has a nanomachine feature that translates normal force to stretching we can design a system where the sheet is stretched upon loading. This leaves room for  a
-% nanomachine setup where the sheet is changeing with load and a more interesting potential for applying any found effects. This is the main argument for choosing the latter approach, even though that this sets the system further apart from previous studies of friction in general.
-
-% Note also that this changes from the substrate to the moving body carrying the interesting part .
-
-% We can flip the system and attatched it to the substrate as well..
 
 \begin{figure}[H]
   \centering
@@ -32,29 +36,40 @@ the substrate. Another option is therefore to attatch the graphene sheet to the 
   \label{fig:system_variations}
 \end{figure}
 
-Hence, using the second option our system of choice consist of two seperate parts: A 2D graphene sheet and a 3D Silicon ``bulk'' substrate. Note, that we do attempt to model the nanomachine explicitly in this study, but we will consider the prospects of adding this in \cref{chap:negative_fric}. 
 
 % By applying a normal force and a tangential force we can investigate the friction behvaiour of the contact interface between the sheet and substrate.
 
 % which interact through \acrshort{LJ} potential modelling a van der Waals force. 
 
 \section{Region definitions}
-Despite having two distinct parts of the simmulation, the sheet and the substrate, we provide a further subdivision ino specific regions according their functionality in the \acrshort{MD} simmulations. We denote the start end end regions of the sheet, with respect to one direction, as so-called \textit{pull blocks}, which is reserved for the application of normal load, stretching and
-dragging of the sheet and applying the thermostat. The remaining \textit{inner
-sheet} is left for the kirigami cuts and simulated as an $NVE$ ensemble. The pull blocks are equal split between a thermostat part and a rigid part. The rigid part is part of the thermostat during an initial relaxtion period before it is then made rigid for the final duration of the simulation. Note that the rigid parts on both sides of the sheet is then considered as a single rigid object even though
-they are physically seperated. This means that all force interactions on these
-parts will be applied as a common average making the move in total synchronization. The substrate is equally divided into three parts: The
+We subdivide the two main parts of the simmulation, the sheet and the substrate, into specific regions according their functionality in the \acrshort{MD} simmulations. We denote a subsection of the sheet ends, with respect to one direction, as so-called \textit{pull blocks}, which is reserved for the application of normal load, stretching and
+dragging of the sheet, and for applying the thermostat. The remaining \textit{inner
+sheet} is left for the kirigami cuts and are simulated as an $NVE$ ensemble. The pull blocks are equally split between a thermostat part and a rigid part. The rigid part is only initially thermolized during relaxtion period before it is then made rigid for the final duration of the simulation. Note that the rigid parts on both sides of the sheet is then considered as a single rigid object even though
+they are physically seperated. This means that all force interactions concerning the rigid parts will be applied as a common average making them move in total synchronization. The substrate is equally divided into three parts: The
 \textit{upper layers} ($NVE$) responsible for the sheet-substrate interaction, the
 \textit{middle layers} being a thermostat ($NVT$), and the \textit{bottom layers} being frozen, made rigid and fixed, in the initial lattice structure to ensure that the substrate stays in place. In \cref{fig:system} the system is displayed
 with colors matching the three distinct roles:
 \begin{enumerate}
   \item Red: $NVE$ parts which is governing the frictional behaviour of interest.
-  \item Green: Thermostats (NVT) sourrounding the $NVE$ parts in order to modify the temperature without making disturbing changes to the interaction of the sheet and substrate.
+  \item Green: Thermostats ($NVT$) sourrounding the $NVE$ parts in order to modify the temperature without making disturbing changes to the interaction of the sheet and substrate.
   \item Blue: Parts that is initially or eventually turned in to rigid objects. For the substrate this refers to an addtionally fixation as well.
 \end{enumerate}
 
+The full sheet has the default size $\sim 130 \times \SI{163}{\text{Å}}$ while the substrate is scaled accordingly to the sheet. This is further specified in \cref{sec:substrate}
 
-The total system size, without cuts in the sheet, is roughly  27k atoms, while the full sheet measure $\sim 130 \times \SI{163}{Å}$. The precise numbers and region subdivision is shown for the system atom count in  \cref{tab:system_count} and the sheet dimensions in \cref{tab:sheet_dim}.
+%
+%
+% WORKING HERE
+%
+%
+
+The substrate is scaled in the y-dimensions to accomdate the needed space for stretching the sheet to a certain degree. In the worst case with an expected stretch amount of 200 \% the system size is roughly XXX atoms with subdivisions shown in \cref{tab:system_count}. The system is periodic in the x-y-directins such that the substrate is effectively infinite. 
+
+with subdivision measures as shown in \cref{tab:sheet_dim}.
+
+
+
+% The total system size, without cuts in the sheet, is roughly  27k atoms, while the full sheet measure $\sim 130 \times \SI{163}{Å}$. The precise numbers and region subdivision is shown for the system atom count in  \cref{tab:system_count} and the sheet dimensions in \cref{tab:sheet_dim}.
 \begin{figure}[H]
   \centering
   \begin{subfigure}[b]{0.80\textwidth}
@@ -75,9 +90,60 @@ The total system size, without cuts in the sheet, is roughly  27k atoms, while t
      \label{fig:system}
 \end{figure}
 
+
+% \begin{table}[H]
+%   \begin{center}
+%   \caption{Sheet dimensions comparing the full sheet to its subdivisions: inner sheet and pull blocks.}
+%   \label{tab:sheet_dim}
+%   \begin{tabular}{ | l | r@{}l | r@{}l | c |} \hline
+%     \textbf{Group} & \multicolumn{2}{c|}{$x,y$-dim} & \multicolumn{2}{c|}{dim
+%     [Å]} & Area [Å$^2$]\\ \hline
+%   Full sheet & $x_S \: \times \: $ & $y_S$ &  $130.029 \: \times \:$ & $163.219$
+%   Å & $\phantom{2\times} 21,223.203$ \\ \hline
+%   Inner sheet & $x_S \: \times \:$ & $81.40 \ \%_{y_s}$ &  $130.029  \: \times
+%   \:$ & $132.853$ Å & $\phantom{2\times} 17,274.743$\\ \hline
+%   Pull blocks & $2 \times x_S \: \times \:$ & $ \phantom{0}9.30 \ \%_{y_s}$ & $2
+%   \times 130.029  \: \times \: $ & $\phantom{0}15.183$ Å  & $2 \times
+%   \phantom{0}1,974.230$ \\ \hline  
+% \end{tabular}
+% \end{center}
+% \end{table}
+
+% \begin{table}[H]
+%   \begin{center}
+%   \caption{Sheet dimensions comparing the full sheet to its subdivisions: inner sheet and pull blocks.}
+%   \label{tab:sheet_dim}
+%   \begin{tabular}{ | l | r@{}l | r@{}l | c |} \hline
+%     \textbf{Group} & \multicolumn{2}{c|}{$x,y$-dim} & \multicolumn{2}{c|}{dim
+%     [Å]} & Area [Å$^2$]\\ \hline
+%   Full sheet & $x_S \: \times \: $ & $y_S$ &  $130.029 \: \times \:$ & $163.219$ Å & $\phantom{2\times} 21,223.203$ \\ \hline
+%   Inner sheet & $x_S \: \times \:$ & $81.40 \ \%_{y_s}$ &  $130.029  \: \times \:$ & $132.853$ Å & $\phantom{2\times} 17,274.743$\\ \hline
+%   Pull blocks & $2 \times x_S \: \times \:$ & $ \phantom{0}9.30 \ \%_{y_s}$ & $2 \times 130.029  \: \times \: $ & $\phantom{0}15.183$ Å  & $2 \times \phantom{0}1,974.230$ \\ \hline  
+%   Substrate & $115.89 \ \%_{x_s} \: \times \:$ & $81.40 \ \%_{y_s}$ &  $150.709  \: \times \:$ & $509.152$ Å & $\phantom{2\times} 76,733.789$\\ \hline
+% \end{tabular}
+% \end{center}
+% \end{table}
+
 \begin{table}[H]
   \begin{center}
-  \caption{Amount of atoms in the various system regions in the case of no cutting applied to the sheet.}
+  \caption{x-y dimenstions of sheet and substrate with no cuts and assuming an expected stretch of 200\%.}
+  \label{tab:sheet_dim}
+  \begin{tabular}{ | l | r@{}l | r@{}l | c |} \hline
+    \textbf{Region} & \multicolumn{2}{c|}{$x$-,$y$-dim} & \multicolumn{2}{c|}{Dim
+    [Å]} & Area [Å$^2$]\\ \hline
+  Full sheet & $x_S \: \times \: $ & $y_S$ &  $130.029 \: \times \:$ & $163.219$ Å & $\phantom{2\times} 21,223.203$ \\ \hline
+  Inner sheet & $x_S \: \times \:$ & $0.81 \ y_S$ &  $130.029  \: \times \:$ & $132.853$ Å & $\phantom{2\times} 17,274.743$\\ \hline
+  Pull blocks & $2 \times x_S \: \times \:$ & $ 0.09 \ y_S$ & $2 \times 130.029  \: \times \: $ & $\phantom{0}15.183$ Å  & $2 \times \phantom{0}1,974.230$ \\ \hline  
+  Substrate & $1.16 \ x_S \: \times \:$ & $3.12 \ y_S$ &  $150.709  \: \times \:$ & $509.152$ Å & $\phantom{2\times} 76,733.789$\\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+
+
+\begin{table}[H]
+  \begin{center}
+  \caption{Amount of atoms in the various system regions in the case of no cutting applied to the sheet and assuming a expected stretch of 200 \%.}
   \label{tab:system_count}
   \begin{tabular}{ |c|| c | c | c | c | c | c |} \hline
     \textbf{Region} & \textbf{Total}  & Sub region & Sub total & \textbf{NVE} &
@@ -85,33 +151,35 @@ The total system size, without cuts in the sheet, is roughly  27k atoms, while t
     \multirow{2}{*}{Sheet} & \multirow{2}{*}{7800} & Inner sheet & 6360 & 6360 &
     0 & 0 \\ %\hline
     & & Pull blocks & 1440 & 0 & 720 & 720 \\ \hline   
-    \multirow{2}{*}{Substrate} & \multirow{2}{*}{19656} & Upper & 6552 & 6552 &
+    \multirow{2}{*}{Substrate} & \multirow{2}{*}{47376} & Upper & 15792 & 15792 &
     0 & 0 \\ %\hline
-    & & Middle & 6552 & 0 & 6552 & 0 \\ %\hline
-    & & Bottom & 6552 & 0 & 0 & 6552 \\ \hline \hline   
-    All & 27456 & \multicolumn{2}{r|}{} & 12912 & 7272 & 7272 \\ \hline 
+    & & Middle & 15792 & 0 & 15792 & 0 \\ %\hline
+    & & Bottom & 15792 & 0 & 0 & 15792 \\ \hline \hline   
+    All & 55176 & \multicolumn{2}{r|}{} & 22152 & 16512 & 16512 \\ \hline 
   \end{tabular}
   \end{center}
 \end{table}
+% \begin{table}[H]
+%   \begin{center}
+%   \caption{Amount of atoms in the various system regions in the case of no cutting applied to the sheet.}
+%   \label{tab:system_count}
+%   \begin{tabular}{ |c|| c | c | c | c | c | c |} \hline
+%     \textbf{Region} & \textbf{Total}  & Sub region & Sub total & \textbf{NVE} &
+%     \textbf{NVT} & \textbf{Rigid} \\ \hline   
+%     \multirow{2}{*}{Sheet} & \multirow{2}{*}{7800} & Inner sheet & 6360 & 6360 &
+%     0 & 0 \\ %\hline
+%     & & Pull blocks & 1440 & 0 & 720 & 720 \\ \hline   
+%     \multirow{2}{*}{Substrate} & \multirow{2}{*}{19656} & Upper & 6552 & 6552 &
+%     0 & 0 \\ %\hline
+%     & & Middle & 6552 & 0 & 6552 & 0 \\ %\hline
+%     & & Bottom & 6552 & 0 & 0 & 6552 \\ \hline \hline   
+%     All & 27456 & \multicolumn{2}{r|}{} & 12912 & 7272 & 7272 \\ \hline 
+%   \end{tabular}
+%   \end{center}
+% \end{table}
 
 
-\begin{table}[H]
-  \begin{center}
-  \caption{Sheet dimensions comparing the full sheet to its subdivisions: inner sheet and pull blocks.}
-  \label{tab:sheet_dim}
-  \begin{tabular}{ | l | r@{}l | r@{}l | c |} \hline
-    \textbf{Group} & \multicolumn{2}{c|}{$x,y$-dim} & \multicolumn{2}{c|}{dim
-    [Å]} & Area [Å$^2$]\\ \hline
-  Full sheet & $x_S \: \times \: $ & $y_S$ &  $130.029 \: \times \:$ & $163.219$
-  Å & $\phantom{2\times} 21,223.203$ \\ \hline
-  Inner sheet & $x_S \: \times \:$ & $81.40 \ \%_{y_s}$ &  $130.029  \: \times
-  \:$ & $132.853$ Å & $\phantom{2\times} 17,274.743$\\ \hline
-  Pull blocks & $2 \times x_S \: \times \:$ & $ \phantom{0}9.30 \ \%_{y_s}$ & $2
-  \times 130.029  \: \times \: $ & $\phantom{0}15.183$ Å  & $2 \times
-  \phantom{0}1,974.230$ \\ \hline  
-  \end{tabular}
-  \end{center}
-\end{table}
+% The substrate amount should be a range !!!!!
 
 
 \section{Numerical procedure}
@@ -145,6 +213,37 @@ denoted in parentheses in units of ps, \num{e-12} seconds.
 
 In order to prevent rupturing, or detachment, of the sheet we monitor the nearest neighbours for each atom throughout the simularion. At the initial timestep the three nearest neighbours (at distance 1.42 Å) of all graphene atoms is recorded. If any of these nearest neighbours exceeds a threshold distance of 4
 Å, indicating a bond breakage, this is marked as a rupture and we halt the simulation early. Thus, we ensure that no wear is allowed for the sheet. The substrate is way more robust and by running test simulation of high load and sliding speed we confirmed visually that no wear is accouring in the vicinity of the conditions used in the study
+
+
+\section{Creating the substrate}\label{sec:substrate}
+The substrate is created as a rectangular slab of Silicon (Si). We create the
+initial configuration according to its crystaline structure given as a diamond
+cubic crystal with a lattice parameter $a_{\text{Si}} = 5.43$ Å. The default
+substrate thickness is choosen such that 9 layers of atoms appear (2 unit cells)
+corresponing to 10.86 Å. The x-y dimensions is choosen to match the dimensions
+of the sheet after it is stretched. That is, we define a margin between the
+sheet edge and the substrate edge for the x- and y-direction respectively. Since
+we use periodic boundary conditions a too small margin would result in the sheet
+edges interacting with themselves through the boundary. The absolute lower limit
+for the margin choice is half the cut-off distance for the Tersoff potential,
+governing the graphene sheet interaction, at $R + D = 2.1$ Å. However, due to
+fluctuations in the sheet we cannot set the margin to close to that limit.
+Additionally, we must take into account the buckling of the sheet as it is
+stretched, which might induce an expansion in the x-direction for certain
+configurations. We choose a x-margin of 20 Å which provides $2\cdot
+\SI{20}{\text{Å}} - \SI{2.1}{\text{Å}} = \SI{37.9}{\text{Å}}$ of additional
+spacing with respect to the absolute lower limit. By looking over the simulation
+result visually we confirm that this leaves more than enough room in the cases
+of extreme buckling. For the y-direction the rigid parts of the pull-blocks
+moves a certain distance based on the stretch value exclusively, and we define
+the y-margin based on the remaining distance to the edge after stretching.
+However, as the sheet travels through the periodic boundaries in the y-direction
+when sliding, we want to add some additional spacing through the y-margin in
+order to let the substrate surface relax before interacting with the sheet a
+second time. We choose a y-margin of 15 Å for which the chosen sliding speed of
+$\SI{20}{m/s} = \SI{2}{Å/ps}$ gives \SI{15}{ps} of relaxtion time between encounters with the sheet similar to the inital relaxtion time. 
+
+
 
 \section{Creating the sheet}
 

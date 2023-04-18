@@ -11,8 +11,9 @@ variable K index 1.87 # ~ 30 N/m
 # variable K index 1e3 
 variable root index ..
 variable out_ext index test
-variable config_data index sheet_pop_20x26_1_7_5
-variable stretch_max_pct index 0.1
+# variable config_data index sheet_pop_20x26_1_7_5
+variable config_data index sheet_nocut
+variable stretch_max_pct index 2.0
 variable drag_dir_x index 0 
 variable drag_dir_y index 1 
 # variable F_N index 62.41  # 100 nN
@@ -26,11 +27,11 @@ variable run_rupture_test index 0
 
 variable R index 6
 
-include ${root}/manual_coupling_stretch.in
-include ${root}/manual_coupling_free_drag.in
+# include ${root}/manual_coupling_stretch.in
+# include ${root}/manual_coupling_free_drag.in
 # include ${root}/manual_coupling_drag.in
 
-# include ${root}/stretch.in
+include ${root}/stretch.in
 # include ${root}/drag.in 
 
 
