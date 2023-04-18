@@ -680,8 +680,11 @@ however, that we will only apply the thermostat to specific regions in our simul
 % see https://www2.ph.ed.ac.uk/~dmarendu/MVP/MVP03.pdf p. 4
 
 
-\section{MD limitations (?)}
+\section{Limitations}
+One a general note \acrshort{MD} simulations are limited on a relative small time- and size-scales. Thus, for a friction simulation a sliding speed below a few m/s becomes inaccesible as the computing time increases inversely with sliding speed with regard to a fixed total time of the procedure. The modelling is simplified through the interatomic potentials and the solutions which do not take quantum mechanical effetcs into account. One consequence of this is the omission of effects from electron energy transport. Similarly, the modelling of heat transport through a viscous and a random force as done with the Langevin thermostat might be a highly oversimplyfication which reduced the number of dissipation channels heavily. As mentioned, the phonon is expected to have $3N$ frequencies \hl{Go back and match theory of friction}. 
 
+% Speed
+% Dissipation
 
 % Adding viscous friction in the modelling of friction seems like an obvious issue for a true picture of this. The simplicity of the dissipation channel might be of importance for the final results. 
 
@@ -705,4 +708,4 @@ however, that we will only apply the thermostat to specific regions in our simul
 
 
 \section{LAMMPS}
-
+We use LAMMPS (Large-scale Atomic/Molecular Massively Parallel Simulator.) \cite{LAMMPS} as the base for our numerical framework. LAMMPS is a C\texttt{++} based libary which provides high-level access to numerical efficient \acrshort{MD} simulations with the option to run the computations in parallel. This allows us to focus on higher-level features of the numerical procedure rather than building the simulation from scratch. 
