@@ -4,148 +4,103 @@
 
 
 \chapter{Pilot study}
-Having defined our system, we carry out an initial study of the numerical approach. This includes an analysis of how to define and measure the frictional properties of interest and an investigation of the dependence of the main parameters governing the numerical solutions. From this point of view we decide on a suitable set of parameter choices for the further study moving on. Additionally, we investigate the friction behaviour under the variation of load and stretch for a selected set of configurations. 
+Having defined our system, we carry out an initial study of the numerical approach. This includes an analysis of how to define and measure the frictional properties of interest, and an investigation of the main parameters governing the numerical solutions. From this point of view we decide on a suitable set of parameters for the remaining study. Additionally, we investigate the frictional behaviour under the variation of load and stretch for a selected set of configurations which serves as a baseline for later comparison. 
 
 
 \section{Friction simulation parameters}
 The \acrshort{MD} simulation is governed by a small set of parameters, some
-related directly to the numerical aspects of the simulation and other to the
-physical conditions simmulated. Thus, we distinct between the two main
-categories: 1) \textit{Physical}, parameters which alter the physical conditions
-of the ``numerical experiment'' and are expected to effect the frictional
-behaviour. 2) \textit{Numerical}, parameters which are related more closely to
-the numerical procedure which are expected to influence the simulation dynamics
-but should be chosen to ensure the most stable results. For the purpose of
-creating a machine learning dataset most of theese parameters are kept constant
-with only a subset of the physical parameters being varied. 
+which are related directly to the numerical aspects of the simulation and other
+to the physical conditions in the simmulation. Thus, we differentiate between
+the two main categories: 1) \textit{Physical}, parameters which alter the
+physical conditions of the ``numerical experiment'' and are expected to effect
+the frictional behaviour. 2) \textit{Numerical}, parameters which are related
+more closely to the numerical procedure itself, expected to influence the
+simulation dynamics, which should be chosen to ensure the most stable results.
+For the purpose of creating the machine learning dataset most of these
+parameters will be kept constant with only a subset of the physical parameters
+being varied. The parameters are summarized in \cref{tab:param} with the grey
+shaded area denoting the parameters which we will vary for the dataset. Due to
+the great number of parameters it is unreasonable to make an exhaustive search
+of all parameters, in order to choose the final settings. Instead, we take a
+basis in the parameters used in similar studies \hl{SOURCES} and adjust them as
+we carry out the analysis of the simulation results. Thus, we start at values
+most representative for other similar simulations and adjust according to the
+stability of the results and the computation time. Since we are going to
+introduce a lot of complexity to the system, through the cut and stretch
+deformation, we are less strict about meeting other paramter criterias (does
+this make sense). The final parameter choice is shown in \cref{tab:param} which
+we be the default values in the following study, i.e.\ when nothing is stated explicitly we will use these parameters. As we analyse the data we will provide further arguments for specific choices made.
 
-%
-% Working here (relac the description a bit since it is covered in the system chapter)
-%
 
-\begin{table}[H]
-  \begin{center}
-  \caption{Parameters of the numerical procedure for measuring friction. The shaded area denote the variables used for \acrshort{ML}.}
-  \label{tab:param}
-  \begin{tabular}{ | c | C{2cm} | C{3.5cm} | X{8cm}|} \hline
-    Category & Parameter & Value &  Description \\ \hline
-    \multirow{13}{*}{Physical} & $T$ & \SI{300}{K} &  Temperature for the Langevin thermostat. \\ \hhline{~|-|-|-|}
-    & $v_{\text{slide}}$ &\SI{20}{m/s} & Sliding speed for the sheet translation. \\ \hhline{~|-|-|-|}
-    & $K$ & $\inf$ & Spring constant for the spring force between the virtual atom and the pull blocks responsible for translating the sheet along the substarte. An infinte spring constant is achieved by moving the pull blocks as a rigid body (Lammps: fix move). \\ \hhline{~|-|-|-|}
-    & Scan direction & $(x,y) = (0,1)$ (zigzag direction)  & The direction for which we translate the sheet. \\ \hhline{~|-|-|-|}   
-    & \cellcolor{black!7} Sheet configuration & \cellcolor{black!7} Contiguous & \cellcolor{black!7} A binary matrix containing information of which atoms are removed (0) and which is still present (1) in the graphene sheet.  \\ \hhline{~|-|-|-|}
-    & \cellcolor{black!7} Stretch amount & \cellcolor{black!7} 0\% - rupture & \cellcolor{black!7} The relative sheet stretch in percentage. \\ \hhline{~|-|-|-|}
-    & \cellcolor{black!7} $F_N$ & \cellcolor{black!7} [0.1, 10] nN & \cellcolor{black!7} Applied normal force to the pull blocks. \\ \hline
-    \multirow{8}{*}{Numerical} & $dt$ & \SI{1}{fs} &  Integration timestep. \\ \hhline{~|-|-|-|}
-    & $t_R$ &  \SI{15}{ps} & Relaxtion time before strething. \\ \hhline{~|-|-|-|}
-    & Pauses & \SI{5}{ps} & between stretch and adding normal force and between dragging the sheet. \\ \hhline{~|-|-|-|}
-    & Stretch Speed & \SI{0.01}{ps^{-1}} & How fast to stretch the sheet. \\ \hhline{~|-|-|-|}
-    & Slide distance & \SI{400}{Å} & How far to translate the sheet. \\ \hhline{~|-|-|-|}
-    & Sheet size & $130.029 \times \SI{163.219}{\text{Å}}$ & Spatial size of the 2D sheet.   \\ \hhline{~|-|-|-|}
-    & Pull block size & $2 \times 130.029 \times \SI{15.183}{\text{Å}}$ & spatial size of the pull blocks. \\ \hhline{~|-|-|-|}
-    & Substrate size? & --- & --- \\ \hline
-  \end{tabular}
-  \end{center}
-\end{table}
+% Thus, by adjusting a few selected parameters one by one we arrived at a final choice as shown in \cref{tab:param}. 
+
+% We will present an analysis of the simulation results and its dependency of these selected variables in the following using the final choice as default values. Thus we should stress that the intention behind this choice is mainly to get a working simulation with stable results and not to optimize for any spefic properties yet. 
+
+% \hl{Say a bit more about the articles used to set a starting reference for these parameters.}
+
+% we proposed a set of parameters for which we investgated the dependencies of only selected ones. By adjusting the parameters according to the findings we landed on a final set as already shown in \cref{tab:param}
+
+
+% In the following we present the results of the friction simulations in parallel to the procedure of investigating the choice of different parameters. 
+
+% We aim to chose the parameters in order to accomodate a balance between generlizable and stable result which is simmutaneously a suting candidate as a proof of concept for the control of friction properties using kirigami inspired cuts. 
 
 
 
-\begin{table}[H]
-  \begin{center}
-  \caption{Parameters of the numerical procedure for measuring friction.}
-  \label{tab:param}
-  \begin{tabular}{ | c | m{8cm}| m{5cm}|} 
-    \hline
-    Category & Parameter name: description & Category purpose \\ 
-    \hline
-    Physical & 
-    \begin{itemize}
-      \item[-] $T$: Temperature for the Langevin thermostat.
-      \item[-] $v_{\text{slide}}$ : Sliding speed for the sheet translation.
-      \item[-] $K$: Spring constant for the spring force between the virtual atom and the pull blocks responsible for translating the sheet along the substarte. An infinte spring constant is achieved by moving the pull blocks as a rigid body (Lammps: fix move).
-      \item[-] Scan angle: The direction for which we translate the sheet.
-    \end{itemize} &
-    Parameters expected to have a physical effect on the friction properties, which is kept fixed and thus not included in the machine learning input set. 
-    \\ \hline
-    Measurement & 
-    \begin{itemize}
-      \item[-] $dt$: Integration timestep.
-      \item[-] $t_R$: Relaxtion time before strething.
-      \item[-] Pauses between stretch and adding normal force and between dragging the sheet.  
-      \item[-] Stretch Speed: How fast to stretch the sheet.
-      \item[-] Slide distance: How far to translate the sheet.
-      \item[-] Sheet size: Spatial size of the 2D sheet.  
-      \item[-] Pull block size: spatial size of the pull blocks.
-    \end{itemize} &
-    Paramters influecing the simulation dynamics and being representative of the experimental procedure that we are mimicking. These parameters is chosen with the aim of getting stable parameters under small perturbations of the given parameter. 
-     \\ \hline
-    ML input & 
-    \begin{itemize}
-      \item[-] Sheet configuration: A binary matrix containing information of which atoms are removed (0) and which is still present (1) in the graphene sheet. 
-      \item[-] Stretch amount: The relative sheet stretch in percentage.
-      \item[-] $F_N$: Applied normal force to the pull blocks.
-    \end{itemize} &
-    The remaining paramters serves as input variables for optimization process and is thus given as input variables for the machine learning (ML). 
-    \\ \hline
-  \end{tabular}
-  \end{center}
-\end{table}
+% Due to the great number of parameters, and corresponding range of reasonable numerical values they can take, it is ... to parameter search including all of these. Thus, we will to a great extent rely on a reverse engineering in order to establish a set of parameters for the \textit{physical} and \textit{measurement} categories along with numerical ranges for the $\textit{ML input}$ category which gives stable and promising results. By doing so we effectively narrow down the parameter regime for which the investigated frictional properties belong. We aim to chose the parameters in order to accomodate a balance between generlizable and stable result which is simmutaneously a suting candidate as a proof of concept for the control of friction properties using kirigami inspired cuts. 
+
+% In the following we present the results of the friction simulations in parallel to the procedure of investigating the choice of different parameters. 
+
+% In the following subsections (X to Y) we are going to present the friction simulation results in parallel to the presentation of the reasoning behind the parameter choices. For this we will refer to the default parameter choice showcased in \cref{tab:final_param} which is representative of the final parameter choices. 
 
 
-
-
-Due to the great number of parameters, and corresponding range of reasonable numerical values they can take, it is ... to parameter search including all of these. Thus, we will to a great extent rely on a reverse engineering in order to establish a set of parameters for the \textit{physical} and \textit{measurement} categories along with numerical ranges for the $\textit{ML input}$ category which gives stable and promising results. By doing so we effectively narrow down the parameter regime for which the investigated frictional properties belong. We aim to chose the parameters in order to accomodate a balance between generlizable and stable result which is simmutaneously a suting candidate as a proof of concept for the control of friction properties using kirigami inspired cuts. 
-
-In the following we present the results of the friction simulations in parallel to the procedure of investigating the choice of different parameters. 
-
-In the following subsections (X to Y) we are going to present the friction simulation results in parallel to the presentation of the reasoning behind the parameter choices. For this we will refer to the default parameter choice showcased in \cref{tab:final_param} which is representative of the final parameter choices. 
-
-
-
-
-% \begin{table}[H]
-%   \begin{center}
-%   \caption{Final parameters for the friction simmulations \hl{Probably not the neatest format for this...}}
-%   \label{tab:final_param}
-%   \begin{tabular}{ | m{3cm} | m{3cm}| m{3cm} |} \hline
-%     Physical & Measurements & ML input \\ \hline
-%     {\begin{align*}
-%       T &= \SI{300}{K}  \\
-%       v_{\text{slide}} &= \SI{20}{m/s}  \\
-%       K &= \inf \text{(LAMMPS: \textit{fix move})}  \\
-%       \text{Scan angle} &:  (x,y) = (0,1)  
-%     \end{align*}} &
-%     {\begin{align*}
-%       dt &= \SI{1}{fs} \\
-%       t_R &= \SI{15}{ps} \\
-%       \text{Pauses} &= \SI{5}{ps} \\
-%       \text{Stretch speed} &= \SI{0.01}{ps^{-1}} \\
-%       \text{Slide distance} &= \SI{400}{Å} \\
-%       \text{Sheet size} &= 130.029 \times \SI{163.219}{\text{Å}} \\
-%       \text{Pull block size} &= 2 \times 130.029 \times \SI{15.183}{\text{Å}}
-%     \end{align*}} &
-%     {\begin{align*}
-%       \text{Sheet configuration} &= \text{Contiguous} \\
-%       \text{Stretch amount} &= \text{Below rupture} \\
-%       F_N &= [0.1, 10] \ \text{nN}
-%     \end{align*}}
-%     \\ \hline
-%   \end{tabular}
-%   \end{center}
-% \end{table}
-
-
-
-Say someting about how these parameters is chosen. Reference to articles for which these was mirrored from. 
-
-
-% Which articles is used as a reference for choosing these variables?
 
 
 % The sliding velocity is 20 m/s, which is comparable to the operating conditions in micromechanical systems (MEMS), but which is much larger than the typical velocity in scanning force microscopy (SFM) experiments. \cite{mo_friction_2009} Supplementary materials.
 
 
 % We should try to set the physcis and measurement parameters in such a way that we reduce computation speed where it is doesn't infer with the frictional properties study.
+
+\begin{table}[H]
+  \begin{center}
+  \caption{Parameters of the numerical \acrshort{MD} simulation for measuring friction. The values correspond to the final choice used for the dataset. The shaded area denote the parameters varied in the \acrshort{ML} dataset.}
+  \label{tab:param}
+  \begin{tabular}{ | c | C{2cm} | C{3.5cm} | X{8cm}|} \hline
+    Category & Parameter & Value &  Description \\ \hline
+    \multirow{13}{*}{Physical} & $T$ & \SI{300}{K} &  Temperature. \\ \hhline{~|-|-|-|}
+    & $v_{\text{slide}}$ &\SI{20}{m/s} & Sliding speed for the sheet translation. \\ \hhline{~|-|-|-|}
+    & $K$ & $\inf$ & Spring constant for the coupling between the virtuel atom and the sheet pull blocks. \\ \hhline{~|-|-|-|}
+    & Scan direction & $(x,y) = (0,1)$ \linebreak (zigzag direction)  & The direction for which we translate the sheet. \\ \hhline{~|-|-|-|}   
+    & \cellcolor{black!7} Sheet configuration & \cellcolor{black!7} Contiguous & \cellcolor{black!7} Binary mapping describing which atoms are removed (0) and which is still present (1) in the graphene sheet.  \\ \hhline{~|-|-|-|}
+    & \cellcolor{black!7} Stretch amount & \cellcolor{black!7} 0\% - rupture & \cellcolor{black!7} The relative stretch of the sheet. \\ \hhline{~|-|-|-|}
+    & \cellcolor{black!7} $F_N$ & \cellcolor{black!7} [0.1, 10] nN & \cellcolor{black!7} Applied normal force to the pull blocks. \\ \hline
+    \multirow{8}{*}{Numerical} & $dt$ & \SI{1}{fs} &  Integration timestep. \\ \hhline{~|-|-|-|}
+    & $t_R$ &  \SI{15}{ps} & Relaxtion time before strething. \\ \hhline{~|-|-|-|}
+    & Pauses & \SI{5}{ps} & Relaxtion pauses after stretch, and during the normal load phase (before translating the sheet). \\ \hhline{~|-|-|-|}
+    & Stretch Speed & \SI{0.01}{ps^{-1}} & The rate of stretching for the sheet. \\ \hhline{~|-|-|-|}
+    & Slide distance & \SI{400}{Å} & How far to translate the sheet. \\ \hhline{~|-|-|-|}
+    & Sheet size & $130.029 \times \SI{163.219}{\text{Å}}$ & Spatial 2D size of the sheet.  \\ \hhline{~|-|-|-|}
+    & Pull block size & $2 \times 130.029 \times \SI{15.183}{\text{Å}}$ & Spatial 2D size of the pull blocks. \\ \hline
+  \end{tabular}
+  \end{center}
+\end{table}
+
+
+
+% Parameters expected to have a physical effect on the friction properties, which is kept fixed and thus not included in the machine learning input set. 
+
+% Paramters influecing the simulation dynamics and being representative of the experimental procedure that we are mimicking. These parameters is chosen with the aim of getting stable parameters under small perturbations of the given parameter. 
+
+% The remaining paramters serves as input variables for optimization process and is thus given as input variables for the machine learning (ML).
+
+
+
+
+% Say someting about how these parameters is chosen. Reference to articles for which these was mirrored from. 
+
+
+
+
 
 % We need to define some ranges for the ML input paramters. $F_N$, stretch ranges where it is not prone to ruptures. The configuration it self does not have clear rules but is also being regulated by the no rupture requirement. 
 
@@ -162,54 +117,30 @@ Say someting about how these parameters is chosen. Reference to articles for whi
 % Besides the limitations of system size and simulation times that are obvious and will be discussed later, there is another limitation concerning temperature, that is rarely mentioned. All classical frictional simulations, atomistic or otherwise, are only valid at sufficiently high temperature. They become in principle invalid at low temperatures where the mechanical degrees of freedom of solids progressively undergo ”quantum freezing”, and both mechanics and thermodynamics deviate from classical. \cite{Manini_2016}.
 
 
-\subsection{Pressure reference for normal load domain}
-\text{Find place to put this.}
-
-% source 1: stiletto heeled shoes with less than 1cm diameter:
-% https://www.researchgate.net/publication/342223559_How_the_stiletto_heeled_shoes_which_are_popularly_preferred_by_many_women_affect_balance_and_functional_skills
-
-In order to relate the magntidue of the normal force in our friciton measurement
-we will use the pressure as a reference. We will use the pressure underneath a
-stiletto shoe as a worst case for human pressure execuation underneath the
-shoes. From (source 1) it is reported that the diameter of a stiletto heeled
-shoe can be less than 1 cm. Hence a 80 kg man\footnote{Yes, a man can certainly
-wear stilleto heels.} standing on one stiletto heel (with all the weight on the
-heel) will result in a pressure
-\begin{align*}
-  P = \frac{F}{A} = \frac{mg}{r^2\pi} = \frac{\SI{80}{kg} \cdot \SI{9.8}{\frac{m}{s^2}}}{(\frac{\SI{1e-2}{m}}{2})^2 \pi} = \SI{9.98}{MPa} \\
-\end{align*} 
-
-% source 1:
-% https://www.schoolphysics.co.uk/age16-19/Mechanics/Statics/text/Pressure_/index.html
-While this is in itself a spectacular realization that is often used in
-introductory physics courses (source 2) to demonstrate the rather extreme
-pressure under a stiletto heel (greater than the foot of an elephant) (how many
-Atmos?) this serves as a reasonible upperbound for human executed pressure. With
-a full sheet area of $\sim\SI{21e3}{{\text{Å}}^2}$ we can achieve a similar pressure of
-$\sim \SI{10}{MPA}$ with a normal force of
-\begin{align*}
-  F_N = \SI{10}{MPa} \cdot \SI{21e-17}{m^2} = \SI{2.10}{nN}  
-\end{align*}
-
-Of course this pressure might be insufficient for various industrial purposes,
-but with no specific procedure in mind this serves as a decent reference point.
-Notice that if we consider a human foot with ares $\SI{113}{cm^2}$ the pressure
-drops to a mere $\SI{70}{kPa}$ corresponding to $\sim \SI{0.01}{nN}$.
-
-% source 3: foot area ≈ 113 cm^2:
-% https://www.footbionics.com/Patients/Foot+Facts.html source 4:
-% https://hypertextbook.com/facts/2003/JackGreen.shtml
-
-
 
 
 \newpage
 \section{Single friction simulation analysis}\label{sec:single_analysis}
-We begin by assessing the raw data for a single friction simulation run with the default parameters shown in \cref{tab:final_param} for a non-cut sheet, no stretch and an applied normal force of $\SI{1}{nN}$.
+We begin by assessing the raw data for a single friction simulation using the default parameters shown in \cref{tab:final_param} for a non-cut sheet with no stretch applied and a  normal force of $\SI{1}{nN}$.
 
 
 \subsection{Force oscillations}\label{sec:force_oscillations}
-We first assess the raw data for the friction force $F_{\parallel}$ parallel to the drag direction as seen in \cref{fig:drag_Ff}. The sample rate is 10 ps$^{-1}$ = 100 timesteps$^{-1}$ for which each sample is the mean value of the 100 timesteps preceding the given sample interval. We observe immediately that the data carriers oscillations on different time scales. By applying a savgol filter to the data with a polyorder of 5 and window length of 150 timesteps, corresponding to a sliding distance of 3 Å or a time window of 15 ps, we can qualitatively point out at least two different frequencies of osccilation. On \cref{fig:drag_Ff_10} we see roughly three waves on the savgol filter corresponding to a relative high frequency, while on \cref{fig:drag_Ff_100} the same savgol filter reveals a lower frequency on top of the first, creating the visual pattern of a wavepacket.
+We evaluate the friction force by force acting on the sheet from the substrate.
+We initally look at the force friction force $F_{\parallel}$ parallel to the
+drag direction as seen in \cref{fig:drag_Ff}. The sample rate is 10 ps$^{-1}$ =
+100 timesteps$^{-1}$ for which each sample is the mean value of the 100
+timesteps preceding the given sample interval. We observe immediately that the
+data carriers oscillations on different time scales which matches the
+expectations for sliding between periodic surfaces. By applying a savgol filter
+to the data with a polyorder of 5 and window length of 150 timesteps,
+corresponding to a sliding distance of 3 Å or a time window of 15 ps, we can
+qualitatively point out at least two different frequencies of osccilation.
+During the first 10 Å of sliding in \cref{fig:drag_Ff_10} we see roughly three waves on the savgol filter corresponding to a relative high frequency, while on the scale of 100 Å of sliding in \cref{fig:drag_Ff_100} the same savgol filter reveals an lower frequency in addition, creating the visual pattern of a wavepacket.
+
+%%% WORKING HERE
+%%% WORKING HERE
+%%% WORKING HERE
+%%% WORKING HERE
 
 \begin{figure}[H]
   \centering
@@ -487,6 +418,45 @@ purely on the dynamic friction force.
 % spring constant lower than that as qualified way of determining if this is the
 % reason why we do not really see static friciton in the simulation. By plotting the max position (in terms of drag length) as a function of spring constant as seen in \cref{fig:max_vs_K} we can investigate if the concept of a critical spring constant is governing this simulation. However, as I'm writing this I'm realizing that the spring constant in the model applies to the interatomic forces and not the one dragging the system.....
 
+
+
+\subsection{Pressure reference for normal load domain}
+\text{Find place to put this.}
+
+% source 1: stiletto heeled shoes with less than 1cm diameter:
+% https://www.researchgate.net/publication/342223559_How_the_stiletto_heeled_shoes_which_are_popularly_preferred_by_many_women_affect_balance_and_functional_skills
+
+In order to relate the magntidue of the normal force in our friciton measurement
+we will use the pressure as a reference. We will use the pressure underneath a
+stiletto shoe as a worst case for human pressure execuation underneath the
+shoes. From (source 1) it is reported that the diameter of a stiletto heeled
+shoe can be less than 1 cm. Hence a 80 kg man\footnote{Yes, a man can certainly
+wear stilleto heels.} standing on one stiletto heel (with all the weight on the
+heel) will result in a pressure
+\begin{align*}
+  P = \frac{F}{A} = \frac{mg}{r^2\pi} = \frac{\SI{80}{kg} \cdot \SI{9.8}{\frac{m}{s^2}}}{(\frac{\SI{1e-2}{m}}{2})^2 \pi} = \SI{9.98}{MPa} \\
+\end{align*} 
+
+% source 1:
+% https://www.schoolphysics.co.uk/age16-19/Mechanics/Statics/text/Pressure_/index.html
+While this is in itself a spectacular realization that is often used in
+introductory physics courses (source 2) to demonstrate the rather extreme
+pressure under a stiletto heel (greater than the foot of an elephant) (how many
+Atmos?) this serves as a reasonible upperbound for human executed pressure. With
+a full sheet area of $\sim\SI{21e3}{{\text{Å}}^2}$ we can achieve a similar pressure of
+$\sim \SI{10}{MPA}$ with a normal force of
+\begin{align*}
+  F_N = \SI{10}{MPa} \cdot \SI{21e-17}{m^2} = \SI{2.10}{nN}  
+\end{align*}
+
+Of course this pressure might be insufficient for various industrial purposes,
+but with no specific procedure in mind this serves as a decent reference point.
+Notice that if we consider a human foot with ares $\SI{113}{cm^2}$ the pressure
+drops to a mere $\SI{70}{kPa}$ corresponding to $\sim \SI{0.01}{nN}$.
+
+% source 3: foot area ≈ 113 cm^2:
+% https://www.footbionics.com/Patients/Foot+Facts.html source 4:
+% https://hypertextbook.com/facts/2003/JackGreen.shtml
 
 
 
