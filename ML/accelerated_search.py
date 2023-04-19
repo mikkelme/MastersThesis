@@ -688,11 +688,11 @@ if __name__ == '__main__':
     
     
     # # --- Genetic algorithm search: Max drop --- #
-    GA = Genetic_algorithm(model_weights, model_info, N = 100, image_shape = (62,106), repair = True)
+    GA = Genetic_algorithm(model_weights, model_info, N = 50, image_shape = (62,106), repair = True)
     GA.stretch = np.linspace(0, 2, 100)
     GA.F_N = 5
     GA.set_fitness_func(GA.max_drop)
-    GA.init_population([0.01, 0.05, 0.1, 0.2, 0.3])
+    GA.init_population([0.5])
     GA.evolution(num_generations = 100)
     
     topN = 5

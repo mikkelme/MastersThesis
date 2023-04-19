@@ -42,9 +42,9 @@ study, but we will consider the prospects of adding this in
 % which interact through \acrshort{LJ} potential modelling a van der Waals force. 
 
 \section{Region definitions}
-We subdivide the two main parts of the simmulation, the sheet and the substrate, into specific regions according their functionality in the \acrshort{MD} simmulations. We denote a subsection of the sheet ends, with respect to one direction, as so-called \textit{pull blocks}, which is reserved for the application of normal load, stretching and
+We subdivide the two main parts of the simmulation, the sheet and the substrate, into specific regions according their functionality in the \acrshort{MD} simmulations. For the sheet, we denote a subsection of the ends, with respect to the sliding direction, as so-called \textit{pull blocks}, which is reserved for the application of normal load, stretching and
 dragging of the sheet, and for applying the thermostat. The remaining \textit{inner
-sheet} is left for the kirigami cuts and are simulated as an $NVE$ ensemble. The pull blocks are equally split between a thermostat part and a rigid part. The rigid part is only initially thermolized during relaxtion period before it is then made rigid for the final duration of the simulation. Note that the rigid parts on both sides of the sheet is then considered as a single rigid object even though
+sheet} is left for the kirigami cuts and are simulated as an $NVE$ ensemble. The pull blocks are equally split between a thermostat part and a rigid part. The rigid part is however thermolized during the initial relaxtion period but made rigid for the final duration of the simulation. Note that the rigid parts on both sides of the sheet is then considered as a single rigid object even though
 they are physically seperated. This means that all force interactions concerning the rigid parts will be applied as a common average making them move in total synchronization. The substrate is equally divided into three parts: The
 \textit{upper layers} ($NVE$) responsible for the sheet-substrate interaction, the
 \textit{middle layers} being a thermostat ($NVT$), and the \textit{bottom layers} being frozen, made rigid and fixed, in the initial lattice structure to ensure that the substrate stays in place. In \cref{fig:system} the system is displayed
@@ -52,24 +52,11 @@ with colors matching the three distinct roles:
 \begin{enumerate}
   \item Red: $NVE$ parts which is governing the frictional behaviour of interest.
   \item Green: Thermostats ($NVT$) sourrounding the $NVE$ parts in order to modify the temperature without making disturbing changes to the interaction of the sheet and substrate.
-  \item Blue: Parts that is initially or eventually turned in to rigid objects. For the substrate this refers to an addtionally fixation as well.
+  \item Blue: Parts that are initially or eventually turned in to rigid objects. For the substrate this refers to an addtionally fixation as well.
 \end{enumerate}
-
-The full sheet has the default size $\sim 130 \times \SI{163}{\text{Å}}$ while the substrate is scaled accordingly to the sheet. This is further specified in \cref{sec:substrate}
-
-%
-%
-% WORKING HERE
-%
-%
-
-The substrate is scaled in the y-dimensions to accomdate the needed space for stretching the sheet to a certain degree. In the worst case with an expected stretch amount of 200 \% the system size is roughly XXX atoms with subdivisions shown in \cref{tab:system_count}. The system is periodic in the x-y-directins such that the substrate is effectively infinite. 
-
-with subdivision measures as shown in \cref{tab:sheet_dim}.
+The full sheet is given a size $\sim 130 \times \SI{163}{\text{Å}}$ while the substrate is scaled accordingly to the sheet which is further specified in \cref{sec:substrate}. For an expected stretch of 200\% the total system size is roughly 55k atoms. The specific distribution is shown in \cref{tab:system_count} along with the spatial x-y-measures in \cref{tab:sheet_dim}.
 
 
-
-% The total system size, without cuts in the sheet, is roughly  27k atoms, while the full sheet measure $\sim 130 \times \SI{163}{Å}$. The precise numbers and region subdivision is shown for the system atom count in  \cref{tab:system_count} and the sheet dimensions in \cref{tab:sheet_dim}.
 \begin{figure}[H]
   \centering
   \begin{subfigure}[b]{0.80\textwidth}
@@ -91,45 +78,13 @@ with subdivision measures as shown in \cref{tab:sheet_dim}.
 \end{figure}
 
 
-% \begin{table}[H]
-%   \begin{center}
-%   \caption{Sheet dimensions comparing the full sheet to its subdivisions: inner sheet and pull blocks.}
-%   \label{tab:sheet_dim}
-%   \begin{tabular}{ | l | r@{}l | r@{}l | c |} \hline
-%     \textbf{Group} & \multicolumn{2}{c|}{$x,y$-dim} & \multicolumn{2}{c|}{dim
-%     [Å]} & Area [Å$^2$]\\ \hline
-%   Full sheet & $x_S \: \times \: $ & $y_S$ &  $130.029 \: \times \:$ & $163.219$
-%   Å & $\phantom{2\times} 21,223.203$ \\ \hline
-%   Inner sheet & $x_S \: \times \:$ & $81.40 \ \%_{y_s}$ &  $130.029  \: \times
-%   \:$ & $132.853$ Å & $\phantom{2\times} 17,274.743$\\ \hline
-%   Pull blocks & $2 \times x_S \: \times \:$ & $ \phantom{0}9.30 \ \%_{y_s}$ & $2
-%   \times 130.029  \: \times \: $ & $\phantom{0}15.183$ Å  & $2 \times
-%   \phantom{0}1,974.230$ \\ \hline  
-% \end{tabular}
-% \end{center}
-% \end{table}
-
-% \begin{table}[H]
-%   \begin{center}
-%   \caption{Sheet dimensions comparing the full sheet to its subdivisions: inner sheet and pull blocks.}
-%   \label{tab:sheet_dim}
-%   \begin{tabular}{ | l | r@{}l | r@{}l | c |} \hline
-%     \textbf{Group} & \multicolumn{2}{c|}{$x,y$-dim} & \multicolumn{2}{c|}{dim
-%     [Å]} & Area [Å$^2$]\\ \hline
-%   Full sheet & $x_S \: \times \: $ & $y_S$ &  $130.029 \: \times \:$ & $163.219$ Å & $\phantom{2\times} 21,223.203$ \\ \hline
-%   Inner sheet & $x_S \: \times \:$ & $81.40 \ \%_{y_s}$ &  $130.029  \: \times \:$ & $132.853$ Å & $\phantom{2\times} 17,274.743$\\ \hline
-%   Pull blocks & $2 \times x_S \: \times \:$ & $ \phantom{0}9.30 \ \%_{y_s}$ & $2 \times 130.029  \: \times \: $ & $\phantom{0}15.183$ Å  & $2 \times \phantom{0}1,974.230$ \\ \hline  
-%   Substrate & $115.89 \ \%_{x_s} \: \times \:$ & $81.40 \ \%_{y_s}$ &  $150.709  \: \times \:$ & $509.152$ Å & $\phantom{2\times} 76,733.789$\\ \hline
-% \end{tabular}
-% \end{center}
-% \end{table}
 
 \begin{table}[H]
   \begin{center}
-  \caption{x-y dimenstions of sheet and substrate with no cuts and assuming an expected stretch of 200\%.}
+  \caption{Specification of the spatial size of the system for the x-y-dimensions with a substrate scaled for an expected stretch of 200\%. The first column denotes the size relative to the full sheet size $x_S \times y_S$, while the second column denotes the corresponding length in Å.}
   \label{tab:sheet_dim}
   \begin{tabular}{ | l | r@{}l | r@{}l | c |} \hline
-    \textbf{Region} & \multicolumn{2}{c|}{$x$-,$y$-dim} & \multicolumn{2}{c|}{Dim
+    \textbf{Region} & \multicolumn{2}{c|}{Dim} & \multicolumn{2}{c|}{Dim
     [Å]} & Area [Å$^2$]\\ \hline
   Full sheet & $x_S \: \times \: $ & $y_S$ &  $130.029 \: \times \:$ & $163.219$ Å & $\phantom{2\times} 21,223.203$ \\ \hline
   Inner sheet & $x_S \: \times \:$ & $0.81 \ y_S$ &  $130.029  \: \times \:$ & $132.853$ Å & $\phantom{2\times} 17,274.743$\\ \hline
@@ -143,89 +98,63 @@ with subdivision measures as shown in \cref{tab:sheet_dim}.
 
 \begin{table}[H]
   \begin{center}
-  \caption{Amount of atoms in the various system regions in the case of no cutting applied to the sheet and assuming a expected stretch of 200 \%.}
+  \caption{Specification of the system size in number of atoms for various system regions. These numbers corresponds with the case of no cuts applied to the sheet and a substrate scaled for the expected stretch of 200 \%.}
   \label{tab:system_count}
-  \begin{tabular}{ |c|| c | c | c | c | c | c |} \hline
+  \begin{tabular}{ |c?{0.3mm} c | c | c | c | c | c |} \hline
     \textbf{Region} & \textbf{Total}  & Sub region & Sub total & \textbf{NVE} &
     \textbf{NVT} & \textbf{Rigid} \\ \hline   
-    \multirow{2}{*}{Sheet} & \multirow{2}{*}{7800} & Inner sheet & 6360 & 6360 &
+    \multirow{2}{*}{Full sheet} & \multirow{2}{*}{7800} & Inner sheet & 6360 & 6360 &
     0 & 0 \\ %\hline
     & & Pull blocks & 1440 & 0 & 720 & 720 \\ \hline   
-    \multirow{2}{*}{Substrate} & \multirow{2}{*}{47376} & Upper & 15792 & 15792 &
+    \multirow{3}{*}{Substrate} & \multirow{3}{*}{47376} & Upper & 15792 & 15792 &
     0 & 0 \\ %\hline
     & & Middle & 15792 & 0 & 15792 & 0 \\ %\hline
-    & & Bottom & 15792 & 0 & 0 & 15792 \\ \hline \hline   
+    & & Bottom & 15792 & 0 & 0 & 15792 \\ \Xhline{2\arrayrulewidth}   
     All & 55176 & \multicolumn{2}{r|}{} & 22152 & 16512 & 16512 \\ \hline 
   \end{tabular}
   \end{center}
 \end{table}
-% \begin{table}[H]
-%   \begin{center}
-%   \caption{Amount of atoms in the various system regions in the case of no cutting applied to the sheet.}
-%   \label{tab:system_count}
-%   \begin{tabular}{ |c|| c | c | c | c | c | c |} \hline
-%     \textbf{Region} & \textbf{Total}  & Sub region & Sub total & \textbf{NVE} &
-%     \textbf{NVT} & \textbf{Rigid} \\ \hline   
-%     \multirow{2}{*}{Sheet} & \multirow{2}{*}{7800} & Inner sheet & 6360 & 6360 &
-%     0 & 0 \\ %\hline
-%     & & Pull blocks & 1440 & 0 & 720 & 720 \\ \hline   
-%     \multirow{2}{*}{Substrate} & \multirow{2}{*}{19656} & Upper & 6552 & 6552 &
-%     0 & 0 \\ %\hline
-%     & & Middle & 6552 & 0 & 6552 & 0 \\ %\hline
-%     & & Bottom & 6552 & 0 & 0 & 6552 \\ \hline \hline   
-%     All & 27456 & \multicolumn{2}{r|}{} & 12912 & 7272 & 7272 \\ \hline 
-%   \end{tabular}
-%   \end{center}
-% \end{table}
-
-
-% The substrate amount should be a range !!!!!
 
 
 \section{Numerical procedure}
 The numerical procedure related to the measurement of friction can be arranged
-into the following steps. Some steps have been given a duration
+into the following steps. Some steps have been given a default duration
 denoted in parentheses in units of ps, \num{e-12} seconds.
 \begin{enumerate}
-  \item \textbf{Relaxation} (15 ps): The sheet and substrate are relaxed for 15 ps after being added in their crystaline form with a seperation distance of 3 Å which was found to be a reasonble estimate for the equilibrium distance at the temperature range of interest. The sheet is
+  \item \textbf{Relaxation} (15 ps): The sheet and substrate are relaxed for 15 ps after being added in their crystaline form with a seperation distance of 3 Å. The equilibrium seperation distance varies slightly with temperature, but we found this number to be a reasonble middle ground for the temperature range of interest. The sheet is
   constrained under three hard spring forces, all with spring constant $10^5$
   eV/Å$^2$ $\sim$ \num{1.6e6} N/m: One spring attaches the sheet center of mass
   (\acrshort{CM}) to its orginal postion, preventing any drift. The
-  remaining two springs are attatched the pull block ends, to their initial \acrshort{CM} position respectively, to prevent rotation. In principle, it would be sufficient to fixate just one of the ends in order to stop rotation, but we fixate both ends for the sake of symmetry. During the
+  remaining two springs are attatched to the pull block ends, to their initial \acrshort{CM} position respectively, to prevent rotation. In principle, it would be sufficient to fixate just one of the ends in order to stop rotation, but we fixate both ends for the sake of symmetry. During the
   relaxtion phase the pull blocks are made rigid with respect to the z-direction
   only (perpendicular to the sheet). That is, all the forces in the z-direction
   is summed up and distributed on the pull blocks as a single external force, while it is free to expand and
   contract in the x-y-plane. This is mainly to ensure that it achieves the
   correct lattice spacing according to the temperature of the system. For the following phases the rigid parts of the pull block is in fact rigid with
   respect to all directions. The spring forces are terminated after the relaxtion phase. 
-  \item \textbf{Stretch}: The sheet is stretched by seperating the two opposing rigid parts of the pullblock at constant velocity until the desired stretch amount is met. The duration of this phase is thus controlled by the  \textit{stretch speed} and \textit{stretch amount} parameters. 
-  \item \textit{Pause} (5 ps): The sheet is relaxed for 5 ps after the stretch
-  procedure to ensure that the sheet is stable and equilibrized after the applied stretch deformation. 
+  \item \textbf{Stretch}: The sheet is stretched by seperating the two opposing rigid parts of the pullblock at constant velocity until the desired stretch amount is met. The duration of this phase is thus governed by the  \textit{stretch speed} and \textit{stretch amount} parameters. 
+  \item \textbf{Pause} (5 ps): The sheet is relaxed for 5 ps to ensure that the sheet is stable and equilibrized after the applied stretch deformation. 
   \item \textbf{Normal load} (5 ps): The normal load is applied to the rigid
-  parts of the pull blocks. Initially a viscous damping force, $F = -\gamma \vec{v}$, is added to the sheet to resist the rapid acceleraction of the sheet and prevent a hard impact between the sheet and substrate. The damping coefficient is set to $\gamma = \SI{8e-4}{nN/(m/s)}$ and terminated after 0.5 ps as this was visually found to be suitable for the extreme load cases of our intedned range of normal force. The remaining 4.5 ps devoted as a relaxtion phase. 
+  parts of the pull blocks. Initially a viscous damping force, $F = -\gamma \vec{v}$, is added to the sheet to resist the rapid acceleraction of the sheet and prevent a hard impact between the sheet and substrate. The damping coefficient is set to $\gamma = \SI{8e-4}{nN/(m/s)}$ and terminated after 0.5 ps which was found to be suitable for the extreme load cases of our intended range. The remaining 4.5 ps is simply devoted for further relaxation. 
   \item \textbf{Sliding}: A virtuel atom is introduced into the simulation which
-  exclusively interacts with the rigid parts of the pull through a spring force
+  exclusively interacts with the rigid parts of the pull blocks through a spring force
   with variable spring constant $K$ in the x-y-plane. The z-direction is not
-  affected by the spring force and is purely governed by the balance between normal load and the normal response from the sheet-substrate interaction. The
-  virtual atom is immediately given a constant velocity, corresponding to a
-  the \textit{sliding speed} parameter, which make the sliding force increase proportional to $\propto K(vt)^2$ for sliding speed $v$. An infinite sprig constant can also be choosen for which the spring is omitted and teh pull blocks are moved rigidly with the constant speed according to the sliding speed.
+  affected by the spring force and is purely governed by the balancing forces of the normal load and the normal response from the sheet-substrate interaction. The
+  virtual atom is immediately given a constant velocity, in accordance to
+  the \textit{sliding speed} parameter, which make the sliding force increase quadratically, $F_{\textit{slide}} \propto K(v_{\text{slide}}t)^2$, with sliding speed. An infinite sprig constant can also be enforced for which the spring is omitted and the pull blocks are moved rigidly with a constant speed according to the sliding speed.
 \end{enumerate}
-
-In order to prevent rupturing, or detachment, of the sheet we monitor the nearest neighbours for each atom throughout the simularion. At the initial timestep the three nearest neighbours (at distance 1.42 Å) of all graphene atoms is recorded. If any of these nearest neighbours exceeds a threshold distance of 4
-Å, indicating a bond breakage, this is marked as a rupture and we halt the simulation early. Thus, we ensure that no wear is allowed for the sheet. The substrate is way more robust and by running test simulation of high load and sliding speed we confirmed visually that no wear is accouring in the vicinity of the conditions used in the study
-
+In order to prevent rupturing, or detachment, of the sheet, we monitor the nearest neighbours for each atom throughout the simularion. At the initial timestep the three nearest neighbours, sitting at a distance 1.42 Å, of all graphene atoms is recorded. If any of these nearest neighbours exceeds a threshold distance of 4 Å, indicating a bond breakage, this is marked as a rupture and we halt the simulation early. Thus, we ensure that no wear is taking place for the sheet. The substrate was proven to be way more resistant to wear, and by running a few test simulations of high load and sliding speed we confirmed visually that no wear is accouring.
 
 \section{Creating the substrate}\label{sec:substrate}
 The substrate is created as a rectangular slab of Silicon (Si). We create the
 initial configuration according to its crystaline structure given as a diamond
 cubic crystal with a lattice parameter $a_{\text{Si}} = 5.43$ Å. The default
 substrate thickness is choosen such that 9 layers of atoms appear (2 unit cells)
-corresponing to 10.86 Å. The x-y dimensions is choosen to match the dimensions
-of the sheet after it is stretched. That is, we define a margin between the
+corresponing to a thickness of 10.86 Å. The x-y dimensions is choosen to match the dimensions. That is, we define a margin between the
 sheet edge and the substrate edge for the x- and y-direction respectively. Since
 we use periodic boundary conditions a too small margin would result in the sheet
 edges interacting with themselves through the boundary. The absolute lower limit
-for the margin choice is half the cut-off distance for the Tersoff potential,
+for the margin choice is thus half the cut-off distance for the Tersoff potential,
 governing the graphene sheet interaction, at $R + D = 2.1$ Å. However, due to
 fluctuations in the sheet we cannot set the margin to close to that limit.
 Additionally, we must take into account the buckling of the sheet as it is
@@ -240,41 +169,31 @@ the y-margin based on the remaining distance to the edge after stretching.
 However, as the sheet travels through the periodic boundaries in the y-direction
 when sliding, we want to add some additional spacing through the y-margin in
 order to let the substrate surface relax before interacting with the sheet a
-second time. We choose a y-margin of 15 Å for which the chosen sliding speed of
-$\SI{20}{m/s} = \SI{2}{Å/ps}$ gives \SI{15}{ps} of relaxtion time between encounters with the sheet similar to the inital relaxtion time. 
-
+second time. We choose a y-margin of 15 Å for which the preferred sliding speed of
+$\SI{20}{m/s} = \SI{2}{\text{Å}/ps}$ gives \SI{15}{ps} of relaxtion time between encounters with the sheet, similar to the inital relaxtion time. 
 
 
 \section{Creating the sheet}
-
-We are going to create a 2D sheet graphene sheet. 
-
-\subsection{Graphene}
+% \subsection{Graphene}
 % (https://community.wvu.edu/~miholcomb/graphene.pdf)
 % https://www.physics-in-a-nutshell.com/article/4/lattice-basis-and-crystal
 
-Graphene is a single layer of carbon atom, graphite is the bulk, arranged in a
-hexagonallattice structure. We can describe the 2D crystal structure in terms of
-its primitive lattice vector and a basis. That is we populate each lattice site
-by the given basis and translate it to fill the whole plane by any linear
-combination of the lattice vectors
+The sheet is created by the 2D material known as graphene which consist of a single layer of carbon atom arramged in hexagonal lattice structure. The bulk version of this material is called graphite and simple referes to the merged structure of multiple graphene layers. We can describe the 2D crystal structure in terms of its primitive lattice vectors $\vec{a_1}$ and $\vec{a_2}$ and a basis. The basis describes the .. part of the crystal and we populate each lattice site by the given basis and translate it to fill the whole plane by any linear combination of the lattice vectors 
 \begin{align*}
   \vec{T}_{mn} = m\vec{a_1} + n\vec{a_2}, \qquad m,n \in \mathbb{N}.
 \end{align*}
-For graphene we have the primitive lattice vectors 
+For graphene, we have the primitive lattice vectors 
 \begin{align*}
-  \vec{a_1} = a \left(\frac{\sqrt{3}}{2}, -\frac{1}{2}\right), \qquad \vec{a_2} = a \left(\frac{\sqrt{3}}{2}, \frac{1}{2}\right), \qquad |\vec{a_1}| = |\vec{a_2} = 2.46 \ \text{Å}.
+  \vec{a_1} = a \left(\frac{\sqrt{3}}{2}, -\frac{1}{2}\right), \qquad \vec{a_2} = a \left(\frac{\sqrt{3}}{2}, \frac{1}{2}\right), \qquad |\vec{a_1}| = |\vec{a_2}| = 2.46 \ \text{Å}.
 \end{align*}
 Notice that we deliberately excluded the third coordinate as we only consider a
-single graphene layer on not the bulk graphite consisting of multiple layers
-stacked on top of each other. The basis is 
+single graphene and thus we do not have to consider the stacking structure of 3D graphite. The basis consist of two carbon atoms given as 
 \begin{align*}
   \Big\{\Big(0,0\Big), \frac{a}{2}\Big(\frac{1}{\sqrt{3}}, 1 \Big) \Big\}
 \end{align*}
-It turns out that the spacing between atoms is equal for all paris with an
-interatomic distance 
+The crystal structure is visualized in \cref{fig:graphene_crystal}. It turns out that the spacing between atoms is equal for all pairs of atoms with an interatomic distance
 \begin{align*}
-  \left|\frac{a}{2}\Big(\frac{1}{\sqrt{3}}, 1 \Big)\right| \approx 1.42 \ \text{Å}.
+  \left|\left|\frac{a}{2}\Big(\frac{1}{\sqrt{3}}, 1 \Big)\right|\right| \approx 1.42 \ \text{Å}.
 \end{align*}
 
 
@@ -292,26 +211,24 @@ In order to define the cut patterns applied to the graphene sheet we need to
 define an indexing system. We must ensure that this gives an unique description
 of the atoms as we eventually want to pass a binary matrix, containing 0 for
 removed atoms and 1 for present atoms, that uniquely describes the sheet. We do
-this by letting the x-coordinate point to zigzag chains and the y-coordinate to
-the position along that chain. This is illustrated in figure
-\cref{fig:atom_indexing}. Other solutions might naturally invole the lattice
-vectors, but as these are used to translate between similar basis atoms
-unfortunate duality is introduced as one need to include the basis atom of
-choice into the indexing system. Additionally, we want a system where the
-indexes reflect the relative physical position of neighbours . That is, atom
-$(i, j)$ is in the proximity of $\{(i+1, j), (i-1, j), (i, j+1), (i, j-1)\}$.
-However, only three of them is categorized as nearest neighbours due to the
-hexgonal structure of the lattice. While $(i, j\pm 1)$ is always a nearest
-neighbour the neighbour in the x-direction flip sides when incrementing either
-x- or y-coordinate. That is the nearest neighbours (NN) is decided as
+this by letting the x-coordinate allign with the so-called \textit{armchair}
+direction of the sheet and making the y-coordinate increment along the
+so-called \textit{zigzag} direction. Notice that the x-coordinate will point
+point to \textit{zigzag} chains of atoms for which the starting point, at $y = 0$ is not evenly spacedd as illustrated in figure \cref{fig:atom_indexing}. Other solutions
+might naturally invole the lattice vectors, but since these are used to
+translate between similar basis atoms it introduces an unfortunate duality as
+one would then need to include the basis atom of choice into the indexing system
+as well. Additionally, we want an indexing system which conserves the relative
+physical position of neighbours. That is, atom $(i, j)$ should be in the
+proximity of $\{(i+1, j), (i-1, j), (i, j+1), (i, j-1)\}$. However, due to the hexagonal structure of the lattice, only three said neighbour indexes will be actual nearest neighbours in the lattice. While $(i, j\pm 1)$ is always a nearest neighbour, the index of the nearest neighbour in the x-direction oscillate for each incrementing of x- or y-coordinate. That is, the nearest neighbours (\acrshort{NN}) is decided as
 \begin{equation}
   \begin{aligned}
-    (i + j) \ \text{is even} &\rightarrow \text{NN} = \{(i-1, j), (i, j+1), (i, j-1)\}, \\
-    (i + j) \ \text{is odd} &\rightarrow \text{NN} = \{(i+1, j), (i, j+1), (i, j-1)\}.
+    (i + j) \ \text{is even} &\rightarrow \text{\acrshort{NN}} = \{(i-1, j), (i, j+1), (i, j-1)\}, \\
+    (i + j) \ \text{is odd} &\rightarrow \text{\acrshort{NN}} = \{(i+1, j), (i, j+1), (i, j-1)\}.
   \end{aligned}
   \label{eq:atom_neigh_idx}
 \end{equation}
-
+By consulting \cref{fig:atom_indexing} we can verify this visually, and it basically comes down to the fact whether the atom is oriented to the right or theleft side in the zigzag chain.
 
 \begin{figure}[H]
   \centering
@@ -323,10 +240,7 @@ x- or y-coordinate. That is the nearest neighbours (NN) is decided as
 
 
 \subsection{Removing atoms}
-
-As a mean to ease the formulation of cut patterns we introduce pseudo center
-element in each gap of the hexagonal honeycombs, see figure
-\cref{fig:center_indexing}. 
+As a means to ease the formulation of the cut patterns we introduce the \textit{center element} placed in each gap of the hexagonal honeycomb structure as shown in figure \cref{fig:center_indexing}. These are not populated by any atoms but will serve as a temporary reference for the algorithmic approaches of defining a cut pattern.
 
 \begin{figure}[H]
   \centering
@@ -335,16 +249,12 @@ element in each gap of the hexagonal honeycombs, see figure
   \label{fig:center_indexing}
 \end{figure}
 
-
-Similar to the case of the indexing for the carbon atoms themselves the nearest
-neighbour center elements alternate with position, this time only along the
-x-coordinate index. Each center element has six nearest neighbours, in clock wise
+Similar to the case of the atom indexing, the nearest neighbours center elements alternate with position, this time only along the x-coordinate index. Each center element has six nearest neighbours, in clockwise
 direction we can denote them: ``up'', ``upper right'', ``lower right'',
 ``down'', ``lower left'', ``upper left''. The ``up'' and ``down'' is always
 accesed as $(i,j\pm 1)$, but for even $i$ the $(i+1,j)$ index corresponds to the
 ``lower right'' neighbour while for odd $i$ this corresponds to the ``upper
-right'' neighbour. This shifting applies for all left or right neighbours and
-the full neighbour list is illustrated in \cref{fig:center_directions}. 
+right'' neighbour. This shifting applies for all left or right oriented neighbours and the full neighbour list is illustrated in \cref{fig:center_directions}. 
 
 
 \begin{figure}[H]
@@ -354,41 +264,28 @@ the full neighbour list is illustrated in \cref{fig:center_directions}.
   \label{fig:center_directions}
 \end{figure}
 
-
 We define a cut pattern by connecting center elements into connected paths. As
-we walk element to element we remove atoms according to one of two rules 
+we walk from center element to center element we remove atoms according to one of two rules 
 \begin{enumerate}
   \item Remove intersection atoms: We remove the pair of atoms placed directly
-  in the path we are walking. That is, when jumnping to the ``up'' center
+  in the path we are walking. That is, when jumping to the ``up'' center
   element we remove the two upper atoms located in the local hexagon of atoms.
   This method is sensitive to the order of the center elements in the path. 
   \item Remove all surrounding atoms: We simply remove all atoms in the local
   hexagon surrounding each center element. This method is indepdent of the
   ordering of center elements in the path.
 \end{enumerate}
-
-We notice that removing atoms using either of these rules will not garuantee an
-unique cut pattern. Rule 1 is the more sensitive to paths but we realize that,
-for an even $i$, we will remove the same five atoms following either of the
-following paths.
+We notice that removing atoms using either of these rules will not garuantee an injective, one to one, mapping. The first rule, being path dependent, will more often result in a unique result. However, for both methods it is possible to construct two different paths leading to the same cut pattern as shown in the following example:
 \begin{align*}
-  (i, j) &\rightarrow \underbrace{(i+1,j+1)}_{\text{upper right}} \rightarrow \underbrace{(i, j+1)}_{\text{up}} \rightarrow \underbrace{(i+1, j+2)}_{\text{upperright + up}} \rightarrow \underbrace{(i+1, j+1)}_{\text{upper right}} \\
-  (i, j) &\rightarrow \underbrace{(i+1,j+1)}_{\text{upper right}} \rightarrow \underbrace{(i+1, j+2)}_{\text{upperright + up}} \rightarrow \underbrace{(i, j+1)}_{\text{up}}
+  \text{Path 1:} \quad (i, j) &\rightarrow \underbrace{(i+1,j+1)}_{\text{upper right}} \rightarrow \underbrace{(i, j+1)}_{\text{up}} \rightarrow \underbrace{(i+1, j+2)}_{\text{upper right + up}} \rightarrow \underbrace{(i+1, j+1)}_{\text{upper right}} \\
+  \text{Path 2:} \quad (i, j) &\rightarrow \underbrace{(i+1,j+1)}_{\text{upper right}} \rightarrow \underbrace{(i+1, j+2)}_{\text{upper right + up}} \rightarrow \underbrace{(i, j+1)}_{\text{up}}
 \end{align*}
+\hl{Illustrate the example path, because I think it is otherwise impossible to follow.}
 
-For rule 2 it is even more abovious that different paths can result in the same
-atoms being removed. This is the reason that we needed to define and indexing
-system for the atom position itself even though that all cuts generated manually
-will use the center element path as reference. \\
-
-Illustrate some delete path?
-
-
+For the second rule it is even more abovious that different paths can result in the same final pattern. For instance, if we incircle a center element completely there will be no surrounding atoms left to delete when jumping to that center element. This highlights the importance of defining the atom based indexing system will yield an injective mapping for the binary cut matrix. However, using the center elements for reference makes the following definitions of the cut patterns a lot easier to design as we always can always go in the same six directions as opposed to the atom indexing system which have alternating directions for its neighbours. 
 
 \section{Kirigami patterns}
-
-We propose a series of kirigami inspired cut patterns for the altering of the graphene sheet. We seek inspiration from macroscale patterns that showcases a considerable amount of out of plane buckling when stretched. We choose to imitate two different designs: 1$)$ An alternating repeating series of perpendicular cuts as shown in \cref{fig:kirigami_inspiration_a} commonly used in studies of morphable metematerials \cite{new_pop_up}. This patteren produce surface buckling with a tetrahedron (three sided pyramid) shape when stretched. 2$)$ A more intricate pattern shown in \cref{fig:kirigami_inspiration_b} which is used Scotch\textsuperscript{TM} Cushion Lock\textsuperscript{TM} \cite{cushion_wrap} as protective wrap for items during shipping. This pattern buckles into a hexagoal honeycomb structure when stretched. In addition to the modeling of the so-called \textit{tetrahedron} and \textit{honeycomb} patterns we also create a series of random walk styled cut patterns.
-
+We propose a series of kirigami inspired cut patterns for the altering of the graphene sheet. We seek inspiration from macroscale patterns that showcases a considerable amount of out of plane buckling when stretched. We choose to imitate two different designs: 1) An alternating repeating series of perpendicular cuts as shown in \cref{fig:kirigami_inspiration_a} popularly used in studies of morphable metematerials \cite{new_pop_up}. This patteren produce surface buckling with a tetrahedron (three sided pyramid) shape when stretched. 2) A more intricate pattern shown in \cref{fig:kirigami_inspiration_b} which is used commercially by Scotch\textsuperscript{TM} Cushion Lock\textsuperscript{TM} \cite{cushion_wrap} as protective wrap for items during shipping. This pattern buckles into a hexagoal honeycomb structure when stretched. In addition to the modeling of the so-called \textit{Tetrahedron} and \textit{Honeycomb} patterns we also create a series of random walk cut patterns.
 
 \begin{figure}[H]
   \centering
@@ -406,12 +303,12 @@ We propose a series of kirigami inspired cut patterns for the altering of the gr
       \label{fig:kirigami_inspiration_b}
   \end{subfigure}
   \hfill
-     \caption{Macroscale kirigami cut patterns used as inspiraton for the nanoscale implementation. (a) Alternating perpendicular cuts producing a tetrahedron shaped surface buckling when stretched \cite{new_pop_up}. (b) Scotch\textsuperscript{TM} Cushion Lock\textsuperscript{TM} \cite{cushion_wrap} producing a honeycomb shaped surface buckling when stretched.}
+     \caption{Macroscale kirigami cut patterns used as inspiraton for the nanoscale implementation. (a) Tetrahedron: Alternating perpendicular cuts producing a tetrahedron shaped surface buckling when stretched \cite{new_pop_up}. (b) Honeycomb: Scotch\textsuperscript{TM} Cushion Lock\textsuperscript{TM} \cite{cushion_wrap} producing a honeycomb shaped surface buckling when stretched.}
      \label{fig:kirigami_inspiration}
 \end{figure}
 
 \subsection{Tetrahedron}
-The \textit{tetrahedron} pattern is defined in terms of center elements for which all
+The \textit{Tetrahedron} pattern is defined in terms of center elements for which all
 atoms sourrounding a given center element are removed. The pattern is
 characterized by two straight cuts, here denoted line 1 and line 2, arranged
 perpendicular to each other such that one line aligns with the center of the
