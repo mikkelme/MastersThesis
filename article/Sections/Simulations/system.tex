@@ -352,16 +352,15 @@ In addition to the three parameters $L_1, L_2, d$, the pattern is also anchored 
 
 
 \subsection{Honeycomb}
-The \textit{honeycomb} pattern is defined, similarly to the tetrahedron pattern,
-in terms of center elements for which all atoms sourrounding a given center
-element are removed. The honeycomb pattern is build from a repeating series of
-cuts remniscient of a roman numeral one put on its side
-(\rotatebox[origin=c]{90}{\MakeUppercase{\romannumeral 1}}). With a given spacing these are put next to each other in the x-direction (\rotatebox[origin=c]{90}{\MakeUppercase{\romannumeral 1}}
+The \textit{Honeycomb} pattern is defined, similarly to the Tetrahedron pattern,
+in terms of the center elements for which all sourrounding atoms are removed. The Honeycomb pattern is build from a repeating series of
+cuts remniscient of the roman numeral one rotated by 90$^{\circ}$
+(\rotatebox[origin=c]{90}{\MakeUppercase{\romannumeral 1}}). For a given spacing these are put next to each other in the x-direction, \rotatebox[origin=c]{90}{\MakeUppercase{\romannumeral 1}}
 \rotatebox[origin=c]{90}{\MakeUppercase{\romannumeral 1}}
-\rotatebox[origin=c]{90}{\MakeUppercase{\romannumeral 1}}) to achieve a row
-where only a thin \textit{bridge} in between each cut is left to connect the sheet in the y-direction. By placing multiple rows along the y-direction with alternating x-offsett we get the class of honeycomb patterns as visualized in \cref{fig:honeycomb}. The pattern
+\rotatebox[origin=c]{90}{\MakeUppercase{\romannumeral 1}}, to achieve a row
+where only a thin \textit{bridge} in between is left to connect the sheet vertically in the y-direction. By placing multiple rows along the y-direction with alternating x-offsett we get the class of honeycomb patterns as visualized in \cref{fig:honeycomb}. The pattern
 is described in terms of the parameters: (x-width, y-width, bridge thickness,
-bridge length) which is annotated in \cref{fig:honeycomb_a} where the parameters (2, 2, 1, 5) is used as an example. Some additional variations of the pattern class is showcased in \cref{fig:honeycomb_flavors}
+bridge length) which is annotated in \cref{fig:honeycomb_a} with the parameters (2, 2, 1, 5) used as an example. Some additional variations of the pattern class is showcased in \cref{fig:honeycomb_flavors}.
 
 
 \begin{figure}[H]
@@ -396,8 +395,7 @@ bridge length) which is annotated in \cref{fig:honeycomb_a} where the parameters
 
 
 \subsection{Random walk}
-The random walk serves as a method for introducing random patterns into the dataset with the scope of populating the configuration space more broadly than achieved with the more systematic patterns classes described above. By this argument a more straightforward way to create random configurations could be achieved by random noise, either uniform or gaussian. However, this would often leave the sheet detached with lots of non-connected atom clusters, and intuitively we do not find this promising for the generation of large scale organized structures which is hypothesized to be of interest. The random walk pattern generation is characterized by the parameters summarized in \cref{tab:RW_params} which will be introduced throughout the following paragraphs. 
-
+The random walk serves as a method for introducing random patterns into the dataset with the scope of populating the configuration space more broadly than achieved purely with the more systematic patterns described above. By this argument, a straightforward way to create random configurations could be achieved simply by random noise, either uniform or gaussian. However, this would often leave the sheet detached with lots of non-connected atom clusters. Intuitively, we do not find this promising for the generation of large scale organized structures which we hypothesize to be of interest. The random walk pattern generation is characterized by the parameters summarized in \cref{tab:RW_params} which will be introduced throughout the following paragraphs. 
 
 \begin{table}[H]
   \begin{center}
@@ -408,10 +406,10 @@ The random walk serves as a method for introducing random patterns into the data
   Num.\ walkers ($M$) & Integer $\ge$ 1 & Number of random walks to be initiated on the sheet (one at a time). \\ \hline
   Max.\ steps ($S$)  & Integer $\ge$ 1 &The maximum steps allowed for any random walker. \\ \hline
   Min.\ distance  & Integer $\ge$ 0 &The minimum distance required between any future paths and the previous paths in terms of the least walking steps in between. \\ \hline
-  Bias  & Vector & Bias direction and strength defining the discrete probability for the chocie of the next site. \\ \hline
+  Bias  & Vector (direction, strength) & Bias direction and strength defining the discrete probability for the chocie of the next site. \\ \hline
   Connection  & Atoms / Center elements & Walk between atoms or between center elements (removing all adjecent atoms). \\ \hline
   Avoid unvalid  & True/False & Whether to remove already visited sites from the neighbour list before picking the next site. This prevents jumping to already visited site and lowers the likelihood of early termination.  \\ \hline
-  Stay or break  & $p = [0,1]$ & \\ \hline
+  Stay or break  & $p = [0,1]$ & \hl{Fill out} \\ \hline
   Periodic  & True/False & Whether to use periodic boundary conditions of all four sides. \\ \hline
   Avoid clustering  & Integer $\ge$ 0 & Amount of times to retry random walk in order to avoid detached clusters. Non-spanning clusters are removed after this amount of tries.\\ \hline
   RN6  & True/False & Randomly change the bias direction between one of the six center element directiosn for each random walker deployed. \\ \hline
@@ -422,40 +420,45 @@ The random walk serves as a method for introducing random patterns into the data
 \end{table}
 
 \subsubsection{Fundamentals} % M, S, Connection, Periodic, Avoid unvalid
-For an uncut sheet we deploy $M$ random walkers one at a time and let them walk
+For an uncut sheet we deploy $M$ random walkers, one at a time, and let them walk
 for a maximum number of $S$ steps. We can either let the walker travel between
 atom sites, removing the atoms in the path as it goes, or between center
-elements, removing all sourrounding atoms - \textit{Connection: Atom/Center
-elements}. Nonetheless, we will always remove a site once visited such that the
-walker itself or any other walker cannot use this site again. This corresponds
+elements, removing all sourrounding atoms --- \textit{Connection: Atom/Center
+elements}. The method of removing only the intersecting atoms between center elements was also incorporated, but we ended up not using it due to plenty of other interesting options. Nonetheless, we will always remove a site once visited such that the
+walker itself, or any other walkers, cannot use this site again. This corresponds
 with the property of a self avoiding random walk, but it futhermore constraint
-the walkers not to visit any path previously visited by another walker on the
-sheet. By default, the walker has an equal chance of chosing any of its adjecent
+the walkers not to visit any path previously visited by others walkers which we might denote ``other avoiding'' then. By default, the walker has an equal chance of chosing any of its adjecent
 neighbours for the next step, i.e.\ we draw the next step from a discrete
 uniform distribution. Optionally we can use periodic bounary conditions,
 \textit{Periodic: True/False}, allowing neighbouring sites to be connected
 through the edge in both the x and y-direction. When traveling on atom sites
-this gives three nieghbour options for the next step while traveling on the
-center elements gives six neighbour options. If the walker happens to arrive at
+this ensures that we have three neighbour options for the next step while traveling on the
+center elements this gives six neighbour options. If the walker happens to arrive at
 an already visited site the walk is terminated early. Optionally, we can choose
 to remove any neighbouring sites already visited from the neighbour list,
 \textit{Avoid unvalid: True/False}, and choose uniformly between the remaining
-options instead. This prolongs the walking distance. However, the walker is
-still able to find itself in a situation where no neighbouring sites is
+options instead. This prolongs the walking distance, but the walker is
+still able to find itself in a situation where no neighbouring sites are
 availble, note that it cannot backtrack its own path either, and in such a case
-the walk is always terminated dispite the setting of \textit{Avoid unvalid}.
+the walk will be terminated dispite the setting of \textit{Avoid unvalid}.
 
 
 \subsubsection{Spacing of walking paths} % minimum distance
 In order to control the spacing between the paths of the various walkers we
-implement a so-called \textit{minimum distance: 0, 1, \ldots} parameter,
+implement a so-called, \textit{minimum distance: 0, 1, \ldots}, parameter
 describing the spacing required between paths in terms of the least amount of
 steps. When a walker has ended its walk, either by early termination or hitting
 the maximum limits of steps, all sites within a walking distance of the minimum
-distance is marked as visited, allthough they are not removed from the sheet.
+distance is marked as visited, although they are not removed from the sheet.
 This prevents any subsequent walkers to visit those sites in their walk
-according to the general behaviour described in the
-previous paragraph. In practice this is done through a recursive algorithm as described in algorithm \cref{algo:walk_dis}. For a given path the function walk\_distance() is called with the input being a list of all sites in the given paths. The function will then for each site gather all site neighbours (regardless of their state on the sheet) and call itself using this neighbour list as input while incrementing a distance counter passed along. This will result in an expansion along all possible outgoing paths from the initial path of interest which is terminated when the distance counter hits the minimum distance limit. The function will then return the final neighbour lists which is cummulated into a final output corresponding to a list of all sites within the minimum distance to the path.
+according to the general behaviour introduced in the previous paragraph. In
+practice this is done through a recursive algorithm as described in algorithm
+\cref{algo:walk_dis}. For a given path the function \textit{walk\_distance()} is called with the input being a list of all sites in the given paths. For each site, the function then gathers all site neighbours (regardless of their state on the sheet) and call itself using this neighbour list as input while incrementing a
+distance counter passed along. This will result in an expansion along all
+possible outgoing paths from the initial path of interest which is terminated
+when the distance counter hits the distance limit. The function will
+then return the final neighbour lists which is cummulated into a final output
+corresponding to a list of all sites within the minimum distance to the path.
 
 \begin{algorithm}[H]
   \caption{Recursive algorithm implemented as class method to mark sites within a distance of the class attribute self.min\_dis.}
@@ -484,13 +487,12 @@ previous paragraph. In practice this is done through a recursive algorithm as de
   \end{algorithmic}
 \end{algorithm}
 
-
-% Show figure of the self.visited shadowing  ???
+\hl{Do we need a figure supporting this?}
 
 \subsubsection{Bias} % Bias
-We include the option perform biased random walk through the \text{Bias:
+We include the option to perform biased random walk through the \text{Bias:
 (direction, strength)} parameter option. We implement this by modelling each
-walking step as an analog to the canonical ensemble under the influence of an
+walking step analog to the canonical ensemble under the influence of an
 external force $\vec{F}$ representing the bias. For such a system each
 microstate $i$, corresponding to the sites in the neighbour list, has the
 associated probability $p_i$ given by the Gibbs–Boltzmann distribution
@@ -500,30 +502,26 @@ associated probability $p_i$ given by the Gibbs–Boltzmann distribution
 where $Z$ is the canonical partition function, $\beta = 1/k_B T$ for the
 boltzmann constant $k_B$ and temperature $T$, and $E_i$ the energy of site $i$.
 We model the energy of each site as the work required to move there. For a step
-$\vec{s}$ the energy becomes $E_i = -\vec{s}\cdot\vec{F}$, where we notice that
-the energy is negative for alligned bias and step analogous to an energy gain by
+$\vec{s}$ the energy becomes $E_i = -\vec{s}\cdot\vec{F}$, where the sign is chosen such that the energy (difference) is negative when moving for aling the bias, analogous to an energy gain by
 moving there. Due to the symmetry of both the atom sites and the center elements
 sites the step length to neighbouring sites will always be equal. By defining
-the bias magnitude $B = \beta|\vec{F}||\vec{s}|$ we get that the probability for
-jumping to site $i$ is given by
+the bias magnitude $B = \beta|\vec{F}||\vec{s}|$ we the probability for
+jumping to site $i$ as
 \begin{align*}
   p_i = \frac{1}{Z}e^{B\hat{\vec{s}}\cdot\hat{\vec{F}}} \propto e^{B\hat{\vec{s}}\cdot\hat{\vec{F}}},
 \end{align*}
- where the hat denotes the unit direction of the vector. The bias magnitude $B$
- captures the opposing effects of the magnitude of the external force and the
+ where the hat denotes the unit direction of the vector. The bias magnitude $B$ then captures the opposing effects of the magnitude of the external force and the
  temperature of the system as $B\propto |\vec{F}|/T$. We notice that
  $\hat{\vec{s}}\cdot\hat{\vec{F}} = \cos{(\theta)}$ for the angle $\theta$
  between the step and bias direction. This shows that the bias will have the
- biggest positive contribution when the step direction is allinged with the bias
+ biggest positive contribution to the probability when the step direction is fully allinged with the bias
  direction ($\theta = 0$), have no contribution for orthogonal directions
- ($\theta = \pm \pi/2$) and biggest positive contribution when the directions
+ ($\theta = \pm \pi/2$) and the biggest negative contribution when the directions
  are antiparallel ($\theta = \pi$). The partition function serves simply as a
- normalization constant which in practice is  excluded ($Z = 1$) from the
- calculation of $p_i$ initially and then enforced at the final stage as a
+ normalization constant. Thus, numerically we can enforce this simply by setting $Z = 1$ at first, calculate $p_i$, and then normalize the result at the final stage as a
  divition by the sum of all $p_i$. In the numerical implementation we then pick
  the step destination weighted by the discrete probability distribtion $p_i$. In
- \cref{fig:bias_prob} we have illustrated how a bias of different strength impacts the probability disitrbution for a random walk between center elements. We can visually confirm that the bias will favorise the directions that lies closes to the bias direction. This favorization is more distinct at high bias strenghs while at low strength $B\to0$ we get a uniform distribution whichi alligns with the default unbiased random walk. 
-
+ \cref{fig:bias_prob} we have illustrated how a bias of different strength impacts the probability disitrbution for a random walk between center elements. We can visually confirm that the bias will favorise the directions that lies closes to the bias direction. This favorization is more distinct at high bias strengths while at low strength $B\to0$ we get a uniform distribution which alligns with the default unbiased random walk. 
 
 \begin{figure}[H]
   \centering
@@ -547,38 +545,44 @@ jumping to site $i$ is given by
 
 
 \subsubsection{Stay or break}
-The \textit{Stay or break} parameter defines the probability $p_{\text{stay}}$ that the walker will keep its direction or otherwise break into a different direction by probability $1-p_{\text{stay}}$. That is we manually substitute in the $p_{\text{stay}}$ in the discrete probability for the direction corresponding to the direction of the last jump. We then shift the remaining probabilities such that the distirbution sum to one again. In this way we can still perform bias random walk in combination. For the center element walk it is trivial to determine which of the neighbour directions correspond to the direction of the last jump. However, due to the layout of the atom sites, it is not possible to follow the same direction continously when performing an atom site type walk. We recall that the nearest atom neighbourindexes alternates for each increment in x or y position ($(i, j)$-index) (see eq.~\eqref{eq:atom_neigh_idx}) which yields alternating directions as
+The \textit{Stay or break: True/False} parameter defines the probability
+$p_{\text{stay}}$ that the walker will keep its direction or otherwise break
+into a different direction by probability $1-p_{\text{stay}}$. That is, we
+manually substitute $p_{\text{stay}}$ in the discrete probability for the next
+step corresponding to a continuation in the same direction. We then  shift the
+remaining probabilities such that the distirbution remains normalized. In this
+way we can still perform bias random walk in combination. For the center element
+walk it is trivial to determine which of the neighbour directions correspond to
+a continuation of direction based on the last visited site. However, for an atom site walk, it is not possible to follow the same direction in a straight line due to the hexagonal layout of the lattice. We recall that the
+nearest atom neighbour indexes alternates for each increment in x or y index (see \cref{eq:atom_neigh_idx}) which corresponds to the alternating neighbour directions $D$
 \begin{align*}
   (i + j) \ \text{is even} &\rightarrow D = \left\{ \frac{a}{2}\left(\frac{-2}{\sqrt{3}}, 0\right), \frac{a}{2}\left(\frac{1}{\sqrt{3}}, 1\right), \frac{a}{2}\left(\frac{1}{\sqrt{3}}, -1\right)\right\}, \\
   (i + j) \ \text{is odd} &\rightarrow D = \left\{ \frac{a}{2}\left(\frac{2}{\sqrt{3}}, 0\right), \frac{a}{2}\left(\frac{-1}{\sqrt{3}}, 1\right), \frac{a}{2}\left(\frac{-1}{\sqrt{3}}, -1\right)\right\}.
 \end{align*}
-Hence, we use the six directions from the center element walk as the common direction to stay or break from. As showcased in \cref{fig:stay_or_break}, for each center element direction (black arrows) there are two possible atom directions (red and orange arrows) that are equally close to the center element direction. The red and orange arrows represent $(i+j)$ being even or odd respectively, and we notice that these appear in paris such that we can always determine which of the atom directions are closest to the center element direction. Following this idea we can map each center direction to an atom direction depending on the even or oddness of the position. For $p_{\text{stay}} = 1$ this results in zigzag motion along the center element direction that happens to start on. 
+One way to mittigate this issue is to use the six directions from the center element walk as the common direction to ``stay or break'' from. As showcased in \cref{fig:stay_or_break}, for each center element direction (black arrows) there are two possible atom directions (red and orange arrows) that are equally close to the center element direction. The red and orange arrows represent $(i+j)$ being even or odd respectively, and we notice that these appear in pairs such that we can always determine which of the atom directions that are closest to the center element direction. Following this idea we can map each center direction to an atom direction depending on the even or oddness of the position. For $p_{\text{stay}} = 1$ this results in a garuanteed zigzag motion along the center element direction that it happens to start on. 
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.5\linewidth]{figures/system/stay_or_break.pdf}
-  \caption{...}
+  \caption{\hl{Caption}}
   \label{fig:stay_or_break}
 \end{figure}
 
+The \textit{Stay or break} is still subject to previsouly defined rules, such that in the case that the site preferred site is not availble, it will either terminate when going there, or it is removed from the neighbour list when \textit{avoid unvalid: True}. For the latter case the walker has broken its direction and will follow the new direction with probability $p_{\text{stay}}$
 
-In cases where the site corresponding to following the previous direction is not available we get a break of direction by definition. 
 
 \subsubsection{Deployment schemes} % Grid start, Centering, RN6
 By default, each random walker is given an uniform random starting point among
-the non-visited sites left on the sheet. This includes any modifications in
-relation to the minimum distance parameter. By toggling the \textit{Grid start:
-True/False} parameter on the starting points are instead predefined on evenly
+the non-visited availble sites left on the sheet. This includes any modifications in relation to the minimum distance parameter. By toggling the \textit{Grid start:
+True/False} parameter on, the starting points are instead predefined on an evenly
 spaced grid. That is, the sheet is subdivided into the least amount of squares
-that will accomodate a space for each starting point. $\{1\}$ walker leads to a
+that will accomodate a space for each starting point. 1 walker leads to a
 $1\times 1$ partition, $\{2,3,4\}$ walkers lead to a $2\times 2$ partition,
-$\{5,6,7,8,9\}$ walker lead to a $3\times 3$ partition and so on. The lower left
-corner \footnote{In hindsight this would have been statistically better spaced
-if with a random starting corner, but this is not considered to be of great
-importance for the way we used this feature in the dataset generation.} is then choosen as a default starting place for the first
-walker for which the remaining sites are filled according to the order that
+$\{5,6,7,8,9\}$ walker lead to a $3\times 3$ partition and so on. For each partition square the starting point is placed as central as possible. The lower left partition square is then choosen as a default starting place for the first
+walker and the remaining sites are filled according to the order that
 maximizes the minimum distance between a new starting point and the ones already
-used. The population of the grid is visualized in \cref{fig:grid_start} for 1-9 walkers in total. 
+used\footnote{In hindsight, it would have been less biased to choose a random partition square, but we do not consider this to be of great
+importance for the usage of this feature in final dataset }. The population of the grid is visualized in \cref{fig:grid_start} for 1-9 walkers in total with color coding for the order of deployment. 
 
 
 \begin{figure}[H]
@@ -588,29 +592,24 @@ used. The population of the grid is visualized in \cref{fig:grid_start} for 1-9 
   \label{fig:grid_start}
 \end{figure}
 
+The \textit{Centering: True/False} parameter let us relocate the path of the random walker such that the path center of mass alligns better with the starting point. When toggled on, the path is moved in the direction defined by the center of mass and the starting point for which the closest valid relocation on the direct translation line is choosen. This can be used in combination with the grid start and the bias parameter to make rather ordered configurations. In addition, the \textit{RN6:True/False} parameter can be used update the bias direction to on of the six directions of the center element walk for each new walker deplyoed. This lets us create confgiratiosn like the one shown in \cref{fig:RW_flavors}\textcolor{red!50!black}{b}. 
 
-The \textit{Centering: True/False} parameter let us relocate the path of the random walker such that the path center of mass alligns better with the starting point. This can be used in combination to the grid start and the bias parameter to make rather ordered configurations. In addition, the \textit{RN6:True/False} parameter can be used change the bias direction to on of the six directions of the center element walk for each new walker. This lets us create confgiratiosn like [EXAMPLE]. 
 
 \subsubsection{Validity}
-The simulation procedure requires the sheet is fully attatched which can be summarized as the following requirements. 
+The simulation procedure requires the sheet to be fully attatched, non ruptured, which can be summarized as the following requirements. 
 \begin{enumerate}
   \item There exist only a single cluster on the sheet. We define a cluster as the set of atoms which can all be reached through nearest neighbour walking on the cluster.
   \item The cluster of atoms is spanning the sheet in the y-direction. This means that there exist at least one path through nearest neighbour walks that connect the bottom and the top of the sheet. This is due to the reason that the sheet must be attatched to the pull blocks.
 \end{enumerate}
-
-In order to accommodate these requirements we count the number of clusters and search for a spanning cluster after all walkers have terminated. If the requirements are not met we simply rerun the random walk from scratch. This is done \textit{Avoid clustering} amount of times. If the requirements are not met during any of those reruns the non-spanning clusters are simply removed. In the case of no spanning cluster the configuration is dropped. This crude scheme was later reinvented as a more refined repair scheme which alters the sheet by the intention of performing the least amount of changes (addition of subtraction of atoms) in order to meet attatchment requirements. This was done as a part of the accelerated search procedure and hence it was not utilized in the creation of the random walk dataset. 
-
-
-
-% We might get configurations with multiple isolated clusters, meaning that the sheet is already detached and the simulation will reach a halt immediately. This is especially a problem when having a high number of walkers with a high number of maximum steps. Even with the minimum distance parameter in use a single walker can sourround and inclose a region which will become detached. In order to mitigate this problem we count the number of clusters on the sheet after performing the random walks. We define a cluster of atoms as a set for which all atoms can be reached by walking between neighbouring sites. If there exist more than one cluster, or if the custer is not spanning the sheet in the x, y 
-
-
+In order to accommodate these requirements we count the number of clusters and search for a spanning cluster after all walkers have terminated. If the requirements are not met we simply rerun the random walk from scratch. This is done, \textit{Avoid clustering: 0, 1, \ldots}, amount of times. If the requirements are not met during any of those reruns the non-spanning clusters are simply removed. In the case of no spanning cluster the configuration is skipped. This crude scheme was later reinvented as a more refined repair scheme which alters the sheet by the intention of performing the least amount of changes (addition or subtraction of atoms) in order to meet the attatchment requirements. This was done as a part of the accelerated search procedure and hence it was not utilized in the creation of the random walk dataset. 
 
 \subsubsection{Random walk examples}
+
+Some examples of the random walk patterns are illustrated in \cref{fig:RW_flavors}.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{figures/system/RW_flavors.pdf}
-  \caption{Some example uses of the random walking class.}
+  \caption{Some example uses of the random walking class. \hl{Give information of parameters?}}
   \label{fig:RW_flavors}
 \end{figure}

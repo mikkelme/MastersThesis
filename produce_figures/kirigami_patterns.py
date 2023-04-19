@@ -796,8 +796,8 @@ if __name__ == '__main__':
     # bias_prop_distribution(save = False)
     # stay_or_break(save = False)
     # grid_start(save = False)
-    # RW_flavors(save = True)
+    # RW_flavors(save = False)
     
     # show_all_conf()
-    pass
-    # plt.show()
+    # pass
+    plt.show()
