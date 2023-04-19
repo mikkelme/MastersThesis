@@ -1,13 +1,53 @@
-\chapter{Pilot study}
-
-% TO-DO: Look at friction force graph again and reconsider whether we have stick-slip. The small oscillations is probably noise, and since the big oscialltions go by smooth curves this is actually more likely to be smooth sliding. I guess looking at the period in connection with the lattice spacing show whether it is thoose curves we should look at or the smaller ones result from a lot of small slips...
-
+% TO-DO: Look at friction force graph again and reconsider whether we have stick-slip. The small oscillations is perhaps noise, and since the big oscialltions go by smooth curves this is actually more likely to be smooth sliding. I guess looking at the period in connection with the lattice spacing show whether it is thoose curves we should look at or the smaller ones result from a lot of small slips...
 
 % Note: A good word for the force curves is "Force traces" as used by \cite{Yalin_2011}.
 
-\section{Friction simulation parameters}
 
-The friction simulation is governed by a set of parameters where some is kept constant while other is varied to gain insight in the frictional properties. These parameters can be categorised into three main categories of different purpose as described in \cref{tab:param}. 
+\chapter{Pilot study}
+Having defined our system, we carry out an initial study of the numerical approach. This includes an analysis of how to define and measure the frictional properties of interest and an investigation of the dependence of the main parameters governing the numerical solutions. From this point of view we decide on a suitable set of parameter choices for the further study moving on. Additionally, we investigate the friction behaviour under the variation of load and stretch for a selected set of configurations. 
+
+
+\section{Friction simulation parameters}
+The \acrshort{MD} simulation is governed by a small set of parameters, some
+related directly to the numerical aspects of the simulation and other to the
+physical conditions simmulated. Thus, we distinct between the two main
+categories: 1) \textit{Physical}, parameters which alter the physical conditions
+of the ``numerical experiment'' and are expected to effect the frictional
+behaviour. 2) \textit{Numerical}, parameters which are related more closely to
+the numerical procedure which are expected to influence the simulation dynamics
+but should be chosen to ensure the most stable results. For the purpose of
+creating a machine learning dataset most of theese parameters are kept constant
+with only a subset of the physical parameters being varied. 
+
+%
+% Working here (relac the description a bit since it is covered in the system chapter)
+%
+
+\begin{table}[H]
+  \begin{center}
+  \caption{Parameters of the numerical procedure for measuring friction. The shaded area denote the variables used for \acrshort{ML}.}
+  \label{tab:param}
+  \begin{tabular}{ | c | C{2cm} | C{3.5cm} | X{8cm}|} \hline
+    Category & Parameter & Value &  Description \\ \hline
+    \multirow{13}{*}{Physical} & $T$ & \SI{300}{K} &  Temperature for the Langevin thermostat. \\ \hhline{~|-|-|-|}
+    & $v_{\text{slide}}$ &\SI{20}{m/s} & Sliding speed for the sheet translation. \\ \hhline{~|-|-|-|}
+    & $K$ & $\inf$ & Spring constant for the spring force between the virtual atom and the pull blocks responsible for translating the sheet along the substarte. An infinte spring constant is achieved by moving the pull blocks as a rigid body (Lammps: fix move). \\ \hhline{~|-|-|-|}
+    & Scan direction & $(x,y) = (0,1)$ (zigzag direction)  & The direction for which we translate the sheet. \\ \hhline{~|-|-|-|}   
+    & \cellcolor{black!7} Sheet configuration & \cellcolor{black!7} Contiguous & \cellcolor{black!7} A binary matrix containing information of which atoms are removed (0) and which is still present (1) in the graphene sheet.  \\ \hhline{~|-|-|-|}
+    & \cellcolor{black!7} Stretch amount & \cellcolor{black!7} 0\% - rupture & \cellcolor{black!7} The relative sheet stretch in percentage. \\ \hhline{~|-|-|-|}
+    & \cellcolor{black!7} $F_N$ & \cellcolor{black!7} [0.1, 10] nN & \cellcolor{black!7} Applied normal force to the pull blocks. \\ \hline
+    \multirow{8}{*}{Numerical} & $dt$ & \SI{1}{fs} &  Integration timestep. \\ \hhline{~|-|-|-|}
+    & $t_R$ &  \SI{15}{ps} & Relaxtion time before strething. \\ \hhline{~|-|-|-|}
+    & Pauses & \SI{5}{ps} & between stretch and adding normal force and between dragging the sheet. \\ \hhline{~|-|-|-|}
+    & Stretch Speed & \SI{0.01}{ps^{-1}} & How fast to stretch the sheet. \\ \hhline{~|-|-|-|}
+    & Slide distance & \SI{400}{Å} & How far to translate the sheet. \\ \hhline{~|-|-|-|}
+    & Sheet size & $130.029 \times \SI{163.219}{\text{Å}}$ & Spatial size of the 2D sheet.   \\ \hhline{~|-|-|-|}
+    & Pull block size & $2 \times 130.029 \times \SI{15.183}{\text{Å}}$ & spatial size of the pull blocks. \\ \hhline{~|-|-|-|}
+    & Substrate size? & --- & --- \\ \hline
+  \end{tabular}
+  \end{center}
+\end{table}
+
 
 
 \begin{table}[H]
@@ -51,6 +91,9 @@ The friction simulation is governed by a set of parameters where some is kept co
   \end{center}
 \end{table}
 
+
+
+
 Due to the great number of parameters, and corresponding range of reasonable numerical values they can take, it is ... to parameter search including all of these. Thus, we will to a great extent rely on a reverse engineering in order to establish a set of parameters for the \textit{physical} and \textit{measurement} categories along with numerical ranges for the $\textit{ML input}$ category which gives stable and promising results. By doing so we effectively narrow down the parameter regime for which the investigated frictional properties belong. We aim to chose the parameters in order to accomodate a balance between generlizable and stable result which is simmutaneously a suting candidate as a proof of concept for the control of friction properties using kirigami inspired cuts. 
 
 In the following we present the results of the friction simulations in parallel to the procedure of investigating the choice of different parameters. 
@@ -60,36 +103,36 @@ In the following subsections (X to Y) we are going to present the friction simul
 
 
 
-\begin{table}[H]
-  \begin{center}
-  \caption{Final parameters for the friction simmulations \hl{Probably not the neatest format for this...}}
-  \label{tab:final_param}
-  \begin{tabular}{ | m{3cm} | m{3cm}| m{3cm} |} \hline
-    Physical & Measurements & ML input \\ \hline
-    {\begin{align*}
-      T &= \SI{300}{K}  \\
-      v_{\text{slide}} &= \SI{20}{m/s}  \\
-      K &= \inf \text{(LAMMPS: \textit{fix move})}  \\
-      \text{Scan angle} &:  (x,y) = (0,1)  
-    \end{align*}} &
-    {\begin{align*}
-      dt &= \SI{1}{fs} \\
-      t_R &= \SI{15}{ps} \\
-      \text{Pauses} &= \SI{5}{ps} \\
-      \text{Stretch speed} &= \SI{0.01}{ps^{-1}} \\
-      \text{Slide distance} &= \SI{400}{Å} \\
-      \text{Sheet size} &= 130.029 \times \SI{163.219}{\text{Å}} \\
-      \text{Pull block size} &= 2 \times 130.029 \times \SI{15.183}{\text{Å}}
-    \end{align*}} &
-    {\begin{align*}
-      \text{Sheet configuration} &= \text{Contiguous} \\
-      \text{Stretch amount} &= \text{Below rupture} \\
-      F_N &= [0.1, 10] \ \text{nN}
-    \end{align*}}
-    \\ \hline
-  \end{tabular}
-  \end{center}
-\end{table}
+% \begin{table}[H]
+%   \begin{center}
+%   \caption{Final parameters for the friction simmulations \hl{Probably not the neatest format for this...}}
+%   \label{tab:final_param}
+%   \begin{tabular}{ | m{3cm} | m{3cm}| m{3cm} |} \hline
+%     Physical & Measurements & ML input \\ \hline
+%     {\begin{align*}
+%       T &= \SI{300}{K}  \\
+%       v_{\text{slide}} &= \SI{20}{m/s}  \\
+%       K &= \inf \text{(LAMMPS: \textit{fix move})}  \\
+%       \text{Scan angle} &:  (x,y) = (0,1)  
+%     \end{align*}} &
+%     {\begin{align*}
+%       dt &= \SI{1}{fs} \\
+%       t_R &= \SI{15}{ps} \\
+%       \text{Pauses} &= \SI{5}{ps} \\
+%       \text{Stretch speed} &= \SI{0.01}{ps^{-1}} \\
+%       \text{Slide distance} &= \SI{400}{Å} \\
+%       \text{Sheet size} &= 130.029 \times \SI{163.219}{\text{Å}} \\
+%       \text{Pull block size} &= 2 \times 130.029 \times \SI{15.183}{\text{Å}}
+%     \end{align*}} &
+%     {\begin{align*}
+%       \text{Sheet configuration} &= \text{Contiguous} \\
+%       \text{Stretch amount} &= \text{Below rupture} \\
+%       F_N &= [0.1, 10] \ \text{nN}
+%     \end{align*}}
+%     \\ \hline
+%   \end{tabular}
+%   \end{center}
+% \end{table}
 
 
 

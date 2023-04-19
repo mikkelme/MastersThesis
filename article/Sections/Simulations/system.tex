@@ -405,16 +405,16 @@ The random walk serves as a method for introducing random patterns into the data
   \textbf{Parameters} & \textbf{Value} & \textbf{Description}  \\ \hline
   Num.\ walkers ($M$) & Integer $\ge$ 1 & Number of random walks to be initiated on the sheet (one at a time). \\ \hline
   Max.\ steps ($S$)  & Integer $\ge$ 1 &The maximum steps allowed for any random walker. \\ \hline
-  Min.\ distance  & Integer $\ge$ 0 &The minimum distance required between any future paths and the previous paths in terms of the least walking steps in between. \\ \hline
-  Bias  & Vector (direction, strength) & Bias direction and strength defining the discrete probability for the chocie of the next site. \\ \hline
-  Connection  & Atoms / Center elements & Walk between atoms or between center elements (removing all adjecent atoms). \\ \hline
-  Avoid unvalid  & True/False & Whether to remove already visited sites from the neighbour list before picking the next site. This prevents jumping to already visited site and lowers the likelihood of early termination.  \\ \hline
-  Stay or break  & $p = [0,1]$ & \hl{Fill out} \\ \hline
-  Periodic  & True/False & Whether to use periodic boundary conditions of all four sides. \\ \hline
-  Avoid clustering  & Integer $\ge$ 0 & Amount of times to retry random walk in order to avoid detached clusters. Non-spanning clusters are removed after this amount of tries.\\ \hline
-  RN6  & True/False & Randomly change the bias direction between one of the six center element directiosn for each random walker deployed. \\ \hline
+  Min.\ distance  & Integer $\ge$ 0 &The minimum distance required between any future paths and the previous paths in terms of the shortest walking distance in between. \\ \hline
+  Bias  & (Direction, strength $\ge0$) & Bias direction and strength defining the discrete probability for the chocie of the next site. \\ \hline
+  Connection  & Atoms / Center elements & Whether to walk between atom sites or center elements (removing all adjecent atoms). \\ \hline
+  Avoid unvalid  & True/False & Whether to remove already visited sites from the neighbour list before picking the next site. This prevents jumping to already visited sites and lowers the likelihood of early termination.  \\ \hline
+  Stay or break  & $p = [0,1]$ & Probability that the walker will maintain its direction for the next step. \\ \hline
+  Periodic  & True/False & Whether to use periodic boundary conditions on all four sides. \\ \hline
+  Avoid clustering  & Integer $\ge$ 0 & Amount of times to restart the whole random walk generation in order to arrive at a non-detached configuration. If no valid configuration is reached after this amount of tries, the non-spanning clusters are removed.\\ \hline
+  RN6  & True/False & Randomly change the bias direction between the deployment of each random walker to one of the six center element directions. \\ \hline
   Grid start  & True/False & The option to have the random walkers start in an evenly spaced grid. \\ \hline
-  Centering  & True/False & Relocate the path of a random walk after termination such that the path center of mass gets closer to the starting point (without violating the rules for travelling on already visited sites).\\ \hline
+  Centering  & True/False & Relocate the path of a random walk after termination such that the path center of mass gets closer to the starting point (without violating the rules regarding already visited sites).\\ \hline
   \end{tabular}
   \end{center}
 \end{table}
