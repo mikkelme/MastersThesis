@@ -74,8 +74,8 @@ def pop_up(shape = (62, 106), size = (5,3), sp = 1, ref = None):
 
     # --- Translate cut-out-units across lattice --- # 
     # Estimate how far to translate to cover the whole sheet
-    range1 = int(np.ceil(np.dot(np.array([m,n]), axis1)/np.dot(axis1, axis1))) + 1      # project top-right corner on axis 1 vector
-    range2 = int(np.ceil(np.dot(np.array([0,n]), axis2)/np.dot(axis2, axis2)/2))  + 1   # project top-left corner on axis 2 vector
+    range1 = 2*int(np.ceil(np.dot(np.array([m,n]), axis1)/np.dot(axis1, axis1))) + 1      # project top-right corner on axis 1 vector
+    range2 = 2*int(np.ceil(np.dot(np.array([0,n]), axis2)/np.dot(axis2, axis2)/2))  + 1   # project top-left corner on axis 2 vector
 
     # Number of possible unique pertubations of ref
     M = int(np.abs(np.cross(axis1, axis2))/2)

@@ -663,11 +663,37 @@ We take a look at how the ranking of the four properties of interest is ranked w
   \end{center}
 \end{table}
 
+Even though the scores for top configurations is predicted to a reasonable accuracy by the model we find that: When trying to do a search with the generator class we discovered that is it very sensitive to the reference element choice. This can be attributed either to overfitting in the model or simply a lack of data, but since a translation of the pattern is not guaranteed to give similar result, we have no way of knowing whether this is actually physical valid. The system could be very sensitive to edge effects and we would simply have to simulate this in order to get more information about this.
+
+We perform a search through the pattern generator class. For the tetrahedron and honeycomb repeating each pattern 10 times with random reference points. For the random walk we take a Monte Carlo approach by doing random sampling in a parameter range. Here we use the repair functions for the sheet. For each ML prediction we use 100 points in the stretch range 0\%-200\%. \hl{Say more about how many configurations and setting in general}. 
+
+First of all, the search gave a rather consistent result regarding the
+minimization of friction where the top candidates all shared the same tendency
+of being very sparsly cut. This leads to the immediate interpretation that the
+no cut configuration is representating the lowest friction response that we can
+get within this regime. The ranking of the configurations did not strictly favor
+the least amount of atoms removed, but considering that the minimum values found
+for the Tetrahedron, Honeycomb and Random walk patterns were $-0.062$, $-0.109$
+and $-0.061$ it is quite obvious that the model is not reliable in this domain.
+By asking for the lowest friction we essentially (optimize) uncertain parts of
+the configuration space which can leads to unphysical predictions of negative
+vaues. By somehow penalizing or ignoring negative we would simply disguise the
+problem but not solve it as the certainity nessecary to provide interesting
+results regarding low friction is not in place for this model. That would
+require a different training set altogether. 
 
 
-When trying to do a search with the generator class we discovered that is it very sensitive to the reference element choice. This seems like an overfitting or lacking data problem, but since a translation of the pattern is not guaranteed to give similar result we have know way of knowing whether this is actually physical valid.  
 
-We perform a search through the pattern generator class. For the tetrahedron and honeycomb we repeat each pattern 10? times with random reference element choice to get variations there. For the random walk we take a Monte Carlo approach by doing random sampling in a parameter range. Here we use the repair functions for the sheet
+% the minimum cases also show signs of non continous curves meaning that we are really just optimizing for trouble with this prompt. 
+
+%
+%
+% Fix ref out of bounds issue and run ref search for some selected conf
+%
+%
+
+
+% Include the unique checker in the ref search itself maybe...
 
 
 

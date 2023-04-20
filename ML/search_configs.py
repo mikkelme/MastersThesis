@@ -151,8 +151,8 @@ class Search:
                 self.counter += 1
                 
                 for r in range(repeat):
-                    # print(f'\r{self.current} ({r+1}) | ({self.patterns_evaluated+1}/{total_comb})     ', end = '')
-                    print(f'{self.current} ({r+1}) | ({self.patterns_evaluated+1}/{total_comb})')
+                    print(f'\r{self.current} ({r+1}) | ({self.patterns_evaluated+1}/{total_comb})     ', end = '')
+                    # print(f'{self.current} ({r+1}) | ({self.patterns_evaluated+1}/{total_comb})')
                     try:
                         name, input = self.translate_input()
                         out = self.pattern(self.shape, *input, ref = 'RAND')
@@ -235,10 +235,70 @@ class Search:
                 builder.save_view(save_path, 'sheet', name)
                 # dir, 'sheet', name, overwrite
                 
-      
-            
+    def ref_search(self, param, savename = 'pop_ref_search'):
+        self.current = param
         
-# TODO: Implement repeat functionality ? XXX
+        refs = np.zeros((62, 106//2, 2)).astype('int')
+        keys = [ 'Ff_min', 'Ff_max', 'Ff_max_diff', 'Ff_max_drop']
+        # scores = {key: np.zeros((refs.shape[0], refs.shape[1])) for key in keys }
+        scores = {key: np.full((refs.shape[0], refs.shape[1]), np.nan) for key in keys }
+        matrices = [] 
+        total_refs = np.prod((refs.shape[0], refs.shape[1]))
+        
+        
+        # Fill ref matrix
+        for i in range(refs.shape[0]):
+            for j in range(refs.shape[1]):
+                refs[i,j] = (i,j)
+    
+        dis = np.linalg.norm(refs, axis = 2)
+        dis_sort = np.argsort(dis.reshape(total_refs))
+        indexes = refs.reshape(total_refs, 2)[dis_sort]
+        
+        steps_since_last_append = 0
+        break_limit = 100
+        for i, ref in enumerate(indexes):
+            if steps_since_last_append > break_limit:
+                break
+            print(f'\r{ref} | Total: {i}/{total_refs} | Added: {len(matrices)} | Repeats: {steps_since_last_append}/{break_limit}     ', end = '')
+      
+            steps_since_last_append += 1
+            
+            # Evaluate
+            name, input = self.translate_input()
+            mat =  self.pattern(self.shape, *input, ref = ref)
+            
+            # Add to list if unique
+            if len(matrices) == 0:
+                add = True 
+            elif not np.any(np.all(np.all(mat == matrices, axis = 1), axis = 1)):
+                add = True
+            else:
+                add = False
+
+            if add:            
+                matrices.append(mat)
+                steps_since_last_append = 0
+            
+                metrics = self.evaluate(mat)
+            
+                # Store results
+                for key in keys:
+                    scores[key][ref[0], ref[1]] = metrics[key][-1]
+            
+            
+        # Save result as arrays
+        print(f'\nStoring results as {savename}.npy')
+        scores['refs'] = refs
+        np.save(f'{savename}.npy',  scores)    
+
+       
+
+   
+    
+
+
+
 
 def RW_MC(size, max_num_walks = 10, max_max_steps = 10, max_min_dis = 4, bias_max_temp = 10, ref = None):
     """ Random walk with monte carlo chosen parameters """
@@ -320,11 +380,22 @@ def get_RW_conf(shape, idx, return_name = False, ref = None):
         return mat
 
 
+
+
+
+
 if __name__ == '__main__':
     model_name = 'mom_weight_search_cyclic/m0w0'
     topN = 50
     
     
+    # --- Extended ref search --- #
+    # Pop up
+    S = Search(model_name, topN = 5, pattern = pop_up)
+    # S.ref_search(param = (5, 3, 1), savename = 'ref_search/pop_5_3_1_ref_search')
+    S.ref_search(param = (5, 3, 1), savename = 'ref_search/test')
+    
+   
     # --- Test against data --- #
     # Pop up
     # S = Search(model_name, topN = 50, pattern = get_pop_up_conf)
@@ -345,10 +416,10 @@ if __name__ == '__main__':
     
     # --- Extended search --- #
     # Pop up
-    S = Search(model_name, topN, pattern = pop_up)
-    S.search([60, 60, 30], start_from = 1, repeat = 10) # XXX
-    S.print_extrema()
-    S.save_extrema('./pop_search')
+    # S = Search(model_name, topN, pattern = pop_up)
+    # S.search([60, 60, 30], start_from = 1, repeat = 10) # XXX
+    # S.print_extrema()
+    # S.save_extrema('./pop_search')
     
     # Honeycomb
     # S = Search(model_name, topN, pattern = honeycomb)
@@ -363,3 +434,4 @@ if __name__ == '__main__':
     # S.save_extrema('./RW_search')
     
         
+    

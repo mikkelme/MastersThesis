@@ -583,9 +583,9 @@ if __name__ == "__main__":
     # mat = honeycomb(shape = (62, 106), xwidth = 1, ywidth = 1,  bridge_thickness = 1, bridge_len = 5, ref = None)
     
     
-    # mat = honeycomb(shape = (62, 106), xwidth = 1, ywidth = 0,  bridge_thickness = 1, bridge_len = 1, ref = None)
-    mat = pop_up(shape = (62, 106), size = (53,3), sp = 1, ref = None)
-    
+    mat = honeycomb(shape = (62, 106), xwidth = 1, ywidth = 4,  bridge_thickness = 5, bridge_len = 1, ref = (0,53))
+    # mat = pop_up(shape = (62, 106), size = (3, 1), sp = 1, ref = (0, 53))
+    # mat = np.load('popup/pop1_3_1.npy')
     
     builder = config_builder(mat)
     # builder.add_pullblocks()
