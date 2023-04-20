@@ -15,7 +15,7 @@ the two main categories: 1) \textit{Physical}, parameters which alter the
 physical conditions of the ``numerical experiment'' and are expected to effect
 the frictional behaviour. 2) \textit{Numerical}, parameters which are related
 more closely to the numerical procedure itself, expected to influence the
-simulation dynamics, which should be chosen to ensure the most stable results.
+simulation kinetics, which should be chosen to ensure the most stable results.
 For the purpose of creating the machine learning dataset most of these
 parameters will be kept constant with only a subset of the physical parameters
 being varied. The parameters are summarized in \cref{tab:param} with the grey
@@ -89,7 +89,7 @@ we be the default values in the following study, i.e.\ when nothing is stated ex
 
 % Parameters expected to have a physical effect on the friction properties, which is kept fixed and thus not included in the machine learning input set. 
 
-% Paramters influecing the simulation dynamics and being representative of the experimental procedure that we are mimicking. These parameters is chosen with the aim of getting stable parameters under small perturbations of the given parameter. 
+% Paramters influecing the simulation kinetics and being representative of the experimental procedure that we are mimicking. These parameters is chosen with the aim of getting stable parameters under small perturbations of the given parameter. 
 
 % The remaining paramters serves as input variables for optimization process and is thus given as input variables for the machine learning (ML).
 
@@ -114,7 +114,7 @@ we be the default values in the following study, i.e.\ when nothing is stated ex
 % However, MD simulations can provide so much physical insight that they make sense even if carried out at much higher speeds than in real-life AFM or surface force apparatus (SFA) experiments: in practice, currently the sliding speeds of most atomistic tribology simulations are in the $\sim$ 1 m/s region.\cite{Manini_2016}
 
 
-% Besides the limitations of system size and simulation times that are obvious and will be discussed later, there is another limitation concerning temperature, that is rarely mentioned. All classical frictional simulations, atomistic or otherwise, are only valid at sufficiently high temperature. They become in principle invalid at low temperatures where the mechanical degrees of freedom of solids progressively undergo ”quantum freezing”, and both mechanics and thermodynamics deviate from classical. \cite{Manini_2016}.
+% Besides the limitations of system size and simulation times that are obvious and will be discussed later, there is another limitation concerning temperature, that is rarely mentioned. All classical frictional simulations, atomistic or otherwise, are only valid at sufficiently high temperature. They become in principle invalid at low temperatures where the mechanical degrees of freedom of solids progressively undergo ”quantum freezing”, and both mechanics and thermokinetics deviate from classical. \cite{Manini_2016}.
 
 
 
@@ -126,14 +126,31 @@ We begin by assessing the force traces for a single friction simulation using th
 
 
 \subsection{Force oscillations}\label{sec:force_oscillations}
-We evaluate the friction force as the force acting on the sheet from the substrate. We consider initially the force componenet $F_{\parallel}$ parallel to the drag direction as plotted in \cref{fig:drag_Ff}. The sample rate is 10 ps$^{-1}$ = 100 timesteps$^{-1}$ for which each sample is the mean value of the preceding 100
-timesteps. We observe immediately that the
-data carriers oscillations on different time scales which matches our
-expectations for sliding on periodic surfaces. By applying a savgol filter
-to the data with a polyorder of 5 and window length of 150 timesteps,
-corresponding to a sliding distance of 3 Å or a time window of 15 ps, we can
-qualitatively point out at least two different frequencies of osccilation.
-During the first 10 Å of sliding in \cref{fig:drag_Ff_10} we see roughly three waves on the savgol filter corresponding to a relative high frequency, while on the scale of 100 Å of sliding in \cref{fig:drag_Ff_100} the same savgol filter reveals a lower frequency on top, creating the visual pattern of a wavepacket. The data does not indicate clear signs of stick-slip behaviour as otherwise found in other studies, e.g.\ by Zhu and Li  \cite{zhu_study_2018} for graphene on gold, who saw a more typical saw tooth shape in the force trace. \hl{submitted run to ensure that we match Zhu and Li's condition. However, if they look like the ones for K = 30 N/m and 1 m/s we do not see the stick-slip behaviour really.}
+We evaluate the friction force as the force acting on the sheet from the
+substrate. We consider initially the force componenet $F_{\parallel}$ parallel
+to the drag direction as plotted in \cref{fig:drag_Ff}. We use a sample rate of
+10 ps$^{-1}$ = 100 timesteps$^{-1}$ for which each sample is the mean value of
+the preceding 100 timesteps. We observe immediately that the data carriers
+oscillations on different time scales which matches our expectations for sliding
+involving periodic surfaces. By applying a savgol filter to the data with a
+polyorder of 5 and window length of 150 timesteps, corresponding to a sliding
+distance of 3 Å or a time window of 15 ps, we can qualitatively point out at
+least two different frequencies of osccilation. During the first 10 Å of sliding
+in \cref{fig:drag_Ff_10} we see roughly three waves on the savgol filter
+corresponding to a relative high frequency, while for the duraction of 100 Å of
+sliding in \cref{fig:drag_Ff_100} the same savgol filter reveals a lower
+frequency on top, creating the visual pattern of a wavepacket. The data does not
+indicate clear signs of stick-slip behaviour as otherwise found in other
+studies, e.g.\ by Zhu and Li \cite{zhu_study_2018} for graphene on gold, who saw
+a more typical saw tooth shape in the force trace. Beside the different
+substrate material, gold instead of silicon, they used a lower sliding speed of
+\SI{10}{m/s} and soft spring of $\SI{10}{N/m}$. When rerunning the simmulation
+using these values (\cref{fig:drag_Ff_10_K10_v10}) we found a different force
+trace pattern showing signs of stick-sliop behaviour, but not still as evident
+as we see lowering the sliding speed further down to \SI{1}{m/s} as shown in
+\cref{fig:drag_Ff_10_K10_v1}. This result agrees with ... that the stick-slip
+behaviour is suppresed for high sliding speed and stiff springs. However, the low sliding speed comes with a high computational cost which is the reason that we stick to \SI{20}{m/s} and a infinitely stiff spring constant to instead gain stable results in the domain of smooth sliding \hl{the spring constant is further discussed later right}. \hl{Take a look at the soft spring slow speed result for 100 \text{Å} as well}.
+
 
 \begin{figure}[H]
   \centering
@@ -153,19 +170,19 @@ During the first 10 Å of sliding in \cref{fig:drag_Ff_10} we see roughly three 
     \hfill
     \begin{subfigure}[t]{0.49\textwidth}
       \centering
-      \includegraphics[width=\textwidth]{figures/baseline/drag_Ff_10Å_K30_v1.pdf}
-      \caption{$K = \SI{30}{N/m}$, $v = \SI{1}{m/s}$ (10 Å sliding).}
-      \label{fig:drag_Ff_10_K30_v1}
+      \includegraphics[width=\textwidth]{figures/baseline/drag_Ff_10Å_K10_v10.pdf}
+      \caption{$K = \SI{10}{N/m}$, $v = \SI{10}{m/s}$ (10 Å sliding).}
+      \label{fig:drag_Ff_10_K10_v10}
     \end{subfigure}
     \hfill
     \begin{subfigure}[t]{0.49\textwidth}
       \centering
-      \includegraphics[width=\textwidth]{figures/baseline/drag_Ff_100Å_K30_v1.pdf}
-      \caption{$K = \SI{30}{N/m}$, $v = \SI{1}{m/s}$ (100 Å sliding).}
-      \label{fig:drag_Ff_100_K30_v1}
+      \includegraphics[width=\textwidth]{figures/baseline/drag_Ff_10Å_K10_v1.pdf}
+      \caption{$K = \SI{10}{N/m}$, $v = \SI{1}{m/s}$ (100 Å sliding).}
+      \label{fig:drag_Ff_10_K10_v1}
   \end{subfigure}
   \hfill
-     \caption{Friction force $F_\parallel$ with respect to the drag direction between (full) sheet and substrate versus sliding distance. The sliding distance is measured by the constant movement of the virtual atom and not the COM of the sheet. However, we expect these measures to be fairly identical due the fact that the pull blocks is rigidly coupled to the virtual atom. The red line represents a savgol filter with window polyorder 5 and window length of 150 timesteps (corresponding to a sliding distance of 3 Å or a time window of 15 ps).}
+     \caption{\hl{Update caption} Friction force $F_\parallel$ with respect to the drag direction between (full) sheet and substrate versus sliding distance. The sliding distance is measured by the constant movement of the virtual atom and not the COM of the sheet. However, we expect these measures to be fairly identical due the fact that the pull blocks is rigidly coupled to the virtual atom. The red line represents a savgol filter with window polyorder 5 and window length of 150 timesteps (corresponding to a sliding distance of 3 Å or a time window of 15 ps).}
      \label{fig:drag_Ff}
 \end{figure}
 
@@ -307,13 +324,13 @@ motion is associated with a low speed, meaning that is more reminiscent of a ``s
 \end{figure}
 
 
-\section{Defining metrics for dynamic and static friction}\label{sec:def_dyn_and_stat}
+\section{Defining metrics for kinetic and static friction}\label{sec:def_dyn_and_stat}
 
-In order to evaluate the frictional properties of the sheet we aim to reduce the force trace results adressed in section \cref{sec:single_analysis} into single metrics describing the dynamic and static friciton. 
+In order to evaluate the frictional properties of the sheet we aim to reduce the force trace results adressed in section \cref{sec:single_analysis} into single metrics describing the kinetic and static friciton. 
 % The common choice is to use the mean and max values of the time series. 
 
-\subsection{Dynamic friction} 
-For the dynamic friction measurement we take the mean value of the latter half
+\subsection{Kinetic friction} 
+For the kinetic friction measurement we take the mean value of the latter half
 of the dataset to ensure that we are sampling from a stable system. For a full
 sliding simulation of 400 Å we thus base our mean value on the latter 200 Å (1000 ps) of
 sliding. In \cref{fig:runmean} we have shown the force trace for the
@@ -328,12 +345,6 @@ in section \cref{sec:force_oscillations} we found the longest significant
 oscillation period to be $\sim 71$ Å$^{-1}$ corresponding to $\sim 35 \%$ of the
 running mean window which have a window length of 200 Å when including all the data. Hence, we use the standard deviation of the final 35\% of the running mean to approximate the
 uncertainty of the final mean value. We consider the standard deviation as an estimate of the absolute error and calculate the relative error by a division of the final mean value. In \cref{fig:runstd} we showcase a running relative error based on the standard deviation, with a window of length $35 \%$ the mena window, in a continuation of the illustrative case of a 10 Å sliding from \cref{fig:runmean}. In this case we get a high relative error of $\sim 257\%$ which alligns well with the short sampling period and the fact that this lead to the mean value taking an unphysical negative value. 
-
-%
-% WORKING HERE
-% WORKING HERE
-% WORKING HERE
-%
 
 \begin{figure}[H]
   \centering
@@ -355,7 +366,7 @@ uncertainty of the final mean value. We consider the standard deviation as an es
 \end{figure}
 
 
-When including the full dataset of 400 Å of sliding, such that std window actually matches with the longest period of oscillations expected from the data, we get a final relative error of $\sim 12 \%$ as shown in fig \cref{fig:runstd_long}. This is arguable just at the limit for an acceptable error, but as we shall see later (\hl{Make a reference to fig or sec}) this high relative error is mainly connected to the cases of low friction. When changing the simulation parameters, such that the mean friction evaluates to considerable higher values, the relative error drops to the order (\hl{put in numbers}). One interpration of this finding is simply that the oscialltiosn in the running mean is somewhat independent of the magnitude of the friction. In that case, the relative error will spike for the low friction cases. 
+When including the full dataset of 400 Å of sliding, such that the std window actually matches with the longest period of oscillations expected from the data, we get a final relative error of $\sim 12 \%$ as shown in fig \cref{fig:runstd_long}. This is arguable just at the limit for an acceptable error, but as we shall see later on in \cref{sec:load_and_stretch} this high relative error is mainly associated with the cases of low friction. When investigating different configurations under variation of load and stretch we see a considerable lower relative error as the mean friction evaluates to higher values. One interpration of this finding is simply that the oscialltiosn in the running mean not strongly dependent of the magnitude of the friction. In that case, the relative error will spike for the low friction cases, and the absolute error might be there more reliable measure.
 
 
 \begin{figure}[H]
@@ -367,41 +378,39 @@ When including the full dataset of 400 Å of sliding, such that std window actua
 
 
 \subsection{Static friction} 
-The max value is the most obvious choice for adressing the static friction, even
-though that the definition of the static friction is a bit vague. When
-considering the friction force time series in \cref{fig:drag_Ff} we
-observe that the stick-slip oscillations increase in magnitude toward a global
-peak at $\sim \SI{20}{\text{Å}}$. Thus, we could identify this peak as the
-static friction force, but the global max does in fact rarely fall within the
-first part of the sliding. In \cref{fig:max_dist} we investigate the top
-three max value, at which sliding distance they accour and at what magnitude,
-for 30 uniformly sampled normal forces in the interval $[0.1, 10]$ nN. It is
-immediately clear that only few of the peaks falls within the ``beginning'' of
-the simulation defined by the slowest significant oscialltion period of $71\pm
-\SI{15}{\text{Å}}$. In fact only 2/30 global values and 4/90 top three values
+The maximum value is probably the most obvious choice for adressing the static friction, even though the definition of the static friction is a bit vague. When
+considering the force traces in \cref{fig:drag_Ff} we observe that the force oscillations increase in magnitude toward a global peak at $\sim \SI{20}{\text{Å}}$. Thus, one could be inclined to identify this peak as the
+maximum value aassociated with friction force. However, as we have already clarified, this steady increase in friction is a part of a slower oscillation which repeats by a period of $\sim 71$ Å$^{-1}$. By plotting the top three max values recorded during a full 400 Å simulation, for 30 logaritmicly spaced load values in the range $[0.1, 100]$ nN, we observe that the global max in fact rarely fall within this first oscillation period as shown in \cref{fig:max_dist}. Only 2/30 global values and 4/90 top three values 
 can be associated to the start of the sliding by this definition. Thus, this
-result suggest that the max value cannot be used as a reliable measure for the
-static friction either due to its lack of presence or due to the simulation
-setup procedure. For a more typycal evaluation of the static friction force one
-would increase force slowly until the first slip significant slip is recorded (a
-series of precursors is expected to precede this). In our simulations we drag
-the sheet relatively fast in a rigid manner which might be the reason for the lacking the static friction. Bonelli et al.\ \cite{bonelli_atomistic_2009} reported that the stick-slip behaviour was only presented when using a relatively soft spring. Thus, by changing the spring constant we investigate possibility to observe a static friction (\hl{I kind of interchanged stick-slip and static friction int his argument, but I still think it can be used to argue for doing the test...}) response within the framework of our simulation procedure as shown in
-\cref{fig:max_vs_K}. However, the results do not indicate any implications
-that a recognizable domain exist for which the static friction response would be
-reliable. Hence, we will base the final assesment on frictional properties
-purely on the dynamic friction force. 
+result suggest that we can not really measure a significant static friction response in the sense of an initial increase in friction due to a depinning of the sheet from the static state. A possible approach to increase the likelihood of seeing a significant static friction response is by extending the relaxtion period, as static friction is theorized to increase logaritmic with time, and to increase the sliding force slowly and through a soft spring. As an attempt to test parts of this hypothesis we ran a series of simulations with varying spring constant, $K\in [?, 200]$ nN (and $\inf$), but keeping the relaxtion time and sliding speed at the default value. The result is shown in \cref{fig:max_vs_K}, but we did not find any signs of the maximum value falling within the first oscillation period for low spring constants. Due to the ambiguousness in the assesment of the static friction we will mainly consern ourselves with the kinetic friction in this study.
 
 
-\begin{figure}
+
+% In most numerical studies \cite{bonelli_atomistic_2009, zhu_study_2018} they define static friction as the max peak or top 5\% quantile throughout the simulation and do not consern themselves with a requirement for an initial increasement toward this max. Thus, we interpret this as a measure of the force oscillation magnitude which is highly related to the stick-slip behaviour. 
+
+
+
+% that the max value cannot be used as a reliable measure for the
+% static friction either due to its lack of presence or due to the simulation
+% setup procedure. For a more typycal evaluation of the static friction force one
+% would increase force slowly until the first slip significant slip is recorded (a
+% series of precursors is expected to precede this). In our simulations we drag
+% the sheet relatively fast in a rigid manner which might be the reason for the lacking the static friction. Bonelli et al.\ \cite{bonelli_atomistic_2009} reported that the stick-slip behaviour was only presented when using a relatively soft spring. Thus, by changing the spring constant we investigate possibility to observe a static friction (\hl{I kind of interchanged stick-slip and static friction int his argument, but I still think it can be used to argue for doing the test...}) response within the framework of our simulation procedure as shown in
+% \cref{fig:max_vs_K}. However, the results do not indicate any implications
+% that a recognizable domain exist for which the static friction response would be
+% reliable. Hence, we will base the final assesment on frictional properties purely on the kinetic friction force. 
+
+
+\begin{figure}[H]
   \centering
-  \begin{minipage}[t]{.47\textwidth}
+  \begin{minipage}{.47\textwidth}
     \centering
     \includegraphics[width=\linewidth]{figures/baseline/max_dist.pdf}
     \captionof{figure}{Distribution of top three max friction force peaks for 30 uniformly sampled normal forces $F_N \in [0.1, 10]$ nN. The dotted line and the grey area marks the slowest significant oscialltion period found in the data and thus marking a dividing line for whether a peak falls within the ``beginning'' of the sliding simulation.}
     \label{fig:max_dist}
   \end{minipage}%
   \hspace{0.2cm}
-  \begin{minipage}[t]{.48\textwidth}
+  \begin{minipage}{.48\textwidth}
     \centering
     \includegraphics[width=\linewidth]{figures/baseline/max_vs_K}
     \captionof{figure}{Sliding displacement for the max friction peak to appear as a function of spring constant. \hl{Fixmove is tmp mapped to K = 200 here without any discontinuous lines.}}
@@ -541,7 +550,7 @@ the cutted sheets are stretched.
 
 \section{Investigating selected parmeters}
 
-We investigate the importance of the physical variables $T$, $v_{\text{slide}}$ and $K$ (\hl{make plots for scan angle as well?}) and the choice of timestep $dt$. This is done partly understand how the dependencies relate to theoretical, numerical and experimerimental results, and partly to understand how these parameter choices defines the regime for our multi configurational search. We use the default parameters in \cref{tab:final_param} with exception of the single parameter of interest which is varied in a reasonable range of the default choice. In \cref{fig:var_temp}-\cref{fig:var_dt} the dynamic friction estimate and the max friction force is shown as a function of $T$, $v_{\text{slide}}$, $K$ and $dt$ respectively. For the dynamic friction estimate the absolute error is denoted by a shaded error which linearly connects the points.
+We investigate the importance of the physical variables $T$, $v_{\text{slide}}$ and $K$ (\hl{make plots for scan angle as well?}) and the choice of timestep $dt$. This is done partly understand how the dependencies relate to theoretical, numerical and experimerimental results, and partly to understand how these parameter choices defines the regime for our multi configurational search. We use the default parameters in \cref{tab:final_param} with exception of the single parameter of interest which is varied in a reasonable range of the default choice. In \cref{fig:var_temp}-\cref{fig:var_dt} the kinetic friction estimate and the max friction force is shown as a function of $T$, $v_{\text{slide}}$, $K$ and $dt$ respectively. For the kinetic friction estimate the absolute error is denoted by a shaded error which linearly connects the points.
 
 
 \begin{figure}[H]
@@ -549,7 +558,7 @@ We investigate the importance of the physical variables $T$, $v_{\text{slide}}$ 
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/variables_temp_mean_fixmove_v20.pdf}
-      \caption{Dynamic friction force estimate.}
+      \caption{kinetic friction force estimate.}
       \label{fig:var_temp_mean}
   \end{subfigure}
   \hfill
@@ -571,7 +580,7 @@ We investigate the importance of the physical variables $T$, $v_{\text{slide}}$ 
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/variables_vel_mean_fixmove.pdf}
-      \caption{Dynamic friction force estimate.}
+      \caption{kinetic friction force estimate.}
       \label{fig:var_vel_mean}
   \end{subfigure}
   \hfill
@@ -593,7 +602,7 @@ We investigate the importance of the physical variables $T$, $v_{\text{slide}}$ 
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/variables_spring_mean_fixmove.pdf}
-      \caption{Dynamic friction force estimate.}
+      \caption{kinetic friction force estimate.}
       \label{fig:var_K_mean}
   \end{subfigure}
   \hfill
@@ -615,7 +624,7 @@ We investigate the importance of the physical variables $T$, $v_{\text{slide}}$ 
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/variables_dt_mean_fixmove.pdf}
-      \caption{Dynamic friction force estimate.}
+      \caption{kinetic friction force estimate.}
       \label{fig:var_dt_mean}
   \end{subfigure}
   \hfill
@@ -635,12 +644,12 @@ Quick thoughts:
 \begin{itemize}
   \item Temperature: We do clearly not see the $1/T$ temperature decrease. The non-cut sheet seems to showcase a lienar relationship which is also somewaht present for the honeycomb which matches some of the findings in other MD simulations. For the popup we do see a local decrease at low temperatures which flip at around the default $T = \SI{300}{K}$ temperature. The max friction peaks seem to increase with temperatur as well indicating that the peaks might be associated with thermal fluctuations rather than actual stick-slip behaviour. This supports the finding that the static friction response is not significantly present in these simulations. 
   \item Velcotiy: Considering the non-cut sheet first the velocity dependency is seemingly linear which deviates from the expected logaritmic trend. For the cutted configurations we find some peaks which might indicate the presence of resonance frequencies. The cutted sheet might be closer to a logaritmic trend, but this is not spot on either. The max friction seems to decrease slightly with small velcoties and then stay rather constant. This can probably be explained by the reduced time to stick between stick slip. 
-  \item Spring constant: On all three configurations the dynamic friction decreases with an increasing spring constant. The best explanations might be due to the lack of freedom to ``get stuck'' in incommensurable configurations. We also notice that the friction varies a lot at lower spring constants supporting the choice of having a stiff spring for stability reasons. Especially the non-cut sheet peaks at $K = \SI{40}{N/m}$. The max friction seem to be constant with $K$.
-  \item $dt$: The dynamic friction is relatively stable around the default choice of $dt = \SI{1}{fs}$. However, the fluctuations with respect to $dt$ is more significant for popup pattern and even more for the honeycomb pattern. This indicates that the more complex dynamics of the simulation is more sensitive to the timestep. We might interpret this information as an additional measure of uncertainty. The maximum friction decreases with increasing timestep which can be asserted a statistical interpretation: Higher peaks will be captured by the high resolution of a low $dt$ and vice versa. The high max values towards the point of $dt = \SI{2}{fs}$ is most likely due to the approach of unstability in the simulation as seen more clearly for the dynamic friction evaluation. 
+  \item Spring constant: On all three configurations the kinetic friction decreases with an increasing spring constant. The best explanations might be due to the lack of freedom to ``get stuck'' in incommensurable configurations. We also notice that the friction varies a lot at lower spring constants supporting the choice of having a stiff spring for stability reasons. Especially the non-cut sheet peaks at $K = \SI{40}{N/m}$. The max friction seem to be constant with $K$.
+  \item $dt$: The kinetic friction is relatively stable around the default choice of $dt = \SI{1}{fs}$. However, the fluctuations with respect to $dt$ is more significant for popup pattern and even more for the honeycomb pattern. This indicates that the more complex kinetics of the simulation is more sensitive to the timestep. We might interpret this information as an additional measure of uncertainty. The maximum friction decreases with increasing timestep which can be asserted a statistical interpretation: Higher peaks will be captured by the high resolution of a low $dt$ and vice versa. The high max values towards the point of $dt = \SI{2}{fs}$ is most likely due to the approach of unstability in the simulation as seen more clearly for the kinetic friction evaluation. 
 \end{itemize}
 
 
-\section{Normal force and stretch dependencies}
+\section{Normal force and stretch dependencies}\label{sec:load_and_stretch}
 Till this point we have only changed variables one by one to investigate single dependencies. We now advance the sutdy to a simultaneous variation of stretch and normal force.
 
 \hl{Explain how the stretch is uniformly sampled within equally divided intervals and the normal force is actually uniformly sampled in a given range. Argue that the first might be approximately uniformly distributed for large numbers.}
@@ -659,12 +668,12 @@ We reproduce the contact area investigation of \cref{fig:contact_vs_stretch} wit
   \label{fig:multi_stretch_contact}
 \end{figure}
 
-From \cref{fig:contact_vs_stretch} we observe a significant decrease in the contact due to stretching of the cut configurations in contrast to the non-cut which stays roughly constant. This is reminiscent of the non-sliding stretch vs. contact curve shown in \cref{fig:contact_vs_stretch}. Given these results, theoretically one would expect the dynamic friction to decrease with stretch for the cut configurations.
+From \cref{fig:contact_vs_stretch} we observe a significant decrease in the contact due to stretching of the cut configurations in contrast to the non-cut which stays roughly constant. This is reminiscent of the non-sliding stretch vs. contact curve shown in \cref{fig:contact_vs_stretch}. Given these results, theoretically one would expect the kinetic friction to decrease with stretch for the cut configurations.
 
 
 \subsection{Stretch} 
 
-We make a similar analysis as done in the previous section \cref{sec:contact_area} with the substitution of friction force instead of contact (The data is taken from the same simulaitons runs). The dynamic friction force (\hl{put uncertainty here even though that it is quite low?}) and the max friction is shown in \cref{fig:multi_stretch_mean_fric} and \cref{fig:multi_stretch_max_fric} respectively.
+We make a similar analysis as done in the previous section \cref{sec:contact_area} with the substitution of friction force instead of contact (The data is taken from the same simulaitons runs). The kinetic friction force (\hl{put uncertainty here even though that it is quite low?}) and the max friction is shown in \cref{fig:multi_stretch_mean_fric} and \cref{fig:multi_stretch_max_fric} respectively.
 
 
 
@@ -673,7 +682,7 @@ We make a similar analysis as done in the previous section \cref{sec:contact_are
   \begin{subfigure}[t]{\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/multi_stretch_mean_compare.pdf}
-      \caption{Dynamic friction estimate. }
+      \caption{kinetic friction estimate. }
       \label{fig:multi_stretch_mean_fric}
   \end{subfigure}
   \hfill
@@ -690,7 +699,7 @@ We make a similar analysis as done in the previous section \cref{sec:contact_are
 
 
 From \cref{fig:multi_stretch_mean_fric} we find to our surprise that the
-dynamic friction increase with stretch for the cut configurations despite a
+kinetic friction increase with stretch for the cut configurations despite a
 simmutaneous decrease in contact area as shown in figure
 \cref{fig:multi_stretch_contact}. This suggests that the amount of chemical
 bonding atoms is not the dominant mechanism for the friction of this system.
@@ -702,11 +711,11 @@ results showcase a strong coupling between stretch and friction force, also for
 the max friction force, which is beyond the expectations at this stage of the
 study. The non-cut configuration does not show significant dependency on the stretch which reveal that this effect is only present when combining cut and stretch and not purely by strecthing the sheet. 
 
-By considering the increase in dynamic friction towards the first peak we get a relative friction increase and increase vs. stretch ratios as described in \cref{tab:first_peak_stretch}. While the honeycomb force increase towards the first peak is approximately linear the popup exhibits seemingly exponential growth which yield a slope on the order $\sim \SI{30}{nN}$. 
+By considering the increase in kinetic friction towards the first peak we get a relative friction increase and increase vs. stretch ratios as described in \cref{tab:first_peak_stretch}. While the honeycomb force increase towards the first peak is approximately linear the popup exhibits seemingly exponential growth which yield a slope on the order $\sim \SI{30}{nN}$. 
 
 \begin{table}[H]
   \begin{center}
-  \caption{(stretch, dynamic friction) coordinates from \cref{fig:multi_stretch_mean_fric} at start and the first peak respectively used to approximate the relative increase in friction force and the ratio for friction increaese vs. stretch for sait range. In practice  the latter ratio denotes the slope of a forced linear trend. }
+  \caption{(stretch, kinetic friction) coordinates from \cref{fig:multi_stretch_mean_fric} at start and the first peak respectively used to approximate the relative increase in friction force and the ratio for friction increaese vs. stretch for sait range. In practice  the latter ratio denotes the slope of a forced linear trend. }
   \label{tab:first_peak_stretch}
   \begin{tabular}{ | c | c | c | c | c |} \hline
   Configuration & Start & First peak & Relative increase & Friction force vs. stretch ratio [nN]  \\ \hline
@@ -716,7 +725,7 @@ By considering the increase in dynamic friction towards the first peak we get a 
   \end{center}
 \end{table}
 
-Additionally, we notice that booth the popup and honeycomb also exhibits stretch ranges where the dynamic friction force decrease with increasing stretch. Qualitatively we assign the slope to be on the same order of magnitude as those towrds the first peak. This is useful for the prospect of taking advantage of this phenonama as we can essentially achieve booth higher and lower friction for increasing stretch for different starting points. 
+Additionally, we notice that booth the popup and honeycomb also exhibits stretch ranges where the kinetic friction force decrease with increasing stretch. Qualitatively we assign the slope to be on the same order of magnitude as those towrds the first peak. This is useful for the prospect of taking advantage of this phenonama as we can essentially achieve booth higher and lower friction for increasing stretch for different starting points. 
 
 
 \subsection{Normal force}

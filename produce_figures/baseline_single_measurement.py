@@ -39,8 +39,9 @@ def raw_data(filename, save = False):
     add_xaxis(plt.gca(), x = VA_pos[map], xnew = time[map], xlabel = 'Time [ps]', decimals = 0, fontsize = 14)
     plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
     if save:
-        plt.savefig('../article/figures/baseline/drag_Ff_10Å.pdf', bbox_inches='tight')
-        # plt.savefig('../article/figures/baseline/drag_Ff_10Å_K30_v1.pdf', bbox_inches='tight')
+        # plt.savefig('../article/figures/baseline/drag_Ff_10Å.pdf', bbox_inches='tight')
+        # plt.savefig('../article/figures/baseline/drag_Ff_10Å_K10_v1.pdf', bbox_inches='tight')
+        pass
     
     
     # --- Figure 2 --- #
@@ -56,9 +57,9 @@ def raw_data(filename, save = False):
     add_xaxis(plt.gca(), x = VA_pos[map], xnew = time[map], xlabel = 'Time [ps]', decimals = 0, fontsize = 14)
     plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
     if save:
-        plt.savefig('../article/figures/baseline/drag_Ff_100Å.pdf', bbox_inches='tight')
+        # plt.savefig('../article/figures/baseline/drag_Ff_100Å.pdf', bbox_inches='tight')
         # plt.savefig('../article/figures/baseline/drag_Ff_100Å_K30_v1.pdf', bbox_inches='tight')
-    
+        pass
     
 
 
@@ -368,8 +369,11 @@ def max_values(folder, save = False):
     
     topn = 3
     
-    maxsize = 200
-    minsize = 50
+    # maxsize = 200
+    # minsize = 50
+    markers = ['o', 'v', 'D']
+    sizes = [200, 100, 25]
+    
     cmap = matplotlib.cm.viridis
     colorbar_scale = 'log'
     
@@ -429,21 +433,20 @@ def max_values(folder, save = False):
     
     argsort = np.argsort(argtop, axis = 1)
     
-    # Relative to max
-    # Ffmax = Ffmax / Ffmax[:, 0][:, np.newaxis]
-    
+   
     
     plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
     for i in range(len(F_N)):
         color = get_color_value(F_N[i], np.min(F_N), np.max(F_N), scale = colorbar_scale, cmap = cmap)  
                
+        # for n in reversed(range(len(argtop[i]))):
         for n in range(len(argtop[i])):
-            size = minsize + (topn-n)*(maxsize-minsize)/topn
-            plt.scatter(argtop[i ,n], Ffmax[i ,n], marker=f'${n+1}$', s = size, color = color)
-            plt.plot()
+            # size = minsize + (topn-n)*(maxsize-minsize)/topn
             # plt.scatter(argtop[i ,n], Ffmax[i ,n], marker=f'${n+1}$', s = size, color = color)
-            # plt.scatter(argtop[i ,n], topn-n, marker=f'${n+1}$', s = size, color = color)
-        
+            
+            
+            plt.scatter(argtop[i ,n], Ffmax[i ,n], marker=markers[n], s = sizes[n], alpha = 1, color = color, edgecolor = 'black', zorder = n)
+            
         # Plot connections
         plt.plot(argtop[i][argsort[i]], Ffmax[i][argsort[i]], '--', linewidth = 0.5, alpha = 0.2, color = color, zorder = 0)
     
@@ -451,14 +454,21 @@ def max_values(folder, save = False):
     if colorbar_scale == 'linear':
         norm = matplotlib.colors.BoundaryNorm(F_N, cmap.N)
     elif colorbar_scale == 'log':
-        norm = matplotlib.colors.LogNorm(F_N[0], F_N[-1])
+        norm = matplotlib.colors.LogNorm(np.min(F_N), np.max(F_N))
     else:
         exit(f'scale = \'{colorbar_scale}\' is not defined.')
    
    
-    print(np.shape(argtop))
-   
-    vline(plt.gca(), 71, linestyle = '--', color = 'black', linewidth = 1, zorder = 0, label = "Slow period $= 71 \pm 15$ Å")
+    # vline(plt.gca(), 71, linestyle = '--', color = 'black', linewidth = 1, zorder = 0, label = "Slow period $= 71 \pm 15$ Å")
+    vline(plt.gca(), 71, linestyle = '--', color = 'black', linewidth = 1, zorder = 0, label = "$71 \pm 15$ Å")
+    
+     # Add scatter legend
+    for n in range(argtop.shape[1]):
+        plt.scatter([], [], color = 'grey', marker = markers[n], s = sizes[n], label = f'{n+1}')
+    # h, l = ax.get_legend_handles_labels()
+    # legend = ax.legend(h, l, loc='upper right',  handletextpad=0.00, fontsize = 13)
+    # legend.set_title("Depth", {'size': 13})
+    
     
     ax = plt.gca()
     xlim = ax.get_xlim()
@@ -530,28 +540,32 @@ def maxarg_vs_K(dirs, save = False):
 
 
 if __name__ == '__main__':
+    path = '../Data/Baseline'
     # filename = os.path.join(path,'nocut/temp/T300/system_2023-01-17_Ff.txt')
     # filename = os.path.join(path,'nocut/vel/v1/system_v1_Ff.txt')
-    path = '../Data/Baseline_fixmove' # XXX
-    filename = os.path.join(path,'nocut/temp/T300/system_T300_Ff.txt') # XXX
+    filename = os.path.join(path,'nocut/special/v1/system_v1_Ff.txt')
+    
+    # path = '../Data/Baseline_fixmove' # XXX
+    # filename = os.path.join(path,'nocut/temp/T300/system_T300_Ff.txt') # XXX
     # filename = os.path.join(path,'nocut/spring/K10/system_K10_Ff.txt')
-    # raw_data(filename, save = False)
+    
+    
+    raw_data(filename, save = False)
     # ft(filename, save = False)
     # decomp(filename, save = False)
     # COM(filename, save = False)
-    mean_values(filename, save = False)
-    plt.show()
-    exit()
+    # mean_values(filename, save = False)
+    # plt.show()
     
     #############################################
     
     # folder = os.path.join(path,'nocut/multi_stretch/stretch_15001_folder')
-    folder = os.path.join(path,'nocut/multi_FN/stretch_15001_folder')
-    max_values(folder, save = True)
+    # folder = os.path.join(path,'nocut/multi_FN/stretch_15001_folder')
+    # max_values(folder, save = True)
     
     
-    path = '../Data/Baseline_fixmove'
-    files = get_dirs_in_path(os.path.join(path, 'nocut/spring'))
+    # path = '../Data/Baseline_fixmove'
+    # files = get_dirs_in_path(os.path.join(path, 'nocut/spring'))
     # maxarg_vs_K(files, save = False)
     
     
