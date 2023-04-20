@@ -19,7 +19,6 @@ def raw_data(filename, save = False):
     time = data['time'] - data['time'][0]
     VA_pos = time * info['drag_speed']  # virtual atom position
     Ff = data[f'Ff_full_sheet'][:,0]
-    
  
     # --- Figure 1 --- #
     # (VA_pos, Ff full sheet parallel) | drag length = 10 Å
@@ -31,6 +30,8 @@ def raw_data(filename, save = False):
     plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
     plt.plot(VA_pos[map], Ff[map], label = "Raw data")
     plt.plot(VA_pos[map], Ff_savgol[map], label = f"Savgol filter")
+    # plt.plot(VA_pos[map], data[f'move_force'][:,0][map], label = f"Moving body force") # XXX
+    
     plt.xlabel(r'Sliding distance [Å]', fontsize=14)
     plt.ylabel(r'Friction force $F_\parallel$ [nN]', fontsize=14)
     plt.legend(loc = 'lower left', fontsize = 13)
@@ -39,6 +40,7 @@ def raw_data(filename, save = False):
     plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
     if save:
         plt.savefig('../article/figures/baseline/drag_Ff_10Å.pdf', bbox_inches='tight')
+        # plt.savefig('../article/figures/baseline/drag_Ff_10Å_K30_v1.pdf', bbox_inches='tight')
     
     
     # --- Figure 2 --- #
@@ -55,6 +57,7 @@ def raw_data(filename, save = False):
     plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
     if save:
         plt.savefig('../article/figures/baseline/drag_Ff_100Å.pdf', bbox_inches='tight')
+        # plt.savefig('../article/figures/baseline/drag_Ff_100Å_K30_v1.pdf', bbox_inches='tight')
     
     
 
@@ -319,11 +322,11 @@ def mean_values(filename, save = False):
     
     
     plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
-    plt.plot(VA_pos[map], runmean_std, label = "Running std", color = color_cycle(2))
-    plt.plot(VA_pos[map][-1], runmean_std[-1], 'o', label = f'Final std = {runmean_std[-1]:.3f}', color = color_cycle(2))
+    plt.plot(VA_pos[map], runmean_std, color = color_cycle(2))
+    plt.plot(VA_pos[map][-1], runmean_std[-1], 'o', label = f'Final estimate = {runmean_std[-1]:.3f}', color = color_cycle(2))
   
     plt.xlabel(r'Sliding distance [Å]', fontsize=14)
-    plt.ylabel(r'Running std / final running mean', fontsize=14)
+    plt.ylabel(r'Running rel. error', fontsize=14)
     plt.legend(fontsize = 13)
     
     add_xaxis(plt.gca(), x = VA_pos[map], xnew = time[map], xlabel = 'Time [ps]', decimals = 0, fontsize = 14)
@@ -343,11 +346,11 @@ def mean_values(filename, save = False):
     
     
     plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
-    plt.plot(VA_pos, runmean_std, label = "Running std", color = color_cycle(2))
-    plt.plot(VA_pos[-1], runmean_std[-1], 'o', label = f'final std = {runmean_std[-1]:.3f}', color = color_cycle(2))
+    plt.plot(VA_pos, runmean_std, color = color_cycle(2))
+    plt.plot(VA_pos[-1], runmean_std[-1], 'o', label = f'Final estimate = {runmean_std[-1]:.3f}', color = color_cycle(2))
   
     plt.xlabel(r'Sliding distance [Å]', fontsize=14)
-    plt.ylabel(r'Running std / final running mean', fontsize=14)
+    plt.ylabel(r'Running rel. error', fontsize=14)
     plt.legend(fontsize = 13)
     
     add_xaxis(plt.gca(), x = VA_pos, xnew = time, xlabel = 'Time [ps]', decimals = 0, fontsize = 14)
@@ -527,17 +530,18 @@ def maxarg_vs_K(dirs, save = False):
 
 
 if __name__ == '__main__':
-    # path = '../Data/Baseline'
     # filename = os.path.join(path,'nocut/temp/T300/system_2023-01-17_Ff.txt')
-   
-    path = '../Data/Baseline_fixmove'
-    filename = os.path.join(path,'nocut/temp/T300/system_T300_Ff.txt')
+    # filename = os.path.join(path,'nocut/vel/v1/system_v1_Ff.txt')
+    path = '../Data/Baseline_fixmove' # XXX
+    filename = os.path.join(path,'nocut/temp/T300/system_T300_Ff.txt') # XXX
+    # filename = os.path.join(path,'nocut/spring/K10/system_K10_Ff.txt')
     # raw_data(filename, save = False)
     # ft(filename, save = False)
     # decomp(filename, save = False)
     # COM(filename, save = False)
-    # mean_values(filename, save = False)
-    
+    mean_values(filename, save = False)
+    plt.show()
+    exit()
     
     #############################################
     

@@ -119,58 +119,65 @@ we be the default values in the following study, i.e.\ when nothing is stated ex
 
 
 
-\newpage
-\section{Single friction simulation analysis}\label{sec:single_analysis}
-We begin by assessing the raw data for a single friction simulation using the default parameters shown in \cref{tab:final_param} for a non-cut sheet with no stretch applied and a  normal force of $\SI{1}{nN}$.
+% \newpage
+% Single friction simulation analysis
+\section{Force traces}\label{sec:single_analysis}
+We begin by assessing the force traces for a single friction simulation using the default parameters shown in \cref{tab:final_param} for a non-cut sheet with no stretch applied and a normal force of $\SI{1}{nN}$.
 
 
 \subsection{Force oscillations}\label{sec:force_oscillations}
-We evaluate the friction force by force acting on the sheet from the substrate.
-We initally look at the force friction force $F_{\parallel}$ parallel to the
-drag direction as seen in \cref{fig:drag_Ff}. The sample rate is 10 ps$^{-1}$ =
-100 timesteps$^{-1}$ for which each sample is the mean value of the 100
-timesteps preceding the given sample interval. We observe immediately that the
-data carriers oscillations on different time scales which matches the
-expectations for sliding between periodic surfaces. By applying a savgol filter
+We evaluate the friction force as the force acting on the sheet from the substrate. We consider initially the force componenet $F_{\parallel}$ parallel to the drag direction as plotted in \cref{fig:drag_Ff}. The sample rate is 10 ps$^{-1}$ = 100 timesteps$^{-1}$ for which each sample is the mean value of the preceding 100
+timesteps. We observe immediately that the
+data carriers oscillations on different time scales which matches our
+expectations for sliding on periodic surfaces. By applying a savgol filter
 to the data with a polyorder of 5 and window length of 150 timesteps,
 corresponding to a sliding distance of 3 Å or a time window of 15 ps, we can
 qualitatively point out at least two different frequencies of osccilation.
-During the first 10 Å of sliding in \cref{fig:drag_Ff_10} we see roughly three waves on the savgol filter corresponding to a relative high frequency, while on the scale of 100 Å of sliding in \cref{fig:drag_Ff_100} the same savgol filter reveals an lower frequency in addition, creating the visual pattern of a wavepacket.
-
-%%% WORKING HERE
-%%% WORKING HERE
-%%% WORKING HERE
-%%% WORKING HERE
+During the first 10 Å of sliding in \cref{fig:drag_Ff_10} we see roughly three waves on the savgol filter corresponding to a relative high frequency, while on the scale of 100 Å of sliding in \cref{fig:drag_Ff_100} the same savgol filter reveals a lower frequency on top, creating the visual pattern of a wavepacket. The data does not indicate clear signs of stick-slip behaviour as otherwise found in other studies, e.g.\ by Zhu and Li  \cite{zhu_study_2018} for graphene on gold, who saw a more typical saw tooth shape in the force trace. \hl{submitted run to ensure that we match Zhu and Li's condition. However, if they look like the ones for K = 30 N/m and 1 m/s we do not see the stick-slip behaviour really.}
 
 \begin{figure}[H]
   \centering
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/drag_Ff_10Å.pdf}
-      \caption{Drag length of 10 Å.}
+      \caption{$K = \inf$, $v = \SI{20}{m/s}$ (10 Å sliding).}
       \label{fig:drag_Ff_10}
   \end{subfigure}
   \hfill
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/drag_Ff_100Å.pdf}
-      \caption{Drag length of 100 Å.}
+      \caption{$K = \inf$, $v = \SI{20}{m/s}$ (100 Å sliding).}
       \label{fig:drag_Ff_100}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/baseline/drag_Ff_10Å_K30_v1.pdf}
+      \caption{$K = \SI{30}{N/m}$, $v = \SI{1}{m/s}$ (10 Å sliding).}
+      \label{fig:drag_Ff_10_K30_v1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/baseline/drag_Ff_100Å_K30_v1.pdf}
+      \caption{$K = \SI{30}{N/m}$, $v = \SI{1}{m/s}$ (100 Å sliding).}
+      \label{fig:drag_Ff_100_K30_v1}
   \end{subfigure}
   \hfill
      \caption{Friction force $F_\parallel$ with respect to the drag direction between (full) sheet and substrate versus sliding distance. The sliding distance is measured by the constant movement of the virtual atom and not the COM of the sheet. However, we expect these measures to be fairly identical due the fact that the pull blocks is rigidly coupled to the virtual atom. The red line represents a savgol filter with window polyorder 5 and window length of 150 timesteps (corresponding to a sliding distance of 3 Å or a time window of 15 ps).}
      \label{fig:drag_Ff}
 \end{figure}
 
-By performing a Fourier Transform (FT) on the data we can quantify the leading frequencies as seen in \cref{fig:ft_a}. By plotting the two most dominant frequencies $f_1 = 0.0074$ ps$^{-1}$ and $f_2 = 0.0079$ ps$^{-1}$ as $\sin{(2\pi f_1)} + \sin{(2\pi f_2)}$ we find a qualitatively convincing fit to the observed wavepacket shape as seen in \cref{fig:ft_b}. By using the trigonometric identity
+By performing a Fourier Transform on the data (default parameters) we can quantify the leading frequencies observed in figure \cref{fig:drag_Ff_10} and \cref{fig:drag_Ff_100}. The Fourier transform is shown in \cref{fig:ft_a}, and by plotting the two most dominant frequencies $f_1 = 0.0074$ ps$^{-1}$ and $f_2 = 0.0079$ ps$^{-1}$ as $\sin{(2\pi f_1)} + \sin{(2\pi f_2)}$ we find a qualitatively convincing fit to the observed wavepacket shape as seen in \cref{fig:ft_b}. By using the trigonometric identity
 \begin{align*}
-\sin (\alpha+\beta) &= \sin (\alpha) \cos (\beta) + \cos (\alpha) \sin (\beta), \\
-\sin (\alpha-\beta) &= \sin (\alpha) \cos (\beta) - \cos (\alpha) \sin (\beta),
+\sin (a+b) &= \sin (a) \cos (b) + \cos (a) \sin (b), \\
+\sin (a-b) &= \sin (a) \cos (b) - \cos (a) \sin (b),
 \end{align*}
-and decomposing $f_1 = a - b$, $f_2 = a + b$ we can rewrite the sine sum as the sinusoidal product
+and decomposing the frequencies as $f_1 = a - b$, $f_2 = a + b$, we can rewrite the sine sum as the sinusoidal product
 \begin{align*}
-  \sin(2\pi f_1) \sin(2\pi f_2) &= \sin\big(2\pi (a - b)\big) \sin\big(2\pi (a + b)\big) \\
-  &= \sin(a)\cos(b) + \cancel{\cos(2\pi a)\sin(2\pi b)} + \sin(2\pi a)\cos(2\pi b) - \cancel{\cos(2\pi a)\sin(2\pi b)} \\
+  \sin(2\pi f_1) + \sin(2\pi f_2) &= \sin\big(2\pi (a - b)\big) + \sin\big(2\pi (a + b)\big) \\
+  &= \sin(2\pi a)\cos(2\pi b) + \cancel{\cos(2\pi a)\sin(2\pi b)} + \sin(2\pi a)\cos(2\pi b) - \cancel{\cos(2\pi a)\sin(2\pi b)} \\
   &= 2 \sin(2\pi a) \cos(2\pi b),
 \end{align*} 
 
@@ -181,7 +188,21 @@ with
   &= 0.381 \pm \SI{0.003}{{\text{Å}}^{-1}},& 
   &= 0.014 \pm \SI{0.003}{{\text{Å}}^{-1}},& 
 \end{align*}
-where the latter frequency is denoted with respect to the sliding distance. This makes us recognize the high osccilation frequency as $a$ and the low frequency as $b$. The faster one has a period of $T_a = 2.62 \pm 0.02$ Å\footnote{The uncertainty $\Delta y$ is calculated as $\Delta y = \left|\frac{\partial y}{\partial x} \Delta x \right|$ for uncertainty $\Delta x$ and $y(x)$}. This corresponds well with the magnitude of the lattice spacing and especialy that of graphene at 2.46 Å as expected theoretically (make reference to theory section?). We also take note of the longest period $T_b = 71 \pm 15$ Å$^{-1}$ which will be relevant for the evaluation of measurement uncertainty in section \cref{sec:def_dyn_and_stat}.
+where the latter frequency is denoted with respect to the sliding distance. This
+makes us recognize the high osccilation frequency as $a$ and the low frequency
+as $b$. The faster one has a period of $T_a = 2.62 \pm 0.02$ Å\footnote{The
+uncertainty $\Delta y$ is calculated as $\Delta y = \left|\frac{\partial
+y}{\partial x} \Delta x \right|$ for uncertainty $\Delta x$ and $y(x)$}. This
+corresponds well with the magnitude of the lattice spacing and especialy that of
+graphene at 2.46 Å as expected theoretically. The longer period $T_b = 71 \pm
+15$ Å$^{-1}$ is not obviously explained. The build up in friction force is
+reminiscent of a friction strengthening, but the periodic oscillation does not
+really support this idea. Instead, we might attribute it to some kind of phonon
+resosnance which could be a physical phenonama or simply a feature of our
+\acrshort{MD} modelling. 
+% However, we take note of the longest period $T_b = 71
+% \pm 15$ Å$^{-1}$ which will be relevant for the evaluation of measurement
+% uncertainty in section \cref{sec:def_dyn_and_stat}.
 
 \begin{figure}[H]
   \centering
@@ -198,34 +219,36 @@ where the latter frequency is denoted with respect to the sliding distance. This
       \caption{Two most dominant frequencies applied to the data from \cref{fig:drag_Ff_100}}
       \label{fig:ft_b}
   \end{subfigure}
-  \caption{Fourier transform (FT) analysis of the full friction force data (all 400 Å sliding distance) shown in \cref{fig:drag_Ff}. (a) shows the two most dominant frequency peaks. Note that no significant peaks was found in a higher frequency than included here. (b) shows a comparison between the raw data and the wavefunction corresponding to the two peaks in figure (a).}
+  \caption{Fourier transform analysis of the full friction force data (all 400 Å sliding distance) shown in \cref{fig:drag_Ff}. (a) shows the two most dominant frequency peaks. Note that no significant peaks was found in a higher frequency than included here. (b) shows a comparison between the raw data and the wavefunction corresponding to the two peaks in figure (a).}
   \label{fig:ft}
 \end{figure}
 
 
 \subsection{Decompositions}
 In the previous analysis we have looked only at the friction force for the full
-sheet, including the pull blocks which is locked off during sliding, and with
-respect to the drag direction. This represents our choice measurement which we will adress in the following.
+sheet, including the rigid pull blocks, and with
+respect to the drag direction. We found this way of measuring the friction force to be the most reliable, but we will present the underlying arguments for this choice in the following.
 
-Due to the fact that we are only applying cuts to the inner sheet (excluding the
-pull blocks), it might seem more natural to only consider the friction on that
+Due to the fact that we are only applying cuts to the inner sheet, and not the
+pull blocks, it might seem more natural to only consider the friction on that
 part. If the desired frictional properties can be achieved by altering the inner
 sheet one can argue that any opposing effects from the pull blocks can be
 mitigated by scaling the relative size between the inner sheet and the pull
-blocks. However, when looking at the time series of the friction force
-decomposed with respect to the inner sheet and pull block region (see figure
-\cref{fig:decomp_group}), we observe the friction force arrising from those parts
-are seemingly antisymmetric. That is, the distribution of the fricitonal pull from the substrate on the sheet is
-oscillating between the inner sheet and the pull block. Keeping in mind that 
-normal force is only applied to the pull blocks we might take this as an
-integrated feature of the system which does not nessecary dissapear when changing the spatial ratio between inner sheet and pull block. Any interesting friciton properties might depend on this internal distribution of forces. Hence, we hedge our bets
-and use the full sheet friction force as a hollistic approach to this measurement
-problem.
+blocks. However, when looking at the force traces decomposed with respect to the
+inner sheet and pull block regions respectivly (see \cref{fig:decomp_group}), we
+observe that the friction force arrising from those parts are seemingly
+antisymmetric. That is, the distribution of the fricitonal pull from the
+substrate on the sheet is oscillating between the inner sheet and the pull
+block. Keeping in mind that normal force is only applied to the pull blocks we
+might take this as an integrated feature of the system which does not nessecary
+dissapear when changing the spatial ratio between inner sheet and pull block.
+Any interesting friciton properties might depend on this internal distribution
+of forces. Hence, we hedge our bets and use the full sheet friction force as a
+hollistic approach to avoid excluding relevant data in the measurements.
 
 Similar we might question the decision of
 only considering the frictional force projected onto the sliding direction as
-we are neglecting the ``side shift'' induced during the slide phase. In \cref{fig:decomp_direc} we see the decomposition into force components parallel $F_{\parallel}$ and perpendicular $F_{\perp}$ to the slide direction respectively. We see that the most dominant trends is projected into the parallel component. If we want to include the perpendicular component as well we would have to evaluate the friction as the length of the force vector for which we would lose the sign of the force direction. Hence, we would only get a positive contributin which would not be able to capture the change between resisting and assisting the sliding during stick-slip motion. One option to accommodate this is by using the vector length but keeping the sign from the projection parallel to the sliding direction. However, we omit such compromises as this might make analysis interpration more difficult, and we use only the parallel component going forward. 
+we are then neglecting the ``side shift'' induced during the slide phase. In \cref{fig:decomp_direc} we see the decomposition in terms of force components parallel $F_{\parallel}$ and perpendicular $F_{\perp}$ to the sliding direction respectively. We notice that the most dominant trend appears for the parallel component. If we want to include the perpendicular component as well we would have to evaluate friction as the length of the force vector instead. This would remove the sign of the force direction and skew the whole friction force above as we clearly see both negative and positive contributions in the force trace. One option to accommodate this issue is by using the vector length for the magnitude but keeping the sign from the parallel component. However, we omit such compromises as this might make the measurement interpretation unessercary complex, and we use only the parallel component going forward. 
 
 \begin{figure}[H]
   \centering
@@ -248,10 +271,12 @@ we are neglecting the ``side shift'' induced during the slide phase. In \cref{fi
 
 
 \subsection{Center of mass path}
+\hl{Go through here again when done with the stick-slip motion analysis.}
+
 From the previous observations of the friction force time series we see evidence
 of a stick-slip behvaiour. Specially, we see in \cref{fig:decomp_direc}
 that this might be the case both parallel and perpendicular to the sliding
-direction. By looking at the $x,y$-position for the sheet center of mass (COM)
+direction. By looking at the $x,y$-position for the sheet center of mass (COM) \hl{change to CM}
 we observe the stick-slip motion manifested as a variation in COM speed combinned
 with a side to side motion as shown in figure $\cref{fig:COM_path_K0}$. In an attempt to increase the magnitude of the slips we evaluate a similar simulation with spring contant $K = \SI{30}{N/m}$ (see figure
 \cref{fig:COM_path_K30}) in contrast to that of an infinte spring constant. While
@@ -284,18 +309,16 @@ motion is associated with a low speed, meaning that is more reminiscent of a ``s
 
 \section{Defining metrics for dynamic and static friction}\label{sec:def_dyn_and_stat}
 
-In order to evaluate the frictional properties of the sheet we reduce the comprehensive friction force time series adressed in section \cref{sec:single_analysis} into single metrics describing the dynamic and static friciton. The natural choice is to use the mean and max values of the time series. 
+In order to evaluate the frictional properties of the sheet we aim to reduce the force trace results adressed in section \cref{sec:single_analysis} into single metrics describing the dynamic and static friciton. 
+% The common choice is to use the mean and max values of the time series. 
 
 \subsection{Dynamic friction} 
 For the dynamic friction measurement we take the mean value of the latter half
-of the dataset to ensure that we are sample from a stable system. For a full
-sliding simulation of 400 Å we thus base our mean value on the latter 200 Å of
-sliding. In \cref{fig:runmean} we have shown the friction force of the
-first 10 Å of sliding together with a running mean with window length of 5 Å
-corresponding to 50\% the data length. This is merely done to illustrate the
-samplig procedure and by only using a 10 Å sliding distance the final mean
-estimate (indicated with a dot) takes a negative value due to the specific cut-off of the
-few oscialltion captured here. Nonetheless, one approach to quanity the
+of the dataset to ensure that we are sampling from a stable system. For a full
+sliding simulation of 400 Å we thus base our mean value on the latter 200 Å (1000 ps) of
+sliding. In \cref{fig:runmean} we have shown the force trace for the
+first 10 Å of sliding together with a 50\% running mean window with the value being plotted at the end of the window. This is merely done to illustrate the
+samplig procedure, and we see that for such a short sliding period the final mean estimate (marked with a dot) takes a negative value due to the specific cut-off of the few oscialltion captured here. Nonetheless, one approach to quanity the
 uncertainy of the final mean estimate is to consider the variation of the
 running mean preceeding the final mean value. The more the running mean
 fluctuates the more uncertainty associated with the final estimate. However, only the
@@ -303,10 +326,14 @@ running mean ``close'' to the ending should be considered, since the first part
 will rely on data from the beginning of the simulation. From the Fourier analyse
 in section \cref{sec:force_oscillations} we found the longest significant
 oscillation period to be $\sim 71$ Å$^{-1}$ corresponding to $\sim 35 \%$ of the
-running mean window consisting of 200 Å of slifing when including all the data.  Hence, we use the standard deviation of the final 35\% of the running mean to approximate the
-uncertainty of the final mean value, and we estimate the relative error by
-dividing the standard deviation by the final mean value. In \cref{fig:runstd} we showcase a running standard deviation of a window length $35 \%$ the running mean window in \cref{fig:runmean} for the illustrative case of a total 10 Å slide. The final uncertainty value is marked by a dot, and we see as expected that we get a high relative error of $\sim 257\%$ which corresponds well with the short sampling period and the mean value taking an unphysical negative value. 
+running mean window which have a window length of 200 Å when including all the data. Hence, we use the standard deviation of the final 35\% of the running mean to approximate the
+uncertainty of the final mean value. We consider the standard deviation as an estimate of the absolute error and calculate the relative error by a division of the final mean value. In \cref{fig:runstd} we showcase a running relative error based on the standard deviation, with a window of length $35 \%$ the mena window, in a continuation of the illustrative case of a 10 Å sliding from \cref{fig:runmean}. In this case we get a high relative error of $\sim 257\%$ which alligns well with the short sampling period and the fact that this lead to the mean value taking an unphysical negative value. 
 
+%
+% WORKING HERE
+% WORKING HERE
+% WORKING HERE
+%
 
 \begin{figure}[H]
   \centering
