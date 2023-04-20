@@ -582,17 +582,29 @@ if __name__ == "__main__":
     # mat = pop_up(shape = (62, 106), size = (5,3), sp = 1, ref = None)
     # mat = honeycomb(shape = (62, 106), xwidth = 1, ywidth = 1,  bridge_thickness = 1, bridge_len = 5, ref = None)
     
-    
-    mat = honeycomb(shape = (62, 106), xwidth = 1, ywidth = 4,  bridge_thickness = 5, bridge_len = 1, ref = (0,53))
+    # mat = honeycomb(shape = (62, 106), xwidth = 3, ywidth = 3,  bridge_thickness = 3, bridge_len = 3, ref = (12,0))
     # mat = pop_up(shape = (62, 106), size = (3, 1), sp = 1, ref = (0, 53))
     # mat = np.load('popup/pop1_3_1.npy')
     
+    mat = honeycomb(shape = (62, 106), xwidth = 3, ywidth = 3,  bridge_thickness = 3, bridge_len = 3, ref = (0,0))
     builder = config_builder(mat)
-    # builder.add_pullblocks()
+    builder.build()
+    builder.view()
+    mat = honeycomb(shape = (62, 106), xwidth = 3, ywidth = 3,  bridge_thickness = 3, bridge_len = 3, ref = (0,1))
+    builder = config_builder(mat)
+    builder.build()
+    builder.view()
+    mat = honeycomb(shape = (62, 106), xwidth = 3, ywidth = 3,  bridge_thickness = 3, bridge_len = 3, ref = (12,0))
+    builder = config_builder(mat)
+    builder.build()
+    builder.view()
+    mat = honeycomb(shape = (62, 106), xwidth = 3, ywidth = 3,  bridge_thickness = 3, bridge_len = 3, ref = (12,1))
+    builder = config_builder(mat)
     builder.build()
     builder.view()
     
     
+    # builder.add_pullblocks()
   
     # mat[:] = 1
     # mat[mat == 1] = 2

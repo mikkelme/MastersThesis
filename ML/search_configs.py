@@ -395,10 +395,10 @@ if __name__ == '__main__':
     # S.ref_search(param = (5, 3, 1), savename = 'ref_search/pop_5_3_1_ref_search')
     
     # Honeycomb
-    S = Search(model_name, topN = 5, pattern = honeycomb)
-    S.ref_search(param = (3,1,1,1), savename = 'ref_search/hon_2_1_1_1_ref_search')
-    S.ref_search(param = (3,1,5,3), savename = 'ref_search/hon_2_1_5_3_ref_search')
-    S.ref_search(param = (3,3,3,3), savename = 'ref_search/hon_2_3_3_3_ref_search')
+    # S = Search(model_name, topN = 5, pattern = honeycomb)
+    # S.ref_search(param = (3,1,1,1), savename = 'ref_search/hon_2_1_1_1_ref_search')
+    # S.ref_search(param = (3,1,5,3), savename = 'ref_search/hon_2_1_5_3_ref_search')
+    # S.ref_search(param = (3,3,3,3), savename = 'ref_search/hon_2_3_3_3_ref_search')
     
    
     # --- Test against data --- #
@@ -421,14 +421,14 @@ if __name__ == '__main__':
     
     # --- Extended search --- #
     # Pop up
-    # S = Search(model_name, topN, pattern = pop_up)
+    S = Search(model_name, topN, pattern = pop_up)
     # S.search([60, 60, 30], start_from = 1, repeat = 10) # XXX
     # S.print_extrema()
     # S.save_extrema('./pop_search')
     
     # Honeycomb
-    # S = Search(model_name, topN, pattern = honeycomb)
-    # S.search([30, 30, 30, 60], start_from = 1, repeat = 10) # XXX
+    S = Search(model_name, topN, pattern = honeycomb)
+    S.search([30, 30, 30, 60], start_from = 1, repeat = 10) # XXX
     # S.print_extrema()
     # S.save_extrema('./hon_search')
     
