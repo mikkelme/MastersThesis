@@ -391,9 +391,14 @@ if __name__ == '__main__':
     
     # --- Extended ref search --- #
     # Pop up
-    S = Search(model_name, topN = 5, pattern = pop_up)
+    # S = Search(model_name, topN = 5, pattern = pop_up)
     # S.ref_search(param = (5, 3, 1), savename = 'ref_search/pop_5_3_1_ref_search')
-    S.ref_search(param = (5, 3, 1), savename = 'ref_search/test')
+    
+    # Honeycomb
+    S = Search(model_name, topN = 5, pattern = honeycomb)
+    S.ref_search(param = (3,1,1,1), savename = 'ref_search/hon_2_1_1_1_ref_search')
+    S.ref_search(param = (3,1,5,3), savename = 'ref_search/hon_2_1_5_3_ref_search')
+    S.ref_search(param = (3,3,3,3), savename = 'ref_search/hon_2_3_3_3_ref_search')
     
    
     # --- Test against data --- #

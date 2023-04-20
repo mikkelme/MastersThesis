@@ -555,12 +555,12 @@ From the hypertuning study we choose the S32D12 model with a cylic training sche
 \end{figure}  
 
 
-We take a look at how the ranking of the four properties of interest is ranked with the \acrshort{ML} model. Generally the ranking for the minimum friciton is deviating the most. We also see negative values in the \acrshort{ML} prediction which hints that the sensitivity to the low values is not good enough. Otherwise, the \acrshort{ML} is pretty much able to get the top 5 rights for the remaning categories for the tetrehedron and honeycomb pattern. For the random walk it struggles a bit more. Looking at the values for the top candidates in the max-types properties we see that it is generally within a $\sim 0.2$ nN range. 
+We take a look at how the ranking of the four properties of interest is ranked with the \acrshort{ML} model as seen in \cref{tab:ML_ranking_pop} \cref{tab:ML_ranking_hon} \cref{tab:ML_ranking_RW}. Generally the ranking for the minimum friciton is deviating the most. We also see negative values in the \acrshort{ML} prediction which hints that the sensitivity to the low values is not good enough. Otherwise, the \acrshort{ML} is pretty much able to get the top 5 rights for the remaning categories for the tetrehedron and honeycomb pattern. For the random walk it struggles a bit more. Looking at the values for the top candidates in the max-types properties we see that it is generally within a $\sim 0.2$ nN range. 
 
 \begin{table}[H]
   \begin{center}
   \caption{Tetrahedon}
-  \label{tab:}
+  \label{tab:ML_ranking_pop}
   \begin{tabular}{|c|c|c?{0.3mm}c|c|c|} \hline
     ML & \multicolumn{2}{c?{0.3mm}}{Data} &  \multicolumn{2}{c|}{\acrshort{ML}} & Data \\ \cline{2-5}
     Rank & Config & Value [nN] & Config & Value [nN] & Rank \\ \hline
@@ -595,7 +595,7 @@ We take a look at how the ranking of the four properties of interest is ranked w
 \begin{table}[H]
   \begin{center}
   \caption{Honeycomb}
-  \label{tab:}
+  \label{tab:ML_ranking_hon}
   \begin{tabular}{|c|c|c?{0.3mm}c|c|c|} \hline
     ML & \multicolumn{2}{c?{0.3mm}}{Data} &  \multicolumn{2}{c|}{\acrshort{ML}} & Data \\ \cline{2-5}
     Rank & Config & Value [nN] & Config & Value [nN] & Rank \\ \hline
@@ -631,7 +631,7 @@ We take a look at how the ranking of the four properties of interest is ranked w
 \begin{table}[H]
   \begin{center}
   \caption{RW}
-  \label{tab:}
+  \label{tab:ML_ranking_RW}
   \begin{tabular}{|c|c|c?{0.3mm}c|c|c|} \hline
     ML & \multicolumn{2}{c?{0.3mm}}{Data} &  \multicolumn{2}{c|}{\acrshort{ML}} & Data \\ \cline{2-5}
     Rank & Config & Value [nN] & Config & Value [nN] & Rank \\ \hline
@@ -663,9 +663,75 @@ We take a look at how the ranking of the four properties of interest is ranked w
   \end{center}
 \end{table}
 
-Even though the scores for top configurations is predicted to a reasonable accuracy by the model we find that: When trying to do a search with the generator class we discovered that is it very sensitive to the reference element choice. This can be attributed either to overfitting in the model or simply a lack of data, but since a translation of the pattern is not guaranteed to give similar result, we have no way of knowing whether this is actually physical valid. The system could be very sensitive to edge effects and we would simply have to simulate this in order to get more information about this.
+
+
+
+\section{Accelerated Search}
+
+% Maybe look at predictions for the top configuratiosn with respect to min, max, max diff and max drop to establish a comparison. Also does a search on the same configuratiosn yield the same top candidates here?
+
+Having a network model that can predict friction force for a given configuration
+are able to search for some desired properties. Low and high friction and
+maximal negative friction coefficients
+
+
+Here we pursue two different approaches for finding 
+\begin{enumerate}
+  \item Generate an enlarged dataset and run it through the ML model 
+  \item Genetic algorithm
+\end{enumerate}
+
+
+\subsection{Generation search}
+
+
+Judging from the ranking in \cref{tab:ML_ranking_pop} \cref{tab:ML_ranking_hon} \cref{tab:ML_ranking_RW}, the \acrshort{ML} model showcases a reasonable performance with respect to giving a qualitative pointer towards interesting configurations. 
 
 We perform a search through the pattern generator class. For the tetrahedron and honeycomb repeating each pattern 10 times with random reference points. For the random walk we take a Monte Carlo approach by doing random sampling in a parameter range. Here we use the repair functions for the sheet. For each ML prediction we use 100 points in the stretch range 0\%-200\%. \hl{Say more about how many configurations and setting in general}. 
+
+In the search we got very mixed results and even if we only searched through patterns used in the dataset the ranking was suddenly completely different. The only changed aspect were the reference point which was now randomized. Thus, by looking at all reference point options systematically for some selected configurations we discovered that it is extremely sensitive to this parameter.This can be attributed either to overfitting in the model or simply a lack of data, but since a translation of the pattern is not guaranteed to give similar result, we have no way of knowing whether this is actually physical valid. The system could be very sensitive to edge effects and we would simply have to simulate this in order to get more information about this.
+
+This sensitivity was most significant for the max drop property. Thus we look at the change in the predictions for all reference positions for the top candidates for the Tetrahedron (5,3,1) and the Honeycomb pattern (2,3,3,3) repsectively as shown in \cref{fig:ref_search_top_data}.
+
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[t]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/search/ref_search_diff_pop_5_3_1_ref_search.pdf}
+      \caption{}
+      % \label{fig:}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/search/ref_search_drop_pop_5_3_1_ref_search.pdf}
+      \caption{}
+      % \label{fig:}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/search/ref_search_diff_hon_2_3_3_3_ref_search.pdf}
+      \caption{}
+      % \label{fig:}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/search/ref_search_drop_hon_2_3_3_3_ref_search.pdf}
+      \caption{}
+      % \label{fig:}
+  \end{subfigure}
+  \hfill
+  \caption{...}
+  \label{fig:ref_search_top_data}
+\end{figure}
+
+
+
+
+
 
 First of all, the search gave a rather consistent result regarding the
 minimization of friction where the top candidates all shared the same tendency
@@ -696,24 +762,6 @@ require a different training set altogether.
 % Include the unique checker in the ref search itself maybe...
 
 
-
-\section{Accelerated Search}
-
-% Maybe look at predictions for the top configuratiosn with respect to min, max, max diff and max drop to establish a comparison. Also does a search on the same configuratiosn yield the same top candidates here?
-
-Having a network model that can predict friction force for a given configuration
-are able to search for some desired properties. Low and high friction and
-maximal negative friction coefficients
-
-
-Here we pursue two different approaches for finding 
-\begin{enumerate}
-  \item Generate an enlarged dataset and run it through the ML model 
-  \item Genetic algorithm
-\end{enumerate}
-
-
-\subsection{Generation search}
 
 \subsection{Genetic algorithm search}
 

@@ -17,6 +17,7 @@ def plot_ref_search(filename, save = False):
     zlabel = [r'Min $F_{fric}$', r'Max $F_{fric}$', r'Max $\Delta F_{fric}$', r'Max drop']
 
     # Get boundaries
+    valid  = ~np.isnan(data[keys[0]])
     unique = np.argwhere(~np.isnan(data[keys[0]]))
     x_max = np.max(unique[:, 0])
     y_max = np.max(unique[:, 1])
@@ -25,63 +26,32 @@ def plot_ref_search(filename, save = False):
     cmap = 'viridis'
     for i, key in enumerate(keys):
         plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
-        im = plt.imshow(data[key][:x_max+1, :y_max+1].T, origin = 'lower', cmap = cmap)
-        plt.xlabel(r"$x$ (armchair direction)", fontsize = 14)
-        plt.ylabel(r"$y$ (zigzag direction)", fontsize = 14)
-        plt.grid(False)
-
-        cbar = plt.colorbar(im)
-        cbar.set_label(zlabel[i])
+        ax = plt.gca()
+        
+        score = data[key][:x_max+1, :y_max+1]
+        std = np.std(data[key][valid])
+        rel_std = std/np.mean(data[key][valid])
+        print(f'{key}: rel.std = {rel_std:0.4f}, std = {std:0.4f}')
+        
+        sns.heatmap(score, cmap = cmap, cbar_kws={'label': zlabel[i]}, annot = True, ax=ax)
+        ax.invert_yaxis()
+        ax.set_xlabel(r"$x$ (armchair direction)", fontsize = 14)
+        ax.set_ylabel(r"$y$ (zigzag direction)", fontsize = 14)
         plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
         
-    plt.show()
-    
-    
-    
-    # plt.savefig('../article/figures/figure.pdf', bbox_inches='tight')
-    
-    # # Identify unique ref positions
-    # refs = data['refs']
-    # map = np.zeros((refs.shape[0], refs.shape[1])).astype('int')
-    # map[0,0] = 1
-    
-    # # for k in range(2*np.max((map.shape[0], map.shape[1]))):
-    # for k in range(np.max((map.shape[0], map.shape[1]))):
-    #     for j in range(k+1):
-    #         i = k - j
-            
-    #         if i == 0 and j == 0: break
-    #         if i >= refs.shape[0]: break
-    #         if j >= refs.shape[1]: break
-            
-    #         repeated_val = 0
-    #         for key in keys:
-    #             repeated_val += np.any(data[key][i,j] == data[key][np.nonzero(map)])
-                
-    #         if repeated_val == 0:
-    #             map[i,j] = 1
-
-    # plt.imshow(map.T, origin = 'lower')
-    # plt.show()
-    # exit()
-
-    # cmap = 'viridis'
-    # for i, key in enumerate(keys):
-    #     plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
-    #     im = plt.imshow(data[key].T, origin = 'lower', cmap = cmap)
-    #     plt.xlabel(r"$x$ (armchair direction)", fontsize = 14)
-    #     plt.ylabel(r"$y$ (zigzag direction)", fontsize = 14)
-    #     plt.grid(False)
-
-    #     cbar = plt.colorbar(im)
-    #     cbar.set_label(zlabel[i])
-    #     plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+        if save:    
+            savename = filename.strip('.npy').split('/')[-1]
+            save_tag = keys[i].split('_')[-1]
+            plt.savefig(f'../article/figures/search/ref_search_{save_tag}_{savename}.pdf', bbox_inches='tight')
         
-    # plt.show()
-    # # plt.savefig('../article/figures/figure.pdf', bbox_inches='tight')
+    plt.show()
     
 
 
 if __name__ == '__main__':
-    plot_ref_search(filename = '../ML/ref_search/test.npy')
+    # plot_ref_search(filename = '../ML/ref_search/pop_5_3_1_ref_search.npy', save = True)
+    plot_ref_search(filename = '../ML/ref_search/hon_2_3_3_3_ref_search.npy', save = True)
+    
+    # plot_ref_search(filename = '../ML/ref_search/hon_2_1_1_1_ref_search.npy')
+    # plot_ref_search(filename = '../ML/ref_search/hon_2_1_5_3_ref_search.npy')
     pass
