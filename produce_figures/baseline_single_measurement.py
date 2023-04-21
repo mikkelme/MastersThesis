@@ -41,6 +41,7 @@ def raw_data(filename, save = False):
     if save:
         # plt.savefig('../article/figures/baseline/drag_Ff_10Å.pdf', bbox_inches='tight')
         # plt.savefig('../article/figures/baseline/drag_Ff_10Å_K10_v1.pdf', bbox_inches='tight')
+        plt.savefig('../article/figures/baseline/drag_Ff_10Å_K10_v10.pdf', bbox_inches='tight')
         pass
     
     
@@ -58,7 +59,8 @@ def raw_data(filename, save = False):
     plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
     if save:
         # plt.savefig('../article/figures/baseline/drag_Ff_100Å.pdf', bbox_inches='tight')
-        # plt.savefig('../article/figures/baseline/drag_Ff_100Å_K30_v1.pdf', bbox_inches='tight')
+        # plt.savefig('../article/figures/baseline/drag_Ff_100Å_K10_v1.pdf', bbox_inches='tight')
+        plt.savefig('../article/figures/baseline/drag_Ff_100Å_K10_v10.pdf', bbox_inches='tight')
         pass
     
 
@@ -254,7 +256,8 @@ def COM(filename, save = False):
     # --- Figure 10 --- #
     # COM oath
     
-    map = [VA_pos <= 2][0]
+    # map = [VA_pos <= 2][0] # XXX
+    map = [VA_pos <= 10][0] # XXX
     # fig = plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
     fig = plt.figure(num = unique_fignum(), figsize = (10,3), dpi = 80, facecolor='w', edgecolor='k')
     ax = plt.gca()
@@ -263,15 +266,17 @@ def COM(filename, save = False):
     speed[:-1] = np.linalg.norm(data['COM_sheet'][1:,0:2]-data['COM_sheet'][:-1,0:2], axis = 1)/(data['time'][1]-data['time'][0])
     
     
-    plot_xy_time(fig, ax, data['COM_sheet'][map,0], data['COM_sheet'][map,1], speed[map], 'Speed $[Å/ps]$', cmap = 'plasma')
+    plot_xy_time(fig, ax, data['COM_sheet'][map,0], data['COM_sheet'][map,1], speed[map], 'CM Speed $[Å/ps]$', cmap = 'plasma')
     plt.axis('equal')
-    plt.xlabel(r'$\Delta COM_\parallel$ $[Å]$', fontsize=14)
-    plt.ylabel(r'$\Delta COM_\perp$ $[Å]$', fontsize=14)
+    plt.xlabel(r'$\Delta CM_\parallel$ $[Å]$', fontsize=14)
+    plt.ylabel(r'$\Delta CM_\perp$ $[Å]$', fontsize=14)
     plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
     
     if save:
         plt.savefig('../article/figures/baseline/COM_path_K0.pdf', bbox_inches='tight')
-        
+        # plt.savefig('../article/figures/baseline/COM_path_K10_v10.pdf', bbox_inches='tight')
+        # plt.savefig('../article/figures/baseline/COM_path_K10_v1.pdf', bbox_inches='tight')
+        pass
     
     # fig = plt.figure(num = unique_fignum(), figsize = (10,3), dpi = 80, facecolor='w', edgecolor='k')
     # plt.plot(VA_pos[map], Ff_savgol[map], label = "$F_\parallel$", color = color_cycle(0))
@@ -542,18 +547,18 @@ def maxarg_vs_K(dirs, save = False):
 if __name__ == '__main__':
     path = '../Data/Baseline'
     # filename = os.path.join(path,'nocut/temp/T300/system_2023-01-17_Ff.txt')
-    # filename = os.path.join(path,'nocut/vel/v1/system_v1_Ff.txt')
-    filename = os.path.join(path,'nocut/special/v1/system_v1_Ff.txt')
+    # filename = os.path.join(path,'nocut/special/v1/system_v1_Ff.txt')
+    filename = os.path.join(path,'nocut/special/v10/system_v10_Ff.txt')
     
     # path = '../Data/Baseline_fixmove' # XXX
     # filename = os.path.join(path,'nocut/temp/T300/system_T300_Ff.txt') # XXX
     # filename = os.path.join(path,'nocut/spring/K10/system_K10_Ff.txt')
     
     
-    raw_data(filename, save = False)
+    # raw_data(filename, save = False)
     # ft(filename, save = False)
     # decomp(filename, save = False)
-    # COM(filename, save = False)
+    COM(filename, save = False)
     # mean_values(filename, save = False)
     # plt.show()
     

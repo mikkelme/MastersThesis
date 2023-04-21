@@ -4,32 +4,28 @@
 
 
 \chapter{Pilot study}
-Having defined our system, we carry out an initial study of the numerical approach. This includes an analysis of how to define and measure the frictional properties of interest, and an investigation of the main parameters governing the numerical solutions. From this point of view we decide on a suitable set of parameters for the remaining study. Additionally, we investigate the frictional behaviour under the variation of load and stretch for a selected set of configurations which serves as a baseline for later comparison. 
+Having defined our system, we carry out an initial study of the numerical approach. This includes an analysis of how to define and measure the frictional properties of interest, and an investigation of the main parameters governing the numerical solutions. From this point of view we decide on suitable parameters for the remaining study. Particually, we investigate the frictional behaviour under the variation of load and stretch for a selected set of configurations which serves as a baseline for later comparison and an assessment of the prospects of Kirigami modifications for friction. 
 
 
 \section{Friction simulation parameters}
 The \acrshort{MD} simulation is governed by a small set of parameters, some
-which are related directly to the numerical aspects of the simulation and other
-to the physical conditions in the simmulation. Thus, we differentiate between
+which are related directly to the numerical aspects of the simulation and other related
+to the physical conditions we are simmulating. Thus, we differentiate between
 the two main categories: 1) \textit{Physical}, parameters which alter the
 physical conditions of the ``numerical experiment'' and are expected to effect
 the frictional behaviour. 2) \textit{Numerical}, parameters which are related
 more closely to the numerical procedure itself, expected to influence the
-simulation kinetics, which should be chosen to ensure the most stable results.
+simulation dynamics, which should be chosen to ensure the most stable results.
 For the purpose of creating the machine learning dataset most of these
 parameters will be kept constant with only a subset of the physical parameters
-being varied. The parameters are summarized in \cref{tab:param} with the grey
-shaded area denoting the parameters which we will vary for the dataset. Due to
-the great number of parameters it is unreasonable to make an exhaustive search
-of all parameters, in order to choose the final settings. Instead, we take a
-basis in the parameters used in similar studies \hl{SOURCES} and adjust them as
-we carry out the analysis of the simulation results. Thus, we start at values
+being varied. The parameters are summarized in \cref{tab:param} where the grey
+shaded area marks the parameters, Configuration, stretch and load, which we will vary for the dataset. Due to the great number of parameters it is unreasonable to make an exhaustive search of all parameters before deciding on the final settings. Instead, we take a basis in the parameters used in similar studies \hl{SOURCES} and adjust them as
+we carry out the initial analysis of the simulation results. Thus, we start at values
 most representative for other similar simulations and adjust according to the
 stability of the results and the computation time. Since we are going to
 introduce a lot of complexity to the system, through the cut and stretch
-deformation, we are less strict about meeting other paramter criterias (does
-this make sense). The final parameter choice is shown in \cref{tab:param} which
-we be the default values in the following study, i.e.\ when nothing is stated explicitly we will use these parameters. As we analyse the data we will provide further arguments for specific choices made.
+deformation, we are less concerned about aligning parameters for comparison. Instead of presenting the process of narrowing down the final parameters in a chronological manner, wehave shown the final choice shown in \cref{tab:param} which we will discuss throughout the following presentation of the pilot study. Notice, that the values in \cref{tab:param} serves as default values which are used when nothing else is stated.
+
 
 
 % Thus, by adjusting a few selected parameters one by one we arrived at a final choice as shown in \cref{tab:param}. 
@@ -65,7 +61,7 @@ we be the default values in the following study, i.e.\ when nothing is stated ex
   \begin{center}
   \caption{Parameters of the numerical \acrshort{MD} simulation for measuring friction. The values correspond to the final choice used for the dataset. The shaded area denote the parameters varied in the \acrshort{ML} dataset.}
   \label{tab:param}
-  \begin{tabular}{ | c | C{2cm} | C{3.5cm} | X{8cm}|} \hline
+  \begin{tabular}{ | c | C{3cm} | C{3.5cm} | X{7cm}|} \hline
     Category & Parameter & Value &  Description \\ \hline
     \multirow{13}{*}{Physical} & $T$ & \SI{300}{K} &  Temperature. \\ \hhline{~|-|-|-|}
     & $v_{\text{slide}}$ &\SI{20}{m/s} & Sliding speed for the sheet translation. \\ \hhline{~|-|-|-|}
@@ -122,7 +118,8 @@ we be the default values in the following study, i.e.\ when nothing is stated ex
 % \newpage
 % Single friction simulation analysis
 \section{Force traces}\label{sec:single_analysis}
-We begin by assessing the force traces for a single friction simulation using the default parameters shown in \cref{tab:final_param} for a non-cut sheet with no stretch applied and a normal force of $\SI{1}{nN}$.
+We begin by assessing the friction force traces, i.e.\ force vs.\ time curves, for a single friction simulation using the default parameters shown in \cref{tab:final_param} for a non-cut sheet with
+no stretch applied and a normal load of $\SI{1}{nN}$. 
 
 
 \subsection{Force oscillations}\label{sec:force_oscillations}
@@ -131,28 +128,38 @@ substrate. We consider initially the force componenet $F_{\parallel}$ parallel
 to the drag direction as plotted in \cref{fig:drag_Ff}. We use a sample rate of
 10 ps$^{-1}$ = 100 timesteps$^{-1}$ for which each sample is the mean value of
 the preceding 100 timesteps. We observe immediately that the data carriers
-oscillations on different time scales which matches our expectations for sliding
-involving periodic surfaces. By applying a savgol filter to the data with a
-polyorder of 5 and window length of 150 timesteps, corresponding to a sliding
-distance of 3 Å or a time window of 15 ps, we can qualitatively point out at
-least two different frequencies of osccilation. During the first 10 Å of sliding
-in \cref{fig:drag_Ff_10} we see roughly three waves on the savgol filter
-corresponding to a relative high frequency, while for the duraction of 100 Å of
-sliding in \cref{fig:drag_Ff_100} the same savgol filter reveals a lower
-frequency on top, creating the visual pattern of a wavepacket. The data does not
-indicate clear signs of stick-slip behaviour as otherwise found in other
-studies, e.g.\ by Zhu and Li \cite{zhu_study_2018} for graphene on gold, who saw
-a more typical saw tooth shape in the force trace. Beside the different
-substrate material, gold instead of silicon, they used a lower sliding speed of
-\SI{10}{m/s} and soft spring of $\SI{10}{N/m}$. When rerunning the simmulation
-using these values (\cref{fig:drag_Ff_10_K10_v10}) we found a different force
-trace pattern showing signs of stick-sliop behaviour, but not still as evident
-as we see lowering the sliding speed further down to \SI{1}{m/s} as shown in
-\cref{fig:drag_Ff_10_K10_v1}. This result agrees with ... that the stick-slip
-behaviour is suppresed for high sliding speed and stiff springs. However, the low sliding speed comes with a high computational cost which is the reason that we stick to \SI{20}{m/s} and a infinitely stiff spring constant to instead gain stable results in the domain of smooth sliding \hl{the spring constant is further discussed later right}.
+oscillations on different time scales matching our general expectations for
+sliding involving periodic surfaces. By applying a savgol filter to the data
+with a polyorder of 5 and window length of 150 timesteps (corresponding to a
+sliding distance of 3 Å or a time window of 15 ps) we can qualitatively point
+out at least two different frequencies of osccilation. During the first 10 Å of
+sliding, seen in \cref{fig:drag_Ff_10}, we see roughly three waves on the savgol
+filter corresponding to a relative high frequency, while for the duraction of
+100 Å of sliding, seen in \cref{fig:drag_Ff_100}, the same savgol filter reveals
+a lower frequency on top, creating the visual pattern of a wavepacket. The data
+does not indicate clear signs of stick-slip behaviour as otherwise found in
+other studies, e.g.\ by Zhu and Li \cite{zhu_study_2018} for graphene on gold,
+who saw a more typical saw tooth shape in the force trace. Beside the difference
+in substrate material, using gold instead of silicon, they used a lower sliding
+speed of \SI{10}{m/s} and a soft spring of $K = \SI{10}{N/m}$. By adopting those
+parameters we get a slightly different force trace behaviour as shown in
+\cref{fig:drag_Ff_10_K10_v10} and \cref{fig:drag_Ff_100_K10_v10}. This change
+breaks the symmetry in the force oscillations, but still does not produce any
+significant discontinuities in the trace. By keeping the spring constant $K =
+\SI{10}{N/m}$ and lowering the sliding speed further down to \SI{1}{m/s} we are
+able to demonstrate a proper stick-slip behaviour as shown in
+\cref{fig:drag_Ff_10_K10_v1} and \cref{fig:drag_Ff_100_K10_v1}. Considering all
+three simulations we might classify the results from the default settings, $K =
+\inf, v = \SI{20}{m/s}$, as smooth sliding,  $K = \SI{10}{N/m}, v =
+\SI{10}{m/s}$, as a transistion phase with possible occasional slipping, and $K
+= \SI{10}{N/m}, v = \SI{1}{m/s}$ as certain stick-slip behaviour.
 
-% Take a look at the soft spring slow speed result for 100 Å as well
-% Alternatively make a 3 x 2 plot showing the 10 and 100 Å figures for (K = 30, v = 1), (k = 10, v = 10), (k = 10, v = 1) or something similar.
+\hl{Refer a bit to theory on this one}
+
+%  This result agrees with ... that the stick-slip
+% behaviour is suppresed for high sliding speed and stiff springs. 
+
+However, the low sliding speed comes with a high computational cost which is the reason that we choose a sliding speed of \SI{20}{m/s}. The choise of an infinite spring constant is related to the stability of the measurements as discussed later \hl{make reference}.
 
 
 \begin{figure}[H]
@@ -160,36 +167,50 @@ behaviour is suppresed for high sliding speed and stiff springs. However, the lo
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/drag_Ff_10Å.pdf}
-      \caption{$K = \inf$, $v = \SI{20}{m/s}$ (10 Å sliding).}
+      \caption{$K = \inf$, $v = \SI{20}{\frac{m}{s}}$ (10 Å sliding).}
       \label{fig:drag_Ff_10}
   \end{subfigure}
   \hfill
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/drag_Ff_100Å.pdf}
-      \caption{$K = \inf$, $v = \SI{20}{m/s}$ (100 Å sliding).}
+      \caption{$K = \inf$, $v = \SI{20}{\frac{m}{s}}$ (100 Å sliding).}
       \label{fig:drag_Ff_100}
     \end{subfigure}
     \hfill
     \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/drag_Ff_10Å_K10_v10.pdf}
-      \caption{$K = \SI{10}{N/m}$, $v = \SI{10}{m/s}$ (10 Å sliding).}
+      \caption{$K = \SI{10}{\frac{N}{m}}$, $v = \SI{10}{\frac{m}{s}}$ (10 Å sliding).}
       \label{fig:drag_Ff_10_K10_v10}
     \end{subfigure}
     \hfill
     \begin{subfigure}[t]{0.49\textwidth}
       \centering
-      \includegraphics[width=\textwidth]{figures/baseline/drag_Ff_10Å_K10_v1.pdf}
-      \caption{$K = \SI{10}{N/m}$, $v = \SI{1}{m/s}$ (100 Å sliding).}
-      \label{fig:drag_Ff_10_K10_v1}
+      \includegraphics[width=\textwidth]{figures/baseline/drag_Ff_100Å_K10_v10.pdf}
+      \caption{$K = \SI{10}{\frac{N}{m}}$, $v = \SI{10}{\frac{m}{s}}$ (100 Å sliding).}
+      \label{fig:drag_Ff_100_K10_v10}
   \end{subfigure}
   \hfill
-     \caption{\hl{Update caption} Friction force $F_\parallel$ with respect to the drag direction between (full) sheet and substrate versus sliding distance. The sliding distance is measured by the constant movement of the virtual atom and not the COM of the sheet. However, we expect these measures to be fairly identical due the fact that the pull blocks is rigidly coupled to the virtual atom. The red line represents a savgol filter with window polyorder 5 and window length of 150 timesteps (corresponding to a sliding distance of 3 Å or a time window of 15 ps).}
+    \begin{subfigure}[t]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/baseline/drag_Ff_10Å_K10_v1.pdf}
+      \caption{$K = \SI{10}{\frac{N}{m}}$, $v = \SI{1}{\frac{m}{s}}$ (10 Å sliding).}
+      \label{fig:drag_Ff_10_K10_v1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/baseline/drag_Ff_100Å_K10_v1.pdf}
+      \caption{$K = \SI{10}{\frac{N}{m}}$, $v = \SI{1}{\frac{m}{s}}$ (100 Å sliding).}
+      \label{fig:drag_Ff_100_K10_v1}
+  \end{subfigure}
+  \hfill
+     \caption{Force traces of the friction force $F_\parallel$ with respect to the drag direction between acting from the substrate on the full sheet and substrate. The force traces is plotted against the sliding distance (lower x-axis) and thr corresponding sliding time (upper x-axis). The sliding distance is measured by displacement of the virtual atom tethering the sheet. The red line represents a savgol filter with window polyorder 5 and window length of 150 timesteps (corresponding to a sliding distance of 3 Å or a time window of 15 ps). Each row, (a,b), (c,d), (e,f), represents a different choice of the spring constant $K$ and sliding speed $v$, while the columns show the same result for two different time scales. The default settings are represented in figure (a) and (b).}
      \label{fig:drag_Ff}
 \end{figure}
 
-By performing a Fourier Transform on the data (default parameters) we can quantify the leading frequencies observed in figure \cref{fig:drag_Ff_10} and \cref{fig:drag_Ff_100}. The Fourier transform is shown in \cref{fig:ft_a}, and by plotting the two most dominant frequencies $f_1 = 0.0074$ ps$^{-1}$ and $f_2 = 0.0079$ ps$^{-1}$ as $\sin{(2\pi f_1)} + \sin{(2\pi f_2)}$ we find a qualitatively convincing fit to the observed wavepacket shape as seen in \cref{fig:ft_b}. By using the trigonometric identity
+By performing a Fourier Transform on the data, using the default parameters, we can quantify the leading frequencies observed in figure \cref{fig:drag_Ff_10} and \cref{fig:drag_Ff_100}. The Fourier transform is shown in \cref{fig:ft_a}, and by plotting the two most dominant frequencies $f_1 = 0.0074$ ps$^{-1}$ and $f_2 = 0.0079$ ps$^{-1}$ as a sine sum, $\sin{(2\pi f_1)} + \sin{(2\pi f_2)}$, we find a qualitatively convincing fit to the observed wavepacket shape as seen in \cref{fig:ft_b}. We can convert the frequencies according to that of a wavepacket. By using the trigonometric identity
 \begin{align*}
 \sin (a+b) &= \sin (a) \cos (b) + \cos (a) \sin (b), \\
 \sin (a-b) &= \sin (a) \cos (b) - \cos (a) \sin (b),
@@ -200,7 +221,6 @@ and decomposing the frequencies as $f_1 = a - b$, $f_2 = a + b$, we can rewrite 
   &= \sin(2\pi a)\cos(2\pi b) + \cancel{\cos(2\pi a)\sin(2\pi b)} + \sin(2\pi a)\cos(2\pi b) - \cancel{\cos(2\pi a)\sin(2\pi b)} \\
   &= 2 \sin(2\pi a) \cos(2\pi b),
 \end{align*} 
-
 with 
 \begin{align*}
   a = \frac{f_1 + f_2}{2} &= 0.0763 \pm \SI{0.0005}{ps^{-1}},& 
@@ -212,17 +232,12 @@ where the latter frequency is denoted with respect to the sliding distance. This
 makes us recognize the high osccilation frequency as $a$ and the low frequency
 as $b$. The faster one has a period of $T_a = 2.62 \pm 0.02$ Å\footnote{The
 uncertainty $\Delta y$ is calculated as $\Delta y = \left|\frac{\partial
-y}{\partial x} \Delta x \right|$ for uncertainty $\Delta x$ and $y(x)$}. This
+y}{\partial x} \Delta x \right|$ for uncertainty $\Delta x$ and $y(x)$} which
 corresponds well with the magnitude of the lattice spacing and especialy that of
 graphene at 2.46 Å as expected theoretically. The longer period $T_b = 71 \pm
-15$ Å$^{-1}$ is not obviously explained. The build up in friction force is
-reminiscent of a friction strengthening, but the periodic oscillation does not
-really support this idea. Instead, we might attribute it to some kind of phonon
+15$ Å$^{-1}$ is not obviously explained. We noticed a similar long period osciallation for all three cases, \cref{fig:drag_Ff_100}, \cref{fig:drag_Ff_100_K10_v10} and \cref{fig:drag_Ff_100_K10_v1}, regarding stick-slip behaviour, and thus we not believe that this is directly related. The initial build up in friction force is reminiscent of a friction strengthening, which is often reported \hl{SOURCE}, but the periodicity goes against this idea. Instead, we might attribute it to some kind of phonon
 resosnance which could be a physical phenonama or simply a feature of our
 \acrshort{MD} modelling. 
-% However, we take note of the longest period $T_b = 71
-% \pm 15$ Å$^{-1}$ which will be relevant for the evaluation of measurement
-% uncertainty in section \cref{sec:def_dyn_and_stat}.
 
 \begin{figure}[H]
   \centering
@@ -247,64 +262,75 @@ resosnance which could be a physical phenonama or simply a feature of our
 \subsection{Decompositions}
 In the previous analysis we have looked only at the friction force for the full
 sheet, including the rigid pull blocks, and with
-respect to the drag direction. We found this way of measuring the friction force to be the most reliable, but we will present the underlying arguments for this choice in the following.
+respect to the drag direction. We found this way of measuring the friction force to be the most intuitive and reliable, but we will present the underlying arguments for this choice in the following.
 
 Due to the fact that we are only applying cuts to the inner sheet, and not the
 pull blocks, it might seem more natural to only consider the friction on that
 part. If the desired frictional properties can be achieved by altering the inner
 sheet one can argue that any opposing effects from the pull blocks can be
-mitigated by scaling the relative size between the inner sheet and the pull
+mitigated by simply scaling the relative size between the inner sheet and the pull
 blocks. However, when looking at the force traces decomposed with respect to the
-inner sheet and pull block regions respectivly (see \cref{fig:decomp_group}), we
+inner sheet and pull block regions respectivly, see \cref{fig:decomp_group}, we
 observe that the friction force arrising from those parts are seemingly
 antisymmetric. That is, the distribution of the fricitonal pull from the
 substrate on the sheet is oscillating between the inner sheet and the pull
 block. Keeping in mind that normal force is only applied to the pull blocks we
-might take this as an integrated feature of the system which does not nessecary
-dissapear when changing the spatial ratio between inner sheet and pull block.
-Any interesting friciton properties might depend on this internal distribution
-of forces. Hence, we hedge our bets and use the full sheet friction force as a
-hollistic approach to avoid excluding relevant data in the measurements.
+might take this as an intrinsic feature of the system which does not nessecary dissapear by scaling of the spatial ratio between the inner sheet and pull block. Any interesting friciton properties might depend on this internal distribution of forces. Hence, we hedge our bets and use the full sheet friction force as a hollistic approach to avoid excluding relevant information in the measurement data.
 
 Similar we might question the decision of
 only considering the frictional force projected onto the sliding direction as
-we are then neglecting the ``side shift'' induced during the slide phase. In \cref{fig:decomp_direc} we see the decomposition in terms of force components parallel $F_{\parallel}$ and perpendicular $F_{\perp}$ to the sliding direction respectively. We notice that the most dominant trend appears for the parallel component. If we want to include the perpendicular component as well we would have to evaluate friction as the length of the force vector instead. This would remove the sign of the force direction and skew the whole friction force above as we clearly see both negative and positive contributions in the force trace. One option to accommodate this issue is by using the vector length for the magnitude but keeping the sign from the parallel component. However, we omit such compromises as this might make the measurement interpretation unessercary complex, and we use only the parallel component going forward. 
+we are then neglecting the ``side shift'' induced during sliding. In \cref{fig:decomp_direc} we show the decomposition in terms of force components parallel $F_{\parallel}$ and perpendicular $F_{\perp}$ to the sliding direction respectively. We notice that the most dominant trend appears for the parallel component. If we want to include the perpendicular component as well we would have to evaluate friction as the length of the force vector instead, but this would remove the sign of the force direction and shift the mean friction force up as we clearly see both negative and positive contributions in the parallel force trace. One option to accommodate this issue is by using the vector length for the magnitude but keeping the sign from the parallel component. However, we omit such compromises as this might make the measurement interpretation unessercary complex, and we use only the parallel component going forward. 
 
 \begin{figure}[H]
   \centering
   \begin{subfigure}[t]{0.49\textwidth}
     \centering
     \includegraphics[width=\textwidth]{figures/baseline/decomp_group.pdf}
-    \caption{Decomposition into group inner sheet (sheet) and pull blocks (PB).}
+    \caption{}
     \label{fig:decomp_group}
   \end{subfigure}
   \hfill
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/decomp_direc.pdf}
-      \caption{Decomposition into parallel ($F_{\parallel}$) and perpendicular ($F_{\perp})$ to drag sliding direction.}
+      \caption{}
       \label{fig:decomp_direc}
   \end{subfigure}
-  \caption{Friction force decomposition on the data shown in \cref{fig:drag_Ff} with applied savgol filters similar to that of \cref{fig:drag_Ff_100} with window polyorder 5 and window length of 150 timesteps (corresponding to a sliding distance of 3 Å or a time window of 15 ps).}
+  \caption{Friction force decomposition on the default parameter force trace shown in \cref{fig:drag_Ff} showing only the applied savgol filters. (a) Decomposition into group inner sheet (sheet) and pull blocks (PB). (b) Decomposition into parallel ($F_{\parallel}$) and perpendicular ($F_{\perp})$ to drag sliding direction.}
   \label{fig:decomp}
 \end{figure}
 
 
 \subsection{Center of mass path}
-\hl{Go through here again when done with the stick-slip motion analysis.}
-
-From the previous observations of the friction force time series we see evidence
-of a stick-slip behvaiour. Specially, we see in \cref{fig:decomp_direc}
-that this might be the case both parallel and perpendicular to the sliding
-direction. By looking at the $x,y$-position for the sheet center of mass (COM) \hl{change to CM}
-we observe the stick-slip motion manifested as a variation in COM speed combinned
-with a side to side motion as shown in figure $\cref{fig:COM_path_K0}$. In an attempt to increase the magnitude of the slips we evaluate a similar simulation with spring contant $K = \SI{30}{N/m}$ (see figure
-\cref{fig:COM_path_K30}) in contrast to that of an infinte spring constant. While
-the maximum slip speed stays within a similar order of magnitude the slip length
-in the sliding direction is increased along with the side to side motion. Note
-that the axis scale is different between \cref{fig:COM_path_K0} and
-\cref{fig:COM_path_K0}. However, in both cases we observe that the side to side
-motion is associated with a low speed, meaning that is more reminiscent of a ``slow'' creep alignment with the substrate than a slip. 
+From the previous observations of the force traces \cref{fig:drag_Ff} we
+demonstarted both smooth sliding and stick-slip behaviour. Considering the force
+decomposition in \cref{fig:decomp_direc} we know that the frictional forces in
+the perpendicular direction to sliding is also present. By looking at the
+$x,y$-position for the sheet Center of Mass (\acrshort{CM}) we see a qualitative
+different behaviour when reconsidering the spring constant and sliding speed
+investigated in \cref{fig:drag_Ff} which is shown in \cref{fig:CM_path}. The
+default case in \cref{fig:CM_path_def} shows a rather straight path forward with
+only a small side motion in comparison to the cases in
+\cref{fig:CM_path_K10_v10} and \cref{fig:CM_path_K10_v1}. However, the
+\acrshort{CM} accelerates and deaccelerates with a high frequency, much to high
+to be associated with the lattice spaing on the order of 2.46 Å (interatomic
+distance of 1.42 Å). One possible explanation is that the sheet and substrate
+constitues an incommensurable contact for which travelling kink excitations make
+the atoms move in such a way that the sheet \acrshort{CM} is incremented in
+small ``burst''. When looking at the $K = \SI{10}{\frac{N}{m}}$, $v =
+\SI{10}{\frac{m}{s}}$ case in \cref{fig:CM_path_K10_v10} we see a completely
+different \acrshort{CM} path where the rapid parts alligns visually better with
+the force oscialltiosn shown earlier in \cref{fig:drag_Ff_100_K10_v10}. The
+\acrshort{CM} accelerates forward and the deaccelerates in combination with a
+side motion that lead to the \acrshort{CM} path making a loop as it slows down.
+Finally we have the $K = \SI{10}{\frac{N}{m}}$, $v = \SI{10}{\frac{m}{s}}$ in
+\cref{fig:CM_path_K10_v10} which is confirmed to have stick-slip behaviour in
+\cref{fig:drag_Ff_100_K10_v1}. Here the \acrshort{CM} path shows a more chaotic
+movement between acceleration which also alligns visually well with the timing
+of the slips seen in \cref{fig:drag_Ff_100_K10_v1}. The chaotic motion is not
+obviously connected to the stick-slip motion, but we ommit a further
+investigation as this is not corresponding to the parameters that we will be
+using. 
 
 
 \begin{figure}[H]
@@ -312,18 +338,24 @@ motion is associated with a low speed, meaning that is more reminiscent of a ``s
   \begin{subfigure}[t]{0.85\textwidth}
     \centering
     \includegraphics[width=\textwidth]{figures/baseline/COM_path_K0.pdf}
-    \caption{$K=\inf$ (Fix move)}
-    \label{fig:COM_path_K0}
+    \caption{$K = \inf$, $v = \SI{20}{\frac{m}{s}}$.}
+    \label{fig:CM_path_def}
   \end{subfigure}
   \hfill
   \begin{subfigure}[t]{0.85\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/baseline/COM_path_K30.pdf}
-      \caption{$\SI{30}{N/m}$}
-      \label{fig:COM_path_K30}
+    \centering
+    \includegraphics[width=\textwidth]{figures/baseline/COM_path_K10_v10.pdf}
+    \caption{$K = \SI{10}{\frac{N}{m}}$, $v = \SI{10}{\frac{m}{s}}$.}
+    \label{fig:CM_path_K10_v10}
   \end{subfigure}
-  \caption{Center of mass posotion relative to the start of the sliding phase in terms of the direction parallel to the sliding direction $\Delta COM_{\parallel}$ and the axis perpendicular to the sliding direction $\Delta COM_{\perp}$. The colorbar denotes the absolute speed of the COM.}
-  \label{fig:COM_path}
+  \begin{subfigure}[t]{0.85\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/baseline/COM_path_K10_v1.pdf}
+    \caption{$K = \SI{10}{\frac{N}{m}}$, $v = \SI{1}{\frac{m}{s}}$.}
+    \label{fig:CM_path_K10_v1}
+  \end{subfigure}
+  \caption{Center of Mass (\acrshort{CM}) position relative to the start of the sliding phase in terms of the direction parallel to the sliding direction $\Delta COM_{\parallel}$ and the axis perpendicular to the sliding direction $\Delta COM_{\perp}$. The colorbar denotes the absolute speed of the \acrshort{CM} motion. Figure a-c shows different parameters used for the spring constant $K$ and sliding speed $v$ similar to that used in \cref{fig:drag_Ff}. (a) Default: $K = \inf$, $v = \SI{20}{\frac{m}{s}}$. (b) $K = \SI{10}{\frac{N}{m}}$, $v = \SI{10}{\frac{m}{s}}$. (c) $K = \SI{10}{\frac{N}{m}}$, $v = \SI{1}{\frac{m}{s}}$ }
+  \label{fig:CM_path}
 \end{figure}
 
 
