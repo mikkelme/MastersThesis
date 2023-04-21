@@ -515,17 +515,15 @@ with time, or to increase the sliding force more slowly and through a soft sprin
 
 \section{Out-of-plane buckling}
 The out-of-plane buckling is one of the original motivations for investigating
-the application of Kirigami cuts in the context of friction. We perform a
-stretch simulation in a low temperature $T = \SI{5}{K}$ vacuum in order to
-verify that we are able to reproduce an out-of-plane buckling with the intended
-patterns described in \cref{chap:system}. We include the non-cut sheet along
-with the Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,15)$ pattern. Depsite a
-visual inspection of the simulation results, using the Open Visualization Tool (OVITO) \hl{SOURCE?}, we quanity the out-of-plane buckling
-by assessing the distirbution of atoms in the z-direction (perpendicular to the plane) during stretching. We calculate the mininum and maximum z-value taken by the atoms along with the atom count quartiles 1\%, 10\%, 25\%, 50\% (median), 75\%, 90\% and 99\% as shown in figure \cref{fig:buckling_quartiles}. We observe that the Tetrahedron and Honeycomb patterns show a considerable amount of buckling in comparison to the non-cut sheet which exhibit minor buckling of $\sim 2$ Å which is on the same order as the
-atomic spacing in the sheet. Furthermore, we notice that the Tetrahedron pattern
-buckles more in consideration to the min.\ and max.\ peaks while the 1\% and 99\%
-quartiles is at a similar magnitude as the Honeycomb. By consulting with the simulation visualization this is mainly attributed to fringes on the edge flapping around and thus pushing the min.\ and max.\ values.
-
+the application of Kirigami cuts in the context of friction properties. Therefor, we perform a stretch simulation, at low temperature ($T = \SI{5}{K}$) without any substrate, in order to verify that we are able to reproduce an out-of-plane buckling with the
+intended patterns described in \cref{chap:system}. For this investigation we include the non-cut sheet, the Tetrahedron $(7,5,1)$ and the Honeycomb $(2,2,1,5)$ pattern. We quantify the out-of-plane buckling by assessing the distribution of atoms along the z-direction (perpendicular to the plane) during stretching. We calculate the
+mininum and maximum z-value as well as the atom count quartiles 1\%, 10\%, 25\%, 50\%
+(median), 75\%, 90\% and 99\% as shown in figure \cref{fig:buckling_quartiles}. The results show significant buckling for the Tetrahedron and Honeycomb patterns in comparison to the non-cut sheet which only exhibit minor
+buckling of $\sim 2$ Å which is on the same order as the lattice spacing.
+Moreover, we notice that the Tetrahedron pattern buckles more in consideration
+to the min.\ and max.\ peaks while the remaining quantiles actually seem to be more closely spaced than for the Honeycomb. By adressing the simulation visually, using the Open Visualization Tool OVITO, we find that this can be
+attributed to fringes on the edge ``flapping around'' and thus increasing the
+min.\ and max.\ values.
 
 \begin{figure}[H]
   \centering
@@ -534,31 +532,38 @@ quartiles is at a similar magnitude as the Honeycomb. By consulting with the sim
   \label{fig:buckling_quartiles}
 \end{figure}
 
-%
-%
-% Working here
-%
-%
+Given the confirmation of out-of-plane buckling in a vacuum, as seen in
+\cref{fig:buckling_quartiles}, we reintroduce the substrate in order to
+investigate whether this effect carries over to a change in contact area. We
+raise the temperature to the default value of $T =\SI{300}{K}$. We keep the
+normal force off and let the sheet stick purely by the adhesion forces between
+the sheet and substrate. We quantify the contact area through the relative
+amount of atoms in the sheet within chemical range of the substrate. The cut-off
+for this interaction is set to 4 Å, inspired by \cite{li_evolving_2016},
+corresponding to $\sim 120$\% the LJ equilibrium distance. Usually the contact
+area is calculated as the number of contacting atoms multiplied with an
+associated area for each atom. However, since we are not interested in the
+absolute value of the actual area, but rather the relative change, we ommit the
+multiplication factor. That is, we consider the relative number of atoms within
+contact range, which is proportional to the contact area, as our metric of
+choice. The relative contact for the three configurations (No cut, Tetrahedron
+$(7,5,1)$ and Honeycomb $(2,2,1,5)$) during strecthing are shown in figure
+\cref{fig:contact_vs_stretch}. The figure reveals a significant drop in contact
+as the sheets are stretched, which agrees qualitatively with the buckling
+observed without the substarte (\cref{fig:buckling_quartiles}). The Honeycomb
+pattern turns out to be both the most stretchable, with a rupture strain at
+127\% its original length, and the one with the biggest decrease in relative
+contact down to approximately 43\%. Notice, that the relative contact is never actual 1.0 but insteadt maxes out at around 96\% with no stretching. This is attributed to the temperature fluctuations and the choice of cut-off.
 
-The next step is to verify that the buckling will lead to a significant altering
-of the contact area when the sheet is in put in contact with the substrate. We
-investigate this by simulating the stretch at the default temperature $T =
-\SI{300}{K}$ with the presence of contact forces between the sheet and
-substrate. Note that no normal load is applied as the sheet and substrate is
-sufficiently attracted by the LJ potential. Selected frames from the simulation is shown in appendix \cref{sec:sheet_stretch}. We assess the contact area by the
-relative amount of atoms in the sheet within chemical range of the substrate.
-The cut-off for this interaction is 4 Å corresponding to $\sim 120$\% the LJ
-equilibrium distance. Since the contact area is usually calculated as the amount
-of atoms in contact multiplied with an associated area for each contact this
-feature is taken to be proportional to the contact area. The relative amount of
-bonds as a function of stretch for the various configurations is shown in figure
-\cref{fig:contact_vs_stretch} which clearly indicates a drop in contact area as
-the cutted sheets are stretched. 
+Selected frames from the simulation result
+are shown in appendix \cref{sec:sheet_stretch} which reveals a bit more
+information of how the buckling accours. The Tetrahedron pattern deforms rather quickly and smoothly into small tetrahedron spikes, as the name suggest. While the Tetrahedron deformation appeared rather uniformly the Honeycomb pattern deformaitons inniate from one side first. As the sheet stretches more rows of the pattern is activated, producing the honeycomb looking shape when seen from above. As both patterns approaches the rupture point the tensions leads to a small increase in the relative contact again. This agrees with the results in \cref{fig:buckling_quartiles} where the buckling reduces slightly towards the end.
+
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.6\linewidth]{figures/baseline/contact_vs_stretch.png}
-  \caption{Contact vs. stretching of the sheet, where the contact is measured by the relative amount atoms in the sheet within chemical interaction range to the substrate. The cut-off for this interaction range is 4 Å corresponding to $\sim 120 \%$ the LJ equilibrium distance. $T = 300$ K }
+  \caption{Relative contact, given as the relative number of atom in the sheet being within chemical interaction range, vs.\ strain of the sheet.  The cut-off for the interaction range is 4 Å corresponding to $\sim 120 \%$ the LJ equilibrium distance. No normal force is applied and temperature is kept at $T = 300$ K.}
   \label{fig:contact_vs_stretch}
 \end{figure}
 

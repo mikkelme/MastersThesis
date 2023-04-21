@@ -461,7 +461,8 @@ def contact_vs_time(path, save = False):
             'popup/contact/pop_contact', 
             'honeycomb/contact/hon_contact']
          
-    names = ['nocut', 'popup', 'honeycomb']
+    names = ['No cut', 'Tetrahedron (7,5,1)', 'Honeycomb (2,2,1,5)']
+    
     
     colors = [color_cycle(0), color_cycle(1), color_cycle(3)]
     
@@ -482,14 +483,14 @@ def contact_vs_time(path, save = False):
         if info['is_ruptured']:
             # plt.plot(stretch[-1], contact[-1], 'o', color = color_cycle(i))
             rup = info['rupture_stretch']
-            vline(plt.gca(), rup, linestyle = "--", alpha = 1, linewidth = 1, color = color_cycle(i))
-            names[i] += f', rupture = {rup:0.2f}'
+            vline(plt.gca(), rup, linestyle = "--", alpha = 1, linewidth = 1, color = colors[i])
+            names[i] += f' (rupture = {rup:0.2f})'
 
 
         
         plt.plot(stretch, contact, color = colors[i], label = names[i])
-        plt.xlabel('Stretch', fontsize=14)
-        plt.ylabel('Rel. Bond', fontsize=14)
+        plt.xlabel('Strain', fontsize=14)
+        plt.ylabel('Rel. Contact', fontsize=14)
         plt.legend(fontsize = 13)
         plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
         if save:
@@ -577,8 +578,8 @@ if __name__ == "__main__":
     
     # multi_FN_force_dist(path)
     
-    # contact_vs_time(path, save = False)
-    vaccum_normal_buckling(path, save = True)
+    contact_vs_time(path, save = False)
+    # vaccum_normal_buckling(path, save = False)
     
     
     plt.show()

@@ -432,11 +432,19 @@ if __name__ == '__main__':
     model_name = 'mom_weight_search_cyclic/m0w0/'
     model_weights = f'{model_name}/model_dict_state'
     model_info = f'{model_name}/best_scores.txt'
+    
     # EV = Evaluater(model_weights, model_info, config_path = '../config_builder/honeycomb/hon3131.npy')
     # EV = Evaluater(model_weights, model_info, config_path = 'pop_search/Ff_min0_conf.npy')
-    EV = Evaluater(model_weights, model_info, config_path = 'hon_search/Ff_min0_conf.npy')
+    # EV = Evaluater(model_weights, model_info, config_path = 'hon_search/Ff_min0_conf.npy')
     # EV = Evaluater(model_weights, model_info, config_path = 'RW_search/Ff_min0_conf.npy')
-    stretch = np.linspace(0, 2, 1000)
+    
+    
+    mat = pop_up(shape = (62, 106), size = (5, 3), sp = 1, ref = (0, 4))
+    EV = Evaluater(model_weights, model_info)
+    EV.set_config(mat)
+    
+    
+    stretch = np.linspace(0, 2, 100)
     F_N = 5
     EV.stretch_profile(stretch, F_N)
     plt.show()
