@@ -235,8 +235,13 @@ class Search:
                 builder.save_view(save_path, 'sheet', name)
                 # dir, 'sheet', name, overwrite
                 
-    def ref_search(self, param, savename = 'pop_ref_search'):
+    def ref_search(self, param, savename = None):
         self.current = param
+        
+        pattern_name = self.pattern.__name__    
+        if pattern_name == 'honeycomb':
+            self.current[0] = 2*self.current[0]-1
+        
         
         refs = np.zeros((62, 106//2, 2)).astype('int')
         keys = [ 'Ff_min', 'Ff_max', 'Ff_max_diff', 'Ff_max_drop']
@@ -251,12 +256,13 @@ class Search:
             for j in range(refs.shape[1]):
                 refs[i,j] = (i,j)
     
+        # Define search order
         dis = np.linalg.norm(refs, axis = 2)
         dis_sort = np.argsort(dis.reshape(total_refs))
         indexes = refs.reshape(total_refs, 2)[dis_sort]
         
         steps_since_last_append = 0
-        break_limit = 100
+        break_limit = 300
         for i, ref in enumerate(indexes):
             if steps_since_last_append > break_limit:
                 break
@@ -286,11 +292,11 @@ class Search:
                 for key in keys:
                     scores[key][ref[0], ref[1]] = metrics[key][-1]
             
-            
-        # Save result as arrays
-        print(f'\nStoring results as {savename}.npy')
-        scores['refs'] = refs
-        np.save(f'{savename}.npy',  scores)    
+        if savename is not None:
+            # Save result as arrays
+            print(f'\nStoring results as {savename}.npy')
+            scores['refs'] = refs
+            np.save(f'{savename}.npy',  scores)    
 
        
 
@@ -392,13 +398,12 @@ if __name__ == '__main__':
     # --- Extended ref search --- #
     # Pop up
     # S = Search(model_name, topN = 5, pattern = pop_up)
-    # S.ref_search(param = (5, 3, 1), savename = 'ref_search/pop_5_3_1_ref_search')
+    # S.ref_search(param = (1, 7, 1), savename = 'ref_search/pop_1_7_1_ref_search')
     
     # Honeycomb
-    # S = Search(model_name, topN = 5, pattern = honeycomb)
-    # S.ref_search(param = (3,1,1,1), savename = 'ref_search/hon_2_1_1_1_ref_search')
-    # S.ref_search(param = (3,1,5,3), savename = 'ref_search/hon_2_1_5_3_ref_search')
-    # S.ref_search(param = (3,3,3,3), savename = 'ref_search/hon_2_3_3_3_ref_search')
+    S = Search(model_name, topN = 5, pattern = honeycomb)
+    # S.ref_search(param = [3, 3, 5, 3], savename = 'ref_search/hon_3_3_5_3_ref_search')
+    S.ref_search(param = [2, 3, 3, 3], savename = 'ref_search/hon_2_3_3_3_ref_search')
     
    
     # --- Test against data --- #
@@ -421,15 +426,15 @@ if __name__ == '__main__':
     
     # --- Extended search --- #
     # Pop up
-    S = Search(model_name, topN, pattern = pop_up)
+    # S = Search(model_name, topN, pattern = pop_up)
     # S.search([60, 60, 30], start_from = 1, repeat = 10) # XXX
     # S.print_extrema()
     # S.save_extrema('./pop_search')
     
     # Honeycomb
-    S = Search(model_name, topN, pattern = honeycomb)
-    S.search([30, 30, 30, 60], start_from = 1, repeat = 10) # XXX
-    # S.print_extrema()
+    # S = Search(model_name, topN, pattern = honeycomb)
+    # S.search([30, 30, 30, 60], start_from = 1, repeat = 10) # XXX
+    # # S.print_extrema()
     # S.save_extrema('./hon_search')
     
     # Random walk

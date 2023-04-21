@@ -6,6 +6,8 @@ from config_builder.build_config import *
 from graphene_sheet.build_utils import *
 from ase.visualize.plot import plot_atoms
 
+from time import perf_counter
+
 # from graphene_sheet.RN_walks import *
 
 
@@ -243,6 +245,9 @@ class Genetic_algorithm: # Genetic algorithm
     
     def evolution(self, num_generations = 1000):
         
+        timer_start = perf_counter() 
+
+        
         self.evaluate_fitness()
         for generation in range(num_generations):
             try:
@@ -265,6 +270,13 @@ class Genetic_algorithm: # Genetic algorithm
             except KeyboardInterrupt: 
                 break
         
+        timer_stop = perf_counter()
+        elapsed_time = timer_stop - timer_start
+        h = int(elapsed_time // 3600)
+        m = int((elapsed_time % 3600) // 60)
+        s = int(elapsed_time % 60)
+        self.s_timing = f'{h:02d}:{m:02d}:{s:02d}'
+        print(f'Elapsed time: {self.s_timing}')
         
     def show_sheet(self, conf):
         builder = config_builder(conf)
@@ -620,6 +632,7 @@ class Genetic_algorithm: # Genetic algorithm
         s += f'Mean score = {self.mean_score:g}\n'
         s += f'Max score = {self.max_score:g}\n'
         s += f'porosity = {1-np.mean(self.A[0]):g}\n'
+        s += f'Ellapsed time = {self.s_timing}\n'
         s += f'\n# Top {topN} scores \n'
         for top in range(np.min((topN, self.A.shape[0]))):
             s += f'top{top} | '
@@ -658,9 +671,7 @@ class Genetic_algorithm: # Genetic algorithm
             builder.build()
             builder.save_view(save_path, 'sheet', name)
             
-        
-  
-               
+           
         
 def porosity_target(conf):
     porosity = np.mean(conf)
@@ -681,23 +692,84 @@ def ising_max(conf):
 
 
 
+
+
+def run_pop_search(model_name, params, N = 50, num_generations = 50, topN = 5):
+    """ Do genetic algorithm search based on a Tetrahedron pattern """
+    GA = Genetic_algorithm(model_weights, model_info, N, image_shape = (62,106), repair = True)
+    GA.stretch = np.linspace(0, 2, 100)
+    GA.F_N = 5
+    GA.set_fitness_func(GA.max_drop)
+    
+    
+    name = f'pop_{params[0]}_{params[1]}_{params[2]}'
+    size = (params[0], params[1])
+    sp = params[2]
+    population = []
+    
+    print(f"Creating population (N = {N}): {name}")
+    for n in range(N):
+        print(n)
+        mat = pop_up(shape = (62, 106), size = size, sp = sp, ref = 'RAND')
+        population.append(mat)
+    GA.init_population(population)
+    
+    print(f'Running evolution for {num_generations} generations')
+    GA.evolution(num_generations)
+    
+    print(f'Storing results (top {topN})')
+    GA.print_top(topN)
+    GA.save_top('./GA_{name}', topN)
+
+def run_hon_search(model_name, params, N = 50, num_generations = 50, topN = 5):
+    """ Do genetic algorithm search based on a Honeycomb pattern """
+    GA = Genetic_algorithm(model_weights, model_info, N, image_shape = (62,106), repair = True)
+    GA.stretch = np.linspace(0, 2, 100)
+    GA.F_N = 5
+    GA.set_fitness_func(GA.max_drop)
+    
+    
+    xwidth = 2*params[0]- 1
+    ywidth = params[1]
+    bridge_thickness =  params[2]
+    bridge_len = params[3]
+    name = f'hon_{xwidth}_{ywidth}_{bridge_thickness}_{bridge_len}'
+    population = []
+    
+    print(f"Creating population (N = {N}): {name}")
+    for n in range(N):
+        print(n)
+        mat = honeycomb(shape = (62, 106), xwidth = xwidth, ywidth = ywidth, bridge_thickness = bridge_thickness, bridge_len = bridge_len, ref = 'RAND')
+        population.append(mat)
+    GA.init_population(population)
+    print(f'Running evolution for {num_generations} generations')
+    GA.evolution(num_generations)
+    
+    print(f'Storing results (top {topN})')
+    GA.print_top(topN)
+    GA.save_top(f'./GA_{name}', topN)
+    
+    
+    
+
+
 if __name__ == '__main__': 
     model_name = 'mom_weight_search_cyclic/m0w0'
     model_weights = f'{model_name}/model_dict_state'
     model_info = f'{model_name}/best_scores.txt'
     
     
-    # # --- Genetic algorithm search: Max drop --- #
-    GA = Genetic_algorithm(model_weights, model_info, N = 50, image_shape = (62,106), repair = True)
-    GA.stretch = np.linspace(0, 2, 100)
-    GA.F_N = 5
-    GA.set_fitness_func(GA.max_drop)
-    GA.init_population([0.5])
-    GA.evolution(num_generations = 100)
     
+    # --- Genetic algorithm search: Max drop --- #
+    N = 100
+    num_generations = 1000
     topN = 5
-    GA.print_top(topN)
-    GA.save_top('./GA_RN_start', topN)
+    
+    
+    run_pop_search(model_name, (1,7,1), N, num_generations, topN)
+    # run_hon_search(model_name, (3,3,5,3), N, num_generations, topN)
+    
+    
     
     # ## TEST
     # GA = Genetic_algorithm(model_weights, model_info, N = 5, image_shape = (62,106), repair = False)
@@ -713,7 +785,7 @@ if __name__ == '__main__':
     # GA = Genetic_algorithm(model_weights, model_info, N = 50, image_shape = (10, 10), expand = (62,106), repair = True)
     # GA = Genetic_algorithm(model_weights, model_info, N = 10, image_shape = (10, 10), expand = None)
     
-    exit()
+    # exit()
     # --- Define fitness --- #
     # GA.set_fitness_func(ising_max)
     # GA.init_population(['../config_builder/baseline/hon3215.npy', '../config_builder/baseline/pop1_7_5.npy', 0, 0.25, 0.5, 0.75, 1])
@@ -723,9 +795,6 @@ if __name__ == '__main__':
     # GA.show_sheet(GA.A_ex[0])
     # GA.show_status()
     # plt.show()
-    
-    # TODO: Reparing sheet A before expanding to A_ex does not guarantee spanning,
-    # but is probably much faster. When running on cluster feel free to repair on expanded sheet.
     
     
     
