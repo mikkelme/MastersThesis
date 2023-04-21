@@ -509,17 +509,17 @@ def vaccum_normal_buckling(path, save = False):
             'popup/vacuum/pop_vacuum',
             'honeycomb/vacuum/hon_vacuum']
     
-    names = ['nocut', 'popup', 'honeycomb']
+    names = ['No cut', 'Tetrahedron (7,5,1)', 'Honeycomb (2,2,1,5)']
     
-    colors = [color_cycle(0), color_cycle(1), color_cycle(3)]
-    
-    
+    colors = [get_color_value(i, 0, 4, cmap = 'viridis') for i in reversed(range(5))]
+    # colors = [get_color_value(i, 0, 4, cmap = 'icefire') for i in reversed(range(5))]
+    # colors = [get_color_value(i, 0, 4, cmap = 'Spectral') for i in reversed(range(5))]
+    # colors = [get_color_value(i, 0, 4+1, cmap = 'inferno') for i in reversed(range(5))]
     
     grid = (1, len(dump_files))
     fig, axes = plt.subplots(grid[0], grid[1],  figsize = (10,5))
     
-
-    # plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
+    max_ylim = 0
     for i, dir in enumerate(dirs):
         info = read_info_file(os.path.join(path, dir, info_file))
         timestep, Q_var, Q = get_normal_buckling(os.path.join(path, dir, dump_files[i]), quartiles = [0.01, 0.1, 0.25, 0.50])
@@ -537,20 +537,18 @@ def vaccum_normal_buckling(path, save = False):
             label = f"Q = {Q_var[-j-1]*100:2.0f}%, {Q_var[j]*100:2.0f}%"
             if Q_var[j] == 1:
                 label = 'Q = Min, Max'
-            axes[i].plot(stretch, Q[j], color = color_cycle(j), label = label)
-            axes[i].plot(stretch, Q[-j-1], color = color_cycle(j))
+            axes[i].plot(stretch, Q[j], color = colors[j], label = label)
+            axes[i].plot(stretch, Q[-j-1], color = colors[j])
         
         if Q.shape[0]%2 == 1:
             j += 1
-            axes[i].plot(stretch, Q[j], color = color_cycle(j), label = f"Q = Median")
-            
-            
+            axes[i].plot(stretch, Q[j], color = colors[j], label = f"Q = Median")
         
-        # plt.plot(, contact, color = colors[i], label = names[i])
-        # plt.xlabel('Stretch', fontsize=14)
-        # plt.ylabel('Rel. Bond', fontsize=14)
-        # plt.legend(fontsize = 13)
-        # plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+        ylim = axes[i].get_ylim()
+        max_ylim = np.max((np.max((np.abs(ylim))), max_ylim))
+        
+    for ax in axes:
+        ax.set_ylim([-max_ylim, max_ylim])
 
     fig.supxlabel('Stretch', fontsize = 14)
     fig.supylabel('z-position [Å]', fontsize = 14)
@@ -566,9 +564,6 @@ def vaccum_normal_buckling(path, save = False):
 
 if __name__ == "__main__":
     
-    # path = '../Data/Baseline'
-    # temp(path, save = False)
-    
     path = '../Data/Baseline_fixmove'
     # path = '../Data/Baseline'
     # temp(path, save = False)
@@ -580,10 +575,10 @@ if __name__ == "__main__":
     # multi_FN(path, save = False)
     # multi_area(path, save = False)
     
-    multi_FN_force_dist(path)
+    # multi_FN_force_dist(path)
     
     # contact_vs_time(path, save = False)
-    # vaccum_normal_buckling(path, save = False)
+    vaccum_normal_buckling(path, save = True)
     
     
     plt.show()

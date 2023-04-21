@@ -566,7 +566,7 @@ if __name__ == '__main__':
     
     # folder = os.path.join(path,'nocut/multi_stretch/stretch_15001_folder')
     # folder = os.path.join(path,'nocut/multi_FN/stretch_15001_folder')
-    # max_values(folder, save = True)
+    # max_values(folder, save = False)
     
     
     # path = '../Data/Baseline_fixmove'

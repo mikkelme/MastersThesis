@@ -359,27 +359,35 @@ using.
 \end{figure}
 
 
-\section{Defining metrics for kinetic and static friction}\label{sec:def_dyn_and_stat}
+\section{Defining metrics for friction}\label{sec:def_dyn_and_stat}
 
-In order to evaluate the frictional properties of the sheet we aim to reduce the force trace results adressed in section \cref{sec:single_analysis} into single metrics describing the kinetic and static friciton. 
-% The common choice is to use the mean and max values of the time series. 
+In order to evaluate the frictional properties of the sheet we aim to reduce the force trace results, adressed in section \cref{sec:single_analysis}, into single metrics describing the kinetic and static friciton resepctively. 
 
 \subsection{Kinetic friction} 
-For the kinetic friction measurement we take the mean value of the latter half
-of the dataset to ensure that we are sampling from a stable system. For a full
-sliding simulation of 400 Å we thus base our mean value on the latter 200 Å (1000 ps) of
-sliding. In \cref{fig:runmean} we have shown the force trace for the
-first 10 Å of sliding together with a 50\% running mean window with the value being plotted at the end of the window. This is merely done to illustrate the
-samplig procedure, and we see that for such a short sliding period the final mean estimate (marked with a dot) takes a negative value due to the specific cut-off of the few oscialltion captured here. Nonetheless, one approach to quanity the
-uncertainy of the final mean estimate is to consider the variation of the
-running mean preceeding the final mean value. The more the running mean
-fluctuates the more uncertainty associated with the final estimate. However, only the
-running mean ``close'' to the ending should be considered, since the first part
-will rely on data from the beginning of the simulation. From the Fourier analyse
-in section \cref{sec:force_oscillations} we found the longest significant
-oscillation period to be $\sim 71$ Å$^{-1}$ corresponding to $\sim 35 \%$ of the
-running mean window which have a window length of 200 Å when including all the data. Hence, we use the standard deviation of the final 35\% of the running mean to approximate the
-uncertainty of the final mean value. We consider the standard deviation as an estimate of the absolute error and calculate the relative error by a division of the final mean value. In \cref{fig:runstd} we showcase a running relative error based on the standard deviation, with a window of length $35 \%$ the mena window, in a continuation of the illustrative case of a 10 Å sliding from \cref{fig:runmean}. In this case we get a high relative error of $\sim 257\%$ which alligns well with the short sampling period and the fact that this lead to the mean value taking an unphysical negative value. 
+We measure kinetic friction as the mean of the friction force trace. More
+precisly, we take the mean value of the latter half of the dataset in order to
+ensure that we are sampling from a stable system. For a full sliding simulation
+of 400 Å we thus base our mean value on the latter 200 Å (1000 ps) of sliding.
+In \cref{fig:runmean} we have shown the force trace for the first 10 Å of
+sliding together with a 50\% running mean window. The choice of such a short sliding distance is merely to illustrate the samplig procedure,
+and we see that the final mean estimate (marked
+with a dot) takes a negative value due to the specific cut-off of the few
+oscialltion captured here. Nonetheless, one approach to quanity the uncertainy
+of the final mean estimate is to consider the variation of the running mean
+preceeding the final mean value. The more the running mean fluctuates the more
+uncertainty associated with the final estimate. Only the running mean
+``close'' to the ending should be considered, since the first part will rely on
+data from the beginning of the simulation. From the Fourier analyse in section
+\cref{sec:force_oscillations} we found the longest significant oscillation
+period to be $\sim 71$ Å$^{-1}$ corresponding to $\sim 35 \%$ of the running
+mean window which gives a window length of 200 Å when including all the data.
+Hence, we use the standard deviation of the final 35\% of the running mean to
+approximate the uncertainty of the final mean value. We consider the standard
+deviation (\acrshort{std}) as an estimate of the absolute error and calculate the relative error
+by a division of the final mean value. In \cref{fig:runstd} we showcase a
+running relative error based on the \acrshort{std}, with a window of length
+$35 \%$ the mean window, in a continuation of the illustrative case of a 10 Å
+sliding from \cref{fig:runmean}. In this case we get an extremely high relative error of $\sim 257\%$, but this is desirable since the sampling period leads to an unphysical negative value which should be associated with a high uncertainty. 
 
 \begin{figure}[H]
   \centering
@@ -396,12 +404,11 @@ uncertainty of the final mean value. We consider the standard deviation as an es
       \caption{Running std with window length $\SI{1.75}{\text{Å}}$ (35\% the mean window length.)}
       \label{fig:runstd}
   \end{subfigure}
-  \caption{Running mean and running standard deviation (std) on the friction force data from a $\SI{10}{{\text{Å}}}$ of sliding simulation. The running mean window is 50\% the data length while the running std window is 35\% the running mean window length.}
+  \caption{Running mean (a) and running relative error (std) (b) on the friction force data from a reduced sliding distance of \SI{10}{{\text{Å}}}. The running mean window is 50\% the data length while the running std window is 35\% the running mean window length. The values are plotted at the end of their respective windows such that windoe precredes the actual point on the graph.}
   \label{fig:running}
 \end{figure}
 
-
-When including the full dataset of 400 Å of sliding, such that the std window actually matches with the longest period of oscillations expected from the data, we get a final relative error of $\sim 12 \%$ as shown in fig \cref{fig:runstd_long}. This is arguable just at the limit for an acceptable error, but as we shall see later on in \cref{sec:load_and_stretch} this high relative error is mainly associated with the cases of low friction. When investigating different configurations under variation of load and stretch we see a considerable lower relative error as the mean friction evaluates to higher values. One interpration of this finding is simply that the oscialltiosn in the running mean not strongly dependent of the magnitude of the friction. In that case, the relative error will spike for the low friction cases, and the absolute error might be there more reliable measure.
+When including the full dataset of 400 Å of sliding, such that the \acrshort{std} window actually matches with the longest period of oscillations expected, we get a final relative error of $\sim 12 \%$ as shown in fig \cref{fig:runstd_long}. This is arguable just at the limit of an acceptable error, but as we shall see later on in \cref{sec:load_and_stretch} this high relative error is mainly associated with the cases of low friction. When investigating different configurations under variation of load and stretch we see a considerable lower relative error as the mean friction evaluates to higher values. One interpration of this finding is simply that the oscillations in the running mean are to some degree independent of the magnitude of the friction. In that case, the relative error will spike for the low friction cases, and the absolute error might be there more reliable measure, i.e.\ taken simple the \acrshort{std} without dividing by the final mean value.
 
 
 \begin{figure}[H]
@@ -413,11 +420,25 @@ When including the full dataset of 400 Å of sliding, such that the std window a
 
 
 \subsection{Static friction} 
-The maximum value is probably the most obvious choice for adressing the static friction, even though the definition of the static friction is a bit vague. When
-considering the force traces in \cref{fig:drag_Ff} we observe that the force oscillations increase in magnitude toward a global peak at $\sim \SI{20}{\text{Å}}$. Thus, one could be inclined to identify this peak as the
-maximum value aassociated with friction force. However, as we have already clarified, this steady increase in friction is a part of a slower oscillation which repeats by a period of $\sim 71$ Å$^{-1}$. By plotting the top three max values recorded during a full 400 Å simulation, for 30 logaritmicly spaced load values in the range $[0.1, 100]$ nN, we observe that the global max in fact rarely fall within this first oscillation period as shown in \cref{fig:max_dist}. Only 2/30 global values and 4/90 top three values 
-can be associated to the start of the sliding by this definition. Thus, this
-result suggest that we can not really measure a significant static friction response in the sense of an initial increase in friction due to a depinning of the sheet from the static state. A possible approach to increase the likelihood of seeing a significant static friction response is by extending the relaxtion period, as static friction is theorized to increase logaritmic with time, and to increase the sliding force slowly and through a soft spring. As an attempt to test parts of this hypothesis we ran a series of simulations with varying spring constant, $K\in [?, 200]$ nN (and $\inf$), but keeping the relaxtion time and sliding speed at the default value. The result is shown in \cref{fig:max_vs_K}, but we did not find any signs of the maximum value falling within the first oscillation period for low spring constants. Due to the ambiguousness in the assesment of the static friction we will mainly consern ourselves with the kinetic friction in this study.
+The maximum value is one of the comon choices for adressing static friction,
+even though the definition of static friction is a bit vague. When considering
+the force traces in \cref{fig:drag_Ff} we observe that the force oscillations
+increase in magnitude toward a global peak at $\sim \SI{20}{\text{Å}}$. Thus,
+one could be inclined to identify this peak as the maximum value associated with
+the static friction force. However, as we have already clarified, this steady
+increase in friction is a part of a slower oscillation which repeats by a period
+of $\sim 71$ Å$^{-1}$. By plotting the top three max values recorded during a
+full 400 Å simulation, for 30 logaritmicly spaced load values in the range
+$[0.1, 100]$ nN, we observe that the global max in fact rarely fall within this
+first oscillation period as shown in \cref{fig:max_dist}. Only 2/30 global
+maxima and 4/90 top three maxima can be associated to the start of the sliding
+by this definition. Thus, this result suggest that our default system does not
+yield a static friction response in the sense of an initial increase in friction
+due to a depinning of the sheet from the static state \hl{Is this probably
+definned in the theory section}. Some parameter changes that might increase the
+likelihood of seeing a significant static friction response is either extending
+the relaxtion period, as static friction is theorized to increase logaritmically
+with time, or to increase the sliding force more slowly and through a soft spring tethering. As an attempt to test parts of this hypothesis we run a series of simulations with varying spring constant, $K\in [5, 200]$ nN including also $K = \inf$, but keeping the relaxtion time and sliding speed at the default values. The result is shown in \cref{fig:max_vs_K}. The results do not show any support of the hypothesis that a softning of the spring constant will eventually lead to the maxima occouring in the first periode of sliding. We note that this might be suppressed by having a too short relaxtion period or a too high sliding speed, related to the rate of which force increased initally, but due to the ambiguousness in the assesment of the static friction we will mainly consern ourselves with the kinetic friction in the remaming of this thesis.
 
 
 
@@ -491,72 +512,33 @@ result suggest that we can not really measure a significant static friction resp
 
 
 
-\subsection{Pressure reference for normal load domain}
-\text{Find place to put this.}
 
-% source 1: stiletto heeled shoes with less than 1cm diameter:
-% https://www.researchgate.net/publication/342223559_How_the_stiletto_heeled_shoes_which_are_popularly_preferred_by_many_women_affect_balance_and_functional_skills
-
-In order to relate the magntidue of the normal force in our friciton measurement
-we will use the pressure as a reference. We will use the pressure underneath a
-stiletto shoe as a worst case for human pressure execuation underneath the
-shoes. From (source 1) it is reported that the diameter of a stiletto heeled
-shoe can be less than 1 cm. Hence a 80 kg man\footnote{Yes, a man can certainly
-wear stilleto heels.} standing on one stiletto heel (with all the weight on the
-heel) will result in a pressure
-\begin{align*}
-  P = \frac{F}{A} = \frac{mg}{r^2\pi} = \frac{\SI{80}{kg} \cdot \SI{9.8}{\frac{m}{s^2}}}{(\frac{\SI{1e-2}{m}}{2})^2 \pi} = \SI{9.98}{MPa} \\
-\end{align*} 
-
-% source 1:
-% https://www.schoolphysics.co.uk/age16-19/Mechanics/Statics/text/Pressure_/index.html
-While this is in itself a spectacular realization that is often used in
-introductory physics courses (source 2) to demonstrate the rather extreme
-pressure under a stiletto heel (greater than the foot of an elephant) (how many
-Atmos?) this serves as a reasonible upperbound for human executed pressure. With
-a full sheet area of $\sim\SI{21e3}{{\text{Å}}^2}$ we can achieve a similar pressure of
-$\sim \SI{10}{MPA}$ with a normal force of
-\begin{align*}
-  F_N = \SI{10}{MPa} \cdot \SI{21e-17}{m^2} = \SI{2.10}{nN}  
-\end{align*}
-
-Of course this pressure might be insufficient for various industrial purposes,
-but with no specific procedure in mind this serves as a decent reference point.
-Notice that if we consider a human foot with ares $\SI{113}{cm^2}$ the pressure
-drops to a mere $\SI{70}{kPa}$ corresponding to $\sim \SI{0.01}{nN}$.
-
-% source 3: foot area ≈ 113 cm^2:
-% https://www.footbionics.com/Patients/Foot+Facts.html source 4:
-% https://hypertextbook.com/facts/2003/JackGreen.shtml
-
-
-
-\section{Out of plane buckling}
-
-The out of plane buckling is the main motivation for applying the kirigami
-inspired cuts to the sheet. Thus, we perform a stretch simulation in a low
-temperature $T = \SI{5}{K}$ vacuum in order to verify that the chosen cut
-configurations do in fact contribute to a significant out of plane buckling when
-stretched. For the non-cut, popup and honeycomb configuration we assess the
-movement in the z-direction (perpendicular to the plane) during the stretch,
-which we visualize by the min and max z-value along with the atom count
-quartiles 1\%, 10\%, 25\%, 50\% (median), 75\%, 90\% and 99\% as shown in figure
-\cref{fig:buckling_quartiles}. We observe that the popup and honeycomb pattern
-buckles considerable out of plane during the stretch in comparison to the non-cut sheet which only exhibit minor buckling of $\sim 2$ Å which is on the same order as the
-atomic spacing in the sheet. We also notice that the popup pattern
-buckles more in consideration to the min and max peaks while the 1\%, 99\%
-quartiles is on the same magnitude as the honeycomb. By looking at the simulation visualization
-(\hl{include OVITO figures for vacuum stretch as well?}) we can conclude that this is mainly due to the fringes
-of the sheet ``flapping'' around. 
+\section{Out-of-plane buckling}
+The out-of-plane buckling is one of the original motivations for investigating
+the application of Kirigami cuts in the context of friction. We perform a
+stretch simulation in a low temperature $T = \SI{5}{K}$ vacuum in order to
+verify that we are able to reproduce an out-of-plane buckling with the intended
+patterns described in \cref{chap:system}. We include the non-cut sheet along
+with the Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,15)$ pattern. Depsite a
+visual inspection of the simulation results, using the Open Visualization Tool (OVITO) \hl{SOURCE?}, we quanity the out-of-plane buckling
+by assessing the distirbution of atoms in the z-direction (perpendicular to the plane) during stretching. We calculate the mininum and maximum z-value taken by the atoms along with the atom count quartiles 1\%, 10\%, 25\%, 50\% (median), 75\%, 90\% and 99\% as shown in figure \cref{fig:buckling_quartiles}. We observe that the Tetrahedron and Honeycomb patterns show a considerable amount of buckling in comparison to the non-cut sheet which exhibit minor buckling of $\sim 2$ Å which is on the same order as the
+atomic spacing in the sheet. Furthermore, we notice that the Tetrahedron pattern
+buckles more in consideration to the min.\ and max.\ peaks while the 1\% and 99\%
+quartiles is at a similar magnitude as the Honeycomb. By consulting with the simulation visualization this is mainly attributed to fringes on the edge flapping around and thus pushing the min.\ and max.\ values.
 
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{figures/baseline/vacuum_normal_buckling}
-  \caption{Out of plane buckling during stretch of sheets in vacuum at $T = 5$ K. Reading from left to right the vacuum rupture stretch are 0.38, 0.22 and 1.37. \hl{perhaps use a color scale instead of the standard color cycles here.}}
+  \caption{Out-of-plane buckling during stretching of the No cut, Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$ sheet resepctively in vacuum at low temperature $T = \SI{5}{K}$. The buckling is measured by the distribution of the atom z-position (perpendicular to the sheet plane), for which the colors indicates selected quantiles. The yield strain were, reading from left to right, 0.38, 0.22 and 1.37.}
   \label{fig:buckling_quartiles}
 \end{figure}
 
+%
+%
+% Working here
+%
+%
 
 The next step is to verify that the buckling will lead to a significant altering
 of the contact area when the sheet is in put in contact with the substrate. We
@@ -690,6 +672,47 @@ Till this point we have only changed variables one by one to investigate single 
 \hl{Explain how the stretch is uniformly sampled within equally divided intervals and the normal force is actually uniformly sampled in a given range. Argue that the first might be approximately uniformly distributed for large numbers.}
 
 \hl{Talk about rupture test also. Maybe in the theory/method section under numerical procedure: Before simulating a rupture test is perform to determine under what stretch the sheet ruptures. This is a slightly higher threshold than when applied normal load and sliding along the substrate.}
+
+
+
+\subsection{Pressure reference for normal load domain}
+% source 1: stiletto heeled shoes with less than 1cm diameter:
+% https://www.researchgate.net/publication/342223559_How_the_stiletto_heeled_shoes_which_are_popularly_preferred_by_many_women_affect_balance_and_functional_skills
+
+In order to relate the magntidue of the normal force in our friciton measurement
+we will use the pressure as a reference. We will use the pressure underneath a
+stiletto shoe as a worst case for human pressure execuation underneath the
+shoes. From (source 1) it is reported that the diameter of a stiletto heeled
+shoe can be less than 1 cm. Hence a 80 kg man\footnote{Yes, a man can certainly
+wear stilleto heels.} standing on one stiletto heel (with all the weight on the
+heel) will result in a pressure
+\begin{align*}
+  P = \frac{F}{A} = \frac{mg}{r^2\pi} = \frac{\SI{80}{kg} \cdot \SI{9.8}{\frac{m}{s^2}}}{(\frac{\SI{1e-2}{m}}{2})^2 \pi} = \SI{9.98}{MPa} \\
+\end{align*} 
+
+% source 1:
+% https://www.schoolphysics.co.uk/age16-19/Mechanics/Statics/text/Pressure_/index.html
+While this is in itself a spectacular realization that is often used in
+introductory physics courses (source 2) to demonstrate the rather extreme
+pressure under a stiletto heel (greater than the foot of an elephant) (how many
+Atmos?) this serves as a reasonible upperbound for human executed pressure. With
+a full sheet area of $\sim\SI{21e3}{{\text{Å}}^2}$ we can achieve a similar pressure of
+$\sim \SI{10}{MPA}$ with a normal force of
+\begin{align*}
+  F_N = \SI{10}{MPa} \cdot \SI{21e-17}{m^2} = \SI{2.10}{nN}  
+\end{align*}
+
+Of course this pressure might be insufficient for various industrial purposes,
+but with no specific procedure in mind this serves as a decent reference point.
+Notice that if we consider a human foot with ares $\SI{113}{cm^2}$ the pressure
+drops to a mere $\SI{70}{kPa}$ corresponding to $\sim \SI{0.01}{nN}$.
+
+% source 3: foot area ≈ 113 cm^2:
+% https://www.footbionics.com/Patients/Foot+Facts.html source 4:
+% https://hypertextbook.com/facts/2003/JackGreen.shtml
+
+
+
 
 \subsection{Contact area}\cref{sec:contact_area}
 
