@@ -354,9 +354,7 @@ def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yer
             # Get variables of interest
             locs = locals()
             x, y, z = [eval(v, locs) for v in vars]
-            print(z)
-            print(f'----> {np.max(z)}')
-            
+            # print(f'----> {np.max(z)}')
             # Plot
             if yerr is not None:
                 f_yerr = eval(yerr)
@@ -368,6 +366,13 @@ def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yer
                     
                     color = get_color_value(z[k], colorbar_scale[0][0], colorbar_scale[0][1], scale = colorbar_scale[-1], cmap = cmap)
                     axes[f].plot(x, y[:,k], **line_and_marker, color = color)
+                    # test = y[:, k]/x
+                    # print(f'F/FN (f = {f}, z = {z[k]}): min = {np.min(test)}, max = {np.max(test)}')
+                    notnan = ~np.isnan(y[:, k])
+                    a, b, a_err, b_err = lin_fit(x[notnan],y[notnan, k])
+                    print(f'linfit (f = {f}, z = {z[k]}):  a = {a:g}, b = {b:g}, a_err = {a_err:g}, b_err = {b_err:g}')
+                    
+                    # axes[f].plot(x, y[:,k]/x, **line_and_marker, color = color)
                 
                 else:
                     exit("Handle this")
@@ -588,6 +593,74 @@ def vaccum_normal_buckling(path, save = False):
 
 
 
+def computational_cost(save = False):
+    data_path = '../Data/Baseline_fixmove'
+    T_path = 'temp3'
+    vel_path = 'vel2'
+    K_path = 'spring'
+    dt_path = 'dt2'
+    
+    # TODO: HANDLE 0 --> inf for spring constant
+    
+    param_paths = [T_path, vel_path, K_path, dt_path]
+    param_names = ['$T$ [K]', 'Sliding speed [m/s]', '$K$ [N/m]', '$dt$ [fs]'] 
+    param_loglog = [False, True, False, True]
+    param_savename = ['temp', 'vel', 'K', 'dt']
+    
+    config_paths = ['nocut', 'popup', 'honeycomb']
+    config_names = ['No cut', 'Tetrahedron (7,5,1)', 'Honeycomb (2,2,1,5)']
+    config_markers = ['o', '^', 'D']
+    config_colors = [color_cycle(0), color_cycle(1), color_cycle(3)]
+    
+    
+    
+    for p, p_path in enumerate(param_paths):
+        
+        plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
+        
+        log_fit = [0, 0]
+        for c, c_path in enumerate(config_paths):
+            try:
+                file = os.path.join(data_path, c_path, p_path, 'timing.txt')
+                infile = open(file, 'r')
+            except FileNotFoundError:
+                print(f'File Not Found: ')
+                continue
+            infile.readline() # Skip header
+            
+            var = []; time = []; 
+            for line in infile:
+                words = line.split()
+                var.append(float(words[0]))
+                t = words[1].split(':')
+                time.append(int(t[0])*3600+int(t[1])*60 + int(t[2]))
+            time = np.array(time)
+            var = np.array(var)
+            plt.plot(var, time, linestyle = '', marker = config_markers[c], markersize = 2.5, color = config_colors[c], label = config_names[c])
+            
+            if param_loglog[p]:
+                a, b, a_err, b_err = lin_fit(np.log(var), np.log(time))
+                log_fit[0] += a
+                log_fit[1] += a_err
+                print(f'{p_path}, {c_path} | a = {a:0.{decimals(a_err)}f} +- {a_err:0.{decimals(a_err)}f}')
+        
+        plt.xlabel(param_names[p], fontsize=14)
+        plt.ylabel('Time [s]', fontsize=14)
+        plt.legend(fontsize = 13)
+        if param_loglog[p]:
+            a = log_fit[0] / len(config_paths)
+            a_err = log_fit[1] / len(config_paths)
+            print(f'{p_path}, avg | a = {a:0.{decimals(a_err)}f} +- {a_err:0.{decimals(a_err)}f}')
+            plt.xscale('log')
+            plt.yscale('log')
+        
+        plt.grid(True, which="both")
+        plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+        
+        if save:
+            plt.savefig(f'../article/figures/baseline/comp_cost_{param_savename[p]}.pdf', bbox_inches='tight')
+
+
 if __name__ == "__main__":
     
     path = '../Data/Baseline_fixmove'
@@ -598,7 +671,7 @@ if __name__ == "__main__":
     # dt(path, save = False)
     
     # multi_stretch(path, save = False)
-    multi_FN(path, save = True)
+    # multi_FN(path, save = False)
     # multi_area(path, save = False)
     
     # multi_FN_force_dist(path, save = True)
@@ -606,5 +679,5 @@ if __name__ == "__main__":
     # contact_vs_time(path, save = False)
     # vaccum_normal_buckling(path, save = False)
     
-    
+    computational_cost(save = True)
     plt.show()
