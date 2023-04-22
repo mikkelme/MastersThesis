@@ -750,7 +750,26 @@ def run_hon_search(model_name, params, N = 50, num_generations = 50, topN = 5):
     GA.save_top(f'./GA_{name}', topN)
     
     
+def run_porosity_search(model_name, name, porosity = [0.5], N = 50, num_generations = 50, topN = 5):
+    """ Do genetic algorithm search from random noice of porosity """
+    GA = Genetic_algorithm(model_weights, model_info, N, image_shape = (62,106), repair = True)
+    GA.stretch = np.linspace(0, 2, 100)
+    GA.F_N = 5
+    GA.set_fitness_func(GA.max_drop)
     
+
+    print(f"Creating population (N = {N}): {name}")
+    GA.init_population(porosity)
+    
+    print(f'Running evolution for {num_generations} generations')
+    GA.evolution(num_generations)
+    
+    print(f'Storing results (top {topN})')
+    GA.print_top(topN)
+    GA.save_top(f'./GA_{name}', topN)
+    
+    
+
 
 
 if __name__ == '__main__': 
@@ -762,13 +781,15 @@ if __name__ == '__main__':
     
     # --- Genetic algorithm search: Max drop --- #
     N = 100
-    num_generations = 1000
+    num_generations = 100
     topN = 5
     
     
-    run_pop_search(model_name, (1,7,1), N, num_generations, topN)
+    # run_pop_search(model_name, (1,7,1), N, num_generations, topN)
     # run_hon_search(model_name, (3,3,5,3), N, num_generations, topN)
     
+    run_porosity_search(model_name, 'P05', [0.5], N, num_generations, topN)
+    # run_porosity_search(model_name, 'P025', [0.25], N, num_generations, topN)
     
     
     # ## TEST

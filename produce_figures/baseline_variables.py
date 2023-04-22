@@ -15,7 +15,7 @@ def temp(path, save = False):
     folders = [os.path.join(path, 'nocut', common_folder), 
                os.path.join(path, 'popup', common_folder),
                os.path.join(path, 'honeycomb', common_folder)]
-    names = ['nocut', 'popup', 'honeycomb']
+    names = ['No cut', 'Tetrahedron (7,5,1)', 'Honeycomb (2,2,1,5)']
     # fig_max, fig_mean = variable_dependency(folders, names, 'T', '$T$ [K]', default = 300, error = 'shade')
     fig_max, fig_mean = variable_dependency(folders, names, 'T', '$T$ [K]', default = 300, error = 'shade')
     if save:
@@ -30,7 +30,7 @@ def vel(path, save = False):
     folders = [os.path.join(path, 'nocut', common_folder), 
                os.path.join(path, 'popup', common_folder),
                os.path.join(path, 'honeycomb', common_folder)]
-    names = ['nocut', 'popup', 'honeycomb']
+    names = ['No cut', 'Tetrahedron (7,5,1)', 'Honeycomb (2,2,1,5)']
     convert = metal_to_SI(1, 's')/metal_to_SI(1,'t')
     fig_max, fig_mean = variable_dependency(folders, names, 'drag_speed', 'Sliding speed [m/s]', convert = convert, default = 20, error = 'shade')
     if save:
@@ -44,7 +44,7 @@ def spring(path, save = False):
     folders = [os.path.join(path, 'nocut', common_folder), 
                os.path.join(path, 'popup', common_folder),
                os.path.join(path, 'honeycomb', common_folder)]
-    names = ['nocut', 'popup', 'honeycomb']
+    names = ['No cut', 'Tetrahedron (7,5,1)', 'Honeycomb (2,2,1,5)']
     convert = metal_to_SI(1, 'F')/metal_to_SI(1,'s')
 
 
@@ -88,7 +88,7 @@ def dt(path, save = False):
     folders = [os.path.join(path, 'nocut', common_folder), 
                os.path.join(path, 'popup', common_folder),
                os.path.join(path, 'honeycomb', common_folder)]
-    names = ['nocut', 'popup', 'honeycomb']
+    names = ['No cut', 'Tetrahedron (7,5,1)', 'Honeycomb (2,2,1,5)']
     convert = 1e3 # ps -> fs
     fig_max, fig_mean = variable_dependency(folders, names, 'dt', '$dt$ [fs]', convert = convert, default = 1)
     if save:
@@ -196,7 +196,7 @@ def multi_stretch(path, save = False):
     folders = [os.path.join(path, 'nocut', common_folder), 
                os.path.join(path, 'popup', common_folder),
                os.path.join(path, 'honeycomb', common_folder)]
-    names = ['nocut', 'popup', 'honeycomb']
+    names = ['No cut', 'Tetrahedron (7,5,1)', 'Honeycomb (2,2,1,5)']
     
     # Mean
     vars = ['data[\'stretch_pct\']', 'data[\'Ff\'][:, :, 0, 1]', 'data[\'F_N\']']
@@ -221,7 +221,7 @@ def multi_area(path, save = False):
     folders = [os.path.join(path, 'nocut', common_folder), 
                os.path.join(path, 'popup', common_folder),
                os.path.join(path, 'honeycomb', common_folder)]
-    names = ['nocut', 'popup', 'honeycomb']
+    names = ['No cut', 'Tetrahedron (7,5,1)', 'Honeycomb (2,2,1,5)']
     
     # Mean
     # vars = ['data[\'stretch_pct\']', 'data[\'Ff\'][:, :, 0, 1]', 'data[\'F_N\']']
@@ -242,7 +242,7 @@ def multi_FN(path, save = False):
     folders = [os.path.join(path, 'nocut', common_folder), 
                os.path.join(path, 'popup', common_folder),
                os.path.join(path, 'honeycomb', common_folder)]
-    names = ['nocut', 'popup', 'honeycomb']
+    names = ['No cut', 'Tetrahedron (7,5,1)', 'Honeycomb (2,2,1,5)']
     
     # Mean
     vars = ['data[\'F_N\']', 'data[\'Ff\'][:, :, 0, 1].T', 'data[\'stretch_pct\']']
@@ -570,7 +570,7 @@ if __name__ == "__main__":
     # temp(path, save = False)
     # vel(path, save = False)
     # spring(path, save = False)
-    # dt(path, save = False)
+    dt(path, save = False)
     
     # multi_stretch(path, save = False)
     # multi_FN(path, save = False)
@@ -578,7 +578,7 @@ if __name__ == "__main__":
     
     # multi_FN_force_dist(path)
     
-    contact_vs_time(path, save = False)
+    # contact_vs_time(path, save = False)
     # vaccum_normal_buckling(path, save = False)
     
     

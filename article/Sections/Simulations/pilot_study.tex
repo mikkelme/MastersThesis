@@ -359,11 +359,11 @@ using.
 \end{figure}
 
 
-\section{Defining metrics for friction}\label{sec:def_dyn_and_stat}
+\section{Defining metrics for friction}\label{sec:fric_metrics}
 
 In order to evaluate the frictional properties of the sheet we aim to reduce the force trace results, adressed in section \cref{sec:single_analysis}, into single metrics describing the kinetic and static friciton resepctively. 
 
-\subsection{Kinetic friction} 
+\subsection{Kinetic friction}
 We measure kinetic friction as the mean of the friction force trace. More
 precisly, we take the mean value of the latter half of the dataset in order to
 ensure that we are sampling from a stable system. For a full sliding simulation
@@ -571,104 +571,95 @@ information of how the buckling accours. The Tetrahedron pattern deforms rather 
 
 
 \section{Investigating selected parmeters}
-
-We investigate the importance of the physical variables $T$, $v_{\text{slide}}$ and $K$ (\hl{make plots for scan angle as well?}) and the choice of timestep $dt$. This is done partly understand how the dependencies relate to theoretical, numerical and experimerimental results, and partly to understand how these parameter choices defines the regime for our multi configurational search. We use the default parameters in \cref{tab:final_param} with exception of the single parameter of interest which is varied in a reasonable range of the default choice. In \cref{fig:var_temp}-\cref{fig:var_dt} the kinetic friction estimate and the max friction force is shown as a function of $T$, $v_{\text{slide}}$, $K$ and $dt$ respectively. For the kinetic friction estimate the absolute error is denoted by a shaded error which linearly connects the points.
-
+We carry out a more extensive investigation of the dependence on friction of the
+physical parameters temperature $T$, sliding speed $v_{\text{slide}}$ and spring
+constant $K$, and the numerical parameter timestep $dt$. This is done partly to
+understand how the dependencies relate to theoretical, numerical and
+experimerimental results, and partly to understand how these parameters effects
+the stability of our system. We use the default parameters presented in
+\cref{tab:final_param} and investigate the results as we change a single
+parameter, one at a time. We keep the load at \SI{1}{nN}. We consider the mean
+frition force, sampled from the latter half of the simulation as described in
+\cref{sec:fric_metrics}, representing the kinetic friction. The results are
+presented \cref{fig:main_param}. We have indicated the absolute error visually,
+defined by the \acrshort{std} as described in \cref{sec:fric_metrics}, as a
+shaded area which connects linearly between data points. Generally, we notice
+that the parameter dependencies differs between the different configurations. 
 
 \begin{figure}[H]
   \centering
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/variables_temp_mean_fixmove_v20.pdf}
-      \caption{kinetic friction force estimate.}
-      \label{fig:var_temp_mean}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.49\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/baseline/variables_temp_max_fixmove_v20.pdf}
-      \caption{Max friction}
-      \label{fig:var_temp_max}
-  \end{subfigure}
-  \hfill
-     \caption{Temperature.}
-     \label{fig:var_temp}
-\end{figure}
-
-
-
-\begin{figure}[H]
-  \centering
-  \begin{subfigure}[t]{0.49\textwidth}
+      \caption{}
+      \label{fig:var_temp}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/variables_vel_mean_fixmove.pdf}
-      \caption{kinetic friction force estimate.}
-      \label{fig:var_vel_mean}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.49\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/baseline/variables_vel_max_fixmove.pdf}
-      \caption{Max friction}
-      \label{fig:var_vel_max}
-  \end{subfigure}
-  \hfill
-     \caption{Sliding speed}
-     \label{fig:var_vel}
-\end{figure}
-
-
-
-\begin{figure}[H]
-  \centering
-  \begin{subfigure}[t]{0.49\textwidth}
+      \caption{}
+      \label{fig:var_vel}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/variables_spring_mean_fixmove.pdf}
-      \caption{kinetic friction force estimate.}
-      \label{fig:var_K_mean}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.49\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/baseline/variables_spring_max_fixmove.pdf}
-      \caption{Max friction}
-      \label{fig:var_K_max}
-  \end{subfigure}
-  \hfill
-     \caption{Spring constant}
-     \label{fig:var_K}
+      \caption{}
+      \label{fig:var_K}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/baseline/variables_dt_mean_fixmove.pdf}
+        \caption{}
+        \label{fig:var_dt}
+    \end{subfigure}
+    \hfill
+    \caption{Main parameters investigation. Kinetic friction force}
+    \label{fig:main_param}
 \end{figure}
 
+From the temperature investigation in \cref{fig:var_temp} we find an increasing
+kinetic friction with temperature for both the non-cut sheet and the Honeycomb
+pattern. The Tetrahedron pattern shows both decreasing and increasing trends as
+it yields an initial rapid (10--30 K), followed by a more slowly decrease
+(30--320 K), which turns around and increases (320--480 K), and finally a rapid
+drop decrease again (480--500 K). Similar rapid changes are also seen from the
+Honeycomb pattern, although the underlying trend is seemingly increasing
+throughout. We notice that for the non-cut and Honeycomb sheet, which can be
+attributed some sort of underlying linear increase, the rate of increase is
+higher for the Honeycomb than the non-cut sheet. From a theoretical and
+experimental point of view we would expect a decrease in friction with
+temperature. However, an increasing trend is also observed by Zhang et al.
+\cite{ma12091425} (sliding at \SI{10}{m/s}) which we associates with a high
+sliding speed causing ballistic motion \hl{Revisit theory on this one}. Since
+the results does not indicate any plateau for which the temperature choice is
+more or less stable with respect to changes, we have choosen the room
+temperautre $T = \SI{300}{K}$ 
+
+% For the max friction dependencies we generally also see an increasing trend with increasing temperature. This however, can be attributed to the fact that the possibilities of exiting the sheet to produce a peak force increases with temperature. 
+
+From the sliding speed investigation in \cref{fig:var_vel} we generally find an increasing friction with velocity. Due to the relatively high velocities availble and the effects from the thermostat, we expect a viscous friction $F_k \propto v_{\text{sliding}}$ which matches rather well with these results. However, the Tetrahedron and Honeycomb sheets seem to fall slightly into a sublinear relationship as it approaches higher velocities. Moreover, the cut sheets exhibit some local fluctuations which might be attributed to resosnance effects as discussed with respect to the phonon dynamics. Our choice of sliding speed at \SI{20}{m/s} mainly reflects a consideration of computational cost, but the fact that no immediate resonance fluctuations appears around this values supports the choice.  
+
+From the investigation of the spring constant parameter in \cref{fig:var_K} we observe a significant decrease in friction as the springs stiffens. This can be attributed to the transistion from a stick-slip influenced regieme to a smooth sliding regime as we saw for the force traces in \cref{fig:drag_Ff}. For soft springs the result is quite sensitive to the specific choice of spring constant which is especially seen for the non-cut sheet as is peaks at $K = \SI{40}{N/m}$. Thus, in order to avoid such a sensitivity we settled for the infinite stiff spring with the intention of getting more stable results in our configuration investigation.
 
 
-\begin{figure}[H]
-  \centering
-  \begin{subfigure}[t]{0.49\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/baseline/variables_dt_mean_fixmove.pdf}
-      \caption{kinetic friction force estimate.}
-      \label{fig:var_dt_mean}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.49\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/baseline/variables_dt_max_fixmove.pdf}
-      \caption{Max friction}
-      \label{fig:var_dt_max}
-  \end{subfigure}
-  \hfill
-     \caption{Timestep}
-     \label{fig:var_dt}
-\end{figure}
+Finally, we consider the stability of the result as we vary the simulation timestep in \cref{fig:var_dt}. The general trend shows a stable plateau below $\sim \SI{1.5}{fs}$ for which higher values reveals arrising unstabilities for the cut sheets. This mainly confirms that our choice of timestep is within a reasonable range. However, we do see some fluctuations which are more
+significant for the cut patterns. These fluctuations can be taken as a sign of the sensitivity to randomness in our simulation. An extended study of the effect of changing the random seed for the initial velcoity and thermostat could bring more insight into this matter. However, we might interpret this as an indication that the uncertainity is higher than otherwise estimated by the running mean and running \acrshort{std} evalulation. For the Honeycomb sheet the fluctuations are on the order $\pm 0.017$ which corresponds to a relative error of $\sim 20\%$. This number is a bit unsettling, but we take note of this as an upper limit for the error at an unstretched stage. 
 
 
-Quick thoughts:
-\begin{itemize}
-  \item Temperature: We do clearly not see the $1/T$ temperature decrease. The non-cut sheet seems to showcase a lienar relationship which is also somewaht present for the honeycomb which matches some of the findings in other MD simulations. For the popup we do see a local decrease at low temperatures which flip at around the default $T = \SI{300}{K}$ temperature. The max friction peaks seem to increase with temperatur as well indicating that the peaks might be associated with thermal fluctuations rather than actual stick-slip behaviour. This supports the finding that the static friction response is not significantly present in these simulations. 
-  \item Velcotiy: Considering the non-cut sheet first the velocity dependency is seemingly linear which deviates from the expected logaritmic trend. For the cutted configurations we find some peaks which might indicate the presence of resonance frequencies. The cutted sheet might be closer to a logaritmic trend, but this is not spot on either. The max friction seems to decrease slightly with small velcoties and then stay rather constant. This can probably be explained by the reduced time to stick between stick slip. 
-  \item Spring constant: On all three configurations the kinetic friction decreases with an increasing spring constant. The best explanations might be due to the lack of freedom to ``get stuck'' in incommensurable configurations. We also notice that the friction varies a lot at lower spring constants supporting the choice of having a stiff spring for stability reasons. Especially the non-cut sheet peaks at $K = \SI{40}{N/m}$. The max friction seem to be constant with $K$.
-  \item $dt$: The kinetic friction is relatively stable around the default choice of $dt = \SI{1}{fs}$. However, the fluctuations with respect to $dt$ is more significant for popup pattern and even more for the honeycomb pattern. This indicates that the more complex kinetics of the simulation is more sensitive to the timestep. We might interpret this information as an additional measure of uncertainty. The maximum friction decreases with increasing timestep which can be asserted a statistical interpretation: Higher peaks will be captured by the high resolution of a low $dt$ and vice versa. The high max values towards the point of $dt = \SI{2}{fs}$ is most likely due to the approach of unstability in the simulation as seen more clearly for the kinetic friction evaluation. 
-\end{itemize}
+
+
+
+
+% Quick thoughts:
+% \begin{itemize}
+%   \item Temperature: We do clearly not see the $1/T$ temperature decrease. The non-cut sheet seems to showcase a lienar relationship which is also somewaht present for the honeycomb which matches some of the findings in other MD simulations. For the popup we do see a local decrease at low temperatures which flip at around the default $T = \SI{300}{K}$ temperature. The max friction peaks seem to increase with temperatur as well indicating that the peaks might be associated with thermal fluctuations rather than actual stick-slip behaviour. This supports the finding that the static friction response is not significantly present in these simulations. 
+%   \item Velcotiy: Considering the non-cut sheet first the velocity dependency is seemingly linear which deviates from the expected logaritmic trend. For the cutted configurations we find some peaks which might indicate the presence of resonance frequencies. The cutted sheet might be closer to a logaritmic trend, but this is not spot on either. The max friction seems to decrease slightly with small velcoties and then stay rather constant. This can probably be explained by the reduced time to stick between stick slip. 
+%   \item Spring constant: On all three configurations the kinetic friction decreases with an increasing spring constant. The best explanations might be due to the lack of freedom to ``get stuck'' in incommensurable configurations. We also notice that the friction varies a lot at lower spring constants supporting the choice of having a stiff spring for stability reasons. Especially the non-cut sheet peaks at $K = \SI{40}{N/m}$. The max friction seem to be constant with $K$.
+%   \item $dt$: The kinetic friction is relatively stable around the default choice of $dt = \SI{1}{fs}$. However, the fluctuations with respect to $dt$ is more significant for popup pattern and even more for the honeycomb pattern. This indicates that the more complex kinetics of the simulation is more sensitive to the timestep. We might interpret this information as an additional measure of uncertainty. The maximum friction decreases with increasing timestep which can be asserted a statistical interpretation: Higher peaks will be captured by the high resolution of a low $dt$ and vice versa. The high max values towards the point of $dt = \SI{2}{fs}$ is most likely due to the approach of unstability in the simulation as seen more clearly for the kinetic friction evaluation. 
+% \end{itemize}
 
 
 \section{Normal force and stretch dependencies}\label{sec:load_and_stretch}
