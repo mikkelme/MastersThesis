@@ -201,18 +201,18 @@ def multi_stretch(path, save = False):
     # Mean
     vars = ['data[\'stretch_pct\']', 'data[\'Ff\'][:, :, 0, 1]', 'data[\'F_N\']']
     axis_labels = [r'Stretch', r'$\langle F_\parallel \rangle$ [nN]', r'$F_N$ [nN]']
-    # yerr = 'data[\'Ff_std\'][:,:,0]*data[\'Ff\'][:,:,0, 1]'
-    yerr = None
-    fig_mean, _ = multi_plot_compare(folders, names, vars, axis_labels, rupplot = True)
+    yerr = 'data[\'Ff_std\'][:,:,0]*data[\'Ff\'][:,:,0, 1]'
+    # yerr = None
+    fig_mean, _ = multi_plot_compare(folders, names, vars, axis_labels, yerr = yerr, rupplot = True)
     
-    # Max
-    vars = ['data[\'stretch_pct\']', 'data[\'Ff\'][:, :, 0, 0]', 'data[\'F_N\']']
-    axis_labels = [r'Stretch', r'$\max \ F_\parallel$ [nN]', r'$F_N$ [nN]']
-    fig_max, _ = multi_plot_compare(folders, names, vars, axis_labels, rupplot = True)
+    # # Max
+    # vars = ['data[\'stretch_pct\']', 'data[\'Ff\'][:, :, 0, 0]', 'data[\'F_N\']']
+    # axis_labels = [r'Stretch', r'$\max \ F_\parallel$ [nN]', r'$F_N$ [nN]']
+    # fig_max, _ = multi_plot_compare(folders, names, vars, axis_labels, rupplot = True)
     
     if save:
         fig_mean.savefig("../article/figures/baseline/multi_stretch_mean_compare.pdf", bbox_inches="tight")
-        fig_max.savefig("../article/figures/baseline/multi_stretch_max_compare.pdf", bbox_inches="tight")
+        # fig_max.savefig("../article/figures/baseline/multi_stretch_max_compare.pdf", bbox_inches="tight")
         
         
 def multi_area(path, save = False):
@@ -243,21 +243,22 @@ def multi_FN(path, save = False):
     names = ['No cut', 'Tetrahedron (7,5,1)', 'Honeycomb (2,2,1,5)']
     
     # Mean
-    vars = ['data[\'F_N\']', 'data[\'Ff\'][:, :, 0, 1].T', 'data[\'stretch_pct\']']
-    axis_labels = [r'$F_N$ [nN]', r'$\langle F_\parallel \rangle$ [nN]', r'Stretch']
+    
+    vars = ['data[\'F_N\']', 'data[\'Ff\'][:, :, 0, 1].T', 'data[\'stretch_pct\']/(int(0==f)*0.36 + int(1==f)*0.21 + int(2==f)*1.27)']
+     
+    axis_labels = [r'$F_N$ [nN]', r'$\langle F_\parallel \rangle$ [nN]', r'Rel. Stretch']
     # yerr = 'data[\'Ff_std\'][:,:,0]*data[\'Ff\'][:,:,0, 1]'
-    yerr = None
-    fig_mean = multi_plot_compare(folders, names, vars, axis_labels, yerr, axis_scale = ['log', 'linear'], colorbar_scale = 'linear', equal_axes = [False, False], rupplot = False)
+    fig_mean, _ = multi_plot_compare(folders, names, vars, axis_labels, axis_scale = ['log', 'linear'], colorbar_scale = [[0, 0.9167264826629], 'linear'], equal_axes = [False, False], rupplot = False)
     
     # return 
     # Max
-    vars = ['data[\'F_N\']', 'data[\'Ff\'][:, :, 0, 0].T', 'data[\'stretch_pct\']']
-    axis_labels = [r'$F_N$ [nN]', r'$\max \ F_\parallel$ [nN]', r'Stretch']
-    fig_max = multi_plot_compare(folders, names, vars, axis_labels, axis_scale = ['log', 'linear'], colorbar_scale = 'linear', equal_axes = [False, False], rupplot = False)
+    # vars = ['data[\'F_N\']', 'data[\'Ff\'][:, :, 0, 0].T', 'data[\'stretch_pct\']']
+    # axis_labels = [r'$F_N$ [nN]', r'$\max \ F_\parallel$ [nN]', r'Stretch']
+    # fig_max = multi_plot_compare(folders, names, vars, axis_labels, axis_scale = ['log', 'linear'], colorbar_scale = 'linear', equal_axes = [False, False], rupplot = False)
     
     if save:
         fig_mean.savefig("../article/figures/baseline/multi_FN_mean_compare.pdf", bbox_inches="tight")
-        fig_max.savefig("../article/figures/baseline/multi_FN_max_compare.pdf", bbox_inches="tight")
+        # fig_max.savefig("../article/figures/baseline/multi_FN_max_compare.pdf", bbox_inches="tight")
 
    
 def multi_FN_force_dist(path, save = False):
@@ -278,23 +279,46 @@ def multi_FN_force_dist(path, save = False):
                        'markersize': 2.5}
     
     
-    fig, axes = plt.subplots(1, 2,  figsize = (10,5))#, gridspec_kw ={'width_ratios': width_ratios})
+    # fig, axes = plt.subplots(1, 2,  figsize = (10,4))#, gridspec_kw ={'width_ratios': width_ratios})
     
+
+    ymax = 0
+    ymin = 1e3
+    figs = [];  axes = []
     for f, folder in enumerate(folders):
         data = read_multi_folder(folder, mean_window_pct, std_window_pct)
         
         
-        Ff = data['Ff'][:, :, 0, 1].T
+        Ff = (data['Ff'][:, :, 0, 1].T).ravel()
         F_N = data['F_N']
+        Ff_err = (data['Ff_std'][:,:,0].T*data['Ff'][:,:,0, 1].T).ravel()
         
-        axes[f].set_title(names[f])
-        axes[f].plot(F_N, Ff, 'o')
-        
-        axes[f].set_xlabel('$F_N$ [nN]', fontsize=14)
-        axes[f].set_ylabel(r'$\langle F_\parallel \rangle$ [nN]', fontsize=14)
 
+        fig = plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k'); ax = fig.gca()
+        figs.append(fig); axes.append(ax)
+        ax.set_title(names[f])
+        ax.errorbar(F_N, Ff, yerr = Ff_err, linestyle = 'None', color = 'black', elinewidth = 0.5, capthick = 0.5,  capsize=4) 
+        ax.fill_between(F_N, Ff + Ff_err, Ff - Ff_err, alpha = 0.1, color = color_cycle(0))
+        
+        ax.plot(F_N, Ff, 'o', color = color_cycle(0))
         
         
+        ax.set_xlabel('$F_N$ [nN]', fontsize=14)
+        ylim = ax.get_ylim()
+        ymin = np.min((ymin, ylim[0]))
+        ymax = np.max((ymax, ylim[1]))
+        ax.set_ylabel(r'$\langle F_\parallel \rangle$ [nN]', fontsize=14)
+        
+        
+    name = {0: 'a', 1: 'b'}
+    for f in range(len(figs)):
+        axes[f].set_ylim((ymin, ymax))
+        figs[f].tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+        if save:
+            figs[f].savefig(f"../article/figures/baseline/load_dist_{name[f]}.pdf", bbox_inches="tight")
+
+    
+
  
 def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yerr = None, axis_scale = ['linear', 'linear'], colorbar_scale = [[0.1, 10], 'log'], equal_axes = [False, True], rupplot = False, axes = None):
     # Settings
@@ -326,10 +350,12 @@ def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yer
             axes[f].set_title(names[f])
             data = read_multi_folder(folder, mean_window_pct, std_window_pct)
             
+            
             # Get variables of interest
             locs = locals()
             x, y, z = [eval(v, locs) for v in vars]
-            
+            print(z)
+            print(f'----> {np.max(z)}')
             
             # Plot
             if yerr is not None:
@@ -493,7 +519,7 @@ def contact_vs_time(path, save = False):
         plt.legend(fontsize = 13)
         plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
         if save:
-            plt.savefig("../article/figures/baseline/contact_vs_stretch", bbox_inches="tight")
+            plt.savefig("../article/figures/baseline/contact_vs_stretch.pdf", bbox_inches="tight")
 
 
 def vaccum_normal_buckling(path, save = False):
@@ -558,7 +584,7 @@ def vaccum_normal_buckling(path, save = False):
     fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
     plt.subplots_adjust(right=0.8)
     if save:
-        plt.savefig("../article/figures/baseline/vacuum_normal_buckling", bbox_inches="tight")
+        plt.savefig("../article/figures/baseline/vacuum_normal_buckling.pdf", bbox_inches="tight")
 
 
 
@@ -572,10 +598,10 @@ if __name__ == "__main__":
     # dt(path, save = False)
     
     # multi_stretch(path, save = False)
-    # multi_FN(path, save = False)
+    multi_FN(path, save = True)
     # multi_area(path, save = False)
     
-    # multi_FN_force_dist(path)
+    # multi_FN_force_dist(path, save = True)
     
     # contact_vs_time(path, save = False)
     # vaccum_normal_buckling(path, save = False)

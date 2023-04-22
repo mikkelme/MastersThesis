@@ -527,7 +527,7 @@ min.\ and max.\ values.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth]{figures/baseline/vacuum_normal_buckling}
+  \includegraphics[width=\linewidth]{figures/baseline/vacuum_normal_buckling.pdf}
   \caption{Out-of-plane buckling during stretching of the No cut, Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$ sheet resepctively in vacuum at low temperature $T = \SI{5}{K}$. The buckling is measured by the distribution of the atom z-position (perpendicular to the sheet plane), for which the colors indicates selected quantiles. The yield strain were, reading from left to right, 0.38, 0.22 and 1.37.}
   \label{fig:buckling_quartiles}
 \end{figure}
@@ -562,7 +562,7 @@ information of how the buckling accours. The Tetrahedron pattern deforms rather 
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.6\linewidth]{figures/baseline/contact_vs_stretch.png}
+  \includegraphics[width=0.6\linewidth]{figures/baseline/contact_vs_stretch.pdf}
   \caption{Relative contact, given as the relative number of atom in the sheet being within chemical interaction range, vs.\ strain of the sheet.  The cut-off for the interaction range is 4 Å corresponding to $\sim 120 \%$ the LJ equilibrium distance. No normal force is applied and temperature is kept at $T = 300$ K.}
   \label{fig:contact_vs_stretch}
 \end{figure}
@@ -664,30 +664,23 @@ significant for the cut patterns. These fluctuations can be taken as a sign of t
 
 \section{Load and stretch dependencies}\label{sec:load_and_stretch}
 
-So far, we have carried out a general analysis of the system behaviour under different parameters which lays the foundation for the remaining study. We now shift our intention to the main focus of the study which involves the friction dependence of load and stretch.
-
-
-% \hl{Explain how the stretch is uniformly sampled within equally divided intervals and the normal force is actually uniformly sampled in a given range. Argue that the first might be approximately uniformly distributed for large numbers.}
-
-% \hl{Talk about rupture test also. Maybe in the theory/method section under numerical procedure: Before simulating a rupture test is perform to determine under what stretch the sheet ruptures. This is a slightly higher threshold than when applied normal load and sliding along the substrate.}
-
-
+So far, we have carried out a general analysis of the system behaviour under
+different parameters which lays the foundation for the remaining study. We now
+shift our intention towards the friction dependence of load and stretch.
 
 \subsection{Pressure reference for normal load}
 % source 1: stiletto heeled shoes with less than 1cm diameter:
 % https://www.researchgate.net/publication/342223559_How_the_stiletto_heeled_shoes_which_are_popularly_preferred_by_many_women_affect_balance_and_functional_skills
 
-We will consider the load range of 0.1--\SI{10}{nN} which alligns with the general choice in other \acrshort{MD} studies \hl{SOURCE}. In order to relate the magnitude of this load we provide a short calculation of the corresponding pressure. We will use the pressure underneath a stiletto heeled shoe as a high pressure reference from our macroscale world. The diameter of a stiletto heeled
-shoe can be less than 1 cm \cite{stiletto_1}, and hence a \SI{80}{kg} man\footnote{Yes, a man can certainly
-wear stilleto heels.} standing on one stiletto heel (with all the weight on the
-heel) will correspond to a a pressure
+We consider a load range of 0.1--\SI{10}{nN} which alligns with the general choice in other \acrshort{MD} studies \hl{SOURCE}. In order to relate to the magnitude of this load we provide a short calculation of the corresponding pressure. We will use the pressure underneath a stiletto heeled shoe as a high pressure reference from our macroscale world. The diameter of a stiletto heeled
+shoe can be less than 1 cm \cite{stiletto_1}, and hence an \SI{80}{kg} man\footnote{Yes, a man can certainly
+wear stilleto heels.} standing on one stiletto heel, with all the weight on the heel, will correspond to a pressure
 \begin{align*}
-  P = \frac{F}{A} = \frac{mg}{r^2\pi} = \frac{\SI{80}{kg} \cdot \SI{9.8}{\frac{m}{s^2}}}{(\frac{\SI{1e-2}{m}}{2})^2 \pi} = \SI{9.98}{MPa}.
+  P = \frac{F}{A} = \frac{mg}{r^2\pi} = \frac{\SI{80}{kg} \cdot \SI{9.8}{\frac{m}{s^2}}}{(\frac{\SI{e-2}{m}}{2})^2 \pi} = \SI{9.98}{MPa}.
 \end{align*} 
-While this is in itself an interesting realization that is often used in
-introductory physics courses \cite{stiletto_2} to demonstrate the rather extreme
-pressure under a stiletto heel (greater than the foot of an elephant), this serves as a reasonible upperbound for human executed pressure. With
-a full sheet area of $\sim\SI{21e3}{{\text{Å}}^2}$ our load range of 0.1--\SI{10}{nN} corresponds to a pressure of 0.47--\SI{47}{MPa}. Of course this pressure might be incomparable for various industrial purposes, but with no specific application in mind this serves as a decent reference point. Notice that if we consider a human foot with area $\SI{113}{cm^2}$ \cite{stiletto_3} the pressure
+The fact that the pressure under a stiletto heel can get this high, actually greater than the pressure under an elephant food, is in an interesting realization in itself that is often used in
+introductory physics courses \cite{stiletto_2}, but this also serves as a reasonible upperbound for human executed pressure. With
+a full sheet area of $\sim\SI{21e3}{{\text{Å}}^2}$ our load range of 0.1--\SI{10}{nN} corresponds to a pressure of 0.47--\SI{47}{MPa} which relates nicely with our macroscale reference. This pressure might be incompatible with various industrial purposes, but with no specific application in mind this serves as a decent reference point. Notice that if we consider a human foot with area $\SI{113}{cm^2}$ \cite{stiletto_3} the pressure
 drops to a mere $\SI{70}{kPa}$ corresponding to only $\sim \SI{0.01}{nN}$.
 
 % source 3: foot area ≈ 113 cm^2:
@@ -697,62 +690,41 @@ drops to a mere $\SI{70}{kPa}$ corresponding to only $\sim \SI{0.01}{nN}$.
 
 
 
-\subsection{Stretch dependencies}\cref{sec:contact_area}
-
-We consider the effects of stretching the sheets with focus on the non-cut.  Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$ sheet as used so far. For each configuration we run a rupture test where we stretch the given sheet under zero load, but under influence of the adhesion from the substrate, which yields a rupture strain value. We then run multiple simulations with different stretch between zero and the rupture limit. For the sampling of stretch values we use a pseudo uniform distribution, meaning that we divide the given
+\subsection{Stretch dependencies}\label{sec:stretch_dependency}
+We consider the effects of stretching the sheet using the non-cut.  Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$ sheet as used so far. For each configuration we run a rupture test where the given sheet is stretched under zero load, but still under the influence adhesion from the substrate. The rupture point is then noted such and multiple simulations with different stretch between zero and the rupture limit are run. For the sampling of the stretch values in the availble range we use a pseudo uniform distribution, meaning that we divide the given
 interval in equal segments and pick a value from each segments by a uniform
-distribution. This is due to numerical limitations for the implementation in LAMMPS, but we find that this gives evenly spaced values which also carries some randomness. For the load we use 0.1, 1 and \SI{10}{nN}.
+distribution. This is due to numerical limitations in LAMMPS, but we find that this gives evenly spaced values which also carries some randomness. For the load we use 0.1, 1 and \SI{10}{nN}.
 
 
-First, we reproduce the contact investigation from
+First, we aim to reproduce the contact investigation from
 \cref{fig:contact_vs_stretch}. We quanitify the relative contact as described in
-\cref{sec:out-of-plane_buckling}, but converts this into single metrics per
-simulation by considering the average of the latter 50\% of data points, similar
-to what we have done for the mean friction. Furthermore, we adopt the same
-method for analysing the error using the \acrshort{std}. The results are shown
+\cref{sec:out-of-plane_buckling}, but converts this into a single metric for a given simulation by considering the average of the latter 50\% of data points, similar
+to what we have done for the mean friction, and we adopt the same
+method for quantifing the error. The results are shown
 in \cref{fig:contact_vs_stretch} where we observe a significant decrease in
-contact for the cut patterns which qualitatively agrees with the non-loaded
-continous stretch investigation from \cref{fig:contact_vs_stretch}. This point
-to the idea that the change in contact is not related to a momentum effect as
-each simulation keeps a constant strain throughout. The absolute error for the
-mean rel.\ contact were generally on the order of $0.01$ for all configurations.
-From an Asperity theory point of view this reduction should induce a similar
-reduction in friction, but when considering the kinetic friction force shown in
-\cref{fig:multi_stretch_mean_fric} we find that this is definitely not the case.
-As the contact decreases for the Tetrahedron and Honeycomb pattern the friction
-increases. Yet, theese are not inverse proptional as the friction force suddenly
-dips again, around X for the Tetrahedron and Y for the Honeycomb pattern. This
+contact for the kirigami patterns which qualitatively agrees with the non-loaded
+continous stretch investigation from \cref{fig:contact_vs_stretch}. This result implies that the change in contact can not be related to a momentum effect during stretching, as each simulation now keeps the stretching constant. throughout. The absolute error for the
+mean rel.\ contact were generally quite low on the order of $0.01$ for all configurations. 
+
+From an asperity theory point of view this reduction in contact is theorized to induce a similar reduction in friction, but when considering the kinetic friction shown in \cref{fig:multi_stretch_mean_fric} we find that this is definitely not the case. As the contact decreases, for the Tetrahedron and Honeycomb pattern, the friction increases. Yet, these are not simply inverse proptional as the friction force suddenly dips down and up again, around 0.08--0.11 for the Tetrahedron and 0.73--1.05 for the Honeycomb pattern. This
 suggests that the contact is not a dominating mechanism for friction in this
-system. We notice also that the two orders of magnitude increase in normal load
-did not make significant difference in the results. This can probbaly be
-explained by the fact that load is applied to the pull blocks only. Thus, an
-increased load will not contribute to a compression of the kirigami unduced
-asperities which is why the contact remains relatively uneffected by the load.
-The fact the friction does not increase considerable with load relates to the
-discussion of the load dependence for an atomically flat sheet. This is further
-investigated in \cref{load_dependency}.
+system. The absolute error were fairly low on the order of 0.001--\SI{0.01}{nN}.
+
+We notice also that the two orders of magnitude increase in normal load
+did not make a significant difference in the results. In a study by Zhang et al.\ \cite{zhang_tuning_2019} they found that straining the sheet lead to a reduction in friction. Despite the fact that our result suggest an increase in friction with straining we notice that the observed effect is only present for the kirigami sheets, while the non-cut sheet shows no significantly impact. 
+
+
+% Regarding the contact this can be attributed the fact that load is applied to the pull blocks only. Thus, an
+% increased load will not contribute directly to a compression of the kirigami induced
+% asperities which is why the contact remains relatively uneffected by the load.
+% The fact the friction does not increase considerable with load relates to the
+% discussion of the load dependence for an atomically flat sheet. This is further
+% investigated in \cref{load_dependency}.
 
 
 Tension does also not seem to be the answer since the non cut sheet does not really change 
 
-notice that the initial non stretch values also changes. No cut gives lowest friction.
-
-%
-%
-% Working here
-%
-%
-
-
-% This suggests that the amount of chemical
-% bonding atoms is not the dominant mechanism for the friction of this system.
-% Instead, we might point to a mechanism more mechanical of nature associated to
-% phonon exications. When the cut sheet is strecthed the stress (\hl{show stress
-% maps somewhere or not nessecary?}) might induce a certain distribution and
-% magnitude of point pressures to favor energy dissipation. Nonetheless, the
-% results showcase a strong coupling between stretch and friction force, also for
-% the max friction force, which is beyond the expectations at this stage of the
-% study. The non-cut configuration does not show significant dependency on the stretch which reveal that this effect is only present when combining cut and stretch and not purely by strecthing the sheet. 
+% notice that the initial non stretch values also changes. No cut gives lowest friction.
 
 
 
@@ -779,78 +751,96 @@ notice that the initial non stretch values also changes. No cut gives lowest fri
       \label{fig:multi_stretch_mean_fric}
   \end{subfigure}
   \hfill
-     \caption{Average relatvie contact count defined as the relative number of atoms in the sheet within a contact distance defined by 4 Å. The average is taken over the latter half of the sliding phase. The red shade denotes the stretch range where ruptures accoured during sliding while the black-dotted line represent the rupture point in the no load rupture test. 30 stretch values are sampled from a pseudo uniform distribution which is combinned with the loads 0.1, 1 and \SI{10}{nN} for each of the configurations: non-cut, Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$.}
+     \caption{Average relative contact and average friction for multiple simulations, consisting of 30 stretch values sampled from a pseudo uniform distribution between 0 and the rupture point in combination with loads 0.1, 1 and \SI{10}{nN}, for each of the configurations: non-cut, Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$. The average is taken over the latter half of the sliding phase. The red shade denotes the stretch range where ruptures accoured during sliding while the black-dotted line represent the rupture point in the no load rupture test. (a) The average relative contact defined as the relative number of atoms within a contact threshold of 4 Å to the substarte. The absolute error is on the order 0.01 (b) The average mean friction force parallel to the sliding direction. The absolute error is on the order 0.001--\SI{0.01}{nN}}
      \label{fig:multi_stretch}
 \end{figure}
 
+By considering the increase in friction from no stretch towards the first peak we find that the Tetrahedron pattern exhibit a relative increase of $\sim 27.7$ while the Honeycomb pattern exhibit a relative increase of $\sim 22.4$. This is in itself a remarkable result, but considering that the friction drops almost as dramatically down again is even more unexpected. These results are thus promising for the prospect of demonstrating a negaive friction coefficients by altering the stretch through a coupling to the load.
 
 
-By considering the increase in kinetic friction towards the first peak we get a relative friction increase and increase vs. stretch ratios as described in \cref{tab:first_peak_stretch}. While the honeycomb force increase towards the first peak is approximately linear the popup exhibits seemingly exponential growth which yield a slope on the order $\sim \SI{30}{nN}$. 
+% get a relative friction increase and increase vs. stretch ratios as described in \cref{tab:first_peak_stretch}. While the honeycomb force increase towards the first peak is approximately linear the popup exhibits seemingly exponential growth which yield a slope on the order $\sim \SI{30}{nN}$. 
 
-\begin{table}[H]
-  \begin{center}
-  \caption{(stretch, kinetic friction) coordinates from \cref{fig:multi_stretch_mean_fric} at start and the first peak respectively used to approximate the relative increase in friction force and the ratio for friction increaese vs. stretch for sait range. In practice  the latter ratio denotes the slope of a forced linear trend. }
-  \label{tab:first_peak_stretch}
-  \begin{tabular}{ | c | c | c | c | c |} \hline
-  Configuration & Start & First peak & Relative increase & Friction force vs. stretch ratio [nN]  \\ \hline
-  Popup & $\sim (0, 0.03)$ & $\sim(0.082, 0.83)$ & 27.7 & 9.76  \\ \hline
-  Honeycomb & $\sim (0, 0.07)$ &  $\sim (0.728, 1.57)$ & 22.4 & 2.06 \\ \hline
-  \end{tabular}
-  \end{center}
-\end{table}
+% \begin{table}[H]
+%   \begin{center}
+%   \caption{(stretch, kinetic friction) coordinates from \cref{fig:multi_stretch_mean_fric} at start and the first peak respectively used to approximate the relative increase in friction force and the ratio for friction increaese vs. stretch for sait range. In practice  the latter ratio denotes the slope of a forced linear trend. }
+%   \label{tab:first_peak_stretch}
+%   \begin{tabular}{ | c | c | c | c | c |} \hline
+%   Configuration & Start & First peak & Relative increase & Friction force vs. stretch ratio [nN]  \\ \hline
+%   Popup & $\sim (0, 0.03)$ & $\sim(0.082, 0.83)$ & 27.7 & 9.76  \\ \hline
+%   Honeycomb & $\sim (0, 0.07)$ &  $\sim (0.728, 1.57)$ & 22.4 & 2.06 \\ \hline
+%   \end{tabular}
+%   \end{center}
+% \end{table}
 
-Additionally, we notice that booth the popup and honeycomb also exhibits stretch ranges where the kinetic friction force decrease with increasing stretch. Qualitatively we assign the slope to be on the same order of magnitude as those towrds the first peak. This is useful for the prospect of taking advantage of this phenonama as we can essentially achieve booth higher and lower friction for increasing stretch for different starting points. 
+% Additionally, we notice that booth the popup and honeycomb also exhibits stretch ranges where the kinetic friction force decrease with increasing stretch. Qualitatively we assign the slope to be on the same order of magnitude as those towrds the first peak. This is useful for the prospect of taking advantage of this phenonama as we can essentially achieve booth higher and lower friction for increasing stretch for different starting points. 
 
 
 \subsection{Load dependency}\label{sec:load_dependency}
+From the investigation of the stretch dependency we saw that increasing the normal load from 0.1 to \SI{10}{nN} did not make a considerable impact on the friction in comparison to the effect associated with stretch. One special feature of our system is that we only apply load to the pull blocks. Thus, we investigate the friction under variation of normal load for a non-cut sheet with loading both on the pull block and with a more traditional uniform loading as shown in \cref{fig:load_dist}. The results do not provide any clear difference between the two load variations as both indicate a seemingly non-dependent relationship to friction considering the relative size of the errors. 
 
-\hl{Main take away from this section should be that the normal force does not really change the friction much; The friciton coefficient is extremely low, but I'm not sure how well the linear fits are (whether they are linear or sublinear). Not sure if I should do a linearly increasing normal force for better linear plots?}
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[t]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/baseline/load_dist_a.pdf}
+      \caption{}
+      \label{fig:load_dist_a}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/baseline/load_dist_b.pdf}
+      \caption{}
+      \label{fig:load_dist_b}
+  \end{subfigure}
+  \hfill
+     \caption{Multiple simulations of non-cut sheet under different load. Mean friction is plotted against load for two different variations of loading distribution. (a) Normal loading is applied to the pull blocks. (b) Normal loading is applied uniformly to the sheet. }
+     \label{fig:load_dist}
+\end{figure}
+
+
+We investigate the dependency to normal load for the kirigami patterns as well at different stages of their stretching relative to their respective rupture point as shown in \cref{fig:load_dependency}. On a logaritmic load scale we see some increase with load for the non-cut sheet which is definitely sublinear. Notice that we increased the normal load range to 0.1--100 nN. As we approach 100 nN the non-cut sheet does increase faster with normal load closer to a linear trend. For the kirigami patterns the friction is more or less constant wit load for all stages of stretching. This leads to the conclusion that the load has a minor effect on our system in these conditions. 
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{figures/baseline/multi_FN_mean_compare.pdf}
-  \caption{...}
-  \label{fig:}
+  \caption{Mean friction force vs.\ load in the range 0.1--100 nN, for the non-cut, Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$ sheet resepctively, at different stretch stages relative to their rupture point. }
+  \label{fig:load_dependency}
 \end{figure}
 
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{figures/baseline/multi_FN_max_compare.pdf}
-  \caption{Colorbar is only fitted for the right plot (honeycomb)... this should be fixed. Should I have run a linear distribtion of FN so I could plot it linear here also...?}
-  \label{fig:}
-\end{figure}
+\hl{Give some quick estimates for the size of the friction coefficeint perhaps}
 
 
 
-\begin{table}[H]
-  \begin{center}
-  \caption{Mean friction coeff}
-  \label{tab:fric_coeff}
-  \begin{tabular}{| c | c | c | c | c | c |} \hline
-    nocut & 0.00009 $\pm\num{1e-05}$ & 0.00005 $\pm\num{1e-05}$ & 0.00004 $\pm\num{1e-05}$ & 0.00005 $\pm\num{2e-05}$ & \\ \hline
-    popup & 0.00005 $\pm\num{3e-05}$ & 0.00024 $\pm\num{5e-05}$ & 0.0002 $\pm\num{2e-04}$ & 0.0005 $\pm\num{1e-04}$ & 0.0003 $\pm\num{2e-04}$ \\ \hline
-    honeycomb & 0.00013 $\pm\num{6e-05}$ & 0.0006 $\pm\num{3e-04}$ & 0.0004 $\pm\num{6e-04}$ & 0.0007 $\pm\num{6e-04}$ & 0.0009 $\pm\num{3e-04}$ \\ \hline
-  \end{tabular}
-  \end{center}
-\end{table}
 
-\begin{table}[H]
-  \begin{center}
-  \caption{Max friciton coeff}
-  \label{tab:fric_coeff}
-  \begin{tabular}{| c | c | c | c | c | c |} \hline
-    nocut & $0.0139 \pm \num{9e-04}$& $0.0083 \pm \num{7e-04}$& $0.010 \pm \num{1e-03}$& $0.0105 \pm \num{9e-04}$ &  \\ \hline
-    popup & $0.007 \pm \num{2e-03}$& $0.010 \pm \num{2e-03}$& $0.007 \pm \num{2e-03}$& $0.009 \pm \num{3e-03}$& $0.006 \pm \num{2e-03}$ \\ \hline
-    honeycomb & $0.010 \pm \num{1e-03}$& $0.007 \pm \num{2e-03}$& $0.007 \pm \num{3e-03}$& $0.000 \pm \num{3e-03}$& $0.004 \pm \num{3e-03}$ \\ \hline
-  \end{tabular}
-  \end{center}
-\end{table}
+% \begin{table}[H]
+%   \begin{center}
+%   \caption{Mean friction coeff}
+%   \label{tab:fric_coeff}
+%   \begin{tabular}{| c | c | c | c | c | c |} \hline
+%     nocut & 0.00009 $\pm\num{1e-05}$ & 0.00005 $\pm\num{1e-05}$ & 0.00004 $\pm\num{1e-05}$ & 0.00005 $\pm\num{2e-05}$ & \\ \hline
+%     popup & 0.00005 $\pm\num{3e-05}$ & 0.00024 $\pm\num{5e-05}$ & 0.0002 $\pm\num{2e-04}$ & 0.0005 $\pm\num{1e-04}$ & 0.0003 $\pm\num{2e-04}$ \\ \hline
+%     honeycomb & 0.00013 $\pm\num{6e-05}$ & 0.0006 $\pm\num{3e-04}$ & 0.0004 $\pm\num{6e-04}$ & 0.0007 $\pm\num{6e-04}$ & 0.0009 $\pm\num{3e-04}$ \\ \hline
+%   \end{tabular}
+%   \end{center}
+% \end{table}
+
+% \begin{table}[H]
+%   \begin{center}
+%   \caption{Max friciton coeff}
+%   \label{tab:fric_coeff}
+%   \begin{tabular}{| c | c | c | c | c | c |} \hline
+%     nocut & $0.0139 \pm \num{9e-04}$& $0.0083 \pm \num{7e-04}$& $0.010 \pm \num{1e-03}$& $0.0105 \pm \num{9e-04}$ &  \\ \hline
+%     popup & $0.007 \pm \num{2e-03}$& $0.010 \pm \num{2e-03}$& $0.007 \pm \num{2e-03}$& $0.009 \pm \num{3e-03}$& $0.006 \pm \num{2e-03}$ \\ \hline
+%     honeycomb & $0.010 \pm \num{1e-03}$& $0.007 \pm \num{2e-03}$& $0.007 \pm \num{3e-03}$& $0.000 \pm \num{3e-03}$& $0.004 \pm \num{3e-03}$ \\ \hline
+%   \end{tabular}
+%   \end{center}
+% \end{table}
 
 
-\hl{One theory for the low friction coefficient might dependent on the fact that the normal force is only applied on the pull blocks. Especially with the cutted sheet the tension drops such that the effecive normal force on the inner sheet is not changing very much. By this theory the friction force vs. normal force on the pull blocks should look a bit more like expected and we might make some plots of thoose to check}
+% \hl{One theory for the low friction coefficient might dependent on the fact that the normal force is only applied on the pull blocks. Especially with the cutted sheet the tension drops such that the effecive normal force on the inner sheet is not changing very much. By this theory the friction force vs. normal force on the pull blocks should look a bit more like expected and we might make some plots of thoose to check}
 
-\hl{When looking at the graphs for the PB the max friction is visually textbook linear, while the mean friction is a bit more linear but also with negativ coefficients...}
+% \hl{When looking at the graphs for the PB the max friction is visually textbook linear, while the mean friction is a bit more linear but also with negativ coefficients...}
 
 
 
