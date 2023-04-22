@@ -570,7 +570,7 @@ information of how the buckling accours. The Tetrahedron pattern deforms rather 
 \hl{Compare figure} \cref{fig:contact_vs_stretch} \hl{to that of figure} \cref{fig:multi_stretch_contact} \hl{where multiple simulations constitute the stretch-contact curve.}
 
 
-\section{Investigating selected parmeters}
+\section{Investigating main parameters}
 We carry out a more extensive investigation of the dependence on friction of the
 physical parameters temperature $T$, sliding speed $v_{\text{slide}}$ and spring
 constant $K$, and the numerical parameter timestep $dt$. This is done partly to
@@ -662,46 +662,33 @@ significant for the cut patterns. These fluctuations can be taken as a sign of t
 % \end{itemize}
 
 
-\section{Normal force and stretch dependencies}\label{sec:load_and_stretch}
-Till this point we have only changed variables one by one to investigate single dependencies. We now advance the sutdy to a simultaneous variation of stretch and normal force.
+\section{Load and stretch dependencies}\label{sec:load_and_stretch}
 
-\hl{Explain how the stretch is uniformly sampled within equally divided intervals and the normal force is actually uniformly sampled in a given range. Argue that the first might be approximately uniformly distributed for large numbers.}
-
-\hl{Talk about rupture test also. Maybe in the theory/method section under numerical procedure: Before simulating a rupture test is perform to determine under what stretch the sheet ruptures. This is a slightly higher threshold than when applied normal load and sliding along the substrate.}
+So far, we have carried out a general analysis of the system behaviour under different parameters which lays the foundation for the remaining study. We now shift our intention to the main focus of the study which involves the friction dependence of load and stretch.
 
 
+% \hl{Explain how the stretch is uniformly sampled within equally divided intervals and the normal force is actually uniformly sampled in a given range. Argue that the first might be approximately uniformly distributed for large numbers.}
 
-\subsection{Pressure reference for normal load domain}
+% \hl{Talk about rupture test also. Maybe in the theory/method section under numerical procedure: Before simulating a rupture test is perform to determine under what stretch the sheet ruptures. This is a slightly higher threshold than when applied normal load and sliding along the substrate.}
+
+
+
+\subsection{Pressure reference for normal load}
 % source 1: stiletto heeled shoes with less than 1cm diameter:
 % https://www.researchgate.net/publication/342223559_How_the_stiletto_heeled_shoes_which_are_popularly_preferred_by_many_women_affect_balance_and_functional_skills
 
-In order to relate the magntidue of the normal force in our friciton measurement
-we will use the pressure as a reference. We will use the pressure underneath a
-stiletto shoe as a worst case for human pressure execuation underneath the
-shoes. From (source 1) it is reported that the diameter of a stiletto heeled
-shoe can be less than 1 cm. Hence a 80 kg man\footnote{Yes, a man can certainly
+We will consider the load range of 0.1--\SI{10}{nN} which alligns with the general choice in other \acrshort{MD} studies \hl{SOURCE}. In order to relate the magnitude of this load we provide a short calculation of the corresponding pressure. We will use the pressure underneath a stiletto heeled shoe as a high pressure reference from our macroscale world. The diameter of a stiletto heeled
+shoe can be less than 1 cm \cite{stiletto_1}, and hence a \SI{80}{kg} man\footnote{Yes, a man can certainly
 wear stilleto heels.} standing on one stiletto heel (with all the weight on the
-heel) will result in a pressure
+heel) will correspond to a a pressure
 \begin{align*}
-  P = \frac{F}{A} = \frac{mg}{r^2\pi} = \frac{\SI{80}{kg} \cdot \SI{9.8}{\frac{m}{s^2}}}{(\frac{\SI{1e-2}{m}}{2})^2 \pi} = \SI{9.98}{MPa} \\
+  P = \frac{F}{A} = \frac{mg}{r^2\pi} = \frac{\SI{80}{kg} \cdot \SI{9.8}{\frac{m}{s^2}}}{(\frac{\SI{1e-2}{m}}{2})^2 \pi} = \SI{9.98}{MPa}.
 \end{align*} 
-
-% source 1:
-% https://www.schoolphysics.co.uk/age16-19/Mechanics/Statics/text/Pressure_/index.html
-While this is in itself a spectacular realization that is often used in
-introductory physics courses (source 2) to demonstrate the rather extreme
-pressure under a stiletto heel (greater than the foot of an elephant) (how many
-Atmos?) this serves as a reasonible upperbound for human executed pressure. With
-a full sheet area of $\sim\SI{21e3}{{\text{Å}}^2}$ we can achieve a similar pressure of
-$\sim \SI{10}{MPA}$ with a normal force of
-\begin{align*}
-  F_N = \SI{10}{MPa} \cdot \SI{21e-17}{m^2} = \SI{2.10}{nN}  
-\end{align*}
-
-Of course this pressure might be insufficient for various industrial purposes,
-but with no specific procedure in mind this serves as a decent reference point.
-Notice that if we consider a human foot with ares $\SI{113}{cm^2}$ the pressure
-drops to a mere $\SI{70}{kPa}$ corresponding to $\sim \SI{0.01}{nN}$.
+While this is in itself an interesting realization that is often used in
+introductory physics courses \cite{stiletto_2} to demonstrate the rather extreme
+pressure under a stiletto heel (greater than the foot of an elephant), this serves as a reasonible upperbound for human executed pressure. With
+a full sheet area of $\sim\SI{21e3}{{\text{Å}}^2}$ our load range of 0.1--\SI{10}{nN} corresponds to a pressure of 0.47--\SI{47}{MPa}. Of course this pressure might be incomparable for various industrial purposes, but with no specific application in mind this serves as a decent reference point. Notice that if we consider a human foot with area $\SI{113}{cm^2}$ \cite{stiletto_3} the pressure
+drops to a mere $\SI{70}{kPa}$ corresponding to only $\sim \SI{0.01}{nN}$.
 
 % source 3: foot area ≈ 113 cm^2:
 % https://www.footbionics.com/Patients/Foot+Facts.html source 4:
