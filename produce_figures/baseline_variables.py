@@ -203,13 +203,12 @@ def multi_stretch(path, save = False):
     axis_labels = [r'Stretch', r'$\langle F_\parallel \rangle$ [nN]', r'$F_N$ [nN]']
     # yerr = 'data[\'Ff_std\'][:,:,0]*data[\'Ff\'][:,:,0, 1]'
     yerr = None
-    fig_mean = multi_plot_compare(folders, names, vars, axis_labels, yerr)
-    
+    fig_mean, _ = multi_plot_compare(folders, names, vars, axis_labels, rupplot = True)
     
     # Max
     vars = ['data[\'stretch_pct\']', 'data[\'Ff\'][:, :, 0, 0]', 'data[\'F_N\']']
     axis_labels = [r'Stretch', r'$\max \ F_\parallel$ [nN]', r'$F_N$ [nN]']
-    fig_max = multi_plot_compare(folders, names, vars, axis_labels)
+    fig_max, _ = multi_plot_compare(folders, names, vars, axis_labels, rupplot = True)
     
     if save:
         fig_mean.savefig("../article/figures/baseline/multi_stretch_mean_compare.pdf", bbox_inches="tight")
@@ -226,12 +225,11 @@ def multi_area(path, save = False):
     # Mean
     # vars = ['data[\'stretch_pct\']', 'data[\'Ff\'][:, :, 0, 1]', 'data[\'F_N\']']
     vars = ['data[\'stretch_pct\']', 'data[\'contact_mean\'][:, :, 0]', 'data[\'F_N\']']
-    axis_labels = [r'Stretch', r'Rel. $\langle$Bond$\rangle$', r'$F_N$ [nN]']
-    # yerr = 'data[\'Ff_std\'][:,:,0]*data[\'Ff\'][:,:,0, 1]'
+    axis_labels = [r'Stretch', r'$\langle$ Rel. Contact $\rangle$', r'$F_N$ [nN]']
+    # yerr = 'data[\'Ff_std\'][:,:,0]*data[\'contact_mean\'][:, :, 0]'
     # yerr = 'data[\'contact_std\'][:, :, 0]'
-    yerr = None
-    fig_mean = multi_plot_compare(folders, names, vars, axis_labels, yerr, rupplot = True)
-    
+    # yerr = None
+    fig_mean, _ = multi_plot_compare(folders, names, vars, axis_labels, yerr = yerr, rupplot = True)
 
     if save:
         fig_mean.savefig("../article/figures/baseline/multi_stretch_area_compare.pdf", bbox_inches="tight")
@@ -336,6 +334,7 @@ def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yer
             # Plot
             if yerr is not None:
                 f_yerr = eval(yerr)
+                print(f'-------> {f} | {np.mean(f_yerr[~np.isnan(f_yerr)])}')
                 
             for k in range(len(z)):
                 if len(z) > 1:
@@ -434,8 +433,8 @@ def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yer
     # Rupture stretch 
     if rupplot: 
         for a, ax in enumerate(axes[:-1]):    
-            vline(ax, rupture_stretch[a, 0], linestyle = '--', color = 'black', linewidth = 1, zorder = 0, label = "Rupture stretch" )
-            yfill(ax, [rupture_stretch[a, 1], 10], color = 'red', alpha = 0.1, zorder = 0, label = "Rupture slide")
+            vline(ax, rupture_stretch[a, 0], linestyle = '--', color = 'black', linewidth = 1, zorder = 0, label = "Rupture test" )
+            yfill(ax, [rupture_stretch[a, 1], 10], color = 'red', alpha = 0.1, zorder = 0, label = "Rupture sliding")
 
 
     # Axis scale 
@@ -570,7 +569,7 @@ if __name__ == "__main__":
     # temp(path, save = False)
     # vel(path, save = False)
     # spring(path, save = False)
-    dt(path, save = False)
+    # dt(path, save = False)
     
     # multi_stretch(path, save = False)
     # multi_FN(path, save = False)

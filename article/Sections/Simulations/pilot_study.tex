@@ -513,7 +513,7 @@ with time, or to increase the sliding force more slowly and through a soft sprin
 
 
 
-\section{Out-of-plane buckling}
+\section{Out-of-plane buckling}\label{sec:out-of-plane_buckling}
 The out-of-plane buckling is one of the original motivations for investigating
 the application of Kirigami cuts in the context of friction properties. Therefor, we perform a stretch simulation, at low temperature ($T = \SI{5}{K}$) without any substrate, in order to verify that we are able to reproduce an out-of-plane buckling with the
 intended patterns described in \cref{chap:system}. For this investigation we include the non-cut sheet, the Tetrahedron $(7,5,1)$ and the Honeycomb $(2,2,1,5)$ pattern. We quantify the out-of-plane buckling by assessing the distribution of atoms along the z-direction (perpendicular to the plane) during stretching. We calculate the
@@ -697,60 +697,93 @@ drops to a mere $\SI{70}{kPa}$ corresponding to only $\sim \SI{0.01}{nN}$.
 
 
 
-\subsection{Contact area}\cref{sec:contact_area}
+\subsection{Stretch dependencies}\cref{sec:contact_area}
 
-We reproduce the contact area investigation of \cref{fig:contact_vs_stretch} with the modificaiton that the contact count is measured as an average of the latter 50\% of the sliding simulation at a non-zero applied normal load. The results are shown in \cref{fig:multi_stretch_contact} with 30 attempted (some rupture) stretch (pseudo) uniformly distributed stretch between 0 and the rupture point and 3 uniform distributed normal loads in the interval $[0.1, 10]$ nN. 
+We consider the effects of stretching the sheets with focus on the non-cut.  Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$ sheet as used so far. For each configuration we run a rupture test where we stretch the given sheet under zero load, but under influence of the adhesion from the substrate, which yields a rupture strain value. We then run multiple simulations with different stretch between zero and the rupture limit. For the sampling of stretch values we use a pseudo uniform distribution, meaning that we divide the given
+interval in equal segments and pick a value from each segments by a uniform
+distribution. This is due to numerical limitations for the implementation in LAMMPS, but we find that this gives evenly spaced values which also carries some randomness. For the load we use 0.1, 1 and \SI{10}{nN}.
+
+
+First, we reproduce the contact investigation from
+\cref{fig:contact_vs_stretch}. We quanitify the relative contact as described in
+\cref{sec:out-of-plane_buckling}, but converts this into single metrics per
+simulation by considering the average of the latter 50\% of data points, similar
+to what we have done for the mean friction. Furthermore, we adopt the same
+method for analysing the error using the \acrshort{std}. The results are shown
+in \cref{fig:contact_vs_stretch} where we observe a significant decrease in
+contact for the cut patterns which qualitatively agrees with the non-loaded
+continous stretch investigation from \cref{fig:contact_vs_stretch}. This point
+to the idea that the change in contact is not related to a momentum effect as
+each simulation keeps a constant strain throughout. The absolute error for the
+mean rel.\ contact were generally on the order of $0.01$ for all configurations.
+From an Asperity theory point of view this reduction should induce a similar
+reduction in friction, but when considering the kinetic friction force shown in
+\cref{fig:multi_stretch_mean_fric} we find that this is definitely not the case.
+As the contact decreases for the Tetrahedron and Honeycomb pattern the friction
+increases. Yet, theese are not inverse proptional as the friction force suddenly
+dips again, around X for the Tetrahedron and Y for the Honeycomb pattern. This
+suggests that the contact is not a dominating mechanism for friction in this
+system. We notice also that the two orders of magnitude increase in normal load
+did not make significant difference in the results. This can probbaly be
+explained by the fact that load is applied to the pull blocks only. Thus, an
+increased load will not contribute to a compression of the kirigami unduced
+asperities which is why the contact remains relatively uneffected by the load.
+The fact the friction does not increase considerable with load relates to the
+discussion of the load dependence for an atomically flat sheet. This is further
+investigated in \cref{load_dependency}.
+
+
+Tension does also not seem to be the answer since the non cut sheet does not really change 
+
+notice that the initial non stretch values also changes. No cut gives lowest friction.
+
+%
+%
+% Working here
+%
+%
+
+
+% This suggests that the amount of chemical
+% bonding atoms is not the dominant mechanism for the friction of this system.
+% Instead, we might point to a mechanism more mechanical of nature associated to
+% phonon exications. When the cut sheet is strecthed the stress (\hl{show stress
+% maps somewhere or not nessecary?}) might induce a certain distribution and
+% magnitude of point pressures to favor energy dissipation. Nonetheless, the
+% results showcase a strong coupling between stretch and friction force, also for
+% the max friction force, which is beyond the expectations at this stage of the
+% study. The non-cut configuration does not show significant dependency on the stretch which reveal that this effect is only present when combining cut and stretch and not purely by strecthing the sheet. 
+
+
+
+
+
+
+
+
 
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth]{figures/baseline/multi_stretch_area_compare.pdf}
-  \caption{Average relative amount of bonds beetwen the sheet and the substrate defined by the cut-off distance of 4 Å. The average is taken over the latter half of the sliding phase. The red shade denotes the stretch range where ruptures accour at certain normal loads under sliding while the black-dotted line represent the rupture point due to stretching (rupture test)}
-  \label{fig:multi_stretch_contact}
-\end{figure}
-
-From \cref{fig:contact_vs_stretch} we observe a significant decrease in the contact due to stretching of the cut configurations in contrast to the non-cut which stays roughly constant. This is reminiscent of the non-sliding stretch vs. contact curve shown in \cref{fig:contact_vs_stretch}. Given these results, theoretically one would expect the kinetic friction to decrease with stretch for the cut configurations.
-
-
-\subsection{Stretch} 
-
-We make a similar analysis as done in the previous section \cref{sec:contact_area} with the substitution of friction force instead of contact (The data is taken from the same simulaitons runs). The kinetic friction force (\hl{put uncertainty here even though that it is quite low?}) and the max friction is shown in \cref{fig:multi_stretch_mean_fric} and \cref{fig:multi_stretch_max_fric} respectively.
-
-
-
-\begin{figure}[H]
-  \centering
+  \begin{subfigure}[t]{\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/baseline/multi_stretch_area_compare.pdf}
+      \caption{}
+      \label{fig:fig:multi_stretch_contact}
+  \end{subfigure}
+  \hfill
   \begin{subfigure}[t]{\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/multi_stretch_mean_compare.pdf}
-      \caption{kinetic friction estimate. }
+      \caption{}
       \label{fig:multi_stretch_mean_fric}
   \end{subfigure}
   \hfill
-  \begin{subfigure}[t]{\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/baseline/multi_stretch_max_compare.pdf}
-      \caption{Max friction}
-      \label{fig:multi_stretch_max_fric}
-  \end{subfigure}
-  \hfill
-     \caption{\hl{CAPTION}}
-     \label{fig:multi_stretch_max_fric}
+     \caption{Average relatvie contact count defined as the relative number of atoms in the sheet within a contact distance defined by 4 Å. The average is taken over the latter half of the sliding phase. The red shade denotes the stretch range where ruptures accoured during sliding while the black-dotted line represent the rupture point in the no load rupture test. 30 stretch values are sampled from a pseudo uniform distribution which is combinned with the loads 0.1, 1 and \SI{10}{nN} for each of the configurations: non-cut, Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$.}
+     \label{fig:multi_stretch}
 \end{figure}
 
 
-From \cref{fig:multi_stretch_mean_fric} we find to our surprise that the
-kinetic friction increase with stretch for the cut configurations despite a
-simmutaneous decrease in contact area as shown in figure
-\cref{fig:multi_stretch_contact}. This suggests that the amount of chemical
-bonding atoms is not the dominant mechanism for the friction of this system.
-Instead, we might point to a mechanism more mechanical of nature associated to
-phonon exications. When the cut sheet is strecthed the stress (\hl{show stress
-maps somewhere or not nessecary?}) might induce a certain distribution and
-magnitude of point pressures to favor energy dissipation. Nonetheless, the
-results showcase a strong coupling between stretch and friction force, also for
-the max friction force, which is beyond the expectations at this stage of the
-study. The non-cut configuration does not show significant dependency on the stretch which reveal that this effect is only present when combining cut and stretch and not purely by strecthing the sheet. 
 
 By considering the increase in kinetic friction towards the first peak we get a relative friction increase and increase vs. stretch ratios as described in \cref{tab:first_peak_stretch}. While the honeycomb force increase towards the first peak is approximately linear the popup exhibits seemingly exponential growth which yield a slope on the order $\sim \SI{30}{nN}$. 
 
@@ -769,7 +802,7 @@ By considering the increase in kinetic friction towards the first peak we get a 
 Additionally, we notice that booth the popup and honeycomb also exhibits stretch ranges where the kinetic friction force decrease with increasing stretch. Qualitatively we assign the slope to be on the same order of magnitude as those towrds the first peak. This is useful for the prospect of taking advantage of this phenonama as we can essentially achieve booth higher and lower friction for increasing stretch for different starting points. 
 
 
-\subsection{Normal force}
+\subsection{Load dependency}\label{sec:load_dependency}
 
 \hl{Main take away from this section should be that the normal force does not really change the friction much; The friciton coefficient is extremely low, but I'm not sure how well the linear fits are (whether they are linear or sublinear). Not sure if I should do a linearly increasing normal force for better linear plots?}
 
