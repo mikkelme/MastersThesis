@@ -7,23 +7,52 @@
 
 
 \chapter{Friction}\label{chap:friction} % Tribology - fiction
-Friction plays a central role for the topic of this thesis being the key concept that we want to explore through the design of nanostructures. In this chapter we review the relevant theoretical understanding and highlight the derived expectations for our study.
+Since we aim for controlling frictional properties, we will review the relevant
+theoretical understanding of friction in this chapter. We will relate the
+theory to our study and highlight some of the expected outcomes. In this thesis,
+we will only concern ourselves with dry friction, i.e.\ without any use of lubrication, and without any resulting wear of the contacting
+surfaces. 
 
-Friction is a part of the wider field tribology which includes the study of
-friction, wear and lubrication between two surfaces in relative motion \cite[p.
-1]{gnecco_meyer_2015}. In this thesis we will only concern ourselves with so-called wearless dry friction. That is, without any use of lubrication and without any resulting wear of the contacting surfaces. 
+
+% Friction plays a central role for the topic of this thesis being the key concept that we want to explore through the design of nanostructures. In this chapter we review the relevant theoretical understanding and highlight the derived expectations for our study.
+
+% Friction is a part of the wider field tribology which includes the study of
+% friction, wear and lubrication between two surfaces in relative motion \cite[p.
+% 1]{gnecco_meyer_2015}. In this thesis we will only concern ourselves with so-called wearless dry friction. That is, without any use of lubrication and without any resulting wear of the contacting surfaces. 
 
 \section{Friction across scales}
-Tribological systems take place across a broad
-range of time and length scales, ranging from geological stratum layers involved
-in earthquakes \cite{kim_nano-scale_2009} to atomistic processes, as
-in the gliding motion of a nanocluster or a nanomotor \cite{Manini_2016}. This
-vast difference in scale gives rises to different frictional mechanism being
-dominating. On a macro scale the system is usually subject
-to a relatively high load and sliding speed leading to a high contact stress and
-wear. On the other hand, the micro-/nanoscale regime occupies the opposite domain operating under relatviely small load and sliding speed with negligible wear \cite{kim_nano-scale_2009} \cite[p. 5]{bhushan_2013}. While macroscale friction is often reduced into a few variables such as load, material type, sliding speed and surface roughness, it is clear that the micro-/nanoscale friction cannot be generalized under such a simple representation. On the micro-/nanoscale the tribological propteries are dominated by surface properties which will yield a more complex behaviour of said variables and introduce an additional sensitivity to variables such as temperature, humidity and even sliding history. The works of Bhushan and Kulkarni \cite{BHUSHAN199649} showed that the friction coefficient decreased with scale even though the materials used was unchanged. This reveals an intrinsic relationship between friction and scale as the contact condition is altered.
+Tribological systems span a wide range of time and length scales, from
+geological stratum layers involved in earthquakes \cite{kim_nano-scale_2009} to
+atomistic processes, such as the gliding motion of nanoclusters or nanomotors
+\cite{Manini_2016}. This vast difference in scale leads to different dominant
+frictional mechanisms. At the macro scale, systems are typically subject to
+relatively high loads and sliding speeds, resulting in significant contact
+stress and wear. On the other hand, the micro-/nanoscale regime occupies the
+opposite domain operating under a relatively small load and sliding speed with
+negligible wear \cite{kim_nano-scale_2009} \cite[p. 5]{bhushan_2013}. While
+macroscale friction is often reduced into a few variables such as load, material
+type, sliding speed and surface roughness, it is clear that the micro-/nanoscale
+friction cannot be generalized under such a simple representation. On the
+micro-/nanoscale the tribological properties are dominated by surface properties
+which will yield a more complex behavior of said variables and introduce an
+additional sensitivity to variables such as temperature, humidity and even
+sliding history. The works of Bhushan and Kulkarni \cite{BHUSHAN199649} showed
+that the friction coefficient decreased with scale even though the materials
+used were unchanged. This reveals an intrinsic relationship between friction and
+scale as the contact condition is altered.
 
-The phenomenological descriptions of macroscale friction cannot yet be derived from the fundamental atomic principles, and bridging the gap between different length scales in tribological systems remains an open challenge \cite{Manini_2016}. Hence, the following sections will be organized into macroscale (\cref{sec:macroscale}), microscale (\cref{sec:microscale}) and nanoscale (\cref{sec:nanoscale}) representing the theoretical understanding governing each scale regime. Realising that the field of tribology across all scales is a vastly broad and intricate topic, we will aim to introduce only the essential findings for each scale, while keeping a main focus on nessecary theoretical background associated to the understanding of our system of interest which takes place at the lowest scale.
+
+The phenomenological descriptions of macroscale friction cannot yet be derived
+from the fundamental atomic principles, and bridging the gap between different
+length scales in tribological systems remains an open challenge
+\cite{Manini_2016}. Hence, the following sections will be organized into
+macroscale (\cref{sec:macroscale}), microscale (\cref{sec:microscale}) and
+nanoscale (\cref{sec:nanoscale}) representing the theoretical understanding
+governing each scale regime. Realizing that the field of tribology across all
+scales is a vastly broad and intricate topic, we will aim to introduce only the
+essential findings for each scale, while keeping a main focus on necessary
+theoretical background associated with the understanding of our system of interest
+which takes place at the nanoscale.
 
 
 % While our study of the graphene sheet is based on a nanoscale perspective the hypothesizing about application possibilities will eventually draw upon a macroscale perspective as well. Thus, we argue that a brief theoretical introduction to all three major scales is suitable for a more complete interpreation of the findings in this thesis. 
@@ -101,7 +130,7 @@ The phenomenological descriptions of macroscale friction cannot yet be derived f
 
 
 \section{Macroscale}\label{sec:macroscale}
-Our working definition of the \textit{macroscale} is everything on the scale of visible objects. This is usually denoted to the size of milimeters \SI{e-3}{\metre} and above. Most importantly, we want to make a distinction to the microscale, where the prefix indicates the size of micrometers $m^{-6}$. Hence, we essentially consider everything larger than \textit{micro} to belong to the macroscale\footnote{The width of a human hair is often used as a reference for the limit of human perception. Since the width of a human hair is on the length scale $10^{-5}$ to \SI{e-4}{m} we find this limit alligns rather well with the defined transistion from macro- to microscale.}.
+Our working definition of the \textit{macroscale} is everything on the scale of visible objects. This is usually denoted to the size of millimeters \SI{e-3}{\metre} and above. Most importantly, we want to make a distinction to the microscale, where the prefix indicates the size of micrometers $m^{-6}$. Hence, we essentially consider everything larger than \textit{micro} to belong to the macroscale\footnote{The width of a human hair is often used as a reference for the limit of human perception. Since the width of a human hair is on the length scale $10^{-5}$ to \SI{e-4}{m} we find this limit aligns rather well with the defined transition from macro- to microscale.}.
 
 \subsection{Amontons’ law}
 % Based on \cite{gnecco_meyer_2015}
@@ -111,24 +140,22 @@ Our working definition of the \textit{macroscale} is everything on the scale of 
  overcome certain frictional forces $F_{\text{fric}}$ \cite{gnecco_meyer_2015}.
  The static friction force $F_s$ corresponds to the minimum tangential force
  required to initiate the sliding while the kintec friciton force $F_k$
- corresponds to the tangential force needed to sustain such a sliding at steady
+ corresponds to the tangential force needed to sustain such a sliding at a steady
  speed. The work of Leonardo da Vinci (1452–1519), Guillaume Amontons (1663-705)
  and Charles de Coulomb (1736-1806) all contributed to the empirical law,
  commonly known as \textit{Amontons’ law}, which serves as a common base for macroscale
- friction. Amontons’ law states that the fricitonal forces is entirely
+ friction. Amontons’ law states that the frictional forces are entirely
  independent of contact area and sliding velocity. Instead, it relies only on
- the normal force $F_N$, acting perpendicular to the surface, and the material specific friction coefficient $\mu$ as
+ the normal force $F_N$, acting perpendicular to the surface, and the material-specific friction coefficient $\mu$ as
 \begin{align}
   F_{\text{fric}} = \mu F_N.
   \label{eq:amonton}
 \end{align}
-Notice that the term \textit{Normal force} is often used interchangeably
-with \textit{load} and \textit{normal load} although the latter two terms refer to the applied force, ``pushing'' the object into the surface, and the first is the reaction force acting from the surface on the object. In equilibrium, these forces are equal in magnitude and hence we will not make a distinction between these terms. On the same note, we point out that the frictional force is different from a conventional force which in the Newtonian definition acts on a body from the outside and make it accelerate \cite{gao_frictional_2004}. Rather than being an independent external force the friction force is an internal \textit{reaction} force opposing the externally applied ``sliding'' force. 
+Notice that the term \textit{normal force} is often used interchangeably with \textit{load} and \textit{normal load} although the load and normal load refer to the applied force that pushes the object into the surface, whereas the normal force is the reaction force acting from the surface on the object. In equilibrium, these forces are equal in magnitude and opposite in direction.\hl{and hence we will not make a distinction between these terms.}. On the same note, we point out that the frictional force is different from a conventional force which in the Newtonian definition acts on a body from the outside and makes it accelerate \cite{gao_frictional_2004}. Rather than being an independent external force the friction force is an internal \textit{reaction} force opposing the externally applied ``sliding'' force. 
 
-The friction coeffcient $\mu$ is typically different for the cases of static
+The friction coefficient $\mu$ is typically different for the cases of static
 ($\mu_s$) and kinetic ($\mu_k$) friction, usually both with values lower than
-one and $\mu_s \ge \mu_k$ in all cases \cite[p. 6]{gnecco_meyer_2015}. The
-friction coefficient is taken to be a constant defined by either
+one and $\mu_s \ge \mu_k$ in all cases \cite[p. 6]{gnecco_meyer_2015}. The friction coefficient is taken to be a constant defined by either
 \cite{gao_frictional_2004} \\
 \vspace{0.1cm}
 \begin{subequations}
@@ -166,18 +193,17 @@ consequences of these definitions are illustrated in
 \cref{fig:fric_coef_example}, for selected $F_{\text{fric}}$-$F_N$-curves in
 \cref{fig:fric_coef_example_a} and corresponding friction coefficients in
 \cref{fig:fric_coef_example_b} and \cref{fig:fric_coef_example_c}. For adhesive
-contacts the friction force will not be zero under zero load (red curve: Linear
-+ shift) which can be mittigated by adding an extra constant to
+contacts, the friction force will not be zero under zero load (red curve: Linear
++ shift) which can be mitigated by adding an extra constant to
 \cref{eq:amonton} \cite{gao_frictional_2004}. Using \cref{eq:mu_def1} for
 adhesive contacts would make the friction coefficient diverge for decreasing
 load as illustrated in \cref{fig:fric_coef_example_b}. Thus, we find the second
-definition \cref{eq:mu_def2} more robust and versitile. This also allows for a
-better interpretation of the friciton coefficient in the hypothetical case where
+definition \cref{eq:mu_def2} more robust and versatile. This also allows for a better interpretation of the friction coefficient in the case where
 friction depends non-linearly on load (Purple curve in
 \cref{fig:fric_coef_example}). 
 
 
-% In reality the friction coeffcient is not truly a
+% In reality the friction coefficient is not truly a
 % material specific constant as it is often found to vary under different
 % conditions such as humidity or smooth and rough morphologies of the sliding
 % surfaces \cite{gao_frictional_2004}.
@@ -210,51 +236,41 @@ friction depends non-linearly on load (Purple curve in
   \label{fig:fric_coef_example}
 \end{figure}
 
+Amontons’ law represents the behavior relatively accurately for many surfaces in contact, involving both dry and lubricated, ductile and brittle and rough and smooth surfaces (as long as they are not adhesive) under a variety of conditions \cite{gao_frictional_2004}. But it has its limitations. For instance, at low velocities, Amontons' model breaks down due to thermal effects, and for high velocities due to inertial effects \cite[pp.\ 5--6]{gnecco_meyer_2015}. Additionally, static friction depends on the so-called contact history, with increasing static friction as the logarithm of time in stationary contact \cite{dieterich_1972}.
 
-Although Amontons' law has been successful in is description of the majority of
-rubbing surfaces, involving both dry and lubricated, ductile and brittle and
-rough and smooth (as long as they are not adhesive) surfaces
-\cite{gao_frictional_2004}, it has its limitations. It is now known that
-\cref{eq:amonton} is not valid over a large range of loads and sliding
-velocities and that it completely breaks down for atomically smooth surfaces in
-strongly adhesive contact \cite{gao_frictional_2004}. For instance, the
-independency of sliding velocity dissapears at low velocities as thermal effects
-becomes important and for high velocities due to intertial effetcs \cite[pp.
-5-6]{gnecco_meyer_2015}. For the case of static friction, it was discovered to
-be dependent on the so-called contact history with increasing friction as the
-logarithm of time of stationary contact \cite{dieterich_1972}.
-
-In cases where Amontons' law breaks down we might still use the conceptual
+In cases where Amontons' law breaks down, we might still use the conceptual
 definition of the friction coefficient as defined by (\cref{eq:mu_def2}).
 Especially, in the context of achieving negative friction coefficients (in
-certain load ranges) we would refer to this definition, since \cref{eq:mu_def1}
+certain load ranges), we would refer to this definition, since \cref{eq:mu_def1}
 would imply a truly unphysical situation of the frictional force acting in the
 same direction as the sliding motion. This would accelerate the object
-indefinitelly\footnote{You would most likely have a good shot at the Nobel Prize
+indefinitely\footnote{You would most likely have a good shot at the Nobel Prize
 with that paper.}.
 
 
-Due to the emperical foundation of Amontons’ law it does not provide any
+Due to the empirical foundation of Amontons’ law, it does not provide any
 physical insight into the underlying mechanisms of friction. However, as we will
 later discuss in more detail, we can understand the overall phenomena of
 friction through statistical mechanics by the concept of \textit{equipartition
 of energy} \cite{Manini_2016}. A system in equilibrium has its kinetic energy
 uniformly distributed among all its degrees of freedom. When a macroscale object
 is sliding in a given direction it is clearly not in equilibrium since one of
-its degrees of freedom carriers considerable more kinetic energy. Thus, the
+its degrees of freedom carries considerably more kinetic energy. Thus, the
 system will have a tendency to transfer kinetic energy to the remaining
-degrees of freedom as heat which dissipate to the sourroundings and making the object slow down if not continously driven forward by an extern energy source.  Hence, we can understand the overall concept of friction simply
+degrees of freedom in the form of heat dissipating to the surroundings and making the object slow down if not continuously driven forward by an extern energy source.  Hence, we can understand the overall concept of friction simply
 as the tendency of going toward equilibrium energy equipartitioning among many
-interacting degrees of freedom \cite{Manini_2016}. From this point of view it is
+interacting degrees of freedom \cite{Manini_2016}. From this point of view, it is
 clear that friction is an inevitable part of contact physics, but even though
 friction cannot be removed altogether, we are still capable of manipulating it
-in usefull ways. \\
+in useful ways. \\
 \\
 The attentive reader might point out that we have already moved the discussion
 into the microscopic regime as \textit{statistical mechanics} generally
-aim to explain macroscale behaviour by microscopic interactions. In fact, this 
-highlight the nessecity to consider smaller scales in order to achieve a more fundamental understadning of friction.
+aim to explain macroscale behavior by microscopic interactions. In fact, this 
+highlights the necessity to consider smaller scales in order to achieve a more fundamental understanding of friction.
 
+
+\hl{Mot slutten av 2.2 kan du kommentere at det finnes mer avanserte makroskopiske modeller, men at Amontons lov gir oss det konseptuelle som vi trenger i akkurat denne studien.}
 
 % All the terms in Amontons’ law refer to macroscopic, i.e., space- and time-averaged or “mean-field”, values. Thus, the contact area is the “apparent” or projected geometric area rather than the “real” contact area at the molecular level. And V is the mean relative velocity of the sliding bodies even though the shearing microjunctions may be moving with large fluctuations or in a stick-slip fashion.10 \cite{gao_frictional_2004}
 
@@ -285,36 +301,36 @@ highlight the nessecity to consider smaller scales in order to achieve a more fu
 
 \section{Microscopic scale}\label{sec:microscale}
 Going from a macro- to a microscale perspective, at a length scale on the order
-\SI{e-6}{m}, it was realised that most surfaces is in fact rough
-\cite{mo_friction_2009}. The contact between two surfaces consist of numerous
-smaller contact points, so-called \textit{asperities}, which form junctions due to contact pressure and adhesion as visualized in \cref{fig:asperity_contact} \cite{kim_nano-scale_2009}. In the macroscale perspective of Amonton's law we refer to time- and space-averaged values, i.e.\ the apparent contact area and the average
+\SI{e-6}{m}, it was realised that most surfaces are in fact rough
+\cite{mo_friction_2009}. The contact between two surfaces consists of numerous
+smaller contact points, so-called \textit{asperities}, which form junctions due to contact pressure and adhesion as visualized in \cref{fig:asperity_contact} \cite{kim_nano-scale_2009}. In the macroscale perspective of Amonton's law, we refer to time- and space-averaged values, i.e.\ the apparent contact area and the average
 sliding speed \cite{gao_frictional_2004}. However, microscopically we find the
-real contact area to be much smaller than the apparent area \cite{kim_nano-scale_2009}, and the shearing motion of local microjunctions to happen at large fluctuations rather than as one syncronized movement throughout the surface. 
+real contact area to be much smaller than the apparent area \cite{kim_nano-scale_2009}, and the shearing motion of local microjunctions to happen at large fluctuations rather than as one synchronized movement throughout the surface. 
 
-It is generally accepted that friction is caused by two mechanism: Mechanical
-friction and chemical friction \cite{kim_nano-scale_2009}. The mechanical
+It is generally accepted that friction is caused by two mechanisms: Mechanical
+friction and chemical friction \cite{kim_nano-scale_2009}. Mechanical
 friction is the ``plowing'' of the surface by hard particles or said asperities
 with an energy loss attributed to deformations of the asperity. While plastic
 deformations, corresponding to wear, gives rise to an obvious attribution for
-the energy loss, elastic deformations is also sufficient in explaining energy
-loss due to phonon excitations. In fact the assumption of plastic deformations
-has been critizised as this is theorized only to be present in the beginning of
-a surface contact while it is neglible for prolonged or repeated contacts
+the energy loss, elastic deformations are also sufficient in explaining energy
+loss due to phonon excitations. The assumption of plastic deformations
+has been criticized as this is theorized only to be present at the beginning of
+a surface contact while it is negligible for prolonged or repeated contacts
 \cite{CARBONE20082555}. That is, when machine parts slide against each other for
-millions of cycles, the plastic deformation would only take place in the beginning for which the system then reaches a steady state with only elastic deformations.
-The chemical friction arrises from adhesion between microscopic contacting
-surfaces, with an energy loss attributed to the breaking and forming of bonds. 
+millions of cycles, the plastic deformation would only take place at the beginning for which the system then reaches a steady state with only elastic deformations.
+The chemical friction arises from adhesion between microscopic contacting
+surfaces, with an energy loss attributed to the breaking and forming of bonds. \hl{What kind of bonds} 
 
 
 
 \subsection{Asperity theories} % Surface roughness --- Asperity theories
 % Sources in general: \cite{mo_friction_2009}, \cite{kim_nano-scale_2009} \\
 
-Asperity theories have its foundations in the adhesion model proposed by Bowden and Tabor \cite{bowden2001friction} which is based on the fundamental reasoning that friction is governed by the adhesion between two surfaces \cite{Kim_2012}. Adhesion is proportional to the real contact area defined by asperity junctions and interfacial shear strength $\vec{\tau}$ between such contacting junctions. For an asperity contact area $A_{\text{asp}}$ we get a true contact area $\sum A_{\text{asp}}$ leading to 
+Asperity theories have their foundations in the adhesion model proposed by Bowden and Tabor \cite{bowden2001friction} which is based on the fundamental reasoning that friction is governed by the adhesion between two surfaces \cite{Kim_2012}. Adhesion is proportional to the real contact area defined by asperity junctions and interfacial shear strength $\vec{\tau}$ between such contacting junctions. For an asperity contact area $A_{\text{asp}}$ we get a true contact area $\sum A_{\text{asp}}$ leading to 
 \begin{align*}
   F_\text{fric} = \vec{\tau} \sum A_{\text{asp}}.
 \end{align*}
-Note that this is still compatible with Amontons’ law in \cref{eq:amonton} by having a linear relatioship between the real contact area and the
+Note that this is still compatible with Amontons’ law in \cref{eq:amonton} by having a linear relationship between the real contact area and the
 applied load. In fact, this is exactly how the theoretical model explains the friction dependency of load. By increasing the normal load it is hypothesized that the real contact area will increase as the asperity tips are deformed (plastically or elastically) into broader contact points as visualized qualitatively in \cref{fig:asperity_contact}.
 
 \begin{figure}[H]
@@ -334,13 +350,13 @@ applied load. In fact, this is exactly how the theoretical model explains the fr
   \end{subfigure}
   \hfill
      \caption{Qualitatively illustration of the microscopic asperity deformation
-     under increasing load from frame (a) to (b) \cite{wiki:asperities}. While this figure seemingly portrays plastic deformation the concept of increased contact area under increased load applies for elastic deformation as well.}
+     under increasing load from frame (a) to (b) \cite{wiki:asperities}. While this figure seemingly portrays plastic deformation the concept of increased contact area under increased load applies to elastic deformation as well.}
      \label{fig:asperity_contact}
 \end{figure}
 
 Many studies have focused on single asperity contacts to reveal the relationship
 between the contact area and load
-\cite{Szlufarska_2008,PhysRevLett.56.930,perry_scanning_2004}. By
+\cite{Szlufarska_2008, PhysRevLett.56.930, perry_scanning_2004}. By
 assuming perfectly smooth asperities, with radii of curvature from micrometers
 all the way down to nanometers, continuum mechanics can be used to predict the
 deformation of asperities as load is applied. A model for non-adhesive contact
@@ -351,19 +367,19 @@ Maugis-Dugdale theory \cite{MAUGIS1992243}, which also predicts a sublinear
 relationship between $A_{\text{asp}}$ and $F_N$. Thus, the common feature of all
 single-asperity theories is that $A_{\text{asp}}$ is a sublinear function of
 $F_N$, leading to a similar sublinear relationship for $F_\text{fric}(F_N)$,
-which fails to align with the macroscale observations modelled by Amontons’ law
+which fails to align with the macroscale observations modeled by Amontons’ law
 (eq. \eqref{eq:amonton}).
 
 % Concurrently with single-asperity studies, roughness contact theories are being developed8–10,16 to bridge the gap between the mechanics of single asperities and that of macroscopic contacts.\cite{mo_friction_2009}
 
-Concurrently with single-asperity studies, roughness contact theories are being developed \cite{PhysRevLett.100.055504,Persson,GW,BUSH197587} to bridge the gap between single asperities and macroscopic contacts \cite{mo_friction_2009}. A variety of multi-asperity theories has attempted to combine single asperity
-mechanics by statistical modelling of the asperity height and spatial
-distributions \cite{CARBONE20082555}. This has led to a partially success in the establishment of a linear relationship between $A_{\text{asp}}$ and $F_N$. Unfortunately, these results are restricted
+Concurrently with single-asperity studies, roughness contact theories are being developed \cite{PhysRevLett.100.055504, Persson, GW, BUSH197587} to bridge the gap between single asperities and macroscopic contacts \cite{mo_friction_2009}. A variety of multi-asperity theories has attempted to combine single asperity
+mechanics by statistical modeling of the asperity height and spatial
+distributions \cite{CARBONE20082555}. This has led to partial success in the establishment of a linear relationship between $A_{\text{asp}}$ and $F_N$. Unfortunately, these results are restricted
 in terms of the magnitude of the load and contact area, where multi-asperity
 contact models based on the original ideas of Greenwood and Williamson \cite{GW}
-only predicts linearity at vanhising low loads, or Persson \cite{Persson} which predicts linearity for more reasonable loads but only up to 10-15 \% of the macroscale contact area. However, as the load is further increased all multi-asperity models
+only predicts linearity at vanishing low loads, or Persson \cite{Persson} which predicts linearity for more reasonable loads but only up to 10-15 \% of the macroscale contact area. However, as the load is further increased all multi-asperity models
 predict the contact area to fall into the sublinear dependency of normal force
-as seen for single aperity theories as well \cite{CARBONE20082555}.
+as seen for single asperity theories as well \cite{CARBONE20082555}.
 
 
 % Da Vinci-Amontons law – friction independent of area – is not confirmed at the
@@ -403,26 +419,31 @@ as seen for single aperity theories as well \cite{CARBONE20082555}.
 
 
 % However, even though the successes of continuum mechanics there is no reasion to
-% believe that it will be capable of reproducing tribological behaviour at the
+% believe that it will be capable of reproducing tribological behavior at the
 % nanometre length scale where the discreteness of atoms often has a direct effect
 % on physical properties \cite{Szlufarska_2008}.
 
 
 \section{Nanoscale --- Atomic scale}\label{sec:nanoscale}
 Going from a micro- to a nanoscale, on the order of \SI{e-9}{m}, it has been
-predicted that continnum mechanics will start to break down \cite{luan_breakdown_2005} due to the discreteness of individual atoms. In a numerical \acrshort{MD} study by Mo et
-al.\ \cite{mo_friction_2009}, considering asperity radii of 5-30 nm, it has been
-shown that the asperity area $A_{\text{asp}}$, defined by the circumfereance of
-the contact zone, is sublinear with $F_N$. This is accommodated by the
-observation that not all atoms within the circumference make chemical contact
-with the substrate. By modelling the real contact area $A_{\text{real}} =
-NA_{\text{atom}}$, where $N$ is the amount of atoms within the range of chemical
-interaction and $A_{\text{atom}}$ the associated surface area for a contacting atom, they
-found a consistent linear relationship between friction and the real contact
-area. Without adhesive forces this lead to a similar linear relationship
-$F_{\text{fric}} \propto F_N$, while adding van der Waals adhesion to the
-simulation gave a sublinear relationship matching microscale single asperity theory, even though the $F_{\text{fric}}
-\propto A_{\text{real}}$ was maintained. This result emphasizes that the predictions of continuum mechanchs might still apply at the nanoscale and that the contact area can still be expected to be play an important role for nanoscale asperity contact. It is simply the definition of the contact area that undergoes a change when transistioning from micro- to nanoscale. 
+predicted that continnum mechanics will start to break down
+\cite{luan_breakdown_2005} due to the discreteness of individual atoms. In a
+numerical \acrshort{MD} study by Mo et al.\ \cite{mo_friction_2009}, considering
+asperity radii of 5--30 nm, it has been shown that the asperity area
+$A_{\text{asp}}$, defined by the circumference of the contact zone, is
+sublinear with $F_N$. This is accommodated by the observation that not all atoms
+within the circumference make chemical contact with the substrate. By modeling
+the real contact area $A_{\text{real}} = NA_{\text{atom}}$, where $N$ is the
+amount of atoms within the range of chemical interaction and $A_{\text{atom}}$
+the associated surface area for a contacting atom, they found a consistent linear relationship between friction and the real contact area. Without adhesive
+forces this leads to a similar linear relationship $F_{\text{fric}} \propto F_N$,
+while adding van der Waals adhesion to the simulation gave a sublinear
+relationship matching microscale single asperity theory, even though the
+$F_{\text{fric}} \propto A_{\text{real}}$ was maintained. This result emphasizes
+that the predictions of continuum mechanchs might still apply at the nanoscale
+and that the contact area can still be expected to play an important role for
+nanoscale asperity contact. It is simply the definition of the contact area that
+undergoes a change when transitioning from micro- to nanoscale. 
 
 
 % Although both numerical \cite{zhu_study_2018}\cite{ma12091425}\cite{bonelli_atomistic_2009} and experimental \cite[2005]{DIENWIEBEL2005197}\cite{feng_superlubric_2013} studies have been done for so-called nanoflakes
@@ -440,42 +461,42 @@ simulation gave a sublinear relationship matching microscale single asperity the
 
 % ``Load-independent friction has also been observed in FFM experiments on thermally oxidized MoS2, and it was proposed that MoO3 nanocrystals, that grew during the oxidation process on the MoS2 surface [35], acted as a spacer between the tip and the sample, such that the contact area remained unchanged upon loading.In the present case, the contact area would be completely determined by the flake size, which would be independent of the loading force.Hence, the friction would only increase slightly with normal load as the result of the increase in contact pressure.'' \cite{DIENWIEBEL2005197}
 
-% Before diving into alternative theoretical approaches to adress this issue we point out that exactly this transistion, between nanoscale asperities and atomically smooth surfaces, is of outermost importance for the objective of the thesis. By introducing kirigami cuts and stretching the sheet we expect to see an out of plane buckling which induce an ensemble of asperities on the sheet. Hence, we might hypothesize that such a transition will contribute to a significant change in the goverening mechanism of friction bridgering the two domains of nanoscale asperity and smooth surface theory. 
+% Before diving into alternative theoretical approaches to adress this issue we point out that exactly this transition, between nanoscale asperities and atomically smooth surfaces, is of outermost importance for the objective of the thesis. By introducing kirigami cuts and stretching the sheet we expect to see an out of plane buckling which induce an ensemble of asperities on the sheet. Hence, we might hypothesize that such a transition will contribute to a significant change in the goverening mechanism of friction bridgering the two domains of nanoscale asperity and smooth surface theory. 
 
 While the study by Mo et al.\ \cite{mo_friction_2009} considers a single
 asperity on a nanoscale, some models take this even further to what we will
 denote as the atomic-scale. This final leap is motivated by the fact that our
 system of interest, an atomically flat graphene sheet imposed on a flat silicon
-substrate, lacks the presence of nanoscale asperities in its inital uncut
-underformed state. In the lack of noteworthy structural asperities, friction can
-instead be modelled as a consequencse of the ``rough'' potential layed out by
-the atomic landscape. A series of so-called reduced-order models builds on a
+substrate, lacks the presence of nanoscale asperities in its initial uncut
+undeformed state. In the lack of noteworthy structural asperities, friction can
+instead be modeled as a consequence of the ``rough'' potential laid out by
+the atomic landscape. A series of so-called reduced-order models build on a
 simplified system of atomic-scale contacts based on three essential parts: 1) A
-periodic potential modelling the substrate as rigid crystaline surface. 2) An
+periodic potential modeling the substrate as a rigid crystalline surface. 2) An
 interacting particle, or collection of particles, placed in the potential. 3) A
-moving body, moving at steady speed, and connected to the particles through a
+moving body, moving at a steady speed, and connected to the particles through a
 harmonic coupling. In figure \cref{fig:PT_FK_FKT} three of the most common 1D
-models is displayed which we will adress in the following sections. The
-time-honered Prandtl-Tomlinson (PT) model describes a point-like tip sliding
+models are displayed which we will address in the following sections. The
+time-honored Prandtl-Tomlinson (PT) model describes a point-like tip sliding
 over a space-periodic fixed crystalline surface with a harmonic coupling to the
 moving body. This is analog to that of an experimental cantilever used for
-Atomic Force Microscopy which we will introduce in more details in
-\cref{sec:SPM}. Further extensions was added in the Frenkel-Kontorova
-(\acrshort{FK}) model by substituting the tip with a chain of harmonic coupled
-particles dragged from the end, and finally combinned in the
+Atomic Force Microscopy which we will introduce in more detail in
+\cref{sec:SPM}. Further extensions were added in the Frenkel-Kontorova
+(\acrshort{FK}) model by substituting the tip with a chain of harmonically coupled
+particles dragged from the end, and finally combined in the
 Frenkel-Kontorova-Tomlinson (\acrshort{FKT}) with the addition of a more
 rigorous harmonic coupling between the moving body and each of the atoms in the
-chain. While these models cannot provide the same level of details as atomistic
-simulations such as \acrshort{MD} it enables investigation of atomic friction
+chain. While these models cannot provide the same level of detail as atomistic
+simulations such as \acrshort{MD} they enable investigation of atomic friction
 under most conditions, some of which are inaccessible to \acrshort{MD}
-\cite{Yalin_2011}. This makes these models an appropiate tool for investigating
-inidvidual parameters and mechanisms governing affecting friction.
+\cite{Yalin_2011}. This makes these models an appropriate tool for investigating
+individual parameters and mechanisms governing affecting friction.
 
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.4\linewidth]{figures/theory/PT_FK_FKT.png}
-  \caption{\hl{Temporary} figure from \cite{Yalin_2011}. Be careful to aling notation on the figures with the text later on.}
+  \caption{\hl{Temporary} figure from \cite{Yalin_2011}. Be careful to align the notation on the figures with the text later on.}
   \label{fig:PT_FK_FKT}
 \end{figure}
 
@@ -483,7 +504,7 @@ inidvidual parameters and mechanisms governing affecting friction.
 % Analytical Models for Atomic Friction \cite{Yalin_2011}
 % \textbf{Analytical Models for Atomic Friction}
 \subsection{Prandtl–Tomlinson} % Sources for PT model \cite[2,3]{Yalin_2011} 
-We consider the Prandtl–Tomlinson model (\acrshort{PT}) with added thermal activation as proposed by Gnecco et al. \cite{PhysRevLett.84.1172}. For the theoretical foundation of this section we generally refer to \cite{Yalin_2011}.
+We consider the Prandtl–Tomlinson model (\acrshort{PT}) with added thermal activation as proposed by Gnecco et al. \cite{PhysRevLett.84.1172}. For the theoretical foundation of this section, we generally refer to \cite{Yalin_2011}.
 
 
 
@@ -507,12 +528,12 @@ We consider the Prandtl–Tomlinson model (\acrshort{PT}) with added thermal act
 % effects from individual parameters. 
 
 % Mathematical formulation 
-The 1D \acrshort{PT} model assumes a single ball-tip coupled harmonically to a support moving at constant speed which makes the tip slide along the rigid substrate. The interaction between tip and substrate is modelled as a sinusoidal corrugation potential mimicking the periodicity found in a crystaline substrate. The total potential energy is given as
+The 1D \acrshort{PT} model assumes a single ball-tip coupled harmonically to a support moving at a constant speed which makes the tip slide along the rigid substrate. The interaction between tip and substrate is modeled as a sinusoidal corrugation potential mimicking the periodicity found in a crystalline substrate. The total potential energy is given as
 \begin{align}
   V(x,t) = \frac{1}{2}K(vt - x)^2 - \frac{1}{2}U_0 \cos \left(\frac{2\pi x}{a} \right).
   \label{eq:V_PT}
 \end{align}
-The first term describes the harmonic coupling at time $t$, with spring constant $K$, between the tip at position $x$ and the moving body at position $vt$, given by its constant speed $v$. The second term describs the corrugation potential with amplitude $U_0$ and period $a$ representing the lattice spacing of the substrate. The dynamics of the tip can be described by the Langevin equations 
+The first term describes the harmonic coupling at time $t$, with spring constant $K$, between the tip at position $x$ and the moving body at position $vt$, given by its constant speed $v$. The second term describes the corrugation potential with amplitude $U_0$ and period $a$ representing the lattice spacing of the substrate. The dynamics of the tip can be described by the Langevin equations 
 \begin{align}
   m \ddot{x}+m \mu \dot{x}=-\frac{\partial V(x, t)}{\partial x}+\xi(t),
   \label{eq:Langevin_PT}
@@ -522,16 +543,16 @@ where $m$ is the mass of the tip, $\mu$ the viscous friction and $\xi(t)$ the th
 \begin{align*}
   F_{\text{fric}} = K(vt - x).
 \end{align*}
-The governing equation \cref{eq:Langevin_PT} belongs to a family of stochastic differential equations composed of deterministic dynamics and stochastic processes. In this case the deterministic term is the viscous friction, $m\mu\dot{x}$, to resist the movement of the tip and the force acting from the corrugation potential. The stochastic term is a random force field modelling thermal noise according to the fluctuation–dissipation relation. Thus, there is no single path but rather multiple paths the tip can take. While the Langevin equations is one of the most common ways to handle thermal activaiton other methods exist to solve this problem such as Monte Carlo sampling methods. We ommit the numerical scheme for solving this and refer to a more in depth discussion of the Langevin equations with respect to the use in \acrshort{MD} simulations in \cref{sec:langevin}. 
+The governing equation \cref{eq:Langevin_PT} belongs to a family of stochastic differential equations composed of deterministic dynamics and stochastic processes. In this case, the deterministic term is the viscous friction, $m\mu\dot{x}$, to resist the movement of the tip and the force acting from the corrugation potential. The stochastic term is a random force field modeling thermal noise according to the fluctuation–dissipation relation. Thus, there is no single path but rather multiple paths the tip can take. While the Langevin equations is one of the most common ways to handle thermal activation other methods exist to solve this problem such as Monte Carlo sampling methods. We omit the numerical scheme for solving this and refer to a more in-depth discussion of the Langevin equations with respect to the use in \acrshort{MD} simulations in \cref{sec:langevin}. 
 
 
 \subsubsection{Thermal activation}
-The solving of the Langevin equations, as opposed to Newtons equation of motion, introduces thermal effects to the system. Generally, when the energy barrier comes close to $k_B T$ (0.026 eV at room temperature) thermal effects can not be neglected. In the case of a single asperity contact the energy barrier is on the order 1 eV which make thermal activation significant \cite{Yalin_2011}. Due to the moving body travelling at constant speed the potential energy will increase steadily. Without any temperature, $T = 0$, the slip will only accour when the energy barrier between the current potential well (i) and the adjacent (j) is zero $\Delta V_{i\to j} = 0$. However, in the presence of temperature we get thermal activation, meaning that the tip can slip to the next potential well sooner $\Delta V_{i\to j} > 0$. Provided that the sliding speed is slow enough (\hl{Elaborate}) the transistion rate $\kappa$ for a slip from the current to the next well is given by
+The solving of the Langevin equations, as opposed to Newton's equation of motion, introduces thermal effects to the system. Generally, when the energy barrier comes close to $k_B T$ (0.026 eV at room temperature) thermal effects can not be neglected. In the case of a single asperity contact the energy barrier is on the order 1 eV which makes thermal activation significant \cite{Yalin_2011}. Due to the moving body traveling at a constant speed, the potential energy will increase steadily. Without any temperature, $T = 0$, the slip will only occur when the energy barrier between the current potential well (i) and the adjacent (j) is zero $\Delta V_{i\to j} = 0$. However, in the presence of temperature, we get thermal activation, meaning that the tip can slip to the next potential well sooner $\Delta V_{i\to j} > 0$. Provided that the sliding speed is slow enough (\hl{Elaborate}) the transition rate $\kappa$ for a slip from the current to the next well is given by
 \begin{align}
   \kappa = f_0 e^{-\Delta V / k_B T},
   \label{eq:PT_kappa}
 \end{align}
-with $\Delta V$ being the energy barrier and $f_0$ the attempt rate. The attempt rate following Kramer’s rate theory \cite{RevModPhys.62.251} is related to the mass and damping of the system and can be thought of as the frequency which the tip ``attempts'' to overcome the barrier. Notice that \cref{eq:PT_kappa} resembles a microstate probability in the canonical ensemble with $f_0$ in place of the inverse partion function $Z^{-1}$ which can be used as another intepration of $f_0$. The probability $p_i$ that the tip occupies the current well $i$ relative to the adjacent well $j$, as illustrated in \cref{fig:PT_slip} is governed by 
+with $\Delta V$ being the energy barrier and $f_0$ the attempt rate. The attempt rate following Kramer’s rate theory \cite{RevModPhys.62.251} is related to the mass and damping of the system and can be thought of as the frequency at which the tip ``attempts'' to overcome the barrier. Notice that \cref{eq:PT_kappa} resembles a microstate probability in the canonical ensemble with $f_0$ in place of the inverse partition function $Z^{-1}$ which can be used as another interpretation of $f_0$. The probability $p_i$ that the tip occupies the current well $i$ relative to the adjacent well $j$, as illustrated in \cref{fig:PT_slip} is governed by 
 \begin{align*}
   \frac{dp_i}{dt} = -\kappa_{i\to j}p_i + \kappa_{j\to i}p_j.
 \end{align*}
@@ -566,26 +587,26 @@ This probability is related to temperature, speed and mass.
      \label{fig:PT_temp}
 \end{figure}
 
-Generally, there exist two temperature regimes in the model: Thermal activation at low temperature and thermal drift at high temperature as shown in \cref{fig:PT_temp}. At lower temperature the system is subject to standard thermal activation with $\Delta V_{i \to j} \gg \Delta V_{j \to i}$ resulting in  $\kappa V_{i \to j} \gg \kappa V_{j \to i}$. Effectively, this inhibits any backwards slip and we get  
+Generally, there exist two temperature regimes in the model: Thermal activation at low temperatures and thermal drift at high temperatures as shown in \cref{fig:PT_temp}. At lower temperatures, the system is subject to standard thermal activation with $\Delta V_{i \to j} \gg \Delta V_{j \to i}$ resulting in  $\kappa V_{i \to j} \gg \kappa V_{j \to i}$. Effectively, this inhibits any backward slip and we get  
 \begin{align*}
   \frac{dp_i}{dt} = -\kappa_{i\to j}p_i,
 \end{align*}
-which make the relationship between friction, temperature and speed follow Sang et al.’s prediction \cite{Sang_2001}
+which makes the relationship between friction, temperature and speed follow Sang et al.’s prediction \cite{Sang_2001}
 \begin{align}
   F=F_c-\left|\beta k_B T \ln \left(\frac{v_c}{v}\right)\right|^{2 / 3}, \qquad v_c = \frac{2f_0\beta k_B T}{3 C_{\text{eff}} \sqrt{F_c}},
   \label{eq:F_thermal_ac}
 \end{align}
 where $F_c$ is the maximum friction at $T = 0$, $v_c$ a critical velocity, $f_0$
-is the attempt rate, $c_{eff}$ the effective stifness, and $\beta$ a
+is the attempt rate, $c_{eff}$ the effective stiffness, and $\beta$ a
 parameter determined by the shape of the corrugation well.
 \cref{eq:F_thermal_ac} characterizes the decrease in friction with temperature
-in the thermal activation regime, shown in \cref{fig:PT_temp_a} at low temperature, with the assumption of only forward slips, as seen in the force trace shown in \cref{fig:PT_temp_a}. When the temperatuere is high enough, for the system to be consistenly close to thermal equilibrium, it enters the regime of thermal drift \cite{PhysRevE.71.065101}. This regime transistion can be understood through a comparison of two time scales: The time it takes for the moving body to travel one lattice spacing
-$t_v = a/v$ and the average time for a slip to accour due to thermal activation
-$\tau = 1/\kappa = f^{-1}\exp(\Delta V / k_BT)$. If $t_v \gg \tau$ the system falls within the thermal drift regime, with slips both backwards and forwards as shown in \cref{fig:PT_temp_b}, and the friction follows the prediction of Krylov et
+in the thermal activation regime, shown in \cref{fig:PT_temp_a} at low temperature, with the assumption of only forward slips, as seen in the force trace shown in \cref{fig:PT_temp_a}. When the temperature is high enough, for the system to be consistently close to thermal equilibrium, it enters the regime of thermal drift \cite{PhysRevE.71.065101}. This regime transition can be understood through a comparison of two time scales: The time it takes for the moving body to travel one lattice spacing
+$t_v = a/v$ and the average time for a slip to occur due to thermal activation
+$\tau = 1/\kappa = f^{-1}\exp(\Delta V / k_BT)$. If $t_v \gg \tau$ the system falls within the thermal drift regime, with slips both backward and forwards as shown in \cref{fig:PT_temp_b}, and the friction follows the prediction of Krylov et
 al.\ \cite{Krylow_2007, PhysRevE.71.065101, Jinesh_2008}
 \begin{align}
   F \propto \frac{v}{T}e^{1/T}.
-  \ref{eq:PT_thermal_drift}
+  \label{eq:PT_thermal_drift}
 \end{align}
 
 % \hl{Should we comment about the velocity dependence being different here also?}
@@ -612,7 +633,7 @@ al.\ \cite{Krylow_2007, PhysRevE.71.065101, Jinesh_2008}
 
 \subsubsection{Sliding speed}
 In the thermal activation regime (low temperature) and at low speeds the friction relation follows \cref{eq:F_thermal_ac} making friction scale logarithmically with speed. For higher speed, $v > v_c$, if only thermal effects are considered, \cref{eq:F_thermal_ac} predicts that friction will eventually saturate and come to a plateau at $F_{\text{fric}} = F_C$. This is illustrated in \cref{fig:PT_speed} with this prediction being represented by the dotted line. However, as given away by the figure, for higher speed the model will enter an athermal regime where the thermal effects are negligible compared to other contributions \cite{Yalin_2011}(32). In the athermal regime the damping term $m\mu \dot{x}$ will dominate yielding $F_{\text{fric}}
-\propto v$. The athermal regime is often observedd in reduced models if the system is overdamped or at high speeds. This concept is also interesting in connection to \acrshort{MD} simulations where the accesible speeds often fall into the athermal regime \cite{Li_2011}. It is unclear how this effects real physical systems for which there exist more dissipation channels than just a single viscous term \cite{Dong_2013}. For the thermal drift regime at higher temperatures the linear relation $F_{\text{fric}} \propto v$ is predicted for low speed as well by \cref{eq:PT_thermal_drift}.
+\propto v$. The athermal regime is often observed in reduced models if the system is overdamped or at high speeds. This concept is also interesting in connection to \acrshort{MD} simulations where the accessible speeds often fall into the athermal regime \cite{Li_2011}. It is unclear how this affects real physical systems for which there exist more dissipation channels than just a single viscous term \cite{Dong_2013}. For the thermal drift regime at higher temperatures the linear relation $F_{\text{fric}} \propto v$ is predicted for low speed as well by \cref{eq:PT_thermal_drift}.
 
 \begin{figure}[H]
   \centering
@@ -623,25 +644,25 @@ In the thermal activation regime (low temperature) and at low speeds the frictio
 
 
 \subsubsection{Tip mass}
-The mass of the tip affects the dynamics due to a change of intertia, which changes the attempt rate $f_0$. A smaller intertia leads to a larger attempt rate and vice verse. Effectively, this will affect the transistion point for the temperature and speed regimes described in the previous. A smaller interia, giving a larger attempt rate, will cause an earlier transsition (i.e.\ at lower temperature) to the thermal drift regime, and result in a later speed saturation such that it transistions to the athermal regime at hihger speed. 
+The mass of the tip affects the dynamics due to a change of inertia, which changes the attempt rate $f_0$. Smaller inertia leads to a larger attempt rate and vice versa. Effectively, this will affect the transition point for the temperature and speed regimes described previously. A smaller inertia, giving a larger attempt rate, will cause an earlier transition (i.e.\ at a lower temperature) to the thermal drift regime, and result in a later speed saturation such that it transitions to the athermal regime at a higher speed. 
 
 
 \subsubsection{Friction Regimes: Smooth Sliding, Single Slip, and Multiple Slip}
-Stick-slip motion is a crucial instability mechanism associated with high energy dissipation and high friction. Thus, controlling the transistion between smooth sliding and stick-slip is considered key to control friction. We can divide the frictional stick-slip behaviour into three regimes: 1) Smooth sliding, where the tip slides smoothly on the substrate. 2) Single slip, where the tip stick at one potential well before jumping one lattice spacing to the next. 3) Multiple slip, where the tip jumps more than one lattice spacing for a slip event. The underlying mechanisms behind these regimes can be understood through a static and a dynamic contribution. 
+Stick-slip motion is a crucial instability mechanism associated with high energy dissipation and high friction. Thus, controlling the transition between smooth sliding and stick-slip is considered key to controlling friction. We can divide the frictional stick-slip behavior into three regimes: 1) Smooth sliding, where the tip slides smoothly on the substrate. 2) Single slip, where the tip stick at one potential well before jumping one lattice spacing to the next. 3) Multiple slip, where the tip jumps more than one lattice spacing for a slip event. The underlying mechanisms behind these regimes can be understood through static and dynamic contributions. 
 
-To understand the static mechanism we consider a quasistatic process for which temperature, speed and damping can be neglected and where we must have $\partial(V)/\partial x = 0$. This simiplifies \cref{eq:V_PT} to 
+To understand the static mechanism we consider a quasistatic process for which temperature, speed and damping can be neglected and where we must have $\partial(V)/\partial x = 0$. This simplifies \cref{eq:V_PT} to 
 \begin{align}
   \frac{\pi U_0}{a} \sin\left(\frac{2\pi x}{a}\right) \frac{2 \pi}{a} = K(vt - x).
   \label{eq:static_V}
 \end{align}
 The friction regime is determined by the number of solutions $x$ to \cref{eq:static_V}. Only one solution corresponds to
 smooth sliding, two solutions to a single slip and so on. It turns out that the
-regimes can be defined by the parameter $\eta = 2\pi^2U_0/a^2K$ \cite{Johnson_1998, Medyanik_2006} yielding transistions at $\eta = 1, 4.6, 7.79, 10.95, \hdots$, such that $\eta \le 1$
-corresponds too smooth sliding, $1<\eta \le 4.6$ to a single slip and so on. These static derivation lays out the foundamental probabilities for being in one of the regimes stick-slip regimes. Notice that increasing the spring constant $K$ (stiff spring) will decrease the possibilities for stick-slip behaviour. This also agrees with Bonelli \hl{Talk about this.}
+regimes can be defined by the parameter $\eta = 2\pi^2U_0/a^2K$ \cite{Johnson_1998, Medyanik_2006} yielding transitions at $\eta = 1, 4.6, 7.79, 10.95, \hdots$, such that $\eta \le 1$
+corresponds too smooth sliding, $1<\eta \le 4.6$ to a single slip and so on. These static derivations lay out the fundamental probabilities for being in one of the regimes stick-slip regimes. Notice that increasing the spring constant $K$ (stiff spring) will decrease the possibilities for stick-slip behavior. This also agrees with Bonelli \hl{Talk about this.}
 
-Considering the dynamics on top, one find that damping, speed and temperature will affect this probability. A high damping, equivalenet of a high transfer
-of kinetic energy to heat, will result in less energy available for the slip events. This will make multiple slip less likely. By a similar argument, we find that increasing the speed will contribute to more kinetic energy which will increase the likelihood of multiple slips. Finally, temperature will contribute to earlier slips, due to thermal activation, such that
-less potential energy can be accumulated and it will result in fewer multiple slips. The effects of damping, speed and temperature is illustrated for the force traces in \cref{fig:PT_slip_var}
+Considering the dynamics on top, one finds that damping, speed and temperature will affect this probability. High damping, equivalent to a high transfer
+of kinetic energy to heat, will result in less energy available for the slip events. This will make multiple slip less likely. By a similar argument, we find that increasing the speed will contribute to more kinetic energy which will increase the likelihood of multiple slips. Finally, the temperature will contribute to earlier slips, due to thermal activation, such that
+less potential energy can be accumulated and it will result in fewer multiple slips. The effects of damping, speed and temperature are illustrated for the force traces in \cref{fig:PT_slip_var}
 
 \begin{figure}[H]
   \centering
@@ -654,6 +675,7 @@ less potential energy can be accumulated and it will result in fewer multiple sl
   \begin{subfigure}[t]{0.32\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/theory/PT_slip_speed.png}
+      \label{fig:PT_slip_vel}
       \caption{}
   \end{subfigure}
   \hfill
@@ -714,7 +736,7 @@ less potential energy can be accumulated and it will result in fewer multiple sl
 % \subsection{Tomlinson model}
 % % \cite{kim_nano-scale_2009}
 
-% One of the first atomic scale models. Here we have no asperities but it is based on the assumptions that the atomic surface is not completely smooth. Since atoms was modelled as spheres the surface topography would not be completely flat. The idea is shown in \cref{fig:tomlinson_model} where the moving body is connected the atom with springs.
+% One of the first atomic scale models. Here we have no asperities but it is based on the assumptions that the atomic surface is not completely smooth. Since atoms was modeled as spheres the surface topography would not be completely flat. The idea is shown in \cref{fig:tomlinson_model} where the moving body is connected the atom with springs.
 % \begin{figure}[H]
 %   \centering
 %   \includegraphics[width=0.5\linewidth]{figures/theory/tomlinson_model.png}
@@ -723,24 +745,24 @@ less potential energy can be accumulated and it will result in fewer multiple sl
 % \end{figure}
 
 
-% This model gives an explanation to the stick-slip behaviour. This layed the foundation for the Frenkel-Kontorova model so maybe go straight to that?
+% This model gives an explanation to the stick-slip behavior. This layed the foundation for the Frenkel-Kontorova model so maybe go straight to that?
 
 
 % Double check that I got it right regarding connection to the moving body and how the model is driven. 
 \subsection{Frenkel-Kontorova}
 % Based on \cite{Manini_2016} and \cite{FK2D}.
 
-The Frenkel-Kontorova (\acrshort{FK}) model \cite{Frenkel_1938} extends the \acrshort{PT} model by considering a chain of atoms in constrast to just a single particle (tip). This extension is usefull for understanding the importance of the alignment between the atoms and the substrate, the so-called \textit{commensurability}.
+The Frenkel-Kontorova (\acrshort{FK}) model \cite{Frenkel_1938} extends the \acrshort{PT} model by considering a chain of atoms in contrast to just a single particle (tip). This extension is useful for understanding the importance of the alignment between the atoms and the substrate, the so-called \textit{commensurability}.
 
-The standard (\acrshort{FK}) model consists of a 1D chain of $N$ classical particles of equal mass, representing atoms, interacting via hamornic forces and moving in a sinusoidal potential as sketched in \cref{fig:FK_model} \cite{Manini_2016}. The hamiltonian is 
+The standard (\acrshort{FK}) model consists of a 1D chain of $N$ classical particles of equal mass, representing atoms, interacting via harmonic forces and moving in a sinusoidal potential as sketched in \cref{fig:FK_model} \cite{Manini_2016}. The Hamiltonian is 
 \begin{align}
   H = \sum_{i=1}^N \left[\frac{p_i^2}{2m} + \frac{1}{2}K(x_{i+1} - x_i - a_c)^2 + \frac{1}{2}U_0 \cos{\left(\frac{2\pi x_i}{a_b}\right)}\right],
   \label{eq:H_FK}
 \end{align}
 where the atoms are labelled sequently $i = 1, \hdots, N$. The first term $p_i^2/2m$ represents the kinetic energy with momentum $p_i$
-and mass $m$. Often the effetcs of inertia are neglected, reffered to as the static \acrshort{FK} model, while the inclusion in \cref{eq:H_FK} is known as the dynamic \acrshort{FK} model \cite{FK2D}. The next term describes the harmonic interaction with elastic
+and mass $m$. Often the effects of inertia are neglected, referred to as the static \acrshort{FK} model, while the inclusion in \cref{eq:H_FK} is known as the dynamic \acrshort{FK} model \cite{FK2D}. The next term describes the harmonic interaction with elastic
 constant $K$, nearest neighbour distance $\Delta x = x_{i+1} - x_i$ and 
-corresponding nearest neighbour equilibrium distance $a_c$. The final term represents the periodic corrugation potential, with amplitude $U_0$ and period $a_b$. By comparison to the potential used in the \acrshort{PT} model \cref{eq:V_PT}, the only difference is the introduction of a harmonic coupling between particles in the chain as opposed to the moving body, and that we have not yet specified any force incentivizing sliding. Different boundary choices can be made where both free ends and periodic conditions gives similar results. The choice of fixed ends however makes the chain incapable of sliding.
+corresponding nearest neighbour equilibrium distance $a_c$. The final term represents the periodic corrugation potential, with amplitude $U_0$ and period $a_b$. By comparison to the potential used in the \acrshort{PT} model \cref{eq:V_PT}, the only difference is the introduction of a harmonic coupling between particles in the chain as opposed to the moving body, and that we have not yet specified any force incentivizing sliding. Different boundary choices can be made where both free ends and periodic conditions give similar results. The choice of fixed ends however makes the chain incapable of sliding.
 
 \begin{figure}[H]
   \centering
@@ -749,31 +771,31 @@ corresponding nearest neighbour equilibrium distance $a_c$. The final term repre
   \label{fig:FK_model}
 \end{figure}
 
-To probe static friction one can apply an external adiabatically increasing force until sliding accours. This corresponds to the static \acrshort{FK} model, and it turns out that the sliding properties are entirely governed by its topological excitations referred to as so-called \textit{kinks} and \textit{antikinks}
+To probe static friction one can apply an external adiabatically increasing force until sliding occurs. This corresponds to the static \acrshort{FK} model, and it turns out that the sliding properties are entirely governed by its topological excitations referred to as so-called \textit{kinks} and \textit{antikinks}
 
-\subsubsection{Commensurability} We can subdivide the frictional behaviour in terms of commensurability, that is, how well the spacing of the atoms match the periodic substrate potential. We describe this by the length ratio $\theta = a_b / a_c = N / M$ where $M$ denotes the number of minemas in the potential (within the length of the chain). A rational number for $\theta$ means that we can achieve a perfect alignment between the atoms in the chain and the potential minemas, without stretching the chain, corresponding to a \textit{commensurate} case. If $\theta$ is irrational the chain and substrate cannot fully align without some stretching of the chain, and we denote this as being \textit{incommensurate}.
+\subsubsection{Commensurability} We can subdivide the frictional behavior in terms of commensurability, that is, how well the spacing of the atoms matches the periodic substrate potential. We describe this by the length ratio $\theta = a_b / a_c = N / M$ where $M$ denotes the number of minima in the potential (within the length of the chain). A rational number for $\theta$ means that we can achieve a perfect alignment between the atoms in the chain and the potential minima, without stretching the chain, corresponding to a \textit{commensurate} case. If $\theta$ is irrational the chain and substrate cannot fully align without some stretching of the chain, and we denote this as being \textit{incommensurate}.
 
 We begin with the simplest commensurate case of $\theta = 1$ where the spacing
 of the atoms matches perfectly with the substrate potential periodicity, i.e.\
 $a_c = a_b$, $N = M$. The ground state (\acrshort{GS}) is the configuration
-where each atom is aligned with one of the substrate minema. By adding an extra
-atom to the chain we would effectively shift over some of the atoms, out of this
+where each atom is aligned with one of the substrate minima. By adding an extra
+atom to the chain we would effectively shift some of the atoms, out of this
 ideal state, giving rise to a kink excitation. This leads to the case where two
 atoms will have to ``share'' the same potential corrugation as sketched in
 \cref{fig:incommensurable_example}.  On the other hand, removing an atom from
 the chain results in an antikink excitation where one potential corrugation will
 be left ``atomless''. In order to reach a local minimum the kink (antikink) will
 expand in space over a finite length such that the chain undertakes a local
-compression (expansion). Notice that for low ratios of $\theta$, fewer atoms than minema, the chain will not be able to fill each corrugation well in any case, meaning that commensurability can instead be thought of as whether the atoms are forced to deviate, by a lattice spacing, from the spacing otherwise dictated by the spring forces inbetween. When applying a tangential force to the chain it is much
-easier for an excitation to move along the chain than it is for the non-exicted
+compression (expansion). Notice that for low ratios of $\theta$, fewer atoms than minima, the chain will not be able to fill each corrugation well in any case, meaning that commensurability can instead be thought of as whether the atoms are forced to deviate, by a lattice spacing, from the spacing otherwise dictated by the spring forces in-between. When applying a tangential force to the chain it is much
+easier for an excitation to move along the chain than it is for the non-excited
 atoms since the activation energy $\epsilon_{PN}$ for a kink/antikink
 displacement is systematically smaller (often much smaller) than the potential
 barrier $U_0$. Thus, the motion of kinks (antikinks), i.e.\ the displacement of
-extra atoms (atom vacancies), is represententing the fundamental mechanism for
+extra atoms (atom vacancies), is representing the fundamental mechanism for
 mass transport. These displacements are responsible for the mobility,
 diffusivity and conductivity within this model. 
 
-In the zero temperature commensurable case with an adiabatical increase in force, all atoms would be put into an accelerating motion as soon as the potential barrier energy is present. However, just as discussed for the \acrshort{PT} model, thermal activations will excite the system at an earlier stage resulting in kink-antikink pairs traveling down the chain. For a chain of finite length these often accour at the end of the chain running in opposite direction. This cascade of kink-antikink exications is shown in \cref{fig:kink_antikink}. Notice, that for the 2D case, where an island (or flake) is deposited on a surface, we generally also expect the sliding to be initated by kink-antikink pairs at the boundaries. 
+In the zero temperature commensurable case with an adiabatical increase in force, all atoms would be put into an accelerating motion as soon as the potential barrier energy is present. However, just as discussed for the \acrshort{PT} model, thermal activations will excite the system at an earlier stage resulting in kink-antikink pairs traveling down the chain. For a chain of finite length, these often occur at the end of the chain running in opposite directions. This cascade of kink-antikink excitations is shown in \cref{fig:kink_antikink}. Notice, that for the 2D case, where an island (or flake) is deposited on a surface, we generally also expect the sliding to be initiated by kink-antikink pairs at the boundaries. 
 % As a kink travels down the chain the atoms are advanced by one lattice spacing $a_b$ along the substrate potential. 
 
 \begin{figure}[H]
@@ -785,7 +807,7 @@ In the zero temperature commensurable case with an adiabatical increase in force
 
 
 For the case of incommensurability, i.e.\ $\theta = a_b/a_c$ is irrational, the
-\acrshort{GS} is characterized by a sort of ``staircase''  deformation. That is, the chain will exhibit regular periods of regions where the chain is slightly compressed (expanded) to match the substrate potential, seperated by kinks (antikinks), where the increased stress is eventually released.
+\acrshort{GS} is characterized by a sort of ``staircase''  deformation. That is, the chain will exhibit regular periods of regions where the chain is slightly compressed (expanded) to match the substrate potential, separated by kinks (antikinks), where the increased stress is eventually released.
 % as illustrated in \cref{fig:incommensurable_example} 
 % through a localized expansion (compression) 
 
@@ -797,8 +819,8 @@ For the case of incommensurability, i.e.\ $\theta = a_b/a_c$ is irrational, the
   \caption{\hl{Temporary} figure from
   url{http://www.iop.kiev.ua/~obraun/myreprints/surveyfk.pdf} p. 14.
   Incommensurable case ($\theta = ?$) where atoms sits slightly closer than
-  otherwise dictated by the substrate potential for which this regularly result
-  in a kink here seen as the presence of two atoms closely together in on of the
+  otherwise dictated by the substrate potential for which this regular result in
+  a kink here seen as the presence of two atoms closely together in one of the
   potential corrugations.}
   \label{fig:incommensurable_example}
 \end{figure}
@@ -806,29 +828,29 @@ For the case of incommensurability, i.e.\ $\theta = a_b/a_c$ is irrational, the
 % Maybe use the strength $\lambda = U_0 / (K a_b^2)$ with critical strength $\lambda_c$ instead of critical $K$?
 
 The incommensurable \acrshort{FK} model contains a critical elastic constant $K_c$, such that for $K > K_c$ the static friction $F_s$ drops to zero, making the chain able to initiate a slide at no energy cost, while the low-velocity kinetic friction is dramatically reduced. This can be explained by the
-fact that the displacement accouring in the incommensurable case will yield just
+fact that the displacement occurring in the incommensurable case will yield just
 as many atoms climbing up a corrugation as there are atoms climbing down. For a big (infinite) chain this will exactly balance the forces making it
 non-resistant to sliding. Generally, incommensurability guarantees that the
 total energy (at $T=0$) is independent of the relative position to the
 potential. However, when sliding freely, a single atom will eventually occupy a
 maximum of the potential, and thus when increasing the potential magnitude $U_0$ or
-softning the chain stiffness, lowering $K$, the possibility to occupy such a
-maximum dissapears. This marks the so-called \text{Aubry transition},
+softening the chain stiffness, lowering $K$, the possibility to occupy such a
+maximum disappears. This marks the so-called \text{Aubry transition},
 at the critical elastic constant $K = K_c(U_0, \theta)$, where the chain goes
-from a free sliding to a \textit{pinned} state with a nonzero static friction.
+from a free sliding to a \textit{pinned} state with nonzero static friction.
 $K_c$ is a discontinuous function of the ratio $\theta$, due to the reliance on
 irrational numbers for incommensurability. The minimal
 value $K_c \simeq 1.0291926 $ in units $[2 U_0 (\pi / a_b)^2]$ is achieved for
 the golden-mean ratio $\theta = (1+\sqrt{5}/2)$. Notice that the pinning is
 provided despite translational invariance due to the inaccessibility to move
-past the energy barrier which act as a dynamical constraint. The Aubry transistion can be invistigated as a first-order phase transistion for which power laws can be defined for the order parameter, but this is beyond the scope of this thesis.
+past the energy barrier which acts as a dynamical constraint. The Aubry transition can be investigated as a first-order phase transition for which power laws can be defined for the order parameter, but this is beyond the scope of this thesis.
 
-The phenonema of non-pinned configurations is named \textit{superlubricity} in
-tribological context. Despite the misleadning name this referes to the case
+The phenomena of non-pinned configurations are named \textit{superlubricity} in
+tribological context. Despite the misleading name, this refers to the case
 where the static friction is zero while the kinetic friction is nonzero but
-reduced. For the case of a 2D sheet it is possible to alter the
+reduced. For the case of a 2D sheet, it is possible to alter the
 commensurability, not only by changing the lattice spacing through material
-choices, but also by changing the orientation of the sheet relative to the
+choice but also by changing the orientation of the sheet relative to the
 substrate. Dienwiebel et al.\ \cite{DIENWIEBEL2005197} have shown that the
 kinetic friction, for a graphene flake sliding over a graphite surface (multiple
 layers of graphene), exhibits extremely low friction at certain orientations as
@@ -838,8 +860,8 @@ force. This relates back to the concept of frictional regimes introduced through
 the simpler \acrshort{PT} model, where the change in orientation affects the
 effective substrate potential. Merely from the static consideration, we found that
 lowering the potential amplitude $U_0$ will decrease the parameter $\eta =
-2\pi^2U_0/a^2K$ shifting away from the regimeme of multiple slips towards smooth
-sliding associated with low friction. Such transistions will also be affected by the shape of the
+2\pi^2U_0/a^2K$ shifting away from the regime of multiple slips towards smooth
+sliding associated with low friction. Such transitions will also be affected by the shape of the
 potential and corresponding 2D effects of the sliding path \cite{Yalin_2011}.
 % Say more here
 
@@ -854,7 +876,7 @@ potential and corresponding 2D effects of the sliding path \cite{Yalin_2011}.
 
 
 % The reason that friction lowers for incommensurability is 
-% probably that we avoid stick-slip behaviour which is highly 
+% probably that we avoid stick-slip behavior which is highly 
 % ``strongly dissipative stick-slip motion'' \cite{bonelli_atomistic_2009}
 
 
@@ -868,13 +890,13 @@ potential and corresponding 2D effects of the sliding path \cite{Yalin_2011}.
 
 % Consequently, the \acrshort{FK} model is the simplest model in which dynamic friction is emergent, while in other models some form of heuristic damping must be included.\cite{FK2D}
 \subsubsection{Velocity resosnance} % Velocity resosnance 
-While many of the same arguments used for the \acrshort{PT} model regarding velocity dependence for frictiona can be made for the \acrshort{FK} model, the addition of multiple atoms introduces the possibility of resonance. In the \acrshort{FK} model the kinetic friction is primarily attributed to resonance between the sliding induced vibrations and phonon modes in the chain \cite{FK2D}. The specific dynamics is found to be highly model and dimension specific, and even for the 1D case this is rather complex. However, we make a simplified analysis of the 1D rigid chain case to showcase the reasoning behind the phenomena.
+While many of the same arguments used for the \acrshort{PT} model regarding velocity dependence for friction can be made for the \acrshort{FK} model, the addition of multiple atoms introduces the possibility of resonance. In the \acrshort{FK} model the kinetic friction is primarily attributed to resonance between the sliding induced vibrations and phonon modes in the chain \cite{FK2D}. The specific dynamics are found to be highly model and dimension specific, and even for the 1D case, this is rather complex. However, we make a simplified analysis of the 1D rigid chain case to showcase the reasoning behind the phenomena.
 
 When all atoms are sliding rigidly with center of mass velocity $v_{{\text{CM}}}$ the atoms will pass the potential maxima with the so-called \textit{washboard frequency} $\Omega = 2\pi v_{{\text{CM}}} / a_b$. For a weak coupling between the chain and the potential we can use the zero potential case as an approximation for which the known dispersion relation for the 1D harmonic chain is given \cite[p. 92]{Kittel2004}
 \begin{align*}
   \omega_k = \sqrt{\frac{4 K}{m}} \left|\sin{\left(\frac{k}{2}\right)}\right|,
 \end{align*}
-where $\omega_k$ is the phonon frequency and $k = 2\pi i / N$ the wavenumber with $i\in [N/2, N/2)$. Resonance will accour when the washboard frequency $\Omega$ is close to the frequency of the phonon modes $\omega_q$ in the chain with wavenumber $q = 2\pi a_c / a_b = 2\pi \theta^{-1}$ or its harmonics $nq$ for $n = 1, 2, 3, \hdots$ \cite{van_den_Ende_2012}. Thus, we can approximate the resonance center of mass speed as
+where $\omega_k$ is the phonon frequency and $k = 2\pi i / N$ the wavenumber with $i\in [N/2, N/2)$. Resonance will occur when the washboard frequency $\Omega$ is close to the frequency of the phonon modes $\omega_q$ in the chain with wavenumber $q = 2\pi a_c / a_b = 2\pi \theta^{-1}$ or its harmonics $nq$ for $n = 1, 2, 3, \hdots$ \cite{van_den_Ende_2012}. Thus, we can approximate the resonance center of mass speed as
 \begin{align*}
     n \Omega &\sim \omega_{nq} \\
     n \frac{2\pi v_{\text{CM}}}{a_b} &\sim \sqrt{\frac{4K}{m}} \left| \sin{\left(\frac{2n \pi \theta^{-1}}{2}\right)}\right| \\
@@ -883,15 +905,14 @@ where $\omega_k$ is the phonon frequency and $k = 2\pi i / N$ the wavenumber wit
 When the chain slides with a velocity around resonance speed, the washboard
 frequency can excite acoustic phonons which will dissipate to other phonon modes
 as well. At zero temperature, the energy will transform back and forth between
-internal degrees of freedom and center of mass movement of the chain. Without any dissipation mechanism this is actually theorized to speed up the translational decay \cite{FK2D}. However, as soon as we add a dissipation channel through the substrate, energy will dissipate from the chain to the substrate degrees of freedom. This suggets that certain sliding speeds will exhibit relatively high kinetic friction while
-others will be subject to relative low kinetic friction. Simulations of
-concentric nanotubes in relative motion (telescopic sliding) supports this idea as it has revealed the
-occurence of certain velocities at which the friction is enhanced, corresponding
-to the washboard frequency of the system \cite{Manini_2016}, where the friction
-response was observed to be highly non-linear as the resonance velocities were
+internal degrees of freedom and center of mass movement of the chain. Without any dissipation mechanism this is theorized to speed up the translational decay \cite{FK2D}. However, as soon as we add a dissipation channel through the substrate, energy will dissipate from the chain to the substrate's degrees of freedom. This suggests that certain sliding speeds will exhibit relatively high kinetic friction while
+others will be subject to relatively low kinetic friction. Simulations of
+concentric nanotubes in relative motion (telescopic sliding) support this idea as it has revealed the
+occurrence of certain velocities at which the friction is enhanced, corresponding
+to the washboard frequency of the system \cite{Manini_2016}, where the friction response was observed to be highly non-linear as the resonance velocities were
 approached. 
 
-The analysis of the phonon dynamics is highly simplfied here, and a numerical study of the \acrshort{FK} by Norell et al.\ \cite{FK2D} showed that the behaviour was highly dependent on model parameter choices, but that the friction generally increased with velocity and temperature. Here the latter observation differs qualitative from that of the \acrshort{PT} model.
+The analysis of the phonon dynamics is highly simplified here, and a numerical study of the \acrshort{FK} by Norell et al.\ \cite{FK2D} showed that the behavior was highly dependent on model parameter choices, but that the friction generally increased with velocity and temperature. Here the latter observation differs qualitatively from that of the \acrshort{PT} model.
 
 
 
@@ -927,7 +948,7 @@ The analysis of the phonon dynamics is highly simplfied here, and a numerical st
 
 
 
-% By applying a finite driving force it is known that a pinned configuration will go through several first-order dynamical pahse transistions as the system transfers from a pinned to a sliding state. 
+% By applying a finite driving force it is known that a pinned configuration will go through several first-order dynamical pahse transitions as the system transfers from a pinned to a sliding state. 
 
 
 
@@ -971,13 +992,13 @@ Frenkel-Kontorova-Tomlinson (\acrshort{FKT}) model \cite{weiss_dry_1997}, which
 introduces a harmonic coupling of the sliding atom chain to the driving moving
 body, effectively combining \acrshort{PT} and \acrshort{FK} (see \cref{fig:PT_FK_FKT}). This introduces
 more degrees of freedom to the model based on the intention of getting a more realistic connection between the moving body and the chain. 
-modelling of a broad contact point. Dong et al.\ carried out a numerical
+\hl{modeling of a broad contact point}. Dong et al.\ carried out a numerical
 analysis using the 1D \acrshort{FKT} model investigating the effect of chain
-length. They observed that the friction increased linearly with number of atoms
-in the chain on a long range, but certain lattice mismatch resulted in local non-linear relationship as shown in \cref{fig:FKT_contact}. Similar, taking the
+length. They observed that the friction increased linearly with the number of atoms
+in the chain on a long-range, but certain levels of lattice mismatch resulted in local non-linear relationships as shown in \cref{fig:FKT_contact}. Similarly, taking the
 \acrshort{FKT} model to 2D they were able to achieve a similar sensitivity to
 commensurability as observed experimentally by \cite{DIENWIEBEL2005197} (shown in
-\cref{fig:graphene_rot}) with the numerical result shown in \cref{fig:FKT_2D_rot}. Besides a recreation of the commensurability effect they also observed increasing friction with an increasing flake size. Combinned, the 1D and 2D results supports the idea of an increasing friction with contact size although it might showcase non-linear behvaiour depending on commensurability.
+\cref{fig:graphene_rot}) with the numerical result shown in \cref{fig:FKT_2D_rot}. Besides a recreation of the commensurability effect they also observed increasing friction with an increasing flake size. Combined, the 1D and 2D results support the idea of increasing friction with contact size although it might showcase non-linear behavior depending on commensurability.
 
 
 \begin{figure}[H]
@@ -1025,9 +1046,9 @@ commensurability as observed experimentally by \cite{DIENWIEBEL2005197} (shown i
 \subsection{Shortcomings of atomic models}
 \hl{To-DO: Shortcomings of PT-based reduced-models} % \cite{Yalin_2011}. 
 \begin{itemize}
-  \item Assummes a rigid substrate with a simplified potential shape. 
-  \item Energy dissipation is added through a viscous term $-m\mu \dot{x}$ being the only dissipation channel availble. Does not capture a more complex real life electron and phonon dissipation. Taking phonon dissipation as an example there are many virbaiton modes (3N). This will effect the thermal activationm derivation. 
-  \item The moving body is simplified as constant moving rigid body, while in fact this will also be subject to a more complex dynamic behavior.
+  \item Assumes a rigid substrate with a simplified potential shape. 
+  \item Energy dissipation is added through a viscous term $-m\mu \dot{x}$ being the only dissipation channel availble. Does not capture a more complex real-life electron and phonon dissipation. Taking phonon dissipation as an example there are many vibration modes (3N). This will affect the thermal activation derivation. 
+  \item The moving body is simplified as a constantly moving rigid body, while in fact this will also be subject to a more complex dynamic behavior.
 \end{itemize}
 
 
@@ -1131,37 +1152,37 @@ commensurability as observed experimentally by \cite{DIENWIEBEL2005197} (shown i
 
 
 Experimentally, the study of nanoscale friction is challenging due to the low
-forces on the scale of nano-newtons along with difficulties of mapping the
-nano-scale topography of the sample. In opposition to numerical simulations, which provides full
+forces on the scale of nano-newtons along with the difficulties of mapping the
+nano-scale topography of the sample. In opposition to numerical simulations, which provide full
 transparency regarding atomic-scale structures, sampling of forces, velocities
 and temperature, the experimental results are limited by the state-of-the-art
-experimental methods. In order to compare numerical and experimental results it is useful to adress the most common experimental.
+experimental methods. To compare numerical and experimental results it is useful to address the most common experimental methods.
 
 \subsubsection{Scanning Probe Microscopy}\label{sec:SPM} Scanning probe
 microscopy (\acrshort{SPM}) includes a variety of experimental methods which is used to
 examine surfaces with atomic resolution \cite[pp. 6-27]{BHUSHAN20051507}. This was
-orginally developed for surface topography imaging, but today it plays a crucial
+originally developed for surface topography imaging, but today it plays a crucial
 role in nanoscale science as it is used for probe-sampling regarding
 tribological, electronic, magnetic, biological and chemical character. The
-famility of methods involving the measurement of forces is generally referred to
+family of methods involving the measurement of forces is generally referred to
 as \textit{scanning force microscopies} (\acrshort{SFM}) or for friction purposes
 \textit{friction force microscopes} (\acrshort{FFM}).
 
-One such method arose from the \textit{atomic force microscope} \acrshort{AFM}, which consist
-of a sharp micro-fabricated tip attacthed to a contilever force sensor, usually
-with a sensitivy below 1 nN all the way down to pN. The force is measured by recording the bending of
+One such method arose from the \textit{atomic force microscope} \acrshort{AFM}, which consists
+of a sharp micro-fabricated tip attached to a cantilever force sensor, usually
+with a sensitivity below 1 nN all the way down to pN. The force is measured by recording the bending of
 the cantilever, either as a change in electrical conduction or more commonly, by
 a light beam reflected from the back of the cantilever into a photodetector
 \cite[p. 183]{gnecco_meyer_2015}. By adjusting the tip-sample height to keep a constant
-normal force while scanning accross the surface this can be used to produce a
+normal force while scanning across the surface, the \acrshort{AFM} can be used to produce a
 surface topography map. By tapping the material (dynamic force microscopy) with
-sinusoidally vibrated tip the effects from friction and other disturbing forces
-can be minimized in order to produce an even clearer image (\hl{include example,
-preferable showing the surface structure of graphene}). However, when scanning
+a sinusoidally vibrated tip the effects from friction and other disturbing forces
+can be minimized to produce an even clearer image (\hl{include example,
+preferably showing the surface structure of graphene}). However, when scanning
 perpendicularly to the cantilever axis, one is also able to measure the
 frictional force as torsion of the cantilever. By having four quadrants in the
 photodetector (as shown in figure \cref{fig:AFM}), one can simultaneously
-measure the normal force and friction force as the probes scans accross the
+measure the normal force and friction force as the probes scan across the
 surface. 
 
 \begin{figure}[H]
@@ -1172,15 +1193,15 @@ surface.
 \end{figure}
 
 
-\acrshort{AFM} can also be used to drag a nanoflake accross the substrate as done by
-Dienwiebel et al.\ \cite{DIENWIEBEL2005197}, where a graphene flake was attahced
-to a \acrshort{FFM} tip and dragged accross graphite. Notice that this makes the normal
+\acrshort{AFM} can also be used to drag a nanoflake across the substrate as done by
+Dienwiebel et al.\ \cite{DIENWIEBEL2005197}, where a graphene flake was attached
+to a \acrshort{FFM} tip and dragged across graphite. Notice that this makes the normal
 loading concentrated to a single point on the flake rather than achieving an evenly distributed load. 
 
 
 
 \subsubsection{Surface Force Apparatus}
-The Surface force apparatus \acrshort{SFA} is based on two curved molecuraly smoooth surfaces brought into contact \cite[p. 188]{gnecco_meyer_2015}. The sample is placed in between the two surfaces as surfaces as lubricant film for which the friction properties can be studied by applying a tangential force to the surfaces. 
+The Surface force apparatus \acrshort{SFA} is based on two curved molecularly smooth surfaces brought into contact \cite[p. 188]{gnecco_meyer_2015}. The sample is placed in between the two surfaces as a lubricant film for which the friction properties can be studied by applying a tangential force to the surfaces. 
 
 
 
@@ -1211,25 +1232,19 @@ The Surface force apparatus \acrshort{SFA} is based on two curved molecuraly smo
 
 
 
-\section{Expected frictional properties of graphene}\label{sec:expected_prop}
-% Quick thought: All the three methods in the following is essentialy the same, but the differ in area of contact and force distribution. Even the sharpest AFM tip consist of a few atoms which is just like a small sheet. The SFA takes on a bigger area with even load while the flake is in AFM experiments loaded at a small area while our is loaded at to areas making it less free to rotate. But all in all, they are not so different in the end. The asperity aspect is however a bit different with the AFM tip being able to deform elastically. 
-
-Several studies have investigated the frictional behaviour of graphene by
-varying different parameters such as normal force, sliding velocity,
-temperature, commensurability and graphene thickness
-\cite{penkov_tribology_2014}. In general, we find three types of relevant
-systems being studied: 1) An \acrshort{FFM} type setup where the graphene,
-either resting on a substrate or suspended, is probed by an \acrshort{AFM} tip
-scanning across the surface. 2) \acrshort{SFA} approach with the graphene
-``sandwicheded'' in between two substrate layers moving relative to each other
-using the graphene as a solid lubricant. 3) A graphene flake sliding on a
-substrate, either being dragged by an \acrshort{AFM} tip or by more complex
-arrangements in numerical simulations. Considering that even the sharpest
-\acrshort{AFM} tip will effectively put multiple atoms in contact with the test
-sample, all methods relates to a nanoscale contact involving graphene but differs on contact area. However, the \acrshort{FFM} type suggest a basis in asperity theory as we expect it to deform with increasing load, while the latter two is more alligned with the \acrshort{PT} type models and our system our interest which is an atomic flat sheet on a flat substrate. Having said that, we consider all
-three types with the purpose of gaining a more comprehensive insight. The relevant studies considered in the following are are listed in \cref{tab:friction_ref}
-for convenience. 
-
+\section{Summary of previous results}\label{sec:expected_prop}
+Several studies have investigated the frictional behavior of graphene by varying
+different parameters such as normal force, sliding velocity, temperature,
+commensurability and graphene thickness \cite{penkov_tribology_2014}. In
+general, we find three types of relevant systems being studied: 1) An
+\acrshort{FFM} type setup where the graphene, either resting on a substrate or
+suspended, is probed by an \acrshort{AFM} tip scanning across the surface. 2) A
+\acrshort{SFA} setup with the graphene ``sandwiched'' in-between two
+substrate layers moving relative to each other using the graphene as a solid
+lubricant. 3) A graphene flake sliding on a substrate, either being dragged by
+an \acrshort{AFM} tip or by more complex arrangements in numerical simulations.
+Considering that even the sharpest \acrshort{AFM} tip will effectively put
+multiple atoms in contact with the sample, all methods are relatable to a nanoscale surface contact. However, the \acrshort{FFM} type relates better to asperity theory as we expect it to deform with increasing load, while the latter two are more aligned with the \acrshort{PT} type models. We will consider results across all three types of systems with the relevant studies summarized in \cref{tab:friction_ref} for convenience. 
 
 
 \begin{table}[H]
@@ -1238,7 +1253,7 @@ for convenience.
   \caption{\hl{Update multirow line span after completing the table...}}
   \label{tab:friction_ref}
   \begin{tabular}{ |M{1cm}|M{1cm}|M{1.5cm}|X{2.5cm}|X{4cm}|X{4cm}| } \hline
-  System & Type & Year & Researcher & Materials & Key words \\ \hline
+  System & Type & Year & Researcher & Materials & Keywords \\ \hline
   \parbox[t]{2mm}{\multirow{12}{*}{\rotatebox[origin=c]{90}{FFM}}} & \multirow{3}{*}{Exp.} & 2007 \cite{zhao_thermally_2007} & Zhao et al.\ & Si\textsubscript{3}N\textsubscript{4} tip on graphite. & Temperature dependence \\ \cline{3-6} 
   & & 2015 \cite{Paolicelli_2015} & G. Paolicelli et al.\ & Si tip, graphene on SiO2 and Ni(111) substrate  & Layers, load, shear strength \\ \cline{2-6} 
   & \multirow{4}{*}{Both}& 2019 \cite{zhang_tuning_2019} & Zhang et al.\ & Monolayer graphene  & Straining sheet \\ \cline{3-6} 
@@ -1253,50 +1268,52 @@ for convenience.
    &  & 2012 \cite{Reguzzoni_2012} & Reguzzoni et al.\ & Graphene on graphite & Graphite thickness  \\ \cline{3-6} 
    &  & 2014 \cite{liu_high-speed_2014} & Liu et al.\ & Graphene on graphite & Thickness, deformations, high speed \\ \cline{3-6} 
    &  & 2018 \cite{zhu_study_2018} & P. Zhu and Li & Graphene on gold & Flake size, commensurability  \\ \cline{3-6} 
-   &  & 2019 \cite{ma12091425} & Zhang et al.\  & Graphene on diamond & Temperature, sliding angle, friction coeffcient  \\ \cline{1-6} 
+   &  & 2019 \cite{ma12091425} & Zhang et al.\  & Graphene on diamond & Temperature, sliding angle, friction coefficient  \\ \cline{1-6} 
   \end{tabular}
   % \end{center}
 \end{table}
 
 % Recent AFM experiments on metals revealed that friction varies little with increase of normal load in the low load regime [24, 74]. In addition, a newly invented AFM technique referred to as tip-on-top mode that enables researchers to manipulate nanoparticles of different size showed that in some cases friction increased linearly with interface area while in other cases near fric- tionless sliding was observed [75]. These conflicting results suggest that there may be a non-linear relationship between real contact area and friction. \cite{Yalin_2011}
 
-One of the earlist tribological simulations of graphene was carried out by
+One of the earliest tribological simulations of graphene was carried out by
 Bonelli et al. \cite{bonelli_atomistic_2009} in 2009 using a tight-binding
 method (excluding thermal excitations) to simulate a graphene flake on an
 infinite graphene sheet \cite{penkov_tribology_2014}. They implemented a
-\acrshort{FKT}-like setup where each atom in the flake is coupled horizontally to a rigid
-support by elastic springs. They recovered the stick-slip behaviour, which is
-also observed in \acrshort{FFM} setups both experimentally
+\acrshort{FKT}-like setup where each atom in the flake is coupled horizontally to a rigid support by elastic springs. They recovered the stick-slip behavior, which is also observed in \acrshort{FFM} setups both experimentally
 \cite{zhao_thermally_2007, zhang_tuning_2019} and numerically
-\cite{li_evolving_2016, zhu_study_2018}, and they found an agreement with
-the qualitative observation that soft springs allows for a clean stick-slip
-motion while hard springs inhibit it ($\lesssim$ 40 N/m). In \acrshort{AFM} and
-\acrshort{SFA} experiemnts, the stick-slip motion tend to transistion into
-smooth sliding when the speed exceeds $\sim \SI{1}{\mu/s}$ while in \acrshort{MD} modelling the same transistion is observed in the $\sim \SI{1}{m/s}$ region
-\cite{Manini_2016}. This 6 order of magnitude discrepancy has been largely
-discussed in connection to simplifying assumptions in \acrshort{MD} simulations. 
+\cite{li_evolving_2016, zhu_study_2018}. Morevoer, they found an agreement with
+the qualitative observation that soft springs allow for a clean stick-slip
+motion while hard springs ($\sim \SI{40}{N/m}$) inhibit it. In \acrshort{AFM} and
+\acrshort{SFA} experiments, the stick-slip motion tend to transition into
+smooth sliding when the speed exceeds $\sim \SI{1}{\mu/s}$ while in \acrshort{MD} modeling the same transition is observed in the $\sim \SI{1}{m/s}$ region
+\cite{Manini_2016}. This 6-order-of-magnitude discrepancy has been largely
+discussed in connection to simplifying assumptions in \acrshort{MD} simulations. On the other hand, the \acrshort{PT} model suggest that high speed leads to the multiple slip regime. By considering the force traces predicted by the \acrshort{PT} for a high velocity \cref{fig:PT_slip_vel} we notice that the multiple skip might produce a somewhat smoother curve than in the single slip regime. Thus, we might question the definition of smooth sliding when comparing to experimental results which will be derived purely from an force trace curve. 
 
 Bonelli et al.\ \cite{bonelli_atomistic_2009} also found that commensurability,
-through orientation of the flake and the direction of sliding, had a great impact on the frictional behaviour which generally alligns with the
+through orientation of the flake and the direction of sliding, had a great impact on the frictional behavior which generally aligns with the
 predictions of the \acrshort{FK} and \acrshort{FKT} models. They confirmed qualitatively the experimental observation of superlubricity for certain incommensurable
-orientations as shown experimentally by Dienwiebel et
+orientations which is experimentally by Dienwiebel et
 al.\cite{DIENWIEBEL2005197} and further supported by experimental measurements
-of interaction energies by Feng et al.\ \cite{feng_superlubric_2013}. This commensurability importance is also reported for \acrshort{MD} simulations \cite{ma12091425, zhu_study_2018, Wijn_2011}. Bonelli et al.\ found the friction force and coefficient to be one order of magnitude higher than that of the experimental results which they attribute to the details of the numerical modelling. Generally the experimental coefficients between graphite and most materials lies in the range 0.08-0.18 \cite{DIENWIEBEL2005197} and while Dienwiebel et al.\ \cite{DIENWIEBEL2005197}
-reported a wide range of frictional forces all the way from $28 \pm 16$ pN to $453 \pm 16$ pN in a load range $\sim [-10, 20] nN$ the change in friction with applied load was as low as 0.05-0.4 \% (coef. of 0.0005-0.004). This indicates an almost independent relationship between friction and load which they attributed to the lack of change in contact area. 
+of interaction energies by Feng et al.\ \cite{feng_superlubric_2013}. This commensurability importance is also reported for \acrshort{MD} simulations \cite{ma12091425, zhu_study_2018, Wijn_2011}. Bonelli et al.\ found the friction force and coefficient to be one order of magnitude higher than that of the experimental results which they attribute to the details of the numerical modeling. Generally, the experimental coefficients between graphite and most materials lie in the range 0.08-0.18 \cite{DIENWIEBEL2005197}. While Dienwiebel et al.\ \cite{DIENWIEBEL2005197} reported a wide range of frictional forces from $28 \pm 16$ pN to $453 \pm 16$ pN in a load range $\sim [-10, 20] nN$, the change in friction with applied load was as low as 0.05--0.4 \%, yielding a coefficient of 0.0005--0.004 when using the slope definitionm \cref{eq:mu_def2}. This indicates an almost independent relationship between friction and load which they attributes to the lack of change for the contact area. 
 
-Furthermore, Bonelli et al.\ \cite{bonelli_atomistic_2009} found friction to decrease with flake size which is mainly attributed to the idea that boundary
-atoms are dominant in increasing friction, but also due to the fact that the coupling to the support made for a decreased rotational freedom as size increases, which could then be attributed to a forced path decreasing the tendency of stick-slip behvaiour. This disagrees with the \acrshort{FK} and \acrshort{FKT} model which predicts the reverse, an increase in friciton with increasing size, but this might be a shortage to the simplicity of the reduced-models. However, the decreasing friction with increasing flake size is also found for graphene on gold \acrshort{MD} simulation \cite{zhu_study_2018}. This can however be attributed to commensurability as a numerical \acrshort{MD} study of monolayer islands of krypton on copper by Reguzzoni and Righi \cite{PhysRevB.85.201412} reports that the effective commensurability increase drastically below a critical flake radius on the order of $10$ Å. In a numerical study
-by Varini et al.\ \cite{Varini_2015}, based on Kr islands adsorbed on Pb(111), this is further elaborated as they found that finite size effects are especally important for static friction as a pinning barrier rise from
-the edge (preventing otherwise superlubricity due to incommensurability). They reported a relationship $F_s \sim A^{\gamma_s}$ not only sublinear $\gamma_s <
-1$ but also sublinear with respect to the island perimeter $P \propto A^{1/2}$ by having $\gamma_s = 0.25$ for a hexagonal edge and $\gamma_s = 0.37$ when circular, indicating that only a subset of
-the edge is responsible for the pinning effect. This alligns with the general change in friction found by \cite{zhu_study_2018} for different flake geometries (square, triangle, circle). Additionally, Varini et al.\ also found the edge pinning effect to decrease with increasing temperature as the edge energy barriers are reduced. Bringing this all together, the main picture forming is that flake size, which we can consider as contact area, is affecting friction through a commensurability mechanism. If the flake is constrained in some way we might not observe the same dependence. While flake size nor contact area is easily measured in experimental \acrshort{FFM}  Mo et al.\ \cite{mo_friction_2009} found that $F_{\text{fric}} \propto A$ where $A$ is the real contact area defined by atoms within chemical range.
+Furthermore, Bonelli et al.\ \cite{bonelli_atomistic_2009} found friction to decrease with increasing flake size which is also reported in \acrshort{MD} simulations for graphene on gold \cite{zhu_study_2018} in a \acrshort{MD}.  Bonelli et al.\ mainly attributes this to boundary effects, but also notes that specifics of the coupling to the support made for decreased rotational freedom as flake size were increased. Thus, they hypothesized that the decreased freedom let to the graphene taking a more force path which can be associated with a decreasing the tendency of stick-slip behavior. The general observation however,disagrees with the \acrshort{FK} and \acrshort{FKT} model which predicts the reverse, an increase in friciton with increasing size. 
 
-Evolution effects, or so-called friction strengthening, are also observed, meaning that the friction force increases during the initial stick-slip cycles. This is observed experimentally by Zhang et al.\ \cite{zhang_tuning_2019} and numcerically by Li et al.\ \cite{li_evolving_2016}. However, this is only found when having the graphene sheet resting on a substrate
-\cite{zhang_tuning_2019} opposed to a suspended sheet, and it was found to
+An additional numerical study of monolayer islands of krypton on copper by Reguzzoni and Righi \cite{PhysRevB.85.201412}, supports the importance of commensurability in relation to size effects, as they report that the effective commensurability increase drastically below a critical flake radius on the order of $10$ Å. In a numerical study
+by Varini et al.\ \cite{Varini_2015}, based on Kr islands adsorbed on Pb(111), this is further elaborated as they found that finite size effects are especially important for static friction as a pinning barrier rise from
+the edge, preventing otherwise superlubricity due to incommensurability. They reported a relationship $F_s \sim A^{\gamma_s}$ not only sublinear $\gamma_s <
+1$ but also sublinear to the island perimeter $P \propto A^{1/2}$ by having $\gamma_s = 0.25$ for a hexagonal edge and $\gamma_s = 0.37$ when circular, indicating that only a subset of
+the edge is responsible for the pinning effect. This aligns with the general change in friction found by \cite{zhu_study_2018} for different flake geometries (square, triangle, circle). Additionally, Varini et al.\ also found the edge pinning effect to decrease with increasing temperature as the edge energy barriers are reduced. Bringing this all together, the main picture forming is that flake size, which can be related to contact area, is affecting friction through a commensurability mechanism. If the flake is constrained in some way we might not observe the same dependency. While flake size nor contact area is easily measured in experimental \acrshort{FFM} Mo et al.\ \cite{mo_friction_2009} found that $F_{\text{fric}} \propto A$ where $A$ is the real contact area defined by atoms within chemical range.
+%
+% Working here
+%
+%
+
+Evolution effects, or so-called friction strengthening, are also observed, meaning that the friction force increases during the initial stick-slip cycles. This is observed experimentally by Zhang et al.\ \cite{zhang_tuning_2019} and numerically by Li et al.\ \cite{li_evolving_2016}. However, this is only found when having the graphene sheet resting on a substrate
+\cite{zhang_tuning_2019} as opposed to a suspended sheet, and it was found to
 dimish when increasing number of graphene layers stacked (graphite)
 \cite{li_evolving_2016}. In general, the friction was found to decrease with
 increasing number of layers which is also supported by the findings in
-\cite{Yoon2015MolecularDS} but dissagree with \cite{Reguzzoni_2012}?? Zhang et
+\cite{Yoon2015MolecularDS} but dissagree with \cite{Reguzzoni_2012}\hl{??} Zhang et
 al. \cite{zhang_tuning_2019} additionally found that straining a suspended
 stretch, modulating the flexibility which consequently change the local pinning
 capability of the contact interface and lowers the dynamic friction. Another surface manipulating study was performed by H.\ J.\ Kim and D.\ E.\ Kim. \cite{Kim_2012} where the investigated the effects of corrugated
@@ -1347,37 +1364,17 @@ speed (ballistic) speed friction increases with temperature. In the
 between 10 and 1 m/s. 
 
 % Temperature
-For the temperature the general experimental trend is an decreasing friction with increasing temperature as found by  Zhao et al.\ \cite{zhao_thermally_2007} in a series of \acrshort{AFM} graphene on graphite experiments with $F_{\text{fric}} \propto \exp{(1/T)}$. This agrees with the thermal drift regime of the \acrshort{PT} type models even though the temperature range used in the study does not match the range of this regime according to the \acrshort{PT} model. Wijn et al.\ \cite{Wijn_2011} find that friction commensurability can be lost at higher temperature (above 200K) were the found a power law behaviour $F_k \propto T^{-1.13 \pm0.04}$. Numerically, Zhang et al.\ \cite{ma12091425} found that friction increased with temperature, using a velocity of 10 m/s. Considering the findings of \cite{Guerra_2010} related to \acrshort{MD} this qualitative different dependence might be due the to low speed diffisuve behvaiour as opposed to high speed ballistic behaviour in \acrshort{MD} simulations. 
+For the temperature the general experimental trend is an decreasing friction with increasing temperature as found by  Zhao et al.\ \cite{zhao_thermally_2007} in a series of \acrshort{AFM} graphene on graphite experiments with $F_{\text{fric}} \propto \exp{(1/T)}$. This agrees with the thermal drift regime of the \acrshort{PT} type models even though the temperature range used in the study does not match the range of this regime according to the \acrshort{PT} model. Wijn et al.\ \cite{Wijn_2011} find that friction commensurability can be lost at higher temperature (above 200K) were the found a power law behavior $F_k \propto T^{-1.13 \pm0.04}$. Numerically, Zhang et al.\ \cite{ma12091425} found that friction increased with temperature, using a velocity of 10 m/s. Considering the findings of \cite{Guerra_2010} related to \acrshort{MD} this qualitative different dependence might be due the to low speed diffisuve behvaiour as opposed to high speed ballistic behavior in \acrshort{MD} simulations. 
 
 A summary of the expectations is given in \cref{tab:exp_summary}.
 
-% Textwidth = 484,20988 pt*0,035146 pt/cm = 17,02 % \the\textwidth
-\begin{table}[H]
-  \begin{center}
-  \caption{Summary}
-  \label{tab:exp_summary}
-  \begin{tabular}{  M{5cm}  X{12cm} } \hline
-  \textbf{Stick slip} & Generally we expect to observe periodic stick-slip motion with a period mathing the lattice constant(s) involved \cite{mo_friction_2009}. This is however inhibited for high stiffness of the spring coupling to a driving support and at large sliding velocity. \\ \\
-  % Flake size and temperature? 
-  \textbf{Static friction} & The static friciton is highly related to the presence of stick-slip motion. The static friction is most pronounced for commensurable configurations and will decrease drastically for incommensurability. However, further reducton of static friction is expected for an increasing flake size and increasing temperature. \\ \\
-  \textbf{Commensurability} & Both static and dynamic friction is expected to be highly sensitive to commensurability, through lattice spacing, orientation of the flake relative to the substrate and by the path of sliding along the substrate. By changing the spring stiffness of the coupled driving support we expect to get a response in commensurability due to a change in translational freedom. \\ \\
-  \textbf{Friction evolution} \linebreak \textbf{(Friction strengthening)} & Friction evolution is found to be present in mono layer graphene resting on a substrate, and thus we expect this to be present in our simulaiton setup as well.  \\ \\
-  \textbf{Negative coef} & \hl{TO-DO} \\ \\
-  \textbf{Normal load} & Generally an increasing friction force is expected with increasing load. Both non-dependent, sublinear and linear relationship can be expecteded here. \\ \\
-  \textbf{Velocity} & Generally an increasing friction force is expected with increased sliding velocity. Experimental results suggest that kinetic friction goes as $F_k\propto \ln{(v)}$, with the expectation that friction become independent of velocity at ``high'' velocities above \SI{1}{\mu/s}. Numerically a viscous $F_k \propto v$ is expected for all velocity ranges. \\ \\
-  \textbf{Temperature} & Experimentally and numerically friction is expected to decrease with friction in a power law or expontial manner. However, for high velocity ranges, according to a ballistic regime, which might coincide with the capabilities of \acrshort{MD}, the friction is predicted to increase with temperature. \\ \\
-  \textbf{Contact area} & For our system we do not expect any contact area changes during load, however an increasing number of atoms in contact is expected to increase friction.  \\
-  \hline
-  \end{tabular}
-  \end{center}
-\end{table}
 
 
 
 % Non rigid flake which could deform and rotate,
 % but(?) the graphene flake was fixed at a certain angle after applying normal
 % force to reproduce \acrshort{AFM} experiments. They found stick-slip behvaiour.
-% The flake size and ``stacking angle'' affected the frictional behaviour, such
+% The flake size and ``stacking angle'' affected the frictional behavior, such
 % that a large area resulted in experienced less friciton due the idea that the
 % reactive atoms at the boundary were dominant in increasing friction. The
 % influence of the stacking angle was attributed to the commensurability effect
@@ -1402,7 +1399,7 @@ A summary of the expectations is given in \cref{tab:exp_summary}.
 % Tuning friction to a superlubric state via in-plane straining
 
 
-% Also \cite{gao_frictional_2004} might be usefull to go through again
+% Also \cite{gao_frictional_2004} might be useful to go through again
 
 % Maybe rememeber to talk about the properties of asperity systems as the sheet creates asperities as it buckles. 
 
@@ -1422,7 +1419,7 @@ A summary of the expectations is given in \cref{tab:exp_summary}.
 
 % \subsubsection{Qualitatively}
 % \begin{enumerate}
-%   \item \textbf{Stick slip}: Generally we expect to observe periodic stick-slip motion with a period mathing the lattice constant(s) involved \cite{mo_friction_2009}. This was both present in the MD simulations \cite{zhu_study_2018}, \cite{ma12091425} and in the experiment by \cite{DIENWIEBEL2005197}. In AFM and SFA experiemnts, the stick-slip motion tend to transistion into smooth sliding when the speed exceeds $\sim \SI{1}{\mu/s}$ while in MD modelling the same transistion is observed in the $\sim \SI{1}{m/s}$ region \cite{Manini_2016}. Since we use a sliding speed of \SI{20}{m/s} we might transistion into smooth sliding. This 6 order of magnitude discrepancy has been largely discussed in connection to simplifying assumptions in MD simulations. Bonelli et al.\ \cite{bonelli_atomistic_2009} found that the stick-slip behaviour was present when the cantilever-tip-flake coupling was done with a relatively soft springs in contrast to hard springs which inhibited it.   
+%   \item \textbf{Stick slip}: Generally we expect to observe periodic stick-slip motion with a period mathing the lattice constant(s) involved \cite{mo_friction_2009}. This was both present in the MD simulations \cite{zhu_study_2018}, \cite{ma12091425} and in the experiment by \cite{DIENWIEBEL2005197}. In AFM and SFA experiemnts, the stick-slip motion tend to transition into smooth sliding when the speed exceeds $\sim \SI{1}{\mu/s}$ while in MD modeling the same transition is observed in the $\sim \SI{1}{m/s}$ region \cite{Manini_2016}. Since we use a sliding speed of \SI{20}{m/s} we might transition into smooth sliding. This 6 order of magnitude discrepancy has been largely discussed in connection to simplifying assumptions in MD simulations. Bonelli et al.\ \cite{bonelli_atomistic_2009} found that the stick-slip behavior was present when the cantilever-tip-flake coupling was done with a relatively soft springs in contrast to hard springs which inhibited it.   
 
 %   \item \textbf{Static friction}: As highlighted in the FK model static friction
 %   will be sensitive to commensurability, which will additionally be affected by
@@ -1649,5 +1646,30 @@ A summary of the expectations is given in \cref{tab:exp_summary}.
 
 
 \section{Research questions}
+
+
+
+% Textwidth = 484,20988 pt*0,035146 pt/cm = 17,02 % \the\textwidth
+\begin{table}[H]
+  \begin{center}
+  \caption{Summary}
+  \label{tab:exp_summary}
+  \begin{tabular}{  M{5cm}  X{12cm} } \hline
+  \textbf{Stick slip} & Generally we expect to observe periodic stick-slip motion with a period matching the lattice constant(s) involved \cite{mo_friction_2009}. This is however expected to be inhibited by high spring stiffness for the moving support. At large velocities the reduced-models suggest a multiple slip behavior while experimental results suggest smooth sliding. This discrepancy might be explained by a different definition of smooth sliding as the multiple slip regime can produce seemingly ``smooth-looking'' force traces. Additionally, it is expected that the tendency of stick-slip behvaiour is reduced by increasing temperature and for incommensurability. \\ \\
+  
+  % Flake size and temperature? 
+  \textbf{Static friction} & The static friciton is highly related to the presence of stick-slip motion. The static friction is most pronounced for commensurable configurations and will decrease drastically for incommensurability. However, further reducton of static friction is expected for an increasing flake size and increasing temperature. \\ \\
+  \textbf{Commensurability} & Both static and dynamic friction is expected to be highly sensitive to commensurability, through lattice spacing, orientation of the flake relative to the substrate and by the path of sliding along the substrate. By changing the spring stiffness of the coupled driving support we expect to get a response in commensurability due to a change in translational freedom. \\ \\
+  \textbf{Friction evolution} \linebreak \textbf{(Friction strengthening)} & Friction evolution is found to be present in mono layer graphene resting on a substrate, and thus we expect this to be present in our simulaiton setup as well.  \\ \\
+  \textbf{Negative coef} & \hl{TO-DO} \\ \\
+  \textbf{Normal load} & Generally an increasing friction force is expected with increasing load. Both non-dependent, sublinear and linear relationship can be expecteded here. \\ \\
+  \textbf{Velocity} & Generally an increasing friction force is expected with increased sliding velocity. Experimental results suggest that kinetic friction goes as $F_k\propto \ln{(v)}$, with the expectation that friction become independent of velocity at ``high'' velocities above \SI{1}{\mu/s}. Numerically a viscous $F_k \propto v$ is expected for all velocity ranges. \\ \\
+  \textbf{Temperature} & Experimentally and numerically friction is expected to decrease with friction in a power law or expontial manner. However, for high velocity ranges, according to a ballistic regime, which might coincide with the capabilities of \acrshort{MD}, the friction is predicted to increase with temperature. \\ \\
+  \textbf{Contact area} & For our system we do not expect any contact area changes during load, however an increasing number of atoms in contact is expected to increase friction.  \\
+  \hline
+  \end{tabular}
+  \end{center}
+\end{table}
+
 
 % Formulate the research questions guiding the reading of the thesis moving on. 
