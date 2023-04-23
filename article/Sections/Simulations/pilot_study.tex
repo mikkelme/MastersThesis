@@ -580,7 +580,7 @@ end.
 \hl{Compare figure} \cref{fig:contact_vs_stretch} \hl{to that of figure} \cref{fig:multi_stretch_contact} \hl{where multiple simulations constitute the stretch-contact curve.}
 
 
-\section{Investigating main parameters}
+\section{Investigating main parameters}\label{sec:main_params}
 We carry out a more extensive investigation of the dependence on friction of the
 physical parameters temperature $T$, sliding speed $v_{\text{slide}}$ and spring
 constant $K$, and the numerical parameter timestep $dt$. This is done partly to
@@ -674,8 +674,18 @@ significant for the cut patterns. These fluctuations can be taken as a sign of t
 
 
 \subsection{Computational cost}
+\hl{Say something about how we run the simulations?}
 
-As we discuss the numerical and physical dependencies in the system we also consider the computational cost. This especially relates to parameters as timestep, sliding speed and sliding distance which effect the number of computations done in a single simulation. 
+As we analyse the numerical and physical dependencies in the system we also
+consider the computational cost. This especially relates to the parameters
+defining the total number of computations such as timestep, sliding speed and
+sliding distance. As an extension of the analysis in \cref{sec:main_params} we
+report on the computational times associated with temperature, sliding speed,
+spring constant and dt. By retrieving the computational time used for the
+parameter investigation in \cref{fig:main_param} we get the timing as shown in
+\cref{fig:comp_cost}. Note that these timings only give one time estimate for
+each parameter setting as opposed to an average over multiple runs which is
+nessecry for more reliable data. 
 
 
 \begin{figure}[H]
@@ -708,24 +718,36 @@ As we discuss the numerical and physical dependencies in the system we also cons
         \label{fig:comp_dt}
     \end{subfigure}
     \hfill
-    \caption{Computational cost related to temperature, sliding speed, spring constant and dt parameter. Sliding speed follows $t \propto v^{-0.977 \pm 0.005}$ and dt follows $t \propto \text{dt}^{-0.87\pm 0.02}$}
+    \caption{Computational cost related to temperature, sliding speed, spring
+    constant and dt parameter in terms of CPU hours running on 16 cores on the
+    cluster \hl{double check and elaborate}. Sliding speed follows $t \propto
+    v^{-0.977 \pm 0.005}$ and dt follows $t \propto \text{dt}^{-0.87\pm 0.02}$}
     \label{fig:comp_cost}
 \end{figure}
 
-%
-%
-% Working here
-%
-%
+The computational time is governed by the number of timesteps in the simulation
+and the time used per timestep. For a fixed sliding distance, which is the case
+here, the number of timesteps in the simulaiton should be inversely proportional
+to sliding speed and similar inversely proportional to timestep $dt$. From the
+timings in \cref{fig:comp_cost} we find the slinding speed to obey this
+expectation rather well by $t \propto v^{-0.977 \pm 0.005}$ while the timing did
+not increase as strongly with timestep, falling below the 1/dt relation with $t
+\propto \text{dt}^{-0.87\pm 0.02}$. Moreover, we find that increasing
+temperature also makes for an increased computation time. This can be attributed
+to a increase in computation time associated with the force calculations. The
+rising temperature give rise to more fluctuations in the system which might
+yield more atoms within the force calculation cutoff's. The consideration to
+cuttoff could also be part of the reason for the deviating timing relation for
+$dt$. Finally, for the spring parameter, we did not see any noticable effect on
+timing.
+
+\hl{Mention system size timing?}
 
 
 
+% Show how the number of cores per simulation scale to argue that running on just one core (maybe 4) is smart for the next step of many simulations. 
 
-Talk about the computatonal cost of different choices. How does computation time scale with drag speed, $dt$ and maybe $T$ and $K$ as well. One could also mention scaling with system size.
-
-Show how the number of cores per simulation scale to argue that running on just one core (maybe 4) is smart for the next step of many simulations. 
-
-Mention the trouble with GPU to show that this was considered, and in fact this was the reason for choosing the Tersoff potential over the AIREBO which is perhaps more common these days...
+% Mention the trouble with GPU to show that this was considered, and in fact this was the reason for choosing the Tersoff potential over the AIREBO which is perhaps more common these days...
 
 
 

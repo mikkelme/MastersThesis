@@ -749,6 +749,44 @@ def run_hon_search(model_name, params, N = 50, num_generations = 50, topN = 5):
     GA.print_top(topN)
     GA.save_top(f'./GA_{name}', topN)
     
+def run_RW_search(model_name, name, params, N = 50, num_generations = 50, topN = 5):
+    """ Do genetic algorithm search based on a Random walk pattern """
+    GA = Genetic_algorithm(model_weights, model_info, N, image_shape = (62,106), repair = True)
+    GA.stretch = np.linspace(0, 2, 100)
+    GA.F_N = 5
+    GA.set_fitness_func(GA.max_drop)
+    
+    
+    RW =  RW = RW_Generator(size = (62,106),
+                            num_walks = params['num_walks'],
+                            max_steps = params['max_steps'],
+                            min_dis = params['min_dis'],
+                            bias = params['bias'],
+                            center_elem = params['center_elem'],
+                            avoid_unvalid = params['avoid_unvalid'],
+                            RN6 = params['RN6'],
+                            grid_start = params['grid_start'],
+                            centering = False,
+                            stay_or_break = params['stay_or_break'],
+                            avoid_clustering = 'repair', 
+                            periodic = True
+                    )
+    
+  
+    population = []
+    
+    print(f"Creating population (N = {N}): {name}")
+    for n in range(N):
+        mat = RW.generate()
+        population.append(mat)
+    GA.init_population(population)
+    
+    print(f'Running evolution for {num_generations} generations')
+    GA.evolution(num_generations)
+    
+    print(f'Storing results (top {topN})')
+    GA.print_top(topN)
+    GA.save_top(f'./GA_{name}', topN)
     
 def run_porosity_search(model_name, name, porosity = [0.5], N = 50, num_generations = 50, topN = 5):
     """ Do genetic algorithm search from random noice of porosity """
@@ -781,15 +819,28 @@ if __name__ == '__main__':
     
     # --- Genetic algorithm search: Max drop --- #
     N = 100
-    num_generations = 100
+    num_generations = 50
     topN = 5
     
     
     # run_pop_search(model_name, (1,7,1), N, num_generations, topN)
     # run_hon_search(model_name, (3,3,5,3), N, num_generations, topN)
     
-    run_porosity_search(model_name, 'P05', [0.5], N, num_generations, topN)
+    # run_porosity_search(model_name, 'P05', [0.5], N, num_generations, topN)
     # run_porosity_search(model_name, 'P025', [0.25], N, num_generations, topN)
+   
+    # Top 5 RW for max drop     
+    param1 = {'num_walks': 30, 'max_steps': 26, 'min_dis': 1, 'bias': [(0.03, -1.00), 9.23],  'center_elem': 'full', 'avoid_unvalid': False, 'RN6': False, 'grid_start': True, 'stay_or_break': 0.00} 
+    param2 = {'num_walks': 18, 'max_steps': 20, 'min_dis': 2, 'bias': [(0.19, 0.98), 7.27],   'center_elem': 'full', 'avoid_unvalid': False, 'RN6': False, 'grid_start': True, 'stay_or_break': 0.00} 
+    param3 = {'num_walks': 17, 'max_steps': 17, 'min_dis': 4, 'bias': [(-0.11, -0.99), 9.41], 'center_elem': 'full', 'avoid_unvalid': False, 'RN6': False, 'grid_start': True, 'stay_or_break': 0.00} 
+    param4 = {'num_walks': 10, 'max_steps': 22, 'min_dis': 2, 'bias': [(0.23, 0.97), 7.38],   'center_elem': 'full', 'avoid_unvalid': True,  'RN6': False, 'grid_start': True, 'stay_or_break': 0.00} 
+    param5 = {'num_walks': 17, 'max_steps': 5,  'min_dis': 4, 'bias': [(0.00, 1.00), 0.00],   'center_elem': False,  'avoid_unvalid': True,  'RN6': True,  'grid_start': True, 'stay_or_break': 0.64} 
+   
+    run_RW_search(model_name, 'RW1', param1, N, num_generations, topN)
+    # run_RW_search(model_name, 'RW2', param2, N, num_generations, topN)
+    # run_RW_search(model_name, 'RW3', param3, N, num_generations, topN)
+    # run_RW_search(model_name, 'RW4', param4, N, num_generations, topN)
+    # run_RW_search(model_name, 'RW5', param5, N, num_generations, topN)
     
     
     # ## TEST

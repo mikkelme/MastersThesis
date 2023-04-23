@@ -49,10 +49,10 @@ def spring(path, save = False):
 
 
     fig_max = plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
-    ax_max = brokenaxes(xlims=((-5, 210), (240, 260)), hspace=.05)
+    ax_max = brokenaxes(xlims=((-5, 210), (240, 260)), hspace=.05, wspace = .05)
     
     fig_mean = plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
-    ax_mean = brokenaxes(xlims=((-5, 210), (240, 260)), hspace=.05)
+    ax_mean = brokenaxes(xlims=((-5, 210), (240, 260)), hspace=.05, wspace = .05)
     
     bax_list = [ax_max, ax_mean]
     fig_max, fig_mean = variable_dependency(folders, names, 'K', '$K$ [N/m]', convert = convert, map = {0: 250/convert}, default = 250, figs = [[fig_max, ax_max], [fig_mean, ax_mean]])
@@ -61,6 +61,10 @@ def spring(path, save = False):
     ax_max = fig_max.axes
     ax_mean = fig_mean.axes
     
+    ax_mean[2].xaxis.set_label_coords(.5, -.08)
+    ax_max[2].xaxis.set_label_coords(.5, -.08)
+    fig_mean.subplots_adjust(top = 0.945)
+    fig_max.subplots_adjust(top = 0.945)
     
     xtick_labels_max = ax_max[1].get_xticks()
     xtick_labels_mean = ax_mean[1].get_xticks()
@@ -76,6 +80,8 @@ def spring(path, save = False):
         for handle in bax.diag_handles:
             handle.remove()
         bax.draw_diags()
+    
+    
     
     if save:
         fig_max.savefig("../article/figures/baseline/variables_spring_max_fixmove.pdf", bbox_inches="tight")
@@ -386,8 +392,24 @@ def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yer
                     axes[f].fill_between(x, y[:,k] + f_yerr[:,k], y[:,k] - f_yerr[:,k], alpha = 0.1, color = color)
                     # axes[f].set_xlim(xlim); axes[f].set_ylim(ylim)              
   
-                axes[f].set_xscale(axis_scale[0])
-                axes[f].set_yscale(axis_scale[1])
+            axes[f].set_xscale(axis_scale[0])
+            axes[f].set_yscale(axis_scale[1])
+            for a in range(len(axis_scale)):
+                # print(f'{a} | {axis_scale[a]} == log = {axis_scale[a] == "log"}')
+                if axis_scale[a] == 'log':
+                    if a == 0:
+                        ax = axes[f].xaxis
+                    elif a == 1:
+                        ax = axes[f].yaxis
+                        
+                    ax.get_major_locator().set_params(numticks=99)
+                    ax.get_minor_locator().set_params(numticks=99, subs=[.2, .4, .6, .8])
+                    
+                    # axes[f].tick_params(axis='both')
+                    # axes[f].grid(True, which = 'both') 
+                        
+                         
+                
                     
                     
             # Get rupture strecth information
@@ -616,7 +638,14 @@ def computational_cost(save = False):
     
     for p, p_path in enumerate(param_paths):
         
-        plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
+        
+        fig = plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
+        if p_path == K_path:            
+            ax = brokenaxes(xlims=((-5, 210), (240, 260)), hspace=.05, wspace = .05)
+            map = {0: 250}
+        else:
+            ax = fig.gca()
+            map = None
         
         log_fit = [0, 0]
         for c, c_path in enumerate(config_paths):
@@ -632,33 +661,73 @@ def computational_cost(save = False):
             for line in infile:
                 words = line.split()
                 var.append(float(words[0]))
+                if map:
+                    if var[-1] in map:
+                        var[-1] = map[var[-1]]
                 t = words[1].split(':')
-                time.append(int(t[0])*3600+int(t[1])*60 + int(t[2]))
+                time.append(float(t[0])*3600+float(t[1])*60 + float(t[2]))
+                
             time = np.array(time)
+            time /= 3600 # s --> h
             var = np.array(var)
-            plt.plot(var, time, linestyle = '', marker = config_markers[c], markersize = 2.5, color = config_colors[c], label = config_names[c])
+            ax.plot(var, time, linestyle = '', marker = config_markers[c], markersize = 2.5, color = config_colors[c], label = config_names[c])
             
             if param_loglog[p]:
                 a, b, a_err, b_err = lin_fit(np.log(var), np.log(time))
                 log_fit[0] += a
                 log_fit[1] += a_err
                 print(f'{p_path}, {c_path} | a = {a:0.{decimals(a_err)}f} +- {a_err:0.{decimals(a_err)}f}')
+                
         
-        plt.xlabel(param_names[p], fontsize=14)
-        plt.ylabel('Time [s]', fontsize=14)
-        plt.legend(fontsize = 13)
+        ax.set_xlabel(param_names[p], fontsize=14)
+        if p_path == K_path:
+            fig.axes[2].xaxis.set_label_coords(.5, -.08)
+        
+        ax.set_ylabel('Time [h]', fontsize=14)
+        
+        ax.legend(fontsize = 13)
         if param_loglog[p]:
             a = log_fit[0] / len(config_paths)
             a_err = log_fit[1] / len(config_paths)
             print(f'{p_path}, avg | a = {a:0.{decimals(a_err)}f} +- {a_err:0.{decimals(a_err)}f}')
-            plt.xscale('log')
-            plt.yscale('log')
+            ax.set_xscale('log')
+            ax.set_yscale('log')
         
-        plt.grid(True, which="both")
-        plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+        ax.grid(True, which="both")
+        fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
         
+        if p_path == K_path:     
+            fig.subplots_adjust(top = 0.96)
+            
+            # Replace final label with 'inf'
+            bax = ax
+            axes = fig.axes
+            xtick_labels = axes[1].get_xticks()
+            xtick_labels[-2] = 'inf'
+            axes[1].set_xticklabels(xtick_labels)
+            
+            for handle in bax.diag_handles:
+                handle.remove()
+            bax.draw_diags()
+            
+            # coords = fig.transFigure.transform((.1, .5))
+            # axcoords = ax.transAxes.inverted().transform(coords)
+            # ax.yaxis.set_label_coords(*axcoords)
+            # axes[0].xaxis.set_label_coords(.56, -.08)
+            
+            
+            # fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+            
+            # axes[0].set_xlabel(param_names[p], fontsize=14)
+            # ax.xaxis.set_label_coords(.56, -.08)
+            
+            
+            # axes[0].xaxis.set_label_coords(.55, -.5)
+
         if save:
-            plt.savefig(f'../article/figures/baseline/comp_cost_{param_savename[p]}.pdf', bbox_inches='tight')
+            fig.savefig(f'../article/figures/baseline/comp_cost_{param_savename[p]}.pdf', bbox_inches='tight')
+
+
 
 
 if __name__ == "__main__":
@@ -674,10 +743,10 @@ if __name__ == "__main__":
     # multi_FN(path, save = False)
     # multi_area(path, save = False)
     
-    # multi_FN_force_dist(path, save = True)
+    # multi_FN_force_dist(path, save = False)
     
     # contact_vs_time(path, save = False)
     # vaccum_normal_buckling(path, save = False)
     
-    computational_cost(save = True)
+    # computational_cost(save = True)
     plt.show()
