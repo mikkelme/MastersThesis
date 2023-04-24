@@ -111,8 +111,37 @@ class VGGNet(Module):
         # --- Initialize weights --- #
         # self.apply(self. init_weights)
         # exit()
+        
+        # placeholder for the gradients
+        self.gradients = None
+        # self.hook_layer = self.len_conv - 2
+        # self.hook_layer = self.len_conv - 2 -4*4
+        
+    # hook for the gradients of the activations
+    def activations_hook(self, grad):
+        self.gradients = grad
 
-    def f_mix(self, x):
+
+    # method for the activation exctraction
+    def get_activations(self, x, hook_layer): # Assumes f_mix XXX
+        image, vals = x
+        
+        # --- Gather input into channels --- #
+        # Unsqueeze numerical valuess and expand channels into mathing image dimensions
+        vals = vals.view(vals.shape[0], vals.shape[1], 1, 1).expand(vals.shape[0], vals.shape[1], image.shape[1], image.shape[2])
+        
+        # Unsqueeze image for concatenation
+        image = torch.unsqueeze(image, dim = 1)
+        
+        # Concatenate input channels 
+        x = torch.cat((image, vals), dim = 1)
+        
+        for l in range(hook_layer+1):
+            x = self.layers[l](x)
+        return x
+
+
+    def f_mix(self, x, hook_layer = None):
         """ Image and numerical input (on indivual channels) all go through convolution """
         image, vals = x
         
@@ -130,6 +159,10 @@ class VGGNet(Module):
         # Convolutional 
         for l in range(self.len_conv):
             x = self.layers[l](x)
+            
+            if hook_layer:
+                if l == hook_layer:  # register hook for grad-cam
+                    h = x.register_hook(self.activations_hook)
         
         # Fully connected (FC)
         x = flatten(x, 1)

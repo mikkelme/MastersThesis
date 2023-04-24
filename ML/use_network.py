@@ -6,7 +6,10 @@ from produce_figures.baseline_variables import *
 from ML.ML_utils import *
 from ML.networks import *
 from config_builder.build_config import *
-    
+  
+import cv2
+
+
 # else: # Cluster
 #     from baseline_variables import *
 #     from ML_utils import *
@@ -71,7 +74,8 @@ class Evaluater():
         self.image = torch.from_numpy(mat.astype(np.float32))
 
 
-    def predict(self, stretch, F_N):
+
+    def get_input(self, stretch, F_N):
         # Numpy array
         stretch = np.array(stretch)
         F_N = np.array(F_N)
@@ -95,9 +99,13 @@ class Evaluater():
             image  = self.image.unsqueeze(0).repeat(len(stretch_torch), 1, 1) 
     
         vals = torch.stack((stretch_torch, F_N_torch), -1)
+        
+        return image, vals
 
-        # Get output
-        self.output = self.model((image, vals)).detach().numpy()
+    def predict(self, stretch, F_N):
+        image, vals = self.get_input(stretch, F_N)
+        self.input = (image, vals)
+        self.output = self.model(self.input).detach().numpy()
         return image.detach().numpy(), vals.detach().numpy(), self.output
 
 
@@ -275,7 +283,7 @@ class Evaluater():
       
       
         # Plo feature maps
-        shape = (4,4)
+        shape = (4,8)
         for depth in reversed(range(len(outputs))):
             layer = outputs[depth]
             print(np.shape(layer))
@@ -284,7 +292,8 @@ class Evaluater():
             N = np.min((np.prod(np.shape(axes)), layer.shape[1]))
             for i in range(N):
                 ax = axes[i//axes.shape[1], i%axes.shape[1]]
-                ax.imshow(np.array(layer[0, i].detach()), cmap='viridis')
+                im = np.array(layer[0, i].detach()).T
+                ax.imshow(im, cmap='viridis')
                 ax.axis('off')
             fig.suptitle(f'Depth = {depth}')
             fig.supxlabel(r"$x$ (armchair direction)", fontsize = 14)
@@ -302,14 +311,85 @@ class Evaluater():
 
      
     
-    def explainable_AI_methods(self):        
-        # TODO: Use some kind of linearization method to show which pixels 
-        # it is most sensitive to in order to reveal information about attention behind prediciton 
-        pass
+    def grad_cam(self, index = 0, target = 5):
+        # REF: https://medium.com/@stepanulyanin/implementing-grad-cam-in-pytorch-ea0937c31e82
+        
+        # index = 0
+        image, vals = self.input
+        image = image[index, :, :].unsqueeze(0)
+        vals = vals[index, :].unsqueeze(0)
+        input = (image, vals)
+        
+        shape = image.shape[1], image.shape[2]
+        
+        
+        hook_layers = np.arange(len(self.model.conv_layers))
+        CAM_weight = [1, 1, 1, 1, 1, 1]
+        
+        block_len = 3 + self.model.batchnorm
+        
+        CAM = np.zeros((shape)).T
+        
+        # fig, axes = plt.subplots(1, len(hook_layers), num = unique_fignum(), figsize = (10, 5))
+        for num_hook in hook_layers:
+            hook_layer = 2 + block_len * num_hook
+         
+            # Get output
+            output = self.model(input, hook_layer)
     
-        # TODO: Activation maps XXX
+            # get the gradient of the output with respect to the parameters of the model
+            output[:, target].backward()
+            
+            # pull the gradients out of the model
+            gradients = self.model.gradients
+            
+            # pool the gradients across the channels
+            pooled_gradients = torch.mean(gradients, dim=[0, 2, 3])
+
+    
+            # get the activations of the last convolutional layer
+            activations = self.model.get_activations(input, hook_layer).detach()
+            
+            # weight the channels by corresponding gradients
+            for i in range(len(pooled_gradients)):
+                activations[:, i, :, :] *= pooled_gradients[i]
+            
+            
+            # average the channels of the activations
+            heatmap = torch.mean(activations, dim=1).squeeze()
+
+            # relu on top of the heatmap
+            # expression (2) in https://arxiv.org/pdf/1610.02391.pdf
+            heatmap = np.maximum(heatmap, 0)
+
+            # normalize the heatmap
+            heatmap /= torch.max(heatmap)
+            heatmap[np.isnan(heatmap)] = 0
+
+            heatmap = heatmap.numpy().T
+            
+            heatmap = cv2.resize(heatmap, shape)
+            CAM += heatmap*CAM_weight[num_hook]
+
+            # axes[num_hook].imshow(heatmap)
         
+        plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
+       
+        colors = get_color_value(CAM, np.min(CAM), np.max(CAM), scale = 'linear', cmap='viridis')
         
+        im = image[0].numpy().T
+        plt.imshow(CAM, cmap = 'viridis')
+        outline = {'color': 'black', 'linestyle': '-', 'linewidth': .5}
+        for x in range(im.shape[0]-1):
+            for y in range(im.shape[1]-1):
+                if np.abs(im[x, y]-im[x+1, y]) > 0:
+                    plt.plot([y-0.5, y+0.5], [x+0.5, x+0.5], **outline)
+                if np.abs(im[x, y]-im[x, y+1]) > 0:
+                    plt.plot([y+0.5, y+0.5], [x-0.5, x+0.5], **outline)
+                    
+                    
+                    
+     
         
     
 def test_model_manual(name = None):
@@ -433,20 +513,26 @@ if __name__ == '__main__':
     model_weights = f'{model_name}/model_dict_state'
     model_info = f'{model_name}/best_scores.txt'
     
-    # EV = Evaluater(model_weights, model_info, config_path = '../config_builder/honeycomb/hon3131.npy')
+    EV = Evaluater(model_weights, model_info, config_path = '../config_builder/honeycomb/hon3131.npy')
     # EV = Evaluater(model_weights, model_info, config_path = 'pop_search/Ff_min0_conf.npy')
     # EV = Evaluater(model_weights, model_info, config_path = 'hon_search/Ff_min0_conf.npy')
-    # EV = Evaluater(model_weights, model_info, config_path = 'RW_search/Ff_min0_conf.npy')
     
     
-    mat = pop_up(shape = (62, 106), size = (5, 3), sp = 1, ref = (0, 4))
-    EV = Evaluater(model_weights, model_info)
-    EV.set_config(mat)
+    # EV = Evaluater(model_weights, model_info, config_path = 'GA_RW1/top0.npy')
+    # mat = pop_up(shape = (62, 106), size = (5, 3), sp = 1, ref = (0, 4))
+    # EV = Evaluater(model_weights, model_info)
+    # EV.set_config(mat)
     
     
     stretch = np.linspace(0, 2, 100)
     F_N = 5
-    EV.stretch_profile(stretch, F_N)
+    # EV.stretch_profile(stretch, F_N)
+    EV.predict(stretch, F_N)
+    # EV.get_feature_maps() 
+    
+    for index in range(0, 100, 20):
+        print(index)
+        EV.grad_cam(index) 
     plt.show()
     
     
