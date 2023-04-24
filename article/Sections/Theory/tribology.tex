@@ -21,6 +21,7 @@ surfaces.
 % 1]{gnecco_meyer_2015}. In this thesis we will only concern ourselves with so-called wearless dry friction. That is, without any use of lubrication and without any resulting wear of the contacting surfaces. 
 
 \section{Friction across scales}
+% https://www.sciencedirect.com/science/article/abs/pii/S0301679X18300756 <----- READ
 Tribological systems span a wide range of time and length scales, from
 geological stratum layers involved in earthquakes \cite{kim_nano-scale_2009} to
 atomistic processes, such as the gliding motion of nanoclusters or nanomotors
@@ -1427,7 +1428,7 @@ found that friction increased with temperature, using a sliding speed of
 \SI{10}{m/s}. Considering the findings of \cite{Guerra_2010} this qualitative different behavior might be attributed to a \acrshort{MD} related effect associated with the transition from low speed diffusive behavior as opposed to high speed ballistic behavior.
 
 
-\hl{På slutten av 2.5 trenger du et avsnitt som oppsummerer litt hva som er relevat for din studie, og som skaper en myk overgang til ``Research questions''. Men 2.5 skaper et veldig godt grunnlag for å lage research questions, siden det er mange forskjellige resultater, og du dermed kan gripe tak i motsetninger mellom tidligere eksperimenter, som dine simuleringer kan gi nye innsikter til. Jeg ville prioritert en del tid på å få til en god avslutning på 2.5 og en fin overgang til 2.6.}
+% \hl{På slutten av 2.5 trenger du et avsnitt som oppsummerer litt hva som er relevat for din studie, og som skaper en myk overgang til ``Research questions''. Men 2.5 skaper et veldig godt grunnlag for å lage research questions, siden det er mange forskjellige resultater, og du dermed kan gripe tak i motsetninger mellom tidligere eksperimenter, som dine simuleringer kan gi nye innsikter til. Jeg ville prioritert en del tid på å få til en god avslutning på 2.5 og en fin overgang til 2.6.}
 
 
 % Non rigid flake which could deform and rotate,
@@ -1714,19 +1715,14 @@ From the \hl{discussion} in \cref{sec:prev_results} \hl{or maybe just the whole 
   \caption{Summary}
   \label{tab:exp_summary}
   \begin{tabular}{  M{5cm}  X{12cm} } \hline
-  \textbf{Stick slip} & Generally we expect to observe periodic stick-slip motion with a period matching the lattice constant(s) involved \cite{mo_friction_2009}. This is however expected to be inhibited by high spring stiffness for the moving support, high temperature, system size and at large velocities. For the latter, we mainly refer to a ``smooth-looking'' force trace, which can still involve slips \hl{hmmm...} \\
-  
+  \textbf{Stick slip} & Generally we expect to observe periodic stick-slip motion with a period matching the lattice constant(s) involved \cite{mo_friction_2009}. This is however expected to be inhibited by high spring stiffness for the moving support, high temperature, system size and at large velocities. For the latter, we mainly refer to a ``smooth-looking'' force trace, which can still involve slips \hl{hmmm...} \\ \\
   % At large velocities the reduced-models suggest a multiple slip behavior while experimental results suggest smooth sliding. This discrepancy might be explained by a different definition of smooth sliding as the multiple slip regime can produce seemingly ``smooth-looking'' force traces. Additionally, it is expected that the tendency of stick-slip behvaiour is reduced by increasing temperature and for incommensurability. \\ \\
-
-  \textbf{Static friction} & Static friction is expected to correlate with the presence of stick-slip motion. We expect it to be most pronounced for commensurable configurations with a possible disappearance for incommensurability. Moreover, static friction is expected to increase with system size, time in stationary contact and decreasing temperature.
-
+  \textbf{Static friction} & Static friction is expected to correlate with the presence of stick-slip motion. We expect it to be most pronounced for commensurable configurations with a possible disappearance for incommensurability. Moreover, static friction is expected to increase with system size, time in stationary contact and decreasing temperature. \\ \\
   \textbf{Commensurability} & Both static and kinetic friction is expected to be highly sensitive to commensurability, through lattice spacing, the orientation of the flake relative to the substrate and the path of sliding along the substrate. By loading, rotating, cutting and stretching the sheet we might alter commensurability as well as a change of the spring constant can alter the translational freedom during sliding leading to a similar change in commensurability. \\ \\
   \textbf{Friction evolution} \linebreak \textbf{(Friction strengthening)} & Friction evolution is found to be present in monolayer graphene resting on a substrate, and thus we expect this to be present in our simulation setup as well.  \\ \\
   \textbf{Negative coef} & Previous result shows that a negative friction coefficient can be done, but these were related to a different system. However, alterations through stretching and corrugation have shown that it is possible to alter friction through deformations. By introducing a coupling between load and such deformations we might be able to achieve a negative coefficient.  \\ \\
-  
   \textbf{Normal load} & Generally an increasing friction force is expected with increasing load. Both non-dependent, sublinear and linear relationships can be expected. \\ \\
-  \textbf{Velocity} & Generally an increasing friction force is expected with increased sliding velocity. Numerical results suggest a viscous friction $F_k \propto v$ 
-  
+  \textbf{Velocity} & Generally an increasing friction force is expected with increased sliding velocity. Numerical results suggest a viscous friction $F_k \propto v$ \\ \\
   \textbf{Temperature} & From an experimental and model-based point of view friction is expected to decrease with temperature in a power law or exponential manner. However, for \acrshort{MD} simulations the transition from a diffusive to a ballistic regime at a velocity around 1--\SI{10}{m/s} is suggested to yield increasing friction with temperature.  \\ \\
   \textbf{Contact area} & For the non-cut sheet we do not expect to see any noticeable change in contact area during loading. For a deforming sheet that successfully changes the contact area, it is theorized to alter the friction as well in a proportional manner.  \\
   \hline

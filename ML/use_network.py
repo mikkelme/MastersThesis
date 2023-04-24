@@ -29,7 +29,8 @@ class Evaluater():
         self.load_model(model_weights, model_info)
         
         if config_path is not None:
-             self.load_config(config_path)
+            self.config_path = config_path
+            self.load_config(config_path)
     
     def load_model(self, model_weights, model_info):
         """ Load model using info about class initialization and stored weights """
@@ -311,10 +312,9 @@ class Evaluater():
 
      
     
-    def grad_cam(self, index = 0, target = 5):
+    def grad_cam(self, index = 0, target = 5, ax = None):
         # REF: https://medium.com/@stepanulyanin/implementing-grad-cam-in-pytorch-ea0937c31e82
         
-        # index = 0
         image, vals = self.input
         image = image[index, :, :].unsqueeze(0)
         vals = vals[index, :].unsqueeze(0)
@@ -373,22 +373,29 @@ class Evaluater():
 
             # axes[num_hook].imshow(heatmap)
         
-        plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
+        
+        if ax is None:
+            fig = plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
+            ax = plt.gca()
+
        
         colors = get_color_value(CAM, np.min(CAM), np.max(CAM), scale = 'linear', cmap='viridis')
         
         im = image[0].numpy().T
-        plt.imshow(CAM, cmap = 'viridis')
+        ax.imshow(CAM, cmap = 'viridis')
         outline = {'color': 'black', 'linestyle': '-', 'linewidth': .5}
         for x in range(im.shape[0]-1):
             for y in range(im.shape[1]-1):
                 if np.abs(im[x, y]-im[x+1, y]) > 0:
-                    plt.plot([y-0.5, y+0.5], [x+0.5, x+0.5], **outline)
+                    ax.plot([y-0.5, y+0.5], [x+0.5, x+0.5], **outline)
                 if np.abs(im[x, y]-im[x, y+1]) > 0:
-                    plt.plot([y+0.5, y+0.5], [x-0.5, x+0.5], **outline)
+                    ax.plot([y+0.5, y+0.5], [x-0.5, x+0.5], **outline)
                     
-                    
-                    
+             
+        if ax is None:
+            fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+       
+        return ax 
      
         
     
@@ -513,12 +520,12 @@ if __name__ == '__main__':
     model_weights = f'{model_name}/model_dict_state'
     model_info = f'{model_name}/best_scores.txt'
     
-    EV = Evaluater(model_weights, model_info, config_path = '../config_builder/honeycomb/hon3131.npy')
+    # EV = Evaluater(model_weights, model_info, config_path = '../config_builder/honeycomb/hon3131.npy')
     # EV = Evaluater(model_weights, model_info, config_path = 'pop_search/Ff_min0_conf.npy')
     # EV = Evaluater(model_weights, model_info, config_path = 'hon_search/Ff_min0_conf.npy')
     
     
-    # EV = Evaluater(model_weights, model_info, config_path = 'GA_RW1/top0.npy')
+    EV = Evaluater(model_weights, model_info, config_path = 'GA_RW1/top1.npy')
     # mat = pop_up(shape = (62, 106), size = (5, 3), sp = 1, ref = (0, 4))
     # EV = Evaluater(model_weights, model_info)
     # EV.set_config(mat)
@@ -532,7 +539,7 @@ if __name__ == '__main__':
     
     for index in range(0, 100, 20):
         print(index)
-        EV.grad_cam(index) 
+        EV.grad_cam(index, 0) 
     plt.show()
     
     

@@ -1,12 +1,60 @@
 \chapter{Machine Learning}
 
+We will use machine learning as a tool for designing kirigami configurations that alter the friction behavior in different manners. Through \acrshort{MD} simulations we will provide data for which the machine learning model can learn from. If successful we can utilize the model to predict the friction behavior of unseen configurations which makes us able to skip the \acrshort{MD} and speed up the search process. It is not obvious that the model can capture the physical mechanism governing the friction process and thus a succeeding model might invite further and more advanced study within this domain. 
+
+We aim to implement a basic machine learning approach as an investigation whether this is useful. 
 
 \section{Neural network}
-Feed forward fully connected network.
+% Feed forwatd dense neural network.
+A neural network is of the foundational concepts in machine learning. It consists of an input $\vec{x}$ some so-called \textit{hidden layers} and an output $\hat{\vec{y}}$. We reserve $\vec{y}$ for the actual true output that the model is going to estimate. The input vector $\vec{x} = x_0, x_1, \ldots, x_{n_x}$ contains the input \textit{features}. Each input $x_i$ is connected to each of the \textit{nodes} in the first hidden layer. For a given note $a_j^{[1]}$ in the first hidden layer the input is processed as
+\begin{align*}
+  a_j^{[1]} = f(\sum_i w_{ij}x_i + b_j^{[1]}),
+\end{align*}
+where $w_{ij}$ is the weight representing the connection strength from the input feature $x_i$ to the (first) hidden layer node $a_j^{[1]}$, $b_j^{[1]}$ is a bias associated to the specific hidden layer node and  $f(\cdot)$ is an \textit{activation function}. Notice, that we have individual weights for each connection in the network but we ommit any notation for the layers it connects as it is obvious from the equations so far. The activation function is an crucial part of the neural network as it provides a non-linear mapping to the inputs to the node. Without this, the resulting framework is nothing more than a linear transformation. By introducing the activation function the model is capable of capturing complex trends \hl{SOURCE}. The signal is carried through the hidden layers in a similar fashion from hidden layer $l-1$ to $l$ as 
+\begin{align*}
+  a_j^{[l]} = f\left(\sum_i w_{ij}a_j^{[l-1]} + b_j^{[1]}\right).
+\end{align*}
+Keep in mind that weight is specific to the connection between layer $l-1$ and $l$. Finally, the last hidden layer, $L-1$, connects densely to the output $\hat{\vec{y}}$ as for the remaining of the network. However, here the activation function can be omitted or exchanged with a different mapping, e.g. the sigmoid which maps the output to $(0,1)$. The whole process of sending data through the model is called \textit{forward propagation} as it constitutes the process of sending information through the network. The specific values of the weights and biases will govern the final output.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\linewidth]{figures/theory/ffnn.png}
+  \caption{\hl{From overleaf IN400}}
+  \label{fig:ffnn}
+\end{figure}
+
+The network is trained through the process of \textit{backpropagation} and \textit{gradient descent} optimization. Backpropagation starts with a definition of the error associated with the model output. A so-called \textit{loss function} $L$ compares the output $\hat{\vec{y}}$ with the expected result $\vec{y}$ and calculates the error otherwise known as the loss. For a continuous scalar output, we might simply use the mean squared error (\acrshort{MSE})
+\begin{align*}
+  L_{\text{\acrshort{MSE}}} = \frac{1}{N_y} \sum_{i = 1}^N (y_i - \hat{y}_i)^2.
+\end{align*}
+For classification, where we expect an output of True or False (1 or 0), a common choice is binary cross entropy (BSE)
+\begin{align*}
+  L_{\text{BSE}} =  -\sum_{i=1}^n \ \Big[y_i\log(\hat{y_i}) + (1-y_i)\log(1 - \hat{y_i}) \Big].
+\end{align*}
+This arrises for information theory \hl{or something similar}. Without going into details with the derivation we can convince ourselves that the error is minimized (0) for a perfect prediction and maximized for a completely wrong prediction. When $y_i = 1$ we essentially add the negative term $-\log(\hat{y_i})$. With a prediction given as a number between 0 and 1 (through the sigmoid function), we can interpret the output as a probability of the given classification. When the output approaches 1, $\hat{y}_i \to 1$, in the correct case of $y_i = 1$ the loss contribution goes to towards zero. However, if the output approaches 0, $\hat{y}_i \to 1$, the loss contribution diverges $\hat{y}_i \to \inf$. Similar apply for the case of $y_i = 0$ with opposite directions. 
+
+Given a loss function we can calculate the loss gradient with respect to each weight and bias in the model. That is, how is the error effected is we tweak a certain model parameter, weight or bias. The overall idea is then to  ``nudge'' each parameter in the appropriate direction and repeat the process of forward and backpropagation. For a given paramter $\theta_i$ at epoch $i$ (number of forward and backward repetitions) we can update it through gradient descent 
+\begin{align*}
+  \theta_{i+1} = \theta_i - \eta \nabla_\theta L(\theta_i),
+\end{align*}
+where the new parameter $\theta_i$ is given by stepping in the direction of the loss gradient $\nabla_\theta L(\theta_i)$ with a step length proportional to learning rate $\eta$. In practice, gradient descent is done in batches. That is, for a batch of training data, consisting of input data and true output data, a single step is taken for the average gradient. If a small batch is considered the path towards the optimal parameters will be governed by a fluctuation in parameter space while a large batch will result in a more direct path towards lower error. This is the key concept behind stochastic gradient descent (SGD) which creates random batches from the training data and performs gradient descent. Even though a stable descent toward a minimum error sounds promising, the strength in \acrshort{SGD} lies in the fluctuations of its descent. Without it, learning would be stuck at the first local minimum in the parameter space. 
+
+% Some illustration of SGD maybe?
+
+\section{Optimizers}
+The name \textit{optimizers} covers a variety of gradient descent methods which can be utilized for model training. In our study we will use the ADAM optimizer (short?) which extends the concept of stochastic gradient descent. ADAM combinnes several tricks from other succesfull optimizers by including an exponetial moving average and momentum term. 
+
+% First introduce momentum
+% Then Nesterov momentum (if it relates ADAM)
+% Then RMSProp EMA stuff
+% then combine into ADAM
+
+
+
+
 
 \section{Convolutional neural network}
 
-\section{Optimizers}
 
 \section{Hypertuning strategies}
 

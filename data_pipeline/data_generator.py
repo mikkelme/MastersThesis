@@ -172,8 +172,11 @@ def run_files(filenames, header, simname, num_procs_initial = None, num_procs = 
                     'dump_freq': 0
                 }
     
+    variables['num_stretch_files'] = 30
+    variables['RNSEED'] = -1
     for file in filenames:
-        F_N = np.sort(np.random.uniform(0.1, 10, 3))*1e-9
+        # F_N = np.sort(np.random.uniform(0.1, 10, 3))*1e-9
+        F_N = np.array([5])*1e-9
         gen = Data_generator(file, header, simname)
         gen.run_multi(F_N = F_N, variables = variables, num_procs_initial = num_procs_initial, num_procs = num_procs)
         
@@ -182,14 +185,12 @@ def run_files(filenames, header, simname, num_procs_initial = None, num_procs = 
 if __name__ == "__main__":
     # filenames = get_files_in_folder('../config_builder/popup/', ext = 'npy')
     # filenames = get_files_in_folder('../config_builder/honeycomb/', ext = 'npy')
-    filenames = get_files_in_folder('../config_builder/RW/', ext = 'npy')
-    filenames = np.sort(filenames)
+    # filenames = get_files_in_folder('../config_builder/RW/', ext = 'npy')
     
-    # filenames = filenames[90:100] 
-    # print(filenames)
-    # run_files(filenames, header =  'egil:CONFIGS/RW', simname = 'RW9', num_procs_initial = None, num_procs = 4)
+    
+    filenames = get_files_in_folder('../ML/RW_search', ext = 'npy')
+    # run_files(filenames, header =  'egil:CONFIGS/RW_search_test', simname = 'test', num_procs_initial = 16, num_procs = 4)
    
-    pass
     
     
    

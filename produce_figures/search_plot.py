@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from plot_set import *
+from kirigami_patterns import *
 # from ML.hypertuning import *
 # from ML.ML_perf import *
 # from analysis.analysis_utils import*
@@ -33,7 +34,7 @@ def plot_ref_search(filename, save = False):
         rel_std = std/np.mean(data[key][valid])
         print(f'{key}: rel.std = {rel_std:0.4f}, std = {std:0.4f}')
         
-        sns.heatmap(score, cmap = cmap, cbar_kws={'label': zlabel[i]}, annot = True, ax=ax)
+        sns.heatmap(score.T, cmap = cmap, cbar_kws={'label': zlabel[i]}, annot = True, ax=ax)
         ax.invert_yaxis()
         ax.set_xlabel(r"$x$ (armchair direction)", fontsize = 14)
         ax.set_ylabel(r"$y$ (zigzag direction)", fontsize = 14)
@@ -48,12 +49,53 @@ def plot_ref_search(filename, save = False):
     
 
 
+def plot_RW_top5(save = False):
+    path = '../ML/RW_search/'
+
+    categories = ['Ff_min', 'Ff_max', 'Ff_max_diff', 'Ff_max_drop']
+    ylabel = [r'Min $F_{fric}$', r'Max $F_{fric}$', r'Max $\Delta F_{fric}$', 'Max drop']                  
+    fig, axes = plt.subplots(4, 5, num = unique_fignum(), figsize = (10, 8))    
+    
+    for i, cat in enumerate(categories):
+        config_paths = [os.path.join(path, f'{cat}{k}_conf.npy') for k in range(5)]
+        for j, config_path in enumerate(config_paths):
+            print(i, j)
+            ax = axes[i,j]
+            if i == 0:
+                ax.set_title(f'# {j+1}')
+            if j == 0:
+                ax.set_ylabel(ylabel[i])
+            ax.set_facecolor("white")
+            ax.set_xticks([])
+            ax.set_yticks([])
+            
+            
+            # if i != j:
+            #     continue
+            mat = np.load(config_path)
+            
+            plot_sheet(mat, ax, radius = 0.6, facecolor = 'black', edgecolor = 'black', linewidth = 0.1)
+            ax.grid(False)
+        
+    fig.supxlabel(r"$x$ (armchair direction)", fontsize = 14)
+    fig.supylabel(r"$y$ (zigzag direction)", fontsize = 14)
+    fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    
+    if save:
+        fig.savefig('../article/figures/search/RW_search_top5.pdf', bbox_inches='tight')
+
+
+        
+    
+
 if __name__ == '__main__':
     # plot_ref_search(filename = '../ML/ref_search/pop_1_7_1_ref_search.npy', save = False)
     # plot_ref_search(filename = '../ML/ref_search/pop_5_3_1_ref_search.npy', save = False)
     # plot_ref_search(filename = '../ML/ref_search/hon_3_3_5_3_ref_search.npy', save = False)
-    plot_ref_search(filename = '../ML/ref_search/hon_2_3_3_3_ref_search.npy', save = True)
-    
+    # plot_ref_search(filename = '../ML/ref_search/hon_2_3_3_3_ref_search.npy', save = False)
+    # 
     # plot_ref_search(filename = '../ML/ref_search/hon_2_1_1_1_ref_search.npy')
     # plot_ref_search(filename = '../ML/ref_search/hon_2_1_5_3_ref_search.npy')
-    pass
+    # pass
+    plot_RW_top5(save = True)
+    plt.show()
