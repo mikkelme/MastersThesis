@@ -33,26 +33,73 @@ For classification, where we expect an output of True or False (1 or 0), a commo
 \end{align*}
 This arrises for information theory \hl{or something similar}. Without going into details with the derivation we can convince ourselves that the error is minimized (0) for a perfect prediction and maximized for a completely wrong prediction. When $y_i = 1$ we essentially add the negative term $-\log(\hat{y_i})$. With a prediction given as a number between 0 and 1 (through the sigmoid function), we can interpret the output as a probability of the given classification. When the output approaches 1, $\hat{y}_i \to 1$, in the correct case of $y_i = 1$ the loss contribution goes to towards zero. However, if the output approaches 0, $\hat{y}_i \to 1$, the loss contribution diverges $\hat{y}_i \to \inf$. Similar apply for the case of $y_i = 0$ with opposite directions. 
 
-Given a loss function we can calculate the loss gradient with respect to each weight and bias in the model. That is, how is the error effected is we tweak a certain model parameter, weight or bias. The overall idea is then to  ``nudge'' each parameter in the appropriate direction and repeat the process of forward and backpropagation. For a given paramter $\theta_i$ at epoch $i$ (number of forward and backward repetitions) we can update it through gradient descent 
+Given a loss function we can calculate the loss gradient with respect to each weight and bias in the model. That is, how is the error effected is we tweak a certain model parameter, weight or bias. The overall idea is then to  ``nudge'' each parameter in the appropriate direction and repeat the process of forward and backpropagation. For a given paramter $\theta_t$ at time $t$, measured in epoch for instance (sets of forward and backward repetitions) we can update it through gradient descent 
 \begin{align*}
-  \theta_{i+1} = \theta_i - \eta \nabla_\theta L(\theta_i),
+  \theta_{t+1} = \theta_t - \eta \nabla_\theta L(\theta_t),
 \end{align*}
-where the new parameter $\theta_i$ is given by stepping in the direction of the loss gradient $\nabla_\theta L(\theta_i)$ with a step length proportional to learning rate $\eta$. In practice, gradient descent is done in batches. That is, for a batch of training data, consisting of input data and true output data, a single step is taken for the average gradient. If a small batch is considered the path towards the optimal parameters will be governed by a fluctuation in parameter space while a large batch will result in a more direct path towards lower error. This is the key concept behind stochastic gradient descent (SGD) which creates random batches from the training data and performs gradient descent. Even though a stable descent toward a minimum error sounds promising, the strength in \acrshort{SGD} lies in the fluctuations of its descent. Without it, learning would be stuck at the first local minimum in the parameter space. 
+where the new parameter $\theta_t$ is given by stepping in the direction of the loss gradient $\nabla_\theta L(\theta_t)$ with a step length proportional to learning rate $\eta$. In practice, gradient descent is done in batches. That is, for a batch of training data, consisting of input data and true output data, a single step is taken for the average gradient. If a small batch is considered the path towards the optimal parameters will be governed by a fluctuation in loss space while a large batch will result in a more direct path towards lower error. This is the key concept behind stochastic gradient descent (SGD) which creates random batches from the training data and performs gradient descent. Even though a stable descent toward a minimum error sounds promising, the strength in \acrshort{SGD} lies in the fluctuations of its descent. Without it, learning would be stuck at the first local minimum in the loss space. 
 
 % Some illustration of SGD maybe?
 
 \section{Optimizers}
+% https://arxiv.org/pdf/1412.6980.pdf
 The name \textit{optimizers} covers a variety of gradient descent methods which can be utilized for model training. In our study we will use the ADAM optimizer (short?) which extends the concept of stochastic gradient descent. ADAM combinnes several tricks from other succesfull optimizers by including an exponetial moving average and momentum term. 
 
-% First introduce momentum
-% Then Nesterov momentum (if it relates ADAM)
-% Then RMSProp EMA stuff
-% then combine into ADAM
+
+% Momentum 
+We extend the gradient descent by the introduction of a momentum term $m_t$ such that we get
+\begin{align}
+  \theta_{t+1} = \theta_t - m_{t+1}, \qquad m_{t+1} = \alpha m_t + \eta \nabla_\theta L(\theta_t)
+  \label{eq:mom}
+\end{align}
+with $m_0 = 0$. If we introduce the shorthand $g_t = \nabla_\theta L(\theta_t)$ we find
+\begin{align*}
+  m_0 &= 0 \\
+  m_1 &= \alpha m_0 + \eta g_0 = \eta g_0 \\
+  m_2 &= \alpha m_1 + \eta g_1 = \alpha^1 \eta g_0 + \eta g_1 \\
+  m_2 &= \alpha m_2 + \eta g_2 = \alpha^2 \eta g_0 + \alpha\eta g_1 + \eta g_2 \\
+  &\vdots \\
+  m_t &= \eta \left(\sum_{i=0}^{t-1} \alpha^{t-1-i}g_i\right).
+\end{align*}
+Hence $m_t$ is a weighted average of the gradients which an exponentially decreasing weight. This act as a memory of the previous gradients and aid in passing of local minema of plateaus in the loss space. A variation of momentum can be achieved with the introduction of the exponetial moving average (EMA)
+\begin{align*}
+    \text{EMA}(g_0) &= 0 + (1-\alpha)g_0 \\
+    \text{EMA}(g_1) &= \alpha \text{EMA}(g_t) + (1-\alpha)g_1 \\
+    &\vdots \\
+    \text{EMA}(g_t) &= \alpha \text{EMA}(g_{t-1}) + (1-\alpha)g_t  = \sum_{s=0}^t \alpha^{t-s}(1-\alpha)g_t,
+\end{align*}
+which is quite similar to that of momentum, but here we have the explicit weighting by $(1-\alpha)$.
 
 
+% RMSProp
+Another trick in the book is the root mean square propagation (RMSProp) which is motivated by the problem of passing long plateaus in the loss space. Since the size of the updates are proportional to the norm of the gradient
+\begin{align*}
+  \theta_{t+1} = \theta_t - \eta g_t \ \Longrightarrow \ ||\theta_{t+1}-\theta_{t}|| = \eta ||g_t||
+\end{align*}
+we might get the idea of normalizing the gradient step by dividing with the norm $|||g_t|$.  However, this does not immediately solve the problem of long plateaus as we need to consider multiple past gradients, and thus we use the EMA instead. When reentering a steep region again we need to quickly downscale the gradient steps. By using the squared norm $||g_t||^2$ for the EMA we make it more sensitive to outliers and achieve just that. This corresponds to the RMSProp update scheme
+\begin{align}
+  \theta_{t+1} = \theta_t - \eta \frac{g_t}{\sqrt{\text{EMA}(||g_t||^2)} + \epsilon},
+  \label{eq:RMSProp}
+\end{align}
+where $\epsilon$ is simply a small number to avoid division by issues. ADAM merges the idea behind the root mean square propagation technique in \cref{eq:RMSProp} with a EMA momentum term $m_t$ and second order RMSProp term $v_t$ 
+\begin{align*}
+  m_t &= \beta_1 m_{t_1} + (1-\beta_1)g_t, \\
+  v_t &= \beta_2 v_{t_1} + (1-\beta_2)g_t^2, 
+\end{align*}
+These are initially set to zero and will be biased toward that. ADAM correct for this by applying a scaling term $(1-\beta^t_1)$ and $(1-\beta^t_2)$ respectively
+\begin{align}
+  \theta_{t+1} = \theta_t - \eta \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \epsilon}, \qquad \qquad \hat{m}_t &= \frac{m_t}{1-\beta^t_1}, \qquad \hat{v}_t = \frac{v_t}{1-\beta^t_2} \\
+  \label{eq:ADAM}
+\end{align}
 
 
+\subsection{Weight decay}
+By adding a $l^2$ norm of the parameters to the cost function we get a penalty for high parameters. 
 
+
+\subsection{Batch normalization}
+
+\subsection{Learning rate decay strategies}
 \section{Convolutional neural network}
 
 
