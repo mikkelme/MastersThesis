@@ -219,34 +219,70 @@ where $\epsilon$ is a small number to ensure numerical stability (similar to wha
 with trainable parameters $\gamma$ and $\beta$. \hl{Comment about the reason for the final step}.
 
 
-
-
-
 \subsection{Learning rate decay strategies}
+Until now we have assumed a constant learning rate, but variations use a
+changing learning rate beyond the adaptiveness included in the optimizers as
+described earlier. It can be beneficial to start with a higher learning rate to
+speed up the initial part of training and then lower the learning rate for the
+final gradient descent. One straightforward strategy is a step-wise learning
+rate decay where the learning rate is reduced by a factor $\gamma \in (0,1)$
+every $K$ steps. A more smooth change can be achieved by for instance a
+polynomial decay $\eta_t = \eta_0/t^{\alpha}$ for $\alpha > 0$. More advanced
+approaches use multiple cycles of increasing and decreasing cycles. We will
+mainly concern ourselves with a one-cycle policy for which we start at an
+intermediate value, increase toward a maximum bound and then decrease toward a
+final lower learning rate bound. This can simply be done by a linear increase
+and decrease, but we choose a cosine function that is shifted to peak for the
+first 30\% of the training length. 
+
+
 
 \section{Convolutional Neural Network}
-Convolutional Neural Network (\acrshort{CNN}) builds on feed forward neural
-network, but is specialized for spatial inputs such as images. The neural
-network applies a so-called \textit{kernel} which is a filter sliding over the
-image. for a multi-channel image, such as the standard RGB containing a channel
-for red, green and blue colors, the kernel must have a depth that matches this.
-The input is processed as a dot product between similar channels in the input
-and the kernel for which the resulting values are summed and added with a single
-bias set for the whole kernel as illustrated in \cref{fig:conv_example}. Each
-kernel represents as a set of trainable weights and a bias. Often multiple
-kernels is applied to the input which results in an increasing number of
-channels throughout the model. On the otherside the spatial input is
-down-scaled. By controlling the \textit{stride}, the translation of the filter
-between each convolution, we can alter the amount of down-scaling. If we keep
-the stride and apply a paddin around the input, using zeroes or extending the
-edge for instance, we can also choose to preserve the spatial size in the
-convolution. The spatial size is given by the formula 
+Convolutional Neural Networks (\acrshort{CNN}s) generally build upon the same
+concepts as introduced with the feed-forward neural network. The difference lies
+in its specialization for a spatially correlated input, such as pixels in an
+image. In a dense neural network, every node is connected to each of the nodes
+from the previous layers. Thus, it does not matter how the input is arranged
+initially, but the arrangement is assumed to be consistent for all data. This is
+impractical if we want the model to recognize images of animals as the
+animal-related pixels will be in different regions of each image. The
+\acrshort{CNN} builds on the idea of capturing spatial relations within the
+input, but without being sensitive to the position within the image, in the
+input, but without being dependent on the position within the image, i.e.\ it is
+translational invariant. This is achieved by having a so-called \textit{kernel}
+or \textit{filter} which slides over the images as it processes the input. Note,
+that we will be using the word ``image'' as a reference for a spatially
+dependent input, but in reality, it does not have to be an actual image in the
+classical sense. 
+
+A convolutional layer contains multiple kernels, each
+consisting of a set of trainable weights and a bias, which will produce seperate output channels to resulting \textit{feature map}. The kernel has a spatial size, specific to the model architecture, and a depth that matches the number of input channels to the layer. For instance, a typical RGB will have three channels. The kernel lines up with the image and calculates the feature map output as a dot product between the eights in the kernel and the aligning subset of the input. This is done for each input channel and summed up with the addition of a bias as illustrated in \cref{fig:conv_calculation}. The kernel then slides over by a step size given by the \textit{stride} model parameter. 
+
+
+%
+%
+% Working here
+%
+%
+
+A slide of one represents the minimum
+translation between the processing of the image. Choosing a stride of 2 or
+higher results in a reduction of spatial size for the output \textit{feature
+map}. If we want to preserve the spatial size we must keep a stride of one and
+additionally apply \textit{padding} to the input images, such that we can
+achieve one kernel position for each input ``pixel''. The spatial size of the
+feature map is given as
 \begin{align}
   N_{i+1} = \left\lfloor \frac{N_i - F + 2P}{S} + 1 \right\rfloor,
   \label{eq:down_scaling}
 \end{align}
 for padding $P$, stride $S$, spatial size of the kernel filter $F$, spatial size
-of input $N_i$ and spatial size of output $N_{i+1}$. The down-samling feature is
+of input $N_i$ and spatial size of output $N_{i+1}$. 
+
+
+
+
+The down-samling feature is
 often ... through a pooling layer. A pooling layer process the input by taking
 the mean (mean pooling) or the max value (max pooling) in the filter as it
 slides over the input. This is often used after a convolution meaning that the
@@ -254,6 +290,30 @@ input is given as the resulting feature map. For instance, by making a max
 pooling of size $2 \times 2$ by stride two we essentially half the dimensions of
 the image, but this follows \cref{eq:down_scaling}. 
 
+% We can use activation functions
+
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[t]{0.26\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/theory/conv_kernel_movement.png}
+    % \includegraphics[width=\textwidth]{figures/theory/conv_input_channels.png}
+    \caption{}
+    % \label{fig:}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.70\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/theory/conv_calculation.png}
+    \caption{}
+    \label{fig:conv_calculation}
+  \end{subfigure}
+  \hfill
+  % https://towardsdatascience.com/a-comprehensive-guide-to-convolutional-neural-networks-the-eli5-way-3bd2b1164a53
+  \caption{\hl{TMP}}
+  \label{fig:conv_example}
+\end{figure}
 
 \begin{figure}[H]
   \centering
@@ -263,28 +323,6 @@ the image, but this follows \cref{eq:down_scaling}.
   \label{fig:CNN}
 \end{figure}
 
-
-\begin{figure}[H]
-  \centering
-  \begin{subfigure}[t]{0.26\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/theory/conv_kernel_movement.png}
-      % \includegraphics[width=\textwidth]{figures/theory/conv_input_channels.png}
-      \caption{}
-      % \label{fig:}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.70\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/theory/conv_calculation.png}
-      \caption{}
-      % \label{fig:}
-  \end{subfigure}
-  \hfill
-  % https://towardsdatascience.com/a-comprehensive-guide-to-convolutional-neural-networks-the-eli5-way-3bd2b1164a53
-  \caption{\hl{TMP}}
-  \label{fig:conv_example}
-\end{figure}
 
 For a convolution process, we often consider the \textit{receptive field}. The
 receptive field relates to the spatial size of the input that affects a given
@@ -368,7 +406,8 @@ architecture and hyper-parameters like learning rate, momentum and weight decay,
 we will use the performance on the validation set as a metric to steer by. This
 represents a slower pace parameter fitting which can also led to overfitting on
 a higher level. Hence, we should denote a test set for the final evaluation of
-our model which have not be considered before the end. Formally, this is the only reliable performance metric for the model. 
+our model which have not be considered before the end. Formally, this is the
+only reliable performance metric for the model. 
 
 
 
@@ -378,6 +417,8 @@ our model which have not be considered before the end. Formally, this is the onl
 % learning rate under and over fitting
 % https://www.javatpoint.com/gradient-descent-in-machine-learning
 
+
+% Early stopping.
 
 % Underfitting
 Underfitting is recognized as a loss curve that continues to decrease slowly. This is highly dependent on the complexity of the model and the learning rate. A to small learning rate will induce underfitting
