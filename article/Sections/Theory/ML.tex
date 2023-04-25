@@ -238,59 +238,30 @@ first 30\% of the training length.
 
 
 \section{Convolutional Neural Network}
-Convolutional Neural Networks (\acrshort{CNN}s) generally build upon the same
+Convolutional Neural Networks (\acrshort{CNN}s) build upon some of the same
 concepts as introduced with the feed-forward neural network. The difference lies
 in its specialization for a spatially correlated input, such as pixels in an
 image. In a dense neural network, every node is connected to each of the nodes
 from the previous layers. Thus, it does not matter how the input is arranged
-initially, but the arrangement is assumed to be consistent for all data. This is
+initially, but it cannot be changed at a later stage. This is
 impractical if we want the model to recognize images of animals as the
 animal-related pixels will be in different regions of each image. The
-\acrshort{CNN} builds on the idea of capturing spatial relations within the
-input, but without being sensitive to the position within the image, in the
-input, but without being dependent on the position within the image, i.e.\ it is
+\acrshort{CNN} can be motivated by the idea of capturing spatial relations, but without being sensitive to the relative placement within the image, i.e.\ being
 translational invariant. This is achieved by having a so-called \textit{kernel}
-or \textit{filter} which slides over the images as it processes the input. Note,
+or \textit{filter} which slides over the images\footnote{Note,
 that we will be using the word ``image'' as a reference for a spatially
 dependent input, but in reality, it does not have to be an actual image in the
-classical sense. 
-
-A convolutional layer contains multiple kernels, each
-consisting of a set of trainable weights and a bias, which will produce seperate output channels to resulting \textit{feature map}. The kernel has a spatial size, specific to the model architecture, and a depth that matches the number of input channels to the layer. For instance, a typical RGB will have three channels. The kernel lines up with the image and calculates the feature map output as a dot product between the eights in the kernel and the aligning subset of the input. This is done for each input channel and summed up with the addition of a bias as illustrated in \cref{fig:conv_calculation}. The kernel then slides over by a step size given by the \textit{stride} model parameter. 
-
-
-%
-%
-% Working here
-%
-%
-
-A slide of one represents the minimum
-translation between the processing of the image. Choosing a stride of 2 or
-higher results in a reduction of spatial size for the output \textit{feature
-map}. If we want to preserve the spatial size we must keep a stride of one and
+classical sense.} as it processes the input. A convolutional layer contains multiple kernels, each
+consisting of a set of trainable weights and a bias. Each kernel will produce a separate output channel to the resulting \textit{feature map}. The kernel has a spatial size, specific to the model architecture, and a depth that matches the number of input channels to the layer. For instance, a typical RGB will have three channels. The kernel lines up with the image and calculates the feature map output as a dot product between the weights in the kernel and the aligning subset of the input. This is done for each input channel and summed up with the addition of a bias as illustrated in \cref{fig:conv_calculation}. The kernel then slides over by a step size given by the \textit{stride} model parameter and repeat the calculation. Choosing a stride of 2 or higher results in a reduction of spatial size. If we want to preserve the spatial size we must keep a stride of one and
 additionally apply \textit{padding} to the input images, such that we can
 achieve one kernel position for each input ``pixel''. The spatial size of the
 feature map is given as
 \begin{align}
-  N_{i+1} = \left\lfloor \frac{N_i - F + 2P}{S} + 1 \right\rfloor,
+  N_d^{[l+1]} = \left\lfloor \frac{N_d^{[l]} - F_d + 2P}{S} + 1 \right\rfloor,
   \label{eq:down_scaling}
 \end{align}
-for padding $P$, stride $S$, spatial size of the kernel filter $F$, spatial size
-of input $N_i$ and spatial size of output $N_{i+1}$. 
-
-
-
-
-The down-samling feature is
-often ... through a pooling layer. A pooling layer process the input by taking
-the mean (mean pooling) or the max value (max pooling) in the filter as it
-slides over the input. This is often used after a convolution meaning that the
-input is given as the resulting feature map. For instance, by making a max
-pooling of size $2 \times 2$ by stride two we essentially half the dimensions of
-the image, but this follows \cref{eq:down_scaling}. 
-
-% We can use activation functions
+for padding $P$, stride $S$, spatial size of the kernel filter $F_d$, spatial size
+of input $N_d^{[l]}$, for dimension $d = {x, y}$ and layer $l$. The \textit{down-sampling} is often done through a pooling layer. A pooling layer is remniscent of a kernel, but instead of calculating the output as a dot product, it calculate the mean (mean pooling) or the max value (max pooling) of the values within its range. For instance, by using a max pooling of size $2 \times 2$ and stride two we essentially half the dimensions of the image as dictated by \cref{eq:down_scaling}. \acrshort{CNN}s will often use repeating series of convolution, pooling and then an activation function. Most architectures will down-sample the spatial input while increasing the number of channels in the model.
 
 
 \begin{figure}[H]
@@ -318,66 +289,39 @@ the image, but this follows \cref{eq:down_scaling}.
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.9\linewidth]{figures/theory/CNN.png}
-  \caption{\hl{TMP}}
+  \caption{\hl{TMP} Not used at the moment...}
   % https://www.researchgate.net/figure/Representation-of-a-Convolutional-Neural-Network-The-CNN-performs-automatic-spatial_fig3_359896672
   \label{fig:CNN}
 \end{figure}
 
 
-For a convolution process, we often consider the \textit{receptive field}. The
+For a \acrshort{CNN}, we often consider the \textit{receptive field}. The
 receptive field relates to the spatial size of the input that affects a given
 node in the feature map at a given layer of the model. In
-\cref{fig:receptive_field} the receptive field is illustrated of a 1D
-representation of convolutional with a filter of stride 1 and filter width 2.
-Going from the output and backwards, we see that the output relates to two nodes
-in the previous last hidden layer. Each of these nodes is connected to two nodes
-in the layer before that, however with on of them being the same due to the
-stride of 1. By back tracking all the way to the input we see that this
+\cref{fig:receptive_field} the receptive field is illustrated for a 1D
+representation of a \acrshort{CNN} with repative use of a kernel of with 2 and  stride 1. Going from the output and backward, we see that the output layers are connected to two nodes in the previous layer. Each of these nodes is connected to two nodes in the layer before that, however with one of them being the same due to the stride of 1. By back-tracking to the input we see that this
 corresponds to a receptive field of $D = 5$. By increasing the filter size and
 the stride the 2D receptive field will grow a lot faster than shown in this
-simple 1D example. For a receptive field $D$, in a given spatial dimension, a
-spatial size of the filter $F$, stride $S_i$ (from layer $i$ to $i-1$), layer
-index: $l = \{1,2,3,\cdots,n\}$, we have
+simple 1D example. For a receptive field $D_d$, with respect to the spatial dimension $d$, a
+spatial size of the filter $F_d$, stride $S_l$ (from layer $l-1$ to $l$) we have
 \begin{align*}
     D_l = D_{l-1} + \left[(F_l - 1) \cdot \prod_{i=1}^{l-1}S_i \right],
 \end{align*}
 with $D_0 = 1$ and $l=0$ as the input layer. Note that by convention, the
-product of 0 is 1, so for the first layer, the sum over $S$ is 1. The receptive
-field is important in understanding the connectivity in the model. The model
-output will be completely independent of the inputs and feature maps outside the
-receptive field. Furthermore, since nodes in the center of the receptive field
-cones often have multiple connective paths leading to the output, as seen in
-\cref{fig:receptive_field} as well, we differentiate between the theoretical
+product of zero elements is 1, such that for the first layer, the product is 1. The receptive field is important in understanding the connectivity in the model. The model output will be completely independent of the inputs and feature maps outside the receptive field. Furthermore, we differentiate between the theoretical
 receptive field and the effective receptive field. The effective receptive field
-will have a Gaussian distribution within the theoretical receptive field due to
-the fact that the nodes in the center will be more represented as multiple paths
-connect to the output. Thus we in practice consider the effective receptive
-field to be smaller than the theoretical. Implementations like dilated
-convolutions, which make the filter expand in circumforence and skipping
-skipping positions within the filter, can be used to further increase the
-effective field. 
-
-The power of the \acrshort{CNN} lies mainly in the ability to carry
-translational invariance as opposed to a dense neural network. If practice, if
-you train a dense network to classify cat images and only show images with cats
-on the left side it will fail horribly when predicting on similar imiages with
-cats on the right side of the image. The \acrshort{CNN} is less proven to such
-issues as each kernel translates the whole image using the same weights. This is
-also the reason that the \acrshort{CNN} architecture is more parameter
-efficient. For a dense network it would essentially need to have
-``cat-detecting'' weights and bias configurations for all parts of the input.
-This forces a dense network to learn similar trends for multiple part of the
-network in contrast to the \acrshort{CNN}.
-
-
+will have a Gaussian distribution within the theoretical receptive field due to the fact that these nodes in the center of the receptive field will have more connections leading to the output, as seen in \cref{fig:receptive_field}. Thus, in practice the effective receptive field will be smaller than the theoretical Implementations like dilated convolutions, which make the filter expand in circumference and skipping skipping positions within the filter, which can be used to further increase the effective field. 
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.9\linewidth]{figures/theory/receptive_field.png}
+  \includegraphics[width=0.7\linewidth]{figures/theory/receptive_field.png}
   \caption{\hl{TMP}}
   % https://lukeguerdan.com/blog/2019/intro-to-tcns/
   \label{fig:receptive_field}
 \end{figure}
+
+
+On a final note regarding the \acrshort{CNN} we point out that convolution is often used in combination with a dense network, or \textit{fully connected}, at the end. We can then think of the convolution part to handle the translation from a spatial import to some internal features. For the animal detection network, we would perhaps suggest features like, number of legs, size, color and so on. In practice, the network will not create easily interpreted features for the processing of the fully connected layer. We discuss one approach for interpreting of the model internals in \cref{sec:explanation}
 
 \subsection{Training, validation and test data}
 So far, we have simply considered the concept of training data as a means to
@@ -414,30 +358,56 @@ only reliable performance metric for the model.
 \section{Overfitting and underfitting}
 % THE UNDERFITTING AND OVERFITTING TRADE-OFF \cite{smith2018disciplined}. 
 
-% learning rate under and over fitting
-% https://www.javatpoint.com/gradient-descent-in-machine-learning
-
-
-% Early stopping.
-
-% Underfitting
-Underfitting is recognized as a loss curve that continues to decrease slowly. This is highly dependent on the complexity of the model and the learning rate. A to small learning rate will induce underfitting
-
-% Overfitting
-Overfitting a more complicated to diagnostic. The Dynamics is not as simple as sketched in \cref{fig:over_under_fitting}.
+Underfitting and overfitting represent a crucial balance going on when training
+a model. This concept is highly related to the model complexity and the chosen
+hyper-parameters such as learning rate, momentum and weight decay. The textbook
+visualization of underfitting and overfitting is shown in
+\cref{fig:fitting_vs_time}. As we begin to train or model both the training and
+validation loss is decreasing. At some point, the model will start to pick up to
+specific trends which marks the transition into overfitting where the validation
+loss will start to increase again. Notice that the performance on the training
+data will keep increasing.  \textit{Early stopping} can be utilized to detect
+this transition and stop the training. We will use a variation of this which is
+based on storing the model parameters at the best validation performance but
+letting the model training go on. We can imagine a similar curve as seen in
+\cref{fig:fitting_vs_time} with the replacement of \textit{model complexity} on
+the x-axis. For a certain amount of epochs a simple model will yield
+underfitting and an overly complex model will yield overfitting. In figure
+\cref{fig:fitting_quality} we see how under- and overfitting can be represented
+by a fitting to a 2D curve. We see how a simple, not complex, underfitted model
+will make a crude approximation for the true curve. An overly complex
+overfitted model will follow pick up the noise in the training data and miss the
+general trend. In practice the diagnosticating of under. and overfitting is not
+as simple as the figures in \cref{fig:over_under_fitting} imply. First of all,
+the \cref{fig:fitting_vs_time} is simplifying the idea, and the training and
+validation loss will rarely showcase such a clear indication of the transition
+to overfitting. The problem with \cref{fig:fitting_quality} lies in the fact
+that we do not know the true curve. If we did, we would not need machine
+learning to estimate it in the first place. Without having additional insight into
+the governing source of the data the overfitting case seems to produce the most
+confident fit.
 
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.9\linewidth]{figures/theory/over_under_fitting.png}
-  \caption{\hl{TMP} \cite{smith2018disciplined}}
+  \begin{subfigure}[t]{0.42\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/theory/fitting_vs_time.png}
+    \caption{}
+    \label{fig:fitting_vs_time}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.57\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/theory/fitting_quality.png}
+    \caption{}
+    \label{fig:fitting_quality}
+  \end{subfigure}
+  \hfill
+  \caption{\hl{TMP}}
   \label{fig:over_under_fitting}
 \end{figure}
 
-% \section{More stuff}
-% \begin{enumerate}
-%   \item What about performance measuring?
-% \end{enumerate}
 
 
 
@@ -474,6 +444,18 @@ strongly. Eventually the convergence will stop and the loss will increase again
 as the learning rates becomes to high (\hl{show harmonic potential big learning
 rate example somewhere?}). The learing rates at the point of divergence indicate an upper bound the learning rate that can be used with a cyclic learing rate scheme. One have to set the upper bound a bit lower than this to avoid divergence in practice. The steepest decline of the validation curve can be used as an estimate for the best constant learning rate choice. 
 
+
+
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.9\linewidth]{figures/theory/lr_descents.png}
+%   \caption{\hl{TMP}  }
+%   % https://www.javatpoint.com/gradient-descent-in-machine-learning
+%   \label{fig:lr_descents}
+% \end{figure}
+
+
+
 Next up, is momentum. Momentum and learning rates effect each other and since
 the learning rate is regarded as one of the most important hyper-parameters to
 tune \hl{SOURCE} momentum is also important. We want to set both learning rate
@@ -504,34 +486,49 @@ Finally we address the weight decay. N. Smith reports that weight decay is not s
 
 
 
-\section{Prediction explanation}
-Looking at feature maps and gradient maps.
+\section{Prediction explanation}\label{sec:explanation}
+% Source for reference: \cite{Selvaraju_2019}
+
+With the rise of constantly improving machine learning models and computational
+power, the capabilities of machine learning systems exceed human skills in many
+domains \hl{SOURCE SOME}. However, with deep learning models, we have
+essentially no insight into what kind of considerations went into a
+prediction. This is known as the \textit{black box} problem of deep learning.
+This has spiked interest in developing methods to unravel the inner parts of
+the network. This effort lies partly in the development of better analytic tools
+but also in the aim of creating simpler and more transparent models. We will be
+using a deep-learning convolutional network that is not immediately
+transparent. Since the feature maps in the network preserve the relative spatial
+relations of the input one approach is to consult the feature maps for
+information on which parts of the input it considers the most. However, this is
+often not readily interpreted. 
+
+Instead, we can follow the \textit{Grad-CAM} approach \cite{Selvaraju_2019}.
+The idea is to use the gradients with respect to a given feature map. First, we
+forward propagate the input through the model. Then, for each feature in the
+feature map of choice, we calculate the gradients with respect to the loss of
+our target output. For a classification task, one would often choose the one
+that gives the highest prediction score. The gradients then provide an
+indication of which features that are important for the prediction. By scaling
+the feature map to the original size of the image we can overlay this as a
+heatmap providing a visual clue of what the prediction is based on. We can do
+this for different depths of the model and even combine the results for
+multiple layers. In \cref{fig:grad_cam_example} we see how this can be used to
+reveal the basis for a prediction. In this case the Grad-CAM analysis shows
+the difference between a biased model considering the face, and thus the sex
+of the person, to predict the correct profession as opposed to the unbiased
+model looking at more relevant features like equipment and uniform.
 
 
-% \begin{itemize}
-%   \item Feed forward fully connected
-%   \item CNN
-%   \item GAN (encoder + decoder)
-%   \item Genetic algorithm
-%   \item Using machine learning for inverse designs partly eliminate the black
-%   box problem. When a design is produced we can test it, and if it works we not
-%   rely on machine learning connections to verify it's relevance. 
-%   \item However, using explanaitons techniques such as maybe t-SNE, Deep dream,
-%   LRP, Shapley values and linearizations, we can try to understand why the AI
-%   chose as it did. This can lead to an increased understanding of each design
-%   feature. Again this is not dependent on the complex network of the network as
-%   this can be tested and veriied independently of the network. 
-% \end{itemize}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\linewidth]{figures/theory/grad_cam_example.png}
+  \caption{\hl{TMP} \cite{Selvaraju_2019} }
+  \label{fig:grad_cam_example}
+\end{figure}
 
-% \section{Feed forward network / Neural networks}
-% \section{CNN for image recognition}
-% \section{GAN (encoder + deoder)}
-% \section{Inverse desing using machine learning}
-% \section{Prediction explanation}
-% \subsection{Shapley}
-% \subsection{Lineariations}
-% \subsection{LRP}
-% \subsection{t-SNE}
+
+
 
 \section{Accelerated search using genetic algorithm}
 

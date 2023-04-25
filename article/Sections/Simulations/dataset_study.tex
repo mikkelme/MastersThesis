@@ -350,7 +350,9 @@ remaining 5 variables thus sharing evenly for the remaining 50\% of the weight. 
 but we found that the results varied little and concluded that the training is not very sensitive to this choice, and disregarded further tuning of this parameter. 
 
 \subsection{Hypertuning}
-% Overfitting
+% Show overfitting curve for some of the training results?
+
+
 For the hypertuning of \acrshort{ML} parameters we focus on architecture complexity, learning rate, momentum and weight decay. We train with the adam optimizer with the default values of $beta_1 = 0.9, \beta_2 = 0.999$ and zero weight decay. For the batch size we use 32 for training and 64 for validation. We train the network for a maximum of 1000 epochs, but we save the best model during training based on lowest validation loss. Since the learning rate is considered to be one of the most important hyperparameters we will determine a suitable choice for the learning individually throughout the two major grid searches:
 \begin{enumerate}
   \item Architecture complexity grid search of $S$ vs.\ $D$ with individually chosen learning rates for each complexity combination.
