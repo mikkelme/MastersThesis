@@ -1,20 +1,46 @@
 \chapter{Machine Learning}
+In this thesis machine learning will serve as a numerical tool for evaluating
+and exploring the frictional behavior of various Kirigami designs. We will
+generate data using \acrshort{MD} simulations which serve as a ground truth for
+the training of a machine learning model. If successful, we can utilize such a
+model to predict the frictional behavior of unseen configurations. The machine
+learning predictions will be a lot faster than carrying out a complete
+\acrshort{MD} simulation and thus this can be used to accelerate the search
+through a new set of configurations. It is not obvious that the machine learning
+model can readily capture the physical mechanisms in our system. Hence, the
+attempt to model the system with machine learning also has value in terms of
+revealing the usefulness of such methods to this problem. We aim to implement a
+rather traditional machine-learning approach. In this chapter we introduce the
+key concept behind machine learning and some of the relevant concepts and
+techniques relevant to our implementation.
 
-We will use machine learning as a tool for designing kirigami configurations that alter the friction behavior in different manners. Through \acrshort{MD} simulations we will provide data for which the machine learning model can learn from. If successful we can utilize the model to predict the friction behavior of unseen configurations which makes us able to skip the \acrshort{MD} and speed up the search process. It is not obvious that the model can capture the physical mechanism governing the friction process and thus a succeeding model might invite further and more advanced study within this domain. 
-
-We aim to implement a basic machine learning approach as an investigation whether this is useful. 
 
 \section{Neural network}
-% Feed forwatd dense neural network.
-A neural network is of the foundational concepts in machine learning. It consists of an input $\vec{x}$ some so-called \textit{hidden layers} and an output $\hat{\vec{y}}$. We reserve $\vec{y}$ for the actual true output that the model is going to estimate. The input vector $\vec{x} = x_0, x_1, \ldots, x_{n_x}$ contains the input \textit{features}. Each input $x_i$ is connected to each of the \textit{nodes} in the first hidden layer. For a given note $a_j^{[1]}$ in the first hidden layer the input is processed as
+The neural network, or more precisely the \textit{feed forward dense neural
+network}, is one of the original concepts in machine learning arising from the attempt of mimicking the way neurons work in the brain \cite{lederer2021activation, Shankar_2022}. The neural network can be considered as three major parts: The input layer, the
+so-called \textit{hidden layers} and finally the output layer as shown in
+\cref{fig:ffnn}. The input is described as a vector $\vec{x} = x_0, x_1, \ldots,
+x_{n_x}$ where each input $x_i$ is usually denoted as a \textit{feature}. For
+our task we will consider the Kirigami configuration, load and stretch of the system as input features on which we want the model to base its prediction. The
+input features are densely connected to each of the \textit{nodes} in the first
+hidden layers as indicated by straight lines in \cref{fig:ffnn}. Each line
+represents a weighted connection that can be adjusted to configure the
+importance of that feature. Similar dense connections run through all the
+hidden layers to the final output layer. For a given note $a_j^{[l]}$ in layer $l$ will process the input from layer $l-1$ as
 \begin{align*}
-  a_j^{[1]} = f(\sum_i w_{ij}x_i + b_j^{[1]}),
+  a_j^{[l]} = f\left(\sum_i w^{[l]}_{ij}a_i^{[l-1]} + b_j^{[l]}\right),
 \end{align*}
-where $w_{ij}$ is the weight representing the connection strength from the input feature $x_i$ to the (first) hidden layer node $a_j^{[1]}$, $b_j^{[1]}$ is a bias associated to the specific hidden layer node and  $f(\cdot)$ is an \textit{activation function}. Notice, that we have individual weights for each connection in the network but we ommit any notation for the layers it connects as it is obvious from the equations so far. The activation function is an crucial part of the neural network as it provides a non-linear mapping to the inputs to the node. Without this, the resulting framework is nothing more than a linear transformation. By introducing the activation function the model is capable of capturing complex trends \hl{SOURCE}. The signal is carried through the hidden layers in a similar fashion from hidden layer $l-1$ to $l$ as 
+where $w^{[l]}_{ij}$ is the weight connection node $a_i^{[l-1]}$ of the previous layer to the node $a_j^{[l]}$ in the current layer. Note that the choice of denoting this weight to belong to layer $l$ as opposed $l-1$ is simply a notation choice. $b_j^{[l]}$ denotes a bias and $f(\cdot)$ the \textit{activation function}. The activation function is often chosen to give a non-linear mapping of the input to each node. Without this, the network will only be capable of approximate linear functions \cite{lederer2021activation}. Two common activation functions are the \textit{sigmoid}, mapping the input to the range $(0,1)$, and the ReLU which cuts off negative values and maps positive linearly
 \begin{align*}
-  a_j^{[l]} = f\left(\sum_i w_{ij}a_j^{[l-1]} + b_j^{[1]}\right).
+  \text{Sigmoid:} \quad f(z) = \frac{1}{1 e^{-z}}, \qquad \qquad
+  \text{ReLU:} \quad 
+  f(z)= \begin{cases}
+    z \text{ for } z > 0   \\
+    0 \text{ for } z \leq 0.
+    \end{cases}
 \end{align*}
-Keep in mind that weight is specific to the connection between layer $l-1$ and $l$. Finally, the last hidden layer, $L-1$, connects densely to the output $\hat{\vec{y}}$ as for the remaining of the network. However, here the activation function can be omitted or exchanged with a different mapping, e.g. the sigmoid which maps the output to $(0,1)$. The whole process of sending data through the model is called \textit{forward propagation} as it constitutes the process of sending information through the network. The specific values of the weights and biases will govern the final output.
+Often the same activation function is used throughout the network, except for the output layer where the activation function is usually omitted or the sigmoid is used for classification tasks. The whole process of sending data through the model is called \textit{forward propagation} and constitutes the mechanism for mapping an input $\vec{x}$ to the model output $\hat{vec{y}}$. In order to get useful predictions we must \textit{train} the model which involves tuning the model parameters, the weight and biasses.
+
 
 \begin{figure}[H]
   \centering
@@ -23,15 +49,22 @@ Keep in mind that weight is specific to the connection between layer $l-1$ and $
   \label{fig:ffnn}
 \end{figure}
 
-The network is trained through the process of \textit{backpropagation} and \textit{gradient descent} optimization. Backpropagation starts with a definition of the error associated with the model output. A so-called \textit{loss function} $L$ compares the output $\hat{\vec{y}}$ with the expected result $\vec{y}$ and calculates the error otherwise known as the loss. For a continuous scalar output, we might simply use the mean squared error (\acrshort{MSE})
+
+The model training relies on two core concepts: \textit{backpropagation} and \textit{gradient descent} optimization. We define the error associated with a model prediction, otherwise known as the \textit{loss}, through the \textit{loss function} $L$ that evaluates the model output  $\hat{\vec{y}}$ against the true value $\vec{y}$. For a continuous scalar output, we might simply use the mean squared error (\acrshort{MSE})
 \begin{align*}
   L_{\text{\acrshort{MSE}}} = \frac{1}{N_y} \sum_{i = 1}^N (y_i - \hat{y}_i)^2.
 \end{align*}
-For classification, where we expect an output of True or False (1 or 0), a common choice is binary cross entropy (BSE)
+For a binary classification problem, meaning that the true output is True or False (1 or 0), a common choice is binary cross entropy (BSE)
 \begin{align*}
-  L_{\text{BSE}} =  -\sum_{i=1}^n \ \Big[y_i\log(\hat{y_i}) + (1-y_i)\log(1 - \hat{y_i}) \Big].
+  L_{\text{BSE}} =  -\sum_{i=1}^n \ \Big[y_i\log(\hat{y_i}) + (1-y_i)\log(1 - \hat{y_i}) \Big] =  \sum_{i=1}^n   \begin{cases}
+    - \log{(\hat{y_i})},& \quad y_i = 1 \\
+    -\log{(1-\hat{y_i})},& \quad y_i = 0.
+\end{cases}
 \end{align*}
-This arrises for information theory \hl{or something similar}. Without going into details with the derivation we can convince ourselves that the error is minimized (0) for a perfect prediction and maximized for a completely wrong prediction. When $y_i = 1$ we essentially add the negative term $-\log(\hat{y_i})$. With a prediction given as a number between 0 and 1 (through the sigmoid function), we can interpret the output as a probability of the given classification. When the output approaches 1, $\hat{y}_i \to 1$, in the correct case of $y_i = 1$ the loss contribution goes to towards zero. However, if the output approaches 0, $\hat{y}_i \to 1$, the loss contribution diverges $\hat{y}_i \to \inf$. Similar apply for the case of $y_i = 0$ with opposite directions. 
+The cross-entropy loss can be derived from a maximum likelihood estimation \hl{SOURCE}. Without going into details with the derivation we can convince ourselves that the error is minimized for the correct prediction and maximized for the worst prediction. When $y_i = 1$ we get the negative term $-\log(\hat{y_i})$ where a correct prediction $\hat{y}_i \to 1$ yields a loss contribution $L_i \to 0$. For a wrong prediction $\hat{y}_i \to 0$ the loss contribution will diverge $L_i \to \inf$. Similar applies to the case of $y_i = 0$ with opposite directions. 
+
+
+% . With a prediction given as a number between 0 and 1 (through the sigmoid function), we can interpret the output as a probability of the given classification. When the output approaches 1, $\hat{y}_i \to 1$, in the correct case of $y_i = 1$ the loss contribution goes to towards zero. However, if the output approaches 0, $\hat{y}_i \to 1$, the loss contribution diverges $\hat{y}_i \to \inf$. 
 
 Given a loss function we can calculate the loss gradient with respect to each weight and bias in the model. That is, how is the error effected is we tweak a certain model parameter, weight or bias. The overall idea is then to  ``nudge'' each parameter in the appropriate direction and repeat the process of forward and backpropagation. For a given paramter $\theta_t$ at time $t$, measured in epoch for instance (sets of forward and backward repetitions) we can update it through gradient descent 
 \begin{align*}
@@ -39,9 +72,35 @@ Given a loss function we can calculate the loss gradient with respect to each we
 \end{align*}
 where the new parameter $\theta_t$ is given by stepping in the direction of the loss gradient $\nabla_\theta L(\theta_t)$ with a step length proportional to learning rate $\eta$. In practice, gradient descent is done in batches. That is, for a batch of training data, consisting of input data and true output data, a single step is taken for the average gradient. If a small batch is considered the path towards the optimal parameters will be governed by a fluctuation in loss space while a large batch will result in a more direct path towards lower error. This is the key concept behind stochastic gradient descent (SGD) which creates random batches from the training data and performs gradient descent. Even though a stable descent toward a minimum error sounds promising, the strength in \acrshort{SGD} lies in the fluctuations of its descent. Without it, learning would be stuck at the first local minimum in the loss space. 
 
-% Some illustration of SGD maybe?
+\hl{introduce word mini-batch as this refers to taking smaller batches and batch often refers to the whole data at once.}
+\hl{Mention RELU somewhere}
+
+
+\hl{Some illustration of SGD maybe?}
+
+
+% \begin{align*}
+%   a_j^{[1]} = f(\sum_i w_{ij}x_i + b_j^{[1]}),
+% \end{align*}
+
+
+% It consists of an input $\vec{x}$ some so-called \textit{hidden layers} and an output $\hat{\vec{y}}$. We reserve $\vec{y}$ for the actual true output that the model is going to estimate. The input vector $\vec{x} = x_0, x_1, \ldots, x_{n_x}$ contains the input \textit{features}. Each input $x_i$ is connected to each of the \textit{nodes} in the first hidden layer. For a given note $a_j^{[1]}$ in the first hidden layer the input is processed as
+% \begin{align*}
+%   a_j^{[1]} = f(\sum_i w_{ij}x_i + b_j^{[1]}),
+% \end{align*}
+% where $w_{ij}$ is the weight representing the connection strength from the input feature $x_i$ to the (first) hidden layer node $a_j^{[1]}$, $b_j^{[1]}$ is a bias associated to the specific hidden layer node and  $f(\cdot)$ is an \textit{activation function}. Notice, that we have individual weights for each connection in the network but we ommit any notation for the layers it connects as it is obvious from the equations so far. 
+
+
+
+% The signal is carried through the hidden layers in a similar fashion from hidden layer $l-1$ to $l$ as 
+% \begin{align*}
+%   a_j^{[l]} = f\left(\sum_i w_{ij}a_j^{[l-1]} + b_j^{[1]}\right).
+% \end{align*}
+% Keep in mind that weight is specific to the connection between layer $l-1$ and $l$. Finally, the last hidden layer, $L-1$, connects densely to the output $\hat{\vec{y}}$ as for the remaining of the network. However, here the activation function can be omitted or exchanged with a different mapping, e.g. the sigmoid which maps the output to $(0,1)$. 
+
 
 \section{Optimizers}
+% Consider changing from theta_t+1 to theta
 % https://arxiv.org/pdf/1412.6980.pdf
 The name \textit{optimizers} covers a variety of gradient descent methods which can be utilized for model training. In our study we will use the ADAM optimizer (short?) which extends the concept of stochastic gradient descent. ADAM combinnes several tricks from other succesfull optimizers by including an exponetial moving average and momentum term. 
 
@@ -74,36 +133,265 @@ which is quite similar to that of momentum, but here we have the explicit weight
 % RMSProp
 Another trick in the book is the root mean square propagation (RMSProp) which is motivated by the problem of passing long plateaus in the loss space. Since the size of the updates are proportional to the norm of the gradient
 \begin{align*}
-  \theta_{t+1} = \theta_t - \eta g_t \ \Longrightarrow \ ||\theta_{t+1}-\theta_{t}|| = \eta ||g_t||
+  \theta_{t+1} = \theta_t - \eta g_t \ \Longrightarrow \ ||\theta_{t+1}-\theta_{t}|| = \eta ||g_t||,
 \end{align*}
 we might get the idea of normalizing the gradient step by dividing with the norm $|||g_t|$.  However, this does not immediately solve the problem of long plateaus as we need to consider multiple past gradients, and thus we use the EMA instead. When reentering a steep region again we need to quickly downscale the gradient steps. By using the squared norm $||g_t||^2$ for the EMA we make it more sensitive to outliers and achieve just that. This corresponds to the RMSProp update scheme
 \begin{align}
   \theta_{t+1} = \theta_t - \eta \frac{g_t}{\sqrt{\text{EMA}(||g_t||^2)} + \epsilon},
   \label{eq:RMSProp}
 \end{align}
-where $\epsilon$ is simply a small number to avoid division by issues. ADAM merges the idea behind the root mean square propagation technique in \cref{eq:RMSProp} with a EMA momentum term $m_t$ and second order RMSProp term $v_t$ 
+where $\epsilon$ is simply a small number to avoid division by issues. ADAM merges the idea behind the root mean square propagation technique in \cref{eq:RMSProp} with an EMA momentum term $m_t$ and second order RMSProp term $v_t$ 
 \begin{align*}
-  m_t &= \beta_1 m_{t_1} + (1-\beta_1)g_t, \\
-  v_t &= \beta_2 v_{t_1} + (1-\beta_2)g_t^2, 
+  m_t &= \beta_1 m_{t-1} + (1-\beta_1)g_t, \\
+  v_t &= \beta_2 v_{t-1} + (1-\beta_2)g_t^2. 
 \end{align*}
 These are initially set to zero and will be biased toward that. ADAM correct for this by applying a scaling term $(1-\beta^t_1)$ and $(1-\beta^t_2)$ respectively
 \begin{align}
-  \theta_{t+1} = \theta_t - \eta \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \epsilon}, \qquad \qquad \hat{m}_t &= \frac{m_t}{1-\beta^t_1}, \qquad \hat{v}_t = \frac{v_t}{1-\beta^t_2} \\
+  \theta_{t+1} = \theta_t - \eta \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \epsilon}, \qquad \qquad \hat{m}_t = \frac{m_t}{1-\beta^t_1}, \qquad \hat{v}_t = \frac{v_t}{1-\beta^t_2}. \\
   \label{eq:ADAM}
 \end{align}
 
 
 \subsection{Weight decay}
-By adding a $l^2$ norm of the parameters to the cost function we get a penalty for high parameters. 
+By adding a so-called \textit{regularization} to the loss function we penalize high magnitudes of the model parameters. This is motivated by the idea of preventing overfitting in the modeling. The most common way to do this is by L2 regularization, adding the squared $l^2$ norm $||\theta||_2^2$, where $||\theta||_2 = \sqrt{\theta_1^2 + \theta_2^2 + \ldots}$, to the model. The new loss and gradient then become
+\begin{align}
+  L_{l^2}(\theta) &= L(\theta) + \frac{1}{2}\lambda ||\theta||^2_2 \nonumber \\
+  \nabla_\theta L_{l2}(\theta) &=  \nabla_\theta L(\theta) + \lambda \theta,
+  \label{eq:l2_grad}
+\end{align}
+where $\lambda$ is the weight decay parameter $\in [0,1]$. The name \textit{weight decay} relates to the fact that some practitioners only apply this penalty to the weights in the model, but we will include the biases as well (standard in PyTorch). From the gradient in \cref{eq:l2_grad} we find that the original gradient descent scheme becomes
+\begin{align*}
+  \theta_{t+1} &= \theta_t - \eta g_t - \eta\lambda \theta_t \\
+  &= \theta_t\underbrace{(1-\eta\lambda)}_{\text{Weight decay}} - \eta g_t.
+\end{align*}
+Thus we can see that choosing a high weight decay (towards 1) will downscale the model parameters.  
+
+\subsection{Parameter distributions}
+In order to get good training conditions it has been found that the initial distribution of weights and biases matters. First of all we want to initilize a random set of weights since the weights would otherwise undergo the same tuning during gradient descent. Further, we want to avoid the extreme cases of vanishing or exploding gradients. We want to have a zero mean of the gradients for a given layer and a gradient variance across a layer similar for all layers. This is accommodated by scaling the initial weights to meet the same requirements. This depends on the number of input nodes to a given layer and the activation functions used. For instance, when using the RELU activation function it was found that the single standard deviation will go as $\sim \sqrt{\text{input nodes}}/\sqrt{2}$ and thus we scale each layer by this value. This is part of the Kaiming initialization scheme which is standard in Pytorch. 
 
 
-\subsection{Batch normalization}
+Batch normalization is a technique to speed up and make the training more stable. Weights and biases are modified throughout training meaning that the input to a given node in some layer within the model will also most likely get a changing range of values. By scaling the input for a given layer, for each batch, we can mitigate this problem and make for a standardized value range. The model can then ``focus'' on the distribution of the input without dealing with an overall shift in values. For layer $l$ we calculate the mean $\mu^{[l]}$ and variance $(\sigma^{[l]})^2$ across the layer with nodes $x_1^{[l]}, x_2^{[l]}, \ldots, x_d^{[l]}$ for each mini-batch of size $m$ as
+\begin{align*}
+  \mu^{[l]} = \frac{1}{m} \sum_i z^i, \qquad (\sigma^{[l]})^2 = \frac{1}{m} \sum_i^d (x^i-\mu)^2.
+\end{align*}
+We then perform normal scaling of the inputs within the batch
+\begin{align*}
+  \hat{x}_i^{[l]} = \frac{x_i^{[l]} - \mu^{[l]}}{\sqrt{(\sigma^{[l]})^2 + \epsilon}},
+\end{align*}
+where $\epsilon$ is a small number to ensure numerical stability (similar to RMSProp). In the final step the input values are rescaled as
+\begin{align*}
+  ? = \gamma^{[l]} \hat{x}_i^{[l]} + \beta^{[l]}
+\end{align*}
+with trainable parameters $\gamma$ and $\beta$. 
+
 
 \subsection{Learning rate decay strategies}
-\section{Convolutional neural network}
+
+\section{Convolutional Neural Network}
+Convolutional Neural Network (\acrshort{CNN}) builds on feed forward neural
+network, but is specialized for spatial inputs such as images. The neural
+network applies a so-called \textit{kernel} which is a filter sliding over the
+image. for a multi-channel image, such as the standard RGB containing a channel
+for red, green and blue colors, the kernel must have a depth that matches this.
+The input is processed as a dot product between similar channels in the input
+and the kernel for which the resulting values are summed and added with a single
+bias set for the whole kernel as illustrated in \cref{fig:conv_example}. Each
+kernel represents as a set of trainable weights and a bias. Often multiple
+kernels is applied to the input which results in an increasing number of
+channels throughout the model. On the otherside the spatial input is
+down-scaled. By controlling the \textit{stride}, the translation of the filter
+between each convolution, we can alter the amount of down-scaling. If we keep
+the stride and apply a paddin around the input, using zeroes or extending the
+edge for instance, we can also choose to preserve the spatial size in the
+convolution. The spatial size is given by the formula 
+\begin{align}
+  N_{i+1} = \left\lfloor \frac{N_i - F + 2P}{S} + 1 \right\rfloor,
+  \label{eq:down_scaling}
+\end{align}
+for padding $P$, stride $S$, spatial size of the kernel filter $F$, spatial size
+of input $N_i$ and spatial size of output $N_{i+1}$. The down-samling feature is
+often ... through a pooling layer. A pooling layer process the input by taking
+the mean (mean pooling) or the max value (max pooling) in the filter as it
+slides over the input. This is often used after a convolution meaning that the
+input is given as the resulting feature map. For instance, by making a max
+pooling of size $2 \times 2$ by stride two we essentially half the dimensions of
+the image, but this follows \cref{eq:down_scaling}. 
 
 
-\section{Hypertuning strategies}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\linewidth]{figures/theory/CNN.png}
+  \caption{\hl{TMP}}
+  % https://www.researchgate.net/figure/Representation-of-a-Convolutional-Neural-Network-The-CNN-performs-automatic-spatial_fig3_359896672
+  \label{fig:CNN}
+\end{figure}
+
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[t]{0.26\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/theory/conv_kernel_movement.png}
+      % \includegraphics[width=\textwidth]{figures/theory/conv_input_channels.png}
+      \caption{}
+      % \label{fig:}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.70\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/theory/conv_calculation.png}
+      \caption{}
+      % \label{fig:}
+  \end{subfigure}
+  \hfill
+  % https://towardsdatascience.com/a-comprehensive-guide-to-convolutional-neural-networks-the-eli5-way-3bd2b1164a53
+  \caption{\hl{TMP}}
+  \label{fig:conv_example}
+\end{figure}
+
+For a convolution process, we often consider the \textit{receptive field}. The
+receptive field relates to the spatial size of the input that affects a given
+node in the feature map at a given layer of the model. In
+\cref{fig:receptive_field} the receptive field is illustrated of a 1D
+representation of convolutional with a filter of stride 1 and filter width 2.
+Going from the output and backwards, we see that the output relates to two nodes
+in the previous last hidden layer. Each of these nodes is connected to two nodes
+in the layer before that, however with on of them being the same due to the
+stride of 1. By back tracking all the way to the input we see that this
+corresponds to a receptive field of $D = 5$. By increasing the filter size and
+the stride the 2D receptive field will grow a lot faster than shown in this
+simple 1D example. For a receptive field $D$, in a given spatial dimension, a
+spatial size of the filter $F$, stride $S_i$ (from layer $i$ to $i-1$), layer
+index: $l = \{1,2,3,\cdots,n\}$, we have
+\begin{align*}
+    D_l = D_{l-1} + \left[(F_l - 1) \cdot \prod_{i=1}^{l-1}S_i \right],
+\end{align*}
+with $D_0 = 1$ and $l=0$ as the input layer. Note that by convention, the
+product of 0 is 1, so for the first layer, the sum over $S$ is 1. The receptive
+field is important in understanding the connectivity in the model. The model
+output will be completely independent of the inputs and feature maps outside the
+receptive field. Furthermore, since nodes in the center of the receptive field
+cones often have multiple connective paths leading to the output, as seen in
+\cref{fig:receptive_field} as well, we differentiate between the theoretical
+receptive field and the effective receptive field. The effective receptive field
+will have a Gaussian distribution within the theoretical receptive field due to
+the fact that the nodes in the center will be more represented as multiple paths
+connect to the output. Thus we in practice consider the effective receptive
+field to be smaller than the theoretical. Implementations like dilated
+convolutions, which make the filter expand in circumforence and skipping
+skipping positions within the filter, can be used to further increase the
+effective field. 
+
+The power of the \acrshort{CNN} lies mainly in the ability to carry
+translational invariance as opposed to a dense neural network. If practice, if
+you train a dense network to classify cat images and only show images with cats
+on the left side it will fail horribly when predicting on similar imiages with
+cats on the right side of the image. The \acrshort{CNN} is less proven to such
+issues as each kernel translates the whole image using the same weights. This is
+also the reason that the \acrshort{CNN} architecture is more parameter
+efficient. For a dense network it would essentially need to have
+``cat-detecting'' weights and bias configurations for all parts of the input.
+This forces a dense network to learn similar trends for multiple part of the
+network in contrast to the \acrshort{CNN}.
+
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\linewidth]{figures/theory/receptive_field.png}
+  \caption{\hl{TMP}}
+  % https://lukeguerdan.com/blog/2019/intro-to-tcns/
+  \label{fig:receptive_field}
+\end{figure}
+
+
+\section{Overfitting and underfitting}
+% THE UNDERFITTING AND OVERFITTING TRADE-OFF \cite{smith2018disciplined}. 
+
+% Underfitting
+Underfitting is recognized as a loss curve that continues to decrease slowly. This is highly dependent on the complexity of the model and the learning rate. A to small learning rate will induce underfitting
+
+% Overfitting
+Overfitting a more complicated to diagnostic. The Dynamics is not as simple as sketched in \cref{fig:over_under_fitting}.
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\linewidth]{figures/theory/over_under_fitting.png}
+  \caption{\hl{TMP} \cite{smith2018disciplined}}
+  \label{fig:over_under_fitting}
+\end{figure}
+
+\section{MOre stuff}
+\begin{enumerate}
+  \item Talk about training, validation and test split
+  \item What about performance measuring?
+\end{enumerate}
+
+
+
+\section{Hypertuning}
+Training a machine learning model revolves around tuning the model parameters
+consisting of mainly weights and biases. By following the general idea by the
+gradient descent approach we can get complex models able to give complex
+predictions. However, a handful of so-called \textit{hyper-parameters} remain
+for us to decide. First of all we must decide on an architecture for the model.
+This includes high level considerations as for instance to use neural network or
+a convolutional network, but also lower level considerations like the depth of
+the model and number of nodes/channels per layer. The choice of loss function
+and optimizers come with hyperparameters like learning rate, momentum and weight
+decay. As N. Smith \cite{smith2018disciplined} puts it: ``Setting the
+hyper-parameters remains a black art that requires years of experience to
+acquire''. In the following, we will review some general approaches to the
+hypertuning presented in \cite{smith2018disciplined}. The traditional way is to
+perform a grid-search of multiple training sessions with different combinations
+of hyper-parameters. This can be computationally expensive. In addition, hyper-parameters will depend on each other, the data and the architecture which can realistically be searched at the same time. 
+
+N. Smith points to the fact that validation loss can by examined early on for
+clues of either underfitting or overfitting. For the learning rates one can use
+an increasing learning rate scheme for the so-called \textit{learning rate range
+test} (LR range test). One specifies a minimum and a maximum learning rate
+boundaries and a learning rate step size.  This can be done both for linear
+increasing or decreasing learning rate, which proved to give similar results
+\cite{smith2018disciplined} \hl{Jastrzebski et al. (2017b)}. We choose the
+linear increasing version for simplicity. In the LR range test training then
+starts form the lowest learning rate which is increased in small steps during a
+pre-training. The stepsize can be number of mini-batch iterations, and does not
+have to stick to epochs. For small learning rates the network will converge
+slowly. As the learning rate apporahces an appropriate size the convergence more
+strongly. Eventually the convergence will stop and the loss will increase again
+as the learning rates becomes to high (\hl{show harmonic potential big learning
+rate example somewhere?}). The learing rates at the point of divergence indicate an upper bound the learning rate that can be used with a cyclic learing rate scheme. One have to set the upper bound a bit lower than this to avoid divergence in practice. The steepest decline of the validation curve can be used as an estimate for the best constant learning rate choice. 
+
+Next up, is momentum. Momentum and learning rates effect each other and since
+the learning rate is regarded as one of the most important hyper-parameters to
+tune \hl{SOURCE} momentum is also important. We want to set both learning rate
+and momentum as large as possible without causing instabilities to the training.
+Momentum is designed to accelerate the training process but the effect on
+updating the weights is of the same magnitude as learning rate as present from
+\cref{eq:mom}. Experiments show that finding a the right momentum from momentum
+range test is not useful. Thus, short runs with different values of momentum, on
+the range 0.9--0.99, can be done to find the best choice of momentum. The
+learning rate and momenmtum will however often be inversely dependent. Choosing
+a high learning rate will result in a slightly lower momentum being appropriate
+and vice versa. Thus, when using a cycling learning rate scheme one should adopt
+a cyclic momentum scheme as well with decreasing momentum for increasing
+learning rate. Choosing a lower momentum of 0.80--0.85 often gives similar stabile results.
+
+Finally we address the weight decay. N. Smith reports that weight decay is not similar to learning rate and momentum as it is better to choose a constant weight decay through the training. This will be dependent on the model complexity and he suggest doing a grid-search for values such as 0, $\num{e-6}$, $\num{e-5}$ and $\num{e-4}$ for complex architecture and $\num{e-4}$, $\num{e-3}$ and $\num{e-2}$ for more shallow architectures. Choosing the weight decay on the scale of exponential exponents is often good enough as the sensitivity to precise factors is not found to be highly important. The optimal weight decay will depend on your learning rate and momentum scheme.
+
+
+
+
+
+
+% Since learning rate is regarded as the most important hyper-parameter to tune (Bengio, 2012) \cite{smith2018disciplined}
+
+
+
+
+
+
 
 \section{Prediction explanation}
 Looking at feature maps and gradient maps.
