@@ -32,7 +32,7 @@ hidden layers to the final output layer. For a given note $a_j^{[l]}$ in layer $
 \end{align*}
 where $w^{[l]}_{ij}$ is the weight connection node $a_i^{[l-1]}$ of the previous layer to the node $a_j^{[l]}$ in the current layer. Note that the choice of denoting this weight to belong to layer $l$ as opposed $l-1$ is simply a notation choice. $b_j^{[l]}$ denotes a bias and $f(\cdot)$ the \textit{activation function}. The activation function is often chosen to give a non-linear mapping of the input to each node. Without this, the network will only be capable of approximate linear functions \cite{lederer2021activation}. Two common activation functions are the \textit{sigmoid}, mapping the input to the range $(0,1)$, and the ReLU which cuts off negative values and maps positive linearly
 \begin{align*}
-  \text{Sigmoid:} \quad f(z) = \frac{1}{1 e^{-z}}, \qquad \qquad
+  \text{Sigmoid:} \quad f(z) = \frac{1}{1 + e^{-z}}, \qquad \qquad
   \text{ReLU:} \quad 
   f(z)= \begin{cases}
     z \text{ for } z > 0   \\
@@ -161,41 +161,65 @@ Since these are initially set to zero we can correct a bias towards zero by a sc
 \end{align}
 
 
-%
-% Working here
-%
-
 \subsection{Weight decay}
-By adding a so-called \textit{regularization} to the loss function we penalize high magnitudes of the model parameters. This is motivated by the idea of preventing overfitting in the modeling. The most common way to do this is by L2 regularization, adding the squared $l^2$ norm $||\theta||_2^2$, where $||\theta||_2 = \sqrt{\theta_1^2 + \theta_2^2 + \ldots}$, to the model. The new loss and gradient then become
+By adding a so-called \textit{regularization} to the loss function we can penalize high magnitudes of the model parameters. This is motivated by the idea of preventing overfitting during training. The most common way to do this is by the use of L2 regularization, adding the squared $l^2$ norm $||\theta||_2^2$, where $||\theta||_2 = \sqrt{\theta_1^2 + \theta_2^2 + \ldots}$, to the model. The new loss and gradient then become
 \begin{align}
   L_{l^2}(\theta) &= L(\theta) + \frac{1}{2}\lambda ||\theta||^2_2 \nonumber \\
   \nabla_\theta L_{l2}(\theta) &=  \nabla_\theta L(\theta) + \lambda \theta,
   \label{eq:l2_grad}
 \end{align}
-where $\lambda$ is the weight decay parameter $\in [0,1]$. The name \textit{weight decay} relates to the fact that some practitioners only apply this penalty to the weights in the model, but we will include the biases as well (standard in PyTorch). From the gradient in \cref{eq:l2_grad} we find that the original gradient descent scheme becomes
+where $\lambda$ is the weight decay parameter $\in [0,1]$. The name \textit{weight decay} relates to the fact that some practitioners only apply this penalty to the weights in the model, but we will include the biases as well (standard in PyTorch). Following the original gradient descent scheme \cref{eq:l2_grad} we get
 \begin{align*}
   \theta_{t+1} &= \theta_t - \eta g_t - \eta\lambda \theta_t \\
   &= \theta_t\underbrace{(1-\eta\lambda)}_{\text{Weight decay}} - \eta g_t.
 \end{align*}
-Thus we can see that choosing a high weight decay (towards 1) will downscale the model parameters.  
+Thus we notice that choosing a high weight decay (towards 1) will downscale the model parameters while choosing a low weight decay (towards 0) yields the original gradient descent scheme. Note that this is used in combination with ADAM, but it is easier to show the consequences for the original gradient descent scheme.  
+
+
 
 \subsection{Parameter distributions}
-In order to get good training conditions it has been found that the initial distribution of weights and biases matters. First of all we want to initilize a random set of weights since the weights would otherwise undergo the same tuning during gradient descent. Further, we want to avoid the extreme cases of vanishing or exploding gradients. We want to have a zero mean of the gradients for a given layer and a gradient variance across a layer similar for all layers. This is accommodated by scaling the initial weights to meet the same requirements. This depends on the number of input nodes to a given layer and the activation functions used. For instance, when using the RELU activation function it was found that the single standard deviation will go as $\sim \sqrt{\text{input nodes}}/\sqrt{2}$ and thus we scale each layer by this value. This is part of the Kaiming initialization scheme which is standard in Pytorch. 
-
-
-Batch normalization is a technique to speed up and make the training more stable. Weights and biases are modified throughout training meaning that the input to a given node in some layer within the model will also most likely get a changing range of values. By scaling the input for a given layer, for each batch, we can mitigate this problem and make for a standardized value range. The model can then ``focus'' on the distribution of the input without dealing with an overall shift in values. For layer $l$ we calculate the mean $\mu^{[l]}$ and variance $(\sigma^{[l]})^2$ across the layer with nodes $x_1^{[l]}, x_2^{[l]}, \ldots, x_d^{[l]}$ for each mini-batch of size $m$ as
+In order to get optimal training conditions it has been found that the initial
+state of the weight and biases are important \hl{SOURCE}. First of all, we must
+initialize the weight by sampling from some distribution. If the weights are set
+to equal values the gradient across a layer would be the same. This results in a
+complexity reduction as the model can only encode the same values across the
+layer \hl{SOURCE}. Further, we want to consider the gradient flow during training. Especially for deep networks, networks with many layers, we must pay attention to the problem of vanishing or exploding gradients. If we for instance consider the sigmoid activation function and its derivative 
 \begin{align*}
-  \mu^{[l]} = \frac{1}{m} \sum_i z^i, \qquad (\sigma^{[l]})^2 = \frac{1}{m} \sum_i^d (x^i-\mu)^2.
+  f(z) = \frac{1}{1 + e^{-z}}, \qquad f'(z) = \frac{df(z)}{dz} = \frac{e^{-z}}{(1+e^{-z})^2} = \frac{e^{z}}{(1+e^{z})^2},
+\end{align*}
+we notice that for large and small values we get $f(z\to \pm\infty) \to 0$.
+However, even a small gradient will vanish throughout a deep network as the
+calculation of the gradient involves the chain rule. A similar problem can be
+found with the ReLU activation function which gets a zero gradient for inputs
+$z<0$ which can be mitigated by the so-called leaky RelU which gives the $z<0$ a
+small slope. On the other hand, we have exploding gradients, which are simply a
+result of the chain rule gradient calculation. For a sufficiently deep network,
+the gradient can grow exponentially and sometimes result in numerical overflow.
+While there exist techniques to accommodate this, like for instance the leaky
+ReLU for the vanishing gradients and so-called gradient clipping, cutting off
+the gradient at a maximum, they both benefit from a properly initialized set of
+weights \hl{SOURCE}. That is, we want the gradients across a given layer to have
+a zero mean while the variance is similar to other layers. This balanced
+gradient flow is more likely to happen if we initialize the weight by the same
+set of criteria. The specific actions to achieve this depend on model architecture, including the choice of activation functions. For instance, using the ReLU activation functions it was found that the single standard deviation will depend on the number of input nodes from the previous layer $N^{[l-1]}$ as $\sim \sqrt{N^{[l-1]}}/\sqrt{2}$ and thus we simply scale a zero mean uniform distribution to match this.  This is part of the Kaiming initialization scheme which is standard in Pytorch \hl{SOURCe}. \hl{Mention choices for bias initialization}.
+
+
+Batch normalization is another technique that might also help reduce the issue of poor gradient flow. Furthermore, can benefit by speeding up convergence making it more stable \hl{SOURCE}. In general, model parameters are modified throughout training meaning that the range of values coming from a previous layer will shift, even though the same training data is fed through the network repeatedly.  By scaling the input for a given layer, for each mini-batch, we can mitigate this problem and make for a more standardized input range. This often result in a faster training convergence. For layer $l$ we calculate the mean $\mu^{[l]}$ and variance $\sigma^{2[l]}$ across the layer with nodes $x_1^{[l]}, x_2^{[l]}, \ldots, x_d^{[l]}$ for each mini-batch of size $m$ as
+\begin{align*}
+  \mu^{[l]} = \frac{1}{m} \sum_i z^i, \qquad \sigma^{2[l]} = \frac{1}{m} \sum_i^d (x^i-\mu)^2.
 \end{align*}
 We then perform normal scaling of the inputs within the batch
 \begin{align*}
-  \hat{x}_i^{[l]} = \frac{x_i^{[l]} - \mu^{[l]}}{\sqrt{(\sigma^{[l]})^2 + \epsilon}},
+  \hat{x}_i^{[l]} = \frac{x_i^{[l]} - \mu^{[l]}}{\sqrt{\sigma^{2[l]} + \epsilon}},
 \end{align*}
-where $\epsilon$ is a small number to ensure numerical stability (similar to RMSProp). In the final step the input values are rescaled as
+where $\epsilon$ is a small number to ensure numerical stability (similar to what we used for RMSProp gradient descent). In the final step the input values are rescaled as
 \begin{align*}
-  ? = \gamma^{[l]} \hat{x}_i^{[l]} + \beta^{[l]}
+  \tilde{x_i} = \gamma^{[l]} \hat{x}_i^{[l]} + \beta^{[l]}
 \end{align*}
-with trainable parameters $\gamma$ and $\beta$. 
+with trainable parameters $\gamma$ and $\beta$. \hl{Comment about the reason for the final step}.
+
+
+
 
 
 \subsection{Learning rate decay strategies}
@@ -317,6 +341,36 @@ network in contrast to the \acrshort{CNN}.
   \label{fig:receptive_field}
 \end{figure}
 
+\subsection{Training, validation and test data}
+So far, we have simply considered the concept of training data as a means to
+update the model parameters. Yet, we want to evaluate the model performance is
+it improves. If a model has enough complexity, i.e.\ enough layers with a
+sufficient amount of nodes, it can be proven that it can fit any function
+\hl{SOURCE}. Thus for a complex model, it is just a matter of time before the
+model eventually will learn to give matching predictions for the training data.
+However, we want the model to learn general trends and not to ``memorize'' all
+the data points which is known as overfitting. While the predictions can get
+arbitrarily good the performance on unseen data within the same task will yield
+awful results if the model is overfitted. Hence, we put aside some subset of the
+data which we use as a \textit{validation} throughout and after training. By
+keeping this \textit{validation} set separate from the training data we can get
+a more reliable performance estimate for the model. This splitting of data
+should be done randomly in order to ensure a similar distribution of data
+features in each set. For the size ratio we want to strike a balance between
+training quality and validation quality, usually a 20\%--80\% split favoring the
+training set is a good figure. Other techniques exist which aim to optimize the
+data use for sparse data situations, like cross-validation and bootstrap
+\hl{fact check}, but we will not consider such methods for this thesis. A third
+training set which is often forgoten is the \textit{test} set. While the
+validation set should be kept unseen from the model training, the test set
+should be kept unseen from the model developer. As we choose the model
+architecture and hyper-parameters like learning rate, momentum and weight decay,
+we will use the performance on the validation set as a metric to steer by. This
+represents a slower pace parameter fitting which can also led to overfitting on
+a higher level. Hence, we should denote a test set for the final evaluation of
+our model which have not be considered before the end. Formally, this is the only reliable performance metric for the model. 
+
+
 
 \section{Overfitting and underfitting}
 % THE UNDERFITTING AND OVERFITTING TRADE-OFF \cite{smith2018disciplined}. 
@@ -339,11 +393,10 @@ Overfitting a more complicated to diagnostic. The Dynamics is not as simple as s
   \label{fig:over_under_fitting}
 \end{figure}
 
-\section{MOre stuff}
-\begin{enumerate}
-  \item Talk about training, validation and test split
-  \item What about performance measuring?
-\end{enumerate}
+% \section{More stuff}
+% \begin{enumerate}
+%   \item What about performance measuring?
+% \end{enumerate}
 
 
 
