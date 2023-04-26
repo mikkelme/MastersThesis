@@ -412,112 +412,90 @@ confident fit.
 
 
 \section{Hypertuning}
-Training a machine learning model revolves around tuning the model parameters
-consisting of mainly weights and biases. By following the general idea by the
-gradient descent approach we can get complex models able to give complex
-predictions. However, a handful of so-called \textit{hyper-parameters} remain
-for us to decide. First of all we must decide on an architecture for the model.
-This includes high level considerations as for instance to use neural network or
-a convolutional network, but also lower level considerations like the depth of
-the model and number of nodes/channels per layer. The choice of loss function
-and optimizers come with hyperparameters like learning rate, momentum and weight
-decay. As N. Smith \cite{smith2018disciplined} puts it: ``Setting the
+\hl{Define hyper-parameter probably like done in} \cite{Bengio2012}
+
+Training a machine learning model revolves around tuning the model parameters such as weights and biases. However, a handful of so-called \textit{hyper-parameters} remains for us to decide. First of all, we need to choose an architecture for the model. This includes high-level considerations, for instance, whether to use a neural network or a convolutional network, but also lower-level considerations, such as the depth and the width of the model, i.e.\ how many layers and how many nodes/channels. In addition, we have to define and consider the loss function and the optimizer which come with hyper-parameters such as learning rate, momentum and weight decay. This extensive list of choices makes the designing of an a functional model more complicated that simply starting the traiing. As N. Smith \cite{smith2018disciplined} puts it: ``Setting the
 hyper-parameters remains a black art that requires years of experience to
-acquire''. In the following, we will review some general approaches to the
-hypertuning presented in \cite{smith2018disciplined}. The traditional way is to
-perform a grid-search of multiple training sessions with different combinations
-of hyper-parameters. This can be computationally expensive. In addition, hyper-parameters will depend on each other, the data and the architecture which can realistically be searched at the same time. 
-
-N. Smith points to the fact that validation loss can by examined early on for
-clues of either underfitting or overfitting. For the learning rates one can use
-an increasing learning rate scheme for the so-called \textit{learning rate range
-test} (LR range test). One specifies a minimum and a maximum learning rate
-boundaries and a learning rate step size.  This can be done both for linear
-increasing or decreasing learning rate, which proved to give similar results
-\cite{smith2018disciplined} \hl{Jastrzebski et al. (2017b)}. We choose the
-linear increasing version for simplicity. In the LR range test training then
-starts form the lowest learning rate which is increased in small steps during a
-pre-training. The stepsize can be number of mini-batch iterations, and does not
-have to stick to epochs. For small learning rates the network will converge
-slowly. As the learning rate apporahces an appropriate size the convergence more
-strongly. Eventually the convergence will stop and the loss will increase again
-as the learning rates becomes to high (\hl{show harmonic potential big learning
-rate example somewhere?}). The learing rates at the point of divergence indicate an upper bound the learning rate that can be used with a cyclic learing rate scheme. One have to set the upper bound a bit lower than this to avoid divergence in practice. The steepest decline of the validation curve can be used as an estimate for the best constant learning rate choice. 
+acquire''. In the following we will review a general approach for choosing the learning rate, momentum and weight decay hyper-parameter based mainly on the findings of \cite{smith2018disciplined}. The traditional approach is to
+perform a grid-search of hyper-parameter combinations for multiple training sessions, but this might rather quickly become computationally expensive and ineffective. In addition, hyper-parameters will depend on the training data, the model architecture and not at least each other. 
 
 
+% N. Smith points to the fact that validation loss can by examined early on for
+% clues of either underfitting or overfitting. 
 
-% \begin{figure}[H]
-%   \centering
-%   \includegraphics[width=0.9\linewidth]{figures/theory/lr_descents.png}
-%   \caption{\hl{TMP}  }
-%   % https://www.javatpoint.com/gradient-descent-in-machine-learning
-%   \label{fig:lr_descents}
-% \end{figure}
-
-
-
-Next up, is momentum. Momentum and learning rates effect each other and since
-the learning rate is regarded as one of the most important hyper-parameters to
-tune \hl{SOURCE} momentum is also important. We want to set both learning rate
-and momentum as large as possible without causing instabilities to the training.
-Momentum is designed to accelerate the training process but the effect on
-updating the weights is of the same magnitude as learning rate as present from
-\cref{eq:mom}. Experiments show that finding a the right momentum from momentum
-range test is not useful. Thus, short runs with different values of momentum, on
-the range 0.9--0.99, can be done to find the best choice of momentum. The
-learning rate and momenmtum will however often be inversely dependent. Choosing
-a high learning rate will result in a slightly lower momentum being appropriate
-and vice versa. Thus, when using a cycling learning rate scheme one should adopt
-a cyclic momentum scheme as well with decreasing momentum for increasing
-learning rate. Choosing a lower momentum of 0.80--0.85 often gives similar stabile results.
-
-Finally we address the weight decay. N. Smith reports that weight decay is not similar to learning rate and momentum as it is better to choose a constant weight decay through the training. This will be dependent on the model complexity and he suggest doing a grid-search for values such as 0, $\num{e-6}$, $\num{e-5}$ and $\num{e-4}$ for complex architecture and $\num{e-4}$, $\num{e-3}$ and $\num{e-2}$ for more shallow architectures. Choosing the weight decay on the scale of exponential exponents is often good enough as the sensitivity to precise factors is not found to be highly important. The optimal weight decay will depend on your learning rate and momentum scheme.
-
-
-
-
-
-
-% Since learning rate is regarded as the most important hyper-parameter to tune (Bengio, 2012) \cite{smith2018disciplined}
+The learning rate is often regarded as the most important hyper-parameter to
+tune \cite{Bengio2012}. Typical values are in the range $[\num{e-6}, 1]$.
+Instead of simply running a grid search, i.e.\ multiple full training sessions
+using different learning rates, we can perform a so-called \textit{learning rate
+range test} (LR range test). One specifies the minimum and maximum learning rate
+boundaries and a learning rate step size. A minimum and maximum bound of
+$\num{e-7}$ to 10 will most likely cover an appropriate range, but the test will
+reveal this immediately. The idea is then to vary the learning rate throughout
+the given range in small steps during a short pre-training. We vary the learning
+rate for each iteration, i.e.\ each parameter update following a mini-batch, and
+thus we can run this test for a few epochs, or even a single one, depending on
+the number of mini-batches. The learning rate can be varied in a linear
+increasing or decreasing manner which is found to produce similar results
+\cite{smith2017cyclical}. We choose the linear increasing version for
+simplicity. For small learning rates, the model will converge slowly. As the
+learning rate approaches an appropriate value the convergence will accelerate
+which we see as a drop in the validation loss. Eventually the convergence will
+stop and the validation loss will pass a minimum for which it will begin to
+diverge. This general behaviour can be understood for the simplified 1D example
+of finding the minima of a second-order polynomial as shown in
+\cref{fig:lr_descents}. Small learning rates will step in the right direction,
+but for overly small values this will simply result in a slow convergence. If
+the learning rate becomes too large, we will effectively step past the minemim.
+For each step we will overshoot the minimum more and more leading to a diverging
+trend. The point of divergence can be used as an upper bound for the learning
+rates when considering a cyclic learning rate scheme.  The steepest
+decline of the validation loss can be used as an estimate for the best constant
+learning rate choice. 
 
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\linewidth]{figures/theory/lr_descents.png}
+  \caption{\hl{TMP}  }
+  % https://www.javatpoint.com/gradient-descent-in-machine-learning
+  \label{fig:lr_descents}
+\end{figure}
+
+
+Next, we consider the choice of momentum. Momentum and learning rates are found to affect each other considerably. From the gradient descent scheme with momentum \cref{eq:mom} we see that the momentum parameter $\alpha$ and the learning rate $\eta$ have a similar effect on the parameter update
+\begin{align*}
+  \theta_t = \theta_{t-1} - \eta g_t - \alpha m_{t-1},
+\end{align*}
+as the $m_t$ is a moving average of the gradient $g_t$ as well. Like the
+learning rate, we want to set the momentum value as high as possible without
+causing instabilities in the training. However, it is found that these values
+are somewhat inversely related. Choosing a high learning rate should be coupled
+with a lower momentum and vice versa. N. Smith \cite{smith2018disciplined}
+reports that a momentum range test is not useful to find the right momentum.
+Instead, he suggests doing a few short runs with different values of momentum,
+such as 0.99, 0.97, 0.95, and 0.9, to determine a suitable choice. By including
+momentum in the LR range test we can balance the learning rate accordingly.
+Moreover, for a cyclic learning rate scheme he suggests using a cycling momentum
+scheme, reversed with respect to the learning rate. When the
+learning rate increase toward the upper bound the learning rate should
+decrease toward the lower bound and vice versa. Choosing a lower momentum of
+0.80--0.85 often gives similar stabile results.
+
+
+Finally, we address the weight decay. N. Smith reports that weight decay is different from learning rate and momentum by the fact that weight decay is better chosen as a constant value as opposed to a cyclic scheme. However, the weight decay is dependent on the learning rate and momentum choice and this can often be dialed in after setting thoose. Fuirthermore, the weight decay will be dependent on the model complexity. We can estimate a suitable choice by doing a rough grid search for values such as 0, $\num{e-6}$, $\num{e-5}$ and $\num{e-4}$ for complex architectures and $\num{e-4}$, $\num{e-3}$ and $\num{e-2}$ for more shallow architectures. Choosing the weight decay on the scale of exponential exponents will often provide good enough precision in practice. 
 
 
 
 
 
 \section{Prediction explanation}\label{sec:explanation}
-% Source for reference: \cite{Selvaraju_2019}
-
 With the rise of constantly improving machine learning models and computational
-power, the capabilities of machine learning systems exceed human skills in many
-domains \hl{SOURCE SOME}. However, with deep learning models, we have
-essentially no insight into what kind of considerations went into a
-prediction. This is known as the \textit{black box} problem of deep learning.
-This has spiked interest in developing methods to unravel the inner parts of
-the network. This effort lies partly in the development of better analytic tools
-but also in the aim of creating simpler and more transparent models. We will be
-using a deep-learning convolutional network that is not immediately
-transparent. Since the feature maps in the network preserve the relative spatial
-relations of the input one approach is to consult the feature maps for
-information on which parts of the input it considers the most. However, this is
-often not readily interpreted. 
+power, the capabilities of machine learning systems is improving as well. However, with deep learning models, we have essentially no insight into the considerations that went into a prediction other than the input data. This is known as the \textit{black box} problem. A lot of effort is currently being developed for making more transparent models, like decision trees with interpretable rules, and numerical tools for unpacking the inner workings of the model. We will consider a graident based method called  \textit{Grad-CAM} \cite{Selvaraju_2019}. The idea is to use the gradients for a certain feature map with respect to the loss. 
 
-Instead, we can follow the \textit{Grad-CAM} approach \cite{Selvaraju_2019}.
-The idea is to use the gradients with respect to a given feature map. First, we
-forward propagate the input through the model. Then, for each feature in the
-feature map of choice, we calculate the gradients with respect to the loss of
-our target output. For a classification task, one would often choose the one
-that gives the highest prediction score. The gradients then provide an
-indication of which features that are important for the prediction. By scaling
-the feature map to the original size of the image we can overlay this as a
-heatmap providing a visual clue of what the prediction is based on. We can do
-this for different depths of the model and even combine the results for
+First, we forward propagate the input through the model, and decide on a feature map of interest. We then calculate the gradients for the feature map with respect to the loss of a target output. For a classification task, one would often choose the predicted class as the target output, the class with the highest score. The gradients will then highlight which part of the feature maps is most important for the prediction loss. a ReLU activation layer is then applied to only highlight the positive contributions. Since the convolutional layers preserve relative spacing we can rescale the heatmap provided by the feature map gradient to make an input-sized heatmap we can overlay with the input image. This provides a visual clue of what the prediction is based on. We can do this for different depths of the model and even combine the results for
 multiple layers. In \cref{fig:grad_cam_example} we see how this can be used to
-reveal the basis for a prediction. In this case the Grad-CAM analysis shows
-the difference between a biased model considering the face, and thus the sex
-of the person, to predict the correct profession as opposed to the unbiased
-model looking at more relevant features like equipment and uniform.
+reveal the basis for a prediction. In this case, the Grad-CAM analysis shows
+the difference between a biased and unbiased model for the predictions of professions. The biased model shows to be considering the person more than the actually objective clues given by relevant equipment and work-related clothing
 
 
 \begin{figure}[H]
@@ -528,6 +506,14 @@ model looking at more relevant features like equipment and uniform.
 \end{figure}
 
 
+% This has spiked interest in developing methods to unravel the inner parts of
+% the network. This effort lies partly in the development of better analytic tools
+% but also in the aim of creating simpler and more transparent models. We will be
+% using a deep-learning convolutional network that is not immediately
+% transparent. Since the feature maps in the network preserve the relative spatial
+% relations of the input one approach is to consult the feature maps for
+% information on which parts of the input it considers the most. However, this is
+% often not readily interpreted. 
 
 
 \section{Accelerated search using genetic algorithm}
