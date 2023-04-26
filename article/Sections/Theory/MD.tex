@@ -26,6 +26,10 @@ include the lack of quantum effects.
 % 303]{BHUSHAN20051507}
 
 
+% Ab-initio MD, e.g. of the Car-Parrinello type (Car and Parrinello, 1985), has not really been of use so far in sliding friction, mainly because it can han
+% dle only rather small systems, typically hundreds of atoms, for relatively short times, typically ≪ 1 ns. Most MD frictional simulations are therefore based on reason- able empirical interatomic forces (“force fields”), rang- ing from relatively sophisticated energy surfaces account- ing for electrons at the density-functional level or at the tight-binding level (Xu et al., 1992), to angle-dependent many-particle potentials, to simple pairwise potentials (e.g. Lennard-Jones), to basic simple models of elastic springs, extensions of FK-type formulations.
+% https://arxiv.org/abs/1112.3234v4
+
 
 A \acrshort{MD} simulation can be considered as a computational ``experiment''.
 Given a set of inital conditions and a mathematically defined model for
@@ -681,6 +685,10 @@ however, that we will only apply the thermostat to specific regions in our simul
 
 \section{Limitations}
 One a general note \acrshort{MD} simulations are limited on a relative small time- and size-scales. Thus, for a friction simulation a sliding speed below a few m/s becomes inaccesible as the computing time increases inversely with sliding speed with regard to a fixed total time of the procedure. The modelling is simplified through the interatomic potentials and the solutions which do not take quantum mechanical effetcs into account. One consequence of this is the omission of effects from electron energy transport. Similarly, the modelling of heat transport through a viscous and a random force as done with the Langevin thermostat might be a highly oversimplyfication which reduced the number of dissipation channels heavily. As mentioned, the phonon is expected to have $3N$ frequencies \hl{Go back and match theory of friction}. 
+
+% Read Size- and time-scale issues
+% https://arxiv.org/abs/1112.3234v4
+
 
 % Speed
 % Dissipation
