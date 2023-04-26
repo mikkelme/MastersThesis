@@ -558,18 +558,8 @@ al.\ \cite{Krylow_2007, PhysRevE.71.065101, Jinesh_2008}
 
 Notice that the friction dependence on sliding speed changes between the temperature regimes as well.
 
-%
-%
-% Working here
-%
-%
-
-% \hl{Should we comment about the velocity dependence being different here also?}
 
 
-
-
-% shows the effect of temperature on mean friction and illustrates two regimes: thermal activation and thermal drift. Force traces for these regimes are shown in \cref{fig:PT_temp_force}. 
   
 % \begin{figure}[H]
 %   \centering
@@ -587,8 +577,8 @@ Notice that the friction dependence on sliding speed changes between the tempera
 
 
 \subsubsection{Sliding speed}
-In the thermal activation regime (low temperature) and at low speeds the friction relation follows \cref{eq:F_thermal_ac} making friction scale logarithmically with speed. For higher speed, $v > v_c$, if only thermal effects are considered, \cref{eq:F_thermal_ac} predicts that friction will eventually saturate and come to a plateau at $F_{\text{fric}} = F_C$. This is illustrated in \cref{fig:PT_speed} with this prediction being represented by the dotted line. However, as given away by the figure, for higher speed the model will enter an athermal regime where the thermal effects are negligible compared to other contributions \cite{Yalin_2011}(32). In the athermal regime the damping term $m\mu \dot{x}$ will dominate yielding $F_{\text{fric}}
-\propto v$. The athermal regime is often observed in reduced models if the system is overdamped or at high speeds. This concept is also interesting in connection to \acrshort{MD} simulations where the accessible speeds often fall into the athermal regime \cite{Li_2011}. It is unclear how this affects real physical systems for which there exist more dissipation channels than just a single viscous term \cite{Dong_2013}. For the thermal drift regime at higher temperatures the linear relation $F_{\text{fric}} \propto v$ is predicted for low speed as well by \cref{eq:PT_thermal_drift}.
+In the thermal activation regime (low temperature) and at low speeds the friction relation follows \cref{eq:F_thermal_ac} making friction scale logarithmically with speed. For higher speed, above the critical velocity $v > v_c$, if only thermal effects are considered, \cref{eq:F_thermal_ac} predicts that friction will eventually saturate and come to a plateau at $F_{\text{fric}} = F_C$. This is illustrated in \cref{fig:PT_speed} with this prediction being represented by the dotted line. However, as given away by the figure, for higher speed the model will enter an athermal regime where the thermal effects are negligible compared to other contributions \cite{PhysRevLett.89.224301}. In the athermal regime the damping term $m\mu \dot{x}$ will dominate yielding $F_{\text{fric}}
+\propto v$. The athermal regime is often observed in reduced-models if the system is overdamped or at high speeds. This concept is related to \acrshort{MD} simulations where the accessible speeds often fall into the athermal regime \cite{Li_2011}. It is unclear how this affects real physical systems for which there exist more dissipation channels than just a single viscous term \cite{Dong_2013}. For the thermal drift regime at higher temperatures the linear relation $F_{\text{fric}} \propto v$ as given by \cref{eq:PT_thermal_drift}.
 
 \begin{figure}[H]
   \centering
@@ -613,11 +603,17 @@ To understand the static mechanism we consider a quasistatic process for which t
 The friction regime is determined by the number of solutions $x$ to \cref{eq:static_V}. Only one solution corresponds to
 smooth sliding, two solutions to a single slip and so on. It turns out that the
 regimes can be defined by the parameter $\eta = 2\pi^2U_0/a^2K$ \cite{Johnson_1998, Medyanik_2006} yielding transitions at $\eta = 1, 4.6, 7.79, 10.95, \hdots$, such that $\eta \le 1$
-corresponds too smooth sliding, $1<\eta \le 4.6$ to a single slip and so on. These static derivations lay out the fundamental probabilities for being in one of the regimes stick-slip regimes. Notice that increasing the spring constant $K$ (stiff spring) will decrease the possibilities for stick-slip behavior. This also agrees with Bonelli \hl{Talk about this.}
+corresponds too smooth sliding, $1<\eta \le 4.6$ to a single slip and so on. These static derivations lay out the fundamental probabilities for being in one of the stick-slip regimes. Notice that increasing the spring constant $K$ (stiff spring) will decrease the possibilities for stick-slip behavior. Similarly, the potential corrugation $U_0$ can be altered trough an increased load of the system
+$U_0$ can be altered by an increasing load \cite{Vanossi_2013}
+
 
 Considering the dynamics on top, one finds that damping, speed and temperature will affect this probability. High damping, equivalent to a high transfer
-of kinetic energy to heat, will result in less energy available for the slip events. This will make multiple slip less likely. By a similar argument, we find that increasing the speed will contribute to more kinetic energy which will increase the likelihood of multiple slips. Finally, the temperature will contribute to earlier slips, due to thermal activation, such that
-less potential energy can be accumulated and it will result in fewer multiple slips. The effects of damping, speed and temperature are illustrated for the force traces in \cref{fig:PT_slip_var}
+of kinetic energy to heat, will result in less energy available for the slip events. This will make multiple slip less likely. By a similar argument, we find that increasing the speed will contribute to more kinetic energy which will increase the likelihood of multiple slip. Finally, the temperature will contribute to earlier slips, due to thermal activation, such that
+less potential energy can be accumulated and it will result in fewer multiple slip. The effects of damping, speed and temperature are illustrated for the force traces in \cref{fig:PT_slip_var}
+
+
+
+
 
 \begin{figure}[H]
   \centering
@@ -640,48 +636,12 @@ less potential energy can be accumulated and it will result in fewer multiple sl
       \caption{}
   \end{subfigure}
   \hfill
-     \caption{\hl{Temporary} figure from \cite{Yalin_2011}}
+     \caption{\hl{Temporary} figure from \cite{Yalin_2011}. \hl{Consider removing since the interpretation of smooth sliding might get a bit tricky.}}
      \label{fig:PT_slip_var}
 \end{figure}
 
 
-% In experiment, the effective value of the PT parameter
-% η can be controlled by the variation of the normal load on the contact, which changes the potential corrugation U0 more than the contact stiffness.
-% https://arxiv.org/pdf/1112.3234.pdf
 
-
-
-
-% A direct result of thermal
-% activation, contribution of thermal energy overcoming energy barriers, is that
-% the increase in temperature will decrease friction \cite[7, 21]{Yalin_2011}.
-% Similar friction will increase with speed \cite[4, 22–24]{Yalin_2011} due to the
-% decrease in time between slips making it less likely to get a thermal
-% activation. 
-
-
-
-
-% \subsubsection{2D nature}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-% Our results confirm the conclusions of other authors that single-asperity theories break down at the nanoscale1,5. \cite{mo_friction_2009}
-
-
-% Experimental research to examine the frictional characteristics at the
-% atomic-scale has been conducted for the past two decades. It is well known
-% that frictional behavior cannot be generalized by a few factors such as normal
-% load, surface roughness, speed, and material type of the tribological system.
-% Other conditions such as temperature, humidity, and even sliding history can
-% affect the tribological phenomena significantly. Particularly at nano-scale,
-% the tribological behavior tends to be more sensitive to the state of outermost
-% layer of the surface region. Thus, contamination layer, adsorbed gas,
-% capillary junctions, and oxide layer become more important at small scales.
-% This is because at nano-scale the contact forces are often too low for the
-% asperities to penetrate the surface layers and the magnitude of the surface
-% force may be comparable to the frictional force. {kim_nano-scale_2009}.
 
 
 % Together with the current experimental possibility to perform well-defined
@@ -693,20 +653,6 @@ less potential energy can be accumulated and it will result in fewer multiple sl
 
 
 
-
-% \subsection{Tomlinson model}
-% % \cite{kim_nano-scale_2009}
-
-% One of the first atomic scale models. Here we have no asperities but it is based on the assumptions that the atomic surface is not completely smooth. Since atoms was modeled as spheres the surface topography would not be completely flat. The idea is shown in \cref{fig:tomlinson_model} where the moving body is connected the atom with springs.
-% \begin{figure}[H]
-%   \centering
-%   \includegraphics[width=0.5\linewidth]{figures/theory/tomlinson_model.png}
-%   \caption{\hl{Temporary} figure from \cite{kim_nano-scale_2009}}
-%   \label{fig:tomlinson_model}
-% \end{figure}
-
-
-% This model gives an explanation to the stick-slip behavior. This layed the foundation for the Frenkel-Kontorova model so maybe go straight to that?
 
 
 % Double check that I got it right regarding connection to the moving body and how the model is driven. 
@@ -966,14 +912,8 @@ A final extension of the atomic models worth mentioning here is the
 Frenkel-Kontorova-Tomlinson (\acrshort{FKT}) model \cite{weiss_dry_1997}, which
 introduces a harmonic coupling of the sliding atom chain to the driving moving
 body, effectively combining \acrshort{PT} and \acrshort{FK} (see \cref{fig:PT_FK_FKT}). This introduces
-more degrees of freedom to the model based on the intention of getting a more realistic connection between the moving body and the chain. 
-\hl{modeling of a broad contact point}. Dong et al.\ carried out a numerical
-analysis using the 1D \acrshort{FKT} model investigating the effect of chain
-length. They observed that the friction increased linearly with the number of atoms
-in the chain on a long-range, but certain levels of lattice mismatch resulted in local non-linear relationships as shown in \cref{fig:FKT_contact}. Similarly, taking the
-\acrshort{FKT} model to 2D they were able to achieve a similar sensitivity to
-commensurability as observed experimentally by \cite{DIENWIEBEL2005197} (shown in
-\cref{fig:graphene_rot}) with the numerical result shown in \cref{fig:FKT_2D_rot}. Besides a recreation of the commensurability effect they also observed increasing friction with an increasing flake size. Combined, the 1D and 2D results support the idea of increasing friction with contact size although it might showcase non-linear behavior depending on commensurability.
+more degrees of freedom to the model based on the intention of getting a more realistic connection between the moving body and the chain. Dong et al.\ carried out a numerical analysis using the 1D \acrshort{FKT} model investigating the effect of chain length. They observed that the friction increased linearly with the number of atoms in the chain on a long-range, but certain lattice mismatch resulted in local non-linear relationships as shown in \cref{fig:FKT_contact}. Similarly, by extending the \acrshort{FKT} model to 2D they were able to achieve a similar sensitivity to commensurability as observed experimentally by \cite{DIENWIEBEL2005197} (shown in
+\cref{fig:graphene_rot}) with the numerical result shown in \cref{fig:FKT_2D_rot}. Besides a demonstration of the commensurability effect in 2D they also observed increasing friction with an increasing flake size. Combined, the 1D and 2D results support the idea of increasing friction with contact size although it might showcase non-linear behavior depending on commensurability.
 
 
 \begin{figure}[H]
@@ -996,26 +936,6 @@ commensurability as observed experimentally by \cite{DIENWIEBEL2005197} (shown i
     %  \label{fig:FKT_size}
 \end{figure}
 
-
-
-
-% \begin{figure}[H]
-%   \centering
-%   \includegraphics[width=0.5\linewidth]{figures/theory/FKT_contact}
-%   \caption{\hl{Temporary} figure from \cite{Yalin_2011} }
-%   \label{fig:FKT_contact}
-% \end{figure}
-
-% \begin{figure}[H]
-%   \centering
-%   \includegraphics[width=0.5\linewidth]{figures/theory/FKT_2D_rot.png}
-%   \caption{\hl{Temporary} figure from \cite{Yalin_2011} }
-%   \label{fig:FKT_2D_rot}
-% \end{figure}
-
-% thus makig it possible to investigate stick-slip features ??. The $\acrshort{FKT}$ made it possible to study the combinned interface incommensurability, finite-size effects, mechanical stiffness of the contacting materials and normal load variations \cite{Manini_2016}. 
-
-% Due to the lack of connection between the chain and the moving body the \acrshort{PT} and \acrshort{FK} model was merged by including a harmonic coupling between each of the atoms to the moving body \cite{kim_nano-scale_2009}. 
 
 
 \subsection{Shortcomings of atomic models}
@@ -1124,32 +1044,27 @@ commensurability as observed experimentally by \cite{DIENWIEBEL2005197} (shown i
 % \cite{gnecco_meyer_2015}
 % Check out this \cite{Dong_2013} parameter choices for MD
 
-
-
 Experimentally, the study of nanoscale friction is challenging due to the low
 forces on the scale of nano-newtons along with the difficulties of mapping the
-nano-scale topography of the sample. In opposition to numerical simulations, which provide full
+nano-scale topography of the sample. In contrast to numerical simulations, which provide full
 transparency regarding atomic-scale structures, sampling of forces, velocities
 and temperature, the experimental results are limited by the state-of-the-art
-experimental methods. To compare numerical and experimental results it is useful to address the most common experimental methods.
+experimental methods. To compare numerical and experimental results we adress a few of the most relevamt experimental methods.
 
 \subsubsection{Scanning Probe Microscopy}\label{sec:SPM} Scanning probe
-microscopy (\acrshort{SPM}) includes a variety of experimental methods which is used to
-examine surfaces with atomic resolution \cite[pp. 6-27]{BHUSHAN20051507}. This was
-originally developed for surface topography imaging, but today it plays a crucial
-role in nanoscale science as it is used for probe-sampling regarding
-tribological, electronic, magnetic, biological and chemical character. The
-family of methods involving the measurement of forces is generally referred to
-as \textit{scanning force microscopies} (\acrshort{SFM}) or for friction purposes
-\textit{friction force microscopes} (\acrshort{FFM}).
+microscopy (\acrshort{SPM}) includes a variety of experimental methods which is
+used to examine surfaces with atomic resolution \cite[pp.
+6-27]{BHUSHAN20051507}. This was originally developed for surface topography
+imaging, but today it plays a crucial role in nanoscale science as it is used
+for probe-sampling regarding tribological, electronic, magnetic, biological and
+chemical character. The family of methods involving the measurement of forces is
+generally referred to as \textit{scanning force microscopies} (\acrshort{SFM})
+or for friction purposes \textit{friction force microscopes} (\acrshort{FFM}).
 
-One such method arose from the \textit{atomic force microscope} \acrshort{AFM}, which consists
-of a sharp micro-fabricated tip attached to a cantilever force sensor, usually
-with a sensitivity below 1 nN all the way down to pN. The force is measured by recording the bending of
+One such method arose from the \textit{atomic force microscope} \acrshort{AFM}, which consists of a sharp micro-fabricated tip attached to a cantilever force sensor, usually with a sensitivity below 1 nN all the way down to pN. The force is measured by recording the bending of
 the cantilever, either as a change in electrical conduction or more commonly, by
 a light beam reflected from the back of the cantilever into a photodetector
-\cite[p. 183]{gnecco_meyer_2015}. By adjusting the tip-sample height to keep a constant
-normal force while scanning across the surface, the \acrshort{AFM} can be used to produce a
+\cite[p. 183]{gnecco_meyer_2015}. By adjusting the tip-sample height to keep a constant normal force while scanning across the surface, the \acrshort{AFM} can be used to produce a
 surface topography map. By tapping the material (dynamic force microscopy) with
 a sinusoidally vibrated tip the effects from friction and other disturbing forces
 can be minimized to produce an even clearer image (\hl{include example,
@@ -1180,32 +1095,6 @@ The Surface force apparatus \acrshort{SFA} is based on two curved molecularly sm
 
 
 
-% The trouble is that the coefficients of friction measured in nanotribological
-% experiments and in macroscopic “tribotests” routinely differ by orders of
-% magnitude. (\url{https://physicsworld.com/a/friction-at-the-nano-scale/})
-
-
-
-
-
-% \subsection{Graphene friction}
-% Theory of friction experiment involving graphene.
-
-
-% Read Rare-gas islands and metal clusters \cite{Manini_2016} for theory of effects on surface area scaling
-
-% Because of this frictional reduction, many studies indicate graphene as the
-% thinnest solid-state lubricant and anti-wear coating [104–106]. (Current trends
-% in the physics of nanoscale friction)
-
-
-% Accurate FFM measurements on few-layer graphene systems show that friction
-% decreases by increasing graphene thickness from a single layer up to 4-5 layers,
-% and then it approaches graphite values [97, 99, 101, 107, 108]. (Current trends
-% in the physics of nanoscale friction)
-
-
-
 
 \section{Summary of previous results}\label{sec:prev_results}
 Several studies have investigated the frictional behavior of graphene by varying
@@ -1219,7 +1108,7 @@ substrate layers moving relative to each other using the graphene as a solid
 lubricant. 3) A graphene flake sliding on a substrate, either being dragged by
 an \acrshort{AFM} tip or by more complex arrangements in numerical simulations.
 Considering that even the sharpest \acrshort{AFM} tip will effectively put
-multiple atoms in contact with the sample, all methods are relatable to the study of nanoscale surface contact. However, the \acrshort{FFM} type is more reminiscent of asperity theory as we expect it to deform with increasing load, while the latter two are more aligned with the \acrshort{PT} type models and our system. Nonetheless, we will consider results across all three types of systems with the relevant studies summarized in \cref{tab:friction_ref} for convenience. 
+multiple atoms in contact with the sample, all methods are relatable to the study of nanoscale surface contacts. However, the \acrshort{FFM} type is more reminiscent of asperity theory as we expect it to deform with increasing load, while the latter two are more aligned with the \acrshort{PT} type models and our specific system of interest. Nonetheless, we will consider results across all three types of systems with the relevant studies summarized in \cref{tab:friction_ref} for convenience. 
 
 
 \begin{table}[H]
@@ -1248,7 +1137,6 @@ multiple atoms in contact with the sample, all methods are relatable to the stud
   % \end{center}
 \end{table}
 
-% Sircar and Patra \cite{Sircar_2020} rolling friction, generalized PT model says smooth sliding for high speed
 
 % Stick-slip
 One of the earliest tribological simulations of graphene was carried out by
@@ -1261,23 +1149,20 @@ which is also observed in \acrshort{FFM} setups both experimentally
 \cite{zhao_thermally_2007, zhang_tuning_2019} and numerically
 \cite{li_evolving_2016, zhu_study_2018}. Moreover, they found an agreement with
 the qualitative observation that soft springs allow for a clean stick-slip
-motion while hard springs ($\sim \SI{40}{N/m}$) inhibited it. In \acrshort{AFM}
-and \acrshort{SFA} experiments, the stick-slip motion tends to transition into
-smooth sliding when the speed exceeds $\sim \SI{1}{\mu/s}$ while in
-\acrshort{MD} modeling the same transition is observed in the $\sim \SI{1}{m/s}$
-region \cite{Manini_2016}. This 6-order-of-magnitude discrepancy has been
+motion while hard springs ($\sim \SI{40}{N/m}$) inhibited it, which also aligns
+with the \acrshort{PT} model. In \acrshort{AFM} and \acrshort{SFA} experiments,
+the stick-slip motion tends to transition into smooth sliding when the speed
+exceeds $\sim \SI{1}{\mu/s}$ while in \acrshort{MD} modeling the same transition
+is observed in the $\sim \SI{1}{m/s}$ region \cite{Manini_2016}. More precisely
+Liu et al.\ \cite{liu_high-speed_2014} findes the transistion \acrshort{MD}
+simulations at \SI{15}{m/S}. This 6-order-of-magnitude discrepancy has been
 largely discussed in connection to simplifying assumptions in \acrshort{MD}
-simulations. On the other hand, the \acrshort{PT} model qualitatively disagrees with this as it predicts the reverse: high speed leading to the multiple slip regime. \hl{Little bit unsure what to say about this one.}
+simulations. On the other hand, the \acrshort{PT} model qualitatively disagrees
+as it predicts smooth sliding for low speeds and stick-slip for high speeds.
+However, in an extension of the \acrshort{PT} for the study of nanoscale rolling
+friction by Sircar and Patra \cite{Sircar_2020}, they found smooth sliding for
+high speeds.
 
-
-
-% This is certainly associated with stick-slip
-% behavior, but as we consider the force traces predicted by the \acrshort{PT} for
-% high velocities \cref{fig:PT_slip_vel}, we might argue that this does look more
-% ``smooth'' than the single slip regime behavior. Hence, we argue that the
-% definition of smooth sliding may differ. \hl{Get back to this}
-
-% The waveguide has a speed cutoff: smooth sliding ceases below ,15 m/s, a typical velocity for transition to stick-slip motion in atomic-scale simulations30. \cite{liu_high-speed_2014}
 
 % Commensurability
 Bonelli et al.\ \cite{bonelli_atomistic_2009} also found that commensurability,
@@ -1296,12 +1181,10 @@ coefficients between graphite and most materials lie in the range of 0.08--0.18
 \cite{DIENWIEBEL2005197}. While Dienwiebel et al.\ \cite{DIENWIEBEL2005197}
 reported a wide range of frictional forces from $28 \pm 16$ pN to $453 \pm 16$
 pN with loads $\sim [-10, 20] nN$, the change in friction with applied load was
-as low as 0.05--0.4 \%. When using the slope definition for the frictional
-coefficient \cref{eq:mu_def2}, this corresponds to a coefficient in the range of
-0.0005--0.004. Bonelli et al.\ attribute the low dependency to a lacking change in contact area as the flake is loaded. 
+as low as 0.05--0.4 \% for the incommensurable orientations. When using the slope definition for the frictional coefficient \cref{eq:mu_def2}, this corresponds to a coefficient in the range of 0.0005--0.004. Bonelli et al.\ attribute the low dependency to a lacking change in contact area as the flake is loaded. 
 
 % Flake size
-Furthermore, Bonelli et al.\ \cite{bonelli_atomistic_2009} found friction to decrease with increasing flake size which is also reported in \acrshort{MD} simulations for graphene on gold \cite{zhu_study_2018}. Bonelli et al.\ mainly attribute this to boundary effects, but also note that the coupling to the support made for decreased rotational freedom as flake size was increased. Thus, they hypothesized that the decreased freedom led to the graphene taking a more forced path which less tendency to exhibit stick-slip behavior. The general observation however, disagrees with the \acrshort{FK} and \acrshort{FKT} model which predicts the reverse; an increase in friction with increasing size. 
+Furthermore, Bonelli et al.\ \cite{bonelli_atomistic_2009} found friction to decrease with increasing flake size which is also reported in \acrshort{MD} simulations for graphene on gold \cite{zhu_study_2018}. Bonelli et al.\ mainly attribute this to boundary effects, but also note that the coupling to the support made for decreased rotational freedom as flake size was increased. Thus, they hypothesized that the decreased freedom led to the graphene taking a more forced path which is associated with a decreased stick-slip behavior. The general observation however, disagrees with the \acrshort{FK} and \acrshort{FKT} model which predicts the reverse; an increase in friction with increasing size. 
 
 An additional numerical study of monolayer islands of krypton on copper by
 Reguzzoni and Righi \cite{PhysRevB.85.201412}, supports the importance of
@@ -1323,8 +1206,9 @@ Bringing all this together, the main picture forming is that flake size, which
 can be related to contact area, is affecting friction through a commensurability
 mechanism. If the flake is constrained in some way we might not observe the same
 dependency. While flake size nor contact area is easily measured in experimental
-\acrshort{FFM}, Mo et al.\ \cite{mo_friction_2009} found that friction is
-proportional to contact area for an indenting sphere on a nanoscale.
+\acrshort{FFM}, Mo et al.\ \cite{mo_friction_2009} found in an \acrshort{MD} simulation that friction is proportional to contact area for an indenting sphere on a nanoscale.
+
+
 
 % Evolution effects and graphene layers
 Evolution effects, or so-called friction strengthening, are also observed. That
@@ -1334,90 +1218,79 @@ et al.\ \cite{li_evolving_2016}. However, this is only found when having the
 graphene sheet resting on a substrate \cite{zhang_tuning_2019}, as opposed to a
 suspended sheet. It is also found to diminish with an increasing number of
 graphene layers stacked (graphite) \cite{li_evolving_2016}. In the study by Li
-et al.\ , they reported a general decrease in friction with an increasing number of layers. In other \acrshort{MD} simulations, a similar trend is reported
-\cite{Yoon2015MolecularDS}, as well as the opposite trend \cite{Reguzzoni_2012}.
+et al., they reported a general decrease in friction with an increasing number of layers which is found in other \acrshort{MD} studies \cite{Yoon2015MolecularDS} and experimental studies as well \cite{Filleter_2009, Lee_2010}. However, we also found a \acrshort{MD} study reporting the opposite trend \cite{Reguzzoni_2012}.
+
+
+% Accurate FFM measurements on few-layer graphene systems show that friction
+% decreases by increasing graphene thickness from a single layer up to 4-5 layers,
+% and then it approaches graphite values [97, 99, 101, 107, 108]. (Current trends
+% in the physics of nanoscale friction)
+
 
 
 % Deformations
 A few numerical studies investigate friction under mechanical deformations. 
-Zhang et al. \cite{zhang_tuning_2019} found that straining a suspended
-stretch will lower the kinetic fricion. They attribute this to modulation of flexibility which consequently changes the local pinning capability of the contact interface. Liu et al.\ \cite{liu_high-speed_2014} carried out a \acrshort{MD} simulation of high-speed ($\SI{400}{m/s}$) ballistic nanofriction of graphene on graphite. They found that a biaxial stretching of the graphitic substrate could be used to suppress frictional scattering and achieve persistent superlubricity. Another surface manipulating study was performed by H.\ J.\ Kim and D.\ E.\ Kim. \cite{Kim_2012} who investigated the effects of corrugated
-nano-structured surfaces. The study revealed that corrugated surfaces with altered contact areas and structural stiffness could result in both increased or slightly decreased friction under certain load ranges. These studies highlight the importance of surface structure and mechanical conditions. 
+Zhang et al. \cite{zhang_tuning_2019} found that straining a suspended graphene sheet will lower the kinetic friction. They attribute this to modulation of flexibility which consequently changes the local pinning capability of the contact interface. Liu et al.\ \cite{liu_high-speed_2014} carried out a \acrshort{MD} simulation of high-speed ($\SI{400}{m/s}$) ballistic nanofriction of graphene on graphite. They found that a biaxial stretching of the graphitic substrate could be used to suppress frictional scattering and achieve persistent superlubricity. Another surface manipulating study was performed by H.\ J.\ Kim and D.\ E.\ Kim \cite{Kim_2012} who investigated the effects of corrugated
+nano-structured surfaces. The study revealed that corrugated surfaces with altered contact areas and structural stiffness could result in both increased or slightly decreased friction under certain load ranges. Altogether these studies highlight the importance of surface structure and mechanical conditions. 
 
 
 % Normal load
 The friction dependency of normal load turns out to be a complex matter and has
 proven to be a highly system-dependent feature. As already mentioned, asperity
 theory mainly points to a sublinear relationship between friction and load,
-while the \acrshort{PT} models point to a more intricate relationship through
+while the reduced-models point to a more intricate relationship through
 the change of the effective substrate potential which leads to an altering of
-the commensurability the phonon dynamics. Experimentally rather different trends
-have been observed, although the majority agree on increasing friction with
+the commensurability and the phonon dynamics. Experimentally rather different trends have been observed, although the majority agree on increasing friction with
 increasing load \cite[p. 200]{gnecco_meyer_2015}. For the graphene flake,
 Dienwiebel et al.\ \cite{DIENWIEBEL2005197} found a seemingly non-dependent
 relationship while \acrshort{FFM} study by G. Paolicelli et al.\
-\cite{Paolicelli_2015} found sublinear relationship matching the predictions of
+\cite{Paolicelli_2015} found a sublinear relationship matching the predictions of
 Maugis-Dugdale theory $(F_f \propto (F_N - F_{N,0})^{2/3})$. The discrepancy
-might be attributed to the difference between a spherical tip indenting the
-graphene sheet as opposed to the atomic flatness of the graphene-graphite
-interface, which does not make for changing contact area under load. However,
+might be attributed to the difference in system type; A spherical tip indenting the graphene sheet as opposed to the atomic flatness of the graphene-graphite
+interface, which does not make for a changing contact area under load. However,
 numerical studies using a graphene-graphite interface still find both sublinear
 \cite{bonelli_atomistic_2009} and linear \cite{ma12091425, zhang_tuning_2019}
 load dependencies. 
 
 In an experimental \acrshort{FFM} study by Deng et al.\ it was discovered that
 the friction force kept increasing after unloading the probe tip from the
-graphite surface. Since it has been argued to be a more general phenomenon
+graphite surface. This has been argued to be a more general phenomenon
 related to hysteresis in the adhesive interaction between two sliding bodies
 \cite{thormann_negative_2013}. Following the slope definition for the friction
-coefficient, these results correspond to a negative friction coefficient. More recently, a negative friction coefficient was also found for the loading phase by Liu et al.\ \cite{Liu_2020} in an experimental study of the interface between graphite and muscovite mica heterojunction. With supporting numerical modeling this is attributed to ``synergetic and nontrivial redistribution of water molecules at the interface''. Similar results are also reported numerically by \cite{Mandelli_2019} for graphite in contact with hexagonal boron nitride heterojunctions which is attributed to ``load-induced suppression of the moiré superstructure out-of-plane distortions leading to a less dissipative interfacial dynamics''. Thus, the concept of a negative friction coefficient has already been proven in some complex systems. 
+coefficient, these results correspond to a negative friction coefficient. More recently, a negative friction coefficient has also been observed for the loading phase by Liu et al.\ \cite{Liu_2020} in an experimental study of the interface between graphite and muscovite mica heterojunction. With supporting numerical modeling this is attributed to ``synergetic and nontrivial redistribution of water molecules at the interface''. Similar results are also reported numerically by \cite{Mandelli_2019} for graphite in contact with hexagonal boron nitride heterojunctions which is attributed to ``load-induced suppression of the moiré superstructure out-of-plane distortions leading to a less dissipative interfacial dynamics''. Thus, the concept of a negative friction coefficient has been proven for the unloading phase of adhesive contacts and in the loading phase for a few systems. 
 
+% Speed
 The dependency of velocity is generally found to increase logarithmically with
 velocity in experimental \acrshort{AFM} studies \cite[p. 201]{gnecco_meyer_2015}
 which match the low-velocity regime of the \acrshort{PT} type models. At higher
 velocities thermally activated processes are less important and friction becomes
-independent of velocity according to the continuation of \cref{eq:F_thermal_ac}.
-Saturation of the velocity dependency has been observed numerically for Si tips
-interacting with diamond, graphite and amorphous carbon surfaces respectively
-with scan velocities above \SI{1}{\mu/s} \cite{zworner1998velocity}. Note that
-the \acrshort{PT} model predicts a high increase with friction at high
-velocities as it enters the athermal regime. However, this is related to a
-numerical effect from damping. Guerra et al.\ \cite{Guerra_2010}, studying gold
-clusters on graphite using \acrshort{MD} simulations, found a viscous friction
-response (friction is proportional to sliding velocity) in both low and high
-speed domains. However, thermal effects reversed: at low speed (diffusive)
-friction decreased with increased temperature while at high speed (ballistic)
-friction increased with temperature. In the \acrshort{MD} simulations this
-crossover from ballistic to diffusive occurred between 10 and \SI{1}{m/s}. 
+independent of velocity according to the \acrshort{PT} model result \cref{eq:F_thermal_ac} when ignoring the athermal regime. Saturation of the velocity dependency has been observed numerically for Si tips interacting with diamond, graphite and amorphous carbon surfaces respectively with scan velocities above \SI{1}{\mu/s} \cite{zworner1998velocity}.  Guerra et al.\ \cite{Guerra_2010}, studying gold clusters on graphite using \acrshort{MD} simulations, found a viscous friction response, friction being proportional to sliding velocity, in both low and high speed domains. However, thermal effects reversed as they found friction to decrease with increasing temperature at low speed (diffusive regime), but for high speed (ballistic regime) they found an increasing friction with temperatur. In the \acrshort{MD} simulations this crossover from ballistic to diffusive occurred between 10 and \SI{1}{m/s}. 
+
 
 % Temperature
-Regarding temperature, the general experimental trend is decreasing friction
-with increasing temperature as found by Zhao et al.\ \cite{zhao_thermally_2007}
-in a series of \acrshort{AFM} graphene on graphite experiments with
-$F_{\text{fric}} \propto \exp{(1/T)}$. This agrees with the thermal drift regime
-of the \acrshort{PT} type models even though the temperature range used in the
-study does not match the range of this regime according to the \acrshort{PT}
-model. Wijn et al.\ \cite{Wijn_2011} find that friction commensurability can be
-lost at higher temperatures (above 200K) where they found a power law behavior
-$F_k \propto T^{-1.13 \pm0.04}$. Numerically, Zhang et al.\ \cite{ma12091425}
-found that friction increased with temperature, using a sliding speed of
-\SI{10}{m/s}. Considering the findings of \cite{Guerra_2010} this qualitative different behavior might be attributed to a \acrshort{MD} related effect associated with the transition from low speed diffusive behavior as opposed to high speed ballistic behavior.
+Regarding temperature itself, the general experimental trend is decreasing friction with increasing temperature as found by Zhao et al.\ \cite{zhao_thermally_2007} in a series of \acrshort{AFM} graphene on graphite experiments yielding $F_{\text{fric}} \propto \exp{(1/T)}$. This agrees with the thermal drift regime of the \acrshort{PT} model even though the exact temperature range does not agree. Morevoer, Wijn et al.\ \cite{Wijn_2011} found that friction commensurability can be lost at higher temperatures (above 200K) where they found a power law behavior $F_k \propto T^{-1.13 \pm0.04}$. Numerically, Zhang et al.\ \cite{ma12091425} found that friction increased with temperature, using a sliding speed of \SI{10}{m/s}. Considering the findings of \cite{Guerra_2010} this qualitative different behavior might be attributed to a \acrshort{MD} related effect associated with the transition from low speed diffusive behavior as to high speed ballistic behavior.
 \\
 \\
-From the review of previous results, we find a gap between the friction
-description provided by the reduced-models, \acrshort{MD} simulations and
-experimental methods respectively. While some of the discrepancies can be
-attributed to a difference in the modelling of physical mechanism, some might
-also be attributed to differences in the considered system. For instance, the
-\acrshort{FFM} based results considers a system where the tip is possible
-deformed during loading. From asperity theory we can relate the loading to an
-increase in contact area which is considered a key feature. Since the contact
-area is not observed to change under loading for the atomic flat interface
-contacts this leaves the question: What will happen if we are able to reduce the
-contact area through Kirigami cuts and stretch of the sheet? Such a transition
-represent a system change from an atomically flat system towards an asperity
-system. Following asperity theory we might expect the friction to reduce with
-decreasing contact area. On the other hand, commensurability is generally expected to be a dominant parameter for the friction behavior, and thus we would expect the deformation of the sheet give rise to a commensurability effect as well. This could both lead to a increase or an decrease in friction depending on whether we transition from an incommensurable to commensurable state or vice versa. For a Kirigami modified system the dependence on load will bring insight to the discussion of how friction depends on load with two governing explanations being either true contact area or commensurability. Furthermore, we must consider our results in terms of different friction regimes such as stick-slip and smooth sliding, ballistic and diffusive motion and thermal something. 
+From the review of previous results, we find several gaps and discrepancies
+between the friction description provided by the reduced-models, \acrshort{MD}
+simulations and experimental methods respectively. Some of these discrepancies
+can be attributed to the fact that different physical mechanisms are included in
+the numerical modelling that might not capture the relevant behavior found in
+experiments. On the other hand, we might also point to the slight difference in
+the studied stystems. For instance, the \acrshort{FFM} based results consider a
+system where the tip is expected to deform under loading. From asperity theory
+we can relate the loading to the increase in contact area which is considered a
+key feature. Since the contact area is not observed to change under loading for
+the atomic flat interface contacts this leaves a gap whether this can play an
+important role still. By applying stretching to a Kirigami sheet we might
+transition the system from an atomically flat sheet towards an asperity system.
+If we were to follow asperity theory this should result in a reduced friction.
+If not, this might provide insight into the general importance of the contact
+area. In addition, the deformation of the sheet will most likely be connected to
+effect the commensurability which generally found to be of great importance.
+This could probably give rise to both an increase or a decrease in friction depending on whether we transition from an incommensurable to a commensurable state or vice versa. For a Kirigami modified system the dependence on load will bring insight to the discussion of how friction depends on load with two governing
+explanations being either true contact area or commensurability. The dependencies for velocity, temperature and spring constant provide a reference point for the possible friction regimes, such as stick-slip versus smooth sliding or ballistic versus diffusive motion, which is essential for a more through comparison and understanding of our results. 
+
 
 
 
@@ -1485,157 +1358,9 @@ decreasing contact area. On the other hand, commensurability is generally expect
 
 
 
-% \subsubsection{Qualitatively}
-% \begin{enumerate}
-%   \item \textbf{Stick slip}: Generally we expect to observe periodic stick-slip motion with a period mathing the lattice constant(s) involved \cite{mo_friction_2009}. This was both present in the MD simulations \cite{zhu_study_2018}, \cite{ma12091425} and in the experiment by \cite{DIENWIEBEL2005197}. In AFM and SFA experiemnts, the stick-slip motion tend to transition into smooth sliding when the speed exceeds $\sim \SI{1}{\mu/s}$ while in MD modeling the same transition is observed in the $\sim \SI{1}{m/s}$ region \cite{Manini_2016}. Since we use a sliding speed of \SI{20}{m/s} we might transition into smooth sliding. This 6 order of magnitude discrepancy has been largely discussed in connection to simplifying assumptions in MD simulations. Bonelli et al.\ \cite{bonelli_atomistic_2009} found that the stick-slip behavior was present when the cantilever-tip-flake coupling was done with a relatively soft springs in contrast to hard springs which inhibited it.   
-
-%   \item \textbf{Static friction}: As highlighted in the FK model static friction
-%   will be sensitive to commensurability, which will additionally be affected by
-%   flake size. Reguzzoni and Righi \cite{PhysRevB.85.201412} have shown that the
-%   effective commensurability will increase drastically below a critical flake
-%   radius on the order of $10$ Å. Macroscopically we expect to see a logarithmic
-%   increase in static friction with contact time before sliding
-%   \cite{dieterich_1972}, and hence due to the short time-span of the static
-%   contact before dragging, it is not obvious to determine whether a significant
-%   static friction peak will be found. Also, the static friction best asserted by
-%   increasing the tangential sliding force slowly which is not the case in our
-%   simulation, especially considering that we are going to move the sheet rigidly
-%   (infinte spring constant) without any slack of a soft spring. Edge related
-%   origin of the pinning effects suggest that static friction can increase with
-%   sheet size up to a factor $A\propto A^{1/2}$, but this is also reported to be specific of the contact shape \cite{Manini_2016}.
-  
-%   % Talk about size effects?
-
-%   % Concerning stick-slip friction, another problem is that, unlike simulations, real experiments contain mesoscale or macroscale component intrinsically involved in the mechanical instabilities of which stick-slip consists. Here the comforting observation is that stick-slip is nearly independent of speed, so that so long as a simulation is long enough to realize a sufficient number of slip events, the results may already be good enough [148]  \cite{Manini_2016}.
-
-
-%   % A serious aspect of stick-slip friction which MD simulation is unable to attack is ageing. The slip is a fast event, well described by MD, but sticking is a long waiting time, during which the frictional contact settles very slowly. The longer the sticking time, the larger the static friction force necessary to cause the slip. Typicall experiments show a logarithmic increase of static friction with time [150] \cite{Manini_2016}.
-  
-%   % For monolayers sliding along atomically uniform substrates, however, there
-%   is % essentially no static friction. Indeed, the friction in these systems
-%   can be % up to 105 times less than that for macroscopic lubricants such as
-%   graphite. % This raises questions about the fundamental dissipation
-%   mechanisms that are at % work in systems at different scales. %
-%   (\url{https://physicsworld.com/a/friction-at-the-nano-scale/})
-
-%   \item \textbf{Oritentation (friction anisotropy)}: As predicted by the FK model and confirmed both numerically \cite{zhu_study_2018}, \cite{ma12091425} and experimentally \cite{DIENWIEBEL2005197}, \cite{feng_superlubric_2013} we expect a dependence of friction force on orientation due to changing commensurability. Zhu and Li \cite{zhu_study_2018} (gold substrate) reported the highest friction when sliding along the armchair direction, while Zhang et al.\ \cite{ma12091425} (diamond substrate) found the zigzag-direction to give the highest friction force (also the most evident stick-slip behvaiour in this direction). 
-% \end{enumerate}
 
 
 % By consulting with the most related numerical and experimental studies, while also considering the theoretical gap between smooth atomic contact and asperity theory, we have summarized an evaluation of the most important quantative trends expected from our numerical results in \cref{var_dep}. 
-
-
-
-
-
-
-% \begin{table}[H]
-%   \begin{center}
-%   \caption{Qualitative trends}
-%   \label{tab:qual_exp}
-%   \begin{tabular}{  M{5cm}  X{12cm} } \hline
-%   \textbf{Normal load} & Generally an increasing friction force is expected with increasing load. Both non-dependent, sublinear and linear relationship can be expecteded here. \\ \\
-%   \textbf{Velocity} & Generally an increasing friction force is expected with increased sliding velocity. Experimental results suggest that kinetic friction goes as $F_k\propto \ln{(v)}$, with the expectation that friction become independent of velocity at ``high'' velocities above \SI{1}{\mu/s}. Numerically a viscous $F_k \propto v$ is expected for all velocity ranges. \\ \\
-%   \textbf{Temperature} & . \\
-%   \hline
-%   \end{tabular}
-%   \end{center}
-% \end{table}
-
-% \begin{table}[H]
-%   \begin{center}
-%   \caption{Quantitative nano friction dependence on various variables. \hl{work in progress.}}
-%   \label{tab:var_dep}
-%   \begin{tabular}{ | c | C{3cm}| m{5cm}| m{5cm}|} \hline
-%   \textbf{Variable} & \textbf{Dependency} & \textbf{Numerical studies} & \textbf{Experimental} \\ \hline 
-%   Normal force $F_N$ 
-%   & {\begin{align*}
-%     F_{\text{fric}} &\propto F_N^{\alpha} \\
-%     \alpha &\le 1
-%   \end{align*}} 
-%   & Zhang et al.\ \cite{ma12091425} finds a seemingly linear relationship $F_{\text{fric}} \propto F_N$ while Bonelli et al.\ \cite{bonelli_atomistic_2009} reports a sublinear relationship. The latter corresponds with that of nanosasperity simulations where Mo et al.\ \cite{mo_friction_2009}, using an amorphous carbon tip on a diamond sample, also found a sublinear relationship when including adhesion and linear without adhesion.
-%   & Experimentally rather different trends have been observed, although the majority agree on increasing friction with increasing load \cite[p. 200]{gnecco_meyer_2015}. For the graphebne flake Dienwiebel et al.\ \cite{DIENWIEBEL2005197} found a seemingly non-dependent relationship while Feng et al.\ \cite{feng_superlubric_2013} did not report on this. FFM analog to the single asperity setup have yielded both linear relationship \cite{gao_frictional_2004} (silicon tip on gold) while Schwarz et al.\ \cite{PhysRevB.56.6987} found that FFM with well-defined spherical tips mathed with theoretical results (DMT, elastic spheres pressed together \cite[p. 200]{gnecco_meyer_2015}), yielding a power law $F_{\text{fric}} = F_N^{2/3}$. 
-%   \\ \hline
-%   Velocity $v$ & 
-%   {\begin{align*}
-%     F_{\text{fric}} &\propto \ln{v} \ (\text{exp.})\\
-%     &\text{or} \\
-%     F_{\text{fric}} &\propto v \ (\text{num.})\\
-%   \end{align*}}
-%   % $F_{\text{fric}} \propto \ln{v}$ 
-%   &  Studies of gold clusters on graphite suggest that friction is viscous, i.e. proportional to velocity \cite{Manini_2016}.
-
-%   & Logaritmic velocity dependence of friction has been measured for nanotip friction \cite[p. 201]{gnecco_meyer_2015} associated to thermal activation and possibly the time availble to form bond between the tip and the substrate. At higher velocities thermally activated processes are less important and friction becomes independent of velocity. This has been observed for Si tips and diamond, graphite and amorphous carbon surfaces with scan velocities above \SI{1}{\mu/s}.
-%   \\ \hline
-%   Temperature $T$
-%   & Either increase (MD) or decrease as $F_{\text{fric}} \propto \exp{(1/T)}$  (experimental)
-%   &  Zhang et al.\ \cite{ma12091425} found simply that friction increased with temperature. The \cite{Manini_2016} gold cluster on graphite study (\hl{get reference}) found that the temperature dependence was dependend on velocity regime. Low speed (diffusive) friction decreases upon heating while high speed (ballistic) friction rises with temperature. 
-%   & Zhao et al.\ \cite{zhao_thermally_2007} found $F_{\text{fric}} \propto \exp({1/T})$.
-%   \\ \hline
-%   Real contact area $A$ 
-%   & $F_{\text{fric}} \propto A$ 
-%   & Mo et al.\ \cite{mo_friction_2009} found that $F_{\text{fric}} \propto A$ where $A$ is the real contact area defined by atoms within chemical range. This is not studied for the case of a nanoflake where the contact area is presumingly rather constant.
-%   & \\ \hline
-%   \end{tabular}
-%   \end{center}
-% \end{table}
-
-
-
-% \begin{table}[H]
-%   \begin{center}
-%   \caption{Quantitative nano friction dependence on various variables.}
-%   \label{tab:var_dep}
-%   \begin{tabular}{ | c | m{3cm}| m{5cm}| m{5cm}|} \hline
-%   \textbf{Variable} & \textbf{Dependency} & \textbf{Numerical studies} & \textbf{Experimental} \\ \hline 
-%   Normal force $F_N$ 
-%   &  $F_f$ increasing $F_N$
-%   & MD simulations of amorphous carbon asperity on diamond substrate suggest a linear relatioship to $F_f\propto F_N$ for nonadhesive contact and sublinear with van der waals adhesive forces \cite{mo_friction_2009}. Graphene flake?
-%   & The general trend observed in AFM nanoscale friction is that friction force increase with normal load \cite[p.200]{gnecco_meyer_2015}. Various trends have been observed from linear to power trends. 
-%   \\ \hline
-%   Velocity $v$& $F_f \propto \ln{v}$ & & \\ \hline
-%   Temperature $T$& $F_f \propto 1/T$ & & \\ \hline
-%   Real contact area $A$ & $F_f \propto A$ & & \\ \hline
-%   \end{tabular}
-%   \end{center}
-% \end{table}
-
-
-
-
-% the stick-slip motion was more evident when changing the sliding direction from armchair to zigzag direction \cite{ma12091425}
-  
-%   \subsubsection{Variable dependence}
-
-%   \begin{enumerate}
-%   \item Normal force: The general trend observed in AFM nanoscale friction is that friction force increase with normal load \cite{gnecco_meyer_2015}. 
-%   \item Velocity: Smooth kinetic friction generally increase with speed (velocity strengthening) \cite{Manini_2016}. E. Gnecco et al.\ \cite{PhysRevLett.84.1172} showed a logaritmic increase in mean friction with velocity (the tip of a friction force microscope and NaCl(100) at low velocity ($10^-9$ - $10^-6$ m/s)).  If the scan velocity increases thermally activated processes becomes less important and beyond a critical value the friction forces becomes independent of velocity \cite[p. 202]{gnecco_meyer_2015}
-%   \item Temperature: A decrease in friction as $1/T$ was observed by Zhao et al.\ in a series of AFM measurements on graphite in a wide temperature range (140-750 K) \cite[source 351]{gnecco_meyer_2015}
-%   % Zhao et al.\ (2007) observed that friction on graphite decreases as 1/T over a wide temperature range (140–750 K), supporting the hypothesis of thermal activation of the stick–slip process. However, it was only recently that group of Schirmeisen reported atomic-scale FFM mea- surements in UHV at different temperatures (Jan- sen et al.\ 2010). When silicon, SiC, ionic crystals and graphite surfaces were cooled down from room temperature to cryogenic conditions, a good agreement with the thermally activated PT model was found down to a peak or a plateau, appearing between 50 and 200 K. Below these values, the friction was found to decrease with temperature, which the authors attributed to the competition between thermally activated rupture and formation of chemical bonds (Barel et al.\ 2010). \cite{BHUSHAN20051507}
-%   \item Ruan and Bhushan (1994) (source) found in an AFM study on graphite that the friction coefficient was around $\sim 0.01 - 0.03$
-%   % Ruan and Bhushan (1994) used an AFM to investigate the effect of surface roughness on the tribological characteristics of graphite using a Si3N4 tip. It was found that friction coefficient varied with respect to roughness of the substrate. The friction coefficient was below 0.01 and 0.03 for RMS roughness of about 10 nm and 140 nm, respectively. This outcome was attributed to the loss of orientation of the substrate with increasing roughness.33 \cite{kim_nano-scale_2009}
-%   \item Contact area
-% \end{enumerate}
-
-
-
-
-
-
-% \begin{enumerate}
-%   \item Smooth kinetic friction generally increase with speed  \cite{Manini_2016}. so-called velocity strengthening.  Logaritmic with speed % Gnecco E, Bennewitz R, Gyalog T, Loppacher C, Bam- merlin M, Meyer E, Güntherodt H-J (2000) Velocity dependence of atomic friction. Phys Rev Lett 84:1172–1175. Maybe crosscheck with macroscale to ensure that this is valid for higher velocities. 
- 
-%   \item Occurrence of stick slip (also in MD) \cite{kim_nano-scale_2009} (p. 146)
-% \end{enumerate}
-
-% Thus, it is commonly expected that the
-% friction of a dry nanocontact should classically decrease with increasing
-% temperature provided no other surface or material parameters are altered by
-% the temperature changes [77, 80–83]. (Current trends in the physics of
-% nanoscale friction)
-
-% Thus far we have used thermal activation to explain the velocity dependence of friction. The same mechanism also predicts that friction should change with temperature. \cite{BHUSHAN20051507}
-
 
 
 
@@ -1670,20 +1395,6 @@ decreasing contact area. On the other hand, commensurability is generally expect
 %   \label{fig:slip_line}
 % \end{figure}
 
-% \begin{enumerate}
-%   \item Friction should decrease by increasing temperature.
-%   \item We expect stick slip motion
-%   \item What about dependence on normal force?
-%   \item Dependence on contact area?
-%   \item Dependense on speed? 
-% \end{enumerate}
-
-% \begin{itemize}
-%   \item Different friction models on macro-and microscopic scale
-% \end{itemize}
-
-
-% Smooth kinetic friction generally increases with speed (velocity strengthening), but sometimes decreases with increasing speed in certain intervals \cite{Manini_2016}.
 
 % the smallest force needed to set a slider in motion – is also dependent on the simulation time (a longer wait may lead to depinning when a short wait might not), and generally dependent on system size, often increasing with sub-linear scaling with the slider’s contact area. To address this kind of behavior in MD simulations, it is often necessary to resort to scaling arguments in order to extrapolate the large-area static friction from small-size MD simulations [131, 140] \cite{Manini_2016}.
 
@@ -1717,6 +1428,9 @@ decreasing contact area. On the other hand, commensurability is generally expect
 From the friction review in \cref{chap:friction} we find that friction is an complex and scale and system specific phenomena. We are going to study the behvaiour of a kirigami sheet deforming under stretching which constitute a transition between system types. We will focus on how this transition effects the frictional behaviour and how this relates to parameters such as load and contact area. From the previous results we find the main expectations to our system which in \cref{tab:exp_summary}. By considering our system behaviour against these general expectations we can bring insight into some of the discrepancies related to different theoretical predictions and aim to pinpoint where our system belongs
 
 Experimental method lacks from not seeing the surface contact and retrieivng accurate data for what goes ons
+
+
+% Size effects, edge effects and shape effects on commensurability is worth mentioning.  
 
 
 % Textwidth = 484,20988 pt*0,035146 pt/cm = 17,02 % \the\textwidth
