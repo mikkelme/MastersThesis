@@ -1,4 +1,4 @@
-\chapter{Molecular Dynamics}
+\chapter{Molecular Dynamics}\label{chap:MD}
 % \cite[p. 18-]{Manini_2016}
 
 Molecular Dynamics (\acrshort{MD}) is an atomistic simulation method which are a
@@ -89,7 +89,7 @@ mechanics \hl{source}.
 
 
 
-\section{Potentials}
+\section{Potentials}\label{sec:potentials}
 % \cite{PhysRevB.37.6991}
 
 % I have chosen the potentials from experience of similar studies to achieve
@@ -366,7 +366,7 @@ is adopted from J. Tersoff \cite{PhysRevB.39.5566} and summarized in
 \end{table}
 
 
-\section{Integration}
+\section{Integration}\label{sec:integration}
 % https://www.eng.uc.edu/~beaucag/Classes/AdvancedMaterialsThermodynamics/Books/%5BComputational%20science%20(San%20Diego,%20Calif.)%5D%20Daan%20Frenkel_%20Berend%20Smit%20-%20Understanding%20molecular%20simulation%20_%20from%20algorithms%20to%20applications%20(2002,%20Academic%20Press%20)%20-%20libgen.lc.pdf
 
 Assuming that one has defined a system of particles, setting the atom types, initial positions and velocties, and interartomic potentials, we need
@@ -441,7 +441,7 @@ numerically is as stated in the following steps.
 \end{enumerate}
 
 
-\section{Thermostats}
+\section{Thermostats}\label{sec:thermostat}
 In \cref{chap:friction} we introduced friction as an ultimate result of the equipartition theorem stating that the kinetic energy supplied by the sliding motion will tend to transfer to other degress of freedom and eventually dissipate to the environment as heat through phonon transport (and electrons for a metallic system) \cite{Manini_2016}. However, when modelling the system exclusively through the solutions of Newtons equations of motion we have no modelling of such an environment. Instead the energy will reflect back and forth and eventually ``pile up'' in the system in an unphysical manner. In order to resolve this issue we have to include a modelling of the environmeant by adding some kind of heatsink that allow for heat dissipation. This can be approached in a variety of ways, but one of the more common choices, which we will use as well, is the Langevin thermostat.
 
 

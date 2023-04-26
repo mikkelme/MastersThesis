@@ -1,4 +1,4 @@
-\chapter{Machine Learning}
+\chapter{Machine Learning}\label{chap:ML}
 In this thesis machine learning will serve as a numerical tool for evaluating
 and exploring the frictional behavior of various Kirigami designs. We will
 generate data using \acrshort{MD} simulations which serve as a ground truth for
@@ -15,7 +15,7 @@ key concept behind machine learning and some of the relevant concepts and
 techniques relevant to our implementation.
 
 
-\section{Neural network}
+\section{Neural network}\label{sec:NN}
 The neural network, or more precisely the \textit{feed forward dense neural
 network}, is one of the original concepts in machine learning arising from the attempt of mimicking the way neurons work in the brain \cite{lederer2021activation, Shankar_2022}. The neural network can be considered as three major parts: The input layer, the
 so-called \textit{hidden layers} and finally the output layer as shown in
@@ -107,7 +107,7 @@ precision but the noisiness makes it more likely to escape local minima in the l
 
 
 
-\section{Optimizers}
+\subsection{Optimizers}
 % Consider changing from theta_t+1 to theta
 % https://arxiv.org/pdf/1412.6980.pdf
 
@@ -237,7 +237,7 @@ first 30\% of the training length.
 
 
 
-\section{Convolutional Neural Network}
+\section{Convolutional Neural Network}\label{sec:CNN}
 Convolutional Neural Networks (\acrshort{CNN}s) build upon some of the same
 concepts as introduced with the feed-forward neural network. The difference lies
 in its specialization for a spatially correlated input, such as pixels in an
@@ -411,8 +411,8 @@ confident fit.
 
 
 
-\section{Hypertuning}
-\hl{Define hyper-parameter probably like done in} \cite{Bengio2012}
+\section{Hypertuning}\label{sec:hypertuning}
+\hl{Define hyper-parameter properly like done in} \cite{Bengio2012}
 
 Training a machine learning model revolves around tuning the model parameters such as weights and biases. However, a handful of so-called \textit{hyper-parameters} remains for us to decide. First of all, we need to choose an architecture for the model. This includes high-level considerations, for instance, whether to use a neural network or a convolutional network, but also lower-level considerations, such as the depth and the width of the model, i.e.\ how many layers and how many nodes/channels. In addition, we have to define and consider the loss function and the optimizer which come with hyper-parameters such as learning rate, momentum and weight decay. This extensive list of choices makes the designing of an a functional model more complicated that simply starting the traiing. As N. Smith \cite{smith2018disciplined} puts it: ``Setting the
 hyper-parameters remains a black art that requires years of experience to
@@ -516,7 +516,7 @@ the difference between a biased and unbiased model for the predictions of profes
 % often not readily interpreted. 
 
 
-\section{Accelerated search using genetic algorithm}
+\section{Accelerated search using genetic algorithm}\label{sec:GA}
 
 
 \subsection{Markov-Chain Accelerated Genetic Algorithms}
