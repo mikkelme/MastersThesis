@@ -1271,25 +1271,27 @@ independent of velocity according to the \acrshort{PT} model result \cref{eq:F_t
 Regarding temperature itself, the general experimental trend is decreasing friction with increasing temperature as found by Zhao et al.\ \cite{zhao_thermally_2007} in a series of \acrshort{AFM} graphene on graphite experiments yielding $F_{\text{fric}} \propto \exp{(1/T)}$. This agrees with the thermal drift regime of the \acrshort{PT} model even though the exact temperature range does not agree. Morevoer, Wijn et al.\ \cite{Wijn_2011} found that friction commensurability can be lost at higher temperatures (above 200K) where they found a power law behavior $F_k \propto T^{-1.13 \pm0.04}$. Numerically, Zhang et al.\ \cite{ma12091425} found that friction increased with temperature, using a sliding speed of \SI{10}{m/s}. Considering the findings of \cite{Guerra_2010} this qualitative different behavior might be attributed to a \acrshort{MD} related effect associated with the transition from low speed diffusive behavior as to high speed ballistic behavior.
 \\
 \\
-From the review of previous results, we find several gaps and discrepancies
-between the friction description provided by the reduced-models, \acrshort{MD}
-simulations and experimental methods respectively. Some of these discrepancies
-can be attributed to the fact that different physical mechanisms are included in
-the numerical modelling that might not capture the relevant behavior found in
-experiments. On the other hand, we might also point to the slight difference in
-the studied stystems. For instance, the \acrshort{FFM} based results consider a
-system where the tip is expected to deform under loading. From asperity theory
-we can relate the loading to the increase in contact area which is considered a
-key feature. Since the contact area is not observed to change under loading for
-the atomic flat interface contacts this leaves a gap whether this can play an
-important role still. By applying stretching to a Kirigami sheet we might
-transition the system from an atomically flat sheet towards an asperity system.
-If we were to follow asperity theory this should result in a reduced friction.
-If not, this might provide insight into the general importance of the contact
-area. In addition, the deformation of the sheet will most likely be connected to
-effect the commensurability which generally found to be of great importance.
-This could probably give rise to both an increase or a decrease in friction depending on whether we transition from an incommensurable to a commensurable state or vice versa. For a Kirigami modified system the dependence on load will bring insight to the discussion of how friction depends on load with two governing
-explanations being either true contact area or commensurability. The dependencies for velocity, temperature and spring constant provide a reference point for the possible friction regimes, such as stick-slip versus smooth sliding or ballistic versus diffusive motion, which is essential for a more through comparison and understanding of our results. 
+From the review of previous results, we find several gaps and discrepancies in
+the description of friction provided by the reduced-models, \acrshort{MD}
+simulations and experimental methods respectively. Some of the discrepancies can
+be attributed to the fact that different physical mechanisms are included in the
+numerical modeling. The reduced-models provides the simplest description while
+\acrshort{MD} simulations are thought to capture a more complex behavior. On the
+other hand, we might also point differences in the studied systems as an
+important factor to consider. This regard the physical conditions such as
+sliding speed and temperature, but also higher level features converning the
+mechanical properties of the system. For instance, the \acrshort{FFM} based
+results consider an asperity-like system where the tip is expected to deform
+under loading, which gives rise to a change in contact area. This feature is
+lacking in the flat flake-/sheet-systems, and thus we might question the role of
+the contact area in these systems. More precisely, when inflicting an
+out-of-plane buckling through Kirigami cuts and stretching, the contact area is
+expected to decrease as well. From asperity theory we might simply hypothesize
+that friction will decrease during such a transition. However, as the system
+deforms we can also expect a modification of the commensurability, and the local loading which can be associated with radical changes in the frictional behavior associated with different stick-slip regimes. From the results of a non-Kirigami sheet under tension, we already see clues that the stretching will provide an reduction in friction without considering the contact area. Similar, the results from a corrugated nano surface also points to the fact that surface stiffness might play an important role as well. 
+
+
+
 
 
 
@@ -1425,48 +1427,43 @@ explanations being either true contact area or commensurability. The dependencie
 
 
 \section{Research questions}\label{sec:research_questions}
-From the friction review in \cref{chap:friction} we find that friction is an complex and scale and system specific phenomena. We are going to study the behvaiour of a kirigami sheet deforming under stretching which constitute a transition between system types. We will focus on how this transition effects the frictional behaviour and how this relates to parameters such as load and contact area. From the previous results we find the main expectations to our system which in \cref{tab:exp_summary}. By considering our system behaviour against these general expectations we can bring insight into some of the discrepancies related to different theoretical predictions and aim to pinpoint where our system belongs
-
-Experimental method lacks from not seeing the surface contact and retrieivng accurate data for what goes ons
-
-
-% Size effects, edge effects and shape effects on commensurability is worth mentioning.  
-
-
-% Textwidth = 484,20988 pt*0,035146 pt/cm = 17,02 % \the\textwidth
-\begin{table}[H]
-  \begin{center}
-  \caption{Summary}
-  \label{tab:exp_summary}
-  \begin{tabular}{  M{5cm}  X{12cm} } \hline
-  \textbf{Stick slip} & Generally we expect to observe periodic stick-slip motion with a period matching the lattice constant(s) involved \cite{mo_friction_2009}. This is however expected to be inhibited by high spring stiffness for the moving support, high temperature, system size and at large velocities. For the latter, we mainly refer to a ``smooth-looking'' force trace, which can still involve slips \hl{hmmm...} \\ \\
-  % At large velocities the reduced-models suggest a multiple slip behavior while experimental results suggest smooth sliding. This discrepancy might be explained by a different definition of smooth sliding as the multiple slip regime can produce seemingly ``smooth-looking'' force traces. Additionally, it is expected that the tendency of stick-slip behvaiour is reduced by increasing temperature and for incommensurability. \\ \\
-  \textbf{Static friction} & Static friction is expected to correlate with the presence of stick-slip motion. We expect it to be most pronounced for commensurable configurations with a possible disappearance for incommensurability. Moreover, static friction is expected to increase with system size, time in stationary contact and decreasing temperature. \\ \\
-  \textbf{Commensurability} & Both static and kinetic friction is expected to be highly sensitive to commensurability, through lattice spacing, the orientation of the flake relative to the substrate and the path of sliding along the substrate. By loading, rotating, cutting and stretching the sheet we might alter commensurability as well as a change of the spring constant can alter the translational freedom during sliding leading to a similar change in commensurability. \\ \\
-  \textbf{Friction evolution} \linebreak \textbf{(Friction strengthening)} & Friction evolution is found to be present in monolayer graphene resting on a substrate, and thus we expect this to be present in our simulation setup as well.  \\ \\
-  \textbf{Negative coef} & Previous result shows that a negative friction coefficient can be done, but these were related to a different system. However, alterations through stretching and corrugation have shown that it is possible to alter friction through deformations. By introducing a coupling between load and such deformations we might be able to achieve a negative coefficient.  \\ \\
-  \textbf{Normal load} & Generally an increasing friction force is expected with increasing load. Both non-dependent, sublinear and linear relationships can be expected. \\ \\
-  \textbf{Velocity} & Generally an increasing friction force is expected with increased sliding velocity. Numerical results suggest a viscous friction $F_k \propto v$ \\ \\
-  \textbf{Temperature} & From an experimental and model-based point of view friction is expected to decrease with temperature in a power law or exponential manner. However, for \acrshort{MD} simulations the transition from a diffusive to a ballistic regime at a velocity around 1--\SI{10}{m/s} is suggested to yield increasing friction with temperature.  \\ \\
-  \textbf{Contact area} & For the non-cut sheet we do not expect to see any noticeable change in contact area during loading. For a deforming sheet that successfully changes the contact area, it is theorized to alter the friction as well in a proportional manner.  \\
-  \hline
-  \end{tabular}
-  \end{center}
-\end{table}
-
-In general we will aim to design a friction simulation that gives stable result. We will consider the dependencies to temperautre, speed, spring constant as a means to comparing our results with the ...
-
-\begin{itemize}
-  \item How does the contact area relate to friction as the sheet buckles during stretching. 
-  \item How does stretching effect friction.
-  \item How does a non-stretched kirigami effect friction.
-  \item what mechanism can we recognize from our expectations. 
-\end{itemize}
+From the friction review in \cref{chap:friction}, we find a frictional
+behavior that is highly dependent on the system, the numerical modeling and the
+physical conditions related to the environment and the probing of friction. We aim to study the frictional behavior of a Kirigami sheet as it exhibits out-of-plane buckling under tension. The theoretical understanding indicates that such deformations will constitute a transition between two types of systems, an
+asperity system and an atomically flat interface, which have only been
+studied separately. Thus, our primary objective is to explore the effects of such a transition. In particular, our study aims to investigate the significance of contact area and to test the hypothesis that reducing the contact area results in decreased friction. Additionally, we seek to enhance our comprehension of how Kirigami sheet friction is affected by stretching and how this impacts its load dependence. To contribute with new insight into the field of friction we are especially interested in non-linear dependencies between friction and stretching of various Kirigami designs. From these results, we want to investigate the prospects of achieving a negative friction coefficient for a system of coupled load and stretch. Do the extensive list of important physical
+parameters, we do not carry out an exhaustive evaluation of how our system behaves across the corresponding frictional regimes. Instead, we aim to create a \acrshort{MD} simulation which provides a good basis for the measurement of friction. The relevant understanding of how the physical conditions affect the simulation will be considered in order to frame our system within the theoretical understanding.
 
 
+In order to get a broader view of the possibilities within Kirigami design for friction control we create a \acrshort{MD}-based dataset regarding the friction behavior for a variety of Kirigami designs. By the use of Machine learning, we want to investigate whether it is possible to pick up any useful trends in the dataset regarding the friction behavior as a function of kirigami design, stretch and load. This will serve as an initial clue whether this machine learning can be useful for this kind of problem as well as a tool for performing an accelerated search of Kirigami designs. Especially we want to use the data for an evaluation of the prospects of minimizing and maximizing the friction force and also the friction coefficient for a coupled system of load and stretch. 
 
-% Formulate the research questions guiding the reading of the thesis moving on. 
 
+% This transition can be hypothesized
+% to introduce the contact area as an important factor for friction, along with
+% more complex effects associated with commensurability and the mechanical
+% deformations in general.
+
+
+% Initially, we want to focus on a qualitative description of the effect on out-of-plane buckling and consider the relation to contact area. We will then evaluate the dependence on stretch and investigate how this effect the load dependence and the associated frictional coefficients. 
+
+
+% From there on, we want to create an dataset of multiple Kirigami patterns in order to explore the relation to stretching of the sheet. The aim is to identify the possibility for interesting non-linear effects. By training a machine learning model we will extend this search further in an accelerated manner. This exploration can be considered as a broad view of the possible effects from Kirigami induced deformations which will set the scene for further studies of the phyical mechanisms behind. Thus we consider our work as a proof of concept for the general method and as a relevant insight in a system domain not systematically studied. 
+
+Our main research questions can be summarized as follows.
+
+\begin{enumerate}
+  \item  How can we design a \acrshort{MD} simulation that provides a stable foundation for an investigation of friction behavior for a Kirigami sheet sliding on a substrate? How do our specific system and condition choices relate to the theoretical understanding?
+  \item Can we achieve out-of-plane buckling for a graphene sheet using Kirigami cuts and stretch? How can we design a numerical procedure to generate a variety of designs which include out-of-plane buckling but also some randomized designs for an improved variety in the machine learning data?
+  \item What friction-related effects can be observed for a Kirigami sheet as it is stretched?
+  \begin{enumerate}
+    \item How does friction dependent on changing contact area?
+    \item Are stretching effects significant for a non-cut sheet?
+    \item How does the load dependence relate to stretched Kirigami sheets?
+  \end{enumerate}
+  \item Are we able to capture general trends in the friction data related to Kirigami designs, stretch and load using machine learning?
+  \item Can we use a machine learning model to predict new designs optimizing for a minimum or maximum friction force and a minimum or maximum friction coefficient in a system with coupled load and stretch?
+  \item What are the prospects of achieving a negative friction coefficient for a coupled system?
+\end{enumerate}
 
 
 
@@ -1482,4 +1479,75 @@ In general we will aim to design a friction simulation that gives stable result.
 %   \item Use the most promising candidates from the accelerated search to investigate the prospects of creating a nanomachine setup that exhibits a negative friction coefficient. 
 %   \item Study certain designs of interest with the scope of revealing underling mechanisms. This includes simple correlation analysis but also a visualization of feature and gradient maps of the \acrshort{ML} network.
 % \end{enumerate}
+
+
+
+
+
+
+% What kind of friction effects can be associated to the stretching of Kirigami sheets.
+% \item 
+
+
+% How does the contact area relate to friction as the sheet buckles during stretching. 
+% \item How does stretching effect friction.
+% \item How does a non-stretched kirigami effect friction.
+% \item what mechanism can we recognize from our expectations. 
+
+% In general we will aim to design a friction simulation that gives stable result. We will consider the dependencies to temperautre, speed, spring constant as a means to comparing our results with the ...
+
+
+% We are going to study the behvaiour of a kirigami sheet deforming under stretching which constitute a transition between system types. We will focus on how this transition effects the frictional behaviour and how this relates to parameters such as load and contact area. From the previous results we find the main expectations to our system which in \cref{tab:exp_summary}. By considering our system behaviour against these general expectations we can bring insight into some of the discrepancies related to different theoretical predictions and aim to pinpoint where our system belongs
+
+% Experimental method lacks from not seeing the surface contact and retrieivng accurate data for what goes ons
+
+
+% Size effects, edge effects and shape effects on commensurability is worth mentioning.  
+
+%  By applying stretching to a Kirigami sheet we might
+% transition the system from an atomically flat sheet towards an asperity system.
+% If we were to follow asperity theory this should result in a reduced friction.
+% If not, this might provide insight into the general importance of the contact
+% area.
+
+% In addition, the deformation of the sheet will most likely be connected to
+% effect the commensurability which generally found to be of great importance.
+% This could probably give rise to both an increase or a decrease in friction depending on whether we transition from an incommensurable to a commensurable state or vice versa. For a Kirigami modified system the dependence on load will bring insight to the discussion of how friction depends on load with two governing
+% explanations being either true contact area or commensurability. 
+
+
+% The dependencies for velocity, temperature and spring constant provide a reference point for the possible friction regimes, such as stick-slip versus smooth sliding or ballistic versus diffusive motion, which is essential for a more through comparison and understanding of our results. 
+
+
+
+% Textwidth = 484,20988 pt*0,035146 pt/cm = 17,02 % \the\textwidth
+% \begin{table}[H]
+%   \begin{center}
+%   \caption{Summary}
+%   \label{tab:exp_summary}
+%   \begin{tabular}{  M{5cm}  X{12cm} } \hline
+%   \textbf{Stick slip} & Generally we expect to observe periodic stick-slip motion with a period matching the lattice constant(s) involved \cite{mo_friction_2009}. This is however expected to be inhibited by high spring stiffness for the moving support, high temperature, system size and at large velocities. For the latter, we mainly refer to a ``smooth-looking'' force trace, which can still involve slips \hl{hmmm...} \\ \\
+%   % At large velocities the reduced-models suggest a multiple slip behavior while experimental results suggest smooth sliding. This discrepancy might be explained by a different definition of smooth sliding as the multiple slip regime can produce seemingly ``smooth-looking'' force traces. Additionally, it is expected that the tendency of stick-slip behvaiour is reduced by increasing temperature and for incommensurability. \\ \\
+%   \textbf{Static friction} & Static friction is expected to correlate with the presence of stick-slip motion. We expect it to be most pronounced for commensurable configurations with a possible disappearance for incommensurability. Moreover, static friction is expected to increase with system size, time in stationary contact and decreasing temperature. \\ \\
+%   \textbf{Commensurability} & Both static and kinetic friction is expected to be highly sensitive to commensurability, through lattice spacing, the orientation of the flake relative to the substrate and the path of sliding along the substrate. By loading, rotating, cutting and stretching the sheet we might alter commensurability as well as a change of the spring constant can alter the translational freedom during sliding leading to a similar change in commensurability. \\ \\
+%   \textbf{Friction evolution} \linebreak \textbf{(Friction strengthening)} & Friction evolution is found to be present in monolayer graphene resting on a substrate, and thus we expect this to be present in our simulation setup as well.  \\ \\
+%   \textbf{Negative coef} & Previous result shows that a negative friction coefficient can be done, but these were related to a different system. However, alterations through stretching and corrugation have shown that it is possible to alter friction through deformations. By introducing a coupling between load and such deformations we might be able to achieve a negative coefficient.  \\ \\
+%   \textbf{Normal load} & Generally an increasing friction force is expected with increasing load. Both non-dependent, sublinear and linear relationships can be expected. \\ \\
+%   \textbf{Velocity} & Generally an increasing friction force is expected with increased sliding velocity. Numerical results suggest a viscous friction $F_k \propto v$ \\ \\
+%   \textbf{Temperature} & From an experimental and model-based point of view friction is expected to decrease with temperature in a power law or exponential manner. However, for \acrshort{MD} simulations the transition from a diffusive to a ballistic regime at a velocity around 1--\SI{10}{m/s} is suggested to yield increasing friction with temperature.  \\ \\
+%   \textbf{Contact area} & For the non-cut sheet we do not expect to see any noticeable change in contact area during loading. For a deforming sheet that successfully changes the contact area, it is theorized to alter the friction as well in a proportional manner.  \\
+%   \hline
+%   \end{tabular}
+%   \end{center}
+% \end{table}
+
+
+
+
+
+% Formulate the research questions guiding the reading of the thesis moving on. 
+
+
+
+
 
