@@ -196,11 +196,6 @@ class Evaluater():
             prac_rup_stretch_idx = np.min(np.argwhere(rupture))
             if prac_rup_stretch_idx < 2: # If early rupture
                 return None
-                # metrics['Ff_min'] = (np.nan, np.nan)
-                # metrics['Ff_max'] = (np.nan, np.nan)
-                # metrics['Ff_max_diff'] = (np.nan, np.nan, np.nan)
-                # metrics['Ff_max_drop'] = (np.nan, np.nan, np.nan)
-                # return metrics
                     
         else:
             prac_rup_stretch_idx = -1

@@ -69,11 +69,7 @@ class Search:
         condition = metrics['Ff_max'][-1] >= self.extrema['Ff_max'][:, -1]
         self.insert(condition, name, mat, metrics, 'Ff_max')
         
-        
-        # print(name, np.argmax(self.extrema['Ff_max'][:, 0] == 'name'))
-        
-        
-        
+           
         # Maximum Ff diff
         condition = np.abs(metrics['Ff_max_diff'][-1]) >= np.abs(self.extrema['Ff_max_diff'][:, -1])
         self.insert(condition, name, mat, metrics, 'Ff_max_diff')

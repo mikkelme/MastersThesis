@@ -724,8 +724,10 @@ def final_model_compare_scores(model_path):
                         popup + 'pop_28',
                         popup + 'pop_1',
                         popup + 'pop_58']
-    
+
     compare_folders = honeycomb_folder + popup_folder
+    
+    
     R2 = np.zeros((len(compare_folders), 3)) # Ff_mean, Ff_max, contact
     porosity_abs_error = np.zeros(len(compare_folders)) 
     rup_stretch_rel_error = np.zeros(len(compare_folders)) 
@@ -773,7 +775,6 @@ def final_model_compare_scores(model_path):
                     labels = np.stack((Ff_mean[:, k], Ff_max[:, k], contact[:, k], np.full(Ff_mean.shape[0], porosity), np.full(Ff_mean.shape[0], porosity), rup[:, k]), axis=1).astype('float32')
                     loss, Ff_loss, other_loss, rup_loss = criterion(torch.from_numpy(output), torch.from_numpy(labels))
                     tot_loss[f] += loss.item()
-                    
                     
                     porosity_abs_error[f] += np.sum(np.abs(porosity - output[:, 3]))
                     rup_stretch_rel_error[f] += np.sum(np.abs((rupture_stretch - output[:, 4])/rupture_stretch))
@@ -831,8 +832,8 @@ if __name__ == '__main__':
     # mom_weight_search_compare_perf(path = '../ML/mom_weight_search_cyclic', save = False)
     
     
-    final_model_evaluation(model_path = '../ML/mom_weight_search_cyclic/m0w0', save = True)
-    # final_model_compare_scores(model_path = '../ML/mom_weight_search_cyclic/m0w0')
+    # final_model_evaluation(model_path = '../ML/mom_weight_search_cyclic/m0w0', save = False)
+    final_model_compare_scores(model_path = '../ML/mom_weight_search_cyclic/m0w0')
     plt.show()
 
 

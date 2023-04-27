@@ -8,7 +8,7 @@ from analysis.analysis_utils import *
 #     from dataloaders import *
 #     from analysis_utils import *
     
-
+from scipy.signal import argrelextrema
 from plot_set import *
 import ast
 
@@ -322,6 +322,83 @@ def get_rupture_count():
     
         
         
+def get_config_data_property_score(folder):
+    
+    data = read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.35)
+
+
+
+    stretch = data['stretch_pct']
+    F = data['Ff'][:, :, 0, 1]
+
+
+    extrema = {}
+    extrema['Ff_min'] = (np.nan, 1e3)
+    extrema['Ff_max'] = (np.nan, -1e3)
+    extrema['Ff_max_diff'] = (np.nan, np.nan, 0)
+    extrema['Ff_max_drop'] = (np.nan, np.nan, -1e3)
+    
+    # Go through normal load and find extrema
+    for k in range(F.shape[1]): 
+        metrics = {}
+    
+        Ff = F[:,k]
+        non_rup = ~np.isnan(Ff)
+        
+
+        Ffmin_idx = np.argmin(Ff[non_rup])
+        Ffmax_idx = np.argmax(Ff[non_rup])
+
+        # Biggest forward drop in Ff
+        loc_max = argrelextrema(Ff[non_rup], np.greater_equal)[0]
+        loc_min = argrelextrema(Ff[non_rup], np.less_equal)[0]
+
+        drop_start = 0; drop_end = 0; max_drop = 0
+        for i in loc_max:
+            for j in loc_min:
+                if j > i: # Only look forward 
+                    drop = Ff[i] - Ff[j]
+                    if drop > max_drop:
+                        drop_start = i
+                        drop_end = j
+                        max_drop = drop
+            
+        metrics['Ff_min'] = (stretch[Ffmin_idx], Ff[Ffmin_idx])
+        metrics['Ff_max'] = (stretch[Ffmax_idx], Ff[Ffmax_idx])
+        metrics['Ff_max_diff'] = (stretch[Ffmin_idx], stretch[Ffmax_idx], Ff[Ffmax_idx]-Ff[Ffmin_idx])
+        metrics['Ff_max_drop'] = (stretch[drop_start], stretch[drop_end], max_drop)
+                 
+
+        
+        if metrics['Ff_min'][-1] <= extrema['Ff_min'][-1]:
+            extrema['Ff_min'] = metrics['Ff_min']
+
+        if metrics['Ff_max'][-1] >= extrema['Ff_max'][-1]:
+            extrema['Ff_max'] = metrics['Ff_max']
+            
+        if np.abs(metrics['Ff_max_diff'][-1]) >= np.abs(extrema['Ff_max_diff'][-1]):
+            extrema['Ff_max_diff'] = metrics['Ff_max_diff']
+            
+        if metrics['Ff_max_drop'][-1] >= extrema['Ff_max_drop'][-1]:
+            extrema['Ff_max_drop'] = metrics['Ff_max_drop']
+
+        
+    for key in extrema:
+        print(extrema[key])
+       
+       
+        # metrics['Ff_max'] = (stretch[Ffmax_idx], Ff[Ffmax_idx])
+        # metrics['Ff_max_diff'] = (stretch[Ffmin_idx], stretch[Ffmax_idx], Ff[Ffmax_idx]-Ff[Ffmin_idx])
+        # metrics['Ff_max_drop'] = (stretch[drop_start], stretch[drop_end], max_drop)
+                 
+        # s = ''          
+        # s += f'Ff_min: {stretch[Ffmin_idx]}, {Ff[Ffmin_idx]}\n'
+        # s += f'Ff_max: {stretch[Ffmax_idx]}, {Ff[Ffmax_idx]}\n'
+        # s += f'Ff_max_diff: {stretch[Ffmin_idx]}, {stretch[Ffmax_idx]}, {Ff[Ffmax_idx]-Ff[Ffmin_idx]}\n'
+        # s += f'Ff_max_drop: {stretch[drop_start]}, {stretch[drop_end]}, {max_drop}\n'
+        # print(s) 
+    
+        
 if __name__ == '__main__':
     # plot_corrcoef(save = False)
     # plot_corr_scatter(save = False)
@@ -332,13 +409,19 @@ if __name__ == '__main__':
     # get_rupture_count()
     
     # plt.show()
-    pass
     
     # data_root = ['../Data/ML_data/honeycomb', '../Data/ML_data/popup'] 
     # obj = Data_fetch(data_root)
     # data = obj.get_data(['is_ruptured'], obj[:], exclude_rupture = False)
     # part = np.sum(data['is_ruptured']) / len(data['is_ruptured'])
     # print(part)
+    
+    folder = '../Data/baseline_fixmove/nocut/multi_stretch'
+    folder = '../Data/baseline_fixmove/popup/multi_stretch'
+    # folder = '../Data/baseline_fixmove/honeycomb/multi_stretch'
+    get_config_data_property_score(folder)
+    
+    pass
     
     
     

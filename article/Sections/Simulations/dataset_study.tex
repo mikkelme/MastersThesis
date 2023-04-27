@@ -1,27 +1,48 @@
 \chapter{Kirigami configuration exploration}\label{chap:dataset_study}
 
-\section{Generating data}
-The dataset consist of friction simulations of various cut configurations and combinations of normal load and stretch. For each configuration we
-sample 15 pseudo uniform (\hl{refer to relevant section here}) strech values
-between zero and the rupture stretch found in the rupture test. The normal force
-is uniformly sampled in the range $[0.1, 10]$ nN. In total this gives $3\times
-15$ data points for each configuration. For the remaining parameters we use the
-values presented in the pilot study (see \cref{tab:param}). We generate 68
+
+Based on the findings in the Pilot Study \cref{chap:pilot_study} we will further explore the effects of Kirigami designs for stretch-depending friction. We are especially interested in the optimization toward friction force and friction coefficient extrema. First, we create a dataset through \acrshort{MD} simulations for an extended set of Kirigami designs. This provides useful insight regarding general trends for the frictonal behavior. Following, we use the dataset to investigate the possibility to use machine learning for a prediction of the friction behavior based on Kirigami design, stretch and load. Finally, we attempt an accelerated search using the acquired machine learning model.
+
+
+\section{Generating the dataset}
+We aim to create a dataset that contains information on frictional behavior for
+varying Kirigami configurations \hl{(is it bad to change from ``design'' to
+``configuration''...)}, stretch and load. For each configuration, we sample 15
+pseudo uniform stretch values (see \cref{sec:stretch_dependency}) between zero
+and the rupture stretch according to the rupture test. The normal force is
+uniformly sampled in the range $[0.1, 10]$ nN. In total, this gives $3\times 15$
+data points for each configuration. For the remaining parameters, we use the
+values presented in the pilot study (see \cref{tab:param}). We are mainly
+concerned with the mean friction and whether the sheet is ruptured or not.
+However, we also include the maximum friction, the relative contact, the rupture
+stretch (from the rupture test) and the porosity (void fraction) in the dataset. We generate 68
 configurations of the Tetrahedron pattern type, 45 of the Honeycomb type and 100
-of the Random walk type. A summary of the dataset is given in \cref{tab:dataset_summary} while all configurations are shown explicitly in \cref{sec:dataset_conf}. Notice that not all submitted data points ``makes it'' to the final dataset. This is due a small variation in rupture stretch points which were not anticipated during the creation of the numerical framework for submitting multiple simulation. After performing the rupture test the simulation is restarted
-with a new substrate size corresponding to the measured rupture stretch limit
-and also with new random velocity and thermostat initializations values. The sheet is then stretched and checkpoints of the simulation state (LAMMPS restart files) are saved for each of the targeted stretch samples. However, if the rupture points arrives slightly early than syggested by the rupture test, some sampled stretch values might not get a corresponding checkpoint file. Thus, these data points are not included in the data set even though they ideally should have been noted as a rupture event. This could quite easily have been mittigated by a rewrite of that part of the code, but it was first discovered after the dataset had been created. However, the dataset still includeds 11.57 \% rupture events and it most likely that the most cases with a lost rupturer event have a rupture event stored for the preeceding stretch value instead which captures the information of the sheet stretch limit on its own. 
+of the Random walk type. A summary of the dataset is given in
+\cref{tab:dataset_summary} while all configurations are shown explicitly in
+\cref{sec:dataset_conf}. The Tetrahedron and Honeycomb parameters are chosen to
+provide additional variations of the evaluated configurations evaluated in
+\cref{chap:pilot_study} which exhibited interesting properties, while the Random
+walk configurations are chosen to get as diverse configurations as possible.
+Notice that not all submitted data points ``make it'' to the final dataset. This
+is due to a small bug in the data generation procedure\footnote{The issue arises from the fact that the rupture point in the rupture test does not
+completely match the rupture point in the following simulations. After
+performing the rupture test the simulation is restarted with a new substrate
+size, corresponding to the measured rupture stretch limit, but also with a new
+random velocity and thermostat initialization. The sheet is then stretched and
+checkpoints of the simulation state (LAMMPS restart files) are saved for each of
+the targeted stretch samples. However, if the rupture point arrives earlier than suggested by the rupture test due, to the randomness from the initialization, some of the planned stretch samples might get lost without a corresponding checkpoint file. Thus, these data points are not included in the dataset even though they ideally should have been noted as a rupture event. This could quite easily have been mitigated by a rewrite of the code, but it was first discovered after the dataset had been created. We notice, however, that the dataset still contains 11.57 \% rupture events which provide a reasonable amount of rupture events to incorporate in the machine learning model}.
+
 
 \begin{table}[H]
   \begin{center}
-  \caption{Summary of the number of generated data points in the dataset. Due to slight deviations in the rupture stretch and the specific numerical procedure not all submitted simulations ``makes it'' to the final dataset. Notice that the Tetrahedon (7, 5, 2) and Honeycomb (2, 2, 1, 5) from the pilot study is rerun as a part of the Tetrahedon and the Honeycomb datasets seperately. In the latter datasets the reference point for the pattern is randomized and thus theese configurations is not fully identical. This is the idea behind the difference of 2 in the total sum.}
+  \caption{Summary of the number of generated data points in the dataset. Due to slight deviations in the rupture stretch and the specific numerical procedure not all submitted simulations ``make it'' to the final dataset. Notice that the Tetrahedon (7, 5, 2) and Honeycomb (2, 2, 1, 5) from the pilot study are rerun as a part of the Tetrahedon and the Honeycomb datasets separately. In the latter datasets, the reference point for the pattern is randomized and thus these configurations are not fully identical. This is the reason for the ambiguousness in the total sum.}
   \label{tab:dataset_summary}
   \begin{tabular}{ | c | c | c | c | c |} \hline
   \textbf{Type} & \textbf{Configurations} & \textbf{Submitted data points} & \textbf{Final data points} & \textbf{Ruptures} \\ \hline
   Pilot study & 3 & 270 & 261 & \: 25 \: (9.58 \%)\\ \hline
   Tetrahedon & 68 & 3060 & 3015 & 391 (12.97 \%)\\ \hline
   Honeycomb & 45 & 2025 & 1983 & \: 80 \: (4.03 \%)\\ \hline
-  Random walk & 100 & 4500 & 4401 & 622 (14.13 \%) \\ \hline \hline
+  Random walk & 100 & 4500 & 4401 & 622 (14.13 \%) \\ \Xhline{2\arrayrulewidth}
   Total & 214 (216) & 9855 & 9660 & 1118 (11.57 \%) \\ \hline
   \end{tabular}
   \end{center}
@@ -29,40 +50,41 @@ and also with new random velocity and thermostat initializations values. The she
 
 
 \section{Data analysis}
-
-
-In order to gain insight into the correlations between variables associated to the simulations we calculate the correlations coefficients between all variable combinations. More specific, we are going to calculate the Pearson product-moment correlation coefficient (PPMCC) for which is defined, between data set $X$ and $Y$, as
+In order to gain insight into the correlations in the data we calculate the correlation coefficients between all variable combinations. More specifically, we calculate the Pearson product-moment correlation coefficient which is defined, between data set $X$ and $Y$, as
 \begin{align*}
   \mathrm{corr}(X,Y) = \frac{\mathrm{Cov}(X,Y)}{\sigma_X \sigma_Y} = \frac{\langle (X - \mu_X)(Y - \mu_Y)\rangle}{\sigma_X \sigma_Y} \ \in [-1, 1]
 \end{align*}
-where $\mathrm{Cov}(X,Y)$ is the covariance, $\mu$ the mean value and $\sigma$ the standard deviation. The correlation coefficients ranges from perfect negative correlation $(-1)$ through no correlation $(0)$ to a perfect positive correlation $(1)$. The correlation coefficients is shown in \cref{fig:corrcoef_matrix}
-
+where $\mathrm{Cov}(X,Y)$ is the covariance, $\mu$ the mean value and $\sigma$ the standard deviation. The correlation coefficients range from a complete negative correlation $(-1)$ through no correlation $(0)$ to a complete positive correlation $(1)$. The correlation coefficients is shown in \cref{fig:corrcoef_matrix}
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{figures/ML/corrcoef_matrix.pdf}
   \caption{Pearson product-moment correlation coefficients for the full datset (see \cref{tab:dataset_summary}).}
   \label{fig:corrcoef_matrix}
 \end{figure}
+From \cref{fig:corrcoef_matrix} we especially notice that the mean friction
+force $\langle F_{\parallel} \rangle$ has a significant positive correlation
+with stretch $(0.77)$ and porosity $(0.60)$. However, the relative stretch, the
+stretch scaled by the rupture stretch, has a weaker correlation of only 0.25.
+This indicates that the correlation might be associated with the flexibility of
+the configurations as these can be taken to higher absolute values of stretch.
+This is further supported by the fact that the mean friction and the rupture
+stretch are also strongly positively correlated $(0.78)$. From figure
+\cref{fig:corrcoef_matrix} we also observe that the contact is negatively
+correlated with the mean friction $(-0.67)$ and the stretch value $(-0.74)$
+which is consistent with the trend observed in the pilot study in
+\cref{fig:multi_stretch} of the contact decreasing with increasing stretch and
+mean friction. However, we must take note that the correlation coefficient is a
+measure of the strength and slope of a forced linear fit on the data \hl{Do I
+need as source?}. Since we have observed a non-linear trend between friction and
+stretch (\cref{fig:multi_stretch_mean_fric}) we should not expect any 100 \%
+correlations \cref{fig:corr_vis} shown a visualization of the data (excluding
+the pilot study configurations) for chosen variable pairs on the axes. This
+provides a visual clue on some of the correlations and provides a qualitative
+feeling for the diversity in various slices of parameter space that we
+eventually are going to base our machine learning model on. We notice that the
+honeycomb pattern is spanning a significantly larger range of stretch, contact
+and mean friction.
 
-From \cref{fig:corrcoef_matrix} we especially notice that the mean
-friction force $\langle F_{\parallel} \rangle$ has a signifciant positively
-correlation with stretch $(0.77)$ and porosity $(0.60)$ (void fraction).
-However, the relative stretch, which is scaled by the rupture stretch, has a
-weaker correlation of only 0.25 which indicates that it is the absolute stretch
-value that has the most significant impact on the friction force increase during
-stretching. This is further supported by the fact that the mean friction and the
-rupture stretch is also strongly positively correlated $(0.78)$. From figure
-\cref{fig:corrcoef_matrix} we also observe that the contact bond count is
-negatively correlated with the mean friction $(-0.67)$ and the stretch value
-$(-0.74)$ which is consistent with the trend observed in the pilot study  \cref{fig:multi_stretch_contact} and \cref{fig:multi_stretch_mean_fric}) of the
-contact decreasing with increasing stretch and mean friction. However, we must
-take note that the correlation coefficients is a measure of the strength and slope of a
-forced linear fit on the data. We clearly observed a non-linear relationship between stretch and mean friction for the tetrahedron and honeycomb pattern used in the pilot study  \cref{fig:multi_stretch_mean_fric}) where the relationship was partwise characterized by a postive correlation for some stretch ranges and partwise negative correlation for other stretch ranges. Hence, interesting strong regime-specific correlations might not be accurately highlighted by the correlation coefficients shown in \cref{fig:corrcoef_matrix}.
-
-In \cref{fig:corr_vis} we have visualized the data (excluding the pilot study) for chosen pairs of variables on the axes. In addition to a visual confirmation of how the given correlations look in a 2D plot we also get a feeling for the coverage in various areas of the parameter space that we are eventually going to feed the neural network. The honeycomb pattern is spanning a significant larger range of stretch, contact and mean friction makes the data rather biased towards the Honeycomb pattern in thoose areas. 
-% Judging form the combinned information of the pilot study and the data distribution shown in \cref{fig:corr_vis} it would not be surprising if the machine learning were to learn that the honeycomb pattern is superiour for 
-
-Uncommented to decrease loading time
 \begin{figure}[H]
   \centering
   \begin{subfigure}[t]{0.49\textwidth}
@@ -99,23 +121,46 @@ Uncommented to decrease loading time
 
 
 \section{Properties of interest} 
-From the Pilot study we discovered that it might be possible to achieve a negative friction coefficient for certain kirigami cut configurations under the assumption of a system with coupled normal force $F_N$ and stretch $S$. This stands as the main property of interest to explore further in the dataset. However, it is not obvious how one should quanity this in a rigorous manner. The friction coefficient is by our definition (\hl{see theory sec XXX}) given as the slope of the friction vs.\ normal force curve. For two data points $(F_{N,1}, F_{f,1}), (F_{N,2}, F_{f,2})$, $F_{N,1} < F_{N,2}$ we would evaluate the associated friction coefficient $\mu_{1,2}$ as 
+In the pilot study (\cref{chap:pilot_study}) we found promising results for the idea of achieving a negative friction coefficient under the assumption of a system with coupled normal force and stretch. Hence, we will consider this as a main property of interest for our further exploration. However, it is not obvious how one should rigorously quantify this. The friction coefficient is by our definition (\cref{eq:mu_def2}) given as the slope of the friction $F_f$ vs.\ normal force $F_N$ curve. Hence, for two data points $\{(F_{N,1}, F_{f,1}), (F_{N,2}, F_{f,2})\}$, $F_{N,1} < F_{N,2}$ we can evaluate the associated friction coefficient $\mu_{1,2}$ as 
 \begin{align*}
-  \mu_{1,2} = \frac{F_{f,2} - F_{f,1}}{F_{N,2} - F_{N,1}} = \frac{\Delta F_f}{\Delta F_N}
+  \mu_{1,2} = \frac{F_{f,2} - F_{f,1}}{F_{N,2} - F_{N,1}} = \frac{\Delta F_f}{\Delta F_N}.
 \end{align*}
-In the pilot study it became clear that the effects on friction under the change of $F_N$ is neglible in comparison to the effects under change of $S$. Thus, by working under the assumption $F(F_N, S) \sim F(S)$ and a coupling $F_N \propto R\cdot S$ with coupling ratio $R$ we get 
+In the pilot study, it became clear that the effects of friction under the
+change of load is negligible in comparison to the effects related to stretch $S$.
+Thus, by working under the assumption $F(F_N, S) \sim F(S)$ and a coupling $F_N
+\propto R\cdot S$ with linear coupling ratio $R$ we get 
 \begin{align}
-  \mu_{1,2}(S_1, S_2) = \frac{\Delta F_{f}(S_1, S_2)}{R(S_2 - S_1)} \propto \frac{\Delta F_{f}(S_1, S_2)}{\Delta S},
+  \mu_{1,2}(S_1, S_2) = \frac{\Delta F_{f}(S_1, S_2)}{R(S_2 - S_1)} \propto \frac{\Delta F_{f}(S_1, S_2)}{\Delta S}.
   \label{eq:mu_stretch}
 \end{align}
-With the above reasoning we have in practive exchanged $F_N$ with $S$ in the
-expression for the friction coefficient. This means that we are interested in  a
-negative slope on the friction vs.\ stretch curve which corresponds to a
-negative friction coefficient in our proposed coupled system. The next question
-remaining is then how to evaluate the strength of this property. By definition,
-the minimum slope value would give the lowest friction coefficient. However, for two data points with a small $\Delta S$, corresponding to small denominator in \cref{eq:mu_stretch}, would potentially result in big $|\mu|$ without any signifiant decrease in friction. Hence, we choose to consider the drop in friction with increasing stretch. For a discrete dataset we can locate all local maxima and evaluate the difference to all succeeding local minema. The biggest drop will serve as our indicator for a signifcant negative friction coefficient. In this evaluation we do not guarantee a monotonic decrease of friciton in the range of the biggest drop, but when seearching among multiple configurations this is considered a descent strategy to highlight configurations of interest worthy of further investigation. 
+With this reasoning we can in practice exchange $F_N$ with $S$ in the expression
+for the friction coefficient of our coupled system. This justifies the search
+for a strong negative slope on the friction vs.\ stretch curve as it can be
+related to a negative friction coefficient in our proposed coupled system. The
+remaining question is how to evaluate the strength of this property. By
+definition, the minimum (most negative) slope value would give the lowest
+friction coefficient. However, two data points with a small $\Delta S$,
+corresponding to a small denominator in \cref{eq:mu_stretch}, would potentially
+lead to a huge negative slope value without any significant decrease in
+friction. Hence, we choose to consider the drop in friction with increasing
+stretch as a better metric. For a given friction vs.\ stretch curve, we can
+locate the local maxima and evaluate the difference to the succeeding local
+minima. The biggest drop will serve as our indicator for a negative friction
+coefficient. In this evaluation, we do not guarantee a monotonic decrease of
+friction in the range of the biggest drop, but when searching among multiple
+configurations this is considered a decent strategy to highlight configurations
+of interest worthy of further investigation. In addition to the biggest drop in
+friction, max drop, we also consider the minimum, $\min F_{\text{fric}}$, and
+maximum, $\min F_{\text{fric}}$, friction along with the maximum difference
+$\max \Delta f_{\text{fric}} = \max F_{\text{fric}} - \min F_{\text{fric}}$. The
+extrema of these four properties for each of the designs categories
+(Tetrahedron, Honeycomb and Random walk) and the Pilot study are summarized in
+\cref{tab:data_properties} with the corresponding stretch profiles and
+configurations shown in \crefrange{fig:PP_min}{fig:PP_max_drop} (excluding the
+pilot study). The stretch profiles for the full dataset are shown in appendix
+\cref{sec:data_stretch_profiles}. 
 
-In addition to the biggest drop in friction we also look at minimum abnd maximum friction along with the difference between theese extrema. In \cref{tab:data_properties} we summarized the extrema of these properties. The corresponding friction vs.\ stretch profiles and configurations are visualized for each property category in \crefrange{fig:PP_min}{fig:PP_max_drop}. The stretch profiles for all the configurations are shown in appendix \cref{sec:data_stretch_profiles}.
+From the property comparison in \cref{tab:data_properties} we see in general that the Honeycomb pattern is superior in terms of the maximum properties which aligns with the pilot study results as well. However, by including more variations of the patterns we find an improvement in the max drop category for both the Tetrahedron pattern ($0.5098 \to 0.8841$) and the Honeycomb pattern ($0.9674 \to 1.2785$). The comparison also reveals that the non-cut sheet is still the best candidate for a low friction behavior which indicates that the Kirigami designs cannot be used to further reduce friction in our simulation domain. The Random walk property scores are in general on a comparable order of magnitude which indicates that these randomized patterns have some relevance with respect to the usage as training data.
 
 
 \begin{table}[H]
@@ -124,43 +169,34 @@ In addition to the biggest drop in friction we also look at minimum abnd maximum
   \label{tab:data_properties}
   \begin{tabular}{| c | c | c | c|} \hline
   \textbf{Tetrahedron} & Configuration & Stretch & Value [nN]  \\ \hline
-  Min $F_{\text{fric}}$ & $(3,9,4)$ &  0.0296 & 0.0067 \\ \hline
-  Max $F_{\text{fric}}$ & $(5,3,1)$ & 0.1391 & 1.5875 \\ \hline
-  Max $\Delta F_{\text{fric}}$  & $(5, 3, 1)$ & $[0.0239, 0.1391]$ & 1.5529 \\ \hline
-  Max drop & $(5,3,1)$ & $[0.1391, 0.1999]$ & 0.8841 \\ \hline
+  $\min F_{\text{fric}}$ & $(3,9,4)$ &  0.0296 & 0.0067 \\ \hline
+  $\max F_{\text{fric}}$ & $(5,3,1)$ & 0.1391 & 1.5875 \\ \hline
+  $\max \Delta F_{\text{fric}}$  & $(5, 3, 1)$ & $[0.0239, 0.1391]$ & 1.5529 \\ \hline
+  max drop & $(5,3,1)$ & $[0.1391, 0.1999]$ & 0.8841 \\ \hline
   \multicolumn{4}{c}{} \\ \hline
   % \textbf{Tetrahedron} & \multicolumn{3}{c|}{} \\ \hline
   \textbf{Honeycomb} & Configuration & Stretch & Value [nN]  \\ \hline
-  Min $F_{\text{fric}}$ & $(2, 5, 1, 1)$ &  0.0267 & 0.0177 \\ \hline
-  Max $F_{\text{fric}}$ & $(2, 1, 1, 1)$ & 1.0654 & 2.8903 \\ \hline
-  Max $\Delta F_{\text{fric}}$  & $(2, 1, 5, 3)$ & $[0.0856, 1.4760]$ & 2.0234 \\ \hline
-  Max drop & $(2, 3, 3, 3)$ & $[0.5410, 1.0100]$ & 1.2785 \\ \hline
+  $\min F_{\text{fric}}$ & $(2, 5, 1, 1)$ &  0.0267 & 0.0177 \\ \hline
+  $\max F_{\text{fric}}$ & $(2, 1, 1, 1)$ & 1.0654 & 2.8903 \\ \hline
+  $\max \Delta F_{\text{fric}}$  & $(2, 1, 5, 3)$ & $[0.0856, 1.4760]$ & 2.0234 \\ \hline
+  max drop & $(2, 3, 3, 3)$ & $[0.5410, 1.0100]$ & 1.2785 \\ \hline
   \multicolumn{4}{c}{} \\ \hline
   \textbf{Random walk} & Configuration & Stretch & Value [nN]  \\ \hline
-  Min $F_{\text{fric}}$ & 12 &  0.0562 & 0.0024\\ \hline
-  Max $F_{\text{fric}}$ & 96 & 0.2375 & 0.5758 \\ \hline
-  Max $\Delta F_{\text{fric}}$  & 96 & $[0.0364, 0.2375]$ & 0.5448 \\ \hline
-  Max drop & 01 & $[0.0592, 0.1127]$ & 0.1818 \\ \hline
+  $\min F_{\text{fric}}$ & 12 &  0.0562 & 0.0024\\ \hline
+  $\max F_{\text{fric}}$ & 96 & 0.2375 & 0.5758 \\ \hline
+  $\max \Delta F_{\text{fric}}$  & 96 & $[0.0364, 0.2375]$ & 0.5448 \\ \hline
+  max drop & 01 & $[0.0592, 0.1127]$ & 0.1818 \\ \hline
+  \multicolumn{4}{c}{} \\ \hline
+  \textbf{Pilot study} & Configuration & Stretch & Value [nN]  \\ \hline
+  $\min F_{\text{fric}}$ & No cut & 0.2552 & 0.0012 \\ \hline
+  $\max F_{\text{fric}}$ & Honeycomb & 0.7279 & 1.5948 \\ \hline
+  $\max \Delta F_{\text{fric}}$  & Honeycomb & 0.7279 & 1.5325 \\ \hline
+  max drop & Honeycomb & $[0.7279, 1.0463]$ & 0.9674 \\ \hline
 \end{tabular}
 \end{center}
 \end{table}
-% Popup
-% ['(3, 9, 4)', 0.0296407442523106, 0.006738434728040425]
-% ['(5, 3, 1)', 0.139120019152679, 1.5874991413277917]
-% ['(5, 3, 1)', 0.0238700191526787, 0.139120019152679, 1.5529155085058322]
-% ['(5, 3, 1)', 0.139120019152679, 0.199920019152683, 0.8840614643066859]
 
-% Honeycomb
-% ['(2, 5, 1, 1)', 0.0267215709876031, 0.01771035812444661]
-% ['(2, 1, 1, 1)', 1.06536290170726, 2.8903313732271183]
-% ['(2, 1, 5, 3)', 0.085589883539189, 1.47601988353919, 2.023377918411005]
-% ['(2, 3, 3, 3)', 0.541004661720013, 1.01001466172002, 1.278541503443495]
 
-% RW
-% ['12', 0.0562087686350666, 0.002350782025058632]
-% ['96', 0.237523191134115, 0.5757864994802119]
-% ['96', 0.0363631911341175, 0.237523191134115, 0.5447910475168634]
-% ['01', 0.0591598822685843, 0.112739882268582, 0.18175926264779968]
 
 \begin{figure}[H]
   \centering
@@ -265,15 +301,18 @@ In addition to the biggest drop in friction we also look at minimum abnd maximum
 
 \section{Machine learning}
 
-General stuff to include. Remember to talk about batchnorm, optimizer, stopping at best epoch. 
+Given the \acrshort{MD}-based datset we investigate the possibilities of training a machine learning model to predict the friction behaviour from a given Kirigami configuration, stretch and load. 
+
+
+% General stuff to include. Remember to talk about batchnorm, optimizer, stopping at best epoch. 
 
 
 \subsection{Architecture}
-Due to the spatial dependencies in the kirigami configurations we use a convolutional neural network (\acrshort{CNN}). Studies on similar a similar system envolving the graphene sheet have used a VGGNet style of network, Hanakata et al.\ \cite{PhysRevLett.121.255304}\cite{PhysRevResearch.2.042006} and Wan et al.\ \cite{graphene/hBN}, which we adopt for this study as well. The VGGNet-16 architecture illustrated in \cref{fig:VGGNet16} shows the key features; 
+Due to the spatial dependencies in the Kirigami configurations, we use a convolutional neural network (\acrshort{CNN}) for our model architecture. Similar studies which predict mechanical properties for graphene sheets have used a VGGNet style network, Hanakata et al.\ \cite{PhysRevLett.121.255304, PhysRevResearch.2.042006} and Wan et al.\ \cite{graphene/hBN}, which we adopt for this study as well. The VGGNet-16 architecture illustrated in \cref{fig:VGGNet16} shows the key features that we will include:
 \begin{itemize}
-  \item The image is processed through a series of $3 \times 3$ convolutional filters (the smallest size to capture spatial dependencies) using a stride of 1 with an increasing number of channels throughout the network. Each convolutional layer is followed by a ReLU acitivation. 
-  \item The spatial dimensions are reduced by a max pooling ($2 \times 2$, stride of 2), which half the spatial resolution each time. 
-  \item The latter part of the network consist of fully connected part followed by a ReLU activation. The image is first processed in a $1 \times 1$ which performs a linear mapping to a series of fully connected layers. 
+  \item The image is processed through a series of $3 \times 3$ convolutional filters (the smallest size capable of capturing spatial dependencies) using a stride of 1 with an increasing number of channels throughout the network. Each convolutional layer is followed by a ReLU activation function. 
+  \item The spatial dimensions are reduced by a max pooling, filter size $2 \times 2$ and a stride of 2, which halfs the spatial resolution each time. 
+  \item The latter part of the network consists of a fully connected part followed by a ReLU activation. The transition from the convolutional to the fully connected part is achieved by applying a filter with the same dimensions as the last convolutional feature map. This essentially maps the spatial output to the fully connected layer with the number of channels corresponding to the nodes in this layer.
 \end{itemize}
 
 \begin{figure}[H]
@@ -283,85 +322,78 @@ Due to the spatial dependencies in the kirigami configurations we use a convolut
   \label{fig:VGGNet16}
 \end{figure}
 
-In contrast to the VGGNet-16 we restrict ourselves to building the convolutional part in terms of blocks of (convolution, ReLU, max pooling), thus not allowing for any connsecutive convolutional filters without performing a max pooling as well. The fully connected blocks is defined as (fully connected, ReLU) similar to that of the VGGNet model. Hanakata et al.\ and Wan et al.\ used a similar construction before settling on the models
+We deviate from the VGGNet-16 architecture by including batch normalization and restricting ourselves to build the convolutional part in terms of the blocks: (Convolution $\to$ Batch normalization $\to$ ReLU $\to$ Max pooling). Similarly, we define a fully connected block by two elements (Fully connected $\to$ ReLU) which match the VGGNet model. Hanakata et al.\ and Wan et al.\ used a similar architecture with the parameters 
 \begin{align*}
   \text{Hanakata et al.\ \cite{PhysRevLett.121.255304}} & \qquad C16 \ C32 \ C64 \ D64, \\ 
   \text{Wan et al.\ \cite{graphene/hBN}} & \qquad C16 \ C32 \ D32 \ D16,
 \end{align*}
-Where $C$ denotes a convolutional block with the following number being the number of channels and $D$ a fully conneted (dense) layer with the number denoting number of nodes. For the process of determing a suiting complexity for the architecture we adpot the approach by Wan et al.\ \cite{graphene/hBN} who used a ``staircase'' pattern for combinning convolutional and fully connected blocks. By defining a starting number of channels $S$ and network depth $D$ we fill the first half with convoliutional blocks doubling in channel number for each layer and the latter half with fully connected blocks starting setting the number of nodes as the reverse pattern used for the number of channels. Following this pattern a $(S=4, D=8)$ would take the form
+Where $C$ denotes a convolutional block with the number denoting the number of channels, and $D$ a fully connected (dense) block with the number denoting number of nodes. For the process of determining a suiting complexity for the architecture, we adopt the approach by Wan et al.\ \cite{graphene/hBN} who used a ``staircase'' pattern for combining convolutional and fully connected blocks. By defining a starting number of channels $S$ and network depth $D$ we fill the first half with convolutional blocks doubling in channel number for each layer and the latter half with fully connected blocks having the number of nodes decreasing in a reverse pattern. For instance the architecture $S4D8$ will take the form
+Following this pattern a $(S=4, D=8)$ would take the form
 \begin{align*}
   \text{Input} \to \underbrace{\overbrace{C4}^{S \ = \ 4}C8 \ C16 \ C32 \ D32 \ D16 \ D8 \ D4}_{D \ = \ 8} \to \text{Output}.
 \end{align*} 
-This provides a simple description where $S$ and $S$ and can be varied systematically for a grid search over architecture complexity. 
+This provides a simple description where $S$ and $S$  can be varied systematically for a grid search over architecture complexity. 
 
-
-% We also throw in a batchnorm!
 
 \subsection{Data handling}
 \subsubsection{Input}
 We use three variables as input: Kirigami configuration, stretch of the sheet
 and applied normal load. While the first is a two-dimensional input the latter
-are both scalar values. This gives rise to two main options for the data structure
+are both scalars. This gives rise to two main options for the data structure
 \begin{enumerate}
   \item Expand the scalar values (stretch and load) into 2D matrices of the same
-  size as the kirigami configuration by copying the scaler value to all positions. This can then be merged into an image of three channels used as a single input.  
-  \item Pass only the kirigami configuration through the \acrshort{CNN} part of the network and introduce the remaining scalar values into the \acrshort{FC} part of the network. 
+  size as the Kirigami configuration (copying the scaler value to all positions). This can then be merged into an image of three channels used as a single input.  
+  \item Pass only the Kirigami configuration through the convolutional part of the network and introduce the remaining scalar values into the fully connected part of the network halfway in. 
 \end{enumerate}
-Both options utilize the same data, but the first emphasizes that the configurations should be processed in relation to the applied stretch and load, while the latter represent a more independent processing. We implemented the option to do both variations, but it quickly became clear that option 1 was producing the most promising result ({hl{do more rigorous presentation of this?}}).
+Both options utilize the same data, but the first is more appropriate if the configuration should be considered in context with the applied stretch and load, while the latter corresponds to a more independent processing. We implemented both options but it was immediately clear from the test runs that option 1 was producing the most promising result which we settled on.
 
 \subsubsection{Output}
-For the output we are mainly concerned about the mean friction and the rupture
-detection. In combination this make us able to produce a friction vs.\ stretch curve with an estimated stopping point as well.  However, it has often been proven useful to introduce more variables in the output in order to strengthen the network training
-(\hl{get source}). In addition, this gives us more options for exploring the
-relationship in the data later on. Therefore, we include maximum friction, contact
-count, porosity and rupture stretch in the output as well. Notice that rupture stretch
-refers to the value found in the rupture test without load, but as the sheet
-always ruptures before or just around this point in a loaded state this provides
-some information for the training to lean on, even though it is in the output
-state. In principle, we could add a penalty whenever the network predicts the
-sheet to be attatched for stretch values above the rupture stretch, but we found
-the performance of the rupture prediction to be satisficatory without such penalties. Notice that we weight the importance of these
-variables differently as explained in the section regarding the loss. 
+For the output we are mainly concerned with mean friction and the rupture
+detection. In combination, this will make the model able to produce a friction vs.\ stretch curve with an estimated stopping point as well. However, for some cases, the model can benefit from having additional output variables to adjust for \hl{source}, and thus we include we include maximum friction, contact, porosity and rupture stretch in the output as well. This also gives us more options for exploring the relationship in the data later on. Notice that we weight the importance of these output variables different in the loss as described in 
+variables differently as described in \cref{sec:loss}. 
+\\
+\\
+\hl{Removed this part, do you think it has any relevance: Notice that the rupture stretch refers to the value found in the rupture test without load, but as the sheet always ruptures before or just around this point in a loaded state this provides some information for the training to lean on, even though it is in the output state. In principle, we could add a penalty whenever the network predicts the sheet to be attached for stretch values above the rupture stretch, but we found the performance of the rupture prediction to be satisfactory without such penalties.}
+
 
 \subsubsection{Data augmentation}
-In order to increase the ulility of the limited data availble, one can introduce data augmentation. For classification task this includes distortions such as color shift, zoom, flip etc. However, such distorions are only valid since the classification network should still classify a cat as a cat even though it is suddenly a bit brigther or flipped upside down. For our problem we can only use augmentation that matches a physical symmetry. Such a symmetry exist only for relfection accross the y-axis. We cannot do this across the
-x-axis as the sheet is translated in a positive y-direction meaning that the reflected version would not be sliding backwards for which we do not expect to be symmetric in results. We definitely expect a snow plow to perform differently when attached in reverse and thus by analogy we would expect the direction of sliding with respect to the configuration to be of importance. 
+In order to increase the utility of the available data one can introduce data augmentation. For most classification tasks this usually includes distortions such as color shifts, zoom, flip etc. However, such distortions are only valid since the classification network should still classify a cat as a cat even though it is suddenly a bit brighter or flipped upside down. For our problem, we can only use augmentation that matches a physical symmetry. Such a symmetry exists for reflection across the y-axis. We cannot do this across the
+x-axis as the sheet is translated in a positive y-direction meaning that the reflected version would correspond to a change in the sliding direction which we cannot expect to be fully symmetric. 
 
-\subsection{Loss}
-The output contain two different types of variables: scalar values and binaray values (0: False 1: True)
+% We definitely expect a snow plow to perform differently when attached in reverse and thus by analogy we would expect the direction of sliding with respect to the configuration to be of importance. 
 
-For the scalar values we use the Mean Squared Error (\acrshort{MSE})
+\subsection{Loss}\label{sec:loss}
+The output contains two different types of variables: scalar values and binary values (0: False 1: True). For the scalar values we use the Mean Squared Error (\acrshort{MSE})
 \begin{align*}
   L_{\text{MSE}} = \frac{1}{N} \sum_{i = 1}^N (y_i - \hat{y}_i)^2,
 \end{align*}
-where $N$ is the number of data entries and $y$ are the true variables and
-$\hat{y}$ are the predicted values. For the binary output we use binary cross entropy 
+where $N$ is the number of data entries, $y$ are the true output and
+$\hat{y}$ are the predicted values. For the binary output, we use binary cross entropy 
 \begin{align*}
   L_{\text{BCE}} = -\frac{1}{N} \left[\sum_{i = 1}^N [t_i\log{(p_i)} + (1-t_i)\log{(1 - p_i)}]\right],
 \end{align*}
 where $t\in \{0,1\}$ is the truth label. \hl{Does this belong in theory
-entirely?}. We calculate the total loss as a weighted sum between the loss associated with
+entirely? I do introduce it there but I guess I have to mention the choice here still}. We calculate the total loss as a weighted sum of the loss associated with
 each variable
 \begin{align*}
   L_{tot} = \sum_{v} W_v\cdot L_v.
 \end{align*}
 We choose the weights to be $1/2$ for the mean friction and $1/10$ for the
-remaining 5 variables thus sharing evenly for the remaining 50\% of the weight. During the introductionary phase of the training we tried varying these weights,
-but we found that the results varied little and concluded that the training is not very sensitive to this choice, and disregarded further tuning of this parameter. 
+remaining 5 variables, thus sharing the loss evenly for the remaining 50\% of the weight. During the introductory phase of the training, we tried different settings for these weights. We found that the results varied little and concluded that the training is not very sensitive to this choice, for which we stuck with the values defined above.
 
 \subsection{Hypertuning}
 % Show overfitting curve for some of the training results?
+For the hypertuning we focus on architecture complexity, learning rate, momentum and weight decay. Thus the non-chaning elements are the use of the ADAM optimizer with the initial default values of $beta_1 = 0.9, \beta_2 = 0.999$ and zero weight decay (we will change momentum $\beta_1$ and weight decay). We use a batch size of 32 and train the model for a maximum of 1000 epochs, but we save the best model during training based on the lowest validation loss. 
 
-
-For the hypertuning of \acrshort{ML} parameters we focus on architecture complexity, learning rate, momentum and weight decay. We train with the adam optimizer with the default values of $beta_1 = 0.9, \beta_2 = 0.999$ and zero weight decay. For the batch size we use 32 for training and 64 for validation. We train the network for a maximum of 1000 epochs, but we save the best model during training based on lowest validation loss. Since the learning rate is considered to be one of the most important hyperparameters we will determine a suitable choice for the learning individually throughout the two major grid searches:
+Since the learning rate is considered to be one of the most important hyperparameters we will determine a suitable choice for the learning rate using the learning rate range test for each of the two major grid searches:
 \begin{enumerate}
   \item Architecture complexity grid search of $S$ vs.\ $D$ with individually chosen learning rates for each complexity combination.
-  \item Momentum vs.\ weight decay grid search with learning range chosen with regard to the momentum setting. 
+  \item Momentum vs.\ weight decay grid search with learning range chosen with regard to the momentum. 
 \end{enumerate}
 We consider first the architectures in the range $S \times D =
 \{2,4,8,16,32,64,128,256\} \times \{4,6,8,10,12,14\}$. For each architecture
-complexity we perform an initial learning rate range test, increaing the
-learning rate for each batch iteration until the training loss diverges. the suggested learning rate is then determined as the point for which the training loss decreases most rapidly. The learning rate is increased exponentially from \num{e-7} to 10 with increments for each training batch iteration. This is done for just a single epoch where a training batch size of 32 yields a total of 242 batches in the training data. This corresponds to an exponent increment of approximately $1/30$ giving a relative increase $10^{1/30} \sim 108\%$ per batch iteration. The learning rate range test is presented in \cref{fig:LR_range}. We notice that the suggested learning rate decreases with increasing number of model parameters. This decrease is further independent on the specific relationship between $S$ and $D$. % Looks a bit like power functions, but I do not really think this is important to say since it is not backed by a fit. 
+complexity, we perform an initial learning rate range test, increasing the
+the learning rate until the training loss diverges. The suggested learning rate is then determined as the point for which the training loss decreases most rapidly. The learning rate is increased exponentially within the range \num{e-7} to 10 with increments for each training batch iteration. This is done for just a single epoch where a training batch size of 32 yields a total of 242 increments. This corresponds to an exponent increment of approximately $1/30$ giving a relative increase $10^{1/30} \sim 108\%$ per batch iteration. The learning rate range test is presented in \cref{fig:LR_range} for variours model architectures. We notice that the suggested learning rate decreases with an increasing number of model parameters. This decrease is further independent of the specific relationship between $S$ and $D$.
 
 \begin{figure}[H]
   \centering
@@ -384,16 +416,14 @@ learning rate for each batch iteration until the training loss diverges. the sug
 \end{figure}
 With the use of the suggested learning rates from \cref{fig:LR_range} we perform
 a grid search over the corresponding $S$ and $D$ parameters. We evaluate both
-the validation loss and the mean friction $R_2$ score which is shown in
-\cref{fig:A_search_perf} together with the best epoch and the number of model
+the loss and the mean friction $R_2$ score for the validation data which is shown in \cref{fig:A_search_perf} together with the best epoch and the number of model
 parameters. Additionally, we evaluate the mean friction $R_2$ score for a
-selected set of configurations. This set consist of the top 10 configurations
+selected set of configurations. This set consists of the top 10 configurations
 with respect to maximum friction drop for the Tetrahedron and Honeycomb pattern
-resepctively. This is done as a way of evaluating the performance on the
-non-linear stretch curve which showed to be the more difficult patterns to
-learn. The selected evaluation is shown in \cref{fig:A_search_compare}. Note
-that these patterns are already a part of the full datset and thus the data points
-related to these patterns are most likely present in both the training and the validation data set. Hence we cannot regard this as a validation set and the performance must be considered in conjuntion with the actual validation performance in \cref{fig:A_search_perf}.
+respectively. This is done as a way of evaluating the performance on the
+non-linear stretch curves which we immediately found to be the more difficult patterns to capture. The selected evaluation is shown in \cref{fig:A_search_compare}. Note
+that these patterns are already a part of the full dataset and thus the data points
+related to these patterns are most likely present in both the training and the validation data set. Hence, the performance must be considered in conjunction with the actual validation performance in \cref{fig:A_search_perf}.
 
 \begin{figure}[H]
   \centering
@@ -410,18 +440,24 @@ related to these patterns are most likely present in both the training and the v
 \end{figure}  
 
 From the validation scores in \cref{fig:A_search_perf} we find that models
-S(8-32)D(8-12) gives reasonble performance. When looking at the best epoch we
-find that  models of low depth result in a later best epoch which is compatible
+S(8-32)D(8-12) to give the best performance. When looking at the best epoch we
+find that models of low depth result in a later best epoch which is compatible
 with underfitting. As the depth is increased we find more models with a lower
 best epoch, in the range $\sim [300, 600]$, which on the other hand suggest
 cases of overfitting. Since our training stores the best model during training,
 we do not have to worry too much about overfitting, but we can take this
-transistion from underfitting to overfitting as a sign that out search is
-conducted in an appropiate complexity range. When consulting evaluation on the
+transition from underfitting to overfitting as a sign that our search is
+conducted in an appropriate complexity range. When consulting the evaluation on the
 selected set in \cref{fig:A_search_compare} we notice in general that we get
-lower $R_2$ scores, especially for the Tetrahedron pattern, which shows that these constitute a challenge for the network. Considering that some of these datapoints is also present in the training data makes it even more clear that the network is not capturing the complexity in the data here. While the peak $R_2$ value for the validation score was found for the S16D10 model we see slightly preference for more complexity in the model with regard to the selected test. In the Tetrahedron grid search we find the best model to be S32D12, with a $R_2$ score of $\sim 87 \%$. This model choice is more or less compatible with the overall performance as this is among the top candidates for the for $R_2$ and loss in \cref{fig:A_search_perf} and the $R_2$ score for the Honeycomb pattern in \cref{fig:A_search_compare} as well. Hence, we settle on this model moving on to the setting of the momentum and weight decay parameter. 
+significantly lower $R_2$ scores, especially for the Tetrahedron pattern. Considering, that some of these data points are also present in the training data, this is a clear indication that these configurations are more challeging to predict. While the peak $R_2$ value for the validation score was found for the S16D10 model we see a slight preference for more complexity in the model with regard to the selected test. In the Tetrahedron selected set grid search, we find the best model to be S32D12, with a $R_2$ score of $\sim 87 \%$. This model choice is more or less compatible with the overall performance as this is among the top candidates for the $R_2$ score and loss in \cref{fig:A_search_perf} and the $R_2$ score for the Honeycomb pattern in \cref{fig:A_search_compare} as well. Hence, we settle on this architecture.
 
-We consider momentum $m$ and weight decays $wd$ in the range $m \in [0.85,
+%
+%
+% Working here
+%
+%
+
+Next, we consider momentum $m$ and weight decays $wd$ in the range $m \in [0.85,
 0.99]$ and $wd \in [0, 1e-2]$. An increased momentum is expected to decrease the
 appropiate learning rate, and thus we perform a new learning rate range
 test to determine a suitable choice for the learning rate for each momentum choice. We propose two learning rate schemes: A constant learning rate as used until this point and a one cycle policy. In the one cycle policy we set a maximum bound for the learning rate and start from a factor $1/20$ of this bound and increase towards the maximum bound during the first 30\% of the
@@ -570,25 +606,25 @@ that it is generally within a $\sim 0.2$ nN range which is promising.
   \begin{tabular}{|c|c|c?{0.3mm}c|c|c|} \hline
     ML & \multicolumn{2}{c?{0.3mm}}{Data} &  \multicolumn{2}{c|}{\acrshort{ML}} & Data \\ \cline{2-5}
     Rank & Config & Value [nN] & Config & Value [nN] & Rank \\ \hline
-    \multicolumn{6}{|c|}{Min $F_{\text{fric}}$} \\ \hline
+    \multicolumn{6}{|c|}{$\min F_{\text{fric}}$} \\ \hline
     20 & (3, 9, 4) & 0.0067 & (3, 1, 2) & 0.0041 & 5  \\ \hline
     5 & (3, 1, 3) & 0.0075 & (1, 3, 4) & 0.0049 & 11 \\ \hline
     6 & (5, 3, 4) & 0.0084 & (1, 3, 3) & 0.0066 & 6  \\ \hline
     21 & (1, 7, 3) & 0.0084 & (3, 1, 4) & 0.0066 & 8  \\ \hline
     1 & (3, 1, 2) & 0.0097 & (3, 1, 3) & 0.0078 & 2  \\ \hline
-    \multicolumn{6}{|c|}{Max $F_{\text{fric}}$} \\ \hline
+    \multicolumn{6}{|c|}{$\max F_{\text{fric}}$} \\ \hline
     1 & (5, 3, 1) & 1.5875 & (5, 3, 1) & 1.5920 & 1 \\ \hline
     2 & (1, 3, 1) & 1.4310 & (1, 3, 1) & 1.2739 & 2 \\ \hline
     4 & (3, 1, 2) & 1.0988 & (9, 3, 1) & 1.1162 & 4 \\ \hline
     3 & (9, 3, 1) & 1.0936 & (3, 1, 2) & 0.7819 & 3 \\ \hline
     5 & (7, 5, 1) & 0.7916 & (7, 5, 1) & 0.7740 & 5 \\ \hline
-    \multicolumn{6}{|c|}{Max $\Delta F_{\text{fric}}$} \\ \hline
+    \multicolumn{6}{|c|}{$\max \Delta F_{\text{fric}}$} \\ \hline
     1 & (5, 3, 1) & 1.5529 & (5, 3, 1) & 1.5578 & 1 \\ \hline 
     2 & (1, 3, 1) & 1.3916 & (1, 3, 1) & 1.2331 & 2 \\ \hline 
     4 & (3, 1, 2) & 1.0891 & (9, 3, 1) & 1.0807 & 4 \\ \hline 
     3 & (9, 3, 1) & 1.0606 & (3, 1, 2) & 0.7778 & 3 \\ \hline 
     5 & (7, 5, 1) & 0.7536 & (7, 5, 1) & 0.7399 & 5 \\ \hline 
-    \multicolumn{6}{|c|}{Max drop} \\ \hline
+    \multicolumn{6}{|c|}{max drop} \\ \hline
     1 & (5, 3, 1) & 0.8841 & (5, 3, 1) & 0.8603 & 1 \\ \hline 
     2 & (3, 5, 1) & 0.4091 & (3, 5, 1) & 0.3722 & 2 \\ \hline 
     4 & (7, 5, 1) & 0.3775 & (1, 1, 1) & 0.2879 & 5 \\ \hline 
@@ -605,25 +641,25 @@ that it is generally within a $\sim 0.2$ nN range which is promising.
   \begin{tabular}{|c|c|c?{0.3mm}c|c|c|} \hline
     ML & \multicolumn{2}{c?{0.3mm}}{Data} &  \multicolumn{2}{c|}{\acrshort{ML}} & Data \\ \cline{2-5}
     Rank & Config & Value [nN] & Config & Value [nN] & Rank \\ \hline
-    \multicolumn{6}{|c|}{Min $F_{\text{fric}}$} \\ \hline
+    \multicolumn{6}{|c|}{$\min F_{\text{fric}}$} \\ \hline
     1 & (2, 5, 1, 1) & 0.0177 & (2, 5, 1, 1) & 0.0113 & 1 \\ \hline 
     9 & (2, 4, 5, 1) & 0.0187 & (2, 5, 5, 3) & 0.0149 & 7 \\ \hline 
     7 & (2, 4, 1, 1) & 0.0212 & (2, 5, 5, 1) & 0.0182 & 4 \\ \hline 
     3 & (2, 5, 5, 1) & 0.0212 & (2, 5, 3, 1) & 0.0186 & 5 \\ \hline 
     4 & (2, 5, 3, 1) & 0.0226 & (2, 4, 1, 3) & 0.0198  & 15 \\ \hline 
-    \multicolumn{6}{|c|}{Max $F_{\text{fric}}$} \\ \hline
+    \multicolumn{6}{|c|}{$\max F_{\text{fric}}$} \\ \hline
     1 & (2, 1, 1, 1) & 2.8903 & (2, 1, 1, 1) & 2.9171 & 1 \\ \hline 
     2 & (2, 1, 5, 3) & 2.2824 & (2, 1, 5, 3) & 2.4004 & 2 \\ \hline 
     6 & (2, 1, 3, 1) & 2.0818 & (2, 1, 5, 1) & 2.1060 & 5 \\ \hline 
     4 & (2, 1, 3, 3) & 2.0313 & (2, 1, 3, 3) & 1.9458 & 4 \\ \hline 
     3 & (2, 1, 5, 1) & 2.0164 & (2, 4, 1, 1) & 1.9381 & 6 \\ \hline 
-    \multicolumn{6}{|c|}{Max $\Delta F_{\text{fric}}$} \\ \hline
+    \multicolumn{6}{|c|}{$\max \Delta F_{\text{fric}}$} \\ \hline
     1 & (2, 1, 5, 3) & 2.0234 & (2, 1, 5, 3) & 2.1675 & 1 \\ \hline 
     2 & (2, 1, 1, 1) & 1.9528 & (2, 1, 1, 1) & 2.0809 & 2 \\ \hline 
     3 & (2, 4, 1, 1) & 1.8184 & (2, 4, 1, 1) & 1.9157 & 3 \\ \hline 
     4 & (2, 1, 3, 3) & 1.7645 & (2, 1, 3, 3) & 1.6968 & 4 \\ \hline 
     5 & (2, 4, 1, 3) & 1.4614 & (2, 4, 1, 3) & 1.5612 & 5 \\ \hline 
-    \multicolumn{6}{|c|}{Max drop} \\ \hline
+    \multicolumn{6}{|c|}{max drop} \\ \hline
     1 & (2, 3, 3, 3) & 1.2785 & (2, 3, 3, 3) & 1.3642 & 1 \\ \hline 
     2 & (2, 1, 3, 1) & 1.1046 & (2, 1, 3, 1) & 0.9837 & 2 \\ \hline 
     3 & (2, 3, 3, 5) & 0.8947 & (2, 3, 3, 5) & 0.9803 & 3 \\ \hline 
@@ -641,25 +677,25 @@ that it is generally within a $\sim 0.2$ nN range which is promising.
   \begin{tabular}{|c|c|c?{0.3mm}c|c|c|} \hline
     ML & \multicolumn{2}{c?{0.3mm}}{Data} &  \multicolumn{2}{c|}{\acrshort{ML}} & Data \\ \cline{2-5}
     Rank & Config & Value [nN] & Config & Value [nN] & Rank \\ \hline
-    \multicolumn{6}{|c|}{Min $F_{\text{fric}}$} \\ \hline
+    \multicolumn{6}{|c|}{$\min F_{\text{fric}}$} \\ \hline
     1 & 12 & 0.0024 & 12 & -0.0011 & 1 \\ \hline 
     24 & 76 & 0.0040 & 06 & 0.0036  & 27 \\ \hline 
     6 & 13 & 0.0055 & 14 & 0.0074  & 23 \\ \hline 
     31 & 08 & 0.0065 & 05 & 0.0082  & 19 \\ \hline 
     26 & 07 & 0.0069 & 63 & 0.0085  & ? \\ \hline 
-    \multicolumn{6}{|c|}{Max $F_{\text{fric}}$} \\ \hline
+    \multicolumn{6}{|c|}{$\max F_{\text{fric}}$} \\ \hline
     3 & 96 & 0.5758 & 99 & 0.5155 & 2 \\ \hline 
     1 & 99 & 0.5316 & 98 & 0.4708 & 3 \\ \hline 
     2 & 98 & 0.4478 & 96 & 0.4356 & 1 \\ \hline 
     4 & 97 & 0.3624 & 97 & 0.3503 & 4 \\ \hline 
     11 & 58 & 0.3410 & 55 & 0.2817 & 7 \\ \hline 
-    \multicolumn{6}{|c|}{Max $\Delta F_{\text{fric}}$} \\ \hline
+    \multicolumn{6}{|c|}{$\max \Delta F_{\text{fric}}$} \\ \hline
     3 & 96 & 0.5448 & 99 & 0.4669 & 2 \\ \hline 
     1 & 99 & 0.4769 & 98 & 0.4314 & 3 \\ \hline 
     2 & 98 & 0.4085 & 96 & 0.4128 & 1 \\ \hline 
     4 & 97 & 0.3268 & 97 & 0.3080 & 4 \\ \hline 
     78 & 57 & 0.2978 & 55 & 0.2542 & 7 \\ \hline 
-    \multicolumn{6}{|c|}{Max drop} \\ \hline
+    \multicolumn{6}{|c|}{max drop} \\ \hline
     3 & 01 & 0.1818 & 00 & 0.1883 & 3 \\ \hline 
     2 & 96 & 0.1733 & 96 & 0.1654 & 2 \\ \hline 
     1 & 00 & 0.1590 & 01 & 0.1532 & 1 \\ \hline 
@@ -740,16 +776,16 @@ translational variants of the same configurations to investigate for any physica
   \begin{tabular}{|L{1.75cm} |c|c|c| c |c|c|c|} \cline{2-4} \cline{6-8}
   \multicolumn{1}{c|}{} & \multicolumn{3}{c|}{Search}  && \multicolumn{3}{c|}{Data} \\ \cline{2-4} \cline{6-8}
   \multicolumn{1}{c|}{\textbf{Scores}} & Tetrahedron & Honeycomb & Random walk && Tetrahedron & Honeycomb & Random walk \\ \cline{1-4} \cline{6-8}
-  Min $F_{\text{fric}}$         & $-0.062 \ \ $  & $-0.109 \ \ $  & $-0.061 \ \ $ &&   0.0067 & 0.0177 & 0.0024 \\ \cline{1-4} \cline{6-8}
-  Max $F_{\text{fric}}$         & $1.089$        & $2.917$        & $0.660$       &&   1.5875 & 2.8903 & 0.5758 \\ \cline{1-4} \cline{6-8}
-  Max $\Delta F_{\text{fric}}$  & $1.062$        & $2.081$        & $0.629$       &&   1.5529 & 2.0234 & 0.5448 \\ \cline{1-4} \cline{6-8}   
-  Max drop                      & $0.277$        & $1.250$        & $0.269$       &&   0.8841 & 1.2785 & 0.1818 \\ \cline{1-4} \cline{6-8}   
+  $\min F_{\text{fric}}$         & $-0.062 \ \ $  & $-0.109 \ \ $  & $-0.061 \ \ $ &&   0.0067 & 0.0177 & 0.0024 \\ \cline{1-4} \cline{6-8}
+  $\max F_{\text{fric}}$         & $1.089$        & $2.917$        & $0.660$       &&   1.5875 & 2.8903 & 0.5758 \\ \cline{1-4} \cline{6-8}
+  $\max \Delta F_{\text{fric}}$  & $1.062$        & $2.081$        & $0.629$       &&   1.5529 & 2.0234 & 0.5448 \\ \cline{1-4} \cline{6-8}   
+  max drop                      & $0.277$        & $1.250$        & $0.269$       &&   0.8841 & 1.2785 & 0.1818 \\ \cline{1-4} \cline{6-8}   
   \multicolumn{8}{c|}{} \\ \cline{2-4} \cline{6-8}
   \multicolumn{1}{c|}{\textbf{Configs.}} & Tetrahedron & Honeycomb & Random walk  && Tetrahedron & Honeycomb & Random walk  \\ \cline{1-4} \cline{6-8}
-  Min $F_{\text{fric}}$         & $(13,11,14)$ & $(14,25,7,19)$  & No naming &&   $(3,9,4)$ & $(2,5,1,1)$ & 12 \\ \cline{1-4} \cline{6-8}
-  Max $F_{\text{fric}}$         & $(1,3,1)$    & $(2,1,1,1)$     & No naming &&   $(5,3,1)$ & $(2,1,1,1)$ & 96 \\ \cline{1-4} \cline{6-8}
-  Max $\Delta F_{\text{fric}}$  & $(1,3,1)$    & $(2,1,1,1)$     & No naming &&   $(5,3,1)$ & $(2,1,5,3)$ & 96 \\ \cline{1-4} \cline{6-8}   
-  Max drop                      & $(1,7,1)$    & $(3,3,5,3)$     & No naming &&   $(5,3,1)$ & $(2,3,3,3)$ & 01 \\ \cline{1-4} \cline{6-8}   
+  $\min F_{\text{fric}}$         & $(13,11,14)$ & $(14,25,7,19)$  & No naming &&   $(3,9,4)$ & $(2,5,1,1)$ & 12 \\ \cline{1-4} \cline{6-8}
+  $\max F_{\text{fric}}$         & $(1,3,1)$    & $(2,1,1,1)$     & No naming &&   $(5,3,1)$ & $(2,1,1,1)$ & 96 \\ \cline{1-4} \cline{6-8}
+  $\max \Delta F_{\text{fric}}$  & $(1,3,1)$    & $(2,1,1,1)$     & No naming &&   $(5,3,1)$ & $(2,1,5,3)$ & 96 \\ \cline{1-4} \cline{6-8}   
+  max drop                      & $(1,7,1)$    & $(3,3,5,3)$     & No naming &&   $(5,3,1)$ & $(2,3,3,3)$ & 01 \\ \cline{1-4} \cline{6-8}   
   \end{tabular}
   \end{center}
 \end{table}

@@ -62,9 +62,9 @@
 %%% SIMULATIONS %%%
 \newpage
 \part{Simulations}\label{part:simulations}
-\input{Sections/Simulations/system} % Chapter 5
+% \input{Sections/Simulations/system} % Chapter 5
 % \input{Sections/Simulations/pilot_study} % Chapter 6
-% \input{Sections/Simulations/dataset_study} % Chapter 7
+\input{Sections/Simulations/dataset_study} % Chapter 7
 % \input{Sections/Simulations/negative_coef} % Chapter 8
 
 
@@ -72,29 +72,37 @@
 % \input{Sections/Summary}
 
 
-% ------ Back matter ------ %
-\backmatter{}
-%%% Appendix %%%
+% ------ Appendices ------ %
 \begin{appendices}
 % \numberwithin{equation}{section}
 
-\appendix\label{test}
-\chapter{Appendix A}\label{app:A}
+\appendix
+
+
+\chapter{Appendix A}%\label{app:A}
 \renewcommand{\thechapter}{A}
 \renewcommand{\theequation}{\thechapter.\arabic{equation}}
 % \input{Sections/Appendix/sheet_stretch}
 
-\chapter{Appendix B}\label{app:B}
+\chapter{Appendix B}%\label{app:B}
 \renewcommand{\thechapter}{B}
 \renewcommand{\theequation}{\thechapter.\arabic{equation}}
 % \input{Sections/Appendix/data_stretch_profiles}
 
-\chapter{Appendix C}\label{app:C}
+\chapter{Appendix C}%\label{app:C}
 \renewcommand{\thechapter}{C}
 \renewcommand{\theequation}{\thechapter.\arabic{equation}}
 % \input{Sections/Appendix/dataset_conf}
 
 \end{appendices}
+
+
+% ------ Back matter ------ %
+\backmatter{}
+
+
+
+
 
 
 

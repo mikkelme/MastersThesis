@@ -400,8 +400,8 @@ if __name__ == '__main__':
     
     compare_folder = ['../Data/Baseline_fixmove/honeycomb/multi_stretch', '../Data/Baseline_fixmove/popup/multi_stretch']
     # compare_folder = []
-    # staircase_heatmap(path, compare_folder, save = False)
+    staircase_heatmap(path, compare_folder, save = False)
     # staircase_complexity(path)
     
-    mom_weight_heatmap(path, compare_folder, save = False)
+    # mom_weight_heatmap(path, compare_folder, save = False)
     plt.show()
