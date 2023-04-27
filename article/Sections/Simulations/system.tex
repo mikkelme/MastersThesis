@@ -1,32 +1,20 @@
-\chapter{Defining the system}\label{chap:system}
-The definition of the system plays an essential role as it sets the scene for
-the whole study. With the general goal of investigating the frictional behvaiour
-of a graphene sheet, as we alter it through kirigami cuts and stretch, two
-different approaches was considered as sketched in \cref{fig:system_variations}.
-One approach is simply to mimic a \acrshort{FFM} type experiment as done in most
-other numerical friction studies. In this case, we probe the graphene sheet,
-resting on a substrate, with an indenting tip connected to a moving body.
-Friction is then measured by making the tip scan across the graphene surface.
-This setup allows for a variety of tip shapes and sizes, and alternatively the
+% \chapter{Defining the system}\label{chap:system}
+\chapter{Creating a graphene kirigami system}\label{chap:system}
+
+The system definition plays an essential role in the ``friction experiment'' that we are going to carry out through \acrshort{MD} simulations. The purpose of the simulations is to quantify the friction that arises when a stretched Kirigami graphene sheet slides over a substrate. Thus we aim to design the simplest possible system that allows such a measurement for different variations on Kirigami design, stretch and load.
+
+For this purpose, two approaches were considered as sketched in \cref{fig:system_variations}. One approach is simply to mimic a \acrshort{FFM} type experiment where the graphene sheet is resting on a substrate and a moving body  scans across the graphene surface. This setup allows for a variety of tip designs connected to the moving body, and alternatively, the
 tip can be substituted with a flat surface making the setup resemble a
-\acrshort{SFA} experiment. It is not obvious how one would achieve the
-stretching of the sheet, but a simple solution is to pre-stretch the sheet to a
-given amount and then fixating it, by the ends, on the substrate. We are then
-able to investigate the frictional behaviour at different amounts of stretching
-between simulations. If any interesting behvaiour is found, at a certain stretch
-amount, a possible application would call for the attatchment of a pre-stretched
-sheet as a surface coating. Another option is to attatch the graphene sheet to
-the moving body instead and introduce some sort of nanomachine in the moving
-body coupling the normal load with a stretching motion. This gives more
-design room to utilize any stretch-related friciton effects that require a
-dynamical changing of the stretch amount throughout the loading. While both
-methods serve as novel approaches with prospects of providing valuable insight
-into a sparsly covered field, we choose the latter option due the increased
-application design freedom. Hence, our system of choice
-consists of two seperate parts: A 2D graphene sheet and a 3D Silicon ``bulk''
-substrate. Note, that we do attempt to model the nanomachine explicitly in this
-study, but we will consider the prospects of adding this in
-\cref{chap:negative_coef}. 
+\acrshort{SFA} experiment instead. For this setup, we would have to attach a pre-stretched sheet to the substrate and require the edges to be fixated in order to ... the stretch sustain the stretch. We would essentially regard the sheet as a part of the substrate, and the possible applications would regard to certain effects being associated constant stretch. Another approach is to have the sheet ends fixated on the moving body instead. This allows for the connection to a nanomachine design which couples the load and the stretch of the sheet. Thus, the possible applications allow for a dynamic effect with changing stretch through the loading of the sheet. While both methods serve as novel approaches with prospects of providing valuable insight into a sparsely covered field, we choose the latter option due to the increased application possibilities.
+
+We do not attempt to model the nanomachine explicitly, but we will use the conceptual idea of a coupling between load and stretch to motivate our study. Our system of choice consists of a 2D graphene sheet with locked ends, mimicking the attachment to a moving body, and a 3D silicon bulk substrate. 
+
+
+
+% This would allow for an investigation of the frictional behavior as a different amount of pre-stretching can be used between simulations. If any interesting behavior is found at a certain stretch amount, a possible application would call for the attachment of a pre-stretched sheet as a surface coating. 
+
+% Another option is to attach the graphene sheet to the moving body instead and introduce some sort of nanomachine that couples the normal load with a stretching of the sheet. This gives more design room to utilize any stretch-related friction effects during loading. 
+
 
 
 \begin{figure}[H]
@@ -37,9 +25,6 @@ study, but we will consider the prospects of adding this in
 \end{figure}
 
 
-% By applying a normal force and a tangential force we can investigate the friction behvaiour of the contact interface between the sheet and substrate.
-
-% which interact through \acrshort{LJ} potential modelling a van der Waals force. 
 
 \section{Region definitions}
 We subdivide the two main parts of the simmulation, the sheet and the substrate, into specific regions according their functionality in the \acrshort{MD} simmulations. For the sheet, we denote a subsection of the ends, with respect to the sliding direction, as so-called \textit{pull blocks}, which is reserved for the application of normal load, stretching and
@@ -85,11 +70,11 @@ The full sheet is given a size $\sim 130 \times \SI{163}{\text{Å}}$ while the s
   \label{tab:sheet_dim}
   \begin{tabular}{ | l | r@{}l | r@{}l | c |} \hline
     \textbf{Region} & \multicolumn{2}{c|}{Dim} & \multicolumn{2}{c|}{Dim
-    [Å]} & Area [Å$^2$]\\ \hline
-  Full sheet & $x_S \: \times \: $ & $y_S$ &  $130.029 \: \times \:$ & $163.219$ Å & $\phantom{2\times} 21,223.203$ \\ \hline
-  Inner sheet & $x_S \: \times \:$ & $0.81 \ y_S$ &  $130.029  \: \times \:$ & $132.853$ Å & $\phantom{2\times} 17,274.743$\\ \hline
-  Pull blocks & $2 \times x_S \: \times \:$ & $ 0.09 \ y_S$ & $2 \times 130.029  \: \times \: $ & $\phantom{0}15.183$ Å  & $2 \times \phantom{0}1,974.230$ \\ \hline  
-  Substrate & $1.16 \ x_S \: \times \:$ & $3.12 \ y_S$ &  $150.709  \: \times \:$ & $509.152$ Å & $\phantom{2\times} 76,733.789$\\ \hline
+    [Å]} & Area [nm$^2$]\\ \hline
+  Full sheet & $x_S \: \times \: $ & $y_S$ &  $130.029 \: \times \:$ & $163.219$ Å & $\phantom{2\times} 212.23$ \\ \hline
+  Inner sheet & $x_S \: \times \:$ & $0.81 \ y_S$ &  $130.029  \: \times \:$ & $132.853$ Å & $\phantom{2\times} 172.74$\\ \hline
+  Pull blocks & $2 \times x_S \: \times \:$ & $ 0.09 \ y_S$ & $2 \times 130.029  \: \times \: $ & $\phantom{0}15.183$ Å  & $2 \times \phantom{0}19.74$ \\ \hline  
+  Substrate & $1.16 \ x_S \: \times \:$ & $3.12 \ y_S$ &  $150.709  \: \times \:$ & $509.152$ Å & $\phantom{2\times} 767.34$\\ \hline
 \end{tabular}
 \end{center}
 \end{table}
@@ -117,31 +102,21 @@ The full sheet is given a size $\sim 130 \times \SI{163}{\text{Å}}$ while the s
 
 
 \section{Numerical procedure}
-The numerical procedure related to the measurement of friction can be arranged
-into the following steps. Some steps have been given a default duration
-denoted in parentheses in units of ps, \num{e-12} seconds.
+After implementing the initial configuration to the system we first need to let the system relax and reach a stable equilibrium state. This involves an adjustment to the system temperature and the sheet-substrate distance. We then stretch the sheet to the desired length before applying normal load the pull blocks. The full numerical procedure can be arranged into the following steps. Some steps have been given a default duration denoted in parentheses in units of ps, \num{e-12} seconds.
 \begin{enumerate}
-  \item \textbf{Relaxation} (15 ps): The sheet and substrate are relaxed for 15 ps after being added in their crystaline form with a seperation distance of 3 Å. The equilibrium seperation distance varies slightly with temperature, but we found this number to be a reasonble middle ground for the temperature range of interest. The sheet is
-  constrained under three hard spring forces, all with spring constant $10^5$
-  eV/Å$^2$ $\sim$ \num{1.6e6} N/m: One spring attaches the sheet center of mass
-  (\acrshort{CM}) to its orginal postion, preventing any drift. The
-  remaining two springs are attatched to the pull block ends, to their initial \acrshort{CM} position respectively, to prevent rotation. In principle, it would be sufficient to fixate just one of the ends in order to stop rotation, but we fixate both ends for the sake of symmetry. During the
-  relaxtion phase the pull blocks are made rigid with respect to the z-direction
-  only (perpendicular to the sheet). That is, all the forces in the z-direction
-  is summed up and distributed on the pull blocks as a single external force, while it is free to expand and
-  contract in the x-y-plane. This is mainly to ensure that it achieves the
-  correct lattice spacing according to the temperature of the system. For the following phases the rigid parts of the pull block is in fact rigid with
-  respect to all directions. The spring forces are terminated after the relaxtion phase. 
+  \item \textbf{Relaxation} (\SI{15}{ps}): The sheet and substrate are relaxed for 
+  \SI{15}{ps} after being added in their crystalline form with a separation distance of \SI{3}{\text{Å}}. Given that the equilibrium separation distance will vary with temperature, this value is based on an average estimate suiting our temperature range of interest. In order to avoid any sheet drift we constrain it with the use of three hard spring forces with a spring constant
+  $\SI{e5}{eV/\text{Å}^2} \sim \SI{1.6e6}{N/m}$: One spring attaches the sheet center of mass (\acrshort{CM}) to its original position, preventing \acrshort{CM} drift, while the remaining two springs are attached to the pull blocks \acrshort{CM}, to prevent rotation. In principle, it would be sufficient to fixate only one of the pull blocks, but we fixate both for the sake of symmetry. During the relaxation phase, we consider the pull blocks to be rigid with respect to the z-direction only (perpendicular to the sheet). That is, all the forces in the z-direction are summed up and applied as a uniform external force, while the pull blocks are free to expand and contract in the x-y-plane. This feature is introduced to allow the sheet pull blocks to readjust the lattice spacing according to the temperature of the system. For the following phases, the pull blocks are made truly rigid with respect to all directions, and the spring forces are terminated. 
   \item \textbf{Stretch}: The sheet is stretched by seperating the two opposing rigid parts of the pullblock at constant velocity until the desired stretch amount is met. The duration of this phase is thus governed by the  \textit{stretch speed} and \textit{stretch amount} parameters. 
-  \item \textbf{Pause} (5 ps): The sheet is relaxed for 5 ps to ensure that the sheet is stable and equilibrized after the applied stretch deformation. 
-  \item \textbf{Normal load} (5 ps): The normal load is applied to the rigid
+  \item \textbf{Pause} (\SI{5}{ps}): The sheet is relaxed for \SI{5}{ps} to ensure that the sheet is stable and equilibrized after the applied stretch deformation. 
+  \item \textbf{Normal load} (\SI{5}{ps}): A normal load is applied to the rigid
   parts of the pull blocks. Initially a viscous damping force, $F = -\gamma \vec{v}$, is added to the sheet to resist the rapid acceleraction of the sheet and prevent a hard impact between the sheet and substrate. The damping coefficient is set to $\gamma = \SI{8e-4}{nN/(m/s)}$ and terminated after 0.5 ps which was found to be suitable for the extreme load cases of our intended range. The remaining 4.5 ps is simply devoted for further relaxation. 
-  \item \textbf{Sliding}: A virtuel atom is introduced into the simulation which
+  \item \textbf{Sliding}: A virtual atom is introduced into the simulation which
   exclusively interacts with the rigid parts of the pull blocks through a spring force
   with variable spring constant $K$ in the x-y-plane. The z-direction is not
   affected by the spring force and is purely governed by the balancing forces of the normal load and the normal response from the sheet-substrate interaction. The
-  virtual atom is immediately given a constant velocity, in accordance to
-  the \textit{sliding speed} parameter, which make the sliding force increase quadratically, $F_{\textit{slide}} \propto K(v_{\text{slide}}t)^2$, with sliding speed. An infinite sprig constant can also be enforced for which the spring is omitted and the pull blocks are moved rigidly with a constant speed according to the sliding speed.
+  virtual atom is immediately given a constant velocity, in accordance with
+  the \textit{sliding speed} parameter, which makes the sliding force increase linearly, $F_{\textit{slide}} \propto Kv_{\text{slide}}t$, with sliding speed. An infinite spring constant can also be enforced for which the spring is omitted and the pull blocks are moved rigidly with a constant speed according to the sliding speed.
 \end{enumerate}
 In order to prevent rupturing, or detachment, of the sheet, we monitor the nearest neighbours for each atom throughout the simularion. At the initial timestep the three nearest neighbours, sitting at a distance 1.42 Å, of all graphene atoms is recorded. If any of these nearest neighbours exceeds a threshold distance of 4 Å, indicating a bond breakage, this is marked as a rupture and we halt the simulation early. Thus, we ensure that no wear is taking place for the sheet. The substrate was proven to be way more resistant to wear, and by running a few test simulations of high load and sliding speed we confirmed visually that no wear is accouring.
 
@@ -220,7 +195,7 @@ translate between similar basis atoms it introduces an unfortunate duality as
 one would then need to include the basis atom of choice into the indexing system
 as well. Additionally, we want an indexing system which conserves the relative
 physical position of neighbours. That is, atom $(i, j)$ should be in the
-proximity of $\{(i+1, j), (i-1, j), (i, j+1), (i, j-1)\}$. However, due to the hexagonal structure of the lattice, only three said neighbour indexes will be actual nearest neighbours in the lattice. While $(i, j\pm 1)$ is always a nearest neighbour, the index of the nearest neighbour in the x-direction oscillate for each incrementing of x- or y-coordinate. That is, the nearest neighbours (\acrshort{NN}) is decided as
+proximity of $\{(i+1, j), (i-1, j), (i, j+1), (i, j-1)\}$. However, due to the hexagonal structure of the lattice, only three said neighbour indexes will be actual nearest neighbours in the lattice. While $(i, j\pm 1)$ is always a nearest neighbour, the index of the nearest neighbour in the x-direction oscillate for each incrementing of x- or y-coordinate. That is, the nearest neighbours is decided as
 \begin{equation}
   \begin{aligned}
     (i + j) \ \text{is even} &\rightarrow \text{\acrshort{NN}} = \{(i-1, j), (i, j+1), (i, j-1)\}, \\
@@ -317,7 +292,7 @@ perpendicular cuts we cannot rely purely on the six principal directions
 corresponding to the center element neighbours which is spaced by 60$^\circ$.
 We let line 1 run along the center elemnts in the direction of the
 ``upper right'' (and ``lower left'') center elements  while line 2 goes in the
-direction between the ``down'' and ``lower right'' (``up'' and ``upper left'') center elements, corresponding to the direction $(1/\sqrt{3}, -1)$. We define variations of the pattern by the number of center elements $L_1$ and $L_2$ in line 1 and 2 respectively, together with the spacing between the lines $d$, as the tuple $(L_1, L_2, d)$. The pattern is constructed by translating the two lines to the whole sheet according to the spacing. Due to the alignment criterias of having one line point to the center of the other line we can only have odd line length. Furthermore, in order to ensure that each center element is translated to an $i$-index of similar odd or eveness, we must in practice require that $|L_2 - L_1| = 2, 6, 10, \ldots \ $. In \cref{fig:pop_up} we see a visual representation of the pattern components for the $(7, 5, 2)$ patteren. 
+direction between the ``down'' and ``lower right'' (``up'' and ``upper left'') center elements, corresponding to the direction $(1/\sqrt{3}, -1)$. We define variations of the pattern by the number of center elements $L_1$ and $L_2$ in line 1 and 2 respectively, together with the spacing between the lines $d$, as the tuple $(L_1, L_2, d)$. The pattern is constructed by translating the two lines to the whole sheet according to the spacing. Due to the alignment criterias of having one line point to the center of the other line we can only have odd line length. Furthermore, in order to ensure that each center element is translated to an $i$-index of similar odd or evenness, we must in practice require that $|L_2 - L_1| = 2, 6, 10, \ldots \ $. \cref{fig:pop_up} shows a visual representation of the pattern components for the $(7, 5, 2)$ patteren. 
 
 
 \begin{figure}[H]
