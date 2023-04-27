@@ -118,23 +118,25 @@ After implementing the initial configuration to the system we first need to let 
   virtual atom is immediately given a constant velocity, in accordance with
   the \textit{sliding speed} parameter, which makes the sliding force increase linearly, $F_{\textit{slide}} \propto Kv_{\text{slide}}t$, with sliding speed. An infinite spring constant can also be enforced for which the spring is omitted and the pull blocks are moved rigidly with a constant speed according to the sliding speed.
 \end{enumerate}
-In order to prevent rupturing, or detachment, of the sheet, we monitor the nearest neighbours for each atom throughout the simularion. At the initial timestep the three nearest neighbours, sitting at a distance 1.42 Å, of all graphene atoms is recorded. If any of these nearest neighbours exceeds a threshold distance of 4 Å, indicating a bond breakage, this is marked as a rupture and we halt the simulation early. Thus, we ensure that no wear is taking place for the sheet. The substrate was proven to be way more resistant to wear, and by running a few test simulations of high load and sliding speed we confirmed visually that no wear is accouring.
+To limit the complexity of our prediction task, we want to consider systems without wear. To make sure that no wear is taking place for the sheet, we monitor the nearest neighbors for each atom throughout the simulation. At the initial timestep the three nearest neighbors, sitting at a distance \SI{1.42}{\text{Å}}, of all graphene atoms are recorded. If any of these nearest neighbors exceeds a threshold distance of \SI{4}{\text{Å}}, indicating a bond breakage, this is marked as a rupture and we halt the simulation. The substrate was proven to be way more resistant to wear than the sheet, and by running a few test simulations of high load and sliding speed we confirmed visually that no wear is occurring.
 
-\section{Creating the substrate}\label{sec:substrate}
+
+\section{Setting up the substrate}\label{sec:substrate}
 The substrate is created as a rectangular slab of Silicon (Si). We create the
-initial configuration according to its crystaline structure given as a diamond
-cubic crystal with a lattice parameter $a_{\text{Si}} = 5.43$ Å. The default
-substrate thickness is choosen such that 9 layers of atoms appear (2 unit cells)
-corresponing to a thickness of 10.86 Å. The x-y dimensions is choosen to match the dimensions. That is, we define a margin between the
-sheet edge and the substrate edge for the x- and y-direction respectively. Since
-we use periodic boundary conditions a too small margin would result in the sheet
-edges interacting with themselves through the boundary. The absolute lower limit
-for the margin choice is thus half the cut-off distance for the Tersoff potential,
-governing the graphene sheet interaction, at $R + D = 2.1$ Å. However, due to
-fluctuations in the sheet we cannot set the margin to close to that limit.
-Additionally, we must take into account the buckling of the sheet as it is
-stretched, which might induce an expansion in the x-direction for certain
-configurations. We choose a x-margin of 20 Å which provides $2\cdot
+initial configuration according to its crystalline structure given as a diamond
+cubic crystal with a lattice parameter $a_{\text{Si}} = \SI{5.43}{\text{Å}}$.
+The default substrate thickness is chosen such that 9 layers of atoms appear (2
+unit cells) corresponding to a thickness of \SI{10.86}{\text{Å}}. The x-y
+dimensions are chosen to match the dimensions of the sheet. That is, we define a
+margin between the sheet edge and the substrate edge for the x- and y-direction
+respectively. Since we use periodic boundary conditions a too small margin would
+result in the sheet edges interacting with themselves through the boundary. The
+absolute lower limit for the margin choice is thus half the cut-off distance for
+the Tersoff potential, governing the graphene sheet interaction, at $R + D =
+2.1$ Å. However, due to fluctuations in the sheet, we cannot set the margin too
+close to that limit. Additionally, we must take into account the buckling of the
+sheet as it is stretched, which might induce an expansion in the x-direction for
+certain configurations. We choose a x-margin of 20 Å which provides $2\cdot
 \SI{20}{\text{Å}} - \SI{2.1}{\text{Å}} = \SI{37.9}{\text{Å}}$ of additional
 spacing with respect to the absolute lower limit. By looking over the simulation
 result visually we confirm that this leaves more than enough room in the cases
@@ -144,16 +146,17 @@ the y-margin based on the remaining distance to the edge after stretching.
 However, as the sheet travels through the periodic boundaries in the y-direction
 when sliding, we want to add some additional spacing through the y-margin in
 order to let the substrate surface relax before interacting with the sheet a
-second time. We choose a y-margin of 15 Å for which the preferred sliding speed of
-$\SI{20}{m/s} = \SI{2}{\text{Å}/ps}$ gives \SI{15}{ps} of relaxtion time between encounters with the sheet, similar to the inital relaxtion time. 
+second time. We choose a y-margin of 15 Å for which the preferred sliding speed
+of $\SI{20}{m/s} = \SI{2}{\text{Å}/ps}$ gives \SI{15}{ps} of relaxation time
+between encounters with the sheet, similar to the initial relaxation time. 
 
 
-\section{Creating the sheet}
+\section{Setting up sheet}
 % \subsection{Graphene}
 % (https://community.wvu.edu/~miholcomb/graphene.pdf)
 % https://www.physics-in-a-nutshell.com/article/4/lattice-basis-and-crystal
 
-The sheet is created by the 2D material known as graphene which consist of a single layer of carbon atom arramged in hexagonal lattice structure. The bulk version of this material is called graphite and simple referes to the merged structure of multiple graphene layers. We can describe the 2D crystal structure in terms of its primitive lattice vectors $\vec{a_1}$ and $\vec{a_2}$ and a basis. The basis describes the .. part of the crystal and we populate each lattice site by the given basis and translate it to fill the whole plane by any linear combination of the lattice vectors 
+The sheet consists of graphene, which is a single layer of carbon atoms arranged in a hexagonal lattice structure. The bulk version of graphene is graphite and is a stacked structure of multiple graphene layers. We can describe the 2D crystal structure in terms of its primitive lattice vectors $\vec{a_1}$ and $\vec{a_2}$ and a basis. The basis describes the atoms associated with each lattice site, and we populate the lattice by translating the basis by any linear combination of the lattice vectors 
 \begin{align*}
   \vec{T}_{mn} = m\vec{a_1} + n\vec{a_2}, \qquad m,n \in \mathbb{N}.
 \end{align*}
@@ -162,7 +165,7 @@ For graphene, we have the primitive lattice vectors
   \vec{a_1} = a \left(\frac{\sqrt{3}}{2}, -\frac{1}{2}\right), \qquad \vec{a_2} = a \left(\frac{\sqrt{3}}{2}, \frac{1}{2}\right), \qquad |\vec{a_1}| = |\vec{a_2}| = 2.46 \ \text{Å}.
 \end{align*}
 Notice that we deliberately excluded the third coordinate as we only consider a
-single graphene and thus we do not have to consider the stacking structure of 3D graphite. The basis consist of two carbon atoms given as 
+single graphene layer and thus we do not have to consider the stacking structure of 3D graphite. The basis consist of two carbon atoms given as 
 \begin{align*}
   \Big\{\Big(0,0\Big), \frac{a}{2}\Big(\frac{1}{\sqrt{3}}, 1 \Big) \Big\}
 \end{align*}
@@ -182,20 +185,19 @@ The crystal structure is visualized in \cref{fig:graphene_crystal}. It turns out
 
 
 \subsection{Indexing}
-In order to define the cut patterns applied to the graphene sheet we need to
-define an indexing system. We must ensure that this gives an unique description
+In order to define the kirigami cut patterns applied to the graphene sheet we need to
+define an indexing system. We must ensure that this gives a unique description
 of the atoms as we eventually want to pass a binary matrix, containing 0 for
 removed atoms and 1 for present atoms, that uniquely describes the sheet. We do
-this by letting the x-coordinate allign with the so-called \textit{armchair}
-direction of the sheet and making the y-coordinate increment along the
+this by letting the x-coordinate allign with the so-called \textit{armchair} direction of the sheet and making the y-coordinate increment along the
 so-called \textit{zigzag} direction. Notice that the x-coordinate will point
-point to \textit{zigzag} chains of atoms for which the starting point, at $y = 0$ is not evenly spacedd as illustrated in figure \cref{fig:atom_indexing}. Other solutions
-might naturally invole the lattice vectors, but since these are used to
+to \textit{zigzag} chains of atoms for which the starting point, at $y = 0$ is not evenly spaced as illustrated in figure \cref{fig:atom_indexing}. Other solutions
+might naturally involve the lattice vectors, but since these are used to
 translate between similar basis atoms it introduces an unfortunate duality as
 one would then need to include the basis atom of choice into the indexing system
-as well. Additionally, we want an indexing system which conserves the relative
-physical position of neighbours. That is, atom $(i, j)$ should be in the
-proximity of $\{(i+1, j), (i-1, j), (i, j+1), (i, j-1)\}$. However, due to the hexagonal structure of the lattice, only three said neighbour indexes will be actual nearest neighbours in the lattice. While $(i, j\pm 1)$ is always a nearest neighbour, the index of the nearest neighbour in the x-direction oscillate for each incrementing of x- or y-coordinate. That is, the nearest neighbours is decided as
+as well. Additionally, we want an indexing system that conserves the relative
+physical position of neighbors. That is, atom $(i, j)$ should be in the
+proximity of $\{(i+1, j), (i-1, j), (i, j+1), (i, j-1)\}$. However, due to the hexagonal structure of the lattice, only three said neighbor indexes willl be actual nearest neighbors in the lattice. While $(i, j\pm 1)$ is always a nearest neighbor, the index of the nearest neighbor in the x-direction oscillates for each incrementing of the x- or y-coordinate. That is, the nearest neighbors are decided as
 \begin{equation}
   \begin{aligned}
     (i + j) \ \text{is even} &\rightarrow \text{\acrshort{NN}} = \{(i-1, j), (i, j+1), (i, j-1)\}, \\
@@ -203,7 +205,7 @@ proximity of $\{(i+1, j), (i-1, j), (i, j+1), (i, j-1)\}$. However, due to the h
   \end{aligned}
   \label{eq:atom_neigh_idx}
 \end{equation}
-By consulting \cref{fig:atom_indexing} we can verify this visually, and it basically comes down to the fact whether the atom is oriented to the right or theleft side in the zigzag chain.
+By consulting \cref{fig:atom_indexing} we can verify this visually, and it basically comes down to the fact whether the atom is oriented to the right or the left side in the zigzag chain.
 
 \begin{figure}[H]
   \centering
@@ -413,9 +415,9 @@ an already visited site the walk is terminated early. Optionally, we can choose
 to remove any neighbouring sites already visited from the neighbour list,
 \textit{Avoid unvalid: True/False}, and choose uniformly between the remaining
 options instead. This prolongs the walking distance, but the walker is
-still able to find itself in a situation where no neighbouring sites are
-availble, note that it cannot backtrack its own path either, and in such a case
-the walk will be terminated dispite the setting of \textit{Avoid unvalid}.
+still able to find itself in a situation where no neighboring sites are
+available. Note that it cannot backtrack its own path either, and in such a case
+the walk will be terminated despite the setting of \textit{Avoid unvalid}.
 
 
 \subsubsection{Spacing of walking paths} % minimum distance
@@ -424,7 +426,7 @@ implement a so-called, \textit{minimum distance: 0, 1, \ldots}, parameter
 describing the spacing required between paths in terms of the least amount of
 steps. When a walker has ended its walk, either by early termination or hitting
 the maximum limits of steps, all sites within a walking distance of the minimum
-distance is marked as visited, although they are not removed from the sheet.
+distance are marked as visited, although they are not removed from the sheet.
 This prevents any subsequent walkers to visit those sites in their walk
 according to the general behaviour introduced in the previous paragraph. In
 practice this is done through a recursive algorithm as described in algorithm
@@ -432,7 +434,7 @@ practice this is done through a recursive algorithm as described in algorithm
 distance counter passed along. This will result in an expansion along all
 possible outgoing paths from the initial path of interest which is terminated
 when the distance counter hits the distance limit. The function will
-then return the final neighbour lists which is cummulated into a final output
+then return the final neighbour lists which are accumulated into a final output
 corresponding to a list of all sites within the minimum distance to the path.
 
 \begin{algorithm}[H]
@@ -543,11 +545,11 @@ One way to mittigate this issue is to use the six directions from the center ele
   \label{fig:stay_or_break}
 \end{figure}
 
-The \textit{Stay or break} is still subject to previsouly defined rules, such that in the case that the site preferred site is not availble, it will either terminate when going there, or it is removed from the neighbour list when \textit{avoid unvalid: True}. For the latter case the walker has broken its direction and will follow the new direction with probability $p_{\text{stay}}$
+The \textit{Stay or break} feature is still subject to previously defined rules. For instance, in the case where the preferred site is not available, the walker will either terminate when going there, or the preferred site is removed from the neighbor list when \textit{avoid unvalid: True}. In the latter case, the walker will be forced to break out of its direction and follow the new direction that it happens to go in.
 
 
 \subsubsection{Deployment schemes} % Grid start, Centering, RN6
-By default, each random walker is given an uniform random starting point among
+By default, each random walker is given a uniform random starting point among
 the non-visited availble sites left on the sheet. This includes any modifications in relation to the minimum distance parameter. By toggling the \textit{Grid start:
 True/False} parameter on, the starting points are instead predefined on an evenly
 spaced grid. That is, the sheet is subdivided into the least amount of squares
@@ -585,6 +587,6 @@ Some examples of the random walk patterns are illustrated in \cref{fig:RW_flavor
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{figures/system/RW_flavors.pdf}
-  \caption{Some example uses of the random walking class. \hl{Give information of parameters?}}
+  \caption{Some example uses of the random walking class. \hl{Give information of parameters? Henrik says Yes :D}}
   \label{fig:RW_flavors}
 \end{figure}
