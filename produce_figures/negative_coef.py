@@ -286,14 +286,14 @@ def manual_coupling(path, compare_path = None, save = False, add_path = None, ad
     
     
     # plot load-stretch curve
-    axes[0].plot(load_test, stretch_test, color = color_original, linewidth = 1, alpha = 1) 
+    # axes[0].plot(load_test, stretch_test, color = color_original, linewidth = 1, alpha = 1) 
     # if add_path is not None:
     #     add_stretch_map_test = np.logical_and(add_stretch_range[0] <= add_stretch_test, add_stretch_test <= add_stretch_range[1])
     #     axes[0].plot(add_load_test[add_stretch_map_test], add_stretch_test[add_stretch_map_test], linewidth = 1, alpha = 1, label = 'TEST')
         
     add_xaxis(axes[0], x = load_test, xnew = load_test*rupture_dict['R'], xlabel = 'Tension [nN]', decimals = 1, fontsize = 14)
     axes[0].set_xlabel(r'$F_N$ [nN]', fontsize = 14)
-    axes[0].set_ylabel('Stretch', fontsize = 14)
+    axes[0].set_ylabel('Strain', fontsize = 14)
 
    
     ## Friction vs. normal force (right plot) ##
@@ -325,26 +325,26 @@ def manual_coupling(path, compare_path = None, save = False, add_path = None, ad
     cb = fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax=axes[-1])
     cb.set_label(label = '$F_N$ [nN]', fontsize=14)
 
-    axes[1].set_xlabel('Stretch', fontsize = 14)
+    axes[1].set_xlabel('Strain', fontsize = 14)
     axes[1].set_ylabel(r'$\langle F_\parallel \rangle$ [nN]', fontsize = 14)
     
 
 
     # --- Add legends --- #
-    axes[0].scatter([], [], color = 'grey', edgecolors = 'black', marker = marker_initial_stretch, label = 'Initial stretch')
-    axes[0].scatter([], [], color = 'grey', edgecolors = 'black', marker = marker_mean_stretch, label = 'Mean stretch')
-    axes[0].plot([], [], color = 'grey', linestyle = '-', label = 'Rupture test')
+    axes[0].scatter([], [], color = 'grey', edgecolors = 'black', marker = marker_initial_stretch, label = 'Initial strain')
+    axes[0].scatter([], [], color = 'grey', edgecolors = 'black', marker = marker_mean_stretch, label = 'Mean strain')
+    # axes[0].plot([], [], color = 'grey', linestyle = '-', label = 'Rupture test')
     axes[0].scatter([], [], color = color_original, edgecolors = 'none', marker = 's', label = 'Original')
     axes[0].scatter([], [], color = color_added, edgecolors = 'none', marker = 's', label = 'Added')
     
     h, l = axes[0].get_legend_handles_labels()
-    legend1 = axes[0].legend(h[:3], l[:3], loc = 'lower right', fontsize = 13)
+    legend1 = axes[0].legend(h[:2], l[:2], loc = 'lower right', fontsize = 13)
     if add_path is not None:
-        legend2 = axes[0].legend(h[3:], l[3:], loc = 'upper left', fontsize = 13)
+        legend2 = axes[0].legend(h[2:], l[2:], loc = 'upper left', fontsize = 13)
         axes[0].add_artist(legend1)
     
     
-    axes[1].scatter([], [], color = 'grey', edgecolors = 'black', marker = marker_const_FN, label = r'Const. $F_N$')
+    axes[1].scatter([], [], color = 'grey', edgecolors = 'black', marker = marker_const_FN, label = r'Pilot study')
     axes[1].scatter([], [], color = 'grey', edgecolors = 'black', marker = marker_coupled_FN, label = f"Coupled (R = {rupture_dict['R']:g})")
     axes[1].scatter([], [], color = color_original, edgecolors = 'none', marker = 's', label = 'Original')
     axes[1].scatter([], [], color = color_added, edgecolors = 'none', marker = 's', label = 'Added')
@@ -390,5 +390,5 @@ def manual_coupling_free(save = False):
     
 
 if __name__ == '__main__':
-    # manual_coupling_free(save = True)
+    manual_coupling_free(save = True)
     plt.show()
