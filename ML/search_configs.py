@@ -397,9 +397,9 @@ if __name__ == '__main__':
     # S.ref_search(param = (1, 7, 1), savename = 'ref_search/pop_1_7_1_ref_search')
     
     # Honeycomb
-    S = Search(model_name, topN = 5, pattern = honeycomb)
+    # S = Search(model_name, topN = 5, pattern = honeycomb)
     # S.ref_search(param = [3, 3, 5, 3], savename = 'ref_search/hon_3_3_5_3_ref_search')
-    S.ref_search(param = [2, 3, 3, 3], savename = 'ref_search/hon_2_3_3_3_ref_search')
+    # S.ref_search(param = [2, 3, 3, 3], savename = 'ref_search/hon_2_3_3_3_ref_search')
     
    
     # --- Test against data --- #
@@ -414,10 +414,9 @@ if __name__ == '__main__':
     # S.print_extrema()
   
     # RW
-    # S = Search(model_name, topN = 100, pattern = get_RW_conf)
-    # S.search([100-1], start_from = 0) 
-    # S.print_extrema()
-    # S.extrema['Ff_max']
+    S = Search(model_name, topN = 100, pattern = get_RW_conf)
+    S.search([100-1], start_from = 0) 
+    S.print_extrema()
     
     
     # --- Extended search --- #
