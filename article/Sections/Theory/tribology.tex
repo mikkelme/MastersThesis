@@ -26,6 +26,9 @@ that the friction coefficient decreased with scale even though the materials
 used were unchanged. This reveals an intrinsic relationship between friction and
 scale as the contact condition is altered.
 
+
+% For load speed thing on different scale on "typical experiments to avoid trouble with saying it for the general scale
+
 The phenomenological descriptions of macroscale friction cannot yet be derived
 from the fundamental atomic principles, and bridging the gap between different
 length scales in tribological systems remains an open challenge
@@ -1452,14 +1455,32 @@ In order to get a broader view of the possibilities within Kirigami design for f
 Our main research questions can be summarized as follows.
 
 \begin{enumerate}
-  \item  How can we design a \acrshort{MD} simulation that provides a stable foundation for an investigation of friction behavior for a Kirigami sheet sliding on a substrate? How do our specific system and condition choices relate to the theoretical understanding?
-  \item Can we achieve out-of-plane buckling for a graphene sheet using Kirigami cuts and stretch? How can we design a numerical procedure to generate a variety of designs which include out-of-plane buckling but also some randomized designs for an improved variety in the machine learning data?
+  \item MD without cuts to be stable (what about physical conditions)
+  \item How can we design different patterns
+  \item Can we observe effects from Kirigami designs
+  \item Can we observe effects from stretched Kirigami designs
+  \item Can we make a ML model predict the MD simulations
+  \item Can we use the model to perform an accelerated search
+  \item Can we use a coupled load and stretch system to demonstrate a negative friction coefficient using our Kirigami design
+
+
+
+
   \item What friction-related effects can be observed for a Kirigami sheet as it is stretched?
   \begin{enumerate}
     \item How does friction dependent on changing contact area?
     \item Are stretching effects significant for a non-cut sheet?
     \item How does the load dependence relate to stretched Kirigami sheets?
   \end{enumerate}
+
+
+
+
+  \item  How can we design an \acrshort{MD} simulation that provides a stable foundation for an investigation of friction behavior for a Kirigami sheet sliding on a substrate? How do the Kirigami pattern and physical conditions such as strain, load, temperature and sliding speed control the frictional behavior?
+  \item Can we generate a variety of Kirigami patterns to control the out-of-plane buckling?
+  \item 
+  
+  but also some randomized designs for an improved variety in the machine learning data?
   \item Are we able to capture general trends in the friction data related to Kirigami designs, stretch and load using machine learning?
   \item Can we use a machine learning model to predict new designs optimizing for a minimum or maximum friction force and a minimum or maximum friction coefficient in a system with coupled load and stretch?
   \item What are the prospects of achieving a negative friction coefficient for a coupled system?
