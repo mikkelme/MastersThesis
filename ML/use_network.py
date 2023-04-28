@@ -155,6 +155,10 @@ class Evaluater():
         stretch_space = np.linspace(np.min(stretch), np.max(stretch), num_points)
         self.load_config(config_path)
         
+        mat = self.image
+        builder = config_builder(mat)
+        builder.view()
+        
         # Predict for different F_N
         for k in range(len(F_N)):
             
@@ -520,22 +524,22 @@ if __name__ == '__main__':
     # EV = Evaluater(model_weights, model_info, config_path = 'hon_search/Ff_min0_conf.npy')
     
     
-    EV = Evaluater(model_weights, model_info, config_path = 'GA_RW1/top1.npy')
+    # EV = Evaluater(model_weights, model_info, config_path = 'GA_RW1/top1.npy')
     # mat = pop_up(shape = (62, 106), size = (5, 3), sp = 1, ref = (0, 4))
     # EV = Evaluater(model_weights, model_info)
     # EV.set_config(mat)
     
     
-    stretch = np.linspace(0, 2, 100)
-    F_N = 5
-    # EV.stretch_profile(stretch, F_N)
-    EV.predict(stretch, F_N)
-    # EV.get_feature_maps() 
+    # stretch = np.linspace(0, 2, 100)
+    # F_N = 5
+    # # EV.stretch_profile(stretch, F_N)
+    # EV.predict(stretch, F_N)
+    # # EV.get_feature_maps() 
     
-    for index in range(0, 100, 20):
-        print(index)
-        EV.grad_cam(index, 0) 
-    plt.show()
+    # for index in range(0, 100, 20):
+    #     print(index)
+    #     EV.grad_cam(index, 0) 
+    # plt.show()
     
     
     # EV = Evaluater(model_weights, model_info, config_path = '../config_builder/baseline/hon3215.npy')
@@ -546,6 +550,7 @@ if __name__ == '__main__':
     # stretch = np.linspace(0, 2, 100)
     # F_N = 10
     # # EV.stretch_profile(stretch, F_N)
-    # EV.compare_to_folder(folder = '../Data/Baseline_fixmove/honeycomb/multi_stretch')
+    EV = Evaluater(model_weights, model_info)
+    EV.compare_to_folder(folder = '../Data/CONFIGS/RW_search_test/test_7')
+    plt.show()
     
-    # plt.show()

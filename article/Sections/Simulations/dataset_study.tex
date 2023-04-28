@@ -595,7 +595,8 @@ friction, max friction and contact is shown in \cref{fig:final_model_eval} in
 comparison with the Tetrahedron (7, 5, 1) and Honeycomb (2,2,1,5) used in the
 pilot study. This gives a visual interpretation of how well the fits are for the
 given $R_2$, and we get a visual confirmation that a $R_2$ score above 0.98
-indeed looks like a promising capture for the non-linear trends in the data. We will perform a true test set evaluation later on, based on some of the suggestions from the accelerated search.
+indeed looks like a promising capture for the non-linear trends in the data. We will perform a true test set evaluation later on, based on some of the
+suggestions from the accelerated search.
 
 \begin{table}[H]
   \begin{center}
@@ -623,7 +624,17 @@ Using our final model, we evaluate the performance for the top ranking within
 the properties of interest. That is, we go through all the configurations in the
 dataset for the Tetrahedron (\cref{tab:ML_ranking_pop}), Honeycomb
 (\cref{tab:ML_ranking_hon}) and Random Walk (\cref{tab:ML_ranking_RW}) patterns
-separately and rank the configurations in each property category. This is then compared to the actual ranking in the dataset. Generally, we find that the \acrshort{ML} performs rather well in the ranking of the max, max difference and max drop properies, but it is deviating a bit more for the minimum friction property. This can be attritbuted to the fact that the precision needed for an accurate ranking among the minimum friction cases is a lot greater than for the remaining properties. The \acrshort{ML} model gives mostly similar predictions for the max-categories ranking for the Tetrahedron and Honeycomb pattern but struggles a bit more for the Random Walk. Looking at the values for the top candidates in the max-types properties we see that it is generally within a $\sim 0.2$ nN range which is promising. 
+separately and rank the configurations in each property category. This is then
+compared to the actual ranking in the dataset. Generally, we find that the
+\acrshort{ML} performs rather well in the ranking of the max, max difference and
+max drop properies, but it is deviating a bit more for the minimum friction
+property. This can be attritbuted to the fact that the precision needed for an
+accurate ranking among the minimum friction cases is a lot greater than for the
+remaining properties. The \acrshort{ML} model gives mostly similar predictions
+for the max-categories ranking for the Tetrahedron and Honeycomb pattern but
+struggles a bit more for the Random Walk. Looking at the values for the top
+candidates in the max-types properties we see that it is generally within a
+$\sim 0.2$ nN range which is promising. 
 
 \begin{table}[H]
   \begin{center}
@@ -766,32 +777,51 @@ originally shown in \cref{tab:data_properties}. The random walk top five candida
 
 First of all, the search shows a rather consistent result regarding the minimization of friction where the top candidates all share the same feature of being sparsely cut. For the Random walk, we see this visually in\cref{fig:RW_search_top5}, while for the Tetrahedon and Honeycomb patterns, this is evident from the configuration parameters shown in
 \cref{tab:pattern_search} where the parameters reveal a high spacing between the
-cuts. The porosity of the minimum friction top candidates are all rather low being $1.5\%, 5.6\%, 1.6\%$ for the Tetrahedron, Honeycomb and Random walk respectively. These results point towards the fact that the Kirigami modification does not immediately give rise to any lowering of friction, within the numerical and physical domain defined by our simulation setup. This is in agreement with the initial analysis on the \acrshort{MD} dataset, and it is not surprising that the search did not reveal any ... since the dataset did not contain any suggestion how these can be doe.
-
-%
-%
-\hl{Working here}
-%
-%
-
-
-
-Note that the full ranking did not strictly favor the least amount of
-atoms removed, but considering that the relative error is high for this domain we can not expect this kind of precision. The fact that the top candidates all take
+cuts. The porosity of the minimum friction top candidates are all rather low being $1.5\%$, $5.6\%$, and $1.6\%$ for the Tetrahedron, Honeycomb and Random walk respectively. These results point toward Kirigami modifications not being applicable for a lowering of friction, within the limitations of our numerical setup. This is in agreement with the initial analysis on the \acrshort{MD} dataset, and hence the dataset does not provide evident suggestions for friction minimization. Thus we might argue that the model is limited on the dataset for this property. The fact that the top candidates all take
 negative values also shows that the model is not reliable in this domain. By
-asking for the lowest friction we essentially find the weak spots, sparsely populated points in \hl{vector space},  which can lead to unphysical predictions. This problem should most likely be resolved through an extension of the dataset and perhaps by applying a physical constraint to the
-model regarding negative values. 
+asking for the lowest friction we effectively take advantage of the sparsely populated areas of the model parameter space which can lead to unphysical predictions. In order to resolve this problem one might attempt an extension of the dataset and possibly also applying a physical constraint for positive friction values. 
+% Note that the full ranking did not strictly favor the least amount of
+% atoms removed, but considering that the relative error is high for this domain we can not expect this kind of precision. 
 
-Among the remaining properties, we find competing values for the Honeycomb and Random walk classes only. When taking a closer look to the ranking for each property it became apparent the predictions are highly sensitive
-to the reference position parameters used for the Tetrahedron and Honeycomb
-pattern. Since we repeated each parameter 10 times with random reference positions, we initially expected to get a ranking in sets of 10. However, the ranking only shows contiguous appearing sets in the range 1--5. Hence we investigate this sensitivity further by evaluating the scores for a systematic change of the reference position for selected configurations. We generally found the mac drop parameter to give the highest variation and thus we show scores for the max drop top candidates, Tetrahedron $(1,7,1)$, $(5,3,1)$ and Honeycomb $(3,3,5,3)$, $(2,3,3,3)$, in
+
+Among the remaining maximum-type properties, we find competing values for the
+Honeycomb and Random walk classes. When taking a closer look at the ranking for
+each property it becomes apparent that the predictions are highly sensitive to
+the reference position parameters used for the Tetrahedron and Honeycomb
+pattern. Since we repeated each pattern parameter 10 times for random reference
+positions, we initially expected to get a ranking in sets of 10. However, the
+ranking shows contiguous appearing sets in the range 1--5 which points toward a
+sensitivity for pattern translation. Hence we investigate this further by
+evaluating the scores for a systematic change of the reference position for
+selected configurations. We generally finn the max drop parameter to give the
+highest variation and thus we show scores for the max drop top candidates,
+Tetrahedron $(1,7,1)$, $(5,3,1)$ and Honeycomb $(3,3,5,3)$, $(2,3,3,3)$, in
 \cref{fig:ref_search_top_data}. It becomes evident that the predictions vary
-drastically with translation of these patterns. The emerging question is then whether this is actually grounded in a physical phenomenon or simply a deficiency in the \acrshort{ML}. Even though the patterns are periodic in the x-y-plane, by the number of center elements represented by the shown squares in \cref{fig:ref_search_top_data}, the translation will determine the specific configuration of the edge. Previous studies of static friction and stick-slip behavior point to the importance of edge effects \hl{look back at theory and
-maybe source}, and thus for a sheet where the atoms sitting on the $\pm x$ free sides constitutes about 2.5\% of the inner sheet atom count, it is not unreasonable
-that the translation might result in a significantly different outcome. In that case, the search through reference positions highlights that the translation can be key to optimizing for certain properties. However, the results might also indicate that the model is either overfitted or that we simply did not provide enough data to reach a generalization of the complex physical behavior of the system. The sensible way forward to unravel this would be to generate additional
-translational variants of the same configurations to investigate for any physical edge dependencies or otherwise strengthen the model. We earmark this suggestion for another study. When considering some of the stretch curves we also find that the prediction of the rupture point makes a crucial impact. As the rupture was often predicted on a descending part of the curve any variation to the rupture point will affect the max drop property quite significantly.
+drastically with the translation of these patterns. The emerging question is
+then whether this is actually grounded in a physical phenomenon or simply a
+deficiency in the \acrshort{ML}. Even though the patterns are periodic in the
+x-y-plane, with period matching the unique translations shown in
+\cref{fig:ref_search_top_data}, the translation will determine the specific
+configuration of the edge. Previous studies of static friction and stick-slip
+behavior point to the importance of edge effects \hl{look back at theory and
+maybe source}, and thus for a sheet where the atoms sitting on the $\pm x$ free
+sides constitutes about 2.5\% of the inner sheet atom count, it is not
+unreasonable that the translation might result in a significantly different
+outcome. In that case, the search through reference positions highlights that
+the translation can be key to optimizing for certain properties. However, the
+results might also indicate that the model is either overfitted or that we
+simply did not provide enough data to reach a generalization of the complex
+physical behavior of the system. The sensible way forward to unravel this would
+be to generate additional translational variants of the same configurations to
+investigate for any physical edge dependencies or otherwise strengthen the
+model. We earmark this suggestion for another study. When considering some of
+the stretch curves we also find that the prediction of the rupture point plays
+an important role for the max drop property. As the rupture was often predicted
+on a descending part of the curve any variation to the rupture point will affect
+the max drop property quite significantly.
 
 
+We use the 20 configurations from the top candidates in the Random walk class as a test set. We sample 30 pseudo uniform stretch values and use a normal load of \SI{5}{nN}. The test set gave a loss 2.13 which is two orders of magnitude higher than the validation and an average absolute error for the mean friction of 0.14 and rupture accuracy of 70 \%. This corresponded to an average negative $R^2$ score indicating that we would have been better off guessing on a constant value corresponding to the true data mean. This shows that the model is clearly not generalized. While some parts can be attributed to the overfitting of the model we believe that this is more likely to be a problem of a too small dataset. \hl{This was just recently added so I need to incorporate this in the further discussion... It is a bit sad.}. 
 
 
 
@@ -863,34 +893,54 @@ translational variants of the same configurations to investigate for any physica
 
 
 \subsection{Genetic algorithm search}
-The second approach to an accelerated search is through the genetic algorithm.
-So far we have concluded that a minimization of the friction, with our system
-specifications and model predictions, is not promising. Hence, we discard this
-property for further study. We have also seen that the maximum style property
-often shares similar top candidates, and thus we choose to only investigate the
-max drop property, associated with the aim of creating a negative friction
-coefficient. From the extended search, we have three candidates within the
-Tetrahedron, Honeycomb and Random walk style. We use these three candidates as
-the basis for an genetic agorithm search. We generate a population of 100
-configurations using the settings associated with the top candidates. We run the
-search for 50 generations as we did not see much difference for any longer
-extensions. The Tetrahedron and Honeycomb search did not give any improvements
-as the top configuration as the first generations was not improved on even
-through the average score was rising. This was more or less the case for the
-random walk as well with only a single new candidate giving a score of
-\SI{0.300}{nN} for the drop property. The fact that starting from an existing
-design did not give any useful results we attempted to start from a population
-of random noise as well. We did with mixed porosities, even parts of $\{0.01,
-0.05, 0.1, 0.2, 0.3\}$, and two for a porosity of 0.25 and 0.5 respectively.
-This time the algorithm improved the top candidate throughout, but the actual
-scores were disappointing. For the mixed porosity start, we found a top score of
-\SI{0.299}{nN}. The top candidates did not seem to carry any higher order
-patterns. To the human eye they still looked like random noise. By the use of
-the gradient cam method \hl{not sure of name yet} we investigate for any
-noticable patterns in the model. This is shown for the mixed porosity top
-candidate in \cref{fig:GC_mixed_p} which can be compared to the top search
-candidates in the drop category in figure \cref{fig:GC_pop_search}, \cref{fig:GC_hon_search} and \cref{fig:GC_RW_search}. While looking a such gradient visulizations can be mesmerizing they do not immediately reveal more about the underlying mechanisms. The ``attention'' of the model often matches well with the placement of the cuts, but it also reveals some frames where it seems consider the edge quite heavily. This especially relates to to the top and bottom edge which corresponds to the front and back of the sheet. Since these are also connected to the pull block it is really not an edge and thus it is a bit surprising if these should be of extra importance. Given the limited time resources we can follow up on these questions.
 
+For the second approach to an accelerated search, we consider the genetic
+algorithm. So far we have concluded that a minimization of the friction is not
+promising, and hence we discard this property for further studing. We have also
+seen that the maximum style properties often share similar top candidates, and
+thus we choose to only investigate the max drop property, associated with the
+aim of creating a negative friction coefficient. We are going to use the
+extended search top candidate as a basis for the genetic algorithm population
+algorithm search. We generate a population of 100 configurations using the
+settings associated with the max drop top candidate for the Tetrahedron,
+Honeycomb and Random walk patterns respectively. We run the search for 50
+generations as we did not see much difference for any longer runs. The
+Tetrahedron and Honeycomb search did immediately not give any improvements as
+the highest scoring individual from the population was not improved through the
+search even though the average score was rising initially. For the Random walk,
+we choose to perform a genetic algorithm search for each of the top 5
+candidates. Most of them gave a similar result as seen from the Tetrahedon and
+Honeycomb pattern with only a single new candidate generated. The score of this
+candidate was \SI{0.240}{nN} which is a small improvement from the best score of
+\SI{0.182}{nN}. However, from some of the other runs the population
+initialization provided a top score of \SI{0.345}{nN} which shows that we have
+better hopes of optimizing this property by simply generating more
+configurations from the top candidate parameters. The fact that starting from an
+existing design did not give any useful results we attempted to start from a
+population of random noise as well. We made one population from mixed
+porosities, having even 20 individuals each for porosity  $\{0.01, 0.05, 0.1,
+0.2, 0.3\}$, and two populations based on a porosity of 0.25 and 0.5
+respectively. This time the algorithm improved the top candidate throughout, but
+the actual scores are still not impressive. The mixed porosity start gave the
+highest score, being \SI{0.299}{nN}. When considering the corresponding patterns
+from the top five candidates in this search, they were all visually quite
+similar to the starting configurations; they still looked like random noise.
+Thus, we do not find signs of a generation of any noticeable patterns worth
+further investigating. By the use of the Grad-CAM method, we examined for any
+noticeable patterns for the model predictions on this mixed porosity top
+candidate as shown  \cref{fig:GC_mixed_p}. For comparison, we included a similar
+examination for the top candidates in the pattern generation search with respect
+to the max drop category for the Tetrahedron, Honeycomb and Random walk shown
+\crefrange{fig:GC_pop_search}{fig:GC_hon_search}. For the mixed porosity top
+candidate, the Grad-CAM method highlights some areas in the noise configuration as
+contributing more positively than others. However, we do not see any obvious
+patterns. For the more structured patterns of the Tetrahedron, Honeycomb and
+Random walk configurations we see in many cases throughout the stretching that
+the cut parts are highlighted. This gives some confidence to the idea that the
+model does consider some of the relevant features in the pattern, but it still
+varies too much to make any strong conclusion. However, we notice that for
+certain stretch values, the Grad-CAM reveals an ``attention'' towards the edge of
+the configuration. This especially relates to the top and bottom edge, which we for instance see for the Honeycomb pattern at strain 0.396 regarding the bottom edge in \cref{fig:GC_hon_search}. Considering that the top and bottom of the configuration are not a true edge, since these are connected to the pull blocks in the simulation, this is a bit surprising. One interpretation is that the dissipation associated with the thermostat in the pull blocks might be of importance. This is not strongly supported and we simply note that as an interesting topic for further studies.
 
 
 \begin{figure}[H]

@@ -727,12 +727,21 @@ def final_model_compare_scores(model_path):
 
     compare_folders = honeycomb_folder + popup_folder
     
+    # Test set
+    compare_folders = get_dirs_in_path('../Data/CONFIGS/RW_search_test')
+    # test_set_path = '../Data/CONFIGS/RW_search_test'
+    # compare_folders = [os.path.join(test_set_path, 'test'),
+    #                     os.path.join(test_set_path, 'test_1'),
+    #                     os.path.join(test_set_path, 'test_2')
+    #          ]
+    
     
     R2 = np.zeros((len(compare_folders), 3)) # Ff_mean, Ff_max, contact
     porosity_abs_error = np.zeros(len(compare_folders)) 
     rup_stretch_rel_error = np.zeros(len(compare_folders)) 
     acc = np.zeros(len(compare_folders)) # Rupture 
     tot_loss = np.zeros(len(compare_folders)) # Tot loss
+    abs_Ff_err = np.zeros(len(compare_folders)) # |Ff err| loss
     for f, folder in enumerate(compare_folders):
         # --- Data --- #
         # Get data
@@ -780,14 +789,33 @@ def final_model_compare_scores(model_path):
                     rup_stretch_rel_error[f] += np.sum(np.abs((rupture_stretch - output[:, 4])/rupture_stretch))
                     rup_label = rup[:, k] > 0.5
                     rup_pred = output[:, -1] > 0.5
-                    acc[f] += np.sum(rup_label == rup_pred)            
+                    acc[f] += np.sum(rup_label == rup_pred)      
+                    abs_Ff_err[f] = np.sum(np.abs(output[~rup_label,0] - Ff_mean[~rup_label, k]))      
                     counter += len(output[:, -1])
         
         R2[f] /= len(F_N)     
         porosity_abs_error[f] /= counter
+        abs_Ff_err[f] /= counter
         rup_stretch_rel_error[f] /= counter
         acc[f] /= counter
         tot_loss[f] /= len(F_N)
+    
+        print('------')
+        print(folder)
+        print(abs_Ff_err[f])
+        print('------')
+    
+    # Test set 
+    print("Test set")
+    print(f'R2 = {np.mean(R2[:], axis = 0)}')
+    print(f'Porosity abs. = {np.mean(porosity_abs_error[:])}')
+    print(f'rup. stretch rel. = {np.mean(rup_stretch_rel_error[:])}')
+    print(f'tot loss = {np.mean(tot_loss[:])}')
+    print(f'rup. acc. = {np.mean(acc[:])}\n')
+    print(f'Ff mean abs. = {np.mean(abs_Ff_err[:])}')
+    exit()
+    
+    
     
     print(tot_loss)
     
