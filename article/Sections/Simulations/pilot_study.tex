@@ -1,40 +1,115 @@
-% TO-DO: Look at friction force graph again and reconsider whether we have stick-slip. The small oscillations is perhaps noise, and since the big oscialltions go by smooth curves this is actually more likely to be smooth sliding. I guess looking at the period in connection with the lattice spacing show whether it is thoose curves we should look at or the smaller ones result from a lot of small slips...
-
-% Note: A good word for the force curves is "Force traces" as used by \cite{Yalin_2011}.
-
 
 \chapter{Pilot study}\label{chap:pilot_study}
-Having defined our system, we carry out an initial study of the numerical approach. This includes an analysis of how to define and measure the frictional properties of interest, and an investigation of the main parameters governing the numerical solutions. From this point of view we decide on suitable parameters for the remaining study. Particually, we investigate the frictional behaviour under the variation of load and stretch for a selected set of configurations which serves as a baseline for later comparison and an assessment of the prospects of Kirigami modifications for friction. 
+
+Having defined our system, we carry out an initial study of the frictional properties. First, we evaluate the numerical results for a non-cut sheet in order to define suitable metrics for a numerical evaluation of friction and justify some of the default parameter choices. This provides a basis for the following study where we consider the Tetrahedron and Honeycomb Kirigami patterns as well. We investigate the friction dependencies to temperature, sliding speed, spring constant and timestep. Finally, we consider the mean friction of all three configurations when stretched. This includes an analysis of the dependence to contact area and the friction-load curves. 
+
+
+% Having defined our system, we carry out an initial study of the numerical approach. This includes an analysis of how to define and measure the frictional properties of interest, and an investigation of the main parameters governing the numerical solutions. From this point of view we decide on suitable parameters for the remaining study. Particually, we investigate the frictional behaviour under the variation of load and stretch for a selected set of configurations which serves as a baseline for later comparison and an assessment of the prospects of Kirigami modifications for friction. 
 
 
 \section{Friction simulation parameters}
-The \acrshort{MD} simulation is governed by a small set of parameters, some
-which are related directly to the numerical aspects of the simulation and other related
-to the physical conditions we are simmulating. Thus, we differentiate between
-the two main categories: 1) \textit{Physical}, parameters which alter the
-physical conditions of the ``numerical experiment'' and are expected to effect
-the frictional behaviour. 2) \textit{Numerical}, parameters which are related
-more closely to the numerical procedure itself, expected to influence the
-simulation dynamics, which should be chosen to ensure the most stable results.
-For the purpose of creating the machine learning dataset most of these
-parameters will be kept constant with only a subset of the physical parameters
-being varied. The parameters are summarized in \cref{tab:param} where the grey
-shaded area marks the parameters, Configuration, stretch and load, which we will vary for the dataset. Due to the great number of parameters it is unreasonable to make an exhaustive search of all parameters before deciding on the final settings. Instead, we take a basis in the parameters used in similar studies \hl{SOURCES} and adjust them as
-we carry out the initial analysis of the simulation results. Thus, we start at values
-most representative for other similar simulations and adjust according to the
-stability of the results and the computation time. Since we are going to
-introduce a lot of complexity to the system, through the cut and stretch
-deformation, we are less concerned about aligning parameters for comparison. Instead of presenting the process of narrowing down the final parameters in a chronological manner, wehave shown the final choice shown in \cref{tab:param} which we will discuss throughout the following presentation of the pilot study. Notice, that the values in \cref{tab:param} serves as default values which are used when nothing else is stated.
+The \acrshort{MD} simulations we will carry out to measure friction are governed
+by a small set of parameters. For the purpose of creating a machine learning
+dataset, most of these parameters will be kept constant with only a small subset
+of parameters being varied: sheet configuration, strain and load. Since we are going to run many simulations we need to choose a standardized set of parameters. Instead of starting with the parameter selection process, we first state the final choice in \cref{tab:final_param}. Due to the great number of parameters, we did not make an exhaustive search before deciding on the final settings. Instead, we take a basis in parameters used in similar friction simulations
+\cite{li_evolving_2016, Yoon2015MolecularDS, liu_high-speed_2014,
+zhu_study_2018, ma12091425} and adjust accordingly to the aim of
+getting stable measurements and reducing computation time where possible. 
+Parameters such as initial relaxation time, pauses and strain speed are chosen mainly from the results of initial stability tests. The sheet and pull block sizes are chosen with a consideration to the balance between Kirigami design options and computational ressources. The scan direction is chosen to be parallel to the connection line between the pull blocks in order to avoid unessecary comeplexity in the motion. The remaining parameters: Temperature $T$, sliding speed $v_{\text{slide}}$, spring constant $K$, normal load $F_N$, timestep $dt$ and sliding distance have been chosen because key output variables remain relatively stable with moderate perturbations around these default values. We will explain this in more detail later in the chapter. Note that the default values in \cref{tab:final_param} will be used when nothing else is stated explicitly.
+
+
+% Du bør kanskje i tillegg legge til en setning eller to om behovet for å standardisere parametrene når du skal gjøre mange simuleringer for å drive med maskinlæring.
+
+% of the relevant references, stability and computational ressources. 
+
+
+% Since we are going to
+% introduce a lot of complexity to the system, through the cut and stretch
+% deformation, we are less concerned about aligning parameters for comparison.
+% Instead of presenting the process of narrowing down the final parameters in a
+% chronological manner, wehave shown the final choice shown in \cref{tab:final_param}
+% which we will discuss throughout the following presentation of the pilot study.
+% Notice, that the values in \cref{tab:final_param} serves as default values which are
+% used when nothing else is stated.
+
+
+% in the parameters used in similar studies \hl{SOURCES} and adjust them as we
+% carry out the initial analysis of the simulation results. Thus, we start at
+% values most representative for other similar simulations and adjust according to
+% the stability of the results and the computation time. 
 
 
 
-% Thus, by adjusting a few selected parameters one by one we arrived at a final choice as shown in \cref{tab:param}. 
+% some which are related directly to the numerical
+% aspects of the simulation and other related to the physical conditions we are
+% simmulating. 
+
+
+% Thus, we differentiate between the two main categories: 1)
+% \textit{Physical}, parameters which alter the physical conditions of the
+% ``numerical experiment'' and are expected to effect the frictional behaviour. 2)
+% \textit{Numerical}, parameters which are related more closely to the numerical
+% procedure itself, expected to influence the simulation dynamics, which should be
+% chosen to ensure the most stable results. 
+
+\begin{table}[H]
+  \begin{center}
+  \caption{Parameters of the numerical \acrshort{MD} simulation for measuring friction. The values correspond to the final choice used for the dataset. The shaded area denote the parameters varied in the \acrshort{ML} dataset.}
+  \label{tab:final_param}
+  \begin{tabular}{ | C{4cm} | C{3.5cm} | X{6cm}|} \hline
+    \textbf{Parameter} & \textbf{Default value} &  \textbf{Description} \\ \hline
+    $T$ & \SI{300}{K} &  Temperature of the system. \\ \hline
+    $v_{\text{slide}}$ &\SI{20}{m/s} & Sliding speed for the sheet translation. \\ \hline
+    $K$ & $\inf$ & Spring constant for the coupling between the virtuel atom and the sheet pull blocks. \\ \hline
+    Scan direction & $(x,y) = (0,1)$ \mbox{(zigzag direction)}  & The direction for which we translate the sheet. \\ \hline   
+    \cellcolor{black!7} Sheet configuration & \cellcolor{black!7} Contiguous & \cellcolor{black!7} Binary mapping describing which atoms are removed (0) and which is still present (1) in the graphene sheet.  \\ \hline
+    \cellcolor{black!7} Strain amount & \cellcolor{black!7} 0\% - rupture & \cellcolor{black!7} The ratio of change in length to the original length. \\ \hline
+    \cellcolor{black!7} $F_N$ & \cellcolor{black!7} [0.1, 10] nN & \cellcolor{black!7} Applied normal force to the pull blocks. \\ \hline
+    $dt$ & \SI{1}{fs} &  \acrshort{MD} integration timestep. \\ \hline
+    Initial relaxation time &  \SI{15}{ps} & Initial relaxation time before straining. \\ \hline
+    Pauses & \SI{5}{ps} & Relaxation pauses after strain, and during the normal load phase (before translating the sheet). \\ \hline
+    Strain Speed & \SI{0.01}{ps^{-1}} & The rate of straining for the sheet. \\ \hline
+    Slide distance & \SI{400}{Å} & How far the sheet is translated. \\ \hline
+    Sheet size & $130.029 \times \SI{163.219}{\text{Å}}$ & Spatial 2D size of the sheet.  \\ \hline
+    Pull block size & $2 \times 130.029 \times \SI{15.183}{\text{Å}}$ & Spatial 2D size of the pull blocks. \\ \hline
+  \end{tabular}
+  \end{center}
+\end{table}
+
+% \begin{table}[H]
+%   \begin{center}
+%   \caption{Parameters of the numerical \acrshort{MD} simulation for measuring friction. The values correspond to the final choice used for the dataset. The shaded area denote the parameters varied in the \acrshort{ML} dataset.}
+%   \label{tab:final_param}
+%   \begin{tabular}{ | c | C{3cm} | C{3.5cm} | X{7cm}|} \hline
+%     Category & Parameter & Value &  Description \\ \hline
+%     \multirow{13}{*}{Physical} & $T$ & \SI{300}{K} &  Temperature. \\ \hhline{~|-|-|-|}
+%     & $v_{\text{slide}}$ &\SI{20}{m/s} & Sliding speed for the sheet translation. \\ \hhline{~|-|-|-|}
+%     & $K$ & $\inf$ & Spring constant for the coupling between the virtuel atom and the sheet pull blocks. \\ \hhline{~|-|-|-|}
+%     & Scan direction & $(x,y) = (0,1)$ \linebreak (zigzag direction)  & The direction for which we translate the sheet. \\ \hhline{~|-|-|-|}   
+%     & \cellcolor{black!7} Sheet configuration & \cellcolor{black!7} Contiguous & \cellcolor{black!7} Binary mapping describing which atoms are removed (0) and which is still present (1) in the graphene sheet.  \\ \hhline{~|-|-|-|}
+%     & \cellcolor{black!7} Stretch amount & \cellcolor{black!7} 0\% - rupture & \cellcolor{black!7} The relative stretch of the sheet. \\ \hhline{~|-|-|-|}
+%     & \cellcolor{black!7} $F_N$ & \cellcolor{black!7} [0.1, 10] nN & \cellcolor{black!7} Applied normal force to the pull blocks. \\ \hline
+%     \multirow{8}{*}{Numerical} & $dt$ & \SI{1}{fs} &  Integration timestep. \\ \hhline{~|-|-|-|}
+%     & $t_R$ &  \SI{15}{ps} & relaxation time before strething. \\ \hhline{~|-|-|-|}
+%     & Pauses & \SI{5}{ps} & relaxation pauses after stretch, and during the normal load phase (before translating the sheet). \\ \hhline{~|-|-|-|}
+%     & Stretch Speed & \SI{0.01}{ps^{-1}} & The rate of stretching for the sheet. \\ \hhline{~|-|-|-|}
+%     & Slide distance & \SI{400}{Å} & How far to translate the sheet. \\ \hhline{~|-|-|-|}
+%     & Sheet size & $130.029 \times \SI{163.219}{\text{Å}}$ & Spatial 2D size of the sheet.  \\ \hhline{~|-|-|-|}
+%     & Pull block size & $2 \times 130.029 \times \SI{15.183}{\text{Å}}$ & Spatial 2D size of the pull blocks. \\ \hline
+%   \end{tabular}
+%   \end{center}
+% \end{table}
+
+
+
+
+% Thus, by adjusting a few selected parameters one by one we arrived at a final choice as shown in \cref{tab:final_param}. 
 
 % We will present an analysis of the simulation results and its dependency of these selected variables in the following using the final choice as default values. Thus we should stress that the intention behind this choice is mainly to get a working simulation with stable results and not to optimize for any spefic properties yet. 
 
 % \hl{Say a bit more about the articles used to set a starting reference for these parameters.}
 
-% we proposed a set of parameters for which we investgated the dependencies of only selected ones. By adjusting the parameters according to the findings we landed on a final set as already shown in \cref{tab:param}
+% we proposed a set of parameters for which we investgated the dependencies of only selected ones. By adjusting the parameters according to the findings we landed on a final set as already shown in \cref{tab:final_param}
 
 
 % In the following we present the results of the friction simulations in parallel to the procedure of investigating the choice of different parameters. 
@@ -56,30 +131,6 @@ deformation, we are less concerned about aligning parameters for comparison. Ins
 
 
 % We should try to set the physcis and measurement parameters in such a way that we reduce computation speed where it is doesn't infer with the frictional properties study.
-
-\begin{table}[H]
-  \begin{center}
-  \caption{Parameters of the numerical \acrshort{MD} simulation for measuring friction. The values correspond to the final choice used for the dataset. The shaded area denote the parameters varied in the \acrshort{ML} dataset.}
-  \label{tab:param}
-  \begin{tabular}{ | c | C{3cm} | C{3.5cm} | X{7cm}|} \hline
-    Category & Parameter & Value &  Description \\ \hline
-    \multirow{13}{*}{Physical} & $T$ & \SI{300}{K} &  Temperature. \\ \hhline{~|-|-|-|}
-    & $v_{\text{slide}}$ &\SI{20}{m/s} & Sliding speed for the sheet translation. \\ \hhline{~|-|-|-|}
-    & $K$ & $\inf$ & Spring constant for the coupling between the virtuel atom and the sheet pull blocks. \\ \hhline{~|-|-|-|}
-    & Scan direction & $(x,y) = (0,1)$ \linebreak (zigzag direction)  & The direction for which we translate the sheet. \\ \hhline{~|-|-|-|}   
-    & \cellcolor{black!7} Sheet configuration & \cellcolor{black!7} Contiguous & \cellcolor{black!7} Binary mapping describing which atoms are removed (0) and which is still present (1) in the graphene sheet.  \\ \hhline{~|-|-|-|}
-    & \cellcolor{black!7} Stretch amount & \cellcolor{black!7} 0\% - rupture & \cellcolor{black!7} The relative stretch of the sheet. \\ \hhline{~|-|-|-|}
-    & \cellcolor{black!7} $F_N$ & \cellcolor{black!7} [0.1, 10] nN & \cellcolor{black!7} Applied normal force to the pull blocks. \\ \hline
-    \multirow{8}{*}{Numerical} & $dt$ & \SI{1}{fs} &  Integration timestep. \\ \hhline{~|-|-|-|}
-    & $t_R$ &  \SI{15}{ps} & Relaxtion time before strething. \\ \hhline{~|-|-|-|}
-    & Pauses & \SI{5}{ps} & Relaxtion pauses after stretch, and during the normal load phase (before translating the sheet). \\ \hhline{~|-|-|-|}
-    & Stretch Speed & \SI{0.01}{ps^{-1}} & The rate of stretching for the sheet. \\ \hhline{~|-|-|-|}
-    & Slide distance & \SI{400}{Å} & How far to translate the sheet. \\ \hhline{~|-|-|-|}
-    & Sheet size & $130.029 \times \SI{163.219}{\text{Å}}$ & Spatial 2D size of the sheet.  \\ \hhline{~|-|-|-|}
-    & Pull block size & $2 \times 130.029 \times \SI{15.183}{\text{Å}}$ & Spatial 2D size of the pull blocks. \\ \hline
-  \end{tabular}
-  \end{center}
-\end{table}
 
 
 
@@ -226,16 +277,16 @@ with
   a = \frac{f_1 + f_2}{2} &= 0.0763 \pm \SI{0.0005}{ps^{-1}},& 
   b = \frac{f_2 - f_1}{2} &= 0.0028 \pm \SI{0.0005}{ps^{-1}},& \\
   &= 0.381 \pm \SI{0.003}{{\text{Å}}^{-1}},& 
-  &= 0.014 \pm \SI{0.003}{{\text{Å}}^{-1}},& 
+  &= 0.014 \pm \SI{0.003}{{\text{Å}}^{-1}}.& 
 \end{align*}
-where the latter frequency is denoted with respect to the sliding distance. This
+In the latter transition we have denoted the frequency with respect to the sliding distance by considering the default sliding speed of $\SI{20}{m/s} = \SI{0.2}{\text{Å}/ps}$. This
 makes us recognize the high osccilation frequency as $a$ and the low frequency
-as $b$. The faster one has a period of $T_a = 2.62 \pm 0.02$ Å\footnote{The
+as $b$. The faster one has a period of $T_a = 2.62 \pm \SI{0.02}{\text{Å}}$ \footnote{The
 uncertainty $\Delta y$ is calculated as $\Delta y = \left|\frac{\partial
 y}{\partial x} \Delta x \right|$ for uncertainty $\Delta x$ and $y(x)$} which
 corresponds well with the magnitude of the lattice spacing and especialy that of
 graphene at 2.46 Å as expected theoretically. The longer period $T_b = 71 \pm
-15$ Å$^{-1}$ is not obviously explained. We noticed a similar long period osciallation for all three cases, \cref{fig:drag_Ff_100}, \cref{fig:drag_Ff_100_K10_v10} and \cref{fig:drag_Ff_100_K10_v1}, regarding stick-slip behaviour, and thus we not believe that this is directly related. The initial build up in friction force is reminiscent of a friction strengthening, which is often reported \hl{SOURCE}, but the periodicity goes against this idea. Instead, we might attribute it to some kind of phonon
+\SI{15}{\text{Å}}$ is not obviously explained. We noticed a similar long period osciallation for all three cases, \cref{fig:drag_Ff_100}, \cref{fig:drag_Ff_100_K10_v10} and \cref{fig:drag_Ff_100_K10_v1}, regarding stick-slip behaviour, and thus we not believe that this is directly related. The initial build up in friction force is reminiscent of a friction strengthening, which is often reported \hl{SOURCE}, but the periodicity goes against this idea. Instead, we might attribute it to some kind of phonon
 resosnance which could be a physical phenonama or simply a feature of our
 \acrshort{MD} modelling. 
 
@@ -365,9 +416,9 @@ In order to evaluate the frictional properties of the sheet we aim to reduce the
 
 \subsection{Kinetic friction}
 We measure kinetic friction as the mean of the friction force trace. More
-precisly, we take the mean value of the latter half of the dataset in order to
+precisly, we take the mean value of the last half of the dataset in order to
 ensure that we are sampling from a stable system. For a full sliding simulation
-of 400 Å we thus base our mean value on the latter 200 Å (1000 ps) of sliding.
+of 400 Å we thus base our mean value on the last 200 Å (1000 ps) of sliding.
 In \cref{fig:runmean} we have shown the force trace for the first 10 Å of
 sliding together with a 50\% running mean window. The choice of such a short sliding distance is merely to illustrate the samplig procedure,
 and we see that the final mean estimate (marked
@@ -377,14 +428,7 @@ of the final mean estimate is to consider the variation of the running mean
 preceeding the final mean value. The more the running mean fluctuates the more
 uncertainty associated with the final estimate. Only the running mean
 ``close'' to the ending should be considered, since the first part will rely on
-data from the beginning of the simulation. From the Fourier analyse in section
-\cref{sec:force_oscillations} we found the longest significant oscillation
-period to be $\sim 71$ Å$^{-1}$ corresponding to $\sim 35 \%$ of the running
-mean window which gives a window length of 200 Å when including all the data.
-Hence, we use the standard deviation of the final 35\% of the running mean to
-approximate the uncertainty of the final mean value. We consider the standard
-deviation (\acrshort{std}) as an estimate of the absolute error and calculate the relative error
-by a division of the final mean value. In \cref{fig:runstd} we showcase a
+data from the beginning of the simulation. From the Fourier analyse in section \cref{sec:force_oscillations} we found the longest significant oscillation period to be $\sim \SI{71}{\text{Å}}$. Hence, we find it reasonable to use the standard deviation (\acrshort{std}) for the last $\sim \SI{71}{\text{Å}}$ of the running mean window to evaluate the fluctuations. When including the full sliding length this corresponds to the last $\sim 35 \%$ of the running mean window. We consider the \acrshort{std} as an estimate of the absolute error and calculate the relative error by a division of the final mean value. In \cref{fig:runstd} we showcase a
 running relative error based on the \acrshort{std}, with a window of length
 $35 \%$ the mean window, in a continuation of the illustrative case of a 10 Å
 sliding from \cref{fig:runmean}. In this case we get an extremely high relative error of $\sim 257\%$, but this is desirable since the sampling period leads to an unphysical negative value which should be associated with a high uncertainty. 
@@ -420,7 +464,7 @@ When including the full dataset of 400 Å of sliding, such that the \acrshort{st
 
 
 \subsection{Static friction} 
-The maximum value is one of the comon choices for adressing static friction,
+The maximum value is one of the common choices for addressing static friction,
 even though the definition of static friction is a bit vague. When considering
 the force traces in \cref{fig:drag_Ff} we observe that the force oscillations
 increase in magnitude toward a global peak at $\sim \SI{20}{\text{Å}}$. Thus,
@@ -430,15 +474,15 @@ increase in friction is a part of a slower oscillation which repeats by a period
 of $\sim 71$ Å$^{-1}$. By plotting the top three max values recorded during a
 full 400 Å simulation, for 30 logaritmicly spaced load values in the range
 $[0.1, 100]$ nN, we observe that the global max in fact rarely fall within this
-first oscillation period as shown in \cref{fig:max_dist}. Only 2/30 global
-maxima and 4/90 top three maxima can be associated to the start of the sliding
+first oscillation period as shown in \cref{fig:max_dist}. Only 2 out of 30 global
+maxima and 4 out of 90 top three maxima can be associated to the start of the sliding
 by this definition. Thus, this result suggest that our default system does not
 yield a static friction response in the sense of an initial increase in friction
 due to a depinning of the sheet from the static state \hl{Is this probably
 definned in the theory section}. Some parameter changes that might increase the
 likelihood of seeing a significant static friction response is either extending
-the relaxtion period, as static friction is theorized to increase logaritmically
-with time, or to increase the sliding force more slowly and through a soft spring tethering. As an attempt to test parts of this hypothesis we run a series of simulations with varying spring constant, $K\in [5, 200]$ nN including also $K = \inf$, but keeping the relaxtion time and sliding speed at the default values. The result is shown in \cref{fig:max_vs_K}. The results do not show any support of the hypothesis that a softning of the spring constant will eventually lead to the maxima occouring in the first periode of sliding. We note that this might be suppressed by having a too short relaxtion period or a too high sliding speed, related to the rate of which force increased initally, but due to the ambiguousness in the assesment of the static friction we will mainly consern ourselves with the kinetic friction in the remaming of this thesis.
+the relaxation period, since static friction is theorized to increase logaritmically
+with time, or to increase the sliding force more slowly and through a soft spring tethering. As an attempt to test parts of this hypothesis we run a series of simulations with varying spring constant, $K\in [5, 200]$ nN including also $K = \inf$, but keeping the relaxation time and sliding speed at the default values. The result is shown in \cref{fig:max_vs_K}. The results do not show any support of the hypothesis that a softning of the spring constant will eventually lead to the maxima occouring in the first periode of sliding. We note that this might be suppressed by having a too short relaxation period or a too high sliding speed, related to the rate of which force increased initally, but due to the ambiguousness in the assesment of the static friction we will mainly concern ourselves with the kinetic friction in the remaming of this thesis.
 
 
 
@@ -515,7 +559,7 @@ with time, or to increase the sliding force more slowly and through a soft sprin
 
 \section{Out-of-plane buckling}\label{sec:out-of-plane_buckling}
 The out-of-plane buckling is one of the original motivations for investigating
-the application of Kirigami cuts in the context of friction properties. Therefor, we perform a stretch simulation, at low temperature ($T = \SI{5}{K}$) without any substrate, in order to verify that we are able to reproduce an out-of-plane buckling with the
+the application of Kirigami cuts in the context of friction properties. Therefore, we perform a stretch simulation, at low temperature ($T = \SI{5}{K}$) without any substrate, in order to verify that we are able to reproduce an out-of-plane buckling with the
 intended patterns described in \cref{chap:system}. For this investigation we include the non-cut sheet, the Tetrahedron $(7,5,1)$ and the Honeycomb $(2,2,1,5)$ pattern. We quantify the out-of-plane buckling by assessing the distribution of atoms along the z-direction (perpendicular to the plane) during stretching. We calculate the
 mininum and maximum z-value as well as the atom count quartiles 1\%, 10\%, 25\%, 50\%
 (median), 75\%, 90\% and 99\% as shown in figure \cref{fig:buckling_quartiles}. The results show significant buckling for the Tetrahedron and Honeycomb patterns in comparison to the non-cut sheet which only exhibit minor
@@ -550,22 +594,19 @@ choice. The relative contact for the three configurations (No cut, Tetrahedron
 $(7,5,1)$ and Honeycomb $(2,2,1,5)$) during strecthing are shown in figure
 \cref{fig:contact_vs_stretch}. The figure reveals a significant drop in contact
 as the sheets are stretched, which agrees qualitatively with the buckling
-observed without the substarte (\cref{fig:buckling_quartiles}). The Honeycomb
-pattern turns out to be both the most stretchable, with a rupture strain at
-127\% its original length, and the one with the biggest decrease in relative
+observed without the substrate (\cref{fig:buckling_quartiles}). The Honeycomb
+pattern turns out to be both the most stretchable, with a rupture strain of 1.27, and the one with the biggest decrease in relative
 contact down to approximately 43\%. Notice, that the relative contact is never
-actual 1.0 but insteadt maxes out at around 96\% with no stretching. This is
+actual 1.0 but instead reaches a maximum of 96\% with no stretching. This is
 attributed to the temperature fluctuations and the choice of cut-off.
 
-Selected frames from the simulation result are shown in appendix
-\cref{sec:sheet_stretch} which reveals a bit more information of how the
-buckling accours. The Tetrahedron pattern deforms rather quickly and smoothly
-into small tetrahedron spikes, as the name suggest. While the Tetrahedron
-deformation appeared rather uniformly the Honeycomb pattern deformaitons inniate
-from one side first. As the sheet stretches more rows of the pattern is
-activated, producing the honeycomb looking shape when seen from above. As both
-patterns approaches the rupture point the tensions leads to a small increase in
-the relative contact again. This agrees with the results in
+Selected frames from the simulation result are shown in \cref{sec:sheet_stretch}
+which reveals a bit more information on how the buckling occurs. The tetrahedron pattern deforms rather quickly and smoothly into small tetrahedron
+spikes, as the name suggests. In the Honeycomb pattern, on the other hand, the
+deformations initiate from one side first. As the sheet stretches more rows of
+the pattern are activated, producing the honeycomb-looking shape when seen from
+above. Both patterns exhibit a small increase in the relative contact when they
+are approaching their yield strain. This agrees with the results in
 \cref{fig:buckling_quartiles} where the buckling reduces slightly towards the
 end.
 
@@ -580,21 +621,19 @@ end.
 \hl{Compare figure} \cref{fig:contact_vs_stretch} \hl{to that of figure} \cref{fig:multi_stretch_contact} \hl{where multiple simulations constitute the stretch-contact curve.}
 
 
-\section{Investigating main parameters}\label{sec:main_params}
-We carry out a more extensive investigation of the dependence on friction of the
-physical parameters temperature $T$, sliding speed $v_{\text{slide}}$ and spring
-constant $K$, and the numerical parameter timestep $dt$. This is done partly to
+\section{Investigating default parameters}\label{sec:main_params}
+We carry out a more extensive investigation of the dependence on friction of the temperature $T$, sliding speed $v_{\text{slide}}$ and spring
+constant $K$, and timestep $dt$. This is done partly to
 understand how the dependencies relate to theoretical, numerical and
-experimerimental results, and partly to understand how these parameters effects
+experimental results, and partly to understand how these parameters affects
 the stability of our system. We use the default parameters presented in
-\cref{tab:final_param} and investigate the results as we change a single
-parameter, one at a time. We keep the load at \SI{1}{nN}. We consider the mean
-frition force, sampled from the latter half of the simulation as described in
+\cref{tab:final_param} and investigate the results as we change parameters, one at a time. We keep the load at \SI{1}{nN}. We consider the mean
+friction force, sampled from the last half of the simulation as described in
 \cref{sec:fric_metrics}, representing the kinetic friction. The results are
 presented \cref{fig:main_param}. We have indicated the absolute error visually,
 defined by the \acrshort{std} as described in \cref{sec:fric_metrics}, as a
-shaded area which connects linearly between data points. Generally, we notice
-that the parameter dependencies differs between the different configurations. 
+shaded area that connects linearly between data points. Generally, we notice
+that the parameter dependencies differ between the graphene sheet. 
 
 \begin{figure}[H]
   \centering
@@ -638,10 +677,10 @@ it yields an initial rapid (10--30 K), followed by a more slowly decrease
 drop decrease again (480--500 K). Similar rapid changes are also seen from the
 Honeycomb pattern, although the underlying trend is seemingly increasing
 throughout. We notice that for the non-cut and Honeycomb sheet, which can be
-attributed some sort of underlying linear increase, the rate of increase is
+attributed to some sort of underlying linear increase, the rate of increase is
 higher for the Honeycomb than the non-cut sheet. From a theoretical and
-experimental point of view we would expect a decrease in friction with
-temperature. However, an increasing trend is also observed by Zhang et al.
+experimental point of view, we would expect a decrease in friction with
+temperature. \hl{Explain why}. However, an increasing trend is also observed by Zhang et al.
 \cite{ma12091425} (sliding at \SI{10}{m/s}) which we associates with a high
 sliding speed causing ballistic motion \hl{Revisit theory on this one}. Since
 the results does not indicate any plateau for which the temperature choice is
@@ -652,11 +691,13 @@ temperautre $T = \SI{300}{K}$
 
 From the sliding speed investigation in \cref{fig:var_vel} we generally find an increasing friction with velocity. Due to the relatively high velocities availble and the effects from the thermostat, we expect a viscous friction $F_k \propto v_{\text{sliding}}$ which matches rather well with these results. However, the Tetrahedron and Honeycomb sheets seem to fall slightly into a sublinear relationship as it approaches higher velocities. Moreover, the cut sheets exhibit some local fluctuations which might be attributed to resosnance effects as discussed with respect to the phonon dynamics. Our choice of sliding speed at \SI{20}{m/s} mainly reflects a consideration of computational cost, but the fact that no immediate resonance fluctuations appears around this values supports the choice.  
 
-From the investigation of the spring constant parameter in \cref{fig:var_K} we observe a significant decrease in friction as the springs stiffens. This can be attributed to the transistion from a stick-slip influenced regieme to a smooth sliding regime as we saw for the force traces in \cref{fig:drag_Ff}. For soft springs the result is quite sensitive to the specific choice of spring constant which is especially seen for the non-cut sheet as is peaks at $K = \SI{40}{N/m}$. Thus, in order to avoid such a sensitivity we settled for the infinite stiff spring with the intention of getting more stable results in our configuration investigation.
+From the investigation of the spring constant parameter in \cref{fig:var_K} we observe a significant decrease in friction as the springs stiffens. This can be attributed to the transistion from a stick-slip influenced regieme to a smooth sliding regime as we saw for the force traces in \cref{fig:drag_Ff}. For soft springs the result is quite sensitive to the specific choice of spring constant which is especially seen for the non-cut sheet as is peaks at $K = \SI{40}{N/m}$. Thus, in order to avoid such a sensitivity we settled for the infinitely stiff spring with the intention of getting more stable results in our configuration investigation.
 
 
 Finally, we consider the stability of the result as we vary the simulation timestep in \cref{fig:var_dt}. The general trend shows a stable plateau below $\sim \SI{1.5}{fs}$ for which higher values reveals arrising unstabilities for the cut sheets. This mainly confirms that our choice of timestep is within a reasonable range. However, we do see some fluctuations which are more
-significant for the cut patterns. These fluctuations can be taken as a sign of the sensitivity to randomness in our simulation. An extended study of the effect of changing the random seed for the initial velcoity and thermostat could bring more insight into this matter. However, we might interpret this as an indication that the uncertainity is higher than otherwise estimated by the running mean and running \acrshort{std} evalulation. For the Honeycomb sheet the fluctuations are on the order $\pm 0.017$ which corresponds to a relative error of $\sim 20\%$. This number is a bit unsettling, but we take note of this as an upper limit for the error at an unstretched stage. 
+significant for the cut patterns. These fluctuations can be taken as a sign of the role of randomness in our simulation. An extended study of the effect of changing the random seed for the initial velcoity and thermostat could bring more insight into this matter. However, we might interpret this as an indication that the uncertainity is higher than otherwise estimated by the running mean and running \acrshort{std} evalulation. For the Honeycomb sheet the fluctuations are on the order $\pm 0.017$ which corresponds to a relative error of $\sim 20\%$. This number is a bit unsettling, but we take note of this as an upper limit for the error at an unstretched stage. 
+
+
 
 
 
@@ -741,8 +782,9 @@ cuttoff could also be part of the reason for the deviating timing relation for
 $dt$. Finally, for the spring parameter, we did not see any noticable effect on
 timing.
 
-\hl{Mention system size timing?}
 
+
+\hl{Henrik: Summarize the result of 6.5. What were the considerations, and what were the results in terms of simulation parameters?}
 
 
 % Show how the number of cores per simulation scale to argue that running on just one core (maybe 4) is smart for the next step of many simulations. 
@@ -780,27 +822,33 @@ drops to a mere $\SI{70}{kPa}$ corresponding to only $\sim \SI{0.01}{nN}$.
 
 
 \subsection{Stretch dependencies}\label{sec:stretch_dependency}
-We consider the effects of stretching the sheet using the non-cut.  Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$ sheet as used so far. For each configuration we run a rupture test where the given sheet is stretched under zero load, but still under the influence adhesion from the substrate. The rupture point is then noted such and multiple simulations with different stretch between zero and the rupture limit are run. For the sampling of the stretch values in the availble range we use a pseudo uniform distribution, meaning that we divide the given
-interval in equal segments and pick a value from each segments by a uniform
-distribution. This is due to numerical limitations in LAMMPS, but we find that this gives evenly spaced values which also carries some randomness. For the load we use 0.1, 1 and \SI{10}{nN}.
+We consider the effects of stretching the sheet using the non-cut, Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$ sheet as used so far. For each configuration, we run a rupture test where the given sheet is stretched under zero load, but still under the influence of adhesion from the substrate. The rupture strain is then recorded, and multiple new simulations are initiated with strain values between zero and the rupture strain. For the sampling of the stretch values in the available range, we use a pseudo-uniform distribution, meaning that we divide the given interval into equal segments and pick a value from each segment by a uniform
+distribution. This is due to numerical limitations in LAMMPS\footnote{In LAMMPS, we sample the various strain values by storing restart files during the straining of the sheet. The restart values are stored at specific timesteps governed by a LAMMPS variable. Such variables allow for a vector of uniform randomly chosen values, but unfortunately, we are not able to sort the vector for ascending values. This will lead to the script waiting to store each restart file according to the timesteps in the unsorted vector. As soon as the next timestep value is less than the current timestep the program will stop producing restart files and thus skip most of them. However, by first defining a series of intervals we can draw a uniform number for each interval without getting into trouble.}, but we find that this gives evenly spaced values which also carry some randomness. For the load we use 0.1, 1 and \SI{10}{nN}.
 
 
 First, we aim to reproduce the contact investigation from
 \cref{fig:contact_vs_stretch}. We quanitify the relative contact as described in
-\cref{sec:out-of-plane_buckling}, but converts this into a single metric for a given simulation by considering the average of the latter 50\% of data points, similar
+\cref{sec:out-of-plane_buckling}, but converts this into a single metric for a given simulation by considering the average of the last 50\% of data points, similar
 to what we have done for the mean friction, and we adopt the same
 method for quantifing the error. The results are shown
 in \cref{fig:contact_vs_stretch} where we observe a significant decrease in
 contact for the kirigami patterns which qualitatively agrees with the non-loaded
-continous stretch investigation from \cref{fig:contact_vs_stretch}. This result implies that the change in contact can not be related to a momentum effect during stretching, as each simulation now keeps the stretching constant. throughout. The absolute error for the
+continous stretch investigation from \cref{fig:contact_vs_stretch}. This result implies that the change in contact can not be related to a momentum effect during stretching, as each simulation now keeps the stretching constant throughout the simulation. The absolute error for the
 mean rel.\ contact were generally quite low on the order of $0.01$ for all configurations. 
 
-From an asperity theory point of view this reduction in contact is theorized to induce a similar reduction in friction, but when considering the kinetic friction shown in \cref{fig:multi_stretch_mean_fric} we find that this is definitely not the case. As the contact decreases, for the Tetrahedron and Honeycomb pattern, the friction increases. Yet, these are not simply inverse proptional as the friction force suddenly dips down and up again, around 0.08--0.11 for the Tetrahedron and 0.73--1.05 for the Honeycomb pattern. This
-suggests that the contact is not a dominating mechanism for friction in this
-system. The absolute error were fairly low on the order of 0.001--\SI{0.01}{nN}.
+From an asperity theory point of view this reduction in contact is theorized to induce a similar reduction in friction, but when considering the kinetic friction shown in \cref{fig:multi_stretch_mean_fric} we find that this is definitely not the case. As the contact decreases, for the Tetrahedron and Honeycomb pattern, the friction increases. Yet, these are not simply inversely proportional. The friction force suddenly dips down and up again, around 0.08--0.11 for the Tetrahedron and 0.73--1.05 for the Honeycomb pattern. This
+suggests that the contact area is not a dominating mechanism for friction in this
+system. The absolute error for the mean friction measure was fairly low on the order of 0.001--\SI{0.01}{nN}.
 
 We notice also that the two orders of magnitude increase in normal load
-did not make a significant difference in the results. In a study by Zhang et al.\ \cite{zhang_tuning_2019} they found that straining the sheet lead to a reduction in friction. Despite the fact that our result suggest an increase in friction with straining we notice that the observed effect is only present for the kirigami sheets, while the non-cut sheet shows no significantly impact. 
+did not make a significant difference in the results. In a study by Zhang et al.\ \cite{zhang_tuning_2019} they found that straining the sheet lead to a reduction in friction. Despite the fact that our result suggest an increase in friction with straining we notice that the observed effect is only present for the kirigami sheets, while the friction force on the non-cut sheet shows no appreciable dependency on the stretching.
+
+
+% Tension does also not seem to be the answer since the non cut sheet does not really change 
+
+
+
+
 
 
 % Regarding the contact this can be attributed the fact that load is applied to the pull blocks only. Thus, an
@@ -809,9 +857,6 @@ did not make a significant difference in the results. In a study by Zhang et al.
 % The fact the friction does not increase considerable with load relates to the
 % discussion of the load dependence for an atomically flat sheet. This is further
 % investigated in \cref{load_dependency}.
-
-
-Tension does also not seem to be the answer since the non cut sheet does not really change 
 
 % notice that the initial non stretch values also changes. No cut gives lowest friction.
 
@@ -840,11 +885,14 @@ Tension does also not seem to be the answer since the non cut sheet does not rea
       \label{fig:multi_stretch_mean_fric}
   \end{subfigure}
   \hfill
-     \caption{Average relative contact and average friction for multiple simulations, consisting of 30 stretch values sampled from a pseudo uniform distribution between 0 and the rupture point in combination with loads 0.1, 1 and \SI{10}{nN}, for each of the configurations: non-cut, Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$. The average is taken over the latter half of the sliding phase. The red shade denotes the stretch range where ruptures accoured during sliding while the black-dotted line represent the rupture point in the no load rupture test. (a) The average relative contact defined as the relative number of atoms within a contact threshold of 4 Å to the substarte. The absolute error is on the order 0.01 (b) The average mean friction force parallel to the sliding direction. The absolute error is on the order 0.001--\SI{0.01}{nN}}
+     \caption{Average relative contact and average friction for multiple simulations, consisting of 30 stretch values sampled from a pseudo uniform distribution between 0 and the rupture point in combination with loads 0.1, 1 and \SI{10}{nN}, for each of the configurations: non-cut, Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$. The average is taken over the last half of the sliding phase. The red shade denotes the stretch range where ruptures accoured during sliding while the black-dotted line represent the rupture point in the no load rupture test. (a) The average relative contact defined as the relative number of atoms within a contact threshold of 4 Å to the substarte. The absolute error is on the order 0.01 (b) The average mean friction force parallel to the sliding direction. The absolute error is on the order 0.001--\SI{0.01}{nN}}
      \label{fig:multi_stretch}
 \end{figure}
 
 By considering the increase in friction from no stretch towards the first peak we find that the Tetrahedron pattern exhibit a relative increase of $\sim 27.7$ while the Honeycomb pattern exhibit a relative increase of $\sim 22.4$. This is in itself a remarkable result, but considering that the friction drops almost as dramatically down again is even more unexpected. These results are thus promising for the prospect of demonstrating a negaive friction coefficients by altering the stretch through a coupling to the load.
+
+
+\hl{Henrik: Her kan du godt skrive litt mer. Poengtere akkurat hvor mye friksjonen faller. Og spekulere litt i hvordan man kan bruke dette til ae designe noe med negativ friksjonskoeffisient.}
 
 
 % get a relative friction increase and increase vs. stretch ratios as described in \cref{tab:first_peak_stretch}. While the honeycomb force increase towards the first peak is approximately linear the popup exhibits seemingly exponential growth which yield a slope on the order $\sim \SI{30}{nN}$. 
@@ -919,24 +967,20 @@ nN throughout the 0.1--100 nN load range. Using a ratio based friction coeffcien
   &\mu_1,  \ \text{\cref{eq:mu_def1}:}& &\text{No cut}\sim [\num{e-4}, 0.13],&  &\text{Tetrahedron}\sim [\num{4e-4},8.7],& &\text{Honeycomb}\sim [\num{9e-4}, 15.2].&
 \end{align*}
 However, these values mainly reflect the
-poornes of this definition, as we find the values to diverge at low load and decrease towards high load due to the lacking linear relationship and an offset in the load curve corresponding to a finite friction at zero load. This offset is drastically enhanced for the kirigami patterns under applied stretch. Due to the small changes in friction comapred to the noise in the data, it is not sensible to calculate the slope $dF_{\text{fric}}/dF_N$ as a function of load. Nonetheless, if we force a linear fit for the whole range and use the second definition \cref{eq:mu_def2} as $\langle \mu_2 \rangle = \Delta F_{\text{fric}}/\Delta F_N$, we get average coefficients in the range
+poornes of this definition, as we find the values to diverge at low load and decrease towards high load due to the lacking linear relationship and an offset in the load curve corresponding to a finite friction at zero load. This offset is drastically enhanced for the kirigami patterns under applied stretch. Due to the small changes in friction compared to the noise in the data, it is not sensible to calculate the slope $dF_{\text{fric}}/dF_N$ as a function of load. Nonetheless, if we force a linear fit for the whole range and use the second definition \cref{eq:mu_def2} as $\langle \mu_2 \rangle = \Delta F_{\text{fric}}/\Delta F_N$, we get average coefficients in the range
 \begin{align*}
   &\mu_2,  \ \text{\cref{eq:mu_def2}:}& &\text{No cut} \sim [4, 9]\times \num{e-5},&  &\text{Tetrahedron} \sim 5\times[\num{e-5}, \num{e-4}],& &\text{Honeycomb} \sim [1,9]\times \num{e-4},&
 \end{align*}
 depending on the stretch values. These numbers should be interpreted cautiously,
-but we can interpret as a rough estimate of the friction coefficient being on
+but we can interpret it as a rough estimate of the friction coefficient being on
 the order \num{e-4}--\num{e-5}. This relates to the finding by
-\cite{DIENWIEBEL2005197} who reported a seemingly non-dependent relationship
-between friciton and normal load with increases that correspond to friciton
-coefficients in the range \num{e-3}--\num{e-4} when using the slope definition
-\cref{eq:mu_def2}. This support the idea that the graphene sheet does in fact
-exhibit superlubric behvaiour in these conditions. Moreover, the fact that the
-increase with load is relatively unaffected by the stretching points to the fact
-that stretch induced effect mainly shift the load curve towards higher friction
-but do not signifciantly alter the slope of it. Considering the big difference
+\cite{DIENWIEBEL2005197} who reported a seemingly non-existing relationship
+between friction and normal load with change in friction that corresponds to a friction coefficients in the range \num{e-3}--\num{e-4} when using the slope definition \cref{eq:mu_def2}. This supports the idea that the graphene sheet does in fact exhibit superlubric behavior in these conditions. Moreover, the fact that the increase with load is relatively unaffected by the stretching points to the fact that the stretch-induced effect mainly shifts the load curve towards higher friction but does not significantly alter its slope. Considering the big difference
 in the ratio for the demonstrated friction changes with stretch (for the
-kirigami patterns) and the friction coefficients, we can conclude that the
-stretch induced mechanism is dominating the friction response. Thus, for a system where the load is coupled to a stretching mechanism, we can basically ignore any effects of loading the system and focus entirely on the stretching. \hl{Does this last sentence make sense?}
+kirigami patterns) and the friction coefficients, we can conclude that the stretch-induced mechanism is dominating the friction response. This works well with the idea of creating a nanomachine that couples load and stretch. By applying load on the nanomachine we would increase both the load and the strain on the sheet simultaneously. However, since the friction dependency to strain dominates in comparison to load effects such a system can be designed entirely by considering the strain dependency.
+
+
+
 
 
 
