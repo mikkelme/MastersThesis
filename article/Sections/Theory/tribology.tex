@@ -1430,37 +1430,34 @@ deforms we can also expect a modification of the commensurability, and the local
 
 
 \section{Research questions}\label{sec:research_questions}
-From the friction review in \cref{chap:friction}, we find a frictional
-behavior that is highly dependent on the system, the numerical modeling and the
-physical conditions related to the environment and the probing of friction. In our study, we aim to investigate the frictional behavior of a Kirigami sheet under the effects of strain. Such a strain has been found to produce out-of-plane buckling \cite{PhysRevLett.121.255304, PhysRevResearch.2.042006} which constitutes a possible transition between two types of systems, an atomically flat interface as opposed to an asperity system, which has only been
-studied separately. Thus, our primary objective is to explore the possible frictional effects of system transitions related to the straining of a Kirigami sheet. In particular, we want to investigate the significance of contact area and test the hypothesis that reducing the contact area results in decreasing friction as well. Additionally, we seek to investigate the relation to the friction-load curve. For the sake of contributing with new insight to the field of nanoscale friction, we are especially interested in non-linear dependencies between friction and stretching of various Kirigami designs. Drawing on this perspective, we aim to to investigate the prospects of achieving a negative friction coefficient for a system of coupled load and stretch. 
+Based on the review of friction presented in \cref{chap:friction}, it is evident that the behavior of friction is significantly influenced by various factors, such as the specific system under investigation, the numerical modeling approach, and the physical conditions related to the environment and the probing of friction. In our study, we aim to investigate the frictional behavior
+of a Kirigami sheet under the effects of strain. Previous studies have
+demonstrated that strained Kirigami sheets are prone to exhibiting out-of-plane buckling \cite{PhysRevLett.121.255304, PhysRevResearch.2.042006} which is indicative of a possible transition between two distinct systems: an atomically flat interface and an asperity system. These systems are usually only studied
+separately, and thus our primary objective is to explore the potential frictional effects associated with system transitions resulting from the straining of a Kirigami sheet. In particular, we want to investigate the significance of the contact area and evaluate the hypothesis that reducing the contact area will lead to a decrease in friction. Additionally, we seek to examine the relationship between the friction-load curve and this phenomenon. For the sake of contributing new insight to the field of nanoscale
+friction, we are especially interested in non-linear dependencies between
+friction and stretching of various Kirigami designs. Drawing on this
+perspective, we aim to investigate the prospects of achieving a negative friction coefficient for a system of coupled load and stretch. The relevant
+understanding of how physical conditions affect frictional behavior in
+experimental and numerical studies will be considered in order to frame our
+results within the theoretical understanding.
 
-% Do the extensive list of important physical
-% parameters, we do not carry out an exhaustive evaluation of how our system behaves across the corresponding frictional regimes. Instead, we aim to create an \acrshort{MD} simulation which provides a good basis for the measurement of friction. The relevant understanding of how the physical conditions affect the simulation will be considered in order to frame our system within the theoretical understanding.
-
-
-
-In order to get a broader view of the possibilities within Kirigami design we want to create an \acrshort{MD}-based dataset concerning the friction effects on Kirigami designs, stretch and load. By the use of machine learning, we want to investigate whether it is possible to capture any useful trends in the data which can be used for further exploration. This will serve as a preliminary investigation for assessing the potential of utilizing machine learning for this kind of problem as well as a tool for performing an accelerated search of Kirigami designs. Especially we want to use the data for an evaluation of the prospects of minimizing and maximizing the friction force and also the friction coefficient for a coupled system of load and stretch. 
-
-
-%
-%
-% Working here 
-%
-%
-
-% This transition can be hypothesized
-% to introduce the contact area as an important factor for friction, along with
-% more complex effects associated with commensurability and the mechanical
-% deformations in general.
+To gain a more comprehensive understanding of the potential applications of Kirigami design, we aim to develop a dataset based on \acrshort{MD} simulations that capture the frictional effects on Kirigami designs when subjected to stretching and loading. We intend to employ machine learning techniques to discern any meaningful trends in the data that may be used to inform future research endeavors. Specifically, we seek to leverage the machine learning model to facilitate an accelerated search for optimizing specific frictional properties. Our focus will be on evaluating the prospects of reducing or increasing the friction force, as well as reducing or increasing the friction coefficient for a coupled system of load and stretch. Our main research questions can be summarized as follows.
 
 
-% Initially, we want to focus on a qualitative description of the effect on out-of-plane buckling and consider the relation to contact area. We will then evaluate the dependence on stretch and investigate how this effect the load dependence and the associated frictional coefficients. 
+\begin{enumerate}
+  \item  How can we design an \acrshort{MD} simulation that provides a reliable foundation for an investigation of the friction behavior for a Kirigami graphene sheet sliding on a substrate? How do physical conditions such as temperature and sliding speed control the frictional behavior?
+  \item How can we design an ensemble of Kirigami patterns for the investigation of its frictional properties with the scope of getting out-of-plane buckling and also randomized design features?   
+  \item Can we control friction for a Kirigami sheet through pattern design and stretching of the sheet?
+  \begin{enumerate}
+    \item How does friction dependent on a changing contact area?
+    \item How does the friction-load curve relate to stretched Kirigami sheets?
+    \item Are the effects of stretching and pattern design significant when considered independently?
+  \end{enumerate}
+  \item Is it possible to utilize machine learning techniques to identify general trends in friction associated with Kirigami designs, stretch and load?
+  \item Can we use a trained machine learning model to predict new designs through accelerated search?
+  \item What are the prospects of achieving a negative friction coefficient for a system of coupled load and stretch through Kirigami design?
+\end{enumerate}
 
-
-% From there on, we want to create an dataset of multiple Kirigami patterns in order to explore the relation to stretching of the sheet. The aim is to identify the possibility for interesting non-linear effects. By training a machine learning model we will extend this search further in an accelerated manner. This exploration can be considered as a broad view of the possible effects from Kirigami induced deformations which will set the scene for further studies of the phyical mechanisms behind. Thus we consider our work as a proof of concept for the general method and as a relevant insight in a system domain not systematically studied. 
-
-Our main research questions can be summarized as follows.
 
 % \item MD without cuts to be stable (what about physical conditions)
 % \item How can we design different patterns
@@ -1470,20 +1467,11 @@ Our main research questions can be summarized as follows.
 % \item Can we use the model to perform an accelerated search
 % \item Can we use a coupled load and stretch system to demonstrate a negative friction coefficient using our Kirigami design
 
-\begin{enumerate}
-  \item  How can we design an \acrshort{MD} simulation that provides a reliable foundation for an investigation of the friction behavior for a Kirigami graphene sheet sliding on a substrate? How do physical conditions such as temperature and sliding speed control the frictional behavior?
-  \item How can we design an ensemble of Kirigami patterns for the investigation of its frictional properties with the scope of getting out-of-plane buckling but also randomized features?   
-  \item Can we control friction for a Kirigami sheet through pattern design and stretching of the sheet?
-  \begin{enumerate}
-    \item Are stretching effects significant for a non-cut sheet?
-    \item Are pattern design effects significant for a non-stretched sheet?
-    \item How does friction dependent on a changing contact area?
-    \item How does the friction-load curve relate to stretched Kirigami sheets?
-  \end{enumerate}
-  \item Are we able to capture general trends in friction related to Kirigami designs, stretch and load using machine learning?
-  \item Can we use a trained machine learning model to predict new designs through accelerated search?
-  \item What are the prospects of achieving a negative friction coefficient for a system of coupled load and stretch through Kirigami design?
-\end{enumerate}
+
+% This transition can be hypothesized
+% to introduce the contact area as an important factor for friction, along with
+% more complex effects associated with commensurability and the mechanical
+% deformations in general.
 
 
 
