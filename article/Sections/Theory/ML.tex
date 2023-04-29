@@ -1,56 +1,42 @@
 \chapter{Machine Learning}\label{chap:ML}
-In this thesis machine learning will serve as a numerical tool for evaluating
-and exploring the frictional behavior of various Kirigami designs. We will
-generate data using \acrshort{MD} simulations which serve as a ground truth for
-the training of a machine learning model. If successful, we can utilize such a
-model to predict the frictional behavior of unseen configurations. The machine
-learning predictions will be a lot faster than carrying out a complete
-\acrshort{MD} simulation and thus this can be used to accelerate the search
-through a new set of configurations. It is not obvious that the machine learning
-model can readily capture the physical mechanisms in our system. Hence, the
-attempt to model the system with machine learning also has value in terms of
-revealing the usefulness of such methods to this problem. We aim to implement a
-rather traditional machine-learning approach. In this chapter we introduce the
-key concept behind machine learning and some of the relevant concepts and
-techniques relevant to our implementation.
+We will use machine learning to predict the friction resulting from the stretching
+and loading of a given Kirigami pattern. To this end, we will generate data through \acrshort{MD} simulations that will serve as the ground truth for training the machine learning model. The advantage of using machine learning is that it can significantly speed up the exploration of new configurations compared to full \acrshort{MD} simulations. However, there is no guarantee that the machine learning model can accurately capture the physical mechanisms governing our system. Hence, a key objective is to assess
+the viability of this approach for further studies of Kirigami friction, It is not guaranteed that the machine learning model can accurately
+capture the physical mechanisms of our system. Hence, one of our objectives is to evaluate the applicability of this approach in the study of Kirigami friction, which we will pursue using a rather traditional machine-learning approach. In this
+chapter, we introduce the key concept behind machine learning and some of the concepts and techniques relevant to our implementation.
 
 
 \section{Neural network}\label{sec:NN}
 The neural network, or more precisely the \textit{feed forward dense neural
-network}, is one of the original concepts in machine learning arising from the attempt of mimicking the way neurons work in the brain \cite{lederer2021activation, Shankar_2022}. The neural network can be considered as three major parts: The input layer, the
+network}, is one of the original concepts in machine learning arising from the attempt of mimicking the way neurons work in the brain~\cite{lederer2021activation, Shankar_2022} brain. The neural network can be considered in terms of three major parts: The input layer, the
 so-called \textit{hidden layers} and finally the output layer as shown in
 \cref{fig:ffnn}. The input is described as a vector $\vec{x} = x_0, x_1, \ldots,
-x_{n_x}$ where each input $x_i$ is usually denoted as a \textit{feature}. For
-our task we will consider the Kirigami configuration, load and stretch of the system as input features on which we want the model to base its prediction. The
+x_{n_x}$ where each input $x_i$ is usually denoted as a \textit{feature}. The
 input features are densely connected to each of the \textit{nodes} in the first
-hidden layers as indicated by straight lines in \cref{fig:ffnn}. Each line
+hidden layer as indicated by the straight lines in~\cref{fig:ffnn}. Each line
 represents a weighted connection that can be adjusted to configure the
-importance of that feature. Similar dense connections run through all the
-hidden layers to the final output layer. For a given note $a_j^{[l]}$ in layer $l$ will process the input from layer $l-1$ as
+importance of that feature. Similar dense connections are present throughout the
+hidden layers to the final output layer. For a given note $a_j^{[l]}$ in layer $l$ the input from all the nodes in the previous layer $l-1$ are processed as
 \begin{align*}
   a_j^{[l]} = f\left(\sum_i w^{[l]}_{ij}a_i^{[l-1]} + b_j^{[l]}\right),
 \end{align*}
-where $w^{[l]}_{ij}$ is the weight connection node $a_i^{[l-1]}$ of the previous layer to the node $a_j^{[l]}$ in the current layer. Note that the choice of denoting this weight to belong to layer $l$ as opposed $l-1$ is simply a notation choice. $b_j^{[l]}$ denotes a bias and $f(\cdot)$ the \textit{activation function}. The activation function is often chosen to give a non-linear mapping of the input to each node. Without this, the network will only be capable of approximate linear functions \cite{lederer2021activation}. Two common activation functions are the \textit{sigmoid}, mapping the input to the range $(0,1)$, and the ReLU which cuts off negative values and maps positive linearly
+where $w^{[l]}_{ij}$ is the weight connection node $a_i^{[l-1]}$ of the previous layer to the node $a_j^{[l]}$ in the current layer. Note that having the weight belong to layer $l$ as opposed $l-1$ is simply a notation choice. $b_j^{[l]}$ denotes a bias and $f(\cdot)$ the \textit{activation function}. The activation function provides a non-linear mapping of the input to each node. Without this, the network will only be capable of approximate linear functions~\cite{lederer2021activation}. Two common activation functions are the \textit{sigmoid}, mapping the input to the range $(0,1)$, and the \textit{ReLU} which cuts off negative contributions
 \begin{align*}
   \text{Sigmoid:} \quad f(z) = \frac{1}{1 + e^{-z}}, \qquad \qquad
   \text{ReLU:} \quad 
   f(z)= \begin{cases}
-    z \text{ for } z > 0   \\
-    0 \text{ for } z \leq 0.
+    z & z > 0   \\
+    0 & z \leq 0.
     \end{cases}
 \end{align*}
-Often the same activation function is used throughout the network, except for the output layer where the activation function is usually omitted or the sigmoid is used for classification tasks. The whole process of sending data through the model is called \textit{forward propagation} and constitutes the mechanism for mapping an input $\vec{x}$ to the model output $\hat{vec{y}}$. In order to get useful predictions we must \textit{train} the model which involves tuning the model parameters, the weight and biasses.
-
-
+Often the same activation function is used throughout the network, except for the output layer where the activation function is usually omitted or the sigmoid is used for classification tasks. The whole process of sending data through the model is called \textit{forward propagation} and constitutes the mechanism for mapping an input $\vec{x}$ to the model output $\hat{\vec{y}}$. In order to get useful predictions we must \textit{train} the model which involves tuning the model parameters, i.e.\ the weight and biasses.
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.9\linewidth]{figures/theory/ffnn.png}
-  \caption{\hl{From overleaf IN400}}
+  \caption{\hl{From overleaf IN5400}}
   \label{fig:ffnn}
 \end{figure}
-
-
-The model training relies on two core concepts: \textit{backpropagation} and \textit{gradient descent} optimization. We define the error associated with a model prediction, otherwise known as the \textit{loss}, through the \textit{loss function} $L$ that evaluates the model output  $\hat{\vec{y}}$ against the true value $\vec{y}$. For a continuous scalar output, we might simply use the mean squared error (\acrshort{MSE})
+The model training relies on two core concepts: \textit{backpropagation} and \textit{gradient descent} optimization. First, we define the error associated with a model prediction, otherwise known as the \textit{loss}, through the \textit{loss function} $L$ that evaluates the model output $\hat{\vec{y}}$ against the ground truth $\vec{y}$. For a continuous scalar output, we might simply use the mean squared error (\acrshort{MSE})
 \begin{align*}
   L_{\text{\acrshort{MSE}}} = \frac{1}{N_y} \sum_{i = 1}^N (y_i - \hat{y}_i)^2.
 \end{align*}
@@ -63,25 +49,20 @@ For a binary classification problem, meaning that the true output is True or Fal
 \end{align*}
 The cross-entropy loss can be derived from a maximum likelihood estimation \hl{SOURCE}. Without going into details with the derivation we can convince ourselves that the error is minimized for the correct prediction and maximized for the worst prediction. When $y_i = 1$ we get the negative term $-\log(\hat{y_i})$ where a correct prediction $\hat{y}_i \to 1$ yields a loss contribution $L_i \to 0$. For a wrong prediction $\hat{y}_i \to 0$ the loss contribution will diverge $L_i \to \infty$. Similar applies to the case of $y_i = 0$ with opposite directions. 
 
-Given a loss function, we can calculate the loss gradient $\nabla_\theta L$ with respect to each of the weights and biases in the model. This gradient expresses how each parameter is connected to the loss. The overall idea is then to  ``nudge'' each parameter in the right direction. We generally denote a full cycle of forward and backpropagation and an update to the parameters as an epoch. We calculate the updated parameter $\theta_t$ for epoch $t$ using gradient descent 
+Given a loss function, we can calculate the loss gradient $\nabla_\theta L$ with respect to each of the weights and biases in the model. This is called \textit{backpropagation} since we follow the propagation of the errors as we go backward back through the model layers calculating the gradient using the chain rule. These gradients express how each parameter is connected to the loss and the overall idea is then to ``nudge'' each parameter in the right direction for reducing the loss. We usually denote a full cycle of forward-, backpropagation and an update of all model parameters as an \textit{epoch}. We calculate the updated parameter $\theta_t$ for epoch $t$ using the \textit{gradient descent} method
 \begin{align*}
   \theta_{t} = \theta_{t-1} - \eta \nabla_\theta L(\theta_t).
 \end{align*}
 Gradient descent is analog to taking a step in parameter space in the direction
-that yields the biggest decrease in the loss. If we imagine a simplified analog
-with only two parameters $\theta_1$ and $\theta_2$ we can think of this as the
-act of stepping perpendicular to the contour lines shaped by the loss function
-as shown in \cref{fig:gd}. Notice however that models in general contain on the order of $\num{e6}--\num{e9}$ parameters \hl{FACT CHECK}, but this might get a bit harder to visualize. The length of each step is proportional to the gradient magnitude and the learning rate $\eta$. There are three main flavors to the gradient descent: Batch,
-stochastic and mini-batch gradient descent. In batch gradient descent we simply
-calculate the gradient based on the whole dataset by averaging the contribution
+that yields the biggest decrease in the loss. If we imagine a simplified case
+with only two parameters $\theta_1$ and $\theta_2$ we can think of these as directions on a map and the loss being the terrain height. The gradient descent steps in the direction perpendicular to the contour lines shaped by loss function terrain as shown in~\cref{fig:gd}. Notice, however, that state-of-the-art models in general contain on the order of $\num{e6}-\num{e9}$ parameters \cite{thompson2022computational} which poses some challenges for the visualization.  The length of each step is proportional to the gradient norm and the learning rate $\eta$. There are three main flavors to the gradient descent: Batch,
+stochastic and mini-batch gradient descent. In \textit{batch gradient descent} we simply
+calculate the gradient based on the entire dataset by averaging the contribution
 from each data point before updating the parameters. This gives the most robust estimate of the gradient and thus the most direct path through parameter space in terms of minimizing the loss function as
-indicated in \cref{fig:gd}. However, for big datasets, this calculation can be
+indicated in~\cref{fig:gd}. However, for big datasets, this calculation can be
 computationally heavy as it must carry the entire dataset in memory at once. A
-solution to this issue is provided by stochastic gradient descent
-(\acrshort{SGD}) which considers only one data point at a time. Each data point is chosen randomly and the parameters are updated based on the corresponding gradient. This leads to more frequent updates of the parameters which will results
-in a more ``noisy'' path through parameter space with respect to minimizing the
-loss as shown in \cref{fig:sgd}. In some situations, this might compromise the
-precision but the noisiness makes it more likely to escape local minima in the loss space. The mini-batch gradient descent serves as a middle ground between the above methods by dividing the full dataset into a subset of mini-batches. Each parameter update is then based on the gradient within a mini-batch. By choosing a suitable batch size we get the robustness of the (full) batch gradient descent and the computational efficiency and resistance to local minima of the \acrshort{SGD} method. 
+solution to this issue is provided by \textit{stochastic gradient descent}
+(\acrshort{SGD}) which considers only one data point at a time. Each data point is chosen randomly and the parameters are updated based on the corresponding gradient. This leads to more frequent updates of the parameters and a more ``noisy'' path through parameter space as shown in~\cref{fig:sgd}.  Under some circumstances, this might compromise the precision. However, the presence of noise can actually increase the chances of avoiding local minima in parameter loss space The \textit{mini-batch gradient descent} serves as a middle ground between the above methods by dividing the full dataset into a subset of mini-batches. Each parameter update is then based on the gradient within a mini-batch. By choosing a suitable batch size we get the robustness of the (full) batch gradient descent and the computational efficiency and resistance to local minima of the \acrshort{SGD} method. 
 
 
 \begin{figure}[H]
@@ -136,7 +117,7 @@ Hence $m_t$ is a weighted average of the gradients with an exponentially decreas
     &\vdots \\
     \text{EMA}(g_t) &= \alpha \text{EMA}(g_{t-1}) + (1-\alpha)g_t  = \sum_{k=0}^t \alpha^{t-k}(1-\alpha)g_t,
 \end{align*}
-which is similar to that of momentum \cref{eq:mom_rec}, but with the explicit weighting by $(1-\alpha)$.
+which is similar to that of momentum~\cref{eq:mom_rec}, but with the explicit weighting by $(1-\alpha)$.
 
 The second moment of the exponential moving average is utilized in the root mean square propagation (\acrshort{RMSProp}) method which is motivated by the issue of passing long plateaus in the loss space. Since the size of the updates are proportional to the norm of the gradient
 \begin{align*}
@@ -149,7 +130,7 @@ we might get the idea of normalizing the gradient step by dividing with the norm
 \end{align}
 where $\epsilon$ is simply a small number to avoid division by zero issues. 
 
-ADAM merges the idea of first order \acrshort{EMA} for the momentum $m_t$, and the second order \acrshort{EMA} $v_t$, as used in the root mean square propagation technique in \cref{eq:RMSProp}
+ADAM merges the idea of first order \acrshort{EMA} for the momentum $m_t$, and the second order \acrshort{EMA} $v_t$, as used in the root mean square propagation technique in~\cref{eq:RMSProp}
 \begin{align*}
   m_t &= \beta_1 m_{t-1} + (1-\beta_1)g_t, \\
   v_t &= \beta_2 v_{t-1} + (1-\beta_2)g_t^2. 
@@ -168,7 +149,7 @@ By adding a so-called \textit{regularization} to the loss function we can penali
   \nabla_\theta L_{l2}(\theta) &=  \nabla_\theta L(\theta) + \lambda \theta,
   \label{eq:l2_grad}
 \end{align}
-where $\lambda$ is the weight decay parameter $\in [0,1]$. The name \textit{weight decay} relates to the fact that some practitioners only apply this penalty to the weights in the model, but we will include the biases as well (standard in PyTorch). Following the original gradient descent scheme \cref{eq:l2_grad} we get
+where $\lambda$ is the weight decay parameter $\in [0,1]$. The name \textit{weight decay} relates to the fact that some practitioners only apply this penalty to the weights in the model, but we will include the biases as well (standard in PyTorch). Following the original gradient descent scheme~\cref{eq:l2_grad} we get
 \begin{align*}
   \theta_{t+1} &= \theta_t - \eta g_t - \eta\lambda \theta_t \\
   &= \theta_t\underbrace{(1-\eta\lambda)}_{\text{Weight decay}} - \eta g_t.
@@ -238,6 +219,10 @@ first 30\% of the training length.
 
 
 \section{Convolutional Neural Network}\label{sec:CNN}
+
+% For
+% our task we will consider the Kirigami configuration, load and stretch of the system as input features on which we want the model to base its prediction.
+
 Convolutional Neural Networks (\acrshort{CNN}s) build upon some of the same
 concepts as introduced with the feed-forward neural network. The difference lies
 in its specialization for a spatially correlated input, such as pixels in an
@@ -252,7 +237,7 @@ or \textit{filter} which slides over the images\footnote{Note,
 that we will be using the word ``image'' as a reference for a spatially
 dependent input, but in reality, it does not have to be an actual image in the
 classical sense.} as it processes the input. A convolutional layer contains multiple kernels, each
-consisting of a set of trainable weights and a bias. Each kernel will produce a separate output channel to the resulting \textit{feature map}. The kernel has a spatial size, specific to the model architecture, and a depth that matches the number of input channels to the layer. For instance, a typical RGB will have three channels. The kernel lines up with the image and calculates the feature map output as a dot product between the weights in the kernel and the aligning subset of the input. This is done for each input channel and summed up with the addition of a bias as illustrated in \cref{fig:conv_calculation}. The kernel then slides over by a step size given by the \textit{stride} model parameter and repeat the calculation. Choosing a stride of 2 or higher results in a reduction of spatial size. If we want to preserve the spatial size we must keep a stride of one and
+consisting of a set of trainable weights and a bias. Each kernel will produce a separate output channel to the resulting \textit{feature map}. The kernel has a spatial size, specific to the model architecture, and a depth that matches the number of input channels to the layer. For instance, a typical RGB will have three channels. The kernel lines up with the image and calculates the feature map output as a dot product between the weights in the kernel and the aligning subset of the input. This is done for each input channel and summed up with the addition of a bias as illustrated in~\cref{fig:conv_calculation}. The kernel then slides over by a step size given by the \textit{stride} model parameter and repeat the calculation. Choosing a stride of 2 or higher results in a reduction of spatial size. If we want to preserve the spatial size we must keep a stride of one and
 additionally apply \textit{padding} to the input images, such that we can
 achieve one kernel position for each input ``pixel''. The spatial size of the
 feature map is given as
@@ -261,7 +246,7 @@ feature map is given as
   \label{eq:down_scaling}
 \end{align}
 for padding $P$, stride $S$, spatial size of the kernel filter $F_d$, spatial size
-of input $N_d^{[l]}$, for dimension $d = {x, y}$ and layer $l$. The \textit{down-sampling} is often done through a pooling layer. A pooling layer is remniscent of a kernel, but instead of calculating the output as a dot product, it calculate the mean (mean pooling) or the max value (max pooling) of the values within its range. For instance, by using a max pooling of size $2 \times 2$ and stride two we essentially half the dimensions of the image as dictated by \cref{eq:down_scaling}. \acrshort{CNN}s will often use repeating series of convolution, pooling and then an activation function. Most architectures will down-sample the spatial input while increasing the number of channels in the model.
+of input $N_d^{[l]}$, for dimension $d = {x, y}$ and layer $l$. The \textit{down-sampling} is often done through a pooling layer. A pooling layer is remniscent of a kernel, but instead of calculating the output as a dot product, it calculate the mean (mean pooling) or the max value (max pooling) of the values within its range. For instance, by using a max pooling of size $2 \times 2$ and stride two we essentially half the dimensions of the image as dictated by~\cref{eq:down_scaling}. \acrshort{CNN}s will often use repeating series of convolution, pooling and then an activation function. Most architectures will down-sample the spatial input while increasing the number of channels in the model.
 
 
 \begin{figure}[H]
@@ -310,7 +295,7 @@ spatial size of the filter $F_d$, stride $S_l$ (from layer $l-1$ to $l$) we have
 with $D_0 = 1$ and $l=0$ as the input layer. Note that by convention, the
 product of zero elements is 1, such that for the first layer, the product is 1. The receptive field is important in understanding the connectivity in the model. The model output will be completely independent of the inputs and feature maps outside the receptive field. Furthermore, we differentiate between the theoretical
 receptive field and the effective receptive field. The effective receptive field
-will have a Gaussian distribution within the theoretical receptive field due to the fact that these nodes in the center of the receptive field will have more connections leading to the output, as seen in \cref{fig:receptive_field}. Thus, in practice the effective receptive field will be smaller than the theoretical Implementations like dilated convolutions, which make the filter expand in circumference and skipping skipping positions within the filter, which can be used to further increase the effective field. 
+will have a Gaussian distribution within the theoretical receptive field due to the fact that these nodes in the center of the receptive field will have more connections leading to the output, as seen in~\cref{fig:receptive_field}. Thus, in practice the effective receptive field will be smaller than the theoretical Implementations like dilated convolutions, which make the filter expand in circumference and skipping skipping positions within the filter, which can be used to further increase the effective field. 
 
 \begin{figure}[H]
   \centering
@@ -321,7 +306,7 @@ will have a Gaussian distribution within the theoretical receptive field due to 
 \end{figure}
 
 
-On a final note regarding the \acrshort{CNN} we point out that convolution is often used in combination with a dense network, or \textit{fully connected}, at the end. We can then think of the convolution part to handle the translation from a spatial import to some internal features. For the animal detection network, we would perhaps suggest features like, number of legs, size, color and so on. In practice, the network will not create easily interpreted features for the processing of the fully connected layer. We discuss one approach for interpreting of the model internals in \cref{sec:explanation}
+On a final note regarding the \acrshort{CNN} we point out that convolution is often used in combination with a dense network, or \textit{fully connected}, at the end. We can then think of the convolution part to handle the translation from a spatial import to some internal features. For the animal detection network, we would perhaps suggest features like, number of legs, size, color and so on. In practice, the network will not create easily interpreted features for the processing of the fully connected layer. We discuss one approach for interpreting of the model internals in~\cref{sec:explanation}
 
 \subsection{Training, validation and test data}
 So far, we have simply considered the concept of training data as a means to
@@ -354,9 +339,8 @@ our model which have not be considered before the end. Formally, this is the
 only reliable performance metric for the model. 
 
 
-
 \section{Overfitting and underfitting}
-% THE UNDERFITTING AND OVERFITTING TRADE-OFF \cite{smith2018disciplined}. 
+% THE UNDERFITTING AND OVERFITTING TRADE-OFF~\cite{smith2018disciplined}. 
 
 Underfitting and overfitting represent a crucial balance going on when training
 a model. This concept is highly related to the model complexity and the chosen
@@ -378,10 +362,10 @@ by a fitting to a 2D curve. We see how a simple, not complex, underfitted model
 will make a crude approximation for the true curve. An overly complex
 overfitted model will follow pick up the noise in the training data and miss the
 general trend. In practice the diagnosticating of under. and overfitting is not
-as simple as the figures in \cref{fig:over_under_fitting} imply. First of all,
-the \cref{fig:fitting_vs_time} is simplifying the idea, and the training and
+as simple as the figures in~\cref{fig:over_under_fitting} imply. First of all,
+the~\cref{fig:fitting_vs_time} is simplifying the idea, and the training and
 validation loss will rarely showcase such a clear indication of the transition
-to overfitting. The problem with \cref{fig:fitting_quality} lies in the fact
+to overfitting. The problem with~\cref{fig:fitting_quality} lies in the fact
 that we do not know the true curve. If we did, we would not need machine
 learning to estimate it in the first place. Without having additional insight into
 the governing source of the data the overfitting case seems to produce the most
@@ -410,13 +394,12 @@ confident fit.
 
 
 
-
 \section{Hypertuning}\label{sec:hypertuning}
-\hl{Define hyper-parameter properly like done in} \cite{Bengio2012}
+\hl{Define hyper-parameter properly like done in}~\cite{Bengio2012}
 
-Training a machine learning model revolves around tuning the model parameters such as weights and biases. However, a handful of so-called \textit{hyper-parameters} remains for us to decide. First of all, we need to choose an architecture for the model. This includes high-level considerations, for instance, whether to use a neural network or a convolutional network, but also lower-level considerations, such as the depth and the width of the model, i.e.\ how many layers and how many nodes/channels. In addition, we have to define and consider the loss function and the optimizer which come with hyper-parameters such as learning rate, momentum and weight decay. This extensive list of choices makes the designing of an a functional model more complicated that simply starting the traiing. As N. Smith \cite{smith2018disciplined} puts it: ``Setting the
+Training a machine learning model revolves around tuning the model parameters such as weights and biases. However, a handful of so-called \textit{hyper-parameters} remains for us to decide. First of all, we need to choose an architecture for the model. This includes high-level considerations, for instance, whether to use a neural network or a convolutional network, but also lower-level considerations, such as the depth and the width of the model, i.e.\ how many layers and how many nodes/channels. In addition, we have to define and consider the loss function and the optimizer which come with hyper-parameters such as learning rate, momentum and weight decay. This extensive list of choices makes the designing of an a functional model more complicated that simply starting the traiing. As N. Smith~\cite{smith2018disciplined} puts it: ``Setting the
 hyper-parameters remains a black art that requires years of experience to
-acquire''. In the following we will review a general approach for choosing the learning rate, momentum and weight decay hyper-parameter based mainly on the findings of \cite{smith2018disciplined}. The traditional approach is to
+acquire''. In the following we will review a general approach for choosing the learning rate, momentum and weight decay hyper-parameter based mainly on the findings of~\cite{smith2018disciplined}. The traditional approach is to
 perform a grid-search of hyper-parameter combinations for multiple training sessions, but this might rather quickly become computationally expensive and ineffective. In addition, hyper-parameters will depend on the training data, the model architecture and not at least each other. 
 
 
@@ -424,7 +407,7 @@ perform a grid-search of hyper-parameter combinations for multiple training sess
 % clues of either underfitting or overfitting. 
 
 The learning rate is often regarded as the most important hyper-parameter to
-tune \cite{Bengio2012}. Typical values are in the range $[\num{e-6}, 1]$.
+tune~\cite{Bengio2012}. Typical values are in the range $[\num{e-6}, 1]$.
 Instead of simply running a grid search, i.e.\ multiple full training sessions
 using different learning rates, we can perform a so-called \textit{learning rate
 range test} (LR range test). One specifies the minimum and maximum learning rate
@@ -462,7 +445,7 @@ learning rate choice.
 \end{figure}
 
 
-Next, we consider the choice of momentum. Momentum and learning rates are found to affect each other considerably. From the gradient descent scheme with momentum \cref{eq:mom} we see that the momentum parameter $\alpha$ and the learning rate $\eta$ have a similar effect on the parameter update
+Next, we consider the choice of momentum. Momentum and learning rates are found to affect each other considerably. From the gradient descent scheme with momentum~\cref{eq:mom} we see that the momentum parameter $\alpha$ and the learning rate $\eta$ have a similar effect on the parameter update
 \begin{align*}
   \theta_t = \theta_{t-1} - \eta g_t - \alpha m_{t-1},
 \end{align*}
@@ -470,7 +453,7 @@ as the $m_t$ is a moving average of the gradient $g_t$ as well. Like the
 learning rate, we want to set the momentum value as high as possible without
 causing instabilities in the training. However, it is found that these values
 are somewhat inversely related. Choosing a high learning rate should be coupled
-with a lower momentum and vice versa. N. Smith \cite{smith2018disciplined}
+with a lower momentum and vice versa. N. Smith~\cite{smith2018disciplined}
 reports that a momentum range test is not useful to find the right momentum.
 Instead, he suggests doing a few short runs with different values of momentum,
 such as 0.99, 0.97, 0.95, and 0.9, to determine a suitable choice. By including
@@ -486,14 +469,12 @@ Finally, we address the weight decay. N. Smith reports that weight decay is diff
 
 
 
-
-
 \section{Prediction explanation}\label{sec:explanation}
 With the rise of constantly improving machine learning models and computational
-power, the capabilities of machine learning systems is improving as well. However, with deep learning models, we have essentially no insight into the considerations that went into a prediction other than the input data. This is known as the \textit{black box} problem. A lot of effort is currently being developed for making more transparent models, like decision trees with interpretable rules, and numerical tools for unpacking the inner workings of the model. We will consider a graident based method called  \textit{Grad-CAM} \cite{Selvaraju_2019}. The idea is to use the gradients for a certain feature map with respect to the loss. 
+power, the capabilities of machine learning systems is improving as well. However, with deep learning models, we have essentially no insight into the considerations that went into a prediction other than the input data. This is known as the \textit{black box} problem. A lot of effort is currently being developed for making more transparent models, like decision trees with interpretable rules, and numerical tools for unpacking the inner workings of the model. We will consider a graident based method called  \textit{Grad-CAM}~\cite{Selvaraju_2019}. The idea is to use the gradients for a certain feature map with respect to the loss. 
 
 First, we forward propagate the input through the model, and decide on a feature map of interest. We then calculate the gradients for the feature map with respect to the loss of a target output. For a classification task, one would often choose the predicted class as the target output, the class with the highest score. The gradients will then highlight which part of the feature maps is most important for the prediction loss. a ReLU activation layer is then applied to only highlight the positive contributions. Since the convolutional layers preserve relative spacing we can rescale the heatmap provided by the feature map gradient to make an input-sized heatmap we can overlay with the input image. This provides a visual clue of what the prediction is based on. We can do this for different depths of the model and even combine the results for
-multiple layers. In \cref{fig:grad_cam_example} we see how this can be used to
+multiple layers. In~\cref{fig:grad_cam_example} we see how this can be used to
 reveal the basis for a prediction. In this case, the Grad-CAM analysis shows
 the difference between a biased and unbiased model for the predictions of professions. The biased model shows to be considering the person more than the actually objective clues given by relevant equipment and work-related clothing
 
@@ -501,7 +482,7 @@ the difference between a biased and unbiased model for the predictions of profes
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.7\linewidth]{figures/theory/grad_cam_example.png}
-  \caption{\hl{TMP} \cite{Selvaraju_2019} }
+  \caption{\hl{TMP}~\cite{Selvaraju_2019} }
   \label{fig:grad_cam_example}
 \end{figure}
 
@@ -529,7 +510,7 @@ biologically inspired operators for which the main ones are selection, mutation
 and crossover. Selection is the process of selecting chromosomes based on their
 fitness score for further processing. In mutation, some of the loci within a
 chromosome are flipped and in crossover chromosomes are merged to create
-offspring. \acrshort{GA} has been implemented in many areas such as the traveling salesman problem \cite{jiang2000distributed}, function optimization \cite{szeto1998effects}, adaptive agents in stock markets \cite{szeto2000adaptive} and airport scheduling \cite{shiu2008self}. Wang et al.\ \cite{Wang2010} note that a general drawback is a need for expertise when choosing parameters that match specific applications. They propose an accelerated genetic algorithm based on a Markov chain transition probability matrix to perform a guided search that reduces the amount of parameter choices one have to make. We will implement this method and thus the following introduction of the method  on \cite{Wang2010}
+offspring. \acrshort{GA} has been implemented in many areas such as the traveling salesman problem~\cite{jiang2000distributed}, function optimization~\cite{szeto1998effects}, adaptive agents in stock markets~\cite{szeto2000adaptive} and airport scheduling~\cite{shiu2008self}. Wang et al.~\cite{Wang2010} note that a general drawback is a need for expertise when choosing parameters that match specific applications. They propose an accelerated genetic algorithm based on a Markov chain transition probability matrix to perform a guided search that reduces the amount of parameter choices one have to make. We will implement this method and thus the following introduction of the method on~\cite{Wang2010}
 
 We define the binary population matrix $A_{ij}(t)$ at generation $t$, consisting of
 $N$ rows denoting chromosomes $i \in \{0, 1, \ldots, N\}$ and $L$ columns denoting the loci $j \in \{0, 1, \ldots L\}$. For our application, we let the locus represent an atom in the Kirigami pattern matrix which is flattened to fit the format of the population matrix. We carry forward the binary values with 0 meaning a removed atom and 1 a present atom. By the use of a fitness function $f(t)$, we sort the population matrix row-wise in descending order by fitness score, i.e.\ $f_i(t) \le f_k(t)$ for $i \ge k$. In the spirit of Markov chains, we assume that some transitions probability exists for the transition between the current state
@@ -544,7 +525,7 @@ fitness function and the chromosome at the $i^{\text{th}}$ fittest place is assi
     1, &\text{else}
   \end{cases}
 \end{align*}
-with $N' = N/2$ from \cite{Wang2010}. We assign a row mutation probability $a_i(t)$ meaning that the probability for a mutation will increase towards the lower fitness scores. For the considerations of mutation with respect to each locus in the columns of $A_{ij}(t)$, we define the count of 0's and 1's as $C_0(j)$ and $C_1(j)$ respectively. These are normalized as
+with $N' = N/2$ from~\cite{Wang2010}. We assign a row mutation probability $a_i(t)$ meaning that the probability for a mutation will increase towards the lower fitness scores. For the considerations of mutation with respect to each locus in the columns of $A_{ij}(t)$, we define the count of 0's and 1's as $C_0(j)$ and $C_1(j)$ respectively. These are normalized as
 \begin{align*}
   n_0(j, t) = \frac{C_0(j)}{C_0(j) + C_1(j)}, \quad n_1(j, t) = \frac{C_1(j)}{C_0(j) + C_1(j)}.
 \end{align*}
@@ -584,7 +565,7 @@ These conditions allow us to solve for the transition probability $P_{10}(j,t)$ 
   P_{01}(j,t) &= 1 - P_{00}(j,t) \label{eq:trans_prop_p01} \\
   P_{11}(j,t) &= 1 - P_{10}(j,t) \label{eq:trans_prop_p11}
 \end{align}
-The remaining part is to define $P_{00}(j,t)$. We adopt the choice from \cite{Wang2010} and start from $P_{00}(j, t = 0) = 0.5$ and choose $P_{00}(j,t) = n_0(j,t)$ for the following generations. Thus for a locus $A_{ij}(t)$ we mutate it, changing the binary value, by the probability
+The remaining part is to define $P_{00}(j,t)$. We adopt the choice from~\cite{Wang2010} and start from $P_{00}(j, t = 0) = 0.5$ and choose $P_{00}(j,t) = n_0(j,t)$ for the following generations. Thus for a locus $A_{ij}(t)$ we mutate it, changing the binary value, by the probability
 \begin{align*}
   p_{ij}(t) = 
   \begin{cases}
@@ -597,8 +578,8 @@ In summary, each generation update involves the following steps.
 \begin{enumerate}
   \item For generation $t$ calculate the fitness score $f_i(t)$ of each chromosome $i$ and sort the population matrix $A_{ij}(t)$ row-wise according to a descending score. 
   \item From a defined ranking scheme $r_i(t)$ set the chromosome mutation probability to $a_i(t) = r_i(t)$ and the weighting of each row $W_i(t) = 1 - r_i(t)$.
-  \item Calculate the target states \cref{eq:target_states} and the transition probabilities using \crefrange{eq:trans_prop_p10}{eq:trans_prop_p11} and $P_{00}(j, t = 0) = 0.5$, $P_{00}(j,t>0) = n_0(j,t>0)$.
-  \item Mutate (flip) each locus $A_{ij}(t)$ by the $p_{ij}$ given by \cref{eq:p_flip}.
+  \item Calculate the target states~\cref{eq:target_states} and the transition probabilities using~\crefrange{eq:trans_prop_p10}{eq:trans_prop_p11} and $P_{00}(j, t = 0) = 0.5$, $P_{00}(j,t>0) = n_0(j,t>0)$.
+  \item Mutate (flip) each locus $A_{ij}(t)$ by the $p_{ij}$ given by~\cref{eq:p_flip}.
 \end{enumerate}
 Notice that this algorithm treats every locus as an independent gene. Thus, we do not incorporate any effects from spatial dependencies in the Kirigami pattern matrix.
 
