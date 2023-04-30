@@ -37,16 +37,18 @@ Often the same activation function is used throughout the network, except for th
   \label{fig:ffnn}
 \end{figure}
 The model training relies on two core concepts: \textit{backpropagation} and \textit{gradient descent} optimization. First, we define the error associated with a model prediction, otherwise known as the \textit{loss}, through the \textit{loss function} $L$ that evaluates the model output $\hat{\vec{y}}$ against the ground truth $\vec{y}$. For a continuous scalar output, we might simply use the mean squared error (\acrshort{MSE})
-\begin{align*}
+\begin{align}
   L_{\text{\acrshort{MSE}}} = \frac{1}{N_y} \sum_{i = 1}^N (y_i - \hat{y}_i)^2.
-\end{align*}
+  \label{eq:MSE}
+\end{align}
 For a binary classification problem, meaning that the true output is True or False (1 or 0), a common choice is binary cross entropy (BSE)
-\begin{align*}
+\begin{align}
   L_{\text{BSE}} =  -\sum_{i=1}^n \ \Big[y_i\log(\hat{y_i}) + (1-y_i)\log(1 - \hat{y_i}) \Big] =  \sum_{i=1}^n   \begin{cases}
     - \log{(\hat{y_i})},& \quad y_i = 1 \\
     -\log{(1-\hat{y_i})},& \quad y_i = 0.
+  \label{eq:BSE}
 \end{cases}
-\end{align*}
+\end{align}
 The cross-entropy loss can be derived from a maximum likelihood estimation \hl{SOURCE}. Without going into details with the derivation we can convince ourselves that the error is minimized for the correct prediction and maximized for the worst prediction. When $y_i = 1$ we get the negative term $-\log(\hat{y_i})$ where a correct prediction $\hat{y}_i \to 1$ yields a loss contribution $L_i \to 0$. For a wrong prediction $\hat{y}_i \to 0$ the loss contribution will diverge $L_i \to \infty$. Similar applies to the case of $y_i = 0$ with opposite directions. 
 
 Given a loss function, we can calculate the loss gradient $\nabla_\theta L$ with respect to each of the weights and biases in the model. This is called \textit{backpropagation} since we follow the propagation of the errors as we go backward back through the model layers calculating the gradient using the chain rule. These gradients express how each parameter is connected to the loss and the overall idea is then to ``nudge'' each parameter in the right direction for reducing the loss. We usually denote a full cycle of forward-, backpropagation and an update of all model parameters as an \textit{epoch}. We calculate the updated parameter $\theta_t$ for epoch $t$ using the \textit{gradient descent} method

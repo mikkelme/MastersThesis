@@ -33,7 +33,7 @@ the targeted strain samples. However, if the rupture point arrives earlier than 
 \end{table}
 
 
-\section{Data analysis}
+\section{Data analysis}\label{sec:data_analysis}
 In order to gain insight into the correlations in the data we calculate the correlation coefficients between all variable combinations. More specifically, we calculate the Pearson product-moment correlation coefficient which is defined, between data set $X$ and $Y$, as
 \begin{align*}
   \mathrm{corr}(X,Y) = \frac{\mathrm{Cov}(X,Y)}{\sigma_X \sigma_Y} = \frac{\langle (X - \mu_X)(Y - \mu_Y)\rangle}{\sigma_X \sigma_Y} \ \in [-1, 1],
@@ -238,171 +238,82 @@ mainly horizontal-orientated cuts. This has some structural reminiscence with th
 
 
 
-% \begin{figure}[H]
-%   \centering
-%   \begin{subfigure}[t]{0.49\textwidth}
-%       \centering
-%       \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_pop_27.pdf}
-%       \caption{}
-%   \end{subfigure}
-%   \hfill
-%   \begin{subfigure}[t]{0.49\textwidth}
-%       \centering
-%       \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_pop_31.pdf}
-%       \caption{}
-%   \end{subfigure}
-%   \hfill
-%   \begin{subfigure}[t]{0.49\textwidth}
-%       \centering
-%       \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_hon_6.pdf}
-%       \caption{}
-%   \end{subfigure}
-%   \hfill
-%   \begin{subfigure}[t]{0.49\textwidth}
-%       \centering
-%       \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_hon_12.pdf}
-%       \caption{}
-%   \end{subfigure}
-%   \hfill
-%   \begin{subfigure}[t]{0.49\textwidth}
-%       \centering
-%       \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_hon_28}
-%       \caption{}
-%   \end{subfigure}
-%   \hfill
-%   \begin{subfigure}[t]{0.49\textwidth}
-%       \centering
-%       \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_hon_42.pdf}
-%       \caption{}
-%   \end{subfigure}
-%   \hfill
-%   \begin{subfigure}[t]{0.49\textwidth}
-%       \centering
-%       \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_RW01.pdf}
-%       \caption{}
-%   \end{subfigure}
-%   \hfill
-%   \begin{subfigure}[t]{0.49\textwidth}
-%       \centering
-%       \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_RW12.pdf}
-%       \caption{}
-%   \end{subfigure}
-%   \hfill
-%   \begin{subfigure}[t]{0.49\textwidth}
-%       \centering
-%       \includegraphics[width=\textwidth]{figures/stretch_profiles/PP_RW96.pdf}
-%       \caption{}
-%   \end{subfigure}
-%   \hfill
-%      \caption{}
-%      \label{fig:}
-% \end{figure}
-
-
-
-
 
 
 
 
 \section{Machine learning}
-
-% use dataset
-% # incentive of information for optimization towards the defined properties
-
-Given the \acrshort{MD}-based datset we investigate the possibilities of training a machine learning model to predict the friction behaviour from a given Kirigami configuration, strain and load. 
-
-
-% General stuff to include. Remember to talk about batchnorm, optimizer, stopping at best epoch. 
-
+Given the \acrshort{MD}-based dataset we investigate the possibilities of training a machine learning model to predict the friction behavior from a given Kirigami configuration, strain and load. 
 
 \subsection{Architecture}
-Due to the spatial dependencies in the Kirigami configurations, we use a convolutional neural network (\acrshort{CNN}) for our model architecture. Similar studies which predict mechanical properties for graphene sheets have used a VGGNet style network, Hanakata et al.~\cite{PhysRevLett.121.255304, PhysRevResearch.2.042006} and Wan et al.~\cite{graphene/hBN}, which we adopt for this study as well. The VGGNet-16 architecture illustrated in~\cref{fig:VGGNet16} shows the key features that we will include:
+Due to the spatial dependencies in the Kirigami configurations, we use a convolutional neural network (\acrshort{CNN}). Similar studies which predict mechanical properties for graphene sheets have used a VGGNet style network, Hanakata et al.~\cite{PhysRevLett.121.255304, PhysRevResearch.2.042006} and Wan et al.~\cite{graphene/hBN}, which we adopt for this study as well. The VGGNet-16 architecture illustrated in~\cref{fig:VGGNet16} shows the key features that we will include:
 \begin{itemize}
-  \item The image is processed through a series of $3 \times 3$ convolutional filters (the smallest size capable of capturing spatial dependencies) using a stride of 1 with an increasing number of channels throughout the network. Each convolutional layer is followed by a ReLU activation function. 
-  \item The spatial dimensions are reduced by a max pooling, filter size $2 \times 2$ and a stride of 2, which halfs the spatial resolution each time. 
-  \item The latter part of the network consists of a fully connected part followed by a ReLU activation. The transition from the convolutional to the fully connected part is achieved by applying a filter with the same dimensions as the last convolutional feature map. This essentially maps the spatial output to the fully connected layer with the number of channels corresponding to the nodes in this layer.
+  \item The image is processed through a series of $3 \times 3$ convolutional filters (the smallest size capable of capturing spatial dependencies) using a stride of 1 with an increasing number of channels throughout the network. We use padding to conserve the spatial size during a convolution. Each convolutional layer is followed by a ReLU activation function. 
+  \item The spatial dimensions are reduced by a max pooling, filter size $2 \times 2$ and a stride of 2, which halves the spatial resolution each time. 
+  \item The latter part of the network consists of a fully connected part using the ReLu activation as well. The transition from the convolutional to the fully connected part is achieved by applying a filter with the same dimensions as the last convolutional feature map. This essentially performs a linear mapping from the spatial output to the fully connected layer with the number of channels corresponding to the nodes in the first fully connected layer.
 \end{itemize}
 
+% Remember the padding
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.7\linewidth]{figures/ML/VGGNet16.jpg}
-  \caption{VGGNet 16. Source \url{https://neurohive.io/en/popular-networks/vgg16/}.}
+  \caption{\hl{VGGNet 16}. Source \url{https://neurohive.io/en/popular-networks/vgg16/}.}
   \label{fig:VGGNet16}
 \end{figure}
 
-We deviate from the VGGNet-16 architecture by including batch normalization and restricting ourselves to build the convolutional part in terms of the blocks: (Convolution $\to$ Batch normalization $\to$ ReLU $\to$ Max pooling). Similarly, we define a fully connected block by two elements (Fully connected $\to$ ReLU) which match the VGGNet model. Hanakata et al. and Wan et al. used a similar architecture with the parameters 
+We deviate from the VGGNet-16 architecture by including batch normalization and restricting ourselves to setting up the convolutional part of the network in terms of the blocks: (Convolution $\to$ Batch normalization $\to$ ReLU $\to$ Max pooling). Similarly, we define a fully connected block by two elements (Fully connected $\to$ ReLU) which match the VGGNet model. Hanakata et al.\ and Wan et al.\ used a similar architecture with the parameters 
 \begin{align*}
   \text{Hanakata et al.~\cite{PhysRevLett.121.255304}} & \qquad C16 \ C32 \ C64 \ D64, \\ 
   \text{Wan et al.~\cite{graphene/hBN}} & \qquad C16 \ C32 \ D32 \ D16,
 \end{align*}
-Where $C$ denotes a convolutional block with the number denoting the number of channels, and $D$ a fully connected (dense) block with the number denoting number of nodes. For the process of determining a suiting complexity for the architecture, we adopt the approach by Wan et al.~\cite{graphene/hBN} who used a ``staircase'' pattern for combining convolutional and fully connected blocks. By defining a starting number of channels $S$ and network depth $D$ we fill the first half with convolutional blocks doubling in channel number for each layer and the latter half with fully connected blocks having the number of nodes decreasing in a reverse pattern. For instance the architecture $S4D8$ will take the form
-Following this pattern a $(S=4, D=8)$ would take the form
+where $C$ denotes a convolutional block with the number denoting the number of channels, and $D$ a fully connected (dense) block with the number denoting the number of nodes. For the process of determining a suiting complexity for the architecture, we adopt the approach by Wan et al.~\cite{graphene/hBN} who used a ``staircase'' pattern for combining convolutional and fully connected blocks. By defining a starting number of channels $S$ and network depth $D$ we fill the first half of the network layers with convolutional blocks, doubling in channel number for each layer, and the latter half with fully connected blocks having the number of nodes decrease in a reverse pattern. For instance, the architecture $S4D8$ will take the form
 \begin{align*}
   \text{Input} \to \underbrace{\overbrace{C4}^{S \ = \ 4}C8 \ C16 \ C32 \ D32 \ D16 \ D8 \ D4}_{D \ = \ 8} \to \text{Output}.
 \end{align*} 
-This provides a simple description where $S$ and $S$  can be varied systematically for a grid search over architecture complexity. 
+This provides a simple description where $S$ and $S$ can be varied systematically for a grid search over architecture complexity. 
 
 
 \subsection{Data handling}
 \subsubsection{Input}
 We use three variables as input: Kirigami configuration, strain of the sheet
-and applied normal load. While the first is a two-dimensional input the latter
-are both scalars. This gives rise to two main options for the data structure
+and applied normal load. The configuration is given as a two-dimensional input by the binary matrix while the strain and load are both scaler values. This gives rise to two different options for the data structure:
 \begin{enumerate}
   \item Expand the scalar values (strain and load) into 2D matrices of the same
-  size as the Kirigami configuration (copying the scaler value to all positions). This can then be merged into an image of three channels used as a single input.  
+  size as the Kirigami configuration by copying the scaler value to all matrix coordinates. This can then be merged into an image of three channels used as a single input.  
   \item Pass only the Kirigami configuration through the convolutional part of the network and introduce the remaining scalar values into the fully connected part of the network halfway in. 
 \end{enumerate}
-Both options utilize the same data, but the first is more appropriate if the configuration should be considered in context with the applied strain and load, while the latter corresponds to a more independent processing. We implemented both options but it was immediately clear from the test runs that option 1 was producing the most promising result which we settled on.
+Both options utilize the same data, but the latter option is more directed towards independent processing of the data while the first makes for an intertwined ude of the configuration, strain and load. We implemented both options but found immediately that option 1 was producing the most promising results during the initial test runs, and thus we settled for this data structure. 
 
 \subsubsection{Output}
-For the output we are mainly concerned with mean friction and the rupture
-detection. In combination, this will make the model able to produce a friction vs.\ strain curve with an estimated stopping point as well. However, for some cases, the model can benefit from having additional output variables to adjust for \hl{source}, and thus we include we include maximum friction, contact, porosity and rupture strain in the output as well. This also gives us more options for exploring the relationship in the data later on. Notice that we weight the importance of these output variables different in the loss as described in 
-variables differently as described in~\cref{sec:loss}. 
-\\
-\\
-\hl{Removed this part, do you think it has any relevance: Notice that the rupture strain refers to the value found in the rupture test without load, but as the sheet always ruptures before or just around this point in a loaded state this provides some information for the training to lean on, even though it is in the output state. In principle, we could add a penalty whenever the network predicts the sheet to be attached for strain values above the rupture strain, but we found the performance of the rupture prediction to be satisfactory without such penalties.}
+For the output, we are mainly concerned with mean friction and the rupture
+detection. In combination, this will make the model able to produce a friction-strain curve with an estimated stopping point as well. However, in order to retain the option to explore other relations in the data we include the maximum friction, relative contact, porosity and rupture strain in the output as well. Notice that we weigh the importance of these output variables differently in the loss as described in~\cref{sec:loss}. 
 
 
 \subsubsection{Data augmentation}
-In order to increase the utility of the available data one can introduce data augmentation. For most classification tasks this usually includes distortions such as color shifts, zoom, flip etc. However, such distortions are only valid since the classification network should still classify a cat as a cat even though it is suddenly a bit brighter or flipped upside down. For our problem, we can only use augmentation that matches a physical symmetry. Such a symmetry exists for reflection across the y-axis. We cannot do this across the
-x-axis as the sheet is translated in a positive y-direction meaning that the reflected version would correspond to a change in the sliding direction which we cannot expect to be fully symmetric. 
+In order to increase the utility of the available data one can introduce data augmentation. For most classification tasks this usually includes distortions such as color shifts, zoom, flip etc. However, such distortions are only valid since the classification network should still classify a cat as a cat even though it is suddenly a bit brighter or flipped upside down. For our problem, we can only use augmentation that matches a physical symmetry. Such a symmetry exists for reflection across the y-axis. We cannot use a reflection across the
+x-axis as the sheet is sliding in a positive y-direction. This would correspond to a change in the sliding direction which we cannot expect to be fully symmetric. 
 
-% We definitely expect a snow plow to perform differently when attached in reverse and thus by analogy we would expect the direction of sliding with respect to the configuration to be of importance. 
 
 \subsection{Loss}\label{sec:loss}
-The output contains two different types of variables: scalar values and binary values (0: False 1: True). For the scalar values we use the Mean Squared Error (\acrshort{MSE})
-\begin{align*}
-  L_{\text{MSE}} = \frac{1}{N} \sum_{i = 1}^N (y_i - \hat{y}_i)^2,
-\end{align*}
-where $N$ is the number of data entries, $y$ are the true output and
-$\hat{y}$ are the predicted values. For the binary output, we use binary cross entropy 
-\begin{align*}
-  L_{\text{BCE}} = -\frac{1}{N} \left[\sum_{i = 1}^N [t_i\log{(p_i)} + (1-t_i)\log{(1 - p_i)}]\right],
-\end{align*}
-where $t\in \{0,1\}$ is the truth label. \hl{Does this belong in theory
-entirely? I do introduce it there but I guess I have to mention the choice here still}. We calculate the total loss as a weighted sum of the loss associated with
+The output contains two different types of variables: scalar values and a binary value (rupture). For the scalar values we use the Mean Squared Error (\acrshort{MSE})~\cref{eq:MSE} and for the binary output, we use binary cross entropy~\cref{eq:BSE}. We calculate the total loss as a weighted sum of the loss associated with
 each variable
 \begin{align*}
   L_{tot} = \sum_{v} W_v\cdot L_v.
 \end{align*}
 We choose the weights to be $1/2$ for the mean friction and $1/10$ for the
-remaining 5 variables, thus sharing the loss evenly for the remaining 50\% of the weight. During the introductory phase of the training, we tried different settings for these weights. We found that the results varied little and concluded that the training is not very sensitive to this choice, for which we stuck with the values defined above.
+remaining 5 variables, thus sharing the loss evenly for the remaining 50\% of the weight. During the introductory phase of the training, we tried different settings for these weights, but we found that the results varied little. Hence, we concluded that this was of minor importance and stuck to the values defined above.
 
 \subsection{Hypertuning}
 % Show overfitting curve for some of the training results?
-For the hypertuning we focus on architecture complexity, learning rate, momentum and weight decay. Thus the non-chaning elements are the use of the ADAM optimizer with the initial default values of $beta_1 = 0.9, \beta_2 = 0.999$ and zero weight decay (we will change momentum $\beta_1$ and weight decay). We use a batch size of 32 and train the model for a maximum of 1000 epochs, but we save the best model during training based on the lowest validation loss. 
-
+For the hypertuning we focus on architecture complexity, learning rate, momentum and weight decay. We will use the ADAM optimizer with the initial default values of $beta_1 = 0.9, \beta_2 = 0.999$ and zero weight decay (we will change momentum $\beta_1$ and weight decay). We use a batch size of 32 and train the model for a maximum of 100 epochs while storing the best model based on the validation scores.
 Since the learning rate is considered to be one of the most important hyperparameters we will determine a suitable choice for the learning rate using the learning rate range test for each of the two major grid searches:
 \begin{enumerate}
   \item Architecture complexity grid search of $S$ vs.\ $D$ with individually chosen learning rates for each complexity combination.
-  \item Momentum vs.\ weight decay grid search with learning range chosen with regard to the momentum. 
+  \item Momentum vs.\ weight decay grid search with learning range chosen with regard to each momentum setting.
 \end{enumerate}
-We consider first the architectures in the range $S \times D =
+We consider first the architecture complexities in the range $S \times D =
 \{2,4,8,16,32,64,128,256\} \times \{4,6,8,10,12,14\}$. For each architecture
-complexity, we perform an initial learning rate range test, increasing the
-the learning rate until the training loss diverges. The suggested learning rate is then determined as the point for which the training loss decreases most rapidly. The learning rate is increased exponentially within the range \num{e-7} to 10 with increments for each training batch iteration. This is done for just a single epoch where a training batch size of 32 yields a total of 242 increments. This corresponds to an exponent increment of approximately $1/30$ giving a relative increase $10^{1/30} \sim 108\%$ per batch iteration. The learning rate range test is presented in~\cref{fig:LR_range} for variours model architectures. We notice that the suggested learning rate decreases with an increasing number of model parameters. This decrease is further independent of the specific relationship between $S$ and $D$.
+complexity, we perform an initial learning rate range test and determine the suitable choice as the point for which the validation loss decreases most rapidly. The learning rate is increased exponentially within the range \num{e-7} to 10 with increments for each training batch iteration. This is done for just a single epoch where a batch size of 32 yields a total of 242 increments. This corresponds to an exponent increment of approximately $1/30$ giving a relative increase $10^{1/30} \sim 108\%$ per batch iteration. The learning rate range test is presented in~\cref{fig:LR_range} for various model complexities. We notice that the suggested learning rate decreases with an increasing number of model parameters. This decrease is further independent of the specific relationship between $S$ and $D$.
 
 \begin{figure}[H]
   \centering
@@ -420,19 +331,12 @@ the learning rate until the training loss diverges. The suggested learning rate 
       % \label{fig:}
   \end{subfigure}
   \hfill
-  \caption{Learning rate range test for various model complexities. We increase the learning rate exponentially from num{e-7} to 10 during one epoch corresponding to an exponent increment of roughly $1/30$ per batch iteration. $(a)$ shows a few examples of the training loss history as a function of learning rate. The examplatory architectures are S[2, 16]D8 with the corresponding number of model parameters shown in parentheses in the legend. The dot indicates the suggested learning rate at the steepest decline of the slope. $(b)$ shows the full results of suggested learning rates depending on the number of model parameters with color coding differentiating the number of start channels and marker types differentiating different model depths. }
+  \caption{Learning rate range test for various model complexities. We increase the learning rate exponentially from num{e-7} to 10 during one epoch corresponding to an exponent increment of roughly $1/30$ per batch iteration. $(a)$ shows a few examples of the training loss history as a function of the learning rate. The exemplary architectures are S[2, 16]D8 with the corresponding number of model parameters shown in parentheses in the legend. The dot indicates the suggested learning rate at the steepest decline of the slope. $(b)$ shows the full results of suggested learning rates depending on the number of model parameters with color coding differentiating the number of start channels and marker types differentiating different model depths. }
   \label{fig:LR_range}
 \end{figure}
 With the use of the suggested learning rates from~\cref{fig:LR_range} we perform
 a grid search over the corresponding $S$ and $D$ parameters. We evaluate both
-the loss and the mean friction $R_2$ score for the validation data which is shown in~\cref{fig:A_search_perf} together with the best epoch and the number of model
-parameters. Additionally, we evaluate the mean friction $R_2$ score for a
-selected set of configurations. This set consists of the top 10 configurations
-with respect to maximum friction drop for the Tetrahedron and Honeycomb pattern
-respectively. This is done as a way of evaluating the performance on the
-non-linear strain curves which we immediately found to be the more difficult patterns to capture. The selected evaluation is shown in~\cref{fig:A_search_compare}. Note
-that these patterns are already a part of the full dataset and thus the data points
-related to these patterns are most likely present in both the training and the validation data set. Hence, the performance must be considered in conjunction with the actual validation performance in~\cref{fig:A_search_perf}.
+the validation loss and the mean friction $R_2$ score for the validation data which is shown in~\cref{fig:A_search_perf} together with the best epoch and the number of model parameters. Additionally, we evaluate the mean friction $R_2$ score for a selected set of configurations. This set consists of the top 10 configurations with respect to the max drop property for the Tetrahedron and Honeycomb patterns respectively. This is done as a way of evaluating the performance on the non-linear strain curves which we immediately found to be the more difficult trend to capture. The selected evaluation is shown in~\cref{fig:A_search_compare}. Note that these configurations already are a part of the full dataset and thus the data points related to these configurations are most likely present in both the training and the validation data set. Hence, the performance must be considered in conjunction with the actual validation performance in~\cref{fig:A_search_perf}.
 
 \begin{figure}[H]
   \centering
@@ -448,39 +352,48 @@ related to these patterns are most likely present in both the training and the v
   \label{fig:A_search_compare}
 \end{figure}  
 
-From the validation scores in~\cref{fig:A_search_perf} we find that models
-S(8-32)D(8-12) to give the best performance. When looking at the best epoch we
-find that models of low depth result in a later best epoch which is compatible
+From the validation scores in~\cref{fig:A_search_perf}, looking at both the loss and the $R^2$ scores, we find that models
+S(8-32)D(8-12) generally give the best performance. When looking at the best epoch we find that models of low depth result in a later best epoch which is compatible
 with underfitting. As the depth is increased we find more models with a lower
 best epoch, in the range $\sim [300, 600]$, which on the other hand suggest
 cases of overfitting. Since our training stores the best model during training,
 we do not have to worry too much about overfitting, but we can take this
 transition from underfitting to overfitting as a sign that our search is
 conducted in an appropriate complexity range. When consulting the evaluation on the
-selected set in~\cref{fig:A_search_compare} we notice in general that we get
-significantly lower $R_2$ scores, especially for the Tetrahedron pattern. Considering, that some of these data points are also present in the training data, this is a clear indication that these configurations are more challeging to predict. While the peak $R_2$ value for the validation score was found for the S16D10 model we see a slight preference for more complexity in the model with regard to the selected test. In the Tetrahedron selected set grid search, we find the best model to be S32D12, with a $R_2$ score of $\sim 87 \%$. This model choice is more or less compatible with the overall performance as this is among the top candidates for the $R_2$ score and loss in~\cref{fig:A_search_perf} and the $R_2$ score for the Honeycomb pattern in~\cref{fig:A_search_compare} as well. Hence, we settle on this architecture.
+selected set in~\cref{fig:A_search_compare} we find
+significantly lower $R_2$ scores, especially for the Tetrahedron pattern. Considering, that some of these data points are also present in the training data, this shows clearly that these configurations are more challenging to predict. While the peak $R_2$ value for the validation score in~\cref{fig:A_search_perf} was found for the model S16D10 model (98.23 \%) the selected set test shows a slight preference for more complexity in the model. In the Tetrahedron selected set grid search, we find the best model to be S32D12, with an $R_2$ score of $\sim 87 \%$. This model choice is more or less compatible with the overall performance as it is among the top candidates for the $R_2$ score and loss in~\cref{fig:A_search_perf} and the $R_2$ score for the Honeycomb pattern in~\cref{fig:A_search_compare} as well. Hence, we settle on this architecture. 
+
+%
+%
+% Working here
+%
+%
 
 
-Next, we consider momentum $m$ and weight decays $wd$ in the range $m \in [0.85,
-0.99]$ and $wd \in [0, 1e-2]$. An increased momentum is expected to decrease the
-appropriate learning rate \hl{(check with theory)}, and thus we perform a new learning rate range test
-for each momentum choice. We propose two learning rate schemes: A constant
-learning rate as used until this point and a one-cycle policy. In the one-cycle
-policy we set a maximum bound for the learning rate and start from a factor
-$1/20$ of this bound and increase towards the maximum bound during the first
-30\% of the training. For the final 70\% of training we decrease towards a final
-minimum given as a factor $1e-4$ of the maximum bound . The increase and
-decrease are done by a cosine function. The suggested learning rate for the
-constant learning rate scheme is once again determined by the steepest slope on
-the loss curve while the maximum bound used for the one-cycle policy is
-determined as the point just before divergence. We find that the minimum point
-on the loss curve is a suitable choice that approaches the diverging point
-without getting too close and causing instabilities. The learning rate range
-test for momentum is shown in~\cref{fig:LR_range_mom}. \hl{We observe that a higher momentum giver higher suggested learning rates, so I need to check with theory on that}. Using the results for the momentum learning rate range test we perform a grid search of momentum and
-weight decay. We examine again the validation loss and validation mean friction
-$R_2$ score in addition to the friction mean $R_2$ score for the selected set of
-Tetrahedron and Honeycomb patterns. This is shown for the constant learning rate
-scheme in~\cref{fig:mom_weight_search_constant} and for the cyclic scheme in~\cref{fig:mom_weight_search_cyclic}.
+Next, we consider momentum $m$ and weight decays $\lambda$ in the range $m \in
+[0.85, 0.99]$ and $\lambda \in [0, 1e-2]$. An increased momentum is expected to
+decrease the appropriate learning rate \hl{(check with theory)}, and thus we
+perform a new learning rate range test for each momentum choice. We propose two
+learning rate schemes: A constant learning rate as used until this point and a
+one-cycle policy. In the one-cycle policy we set a maximum bound for the
+learning rate and start from a factor $1/20$ of this bound and increase towards
+the maximum bound during the first 30\% of the training. For the final 70\% of
+training we decrease towards a final minimum given as a factor $1e-4$ of the
+maximum bound . The increase and decrease are done by a cosine function. The
+suggested learning rate for the constant learning rate scheme is once again
+determined by the steepest slope on the loss curve while the maximum bound used
+for the one-cycle policy is determined as the point just before divergence. We
+find that the minimum point on the loss curve is a suitable choice that
+approaches the diverging point without getting too close and causing
+instabilities. The learning rate range test for momentum is shown
+in~\cref{fig:LR_range_mom}. \hl{We observe that a higher momentum giver higher
+suggested learning rates, so I need to check with theory on that}. Using the
+results for the momentum learning rate range test we perform a grid search of
+momentum and weight decay. We examine again the validation loss and validation
+mean friction $R_2$ score in addition to the friction mean $R_2$ score for the
+selected set of Tetrahedron and Honeycomb patterns. This is shown for the
+constant learning rate scheme in~\cref{fig:mom_weight_search_constant} and for
+the cyclic scheme in~\cref{fig:mom_weight_search_cyclic}.
 
 \begin{figure}[H]
   \centering
@@ -552,9 +465,9 @@ scheme (loss: 0.0176, $R_2$: 0.9831). However, notice that these scores a taking
 for separate combinations of hyperparameters. The comparison among best scores is
 summarized in~\cref{tab:mom_weight_search}. In general, the constant scheme
 shows rather stable results for all momentum settings $m \in [0.85, 0.99]$ in
-combination with a low weight decay $wd \le \num{e-4}$. For the cyclic scheme
+combination with a low weight decay $\lambda \le \num{e-4}$. For the cyclic scheme
 the performance peaks towards a low momentum $m \le 0.93$ and low weight decay
-$wd \le \num{e-4}$. Looking at the summary in~\cref{tab:mom_weight_search} we
+$\lambda \le \num{e-4}$. Looking at the summary in~\cref{tab:mom_weight_search} we
 see that the cyclic scheme can produce a high score among all four
 performance metrics, but since these scores do not share common hyperparameters we need to choose which of them to prioritize. Due to our interest in capturing the non-linear trends, we prioritize the score from the
 selected set of Tetrahedron patterns as this provided the greatest challenge for our model to capture. We recognize that this choice introduces a greater risk of
