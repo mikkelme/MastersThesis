@@ -205,7 +205,7 @@ class Genetic_algorithm: # Genetic algorithm
         self.W = 1 - a
        
        
-        mutate_individual = np.random.rand(self.N) < a
+        # mutate_individual = np.random.rand(self.N) < a
         
         self.update_gene_transistion_probabilities()
         
