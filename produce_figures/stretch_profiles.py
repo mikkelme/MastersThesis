@@ -201,46 +201,15 @@ def plot_profiles_together(path, save = False):
 
 
 def patterns_and_profiles_2(save = False):
-    # # --- Max drop --- #
-    # patterns = [
-    #             '../Data/CONFIGS/popup/pop_27', # (5,3,1)
-    #             '../Data/CONFIGS/honeycomb/hon_28', # (2,3,3,3) 
-    #             '../Data/CONFIGS/RW/RW01', 
-    #             ]
+    # --- Min fric --- #
+    patterns = [
+                '../Data/CONFIGS/popup/pop_31', # (3,9,4)
+                '../Data/CONFIGS/honeycomb/hon_6', # (2,5,1,1) 
+                '../Data/CONFIGS/RW/RW12',
+                ]
     
-    # names = ['Tetrahedron (5,3,1)', 'Honeycomb (2,3,3,3)', 'Random walk 01']
-    # PP(patterns, names, save = ' PP_max_drop.pdf')
-    
-    # # --- Max diff --- #
-    # patterns = [
-    #             '../Data/CONFIGS/popup/pop_27', # (5,3,1)
-    #             '../Data/CONFIGS/honeycomb/hon_42', # (2,1,5,3) 
-    #             '../Data/CONFIGS/RW/RW96', 
-    #             ]
-    
-    # names = ['Tetrahedron (5,3,1)', 'Honeycomb (2,1,5,3)', 'Random walk 96']
-    # PP(patterns, names, save = 'PP_max_diff.pdf')
-    
-    
-    # # --- Max diff --- #
-    # patterns = [
-    #             '../Data/CONFIGS/popup/pop_27', # (5,3,1)
-    #             '../Data/CONFIGS/honeycomb/hon_42', # (2,1,5,3) 
-    #             '../Data/CONFIGS/RW/RW96', 
-    #             ]
-    
-    # names = ['Tetrahedron (5,3,1)', 'Honeycomb (2,1,5,3)', 'Random walk 96']
-    # PP(patterns, names, save = 'PP_max_diff.pdf')
-    
-    # # --- Min fric --- #
-    # patterns = [
-    #             '../Data/CONFIGS/popup/pop_31', # (3,9,4)
-    #             '../Data/CONFIGS/honeycomb/hon_6', # (2,5,1,1) 
-    #             '../Data/CONFIGS/RW/RW12',
-    #             ]
-    
-    # names = ['Tetrahedron (3,9,4)', 'Honeycomb (2,5,1,1)', 'Random walk 12']
-    # PP(patterns, names, save = 'PP_min.pdf')
+    names = ['Tetrahedron (3,9,4)', 'Honeycomb (2,5,1,1)', 'Random walk 12']
+    PP(patterns, names, save = 'PP_min.pdf')
 
     # --- Max fric --- #
     patterns = [
@@ -251,6 +220,27 @@ def patterns_and_profiles_2(save = False):
     
     names = ['Tetrahedron (5,3,1)', 'Honeycomb (2,1,1,1)', 'Random walk 96']
     PP(patterns, names, save = 'PP_max.pdf')
+    
+    # --- Max diff --- #
+    patterns = [
+                '../Data/CONFIGS/popup/pop_27', # (5,3,1)
+                '../Data/CONFIGS/honeycomb/hon_42', # (2,1,5,3) 
+                '../Data/CONFIGS/RW/RW96', 
+                ]
+    
+    names = ['Tetrahedron (5,3,1)', 'Honeycomb (2,1,5,3)', 'Random walk 96']
+    PP(patterns, names, save = 'PP_max_diff.pdf')
+    
+    
+    # --- Max drop --- #
+    patterns = [
+                '../Data/CONFIGS/popup/pop_27', # (5,3,1)
+                '../Data/CONFIGS/honeycomb/hon_28', # (2,3,3,3) 
+                '../Data/CONFIGS/RW/RW01', 
+                ]
+    
+    names = ['Tetrahedron (5,3,1)', 'Honeycomb (2,3,3,3)', 'Random walk 01']
+    PP(patterns, names, save = 'PP_max_drop.pdf')
     
     
     
@@ -266,8 +256,8 @@ def PP(patterns, names, save = None):
     # Stretch profiles
     vars = ['data[\'stretch_pct\']', 'data[\'Ff\'][:, :, 0, 1]', 'data[\'F_N\']']
     axis_labels = [r'Stretch', r'$\langle F_\parallel \rangle$ [nN]', r'$F_N$ [nN]']
-    multi_plot_compare(patterns, names, vars, axis_labels, figsize, axes = axes[0])
-    
+    multi_plot_compare(patterns, names, vars, axis_labels, figsize, axes = axes[0], add_contact = True)
+    # fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2); return
 
     # Patterns
     for i, path in enumerate(patterns):
@@ -378,13 +368,13 @@ if __name__ == "__main__":
     path = '../Data/CONFIGS/RW'
     
     # patterns_and_profiles(save = False)
-    # patterns_and_profiles_2(save = False)
-    # plt.show()
+    patterns_and_profiles_2(save = True)
+    plt.show()
     
     
     
     
     # plot_individual_profiles(path, save = False)
-    plot_profiles_together(path, save = False)
+    # plot_profiles_together(path, save = False)
     # plt.show()    
     

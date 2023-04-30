@@ -61,19 +61,40 @@ increased. This is shown in \cref{fig:multi_stretch}.  This led us to the conclu
 
 % 4: Capture trends with ML
 \subsection{Capture trends with ML}
-With the use of \acrshort{MD} simulations, we have generated an extended dataset of 9660 data points based 216 Kirigami configurations (Tetrahedron: 68, Honeycomb: 45, Random walk: 100, Pilot study: 3) under various strains (15 values) and normal load (3 values). The dataset shows some general correlation, such as a
-positive correlation between the mean friction force and strain (0.77) and
-porosity (0.60), and a negative correlation to contact area (-0.67). These results align with the findings from the pilot study suggesting that these features are involved, but not necessary the cause, in the observed phenomena
+With the use of \acrshort{MD} simulations, we have generated an extended dataset
+of 9660 data points based on 216 Kirigami configurations (Tetrahedron: 68,
+Honeycomb: 45, Random walk: 100, Pilot study: 3) under various strains (15
+values) and normal load (3 values). The dataset shows some general correlation,
+such as a positive correlation between the mean friction force and strain (0.77)
+and porosity (0.60), and a negative correlation to contact area (-0.67). These
+results align with the findings from the pilot study suggesting that these
+features are involved, but not necessarily the cause, in the observed phenomena.
+By defining the friction property metrics: $\min F_{\text{fric}}$,  $\max
+F_{\text{fric}}$, $\max \Delta f_{\text{fric}}$ and max drop, we investigated
+the top candidates within our dataset. This suggested that we cannot readily
+reduce friction using the investigated Kirigami configurations under strain as
+the non-cut sheet provided the lowest overall friction. Regarding the maximum
+properties, we found an improvement from the original pilot study values and
+with the Honeycomb pattern producing the highest scores. This provides an
+incentive that the data contains information for optimization with respect to
+these properties. Among the top candidates, we generally found that a rather
+flat friction-strain profile is mainly associated with little decrease in the
+contact area and vice versa. 
 
 
- By the use of machine learning we found that the
+
+% Defined friction properties of interest
+% Dataset did not provide clues for minimization of friction but improved the scores for maximization and max drop 
+
+
+ By the use of machine learning, we found that the
 trends in the data could generally be captured to a $R_2$ score above 0.97 for
 the validation data. However, the subset of configurations exhibiting the most
 significant effects from Kirigami and stretching provided a bigger challenge.
 Say something about hyperparameter search. By choosing our hyperparameters for a
 selected subset of challenging configurations we got a final network with a
 selected set score of $R^2 = 0.89$ at the worst for the Tetrahedron pattern.
-However these configurations was partly included in the training data and thus these numbers should be taken carefully. By creating a training set based on best candidates in an accelerated search using random walk configurations the network failed completely. This can to some extent be attributed to overfitting of the model but we belive that this is more deeply anchored in the insufficient distribution in the dataset not matching the created test set. It produced a reasonble ranking of the properties of interest within the dataset at least.
+However, these configurations was partly included in the training data and thus these numbers should be taken carefully. By creating a training set based on best candidates in an accelerated search using random walk configurations the network failed completely. This can to some extent be attributed to overfitting of the model but we belive that this is more deeply anchored in the insufficient distribution in the dataset not matching the created test set. It produced a reasonble ranking of the properties of interest within the dataset at least.
 
 
 % 5: Accelerated search

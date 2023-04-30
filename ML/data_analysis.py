@@ -410,8 +410,8 @@ def get_config_data_property_score(folder):
         
 if __name__ == '__main__':
     # plot_corrcoef(save = False)
-    plot_corr_scatter(save = False)
-    plt.show()
+    # plot_corr_scatter(save = False)
+    # plt.show()
     
     # model_performance('training_1')
     # model_performance('training_3')
@@ -426,10 +426,10 @@ if __name__ == '__main__':
     # part = np.sum(data['is_ruptured']) / len(data['is_ruptured'])
     # print(part)
     
-    # folder = '../Data/baseline_fixmove/nocut/multi_stretch'
-    # folder = '../Data/baseline_fixmove/popup/multi_stretch'
-    # # folder = '../Data/baseline_fixmove/honeycomb/multi_stretch'
-    # get_config_data_property_score(folder)
+    folder = '../Data/baseline_fixmove/nocut/multi_stretch'
+    folder = '../Data/baseline_fixmove/popup/multi_stretch'
+    folder = '../Data/baseline_fixmove/honeycomb/multi_stretch'
+    get_config_data_property_score(folder)
     
     pass
     

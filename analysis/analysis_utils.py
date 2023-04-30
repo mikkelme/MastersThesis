@@ -794,27 +794,33 @@ def add_xaxis(ax1, x, xnew, xlabel, decimals = 1, fontsize = 14):
     # Position new axis behind for interactive to work
     ax1.set_zorder(ax2.get_zorder()+1)
     
+   
     
-    # sorter = np.argsort(x)
-    # arg_idx = np.searchsorted(x, tick_loc, sorter=sorter)
+def add_yaxis(ax1, y, ynew, ylabel, decimals = 1, fontsize = 14):
+    ylim = ax1.get_ylim()
     
-    # map = arg_idx <= sorter[-1]
-    # tick_arg = sorter[arg_idx[map]]
-    # tick_loc = tick_loc[map]
+    tick_loc = ax1.get_yticks()
+    tick_loc = tick_loc[np.logical_and(ylim[0] < tick_loc, tick_loc < ylim[1])]
     
-    # ax2 = ax1.twiny()
-    # ax2.set_xlim(ax1.get_xlim())
-    # ax2.set_xticks(tick_loc)
+    dy = (y[-1]-y[0])/(len(y)-1)
+    dynew = (ynew[-1]-ynew[0])/(len(ynew)-1)
+    yticks = np.round(tick_loc/dy*dynew, decimals)
+    if decimals == 0:
+        yticks = yticks.astype('int')
     
-    # xticks = np.round(xnew[tick_arg], decimals)
-    # if decimals == 0:
-    #     xticks = xticks.astype('int')
-    # ax2.set_xticklabels(xticks)
-    # ax2.set(xlabel=xlabel)
-    # ax2.xaxis.label.set_fontsize(fontsize)
+        
+    ax2 = ax1.twinx()
+    ax2.set_ylim(ax1.get_ylim())
+    ax2.set_yticks(tick_loc)
     
-    # # Position new axis behind for interactive to work
-    # ax1.set_zorder(ax2.get_zorder()+1)
+    ax2.set_yticklabels(yticks)
+    ax2.set(ylabel=ylabel)
+    ax2.xaxis.label.set_fontsize(fontsize)
+    
+    # Position new axis behind for interactive to work
+    ax1.set_zorder(ax2.get_zorder()+1)
+    return ax2
+   
     
     
 

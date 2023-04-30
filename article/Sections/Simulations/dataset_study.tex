@@ -1,25 +1,25 @@
 \chapter{Kirigami configuration exploration}\label{chap:dataset_study}
-Building upon the discoveries of the Pilot Study~\cref{chap:pilot_study}, we will further explore the impact of Kirigami designs on stretch-dependent friction. Our focus is primarily to optimize the friction force and friction coefficient towards their maximum or minimum values. To achieve this goal, we will utilize \acrshort{MD} simulations to generate an extended dataset that encompasses a wider range of Kirigami designs. This is motivated by the aim of gaining gain a broader understanding of the friction-strain relationship. We will then leverage this dataset to explore the potential of employing machine learning for predicting friction behavior based on Kirigami design, stretch, and load. Finally, we plan to utilize the developed machine learning model for an accelerated search. 
+Building upon the discoveries of the Pilot Study~\cref{chap:pilot_study}, we will further explore the impact of Kirigami designs on strain-dependent friction. Our focus is primarily to optimize the friction force and friction coefficient towards their maximum or minimum values. To achieve this goal, we will utilize \acrshort{MD} simulations to generate an extended dataset that encompasses a wider range of Kirigami designs. This is motivated by the aim of gaining gain a broader understanding of the friction-strain relationship. We will then leverage this dataset to explore the potential of employing machine learning for predicting friction behavior based on Kirigami design, strain, and load. Finally, we plan to utilize the developed machine learning model for an accelerated search. 
 
 
 \section{Generating the dataset}
 We aim to create a dataset that contains an extended series of Kirigami design configurations based on the pattern generation methods developed in~\cref{chap:system} for which we will vary the strain and load for each configuration. For each configuration, we sample 15 pseudo uniform strain values (see~\cref{sec:stretch_dependency}) between zero and the rupture strain according to the rupture test. Since the normal force did not prove to be dominant in the friction description we only sample 3 values per configuration, uniformly sampled in the range $[0.1, 10]$ nN. In total, this gives $3\times 15 = 45$ data points for each configuration. For the remaining parameters, we use the
 values presented in the pilot study (see~\cref{tab:param}). We are mainly
-concerned with the mean friction and whether the sheet ruptures during the simulation. However, we also include the maximum friction, the relative contact, the rupture stretch (from the rupture test) and the porosity (void fraction) in the dataset. We generate 68 configurations of the Tetrahedron pattern type, 45 of the Honeycomb type and 100 of the Random walk type. For the Tetrahedron and Honeycomb patterns, we choose a random reference position that results in translation of the patterns. A summary of the dataset is given in~\cref{tab:dataset_summary} while all configurations are shown visually in~\cref{sec:dataset_conf}. The Tetrahedron and Honeycomb parameters are chosen to
+concerned with the mean friction and whether the sheet ruptures during the simulation. However, we also include the maximum friction, the relative contact, the rupture strain (from the rupture test) and the porosity (void fraction) in the dataset. We generate 68 configurations of the Tetrahedron pattern type, 45 of the Honeycomb type and 100 of the Random walk type. For the Tetrahedron and Honeycomb patterns, we choose a random reference position that results in translation of the patterns. A summary of the dataset is given in~\cref{tab:dataset_summary} while all configurations are shown visually in~\cref{sec:dataset_conf}. The Tetrahedron and Honeycomb parameters are chosen to
 provide additional variations of the configurations evaluated in~\cref{chap:pilot_study} which exhibited interesting properties. The Random
 walk configurations are chosen with the aim of introducing as much variety as possible within our Random walk framework. Notice that not all submitted data points ``make it'' to the final dataset. This
 is due to a small bug in the data generation procedure\footnote{The issue arises from the fact that the rupture point in the rupture test does not
 completely match the rupture point in the following simulations. After
 performing the rupture test the simulation is restarted with a new substrate
-size, corresponding to the measured rupture stretch limit, but also with a new
-random velocity and thermostat initialization. The sheet is then stretched and
+size, corresponding to the measured rupture strain limit, but also with a new
+random velocity and thermostat initialization. The sheet is then strained and
 checkpoints of the simulation state (LAMMPS restart files) are stored for each of
-the targeted stretch samples. However, if the rupture point arrives earlier than suggested by the rupture test, due to randomness from the initialization, some of the planned stretch samples do not get a corresponding checkpoint file. Thus, these data points are not included in the dataset even though they ideally should have been noted as a rupture event. This could quite have been mitigated by a rewrite of the code, but it was first discovered after the dataset had been created. We notice, however, that the dataset still contains 11.57 \% rupture events which provide a reasonable amount of rupture events to incorporate in the machine learning model}.
+the targeted strain samples. However, if the rupture point arrives earlier than suggested by the rupture test, due to randomness from the initialization, some of the planned strain samples do not get a corresponding checkpoint file. Thus, these data points are not included in the dataset even though they ideally should have been noted as a rupture event. This could quite have been mitigated by a rewrite of the code, but it was first discovered after the dataset had been created. We notice, however, that the dataset still contains 11.57 \% rupture events which provide a reasonable amount of rupture events to incorporate in the machine learning model}.
 
 
 \begin{table}[H]
   \begin{center}
-  \caption{Summary of the number of generated data points in the dataset. Due to slight deviations in the rupture stretch and the specific numerical procedure not all submitted simulations ``make it'' to the final dataset. Notice that the Tetrahedon $(7, 5, 2)$ and Honeycomb $(2, 2, 1, 5)$ from the pilot study are rerun as a part of the Tetrahedon and the Honeycomb datasets separately. In the latter datasets, the reference point for the pattern is randomized and thus these configurations are not fully identical. This is the reason for the ambiguousness in the total sum.}
+  \caption{Summary of the number of generated data points in the dataset. Due to slight deviations in the rupture strain and the specific numerical procedure not all submitted simulations ``make it'' to the final dataset. Notice that the Tetrahedon $(7, 5, 2)$ and Honeycomb $(2, 2, 1, 5)$ from the pilot study are rerun as a part of the Tetrahedon and the Honeycomb datasets separately. In the latter datasets, the reference point for the pattern is randomized and thus these configurations are not fully identical. This is the reason for the ambiguousness in the total sum.}
   \label{tab:dataset_summary}
   \begin{tabular}{ | c | c | c | c | c |} \hline
   \textbf{Type} & \textbf{Configurations} & \textbf{Submitted data points} & \textbf{Final data points} & \textbf{Ruptures} \\ \hline
@@ -52,8 +52,8 @@ strain scaled by the rupture strain, has a weaker correlation of only 0.25.
 This indicates that the correlation might be associated with the flexibility of
 the configurations since these can be taken to higher absolute values of strain.
 This is further supported by the fact that the mean friction and the rupture
-strain are also strongly positively correlated $(0.78)$. From figure~\cref{fig:corrcoef_matrix} we also observe that the contact is negatively
-correlated with the mean friction $(-0.67)$ and the strain value $(-0.74)$. This is generally consistent with the trend observed in the pilot study in~\cref{fig:multi_stretch} where increasing strain was correlated with a decreasing contact and mainly increasing mean friction. However, we must note that the correlation coefficient is a measure of the strength and slope of a forced linear fit on the data. Since we have observed a non-linear trend between friction and strain (\cref{fig:multi_stretch_mean_fric}) we should not expect any near 100 \% correlations. Additionally, we also notice that all correlations to normal load are rather low, which aligns well with the findings in the pilot study. 
+strain are also strongly positively correlated $(0.78)$. From~\cref{fig:corrcoef_matrix} we also observe that the contact is negatively
+correlated with the mean friction $(-0.67)$ and the strain value $(-0.74)$. This is generally consistent with the trend observed in the pilot study in~\cref{fig:multi_stretch} where the increasing strain was correlated with a decreasing contact and mainly increasing mean friction. However, we must note that the correlation coefficient is a measure of the strength and slope of a forced linear fit on the data. Since we have observed a non-linear trend between friction and strain (\cref{fig:multi_stretch_mean_fric}) we should not expect any near 100 \% correlations. Additionally, we also notice that all correlations to normal load are rather low, which aligns well with the findings in the pilot study. 
 
 \cref{fig:corr_vis} shows a visualization of the data (excluding
 the pilot study configurations) for chosen variable pairs on the axes. This
@@ -98,83 +98,106 @@ and mean friction.
      \label{fig:corr_vis}
 \end{figure}
 
-%
-%
-% working here
-%
-%
+
 
 \section{Properties of interest} 
-In the pilot study (\cref{chap:pilot_study}) we found promising results for the idea of achieving a negative friction coefficient under the assumption of a system with coupled normal force and stretch. Hence, we will consider this as a main property of interest for our further exploration. However, it is not obvious how one should rigorously quantify this. The friction coefficient is by our definition (\cref{eq:mu_def2}) given as the slope of the friction $F_f$ vs.\ normal force $F_N$ curve. Hence, for two data points $\{(F_{N,1}, F_{f,1}), (F_{N,2}, F_{f,2})\}$, $F_{N,1} < F_{N,2}$ we can evaluate the associated friction coefficient $\mu_{1,2}$ as 
+In the pilot study (\cref{chap:pilot_study}) we found promising results for the idea of achieving a negative friction coefficient under the assumption of a system with coupled normal force and strain. Hence, we will consider this as a main property of interest for our further exploration. However, it is not obvious how one should rigorously quantify this. The friction coefficient is by our definition (\cref{eq:mu_def2}) given as the slope of the friction $F_f$ vs.\ normal force $F_N$ curve. Hence, for two data points $\{(F_{N,1}, F_{f,1}), (F_{N,2}, F_{f,2})\}$, $F_{N,1} < F_{N,2}$ we can evaluate the associated friction coefficient $\mu_{1,2}$ as 
 \begin{align*}
   \mu_{1,2} = \frac{F_{f,2} - F_{f,1}}{F_{N,2} - F_{N,1}} = \frac{\Delta F_f}{\Delta F_N}.
 \end{align*}
-In the pilot study, it became clear that the effects of friction under the
-change of load is negligible in comparison to the effects related to stretch $S$.
-Thus, by working under the assumption $F(F_N, S) \sim F(S)$ and a coupling $F_N
-\propto R\cdot S$ with linear coupling ratio $R$ we get 
+In the pilot study, it became apparent that the effects of friction under the
+change of load is negligible in comparison to the effects related to strain $\varepsilon$.
+Thus, by working under the assumption $F(F_N, \varepsilon) \sim F(\varepsilon)$ and a coupling $F_N
+\propto R\cdot \varepsilon$ with linear coupling ratio $R$ we get 
 \begin{align}
-  \mu_{1,2}(S_1, S_2) = \frac{\Delta F_{f}(S_1, S_2)}{R(S_2 - S_1)} \propto \frac{\Delta F_{f}(S_1, S_2)}{\Delta S}.
-  \label{eq:mu_stretch}
+  \mu_{1,2}(\varepsilon_1, \varepsilon_2) = \frac{\Delta F_{f}(\varepsilon_1, \varepsilon_2)}{R(\varepsilon_2 - \varepsilon_1)} \propto \frac{\Delta F_{f}(\varepsilon_1, \varepsilon_2)}{\Delta \varepsilon}.
+  \label{eq:mu_strain}
 \end{align}
-With this reasoning we can in practice exchange $F_N$ with $S$ in the expression
-for the friction coefficient of our coupled system. This justifies the search
-for a strong negative slope on the friction vs.\ stretch curve as it can be
-related to a negative friction coefficient in our proposed coupled system. The
-remaining question is how to evaluate the strength of this property. By
-definition, the minimum (most negative) slope value would give the lowest
-friction coefficient. However, two data points with a small $\Delta S$,
-corresponding to a small denominator in~\cref{eq:mu_stretch}, would potentially
-lead to a huge negative slope value without any significant decrease in
-friction. Hence, we choose to consider the drop in friction with increasing
-stretch as a better metric. For a given friction vs.\ stretch curve, we can
-locate the local maxima and evaluate the difference to the succeeding local
-minima. The biggest drop will serve as our indicator for a negative friction
-coefficient. In this evaluation, we do not guarantee a monotonic decrease of
-friction in the range of the biggest drop, but when searching among multiple
-configurations this is considered a decent strategy to highlight configurations
-of interest worthy of further investigation. In addition to the biggest drop in
-friction, max drop, we also consider the minimum, $\min F_{\text{fric}}$, and
-maximum, $\min F_{\text{fric}}$, friction along with the maximum difference
-$\max \Delta f_{\text{fric}} = \max F_{\text{fric}} - \min F_{\text{fric}}$. The
-extrema of these four properties for each of the designs categories
-(Tetrahedron, Honeycomb and Random walk) and the Pilot study are summarized in~\cref{tab:data_properties} with the corresponding stretch profiles and
-configurations shown in~\crefrange{fig:PP_min}{fig:PP_max_drop} (excluding the
-pilot study). The stretch profiles for the full dataset are shown in appendix~\cref{sec:data_stretch_profiles}. 
+With this reasoning, we can in practice substitute load $F_N$ for strain
+$\varepsilon$ in the expression for the friction coefficient of our coupled
+system. This justifies the search for a negative slope on the friction-strain
+curve since this can be related to a negative friction coefficient in our
+proposed coupled system. The remaining question is then how to evaluate the
+strength of this property. By definition, the minimum (most negative) slope
+value would give the lowest friction coefficient. However, two data points with
+a small $\Delta \varepsilon$, corresponding to a small denominator
+in~\cref{eq:mu_strain}, would potentially lead to a huge negative slope value
+without any significant decrease in friction. Hence, we choose to consider the
+drop in friction with increasing strain as a better metric. Numerically we
+compute this by locating the local maxima on the friction-strain curve and then
+evaluating the difference to the succeeding local minima. The biggest difference
+corresponds to the \textit{max drop} which serves as our indicator for a
+negative friction coefficient. In this evaluation, we do not guarantee a
+monotonic decrease of friction in the range of the biggest drop, but when
+searching among multiple configurations this is considered a decent strategy to
+highlight configurations of interest worthy of further investigation. In
+addition to the biggest drop in friction, we also consider the minimum, $\min
+F_{\text{fric}}$, and maximum, $\max F_{\text{fric}}$, friction along with the
+maximum difference, $\max \Delta f_{\text{fric}} = \max F_{\text{fric}} - \min
+F_{\text{fric}}$. The extrema of these four properties for each of the
+categories: Tetrahedron, Honeycomb, Random walk and Pilot study, are summarized
+in~\cref{tab:data_properties}. The corresponding strain profiles and
+configurations are shown in~\crefrange{fig:PP_min}{fig:PP_max_drop} (excluding
+the pilot study). The strain profiles for the full dataset are shown in
+appendix~\ref {sec:data_stretch_profiles}. 
 
-From the property comparison in~\cref{tab:data_properties} we see in general that the Honeycomb pattern is superior in terms of the maximum properties which aligns with the pilot study results as well. However, by including more variations of the patterns we find an improvement in the max drop category for both the Tetrahedron pattern ($0.5098 \to 0.8841$) and the Honeycomb pattern ($0.9674 \to 1.2785$). The comparison also reveals that the non-cut sheet is still the best candidate for a low friction behavior which indicates that the Kirigami designs cannot be used to further reduce friction in our simulation domain. The Random walk property scores are in general on a comparable order of magnitude which indicates that these randomized patterns have some relevance concering the usage as training data.
+From the property comparison in~\cref{tab:data_properties} we find that both the
+Tetrahedron and Honeycomb subsets contain improved candidates for each of the
+property scores in comparison to the Tetrahedron $(7,5,1)$ and Honeycomb
+$(2,2,1,5)$ examined in the pilot study. Overall, the Honeycomb pattern type is
+still resulting in the highest scores for the maximum properties while the
+minimum friction is still achieved by the non-cut sheet. This latter observation
+reveals that our dataset does not provide any indication that friction can readily be reduced for a Kirigami sheet under strain. However, the improvement in the
+remaining properties indicates that the dataset contains the necessary
+information to provide a direction for further optimization of the maximum properties. Considering the Random walk we find that the max property scores are generally lower than that of the Tetrahedron and Honeycomb structures. However, since these are found to be on a comparable order of magnitude we argue that contain relevant information for populating configuration space with respect to machine learning training. The Random walk patterns also contribute with some immediate insight into the structures that we can associate with each of the properties of interest due to its increased diversity in comparison to the other patterns.
 
-\hl{Perhaps comment a bit on what the Random walk top candidates tell about the optimization for the different properties?}
+For the $\min F_{\text{fric}}$ top candidates (\cref{fig:PP_min}) we find that
+the Random walk candidate has a rather cut density (low porosity) and with
+vertical cuts. Since these cuts run parallel to the stretching direction one can
+hypothesize that this minimizes the induced buckling effect which agrees with
+the constant level of contact. For the minimum candidate for the Tetrahedron
+pattern, we also observe a low decrease in contact, and in both these cases this
+corresponds with a relatively flat friction-strain curve. When considering the
+remaining friction-strain curve
+throughout~\crefrange{fig:PP_min}{fig:PP_max_drop} we find a rising
+friction-strain curve which is accompanied by a decreasing relative contact.
+When looking at the Random walk 96 pattern, which is the top candidate for both
+the $\max F_{\text{fric}}$ (\cref{fig:PP_max}) and $\max \Delta f_{\text{fric}}$
+(\cref{fig:PP_max_diff}) property, we find a rather porous configuration with
+mainly horizontal-orientated cuts. This has some structural reminiscence with the Honeycomb pattern. Finally, the best random walk candidate for the max drop category, Random walk 01, did not produce a big drop. We find that the contact area is decreasing with strain but not as strongly as seen for the other configurations. The configuration contains some slanted cuts which might be reminiscent of parts of the Tetrahedron pattern. 
+
+
+
+
 
 \begin{table}[H]
   \begin{center}
   \caption{Evaluation of the properties of interest for our dataset.}
   \label{tab:data_properties}
-  \begin{tabular}{| c | c | c | c|} \hline
-  \textbf{Tetrahedron} & Configuration & Stretch & Value [nN]  \\ \hline
-  $\min F_{\text{fric}}$ & $(3,9,4)$ &  0.0296 & 0.0067 \\ \hline
-  $\max F_{\text{fric}}$ & $(5,3,1)$ & 0.1391 & 1.5875 \\ \hline
-  $\max \Delta F_{\text{fric}}$  & $(5, 3, 1)$ & $[0.0239, 0.1391]$ & 1.5529 \\ \hline
-  max drop & $(5,3,1)$ & $[0.1391, 0.1999]$ & 0.8841 \\ \hline
-  \multicolumn{4}{c}{} \\ \hline
-  % \textbf{Tetrahedron} & \multicolumn{3}{c|}{} \\ \hline
-  \textbf{Honeycomb} & Configuration & Stretch & Value [nN]  \\ \hline
-  $\min F_{\text{fric}}$ & $(2, 5, 1, 1)$ &  0.0267 & 0.0177 \\ \hline
-  $\max F_{\text{fric}}$ & $(2, 1, 1, 1)$ & 1.0654 & 2.8903 \\ \hline
-  $\max \Delta F_{\text{fric}}$  & $(2, 1, 5, 3)$ & $[0.0856, 1.4760]$ & 2.0234 \\ \hline
-  max drop & $(2, 3, 3, 3)$ & $[0.5410, 1.0100]$ & 1.2785 \\ \hline
-  \multicolumn{4}{c}{} \\ \hline
-  \textbf{Random walk} & Configuration & Stretch & Value [nN]  \\ \hline
-  $\min F_{\text{fric}}$ & 12 &  0.0562 & 0.0024\\ \hline
-  $\max F_{\text{fric}}$ & 96 & 0.2375 & 0.5758 \\ \hline
-  $\max \Delta F_{\text{fric}}$  & 96 & $[0.0364, 0.2375]$ & 0.5448 \\ \hline
-  max drop & 01 & $[0.0592, 0.1127]$ & 0.1818 \\ \hline
-  \multicolumn{4}{c}{} \\ \hline
-  \textbf{Pilot study} & Configuration & Stretch & Value [nN]  \\ \hline
-  $\min F_{\text{fric}}$ & No cut & 0.2552 & 0.0012 \\ \hline
-  $\max F_{\text{fric}}$ & Honeycomb & 0.7279 & 1.5948 \\ \hline
-  $\max \Delta F_{\text{fric}}$  & Honeycomb & 0.7279 & 1.5325 \\ \hline
-  max drop & Honeycomb & $[0.7279, 1.0463]$ & 0.9674 \\ \hline
+  \begin{tabular}{| c | c | c | c | c |} \hline
+  \textbf{Tetrahedron} & Configuration & Strain & Value [nN] & Hon. $(2,2,1,5)$ [nN]  \\ \hline
+  $\min F_{\text{fric}}$ & $(3,9,4)$ &  0.0296 & 0.0067 & 0.0262 \\ \hline
+  $\max F_{\text{fric}}$ & $(5,3,1)$ & 0.1391 & 1.5875 & 0.8891 \\ \hline
+  $\max \Delta F_{\text{fric}}$  & $(5, 3, 1)$ & $[0.0239, 0.1391]$ & 1.5529 & 0.8603  \\ \hline
+  max drop & $(5,3,1)$ & $[0.1391, 0.1999]$ & 0.8841 & 0.5098 \\ \hline
+  \multicolumn{5}{c}{} \\ \hline
+  \textbf{Honeycomb} & Configuration & Strain & Value [nN]  & Tetra. $(7,5,1)$ [nN]  \\ \hline
+  $\min F_{\text{fric}}$ & $(2, 5, 1, 1)$ &  0.0267 & 0.0177 & 0.0623 \\ \hline
+  $\max F_{\text{fric}}$ & $(2, 1, 1, 1)$ & 1.0654 & 2.8903 & 1.5948 \\ \hline
+  $\max \Delta F_{\text{fric}}$  & $(2, 1, 5, 3)$ & $[0.0856, 1.4760]$ & 2.0234 & 1.5325 \\ \hline
+  max drop & $(2, 3, 3, 3)$ & $[0.5410, 1.0100]$ & 1.2785 & 0.9674\\ \hline
+  \multicolumn{5}{c}{} \\ \cline{1-4}
+  \textbf{Random walk} & Configuration & Strain & Value [nN] & \multicolumn{1}{c}{} \\ \cline{1-4}
+  $\min F_{\text{fric}}$ & 12 &  0.0562 & 0.0024& \multicolumn{1}{c}{} \\ \cline{1-4}
+  $\max F_{\text{fric}}$ & 96 & 0.2375 & 0.5758 & \multicolumn{1}{c}{} \\ \cline{1-4}
+  $\max \Delta F_{\text{fric}}$  & 96 & $[0.0364, 0.2375]$ & 0.5448 & \multicolumn{1}{c}{} \\ \cline{1-4}
+  max drop & 01 & $[0.0592, 0.1127]$ & 0.1818 & \multicolumn{1}{c}{} \\ \cline{1-4}
+  \multicolumn{5}{c}{} \\ \cline{1-4}
+  \textbf{Pilot study} & Configuration & Strain & Value [nN]  & \multicolumn{1}{c}{} \\ \cline{1-4}
+  $\min F_{\text{fric}}$ & No cut & 0.2552 & 0.0012 & \multicolumn{1}{c}{} \\ \cline{1-4}
+  $\max F_{\text{fric}}$ & Honeycomb & 0.7279 & 1.5948 & \multicolumn{1}{c}{} \\ \cline{1-4}
+  $\max \Delta F_{\text{fric}}$  & Honeycomb & 0.7279 & 1.5325 & \multicolumn{1}{c}{} \\ \cline{1-4}
+  max drop & Honeycomb & $[0.7279, 1.0463]$ & 0.9674 & \multicolumn{1}{c}{} \\ \cline{1-4}
 \end{tabular}
 \end{center}
 \end{table}
@@ -284,7 +307,10 @@ From the property comparison in~\cref{tab:data_properties} we see in general tha
 
 \section{Machine learning}
 
-Given the \acrshort{MD}-based datset we investigate the possibilities of training a machine learning model to predict the friction behaviour from a given Kirigami configuration, stretch and load. 
+% use dataset
+% # incentive of information for optimization towards the defined properties
+
+Given the \acrshort{MD}-based datset we investigate the possibilities of training a machine learning model to predict the friction behaviour from a given Kirigami configuration, strain and load. 
 
 
 % General stuff to include. Remember to talk about batchnorm, optimizer, stopping at best epoch. 
@@ -320,23 +346,23 @@ This provides a simple description where $S$ and $S$  can be varied systematical
 
 \subsection{Data handling}
 \subsubsection{Input}
-We use three variables as input: Kirigami configuration, stretch of the sheet
+We use three variables as input: Kirigami configuration, strain of the sheet
 and applied normal load. While the first is a two-dimensional input the latter
 are both scalars. This gives rise to two main options for the data structure
 \begin{enumerate}
-  \item Expand the scalar values (stretch and load) into 2D matrices of the same
+  \item Expand the scalar values (strain and load) into 2D matrices of the same
   size as the Kirigami configuration (copying the scaler value to all positions). This can then be merged into an image of three channels used as a single input.  
   \item Pass only the Kirigami configuration through the convolutional part of the network and introduce the remaining scalar values into the fully connected part of the network halfway in. 
 \end{enumerate}
-Both options utilize the same data, but the first is more appropriate if the configuration should be considered in context with the applied stretch and load, while the latter corresponds to a more independent processing. We implemented both options but it was immediately clear from the test runs that option 1 was producing the most promising result which we settled on.
+Both options utilize the same data, but the first is more appropriate if the configuration should be considered in context with the applied strain and load, while the latter corresponds to a more independent processing. We implemented both options but it was immediately clear from the test runs that option 1 was producing the most promising result which we settled on.
 
 \subsubsection{Output}
 For the output we are mainly concerned with mean friction and the rupture
-detection. In combination, this will make the model able to produce a friction vs.\ stretch curve with an estimated stopping point as well. However, for some cases, the model can benefit from having additional output variables to adjust for \hl{source}, and thus we include we include maximum friction, contact, porosity and rupture stretch in the output as well. This also gives us more options for exploring the relationship in the data later on. Notice that we weight the importance of these output variables different in the loss as described in 
+detection. In combination, this will make the model able to produce a friction vs.\ strain curve with an estimated stopping point as well. However, for some cases, the model can benefit from having additional output variables to adjust for \hl{source}, and thus we include we include maximum friction, contact, porosity and rupture strain in the output as well. This also gives us more options for exploring the relationship in the data later on. Notice that we weight the importance of these output variables different in the loss as described in 
 variables differently as described in~\cref{sec:loss}. 
 \\
 \\
-\hl{Removed this part, do you think it has any relevance: Notice that the rupture stretch refers to the value found in the rupture test without load, but as the sheet always ruptures before or just around this point in a loaded state this provides some information for the training to lean on, even though it is in the output state. In principle, we could add a penalty whenever the network predicts the sheet to be attached for stretch values above the rupture stretch, but we found the performance of the rupture prediction to be satisfactory without such penalties.}
+\hl{Removed this part, do you think it has any relevance: Notice that the rupture strain refers to the value found in the rupture test without load, but as the sheet always ruptures before or just around this point in a loaded state this provides some information for the training to lean on, even though it is in the output state. In principle, we could add a penalty whenever the network predicts the sheet to be attached for strain values above the rupture strain, but we found the performance of the rupture prediction to be satisfactory without such penalties.}
 
 
 \subsubsection{Data augmentation}
@@ -404,7 +430,7 @@ parameters. Additionally, we evaluate the mean friction $R_2$ score for a
 selected set of configurations. This set consists of the top 10 configurations
 with respect to maximum friction drop for the Tetrahedron and Honeycomb pattern
 respectively. This is done as a way of evaluating the performance on the
-non-linear stretch curves which we immediately found to be the more difficult patterns to capture. The selected evaluation is shown in~\cref{fig:A_search_compare}. Note
+non-linear strain curves which we immediately found to be the more difficult patterns to capture. The selected evaluation is shown in~\cref{fig:A_search_compare}. Note
 that these patterns are already a part of the full dataset and thus the data points
 related to these patterns are most likely present in both the training and the validation data set. Hence, the performance must be considered in conjunction with the actual validation performance in~\cref{fig:A_search_perf}.
 
@@ -568,10 +594,10 @@ From the hypertuning study, we choose the S32D12 model trained by a cyclic
 training scheme with a momentum of 0.85 and zero weight decay. The main
 performance metrics are shown in~\cref{tab:final_model_eval}. Since the porosity
 is a number between $0$ and $1$ we can interpret the absolute error as the
-percentage error similar to the relative error for the rupture stretch. The
-rupture stretch is generally within a 13 \% margin, but we believe that this
-number is especially high due to some low stretch rupture cases in the dataset
-which contributes to a large relative error. The stretch curves for mean
+percentage error similar to the relative error for the rupture strain. The
+rupture strain is generally within a 13 \% margin, but we believe that this
+number is especially high due to some low strain rupture cases in the dataset
+which contributes to a large relative error. The strain curves for mean
 friction, max friction and contact is shown in~\cref{fig:final_model_eval} in
 comparison with the Tetrahedron (7, 5, 1) and Honeycomb (2,2,1,5) used in the
 pilot study. This gives a visual interpretation of how well the fits are for the
@@ -585,7 +611,7 @@ suggestions from the accelerated search.
   \label{tab:final_model_eval}
   \begin{tabular}{ | c | c | c | c | c | c | c | c |} \hline
     & Loss [\num{e2}] & \multicolumn{3}{c|}{$R_2$ [\num{e2}]} & Abs. [\num{e2}] & Rel. [\num{e2}]  & Acc. [\num{e2}] \\ \hline
-    & Total & Mean $F_f$ & Max $F_f$ & Contact & Porosity & Rup.\ Stretch & Rupture \\ \hline
+    & Total & Mean $F_f$ & Max $F_f$ & Contact & Porosity & Rup.\ Strain & Rupture \\ \hline
   Validation  & 2.1488 & 98.067 & 93.558 & 94.598 & 02.325 & 12.958 & 96.102 \\ \hline
   Tetrahedron & 4.0328 & 88.662 & 85.836 & 64.683 & 01.207 & 05.880 & 99.762 \\ \hline
   Honeycomb   & 8.6867 & 96.627 & 89.696 & 97.171 & 01.040 & 01.483 & 99.111 \\ \hline
@@ -597,7 +623,7 @@ suggestions from the accelerated search.
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{figures/ML/final_model_evaluation.pdf}
-  \caption{With \num{e3} points in the stretch range [0, 1.5] and stopping after first rupture True prediction.}
+  \caption{With \num{e3} points in the strain range [0, 1.5] and stopping after first rupture True prediction.}
   \label{fig:final_model_eval}
 \end{figure}  
 
@@ -752,7 +778,7 @@ generator, we do a Monte Carlo sampling. In each sample, we draw the scalar valu
 Notice that we use discrete distribution for the parameters requiring integers. For the binary parameters \textit{Connection}, \textit{Avoid unvalid},
 \textit{RN6} and \textit{Grid start} we simply set the values by a 50--50 chance. The remaining parameters are kept constant at \textit{Periodic: True} and \textit{Centering:False} throughout the search. For the handling of clustering, we implement the repair algorithm such that the sheet is repaired by the least modifications approach rather than retrying the generation several times \hl{Make sure that this is introduced somewhere}. Due to the extra computation time associated with the
 random walk and the repair algorithm, we only generate 10k configurations within
-this class. For the evaluation of the configurations we use a normal load of \SI{5}{nN} and generate a stretch curve in the domain 0--200 \% using 100 evenly spaced points. Top candidate results for each property are shown in~\cref{tab:pattern_search} including a comparison to the dataset top candidates
+this class. For the evaluation of the configurations we use a normal load of \SI{5}{nN} and generate a strain curve in the domain 0--200 \% using 100 evenly spaced points. Top candidate results for each property are shown in~\cref{tab:pattern_search} including a comparison to the dataset top candidates
 originally shown in~\cref{tab:data_properties}. The random walk top five candidates are visualized in~\cref{fig:RW_search_top5}.
 
 First of all, the search shows a rather consistent result regarding the minimization of friction where the top candidates all share the same feature of being sparsely cut. For the Random walk, we see this visually in\cref{fig:RW_search_top5}, while for the Tetrahedon and Honeycomb patterns, this is evident from the configuration parameters shown in~\cref{tab:pattern_search} where the parameters reveal a high spacing between the
@@ -792,13 +818,13 @@ physical behavior of the system. The sensible way forward to unravel this would
 be to generate additional translational variants of the same configurations to
 investigate for any physical edge dependencies or otherwise strengthen the
 model. We earmark this suggestion for another study. When considering some of
-the stretch curves we also find that the prediction of the rupture point plays
+the strain curves we also find that the prediction of the rupture point plays
 an important role for the max drop property. As the rupture was often predicted
 on a descending part of the curve any variation to the rupture point will affect
 the max drop property quite significantly.
 
 
-We use the 20 configurations from the top candidates in the Random walk class as a test set. We sample 30 pseudo uniform stretch values and use a normal load of \SI{5}{nN}. The test set gave a loss 2.13 which is two orders of magnitude higher than the validation and an average absolute error for the mean friction of 0.14 and rupture accuracy of 70 \%. This corresponded to an average negative $R^2$ score indicating that we would have been better off guessing on a constant value corresponding to the true data mean. This shows that the model is clearly not generalized. While some parts can be attributed to the overfitting of the model we believe that this is more likely to be a problem of a too small dataset. \hl{This was just recently added so I need to incorporate this in the further discussion... It is a bit sad.}. 
+We use the 20 configurations from the top candidates in the Random walk class as a test set. We sample 30 pseudo uniform strain values and use a normal load of \SI{5}{nN}. The test set gave a loss 2.13 which is two orders of magnitude higher than the validation and an average absolute error for the mean friction of 0.14 and rupture accuracy of 70 \%. This corresponded to an average negative $R^2$ score indicating that we would have been better off guessing on a constant value corresponding to the true data mean. This shows that the model is clearly not generalized. While some parts can be attributed to the overfitting of the model we believe that this is more likely to be a problem of a too small dataset. \hl{This was just recently added so I need to incorporate this in the further discussion... It is a bit sad.}. 
 
 
 
@@ -914,11 +940,11 @@ to the max drop category for the Tetrahedron, Honeycomb and Random walk shown
 candidate, the Grad-CAM method highlights some areas in the noise configuration as
 contributing more positively than others. However, we do not see any obvious
 patterns. For the more structured patterns of the Tetrahedron, Honeycomb and
-Random walk configurations we see in many cases throughout the stretching that
+Random walk configurations we see in many cases throughout the straining that
 the cut parts are highlighted. This gives some confidence to the idea that the
 model does consider some of the relevant features in the pattern, but it still
 varies too much to make any strong conclusion. However, we notice that for
-certain stretch values, the Grad-CAM reveals an ``attention'' towards the edge of
+certain strain values, the Grad-CAM reveals an ``attention'' towards the edge of
 the configuration. This especially relates to the top and bottom edge, which we for instance see for the Honeycomb pattern at strain 0.396 regarding the bottom edge in~\cref{fig:GC_hon_search}. Considering that the top and bottom of the configuration are not a true edge, since these are connected to the pull blocks in the simulation, this is a bit surprising. One interpretation is that the dissipation associated with the thermostat in the pull blocks might be of importance. This is not strongly supported and we simply note that as an interesting topic for further studies.
 
 

@@ -283,6 +283,9 @@ def multi_FN_force_dist(path, save = False):
                        'marker': 'o',
                        'linewidth': 1.5,
                        'markersize': 2.5}
+    # line_and_marker = {'marker': 'o',
+    #                    's': 20,
+    #                    'edgecolor': 'black'}
     
     
     # fig, axes = plt.subplots(1, 2,  figsize = (10,4))#, gridspec_kw ={'width_ratios': width_ratios})
@@ -326,16 +329,20 @@ def multi_FN_force_dist(path, save = False):
     
 
  
-def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yerr = None, axis_scale = ['linear', 'linear'], colorbar_scale = [[0.1, 10], 'log'], equal_axes = [False, True], rupplot = False, axes = None):
+def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yerr = None, axis_scale = ['linear', 'linear'], colorbar_scale = [[0.1, 10], 'log'], equal_axes = [False, True], rupplot = False, axes = None, add_contact = False):
     # Settings
     
     
     mean_window_pct = 0.5 # relative length of the mean window [% of total duration]
     std_window_pct = 0.35  # relative length of the std windoe [% of mean window]
-    line_and_marker = {'linestyle': '', 
-                       'marker': 'o',
-                       'linewidth': 1.5,
-                       'markersize': 2.5}
+    # line_and_marker = {'linestyle': '', 
+    #                    'marker': 'o',
+    #                    'linewidth': 1.5,
+    #                    'markersize': 2.5,
+    #                    'edgecolor':'black'}
+    line_and_marker = {'marker': 'o',
+                       's': 20,
+                       'edgecolor': 'black'}
     
     cmap = matplotlib.cm.viridis
     
@@ -356,7 +363,7 @@ def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yer
             axes[f].set_title(names[f])
             data = read_multi_folder(folder, mean_window_pct, std_window_pct)
             
-            
+           
             # Get variables of interest
             locs = locals()
             x, y, z = [eval(v, locs) for v in vars]
@@ -371,7 +378,8 @@ def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yer
                     # color = get_color_value(z[k], np.min(z), np.max(z), scale = colorbar_scale[-1], cmap = cmap)
                     
                     color = get_color_value(z[k], colorbar_scale[0][0], colorbar_scale[0][1], scale = colorbar_scale[-1], cmap = cmap)
-                    axes[f].plot(x, y[:,k], **line_and_marker, color = color)
+                    # axes[f].plot(x, y[:,k], **line_and_marker, color = color)
+                    axes[f].scatter(x, y[:,k], **line_and_marker, color = color)
                     # test = y[:, k]/x
                     # print(f'F/FN (f = {f}, z = {z[k]}): min = {np.min(test)}, max = {np.max(test)}')
                     notnan = ~np.isnan(y[:, k])
@@ -379,6 +387,8 @@ def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yer
                     print(f'linfit (f = {f}, z = {z[k]}):  a = {a:g}, b = {b:g}, a_err = {a_err:g}, b_err = {b_err:g}')
                     
                     # axes[f].plot(x, y[:,k]/x, **line_and_marker, color = color)
+                    
+                
                 
                 else:
                     exit("Handle this")
@@ -482,6 +492,28 @@ def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yer
             if equal_axes[0]: ax.set_xlim(xlim)
             if equal_axes[1]: ax.set_ylim(ylim)
      
+
+    if add_contact:
+        for f, folder in enumerate(folders):
+            axes[f].set_title(names[f])
+            data = read_multi_folder(folder, mean_window_pct, std_window_pct)
+
+            # Get variables of interest
+            locs = locals()
+            x, y, z = [eval(v, locs) for v in vars]
+
+        
+            contact = data['contact_mean'][:, :, 0]
+            ax_contact = axes[f]
+            for k in range(len(z)):
+                color = get_color_value(z[k], colorbar_scale[0][0], colorbar_scale[0][1], scale = colorbar_scale[-1], cmap = cmap)
+                notnan = ~np.isnan(y[:, k])    
+                ax_contact.plot(x, (ylim[1]-ylim[0])*contact[:, k]+ylim[0], color = color, linestyle = '-', linewidth = 1, alpha = 0.8)
+            # ax_contact = add_yaxis(axes[f], [np.min(y[notnan,k]), np.max(y[notnan,k])], [0, 1.0], ylabel = 'contact')
+            if f == len(folders)-1:
+                add_yaxis(axes[f], [ylim[0], ylim[1]], [0, 1.0], ylabel = 'Rel. Contact')
+            if f != 0:
+                axes[f].set_yticklabels([])
     
     # Rupture stretch 
     if rupplot: 
