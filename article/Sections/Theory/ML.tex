@@ -550,14 +550,14 @@ These conditions allow us to solve for the transition probability $P_{10}(j,t)$ 
   P_{11}(j,t) &= 1 - P_{10}(j,t) \label{eq:trans_prop_p11}
 \end{align}
 The remaining part is to define $P_{00}(j,t)$. We adopt the choice from~\cite{Wang2010} and start from $P_{00}(j, t = 0) = 0.5$ and choose $P_{00}(j,t) = n_0(j,t)$ for the following generations. Thus for a locus $A_{ij}(t)$ we mutate it, changing the binary value, by the probability
-\begin{align*}
+\begin{align}
   p_{ij}(t) = 
   \begin{cases}
     a_i(t)P_{01}(t), &A_{ij}(t) = 0 \\
     a_i(t)P_{10}(t), &A_{ij}(t) = 1
   \end{cases}
   \label{eq:p_flip}
-\end{align*}
+\end{align}
 In summary, each generation update involves the following steps.
 \begin{enumerate}
   \item For generation $t$ calculate the fitness score $f_i(t)$ of each chromosome $i$ and sort the population matrix $A_{ij}(t)$ row-wise according to a descending score. 

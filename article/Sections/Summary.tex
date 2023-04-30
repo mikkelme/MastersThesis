@@ -61,12 +61,12 @@ increased. This is shown in \cref{fig:multi_stretch}.  This led us to the conclu
 
 % 4: Capture trends with ML
 \subsection{Capture trends with ML}
-From the dataset we found some correlations in the data. That is, we found a
+With the use of \acrshort{MD} simulations, we have generated an extended dataset of 9660 data points based 216 Kirigami configurations (Tetrahedron: 68, Honeycomb: 45, Random walk: 100, Pilot study: 3) under various strains (15 values) and normal load (3 values). The dataset shows some general correlation, such as a
 positive correlation between the mean friction force and strain (0.77) and
-porosity (0.60) and negative correlation to contact area (-0.67). These trends
-aligns with initial study showing that the Kirigami effects is associated to a
-decreasing contact area and a non-zero porosity (atoms need to be removed to
-produce a Kirigami sheet). By the use of machine learning we found that the
+porosity (0.60), and a negative correlation to contact area (-0.67). These results align with the findings from the pilot study suggesting that these features are involved, but not necessary the cause, in the observed phenomena
+
+
+ By the use of machine learning we found that the
 trends in the data could generally be captured to a $R_2$ score above 0.97 for
 the validation data. However, the subset of configurations exhibiting the most
 significant effects from Kirigami and stretching provided a bigger challenge.

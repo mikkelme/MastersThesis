@@ -138,9 +138,9 @@ def plot_corrcoef(save = False):
         savename = False
     
     mat = obj.corrcoef_matrix({'porosity': 'porosity',
-                               'stretch': 'stretch',  
-                               'rel. stretch': 'rel. stretch',
-                               'rupture_stretch': 'rup. stretch',
+                               'stretch': 'strain',  
+                               'rel. stretch': 'rel. strain',
+                               'rupture_stretch': 'rup. strain',
                                'F_N': '$F_N$', 
                                'Ff_mean': r'$\langle F_\parallel \rangle$', 
                                'Ff_max': 'max Ff',
@@ -166,11 +166,11 @@ def plot_corr_scatter(save = False):
     
     # x, y, x-label, y-label, savename
     plots = [
-    ['stretch'          , 'Ff_mean', 'Stretch'              , r'$\langle F_\parallel \rangle$', 'corr_stretch_Ff.pdf'       ],
-    ['rel. stretch'     , 'Ff_mean', 'rel. stretch'         , r'$\langle F_\parallel \rangle$', None                        ],
+    ['stretch'          , 'Ff_mean', 'Strain'               , r'$\langle F_\parallel \rangle$', 'corr_stretch_Ff.pdf'       ],
+    ['rel. stretch'     , 'Ff_mean', 'Rel. strain'          , r'$\langle F_\parallel \rangle$', None                        ],
     ['porosity'         , 'Ff_mean', 'Porosity'             , r'$\langle F_\parallel \rangle$', 'corr_porosity_Ff.pdf'      ],
     ['contact'          , 'Ff_mean', 'Contact'              , r'$\langle F_\parallel \rangle$', 'corr_contact_Ff.pdf'       ],
-    ['stretch'          , 'contact', 'Stretch'              , 'Contact'                       , 'corr_stretch_contact.pdf'  ],
+    ['stretch'          , 'contact', 'Strain'               , 'Contact'                       , 'corr_stretch_contact.pdf'  ],
     ['porosity'          ,'contact', 'Porosity'             , 'Contact'                       , 'corr_porosity_contact.pdf'  ],
     ]
     
@@ -189,7 +189,16 @@ def plot_corr_scatter(save = False):
         for ax_num in range(len(plots)):
             data = np.stack([obj.data[plots[ax_num][0]], obj.data[plots[ax_num][1]]])
             corrcoef = np.corrcoef(data)[0, 1]
-            axes[ax_num].scatter(data[0], data[1], **plot_settings[reg], label = f'{reg_name[reg]} (corr = {corrcoef:0.3f})')
+            axes[ax_num].scatter(data[0], data[1], **plot_settings[reg],)
+            axes[ax_num].scatter([], [], s = 50, marker = plot_settings[reg]['marker'], color = plot_settings[reg]['color'], label = f'{reg_name[reg]} (corr = {corrcoef:0.3f})')
+            
+            #  plot_settings = [{'color': color_cycle(1), 'marker': '^', 's': size, 'alpha': 0.5},
+            #          {'color': color_cycle(3), 'marker': 'D', 's': size, 'alpha': 0.5},
+            #          {'color': color_cycle(4), 'marker': 'o', 's': size, 'zorder': -1, 'alpha': 0.5}]
+    
+
+    
+    
     
     
     
@@ -401,7 +410,8 @@ def get_config_data_property_score(folder):
         
 if __name__ == '__main__':
     # plot_corrcoef(save = False)
-    # plot_corr_scatter(save = False)
+    plot_corr_scatter(save = False)
+    plt.show()
     
     # model_performance('training_1')
     # model_performance('training_3')
@@ -416,10 +426,10 @@ if __name__ == '__main__':
     # part = np.sum(data['is_ruptured']) / len(data['is_ruptured'])
     # print(part)
     
-    folder = '../Data/baseline_fixmove/nocut/multi_stretch'
-    folder = '../Data/baseline_fixmove/popup/multi_stretch'
-    # folder = '../Data/baseline_fixmove/honeycomb/multi_stretch'
-    get_config_data_property_score(folder)
+    # folder = '../Data/baseline_fixmove/nocut/multi_stretch'
+    # folder = '../Data/baseline_fixmove/popup/multi_stretch'
+    # # folder = '../Data/baseline_fixmove/honeycomb/multi_stretch'
+    # get_config_data_property_score(folder)
     
     pass
     
