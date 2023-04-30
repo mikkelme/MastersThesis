@@ -81,10 +81,25 @@ these properties. Among the top candidates, we generally found that a rather
 flat friction-strain profile is mainly associated with little decrease in the
 contact area and vice versa. 
 
+We implemented a VGGNet-16-inspired convolutional neural network with a deep
+``stairlike'' architecture:
+C32-C64-C128-C256-C512-C1024-D1024-D512-D256-D128-D64-D32, for convolutional
+layers $C$ with the number denoting channels and fully connected (dense) layers
+$D$ with the number denoting nodes. The model contains \num{1.3e7} and was
+trained using the ADAM optimizer for a cyclic learning rate and momentum scheme
+for 1000 epochs while saving the best model during training based on the
+validation score. The final model gives mean friction $R^2$ of $\sim 98\%$ and a
+rupture accuracy of $\sim 96 \%$. However, we got lower scores for a selected
+subset of the Tetrahedon ($R^2 \sim 88.7 \%$) and Honeycomb ($R^2 \sim 96.6$)
+pattern based on the top 10 max drop scores respectively. These scores were
+lower despite the fact that the selected set was partly included in the training
+data, and that the hypertuning favored the performance on the selected
+Tetrahedron set. Thus we conclude that these configurations, associated with a
+highly non-linear friction-strain curve, are more challenging to predict. One
+interpretation is that these depend on more complex dynamics and perhaps that
+this is not readily distinguished from the behavior of the other configurations
+within the data.
 
-
-% Defined friction properties of interest
-% Dataset did not provide clues for minimization of friction but improved the scores for maximization and max drop 
 
 
  By the use of machine learning, we found that the

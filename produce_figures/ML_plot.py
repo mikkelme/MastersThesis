@@ -143,7 +143,7 @@ def LR_range_momentum(save = False):
         
         start_cut = np.argmin(np.abs(lr - 1e-5))
         
-        ax.plot(lr[start_cut:], loss[start_cut:], color = color_cycle(i), label = fr'$\beta_1 = ${mom:0.2f}') 
+        ax.plot(lr[start_cut:], loss[start_cut:], color = color_cycle(i), label = fr'$m = ${mom:0.2f}') 
         ax.plot(lr[sug_idx], loss[sug_idx], color = color_cycle(i), marker = 'o')
         ax.plot(lr[div_idx], loss[div_idx], color = color_cycle(i), marker = 'o')
         
@@ -174,7 +174,7 @@ def LR_range_momentum(save = False):
     fig2 = plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
     plt.plot(momentum[:len(lr_sug)], lr_sug, '-o', label = 'Constant suggestion')
     plt.plot(momentum[:len(lr_max)], lr_max, '-o', label = 'Max suggestion')
-    plt.xlabel(r'Momentum ($\beta_1$)', fontsize=14)
+    plt.xlabel(r'Momentum ($m$)', fontsize=14)
     plt.ylabel('Learning rate', fontsize=14)
     plt.yscale('log')
     plt.legend(fontsize = 13)
@@ -591,7 +591,7 @@ def final_model_evaluation(model_path, save = False):
     # Pilot study patterns
     folders = ['../Data/Baseline_fixmove/popup/multi_stretch',
                '../Data/Baseline_fixmove/honeycomb/multi_stretch']
-    patterns = ['Tetrahedron', 'Honeycomb']
+    patterns = ['Tetrahedron (7,5,1)', 'Honeycomb (2,2,1,5)']
     
     colorbar_scale = [(0.1, 10), 'log']
     
@@ -636,11 +636,11 @@ def final_model_evaluation(model_path, save = False):
         Z = [Ff_mean, Ff_max, contact]
         ylabel = [r'$\langle F_\parallel \rangle$ [nN]', 
                   r'$\max \ F_\parallel$ [nN]',
-                  r'Rel. $\langle$ Bond $\rangle$']
+                  r'Rel. contact']
         
         
         axes[0][f].set_title(f'{patterns[f]}')
-        axes[-1][f].set_xlabel('Stretch', fontsize = 14)     
+        axes[-1][f].set_xlabel('Strain', fontsize = 14)     
         for o in range(3): # Ff_mean, Ff_max, contact
             ax = axes[o][f]
             if f == 0:
@@ -860,8 +860,8 @@ if __name__ == '__main__':
     # mom_weight_search_compare_perf(path = '../ML/mom_weight_search_cyclic', save = False)
     
     
-    # final_model_evaluation(model_path = '../ML/mom_weight_search_cyclic/m0w0', save = False)
-    final_model_compare_scores(model_path = '../ML/mom_weight_search_cyclic/m0w0')
+    final_model_evaluation(model_path = '../ML/mom_weight_search_cyclic/m0w0', save = True)
+    # final_model_compare_scores(model_path = '../ML/mom_weight_search_cyclic/m0w0')
     plt.show()
 
 

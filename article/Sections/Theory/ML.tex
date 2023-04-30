@@ -214,9 +214,7 @@ final lower learning rate bound. We do this by following a cosine function that 
 % For
 % our task we will consider the Kirigami configuration, load and stretch of the system as input features on which we want the model to base its prediction.
 
-% . Thus, it does not matter how the input is arranged
-% initially, but it cannot be changed at a later stage. This is
-% impractical if 
+
 Convolutional Neural Networks (\acrshort{CNN}s) build upon many of the same
 concepts as introduced with the feed-forward neural network in~\cref{sec:NN}.
 The difference lies in its specialization for a spatially correlated input, such
@@ -434,12 +432,11 @@ Next, we consider the choice of momentum. Momentum and learning rates are found 
 since $m_t$ is a moving average of the gradient $g_t$ as well. Like the
 learning rate, we want to set the momentum value as high as possible without
 causing instabilities in the training. However, it is found that these values
-are somewhat inversely related. Choosing a high learning rate should be coupled
-with a lower momentum and vice versa. N. Smith~\cite{smith2018disciplined}
+are highly related. N. Smith~\cite{smith2018disciplined}
 reports that a momentum range test is not useful to find the right momentum.
 Instead, he suggests doing a few short runs with different values of momentum,
 such as 0.99, 0.97, 0.95, and 0.9, to determine a suitable choice. By including
-momentum in the LR range test we can balance the learning rate accordingly for such test. Moreover, for a cyclic learning rate scheme he suggests using a cycling momentum scheme reversed with respect to the learning rate. When the
+momentum in the LR range test we can balance the learning rate accordingly. Moreover, for a cyclic learning rate scheme he reports that a cycling momentum scheme, reversed with respect to the learning rate, is beneficial. When the
 learning rate increase toward the upper bound the learning rate should
 decrease toward the lower bound and vice versa. Choosing a lower momentum of
 0.80--0.85 often gives similar stabile results \cite{smith2018disciplined}.
