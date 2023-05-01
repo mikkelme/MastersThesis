@@ -1,69 +1,48 @@
 
 \chapter{Pilot study}\label{chap:pilot_study}
 
-Having defined our system, we carry out an initial study of the frictional properties. First, we evaluate the numerical results for a non-cut sheet in order to define suitable metrics for a numerical evaluation of friction and justify some of the default parameter choices. This provides a basis for the following study where we consider the Tetrahedron and Honeycomb Kirigami patterns as well. We investigate the friction dependencies to temperature, sliding speed, spring constant and timestep. Finally, we consider the mean friction of all three configurations when stretched. This includes an analysis of the dependence to contact area and the friction-load curves. 
-
-
-% Having defined our system, we carry out an initial study of the numerical approach. This includes an analysis of how to define and measure the frictional properties of interest, and an investigation of the main parameters governing the numerical solutions. From this point of view we decide on suitable parameters for the remaining study. Particually, we investigate the frictional behaviour under the variation of load and stretch for a selected set of configurations which serves as a baseline for later comparison and an assessment of the prospects of Kirigami modifications for friction. 
+Having defined our system, we carry out an initial study of the frictional properties. First, we evaluate the numerical results for a non-cut sheet in order to define suitable metrics for a numerical evaluation of friction and justify some of the default parameter choices. This provides a basis for the following study where we consider the Tetrahedron and Honeycomb Kirigami patterns as well. We conduct a more systematic investigation of the friction dependencies to temperature, sliding speed, spring constant and timestep. Finally, we consider the mean friction of all three configurations when stretched. This includes an analysis of the dependence to contact area and the friction-load curves. 
 
 
 \section{Friction simulation parameters}
 The \acrshort{MD} simulations we will carry out to measure friction are governed
-by a small set of parameters. For the purpose of creating a machine learning
-dataset, most of these parameters will be kept constant with only a small subset
-of parameters being varied: sheet configuration, strain and load. Since we are going to run many simulations we need to choose a standardized set of parameters. Instead of starting with the parameter selection process, we first state the final choice in \cref{tab:final_param}. Due to the great number of parameters, we did not make an exhaustive search before deciding on the final settings. Instead, we take a basis in parameters used in similar friction simulations
-\cite{li_evolving_2016, Yoon2015MolecularDS, liu_high-speed_2014,
-zhu_study_2018, ma12091425} and adjust accordingly to the aim of
-getting stable measurements and reducing computation time where possible. 
-Parameters such as initial relaxation time, pauses and strain speed are chosen mainly from the results of initial stability tests. The sheet and pull block sizes are chosen with a consideration to the balance between Kirigami design options and computational ressources. The scan direction is chosen to be parallel to the connection line between the pull blocks in order to avoid unessecary comeplexity in the motion. The remaining parameters: Temperature $T$, sliding speed $v_{\text{slide}}$, spring constant $K$, normal load $F_N$, timestep $dt$ and sliding distance have been chosen because key output variables remain relatively stable with moderate perturbations around these default values. We will explain this in more detail later in the chapter. Note that the default values in \cref{tab:final_param} will be used when nothing else is stated explicitly.
+by a small set of parameters. For the purpose of creating a machine learning we
+need to standardize these parameters. This we keep most of them constant with
+only a small subset of parameters being varied: sheet configuration, strain and
+load. Instead of starting with the parameter selection process, we first state
+the final choice in \cref{tab:final_param}. Due to the great number of
+parameters, we do not make an exhaustive search of all parameters before
+deciding on the final settings. Instead, we take a basis in parameters used in
+similar friction simulations \cite{li_evolving_2016, Yoon2015MolecularDS,
+liu_high-speed_2014, zhu_study_2018, ma12091425} and adjust accordingly to the
+aim of getting stable measurements and reducing computation time where possible.
+Parameters such as initial relaxation time, pauses and strain speed are chosen
+mainly from the results of initial stability tests. The sheet and pull block
+sizes are chosen with a consideration of the balance between Kirigami design
+options and computational resources. The scan direction is chosen to be parallel
+to the connection line between the pull blocks. This is mainly chosen in order
+to avoid unessecary complexity in the motion since it can be hypethesized that the
+center of the sheet can drag behind for other scan directions. The remaining
+parameters: Temperature $T$, sliding speed $v_{\text{slide}}$, spring constant
+$K$, normal load $F_N$, timestep $dt$ and sliding distance have been chosen
+because the friction output remains relatively stable with moderate
+perturbations around these default values. We will explain this in more detail
+later in the chapter. Note that the default values in \cref{tab:final_param}
+will be used when nothing else is stated explicitly.
 
-
-% Du bør kanskje i tillegg legge til en setning eller to om behovet for å standardisere parametrene når du skal gjøre mange simuleringer for å drive med maskinlæring.
-
-% of the relevant references, stability and computational ressources. 
-
-
-% Since we are going to
-% introduce a lot of complexity to the system, through the cut and stretch
-% deformation, we are less concerned about aligning parameters for comparison.
-% Instead of presenting the process of narrowing down the final parameters in a
-% chronological manner, wehave shown the final choice shown in \cref{tab:final_param}
-% which we will discuss throughout the following presentation of the pilot study.
-% Notice, that the values in \cref{tab:final_param} serves as default values which are
-% used when nothing else is stated.
-
-
-% in the parameters used in similar studies \hl{SOURCES} and adjust them as we
-% carry out the initial analysis of the simulation results. Thus, we start at
-% values most representative for other similar simulations and adjust according to
-% the stability of the results and the computation time. 
-
-
-
-% some which are related directly to the numerical
-% aspects of the simulation and other related to the physical conditions we are
-% simmulating. 
-
-
-% Thus, we differentiate between the two main categories: 1)
-% \textit{Physical}, parameters which alter the physical conditions of the
-% ``numerical experiment'' and are expected to effect the frictional behaviour. 2)
-% \textit{Numerical}, parameters which are related more closely to the numerical
-% procedure itself, expected to influence the simulation dynamics, which should be
-% chosen to ensure the most stable results. 
 
 \begin{table}[H]
   \begin{center}
-  \caption{Parameters of the numerical \acrshort{MD} simulation for measuring friction. The values correspond to the final choice used for the dataset. The shaded area denote the parameters varied in the \acrshort{ML} dataset.}
+  \caption{Parameters involved for the numerical \acrshort{MD} simulation for measuring friction. The default values correspond to the final choice used for the dataset. The shaded cells denote the parameters varied in the \acrshort{ML} dataset.}
   \label{tab:final_param}
   \begin{tabular}{ | C{4cm} | C{3.5cm} | X{6cm}|} \hline
     \textbf{Parameter} & \textbf{Default value} &  \textbf{Description} \\ \hline
     $T$ & \SI{300}{K} &  Temperature of the system. \\ \hline
     $v_{\text{slide}}$ &\SI{20}{m/s} & Sliding speed for the sheet translation. \\ \hline
-    $K$ & $\inf$ & Spring constant for the coupling between the virtuel atom and the sheet pull blocks. \\ \hline
+    $K$ & $\infty$ & Spring constant for the coupling between the virtuel atom and the sheet pull blocks. \\ \hline
     Scan direction & $(x,y) = (0,1)$ \mbox{(zigzag direction)}  & The direction for which we translate the sheet. \\ \hline   
     \cellcolor{black!7} Sheet configuration & \cellcolor{black!7} Contiguous & \cellcolor{black!7} Binary mapping describing which atoms are removed (0) and which is still present (1) in the graphene sheet.  \\ \hline
-    \cellcolor{black!7} Strain amount & \cellcolor{black!7} 0\% - rupture & \cellcolor{black!7} The ratio of change in length to the original length. \\ \hline
+    \cellcolor{black!7} Strain amount & \cellcolor{black!7} [0, rupture] & \cellcolor{black!7} The ratio of change in length to the original length. \\ \hline
     \cellcolor{black!7} $F_N$ & \cellcolor{black!7} [0.1, 10] nN & \cellcolor{black!7} Applied normal force to the pull blocks. \\ \hline
     $dt$ & \SI{1}{fs} &  \acrshort{MD} integration timestep. \\ \hline
     Initial relaxation time &  \SI{15}{ps} & Initial relaxation time before straining. \\ \hline
@@ -76,43 +55,7 @@ Parameters such as initial relaxation time, pauses and strain speed are chosen m
   \end{center}
 \end{table}
 
-% \begin{table}[H]
-%   \begin{center}
-%   \caption{Parameters of the numerical \acrshort{MD} simulation for measuring friction. The values correspond to the final choice used for the dataset. The shaded area denote the parameters varied in the \acrshort{ML} dataset.}
-%   \label{tab:final_param}
-%   \begin{tabular}{ | c | C{3cm} | C{3.5cm} | X{7cm}|} \hline
-%     Category & Parameter & Value &  Description \\ \hline
-%     \multirow{13}{*}{Physical} & $T$ & \SI{300}{K} &  Temperature. \\ \hhline{~|-|-|-|}
-%     & $v_{\text{slide}}$ &\SI{20}{m/s} & Sliding speed for the sheet translation. \\ \hhline{~|-|-|-|}
-%     & $K$ & $\inf$ & Spring constant for the coupling between the virtuel atom and the sheet pull blocks. \\ \hhline{~|-|-|-|}
-%     & Scan direction & $(x,y) = (0,1)$ \linebreak (zigzag direction)  & The direction for which we translate the sheet. \\ \hhline{~|-|-|-|}   
-%     & \cellcolor{black!7} Sheet configuration & \cellcolor{black!7} Contiguous & \cellcolor{black!7} Binary mapping describing which atoms are removed (0) and which is still present (1) in the graphene sheet.  \\ \hhline{~|-|-|-|}
-%     & \cellcolor{black!7} Stretch amount & \cellcolor{black!7} 0\% - rupture & \cellcolor{black!7} The relative stretch of the sheet. \\ \hhline{~|-|-|-|}
-%     & \cellcolor{black!7} $F_N$ & \cellcolor{black!7} [0.1, 10] nN & \cellcolor{black!7} Applied normal force to the pull blocks. \\ \hline
-%     \multirow{8}{*}{Numerical} & $dt$ & \SI{1}{fs} &  Integration timestep. \\ \hhline{~|-|-|-|}
-%     & $t_R$ &  \SI{15}{ps} & relaxation time before strething. \\ \hhline{~|-|-|-|}
-%     & Pauses & \SI{5}{ps} & relaxation pauses after stretch, and during the normal load phase (before translating the sheet). \\ \hhline{~|-|-|-|}
-%     & Stretch Speed & \SI{0.01}{ps^{-1}} & The rate of stretching for the sheet. \\ \hhline{~|-|-|-|}
-%     & Slide distance & \SI{400}{Å} & How far to translate the sheet. \\ \hhline{~|-|-|-|}
-%     & Sheet size & $130.029 \times \SI{163.219}{\text{Å}}$ & Spatial 2D size of the sheet.  \\ \hhline{~|-|-|-|}
-%     & Pull block size & $2 \times 130.029 \times \SI{15.183}{\text{Å}}$ & Spatial 2D size of the pull blocks. \\ \hline
-%   \end{tabular}
-%   \end{center}
-% \end{table}
-
-
-
-
-% Thus, by adjusting a few selected parameters one by one we arrived at a final choice as shown in \cref{tab:final_param}. 
-
-% We will present an analysis of the simulation results and its dependency of these selected variables in the following using the final choice as default values. Thus we should stress that the intention behind this choice is mainly to get a working simulation with stable results and not to optimize for any spefic properties yet. 
-
-% \hl{Say a bit more about the articles used to set a starting reference for these parameters.}
-
-% we proposed a set of parameters for which we investgated the dependencies of only selected ones. By adjusting the parameters according to the findings we landed on a final set as already shown in \cref{tab:final_param}
-
-
-% In the following we present the results of the friction simulations in parallel to the procedure of investigating the choice of different parameters. 
+%
 
 % We aim to chose the parameters in order to accomodate a balance between generlizable and stable result which is simmutaneously a suting candidate as a proof of concept for the control of friction properties using kirigami inspired cuts. 
 
@@ -175,43 +118,41 @@ no stretch applied and a normal load of $\SI{1}{nN}$.
 
 \subsection{Force oscillations}\label{sec:force_oscillations}
 We evaluate the friction force as the force acting on the sheet from the
-substrate. We consider initially the force componenet $F_{\parallel}$ parallel
+substrate. We consider initially the force component $F_{\parallel}$ parallel
 to the drag direction as plotted in \cref{fig:drag_Ff}. We use a sample rate of
 10 ps$^{-1}$ = 100 timesteps$^{-1}$ for which each sample is the mean value of
-the preceding 100 timesteps. We observe immediately that the data carriers
-oscillations on different time scales matching our general expectations for
-sliding involving periodic surfaces. By applying a savgol filter to the data
-with a polyorder of 5 and window length of 150 timesteps (corresponding to a
+the preceding 100 timesteps. We observe immediately that the data carries oscillations on different time scales which match our general expectations for
+sliding involving periodic surfaces. By applying a Savgol filter to the data
+with a polynomial order of 5 and a window length of 150 timesteps (corresponding to a
 sliding distance of 3 Å or a time window of 15 ps) we can qualitatively point
-out at least two different frequencies of osccilation. During the first 10 Å of
-sliding, seen in \cref{fig:drag_Ff_10}, we see roughly three waves on the savgol
-filter corresponding to a relative high frequency, while for the duraction of
-100 Å of sliding, seen in \cref{fig:drag_Ff_100}, the same savgol filter reveals
+out at least two different frequencies of oscillation. During the first 10 Å of
+sliding, seen in \cref{fig:drag_Ff_10}, we see roughly three waves on the Savgol
+filter corresponding to a relatively high frequency, while for the duration of
+100 Å of sliding, seen in \cref{fig:drag_Ff_100}, the same Savgol filter reveals
 a lower frequency on top, creating the visual pattern of a wavepacket. The data
-does not indicate clear signs of stick-slip behaviour as otherwise found in
+does not indicate clear signs of stick-slip behavior as otherwise found in
 other studies, e.g.\ by Zhu and Li \cite{zhu_study_2018} for graphene on gold,
-who saw a more typical saw tooth shape in the force trace. Beside the difference
-in substrate material, using gold instead of silicon, they used a lower sliding
-speed of \SI{10}{m/s} and a soft spring of $K = \SI{10}{N/m}$. By adopting those
-parameters we get a slightly different force trace behaviour as shown in
+who saw a more typical saw tooth shape in the force trace. Besides the difference
+in the substrate material, using gold instead of silicon, they used a lower sliding
+speed of \SI{10}{m/s} and a soft spring of $K = \SI{10}{N/m}$. By adopting these
+parameters we get a slightly different force trace behavior as shown in
 \cref{fig:drag_Ff_10_K10_v10} and \cref{fig:drag_Ff_100_K10_v10}. This change
-breaks the symmetry in the force oscillations, but still does not produce any
+breaks the symmetry in the force oscillations but still does not produce any
 significant discontinuities in the trace. By keeping the spring constant $K =
 \SI{10}{N/m}$ and lowering the sliding speed further down to \SI{1}{m/s} we are
-able to demonstrate a proper stick-slip behaviour as shown in
+able to demonstrate a proper stick-slip behavior as shown in
 \cref{fig:drag_Ff_10_K10_v1} and \cref{fig:drag_Ff_100_K10_v1}. Considering all
 three simulations we might classify the results from the default settings, $K =
 \inf, v = \SI{20}{m/s}$, as smooth sliding,  $K = \SI{10}{N/m}, v =
-\SI{10}{m/s}$, as a transistion phase with possible occasional slipping, and $K
-= \SI{10}{N/m}, v = \SI{1}{m/s}$ as certain stick-slip behaviour.
+\SI{10}{m/s}$, as a transition phase with possible occasional slipping, and $K
+= \SI{10}{N/m}, v = \SI{1}{m/s}$ as certain stick-slip behaviour. This confirms the qualitative observation the stick-slip behavior is suppressed with stiff springs~\cite{bonelli_atomistic_2009} springs and high sliding velocity~\cite{liu_high-speed_2014}. Having a low sliding speed comes with a high computational cost which is the reason that we choose a relatively high sliding speed of \SI{20}{m/s}. The choice of an infinite spring constant is related to the stability of the measurements and is discussed later in this chapter \hl{make sure it is, maybe make a reference}.
 
-\hl{Refer a bit to theory on this one}
 
-%  This result agrees with ... that the stick-slip
-% behaviour is suppresed for high sliding speed and stiff springs. 
-
-However, the low sliding speed comes with a high computational cost which is the reason that we choose a sliding speed of \SI{20}{m/s}. The choise of an infinite spring constant is related to the stability of the measurements as discussed later \hl{make reference}.
-
+%
+%
+% Working here
+%
+%
 
 \begin{figure}[H]
   \centering
@@ -257,7 +198,7 @@ However, the low sliding speed comes with a high computational cost which is the
       \label{fig:drag_Ff_100_K10_v1}
   \end{subfigure}
   \hfill
-     \caption{Force traces of the friction force $F_\parallel$ with respect to the drag direction between acting from the substrate on the full sheet and substrate. The force traces is plotted against the sliding distance (lower x-axis) and thr corresponding sliding time (upper x-axis). The sliding distance is measured by displacement of the virtual atom tethering the sheet. The red line represents a savgol filter with window polyorder 5 and window length of 150 timesteps (corresponding to a sliding distance of 3 Å or a time window of 15 ps). Each row, (a,b), (c,d), (e,f), represents a different choice of the spring constant $K$ and sliding speed $v$, while the columns show the same result for two different time scales. The default settings are represented in figure (a) and (b).}
+     \caption{Force traces of the friction force $F_\parallel$ with respect to the drag direction between acting from the substrate on the full sheet and substrate. The force traces is plotted against the sliding distance (lower x-axis) and thr corresponding sliding time (upper x-axis). The sliding distance is measured by displacement of the virtual atom tethering the sheet. The red line represents a Savgol filter with window polynomial order 5 and window length of 150 timesteps (corresponding to a sliding distance of 3 Å or a time window of 15 ps). Each row, (a,b), (c,d), (e,f), represents a different choice of the spring constant $K$ and sliding speed $v$, while the columns show the same result for two different time scales. The default settings are represented in figure (a) and (b).}
      \label{fig:drag_Ff}
 \end{figure}
 
@@ -347,7 +288,7 @@ we are then neglecting the ``side shift'' induced during sliding. In \cref{fig:d
       \caption{}
       \label{fig:decomp_direc}
   \end{subfigure}
-  \caption{Friction force decomposition on the default parameter force trace shown in \cref{fig:drag_Ff} showing only the applied savgol filters. (a) Decomposition into group inner sheet (sheet) and pull blocks (PB). (b) Decomposition into parallel ($F_{\parallel}$) and perpendicular ($F_{\perp})$ to drag sliding direction.}
+  \caption{Friction force decomposition on the default parameter force trace shown in \cref{fig:drag_Ff} showing only the applied Savgol filters. (a) Decomposition into group inner sheet (sheet) and pull blocks (PB). (b) Decomposition into parallel ($F_{\parallel}$) and perpendicular ($F_{\perp})$ to drag sliding direction.}
   \label{fig:decomp}
 \end{figure}
 
