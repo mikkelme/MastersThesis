@@ -64,20 +64,20 @@ increased. This is shown in \cref{fig:multi_stretch}.  This led us to the conclu
 With the use of \acrshort{MD} simulations, we have generated an extended dataset
 of 9660 data points based on 216 Kirigami configurations (Tetrahedron: 68,
 Honeycomb: 45, Random walk: 100, Pilot study: 3) under various strains and normal loads. The dataset reveals some general correlations with mean friction,
-such as a positive correlation, strain (0.77)
+such as a positive correlation to strain (0.77)
 and porosity (0.60), and a negative correlation to contact area (-0.67). These
 results align with the findings from the pilot study suggesting that these
-features are involved, but not necessarily the cause, in the observed phenomena.
+features are relevant, but not necessarily the cause, of the observed phenomena.
 By defining the friction property metrics: $\min F_{\text{fric}}$,  $\max
-F_{\text{fric}}$, $\max \Delta f_{\text{fric}}$ and max drop, we investigated
-the top candidates within our dataset. From the results we find no incentive of the possibility to reduce friction using Kirigami design under strain since
+F_{\text{fric}}$, $\max \Delta F_{\text{fric}}$ and max drop (maximum decrease in friciton with strain), we investigated
+the top candidates within our dataset. From these results, we found no incentive of the possibility to reduce friction with the Kirigami approach since
 the non-cut sheet provided the lowest overall friction. Regarding the maximum
 properties, we found an improvement from the original pilot study values and
-with the Honeycomb pattern producing the highest scores. This suggest that the data contains some relevant information for an optimization with respect to
+with the Honeycomb pattern producing the highest scores. This suggests that the data contains some relevant information for optimization with respect to
 these properties. Among the top candidates, we found that a flat friction-strain profile is mainly associated with little decrease in the
 contact area and vice versa. 
 
-For the machine learning approach, we implemented a VGGNet-16-inspired
+For the machine learning investigation, we have implemented a VGGNet-16-inspired
 convolutional neural network with a deep ``stairlike'' architecture:
 C32-C64-C128-C256-C512-C1024-D1024-D512-D256-D128-D64-D32, for convolutional
 layers $C$ with the number denoting channels and fully connected (dense) layers
@@ -89,26 +89,15 @@ score of $\sim 98\%$ and a rupture accuracy of $\sim 96 \%$. However, we got
 lower scores for a selected subset of the Tetrahedon ($R^2 \sim 88.7 \%$) and
 Honeycomb ($R^2 \sim 96.6$) pattern based on the top 10 max drop scores
 respectively. These scores were lower despite the fact that the selected set was
-partly included in the training data and that the hyperparameter selection
-favored the performance on this selected set. Thus we conclude that these
+partly included in the training data as well and the fact that the hyperparameter selection favored the performance on this selected set. Thus we conclude that these
 selected configurations, associated with a highly non-linear friction-strain
-curve, are more challenging to predict. One interpretation is that these involve
+curve, represent a bigger challennge for machine learning prediction. One interpretation is that these involve
 the most complex dynamics and perhaps that this is not readily distinguished
-from the behavior of the other configurations within the data. By evaluating the
-ability of the model to rank the dataset according to the property scores we
-found in general a good representation of the top 3 scores for the maximum
-categories, while the minimum friction property ranking was lacking. We
-attribute this latter observation to a higher need for precision in order to
-rank the lowest friction values properly which the model does not possess.
+from the behavior of the other configurations which constitutes the majoriry of the data set. By evaluating the ability for the model to rank the dataset according to the property scores we found in general a good representation of the top 3 scores for the maximum categories, while the minimum friction property ranking was lacking. We attribute this latter observation to a higher need for precision in order to rank the lowest friction values properly which the model did not possess.
 
-We created the test set based on \acrshort{MD} simulations for the top 5 candidates
-for each property of interest for the Random walk pattern search. This showed a significantly worse performance than seen for the validation set with a
-two-order of magnitude higher loss and a negative friction mean $R^2$ score
+In order provide a more true evaluation of the model performance we created a test set based on \acrshort{MD} simulations for an extended Random walk search. This test revealed a significantly worse performance than seen for the validation set with a two-order of magnitude higher loss and a negative friction mean $R^2$ score
 which corresponds to the prediction being worse than simply guessing on a
-constant value based on the true data mean. However, by going back to the
-beginning of the architecture complexity hypertuning and choosing the model
-purely based on the lowest validation score we get similar results. This
-indicates that it is not simply a product of a biased hypertuning process which was based on the selected set (which overlapped with the training data). Instead, it points to the fact that our original dataset did not cover a wide enough configuration distribution to accurately capture the full physical complexity of the Kirigami friction behavior.  
+constant value based on the true data mean. However, by considering one of the early hypertuning choices, regarding architecture complexity, we evaluated the model when prioritizing mainly for the lowest validation loss. This gave similar performance on the test set which indicates that it is not simply a product of a biased hypertuning process, since we based our choices on the selected confgiruation set (which overlapped with the training data). Instead, it points to the fact that our original dataset did not cover a wide enough configuration distribution to accurately capture the full physical complexity of the Kirigami friction behavior.  
 
 
 % 5: Accelerated search
@@ -118,19 +107,28 @@ by evaluating the property scores of an extended dataset and another with the
 use of the genetic algorithm approach. For the extended dataset search we used
 the developed pattern generators to generate $\SI{135}{k} \times 10$
 Tetrahedon, $\SI{2025}{k} \times 10$ Honeycomb and \SI{10}{k} Random walk
-patterns. For the minimum friction property, the search suggests a favoring of
+patterns. For the minimum friction property, the search suggests a favoring of a
 low cut density (low porosity) which aligns with the overall idea that the
 dataset does not provide an incentive for further friction reduction. The
 maximum properties resulted in some minor score increases but the suggested
-candidates was overlapping with the original dataset. By investigating the
-sensitivity to translation of the Tetrahedron and Honeycomb patterns we found
-this to be of great importance for the model prediction. This can be attributed
-to a physical relationship since the edge of the sheet is effected by this
-translatio. However, due to a poor model performance on the random walk based
-test set we find it more likely to be an insufficient description of the system
-through a lacking dataset. 
+candidates were overlapping with the original dataset. By investigating the
+sensitivity to translation of the Tetrahedron and Honeycomb patterns we found that the model predictions varied drastically with pattern translation. This can be attributed to a physical dependency since the edge of the sheet is effected by this
+translation. However, due to the poor model performance on the test set, we find it more likely to be a model insufficienty arising from a lacking training dataset. 
 
-The genetic algorithm search did not provide any noteworthy incentive of new design structures worth more investigation. In general the initialization of the population resulted in more score improvements than then actual search itself. This is highly effected by the uncertainty of the model predicitons outside the orignal data domain, and thus we did not pursue this any further. By considering the Grad-CAM explanation method we found that the model predictions sometimes seem to pay considerable attention to the top and bottom edge of the configurations. This is surprising since these are not true edges but are connected to the pull blocks in the simulation. This might be attributed to thermostat effects from the pull blocks and thus we note this as a feature worth more studying. 
+For the genetic algorithm approach, we investigated the optimization for the max
+drop property with respect to starting population based on the result from the
+extended dataset accelerated search, and some random noise initializations with
+different porosity values. This approach did not provide any noteworthy
+incentive for new design structures worth more investigation. In general, the
+initialization of the population itself proved to be a more promising strategy
+tha the genetic algroithm. However, this is highly affected by the uncertainty
+of the model predictions, and thus we did not pursue this any further. By
+considering the Grad-CAM explanation method we found that the model predictions
+sometimes seem to pay considerable attention to the top and bottom edge of the
+configurations. This is surprising since these are not true edges but are
+connected to the pull blocks in the simulation. Despite the uncertainties in the
+predictions, we argue that this might be attributed to thermostat effects from
+the pull blocks and thus we note this as a feature worth more studying. 
 
 
 
