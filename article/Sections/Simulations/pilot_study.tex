@@ -119,12 +119,11 @@ no stretch applied and a normal load of $\SI{1}{nN}$.
 \subsection{Force oscillations}\label{sec:force_oscillations}
 We evaluate the friction force as the force acting on the sheet from the
 substrate. We consider initially the force component $F_{\parallel}$ parallel
-to the drag direction as plotted in \cref{fig:drag_Ff}. We use a sample rate of
-10 ps$^{-1}$ = 100 timesteps$^{-1}$ for which each sample is the mean value of
+to the drag direction as plotted in \cref{fig:drag_Ff}. We use a sample rate of \mbox{$\SI{10}{ps^{-1}} = \SI{100}{timesteps^{-1}}$} for which each sample is the mean value of
 the preceding 100 timesteps. We observe immediately that the data carries oscillations on different time scales which match our general expectations for
 sliding involving periodic surfaces. By applying a Savgol filter to the data
 with a polynomial order of 5 and a window length of 150 timesteps (corresponding to a
-sliding distance of 3 Å or a time window of 15 ps) we can qualitatively point
+sliding distance of \SI{3}{Å} or a time window of \SI{15}{ps}) we can qualitatively point
 out at least two different frequencies of oscillation. During the first 10 Å of
 sliding, seen in \cref{fig:drag_Ff_10}, we see roughly three waves on the Savgol
 filter corresponding to a relatively high frequency, while for the duration of
@@ -147,12 +146,6 @@ three simulations we might classify the results from the default settings, $K =
 \SI{10}{m/s}$, as a transition phase with possible occasional slipping, and $K
 = \SI{10}{N/m}, v = \SI{1}{m/s}$ as certain stick-slip behaviour. This confirms the qualitative observation the stick-slip behavior is suppressed with stiff springs~\cite{bonelli_atomistic_2009} springs and high sliding velocity~\cite{liu_high-speed_2014}. Having a low sliding speed comes with a high computational cost which is the reason that we choose a relatively high sliding speed of \SI{20}{m/s}. The choice of an infinite spring constant is related to the stability of the measurements and is discussed later in this chapter \hl{make sure it is, maybe make a reference}.
 
-
-%
-%
-% Working here
-%
-%
 
 \begin{figure}[H]
   \centering
@@ -198,11 +191,11 @@ three simulations we might classify the results from the default settings, $K =
       \label{fig:drag_Ff_100_K10_v1}
   \end{subfigure}
   \hfill
-     \caption{Force traces of the friction force $F_\parallel$ with respect to the drag direction between acting from the substrate on the full sheet and substrate. The force traces is plotted against the sliding distance (lower x-axis) and thr corresponding sliding time (upper x-axis). The sliding distance is measured by displacement of the virtual atom tethering the sheet. The red line represents a Savgol filter with window polynomial order 5 and window length of 150 timesteps (corresponding to a sliding distance of 3 Å or a time window of 15 ps). Each row, (a,b), (c,d), (e,f), represents a different choice of the spring constant $K$ and sliding speed $v$, while the columns show the same result for two different time scales. The default settings are represented in figure (a) and (b).}
+     \caption{Force traces of the friction force $F_\parallel$ with respect to the drag direction acting from the substrate on the full sheet. The force traces are plotted against the sliding distance (lower x-axis) and the corresponding sliding time (upper x-axis). The sliding distance is measured by the displacement of the virtual atom tethering the sheet. The red line represents a Savgol filter with polynomial order 5 and a window length of 150 timesteps (corresponding to a sliding distance of \SI{3}{Å} or a time window of \SI{15}{ps}). Each row, (a,b), (c,d), (e,f), represents a different choice of the spring constant $K$ and sliding speed $v$, while the columns show the same result for two different time scales. The default settings are represented in figure (a) and (b).}
      \label{fig:drag_Ff}
 \end{figure}
 
-By performing a Fourier Transform on the data, using the default parameters, we can quantify the leading frequencies observed in figure \cref{fig:drag_Ff_10} and \cref{fig:drag_Ff_100}. The Fourier transform is shown in \cref{fig:ft_a}, and by plotting the two most dominant frequencies $f_1 = 0.0074$ ps$^{-1}$ and $f_2 = 0.0079$ ps$^{-1}$ as a sine sum, $\sin{(2\pi f_1)} + \sin{(2\pi f_2)}$, we find a qualitatively convincing fit to the observed wavepacket shape as seen in \cref{fig:ft_b}. We can convert the frequencies according to that of a wavepacket. By using the trigonometric identity
+By performing a Fourier Transform on the data, using the default parameters, we can quantify the leading frequencies observed in figure \cref{fig:drag_Ff_10} and \cref{fig:drag_Ff_100}. The Fourier transform is shown in \cref{fig:ft_a}, and by plotting the two most dominant frequencies $f_1 = \SI{0.0074}{ps^{-1}}$ and $f_2 = \SI{0.0079}{ps^{-1}}$ as a sine sum, $\sin{(2\pi f_1)} + \sin{(2\pi f_2)}$, we find a qualitatively convincing fit to the observed wavepacket shape as seen in \cref{fig:ft_b}. We can convert the frequencies according to that of a wavepacket. By using the trigonometric identity
 \begin{align*}
 \sin (a+b) &= \sin (a) \cos (b) + \cos (a) \sin (b), \\
 \sin (a-b) &= \sin (a) \cos (b) - \cos (a) \sin (b),
@@ -220,16 +213,15 @@ with
   &= 0.381 \pm \SI{0.003}{{\text{Å}}^{-1}},& 
   &= 0.014 \pm \SI{0.003}{{\text{Å}}^{-1}}.& 
 \end{align*}
-In the latter transition we have denoted the frequency with respect to the sliding distance by considering the default sliding speed of $\SI{20}{m/s} = \SI{0.2}{\text{Å}/ps}$. This
-makes us recognize the high osccilation frequency as $a$ and the low frequency
+In the latter transition, we have denoted the frequency with respect to the sliding distance by considering the default sliding speed of $\SI{20}{m/s} = \SI{0.2}{\text{Å}/ps}$. This makes us recognize the high oscillation frequency as $a$ and the low frequency
 as $b$. The faster one has a period of $T_a = 2.62 \pm \SI{0.02}{\text{Å}}$ \footnote{The
 uncertainty $\Delta y$ is calculated as $\Delta y = \left|\frac{\partial
 y}{\partial x} \Delta x \right|$ for uncertainty $\Delta x$ and $y(x)$} which
-corresponds well with the magnitude of the lattice spacing and especialy that of
-graphene at 2.46 Å as expected theoretically. The longer period $T_b = 71 \pm
-\SI{15}{\text{Å}}$ is not obviously explained. We noticed a similar long period osciallation for all three cases, \cref{fig:drag_Ff_100}, \cref{fig:drag_Ff_100_K10_v10} and \cref{fig:drag_Ff_100_K10_v1}, regarding stick-slip behaviour, and thus we not believe that this is directly related. The initial build up in friction force is reminiscent of a friction strengthening, which is often reported \hl{SOURCE}, but the periodicity goes against this idea. Instead, we might attribute it to some kind of phonon
-resosnance which could be a physical phenonama or simply a feature of our
-\acrshort{MD} modelling. 
+corresponds well with the magnitude of the lattice spacing and especially that of
+graphene at \SI{2.46}{Å} as expected theoretically. The longer period $T_b = 71 \pm
+\SI{15}{\text{Å}}$ is not obviously explained. We notice a similarly long period oscillation for all three cases \cref{fig:drag_Ff_100}, \cref{fig:drag_Ff_100_K10_v10} and \cref{fig:drag_Ff_100_K10_v1}, and thus we have no reason to believe that this is dependent on the stick-slip behavior. The initial build-up in friction force is reminiscent of friction strengthening, which is often reported~\cite{zhang_tuning_2019, li_evolving_2016}, but the periodicity goes against this idea. Instead, we might attribute it to some phonon
+resonance which could be a physical phenomenon or simply a feature of our
+\acrshort{MD} modeling. 
 
 \begin{figure}[H]
   \centering
@@ -252,26 +244,24 @@ resosnance which could be a physical phenonama or simply a feature of our
 
 
 \subsection{Decompositions}
-In the previous analysis we have looked only at the friction force for the full
-sheet, including the rigid pull blocks, and with
-respect to the drag direction. We found this way of measuring the friction force to be the most intuitive and reliable, but we will present the underlying arguments for this choice in the following.
+In the previous analysis, we looked only at the friction force for the full
+sheet, including the rigid pull blocks, and with respect to the drag direction. We found this way of measuring the friction force to be the most intuitive and reliable, but we will present the underlying arguments for this choice in the following.
 
-Due to the fact that we are only applying cuts to the inner sheet, and not the
-pull blocks, it might seem more natural to only consider the friction on that
-part. If the desired frictional properties can be achieved by altering the inner
+Since we are only applying cuts to the inner sheet, and not the
+pull blocks, it might appear more natural to only consider the friction inner sheet. If the desired frictional properties can be achieved by altering the inner
 sheet one can argue that any opposing effects from the pull blocks can be
 mitigated by simply scaling the relative size between the inner sheet and the pull
 blocks. However, when looking at the force traces decomposed with respect to the
-inner sheet and pull block regions respectivly, see \cref{fig:decomp_group}, we
-observe that the friction force arrising from those parts are seemingly
-antisymmetric. That is, the distribution of the fricitonal pull from the
+inner sheet and pull block regions respectively in~\cref{fig:decomp_group}, we
+observe that the friction force arising from those parts is seemingly
+antisymmetric. That is, the distribution of the frictional pull from the
 substrate on the sheet is oscillating between the inner sheet and the pull
-block. Keeping in mind that normal force is only applied to the pull blocks we
-might take this as an intrinsic feature of the system which does not nessecary dissapear by scaling of the spatial ratio between the inner sheet and pull block. Any interesting friciton properties might depend on this internal distribution of forces. Hence, we hedge our bets and use the full sheet friction force as a hollistic approach to avoid excluding relevant information in the measurement data.
+blocks. Keeping in mind that normal force is only applied to the pull blocks we
+might take this as an intrinsic feature of the system that does not necessarily disappear with a scaling of the spatial ratio between the inner sheet and pull blocks. Any interesting friction properties might depend on this internal distribution of forces. Hence, we hedge our bets and use the full sheet friction force as a holistic approach to avoid excluding relevant information in the measurement data.
 
-Similar we might question the decision of
+Similarly, we might question the decision of
 only considering the frictional force projected onto the sliding direction as
-we are then neglecting the ``side shift'' induced during sliding. In \cref{fig:decomp_direc} we show the decomposition in terms of force components parallel $F_{\parallel}$ and perpendicular $F_{\perp}$ to the sliding direction respectively. We notice that the most dominant trend appears for the parallel component. If we want to include the perpendicular component as well we would have to evaluate friction as the length of the force vector instead, but this would remove the sign of the force direction and shift the mean friction force up as we clearly see both negative and positive contributions in the parallel force trace. One option to accommodate this issue is by using the vector length for the magnitude but keeping the sign from the parallel component. However, we omit such compromises as this might make the measurement interpretation unessercary complex, and we use only the parallel component going forward. 
+we are then neglecting the ``side shift'' induced during sliding. In~\cref{fig:decomp_direc} we show the decomposition in terms of the force components parallel $F_{\parallel}$ and perpendicular $F_{\perp}$ to the sliding direction respectively. We notice that the most dominant trend appears for the parallel component. If we want to include the perpendicular component as well we would have to evaluate friction as the length of the force vector instead. However, this would remove the sign of the force direction and shift the mean friction force up as we see both negative and positive contributions in the parallel force trace. One option to accommodate this issue is by using the vector length for the magnitude but keeping the sign from the parallel component. However, we omit such compromises as this might make the measurement interpretation unessercary complex, and we use only the parallel component going forward. 
 
 \begin{figure}[H]
   \centering
@@ -294,35 +284,21 @@ we are then neglecting the ``side shift'' induced during sliding. In \cref{fig:d
 
 
 \subsection{Center of mass path}
-From the previous observations of the force traces \cref{fig:drag_Ff} we
-demonstarted both smooth sliding and stick-slip behaviour. Considering the force
-decomposition in \cref{fig:decomp_direc} we know that the frictional forces in
+From the previous observations of the force traces in~\cref{fig:drag_Ff} we found both smooth sliding and stick-slip behavior depending on the sliding speed and spring constant. Considering the force
+decomposition in~\cref{fig:decomp_direc} we know that a frictional force in
 the perpendicular direction to sliding is also present. By looking at the
-$x,y$-position for the sheet Center of Mass (\acrshort{CM}) we see a qualitative
-different behaviour when reconsidering the spring constant and sliding speed
-investigated in \cref{fig:drag_Ff} which is shown in \cref{fig:CM_path}. The
-default case in \cref{fig:CM_path_def} shows a rather straight path forward with
-only a small side motion in comparison to the cases in
-\cref{fig:CM_path_K10_v10} and \cref{fig:CM_path_K10_v1}. However, the
-\acrshort{CM} accelerates and deaccelerates with a high frequency, much to high
-to be associated with the lattice spaing on the order of 2.46 Å (interatomic
-distance of 1.42 Å). One possible explanation is that the sheet and substrate
-constitues an incommensurable contact for which travelling kink excitations make
-the atoms move in such a way that the sheet \acrshort{CM} is incremented in
-small ``burst''. When looking at the $K = \SI{10}{\frac{N}{m}}$, $v =
-\SI{10}{\frac{m}{s}}$ case in \cref{fig:CM_path_K10_v10} we see a completely
-different \acrshort{CM} path where the rapid parts alligns visually better with
-the force oscialltiosn shown earlier in \cref{fig:drag_Ff_100_K10_v10}. The
-\acrshort{CM} accelerates forward and the deaccelerates in combination with a
-side motion that lead to the \acrshort{CM} path making a loop as it slows down.
-Finally we have the $K = \SI{10}{\frac{N}{m}}$, $v = \SI{10}{\frac{m}{s}}$ in
-\cref{fig:CM_path_K10_v10} which is confirmed to have stick-slip behaviour in
-\cref{fig:drag_Ff_100_K10_v1}. Here the \acrshort{CM} path shows a more chaotic
-movement between acceleration which also alligns visually well with the timing
-of the slips seen in \cref{fig:drag_Ff_100_K10_v1}. The chaotic motion is not
-obviously connected to the stick-slip motion, but we ommit a further
-investigation as this is not corresponding to the parameters that we will be
-using. 
+$x,y$-position for the sheet Center of Mass (\acrshort{CM}) we find a qualitatively different behavior when reconsidering the spring constants and sliding speeds investigated in~\cref{fig:drag_Ff}. These results are shown in~\cref{fig:CM_path}. The default case in~\cref{fig:CM_path_def} shows a rather straight path forward with
+only a small side motion in comparison to the cases in~\cref{fig:CM_path_K10_v10} and~\cref{fig:CM_path_K10_v1}. However, the \acrshort{CM} accelerates and deaccelerates with a high frequency, much too high
+to be associated with the lattice spacing on the order of \SI{2.46}{Å}. One possible explanation is that the sheet and substrate
+constitute an incommensurable contact for which traveling kink excitations make
+the atoms move in such a way that the sheet \acrshort{CM} is incremented in small ``burst''. When looking at the $K = \SI{10}{\frac{N}{m}}$, $v =
+\SI{10}{\frac{m}{s}}$ case in~\cref{fig:CM_path_K10_v10} we see a completely
+different \acrshort{CM} path where the rapid movements aligns visually better with
+the force oscillations shown earlier in \cref{fig:drag_Ff_100_K10_v10}. The
+\acrshort{CM} accelerates forward and then deaccelerates in combination with a
+side motion that leads to the \acrshort{CM} path making a loop as it slows down.
+Finally we have the $K = \SI{10}{\frac{N}{m}}$, $v = \SI{10}{\frac{m}{s}}$ in~\cref{fig:CM_path_K10_v10} which is confirmed to have stick-slip behavior in~\cref{fig:drag_Ff_100_K10_v1}. Here the \acrshort{CM} path shows a more chaotic
+movement between acceleration, but with the rapid parts aligning  which also visually well with the timing of the slips seen in \cref{fig:drag_Ff_100_K10_v1}. The chaotic motion is not connected to the stick-slip motion, but we might associate it with the thermal contributions being dominant in this regime. 
 
 
 \begin{figure}[H]
@@ -352,27 +328,35 @@ using.
 
 
 \section{Defining metrics for friction}\label{sec:fric_metrics}
-
-In order to evaluate the frictional properties of the sheet we aim to reduce the force trace results, adressed in section \cref{sec:single_analysis}, into single metrics describing the kinetic and static friciton resepctively. 
+In order to evaluate the frictional properties of the sheet we aim to reduce the force trace results, addressed in section~\cref{sec:single_analysis}, into single metrics describing the kinetic and static friction respectively. 
 
 \subsection{Kinetic friction}
 We measure kinetic friction as the mean of the friction force trace. More
-precisly, we take the mean value of the last half of the dataset in order to
+precisely, we take the mean value of the last half of the dataset in order to
 ensure that we are sampling from a stable system. For a full sliding simulation
-of 400 Å we thus base our mean value on the last 200 Å (1000 ps) of sliding.
-In \cref{fig:runmean} we have shown the force trace for the first 10 Å of
-sliding together with a 50\% running mean window. The choice of such a short sliding distance is merely to illustrate the samplig procedure,
-and we see that the final mean estimate (marked
-with a dot) takes a negative value due to the specific cut-off of the few
-oscialltion captured here. Nonetheless, one approach to quanity the uncertainy
-of the final mean estimate is to consider the variation of the running mean
-preceeding the final mean value. The more the running mean fluctuates the more
-uncertainty associated with the final estimate. Only the running mean
-``close'' to the ending should be considered, since the first part will rely on
-data from the beginning of the simulation. From the Fourier analyse in section \cref{sec:force_oscillations} we found the longest significant oscillation period to be $\sim \SI{71}{\text{Å}}$. Hence, we find it reasonable to use the standard deviation (\acrshort{std}) for the last $\sim \SI{71}{\text{Å}}$ of the running mean window to evaluate the fluctuations. When including the full sliding length this corresponds to the last $\sim 35 \%$ of the running mean window. We consider the \acrshort{std} as an estimate of the absolute error and calculate the relative error by a division of the final mean value. In \cref{fig:runstd} we showcase a
-running relative error based on the \acrshort{std}, with a window of length
-$35 \%$ the mean window, in a continuation of the illustrative case of a 10 Å
-sliding from \cref{fig:runmean}. In this case we get an extremely high relative error of $\sim 257\%$, but this is desirable since the sampling period leads to an unphysical negative value which should be associated with a high uncertainty. 
+of \SI{400}{\text{Å}} our mean value will be founded on the last \SI{200}{\text{Å}}
+(\SI{1000}{ps}) of sliding. In~\cref{fig:runmean} we have shown the force trace
+for the first \SI{10}{\text{Å}} of sliding together with a 50\% running mean window.
+The choice of such a short sliding distance is merely to illustrate the sampling
+procedure, and we see that the final mean estimate (marked with a dot) takes a
+negative value due to the specific cut-off of the few oscillations captured
+here. Nonetheless, one approach to quantify the uncertainty of the final mean
+estimate is to consider the variation of the running mean preceding the final
+mean value. The more the running mean fluctuates the more uncertainty associated
+with the final estimate. Only the running mean ``close'' to the ending should be
+considered, since the first part will rely on data from the beginning of the
+simulation. From the Fourier analyze in section~\cref{sec:force_oscillations} we
+found the longest significant oscillation period to be $\sim \SI{71}{\text{Å}}$.
+Hence, we find it reasonable to use the standard deviation (\acrshort{std}) for
+the last $\sim \SI{71}{\text{Å}}$ of the running mean window to evaluate the
+fluctuations. When including the full sliding length this corresponds to the
+last $\sim 35 \%$ of the running mean window. We consider the \acrshort{std} as
+an estimate of the absolute error and calculate the relative error by a division
+of the final mean value. In~\cref{fig:runstd} we showcase a running relative
+error based on the \acrshort{std}, with a window of length 35\% the mean window,
+in a continuation of the illustrative case of a \SI{10}{\text{Å}} sliding
+from~\cref{fig:runmean}. In this case, we get an extremely high relative error of
+$\sim 257\%$, but this is consistent with the fact that the short sampling period leads to an unphysical negative value which should be associated with high uncertainty. 
 
 \begin{figure}[H]
   \centering
@@ -389,11 +373,11 @@ sliding from \cref{fig:runmean}. In this case we get an extremely high relative 
       \caption{Running std with window length $\SI{1.75}{\text{Å}}$ (35\% the mean window length.)}
       \label{fig:runstd}
   \end{subfigure}
-  \caption{Running mean (a) and running relative error (std) (b) on the friction force data from a reduced sliding distance of \SI{10}{{\text{Å}}}. The running mean window is 50\% the data length while the running std window is 35\% the running mean window length. The values are plotted at the end of their respective windows such that windoe precredes the actual point on the graph.}
+  \caption{Running mean (a) and running relative error (std) (b) on the friction force data from a reduced sliding distance of \SI{10}{{\text{Å}}}. The running mean window is 50\% the data length while the running std window is 35\% the running mean window length. The values are plotted at the end of their respective windows such that windowprecedess the actual point on the graph.}
   \label{fig:running}
 \end{figure}
 
-When including the full dataset of 400 Å of sliding, such that the \acrshort{std} window actually matches with the longest period of oscillations expected, we get a final relative error of $\sim 12 \%$ as shown in fig \cref{fig:runstd_long}. This is arguable just at the limit of an acceptable error, but as we shall see later on in \cref{sec:load_and_stretch} this high relative error is mainly associated with the cases of low friction. When investigating different configurations under variation of load and stretch we see a considerable lower relative error as the mean friction evaluates to higher values. One interpration of this finding is simply that the oscillations in the running mean are to some degree independent of the magnitude of the friction. In that case, the relative error will spike for the low friction cases, and the absolute error might be there more reliable measure, i.e.\ taken simple the \acrshort{std} without dividing by the final mean value.
+When including the full dataset of \SI{400}{\text{Å}} of sliding, such that the \acrshort{std} window actually matches with the longest period of oscillations expected, we get a final relative error of $\sim 12 \%$ as shown in fig \cref{fig:runstd_long}. This is arguable just at the limit of an acceptable error, but as we shall see later on in~\cref{sec:load_and_stretch} this high relative error is mainly associated with the cases of low friction. When investigating different configurations under variation of load and strain we see a considerably lower relative error as the mean friction evaluates to higher values. One interpretation of this finding is simply that the oscillations in the running mean are to some degree independent of the magnitude of the friction. In that case, the relative error will spike for the low friction cases, and the absolute error might be the more reliable measure, i.e.\ using simply the \acrshort{std} without dividing by the final mean value.
 
 
 \begin{figure}[H]
@@ -407,39 +391,36 @@ When including the full dataset of 400 Å of sliding, such that the \acrshort{st
 \subsection{Static friction} 
 The maximum value is one of the common choices for addressing static friction,
 even though the definition of static friction is a bit vague. When considering
-the force traces in \cref{fig:drag_Ff} we observe that the force oscillations
+the force traces in~\cref{fig:drag_Ff} we observe that the force oscillations
 increase in magnitude toward a global peak at $\sim \SI{20}{\text{Å}}$. Thus,
 one could be inclined to identify this peak as the maximum value associated with
 the static friction force. However, as we have already clarified, this steady
-increase in friction is a part of a slower oscillation which repeats by a period
-of $\sim 71$ Å$^{-1}$. By plotting the top three max values recorded during a
-full 400 Å simulation, for 30 logaritmicly spaced load values in the range
-$[0.1, 100]$ nN, we observe that the global max in fact rarely fall within this
-first oscillation period as shown in \cref{fig:max_dist}. Only 2 out of 30 global
-maxima and 4 out of 90 top three maxima can be associated to the start of the sliding
-by this definition. Thus, this result suggest that our default system does not
-yield a static friction response in the sense of an initial increase in friction
-due to a depinning of the sheet from the static state \hl{Is this probably
-definned in the theory section}. Some parameter changes that might increase the
-likelihood of seeing a significant static friction response is either extending
-the relaxation period, since static friction is theorized to increase logaritmically
-with time, or to increase the sliding force more slowly and through a soft spring tethering. As an attempt to test parts of this hypothesis we run a series of simulations with varying spring constant, $K\in [5, 200]$ nN including also $K = \inf$, but keeping the relaxation time and sliding speed at the default values. The result is shown in \cref{fig:max_vs_K}. The results do not show any support of the hypothesis that a softning of the spring constant will eventually lead to the maxima occouring in the first periode of sliding. We note that this might be suppressed by having a too short relaxation period or a too high sliding speed, related to the rate of which force increased initally, but due to the ambiguousness in the assesment of the static friction we will mainly concern ourselves with the kinetic friction in the remaming of this thesis.
-
+increase in friction is part of a slower oscillation that repeats by a period of
+$\sim \SI{71}{\text{Å}}$. By plotting the top three max values recorded during a
+full \SI{400}{Å} simulation, for 30 logarithmically spaced load values in the
+range $[0.1, 100]$ nN, we observe that the global max rarely falls within this
+first oscillation period as shown in \cref{fig:max_dist}. Only 2 out of 30
+global maxima and 4 out of 90 top three maxima can be associated with the start
+of the sliding by this definition. Thus, this result suggests that our default
+system does not yield a static friction response in the sense of an initial
+increase in friction due to a depinning of the sheet from the static state. Some
+parameter changes that might increase the likelihood of seeing a significant
+static friction response are either extending the relaxation period since static
+friction is theorized to increase logarithmically with
+time~\cite{dieterich_1972}, or increasing the sliding force more slowly through a soft spring tethering. As an attempt to test the latter part of this hypothesis
+we run a series of simulations with varying spring constant, $K\in [5, 200]$ nN
+including also $K = \infty$, but keeping the relaxation time and sliding speed at
+the default values. The result is shown in \cref{fig:max_vs_K} and do
+not show any support for the hypothesis that a softening of the spring constant
+will eventually lead to the friction maximum occurring in the first period of sliding. We note that this might be suppressed by having a too short relaxation period or a too high sliding speed (related to the initial force increase),
+but due to the ambiguousness in the assessment of the static friction we will
+mainly concern ourselves with the kinetic friction in the remaning of this
+thesis.
 
 
 % In most numerical studies \cite{bonelli_atomistic_2009, zhu_study_2018} they define static friction as the max peak or top 5\% quantile throughout the simulation and do not consern themselves with a requirement for an initial increasement toward this max. Thus, we interpret this as a measure of the force oscillation magnitude which is highly related to the stick-slip behaviour. 
 
 
-
-% that the max value cannot be used as a reliable measure for the
-% static friction either due to its lack of presence or due to the simulation
-% setup procedure. For a more typycal evaluation of the static friction force one
-% would increase force slowly until the first slip significant slip is recorded (a
-% series of precursors is expected to precede this). In our simulations we drag
-% the sheet relatively fast in a rigid manner which might be the reason for the lacking the static friction. Bonelli et al.\ \cite{bonelli_atomistic_2009} reported that the stick-slip behaviour was only presented when using a relatively soft spring. Thus, by changing the spring constant we investigate possibility to observe a static friction (\hl{I kind of interchanged stick-slip and static friction int his argument, but I still think it can be used to argue for doing the test...}) response within the framework of our simulation procedure as shown in
-% \cref{fig:max_vs_K}. However, the results do not indicate any implications
-% that a recognizable domain exist for which the static friction response would be
-% reliable. Hence, we will base the final assesment on frictional properties purely on the kinetic friction force. 
 
 
 \begin{figure}[H]
@@ -447,7 +428,7 @@ with time, or to increase the sliding force more slowly and through a soft sprin
   \begin{minipage}{.47\textwidth}
     \centering
     \includegraphics[width=\linewidth]{figures/baseline/max_dist.pdf}
-    \captionof{figure}{Distribution of top three max friction force peaks for 30 uniformly sampled normal forces $F_N \in [0.1, 10]$ nN. The dotted line and the grey area marks the slowest significant oscialltion period found in the data and thus marking a dividing line for whether a peak falls within the ``beginning'' of the sliding simulation.}
+    \captionof{figure}{Distribution of top three max friction force peaks for 30 uniformly sampled normal forces $F_N \in [0.1, 10]$ nN. The dotted line and the grey area mark the slowest significant oscillation period found in the data and thus marking a dividing line for whether a peak falls within the ``beginning'' of the sliding simulation.}
     \label{fig:max_dist}
   \end{minipage}%
   \hspace{0.2cm}
@@ -499,16 +480,10 @@ with time, or to increase the sliding force more slowly and through a soft sprin
 
 
 \section{Out-of-plane buckling}\label{sec:out-of-plane_buckling}
-The out-of-plane buckling is one of the original motivations for investigating
-the application of Kirigami cuts in the context of friction properties. Therefore, we perform a stretch simulation, at low temperature ($T = \SI{5}{K}$) without any substrate, in order to verify that we are able to reproduce an out-of-plane buckling with the
-intended patterns described in \cref{chap:system}. For this investigation we include the non-cut sheet, the Tetrahedron $(7,5,1)$ and the Honeycomb $(2,2,1,5)$ pattern. We quantify the out-of-plane buckling by assessing the distribution of atoms along the z-direction (perpendicular to the plane) during stretching. We calculate the
-mininum and maximum z-value as well as the atom count quartiles 1\%, 10\%, 25\%, 50\%
-(median), 75\%, 90\% and 99\% as shown in figure \cref{fig:buckling_quartiles}. The results show significant buckling for the Tetrahedron and Honeycomb patterns in comparison to the non-cut sheet which only exhibit minor
-buckling of $\sim 2$ Å which is on the same order as the lattice spacing.
-Moreover, we notice that the Tetrahedron pattern buckles more in consideration
-to the min.\ and max.\ peaks while the remaining quantiles actually seem to be more closely spaced than for the Honeycomb. By adressing the simulation visually, using the Open Visualization Tool OVITO, we find that this can be
-attributed to fringes on the edge ``flapping around'' and thus increasing the
-min.\ and max.\ values.
+The out-of-plane buckling is one of the motivations for investigating
+the application of Kirigami cuts in the context of friction properties. Therefore, we perform a stretch simulation, at low temperature ($T = \SI{5}{K}$) without any substrate, in order to verify that we can reproduce an out-of-plane buckling with the Tetrahedron and Honeycomb patterns intended for our study (see ~\cref{chap:system}). For this investigation we consider the Tetrahedron $(7,5,1)$ and the Honeycomb $(2,2,1,5)$ pattern in comparison to the non-cut sheet. We quantify the out-of-plane buckling by assessing the distribution of atoms along the z-direction (perpendicular to the plane) during stretching. We calculate the
+minimum and maximum z-value as well as the atom count quartiles 1\%, 10\%, 25\%, 50\% (median), 75\%, 90\% and 99\% as shown in~\cref{fig:buckling_quartiles}. The results show significant buckling for the Tetrahedron and Honeycomb patterns in comparison to the non-cut sheet which only exhibits minor
+buckling of $\sim \SI{2}{\text{Å}}$ which is on the same order as the lattice spacing. Moreover, we notice that the Tetrahedron pattern buckles more in consideration to the min.\ and max.\ peaks while the remaining quantiles seem to be more closely spaced than for the Honeycomb. By addressing the simulation results visually, using the \textit{Open Visualization Tool OVITO}, we find that this can be attributed to fringes on the edge ``flapping around'' and thus increasing the min.\ and max.\ values.
 
 \begin{figure}[H]
   \centering
@@ -517,45 +492,38 @@ min.\ and max.\ values.
   \label{fig:buckling_quartiles}
 \end{figure}
 
-Given the confirmation of out-of-plane buckling in a vacuum, as seen in
-\cref{fig:buckling_quartiles}, we reintroduce the substrate in order to
-investigate whether this effect carries over to a change in contact area. We
-raise the temperature to the default value of $T =\SI{300}{K}$. We keep the
-normal force off and let the sheet stick purely by the adhesion forces between
-the sheet and substrate. We quantify the contact area through the relative
+Given the confirmation of out-of-plane buckling in a vacuum, as seen in~\cref{fig:buckling_quartiles}, we reintroduce the substrate in order to
+investigate whether this effect carries over to a changing contact area. For this simulation we raise the temperature to the default value of $T =\SI{300}{K}$. We keep the normal force off and let the sheet stick purely by the adhesion forces between the sheet and substrate. We quantify the contact area through the relative
 amount of atoms in the sheet within chemical range of the substrate. The cut-off
 for this interaction is set to 4 Å, inspired by \cite{li_evolving_2016},
-corresponding to $\sim 120$\% the LJ equilibrium distance. Usually the contact
-area is calculated as the number of contacting atoms multiplied with an
+corresponding to $\sim 120\%$ the \acrshort{LJ} equilibrium distance. Usually, the contact area is calculated as the number of contacting atoms multiplied by an
 associated area for each atom. However, since we are not interested in the
-absolute value of the actual area, but rather the relative change, we ommit the
+absolute value of the area, but rather the relative change, we omit the
 multiplication factor. That is, we consider the relative number of atoms within
-contact range, which is proportional to the contact area, as our metric of
+the contact range, which is proportional to the contact area, as our metric of
 choice. The relative contact for the three configurations (No cut, Tetrahedron
 $(7,5,1)$ and Honeycomb $(2,2,1,5)$) during strecthing are shown in figure
 \cref{fig:contact_vs_stretch}. The figure reveals a significant drop in contact
 as the sheets are stretched, which agrees qualitatively with the buckling
-observed without the substrate (\cref{fig:buckling_quartiles}). The Honeycomb
-pattern turns out to be both the most stretchable, with a rupture strain of 1.27, and the one with the biggest decrease in relative
-contact down to approximately 43\%. Notice, that the relative contact is never
+observed in~\cref{fig:buckling_quartiles} without the substrate. The Honeycomb
+pattern turns out to be both the most stretchable, with a rupture strain of 1.27, and the one with the biggest decrease in relative contact with a minimum of approximately 43\%. Notice, that the relative contact is never
 actual 1.0 but instead reaches a maximum of 96\% with no stretching. This is
-attributed to the temperature fluctuations and the choice of cut-off.
+attributed to the temperature fluctuations and the choice of cut-off. Thus we might 
 
-Selected frames from the simulation result are shown in \cref{sec:sheet_stretch}
-which reveals a bit more information on how the buckling occurs. The tetrahedron pattern deforms rather quickly and smoothly into small tetrahedron
+Selected frames from the simulation result are shown in~\cref{sec:sheet_stretch}
+which reveals a bit more information on how the buckling occurs. The Tetrahedron pattern deforms rather quickly and smoothly into small tetrahedron
 spikes, as the name suggests. In the Honeycomb pattern, on the other hand, the
 deformations initiate from one side first. As the sheet stretches more rows of
 the pattern are activated, producing the honeycomb-looking shape when seen from
-above. Both patterns exhibit a small increase in the relative contact when they
-are approaching their yield strain. This agrees with the results in
-\cref{fig:buckling_quartiles} where the buckling reduces slightly towards the
-end.
+above. Both patterns exhibit a small increase in relative contact when they
+are approaching their yield strain, which agrees with the results from ~\cref{fig:buckling_quartiles} where the buckling reduces slightly towards the
+rupture strain.
 
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.6\linewidth]{figures/baseline/contact_vs_stretch.pdf}
-  \caption{Relative contact, given as the relative number of atom in the sheet being within chemical interaction range, vs.\ strain of the sheet.  The cut-off for the interaction range is 4 Å corresponding to $\sim 120 \%$ the LJ equilibrium distance. No normal force is applied and temperature is kept at $T = 300$ K.}
+  \caption{Relative contact, given as the relative number of atoms in the sheet being within chemical interaction range, vs.\ strain of the sheet.  The cut-off for the interaction range is \SI{4}{\text{Å}} corresponding to $\sim 120 \%$ the LJ equilibrium distance. No normal force is applied and temperature is kept at $T = \SI{300}{K}$.}
   \label{fig:contact_vs_stretch}
 \end{figure}
 
@@ -563,18 +531,13 @@ end.
 
 
 \section{Investigating default parameters}\label{sec:main_params}
-We carry out a more extensive investigation of the dependence on friction of the temperature $T$, sliding speed $v_{\text{slide}}$ and spring
+We carry out a more extensive investigation of the friction dependence on temperature $T$, sliding speed $v_{\text{slide}}$, spring
 constant $K$, and timestep $dt$. This is done partly to
-understand how the dependencies relate to theoretical, numerical and
-experimental results, and partly to understand how these parameters affects
+understand how the dependencies relate to the theoretical, numerical and
+experimental results, and partly to understand how these parameters affect
 the stability of our system. We use the default parameters presented in
 \cref{tab:final_param} and investigate the results as we change parameters, one at a time. We keep the load at \SI{1}{nN}. We consider the mean
-friction force, sampled from the last half of the simulation as described in
-\cref{sec:fric_metrics}, representing the kinetic friction. The results are
-presented \cref{fig:main_param}. We have indicated the absolute error visually,
-defined by the \acrshort{std} as described in \cref{sec:fric_metrics}, as a
-shaded area that connects linearly between data points. Generally, we notice
-that the parameter dependencies differ between the graphene sheet. 
+friction force, sampled from the last half of the simulation as described in~\cref{sec:fric_metrics}, representing the kinetic friction. The results are shown in \cref{fig:main_param}, where the shaded area (connected linearly) denotes the absolute error defined by the \acrshort{std} as described in~\cref{sec:fric_metrics}. 
 
 \begin{figure}[H]
   \centering
@@ -610,64 +573,33 @@ that the parameter dependencies differ between the graphene sheet.
     \label{fig:main_param}
 \end{figure}
 
-From the temperature investigation in \cref{fig:var_temp} we find an increasing
+From the temperature investigation in~\cref{fig:var_temp} we find an increasing
 kinetic friction with temperature for both the non-cut sheet and the Honeycomb
-pattern. The Tetrahedron pattern shows both decreasing and increasing trends as
-it yields an initial rapid (10--30 K), followed by a more slowly decrease
-(30--320 K), which turns around and increases (320--480 K), and finally a rapid
-drop decrease again (480--500 K). Similar rapid changes are also seen from the
-Honeycomb pattern, although the underlying trend is seemingly increasing
-throughout. We notice that for the non-cut and Honeycomb sheet, which can be
-attributed to some sort of underlying linear increase, the rate of increase is
-higher for the Honeycomb than the non-cut sheet. From a theoretical and
-experimental point of view, we would expect a decrease in friction with
-temperature. \hl{Explain why}. However, an increasing trend is also observed by Zhang et al.
-\cite{ma12091425} (sliding at \SI{10}{m/s}) which we associates with a high
-sliding speed causing ballistic motion \hl{Revisit theory on this one}. Since
-the results does not indicate any plateau for which the temperature choice is
-more or less stable with respect to changes, we have choosen the room
-temperautre $T = \SI{300}{K}$ 
+pattern. The Tetrahedron pattern shows both decreasing and increasing trends. The general trend shows a convex curve in the range (30--480 K) with a minimum around our default choice of \SI{300}{K}, but with rapid fluctuations at the start (10--30 K) and end region (480--500 K). Similar fluctuations are also seen from the Honeycomb pattern, although it shows an underlying increasing trend throughout. When comparing the non-cut sheet and the Honeycomb pattern we observe that the slope for the increasing trend is high for the Honeycomb. From a theoretical and experimental point of view, we would expect a decrease in friction with temperature (see~\cref{sec:prev_results}). However, an increasing trend is also observed in other \acrshort{MD} simulation, for instance by Zhang et al.
+\cite{ma12091425} sliding at \SI{10}{m/s}, which is attributed to the high sliding speed associated with the ballistic motion. The default choice is initially based on the common choice of using the temperature $T = \SI{300}{K}$. The non-cut and Tetrahedon friction seems to be rather stables around that point, but we do see some significant fluctuations for the Honeycomb pattern in this range. However, we do not regard this as a critical feature.
 
-% For the max friction dependencies we generally also see an increasing trend with increasing temperature. This however, can be attributed to the fact that the possibilities of exiting the sheet to produce a peak force increases with temperature. 
+From the sliding speed investigation in \cref{fig:var_vel} we generally find increasing friction with velocity. Due to the relatively high velocities used and the effects from the thermostat, we expect a viscous friction $F_k \propto v_{\text{sliding}}$ which matches rather well with these results. However, the Tetrahedron and Honeycomb sheets seem to fall slightly into a sublinear relationship as it approaches higher velocities. Furthermore, these sheets display indications of local fluctuations that could potentially be attributed to resonance effects, as discussed in relation to the phonon dynamics. Our choice of sliding speed at \SI{20}{m/s} mainly reflects a consideration of computational cost, but the fact that no immediate resonance fluctuations appear in the proximity of this value supports the choice.  
 
-From the sliding speed investigation in \cref{fig:var_vel} we generally find an increasing friction with velocity. Due to the relatively high velocities availble and the effects from the thermostat, we expect a viscous friction $F_k \propto v_{\text{sliding}}$ which matches rather well with these results. However, the Tetrahedron and Honeycomb sheets seem to fall slightly into a sublinear relationship as it approaches higher velocities. Moreover, the cut sheets exhibit some local fluctuations which might be attributed to resosnance effects as discussed with respect to the phonon dynamics. Our choice of sliding speed at \SI{20}{m/s} mainly reflects a consideration of computational cost, but the fact that no immediate resonance fluctuations appears around this values supports the choice.  
+From the investigation of the spring constant parameter in~\cref{fig:var_K} we observe a significant decrease in friction as the springs stiffen. This can be attributed to the transition from a stick-slip influenced regime to a smooth sliding regime as we saw for the force traces in~\cref{fig:drag_Ff}. For soft springs the results are quite sensitive to the specific choice of spring constant which is especially seen for the non-cut sheet around $K = \SI{40}{N/m}$. Thus, in order to avoid this domain we settled for the infinitely stiff spring. This is also considered a more favorable option due to its ability to provide greater standardization of the simulations.
 
-From the investigation of the spring constant parameter in \cref{fig:var_K} we observe a significant decrease in friction as the springs stiffens. This can be attributed to the transistion from a stick-slip influenced regieme to a smooth sliding regime as we saw for the force traces in \cref{fig:drag_Ff}. For soft springs the result is quite sensitive to the specific choice of spring constant which is especially seen for the non-cut sheet as is peaks at $K = \SI{40}{N/m}$. Thus, in order to avoid such a sensitivity we settled for the infinitely stiff spring with the intention of getting more stable results in our configuration investigation.
+Finally, we consider the numerical stability of the result as we vary the
+simulation timestep in~\cref{fig:var_dt}. The general trend shows a stable
+plateau below $\sim \SI{1.5}{fs}$ for which higher values show signs of arising
+instabilities for the cut sheets (Tetrahedron and Honeycomb). This mainly
+confirms that our choice of timestep is within a reasonable range. However, we
+do see some fluctuations which are more significant for the cut sheets.
 
-
-Finally, we consider the stability of the result as we vary the simulation timestep in \cref{fig:var_dt}. The general trend shows a stable plateau below $\sim \SI{1.5}{fs}$ for which higher values reveals arrising unstabilities for the cut sheets. This mainly confirms that our choice of timestep is within a reasonable range. However, we do see some fluctuations which are more
-significant for the cut patterns. These fluctuations can be taken as a sign of the role of randomness in our simulation. An extended study of the effect of changing the random seed for the initial velcoity and thermostat could bring more insight into this matter. However, we might interpret this as an indication that the uncertainity is higher than otherwise estimated by the running mean and running \acrshort{std} evalulation. For the Honeycomb sheet the fluctuations are on the order $\pm 0.017$ which corresponds to a relative error of $\sim 20\%$. This number is a bit unsettling, but we take note of this as an upper limit for the error at an unstretched stage. 
-
-
-
-
-
-
-
-
-% Quick thoughts:
-% \begin{itemize}
-%   \item Temperature: We do clearly not see the $1/T$ temperature decrease. The non-cut sheet seems to showcase a lienar relationship which is also somewaht present for the honeycomb which matches some of the findings in other MD simulations. For the popup we do see a local decrease at low temperatures which flip at around the default $T = \SI{300}{K}$ temperature. The max friction peaks seem to increase with temperatur as well indicating that the peaks might be associated with thermal fluctuations rather than actual stick-slip behaviour. This supports the finding that the static friction response is not significantly present in these simulations. 
-%   \item Velcotiy: Considering the non-cut sheet first the velocity dependency is seemingly linear which deviates from the expected logaritmic trend. For the cutted configurations we find some peaks which might indicate the presence of resonance frequencies. The cutted sheet might be closer to a logaritmic trend, but this is not spot on either. The max friction seems to decrease slightly with small velcoties and then stay rather constant. This can probably be explained by the reduced time to stick between stick slip. 
-%   \item Spring constant: On all three configurations the kinetic friction decreases with an increasing spring constant. The best explanations might be due to the lack of freedom to ``get stuck'' in incommensurable configurations. We also notice that the friction varies a lot at lower spring constants supporting the choice of having a stiff spring for stability reasons. Especially the non-cut sheet peaks at $K = \SI{40}{N/m}$. The max friction seem to be constant with $K$.
-%   \item $dt$: The kinetic friction is relatively stable around the default choice of $dt = \SI{1}{fs}$. However, the fluctuations with respect to $dt$ is more significant for popup pattern and even more for the honeycomb pattern. This indicates that the more complex kinetics of the simulation is more sensitive to the timestep. We might interpret this information as an additional measure of uncertainty. The maximum friction decreases with increasing timestep which can be asserted a statistical interpretation: Higher peaks will be captured by the high resolution of a low $dt$ and vice versa. The high max values towards the point of $dt = \SI{2}{fs}$ is most likely due to the approach of unstability in the simulation as seen more clearly for the kinetic friction evaluation. 
-% \end{itemize}
+The observed fluctuations suggest that randomness plays a role in our simulations and also indicate that the cut sheets are relatively unstable. Further investigation through varying the random seed for the initial velocity and thermostat could shed more light on this matter. In the meantime, we may consider these fluctuations as a sign that the uncertainty in our results is higher than what was estimated using the running mean and running \acrshort{std} evaluation For the Honeycomb sheet, these fluctuations are on the order $\pm \SI{0.017}{nN}$ 
 
 
 
 \subsection{Computational cost}
-\hl{Say something about how we run the simulations?}
-
-As we analyse the numerical and physical dependencies in the system we also
-consider the computational cost. This especially relates to the parameters
-defining the total number of computations such as timestep, sliding speed and
-sliding distance. As an extension of the analysis in \cref{sec:main_params} we
+We run the simulations on a CPU cluster made available by the University of Oslo. This allows us to run multiple simulations at once and with each simulation running in parallel on multiple CPU cores as well. As we decide on the simulation parameters we must also consider the computational cost. When selecting simulation parameters, we also need to keep in mind the computational cost. Given that the chosen parameters will be applied to multiple simulations, any increase in computational time will be multiplied by the number of intended simulations, which is expected to be around 10,000. The computational cost is especially dependent on the timestep and the sliding speed as this will affect the number of computations. As an extension of the analysis in \cref{sec:main_params} we
 report on the computational times associated with temperature, sliding speed,
 spring constant and dt. By retrieving the computational time used for the
 parameter investigation in \cref{fig:main_param} we get the timing as shown in
-\cref{fig:comp_cost}. Note that these timings only give one time estimate for
-each parameter setting as opposed to an average over multiple runs which is
-nessecry for more reliable data. 
+\cref{fig:comp_cost}. Note that these timings are only based on a single simulation for each parameter as opposed to an average over multiple runs which is
+nessecary for more reliable data. 
 
 
 \begin{figure}[H]
@@ -702,35 +634,29 @@ nessecry for more reliable data.
     \hfill
     \caption{Computational cost related to temperature, sliding speed, spring
     constant and dt parameter in terms of CPU hours running on 16 cores on the
-    cluster \hl{double check and elaborate}. Sliding speed follows $t \propto
+    cluster. Sliding speed follows $t \propto
     v^{-0.977 \pm 0.005}$ and dt follows $t \propto \text{dt}^{-0.87\pm 0.02}$}
     \label{fig:comp_cost}
 \end{figure}
 
 The computational time is governed by the number of timesteps in the simulation
-and the time used per timestep. For a fixed sliding distance, which is the case
-here, the number of timesteps in the simulaiton should be inversely proportional
+and the time used per timestep. For a fixed sliding distance, the number of timesteps in the simulation are inversely proportional
 to sliding speed and similar inversely proportional to timestep $dt$. From the
-timings in \cref{fig:comp_cost} we find the slinding speed to obey this
+timings in \cref{fig:comp_cost} we find the sliding speed to obey this
 expectation rather well by $t \propto v^{-0.977 \pm 0.005}$ while the timing did
-not increase as strongly with timestep, falling below the 1/dt relation with $t
+not increase as strongly with timestep, falling below the $1/dt$ relation with $t
 \propto \text{dt}^{-0.87\pm 0.02}$. Moreover, we find that increasing
 temperature also makes for an increased computation time. This can be attributed
-to a increase in computation time associated with the force calculations. The
-rising temperature give rise to more fluctuations in the system which might
-yield more atoms within the force calculation cutoff's. The consideration to
-cuttoff could also be part of the reason for the deviating timing relation for
-$dt$. Finally, for the spring parameter, we did not see any noticable effect on
-timing.
+to an increase in the computation time associated with the force calculations. The
+rising temperature gives rise to more fluctuations in the system which might
+yield more atoms within the force calculation cutoffs for each computation. This kind of consideration can also be attributed to the reason for the deviating timing for $dt$. Finally, for the spring parameter, we did not see any noticable effect on timing.
 
 
-
-\hl{Henrik: Summarize the result of 6.5. What were the considerations, and what were the results in terms of simulation parameters?}
-
-
-% Show how the number of cores per simulation scale to argue that running on just one core (maybe 4) is smart for the next step of many simulations. 
-
-% Mention the trouble with GPU to show that this was considered, and in fact this was the reason for choosing the Tersoff potential over the AIREBO which is perhaps more common these days...
+In general, we have selected our simulation parameters: temperature, sliding speed, spring constant, and timestep, based on numerical stability
+and computational cost. For the timestep, we found that a value of \SI{1}{fs},
+commonly used in similar studies \cite{liu_high-speed_2014, zhu_study_2018},
+produced stable results while higher values were prone to instabilities and
+lower values were computationally expensive. The sliding speed was chosen primarily based on computational cost, with a default value of \SI{20}{m/s} being a reasonable compromise between computational efficiency and the lower values more commonly used in other studies. Although a lower sliding speed could lead to more commonly observed stick-slip motion, it represents a factor of 20 increase in computational time. Since stick-slip motion is out of reach based on the chosen sliding speed, we found that using an infinitely stiff spring $K = \infty$ was the most reasonable option to ensure stable results. Finally, the temperature investigation did not provide much guidance for a specific choice, so we settled for the standard choice of room temperature $T = \SI{300}{K}$.
 
 
 

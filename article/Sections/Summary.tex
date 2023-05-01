@@ -19,10 +19,38 @@ some topics for further research.
 
 % 1: Design MD simulations
 \subsection{Design MD simulations}
-We have designed an \acrshort{MD} simulation for the examination of friction for a graphene sliding on a substrate. Some of the key features for the numerical procedure were that we managed the sheet through pull blocks in the ends. We could then apply load and stretch the sheet without acting directly on the inner parts. Say something about parameter dependencies from the Pilot study. 
+We have designed an \acrshort{MD} simulation for the examination of friction for
+a graphene sheet sliding on a silicon substrate. The key system features were
+the introduction of the pull blocks, defined as the end regions of the sheet
+with respect to the sliding direction, which was utilized for applying normal
+load and sliding the sheet. The pull blocks were made partly rigid and used to
+employ a thermostat as well. Similarly, we divided the substrate into three
+parts with the lowermost part being rigidly locked in place, the middle part
+reserved for a thermostat and the upper part remaining free from further
+modifications. By an analysis of the friction forces from a sliding simulation
+we settled on a standardization of the kinetic friction metric as the mean value
+of the last half of the sliding simulation. This was measured with respect to
+the sliding distance and for the full sheet (including the pull blocks). We
+defined the uncertainty of the measurements through the standard deviation of
+the running mean. We found that the assessment of static friction was ambiguous
+for our simulation and did not pursue this further. From the analysis of the
+force traces, friction force vs.\ time, we identify the friction behavior in our
+simulation domain as being in the smooth sliding regime. This is further
+supported by a demonstration of a transition to stick-slip behavior for softer
+springs and lower sliding speed which points toward our system being in the
+ballistic sliding regime. By conducting a more systematic investigation of the
+effects of temperature, sliding speed, spring constant and timestep, we settled
+on standardized choices based on numerical stability and computational cost. We
+found that friction increased with temperature which disagrees with experimental
+and theoretical considerations but matches other \acrshort{MD}. This is
+attributed to simulation conditions corresponding to a ballistic regime. We choose a room temperature \SI{300}{K} as a standard choice. We
+found friction to increase with velocity as expected with some signs of phonon
+resonance sliding speeds as well. We chose a rather high velocity of \SI{20}{m/s} mainly for the consideration of computational cost. For the spring constant, we found decreasing friction with increasing stiffness of the springs which is associated with the transition from a stick-slip-influenced regime toward smooth sliding. The choice of an infintely stiff spring was made from a stability assessment.  Finally, we
+confirmed that a timestep of \SI{1}{fs} provides reasonable numerical stability.
+However, some fluctuations were observed, especially for the Honeycomb pattern,
+which might be interpreted as a sign of a higher uncertainty than expected on the order of $\pm \SI{0.017}{nN}$.
 
 
-We find our simulation settings to yield a smooth sliding behavior. For softer spring and lower velocity we find a transition to stick-slip behvaior. 
 
 % 2: Design Kirigami framework
 \subsection{Design Kirigami framework}
@@ -45,6 +73,10 @@ repair the sheet for simulation purposes. The capabilities of the numerical fram
 
 % 3: Control friction using Kirigami
 \subsection{Control friction using Kirigami}
+We find buckling in vacuum which correspond ot a reduciton in contact area in connection with a substrate. We find the honeycomb to buckle most resulting in a reduction of the contact area to approximately 43\%. 
+
+
+
 We have investigated the friction behavior of the non-cut sheet and a selected
 Tetrahedron and Honeycomb pattern under various stretch and load. The non-cut
 sheet did not exhibit significant out-of-plane buckling as opposed to the
