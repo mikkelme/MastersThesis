@@ -830,13 +830,13 @@ if __name__ == '__main__':
     # run_porosity_search(model_name, 'P025', [0.25], N, num_generations, topN)
    
     # Top 5 RW for max drop     
-    param1 = {'num_walks': 30, 'max_steps': 26, 'min_dis': 1, 'bias': [(0.03, -1.00), 9.23],  'center_elem': 'full', 'avoid_unvalid': False, 'RN6': False, 'grid_start': True, 'stay_or_break': 0.00} 
-    param2 = {'num_walks': 18, 'max_steps': 20, 'min_dis': 2, 'bias': [(0.19, 0.98), 7.27],   'center_elem': 'full', 'avoid_unvalid': False, 'RN6': False, 'grid_start': True, 'stay_or_break': 0.00} 
-    param3 = {'num_walks': 17, 'max_steps': 17, 'min_dis': 4, 'bias': [(-0.11, -0.99), 9.41], 'center_elem': 'full', 'avoid_unvalid': False, 'RN6': False, 'grid_start': True, 'stay_or_break': 0.00} 
-    param4 = {'num_walks': 10, 'max_steps': 22, 'min_dis': 2, 'bias': [(0.23, 0.97), 7.38],   'center_elem': 'full', 'avoid_unvalid': True,  'RN6': False, 'grid_start': True, 'stay_or_break': 0.00} 
-    param5 = {'num_walks': 17, 'max_steps': 5,  'min_dis': 4, 'bias': [(0.00, 1.00), 0.00],   'center_elem': False,  'avoid_unvalid': True,  'RN6': True,  'grid_start': True, 'stay_or_break': 0.64} 
+    # param1 = {'num_walks': 30, 'max_steps': 26, 'min_dis': 1, 'bias': [(0.03, -1.00), 9.23],  'center_elem': 'full', 'avoid_unvalid': False, 'RN6': False, 'grid_start': True, 'stay_or_break': 0.00} 
+    # param2 = {'num_walks': 18, 'max_steps': 20, 'min_dis': 2, 'bias': [(0.19, 0.98), 7.27],   'center_elem': 'full', 'avoid_unvalid': False, 'RN6': False, 'grid_start': True, 'stay_or_break': 0.00} 
+    # param3 = {'num_walks': 17, 'max_steps': 17, 'min_dis': 4, 'bias': [(-0.11, -0.99), 9.41], 'center_elem': 'full', 'avoid_unvalid': False, 'RN6': False, 'grid_start': True, 'stay_or_break': 0.00} 
+    # param4 = {'num_walks': 10, 'max_steps': 22, 'min_dis': 2, 'bias': [(0.23, 0.97), 7.38],   'center_elem': 'full', 'avoid_unvalid': True,  'RN6': False, 'grid_start': True, 'stay_or_break': 0.00} 
+    # param5 = {'num_walks': 17, 'max_steps': 5,  'min_dis': 4, 'bias': [(0.00, 1.00), 0.00],   'center_elem': False,  'avoid_unvalid': True,  'RN6': True,  'grid_start': True, 'stay_or_break': 0.64} 
    
-    run_RW_search(model_name, 'RW1', param1, N, num_generations, topN)
+    # run_RW_search(model_name, 'RW1', param1, N, num_generations, topN)
     # run_RW_search(model_name, 'RW2', param2, N, num_generations, topN)
     # run_RW_search(model_name, 'RW3', param3, N, num_generations, topN)
     # run_RW_search(model_name, 'RW4', param4, N, num_generations, topN)
@@ -844,6 +844,13 @@ if __name__ == '__main__':
     
     
     # ## TEST
+    GA = Genetic_algorithm(model_weights, model_info, N = 100, image_shape = (10,10), repair = False)
+    GA.set_fitness_func(ising_max)
+    GA.init_population([0.5])
+    GA.evolution(num_generations = 200)
+    plt.imshow(GA.A[0])
+    plt.show()
+    
     # GA = Genetic_algorithm(model_weights, model_info, N = 5, image_shape = (62,106), repair = False)
     # GA.stretch = np.linspace(0, 2, 100)
     # GA.F_N = 5

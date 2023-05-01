@@ -820,60 +820,44 @@ results. This indicates that the poor test result is not simply caused by the hy
 
 
 \subsection{Genetic algorithm search}
-
-Despite the fact that our machine learning analysis indicates that the model are not generalized for the prediction on new configurations we investigate the appraoch of using a gentic algorithm for an accelerate search.
-
-
-
-% Mention that ve verify the algotithm on a test with maximizng ising enegy for a small image. Should produce chess-board pattern.
-
-For the second approach to an accelerated search, we consider the genetic
-algorithm. So far we have concluded that a minimization of the friction is not
-promising, and hence we discard this property for further studing. We have also
+Despite the fact that our machine learning analysis indicates that the model is not generalized enough for an accurate prediction on new configurations, we investigate the prospects of using a genetic algorithm based accelerated search. So far we have concluded that a minimization of the friction is not
+promising, and hence we discard this property for further study. We have also
 seen that the maximum style properties often share similar top candidates, and
 thus we choose to only investigate the max drop property, associated with the
-aim of creating a negative friction coefficient. We are going to use the
-extended search top candidate as a basis for the genetic algorithm population
-algorithm search. We generate a population of 100 configurations using the
-settings associated with the max drop top candidate for the Tetrahedron,
-Honeycomb and Random walk patterns respectively. We run the search for 50
-generations as we did not see much difference for any longer runs. The
-Tetrahedron and Honeycomb search did immediately not give any improvements as
-the highest scoring individual from the population was not improved through the
-search even though the average score was rising initially. For the Random walk,
-we choose to perform a genetic algorithm search for each of the top 5
-candidates. Most of them gave a similar result as seen from the Tetrahedon and
-Honeycomb pattern with only a single new candidate generated. The score of this
-candidate was \SI{0.240}{nN} which is a small improvement from the best score of
-\SI{0.182}{nN}. However, from some of the other runs the population
-initialization provided a top score of \SI{0.345}{nN} which shows that we have
-better hopes of optimizing this property by simply generating more
-configurations from the top candidate parameters. The fact that starting from an
-existing design did not give any useful results we attempted to start from a
-population of random noise as well. We made one population from mixed
-porosities, having even 20 individuals each for porosity  $\{0.01, 0.05, 0.1,
-0.2, 0.3\}$, and two populations based on a porosity of 0.25 and 0.5
+aim of creating a negative friction coefficient. We verify our implementation of the genetic algorithm by optimizing a smaller $10 \times 10$ lattice for the maximum energy of the the Ising model without any external field. That is, we consider the Hamiltonian 
+\begin{align*}
+  H = -J\sum_{\langle kl \rangle} s_k s_l,
+\end{align*}
+for the square lattice sites $s$ with the sum running over nearest neighbouring sites $k$ and $l$. The sites take a binary value, either $-1$ or $+1$, and thus the highest energy for the system is reached for a checkboard pattern of every other side is $-1$ and the remaining being $+1$. We find that the algorithm converges toward the optimal solution within a hundred generations most of the time, which shows that it can handle some spatial dependencies in the matrix.
+
+For the genetic algorithm search we use the top candidates from the pattern generation search as a starting point for the populations. That is, we generate the population based on the parameter associated with the max drop top candidates for the Tetrahedron, Honeycomb and Random walk search respectively. We generate a population of 100 configurations and run the search for  50 generations as we did not see much improvement for longer runs. The Tetrahedron and Honeycomb search did immediately give any useful results as the highest scoring individual from the population was not improved throughout the search even though the average score was rising initially. For the Random walk performed 5 runs based on the top 5 candidates. Most of them gave a similar result as seen for the Tetrahedon and
+Honeycomb patterns with only a single run providing a new generated candidate. The score of this candidate was \SI{0.240}{nN} which is only a small improvement from the otherwise best Random walk max drop score of
+\SI{0.182}{nN}. However, from the other non-improving runs the initialization of the Random walk based population provided a top score of \SI{0.345}{nN} which shows that we have better hopes of optimizing this property by simply generating more configurations from these parameters. 
+
+The fact that starting from an existing design did not give any useful results, we attempt to start from a population of random noise as well. We initialize one population with mixed porosities, having 20 individuals each for porosity $\{0.01, 0.05, 0.1, 0.2, 0.3\}$, and two populations based on a porosity of 0.25 and 0.5
 respectively. This time the algorithm improved the top candidate throughout, but
-the actual scores are still not impressive. The mixed porosity start gave the
-highest score, being \SI{0.299}{nN}. When considering the corresponding patterns
-from the top five candidates in this search, they were all visually quite
+the final top scores are still not impressive. The mixed porosity start gave the
+highest score, being \SI{0.299}{nN}. When considering the corresponding patterns of the top five candidates in this search, they were all visually quite
 similar to the starting configurations; they still looked like random noise.
-Thus, we do not find signs of a generation of any noticeable patterns worth
-further investigating. By the use of the Grad-CAM method, we examined for any
-noticeable patterns for the model predictions on this mixed porosity top
-candidate as shown ~\cref{fig:GC_mixed_p}. For comparison, we included a similar
-examination for the top candidates in the pattern generation search with respect
-to the max drop category for the Tetrahedron, Honeycomb and Random walk shown
+Thus, we do not find any significant signs that the genetic algorithm search can generate any higher-level pattern structures worth further investigating. This is of course likely to be connected with the fact that the machine learning model governing the fitness evaluation is unstable outside orignal data domain.
+
+
+By the use of the Grad-CAM method, we examine some of the proposed patterns for
+any noticeable trends in the model predictions. The result for the mixed
+porosity search top candidate is shown in  ~\cref{fig:GC_mixed_p}. For
+comparison, we included a similar examination for the top candidates in the
+pattern generation search with respect to the max drop category for the
+Tetrahedron, Honeycomb and Random walk, shown in
 \crefrange{fig:GC_pop_search}{fig:GC_hon_search}. For the mixed porosity top
-candidate, the Grad-CAM method highlights some areas in the noise configuration as
-contributing more positively than others. However, we do not see any obvious
-patterns. For the more structured patterns of the Tetrahedron, Honeycomb and
-Random walk configurations we see in many cases throughout the straining that
-the cut parts are highlighted. This gives some confidence to the idea that the
-model does consider some of the relevant features in the pattern, but it still
-varies too much to make any strong conclusion. However, we notice that for
-certain strain values, the Grad-CAM reveals an ``attention'' towards the edge of
-the configuration. This especially relates to the top and bottom edge, which we for instance see for the Honeycomb pattern at strain 0.396 regarding the bottom edge in~\cref{fig:GC_hon_search}. Considering that the top and bottom of the configuration are not a true edge, since these are connected to the pull blocks in the simulation, this is a bit surprising. One interpretation is that the dissipation associated with the thermostat in the pull blocks might be of importance. This is not strongly supported and we simply note that as an interesting topic for further studies.
+candidate, the Grad-CAM method highlights some areas in the noise configuration
+as contributing more positively than others, but we do not find any obvious
+trends from this. For the more structured patterns of the Tetrahedron, Honeycomb
+and Random walk configurations we see in many cases throughout the straining
+that cuts in the sheet are highlighted. This gives some confidence to the idea
+that the model does consider some of the relevant features in the pattern, but
+it still varies too much to make any strong conclusion. However, we notice that
+for certain strain values, the Grad-CAM reveals considerable ``attention'' towards the edge of the configuration. This especially relates to the top and bottom edge ($\pm y$). For instance, \cref{fig:GC_hon_search} shows a highlighting of the bottom edge at strain 0.396 for the Honeycomb pattern. Considering that the top and bottom of the configuration are not a true edge, since these are connected to the pull blocks in the simulation, this is a bit surprising. One interpretation is that the dissipation associated with the thermostat in the pull blocks might be of importance. Even though, that these results should be taken carefully due to the instability of the model, we note this as a topic for further investigations. 
+
 
 
 \begin{figure}[H]
