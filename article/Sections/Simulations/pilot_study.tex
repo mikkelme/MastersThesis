@@ -10,10 +10,10 @@ by a small set of parameters. For the purpose of creating a machine learning we
 need to standardize these parameters. This we keep most of them constant with
 only a small subset of parameters being varied: sheet configuration, strain and
 load. Instead of starting with the parameter selection process, we first state
-the final choice in \cref{tab:final_param}. Due to the great number of
+the final choice in~\cref{tab:final_param}. Due to the great number of
 parameters, we do not make an exhaustive search of all parameters before
 deciding on the final settings. Instead, we take a basis in parameters used in
-similar friction simulations \cite{li_evolving_2016, Yoon2015MolecularDS,
+similar friction simulations~\cite{li_evolving_2016, Yoon2015MolecularDS,
 liu_high-speed_2014, zhu_study_2018, ma12091425} and adjust accordingly to the
 aim of getting stable measurements and reducing computation time where possible.
 Parameters such as initial relaxation time, pauses and strain speed are chosen
@@ -27,7 +27,7 @@ parameters: Temperature $T$, sliding speed $v_{\text{slide}}$, spring constant
 $K$, normal load $F_N$, timestep $dt$ and sliding distance have been chosen
 because the friction output remains relatively stable with moderate
 perturbations around these default values. We will explain this in more detail
-later in the chapter. Note that the default values in \cref{tab:final_param}
+later in the chapter. Note that the default values in~\cref{tab:final_param}
 will be used when nothing else is stated explicitly.
 
 
@@ -661,31 +661,18 @@ lower values were computationally expensive. The sliding speed was chosen primar
 
 
 \section{Load and stretch dependencies}\label{sec:load_and_stretch}
-
-So far, we have carried out a general analysis of the system behaviour under
-different parameters which lays the foundation for the remaining study. We now
-shift our intention towards the friction dependence of load and stretch.
+So far, we have carried out a general analysis of the system behavior under the influence of various simulation parameters. This lays the foundation for the remaining study as we now shift our intention towards the friction dependence of strain and load.
 
 \subsection{Pressure reference for normal load}
-% source 1: stiletto heeled shoes with less than 1cm diameter:
-% https://www.researchgate.net/publication/342223559_How_the_stiletto_heeled_shoes_which_are_popularly_preferred_by_many_women_affect_balance_and_functional_skills
-
-We consider a load range of 0.1--\SI{10}{nN} which alligns with the general choice in other \acrshort{MD} studies \hl{SOURCE}. In order to relate to the magnitude of this load we provide a short calculation of the corresponding pressure. We will use the pressure underneath a stiletto heeled shoe as a high pressure reference from our macroscale world. The diameter of a stiletto heeled
-shoe can be less than 1 cm \cite{stiletto_1}, and hence an \SI{80}{kg} man\footnote{Yes, a man can certainly
-wear stilleto heels.} standing on one stiletto heel, with all the weight on the heel, will correspond to a pressure
+We consider a load range of 0.1--\SI{10}{nN} which coincide with the general investigated range in other \acrshort{MD} studies~\cite{li_evolving_2016, zhu_study_2018, zhu_study_2018}. In order to relate the magnitude of this load we provide a short calculation of the corresponding pressure. We will use the pressure underneath a stiletto-heeled shoe as a high-pressure reference from our macroscale perspective. The diameter of a stiletto-heeled
+shoe can be less than \SI{1}{cm}~\cite{stiletto_1}, and hence an \SI{80}{kg} man\footnote{Yes, a man can certainly
+wear stiletto heels.} standing on one stiletto heel, with all the weight on the heel, will correspond to a pressure
 \begin{align*}
   P = \frac{F}{A} = \frac{mg}{r^2\pi} = \frac{\SI{80}{kg} \cdot \SI{9.8}{\frac{m}{s^2}}}{(\frac{\SI{e-2}{m}}{2})^2 \pi} = \SI{9.98}{MPa}.
 \end{align*} 
-The fact that the pressure under a stiletto heel can get this high, actually greater than the pressure under an elephant food, is in an interesting realization in itself that is often used in
-introductory physics courses \cite{stiletto_2}, but this also serves as a reasonible upperbound for human executed pressure. With
-a full sheet area of $\sim\SI{21e3}{{\text{Å}}^2}$ our load range of 0.1--\SI{10}{nN} corresponds to a pressure of 0.47--\SI{47}{MPa} which relates nicely with our macroscale reference. This pressure might be incompatible with various industrial purposes, but with no specific application in mind this serves as a decent reference point. Notice that if we consider a human foot with area $\SI{113}{cm^2}$ \cite{stiletto_3} the pressure
-drops to a mere $\SI{70}{kPa}$ corresponding to only $\sim \SI{0.01}{nN}$.
-
-% source 3: foot area ≈ 113 cm^2:
-% https://www.footbionics.com/Patients/Foot+Facts.html source 4:
-% https://hypertextbook.com/facts/2003/JackGreen.shtml
-
-
+The fact that the pressure under a stiletto heel can get this high, actually greater than the pressure under an elephant foot, is an interesting realization in itself that is often used in
+introductory physics courses~\cite{stiletto_2}, but this also serves as a reasonable upper bound for human executed pressure. With
+a full sheet area of $\sim\SI{21e3}{{\text{Å}}^2}$ our load range of 0.1--\SI{10}{nN} corresponds to a pressure of 0.47--\SI{47}{MPa} which relates nicely to our macroscale reference. This pressure might be incompatible with various industrial purposes, but with no specific application in mind, this serves as a decent reference point. Notice, that if we consider a human foot with area \SI{113}{cm^2}~\cite{stiletto_3} the pressure drops to a mere \SI{70}{kPa} corresponding to only $\sim \SI{0.01}{nN}$.
 
 
 \subsection{Stretch dependencies}\label{sec:stretch_dependency}
