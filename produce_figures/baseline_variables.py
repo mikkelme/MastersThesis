@@ -206,7 +206,7 @@ def multi_stretch(path, save = False):
     
     # Mean
     vars = ['data[\'stretch_pct\']', 'data[\'Ff\'][:, :, 0, 1]', 'data[\'F_N\']']
-    axis_labels = [r'Stretch', r'$\langle F_\parallel \rangle$ [nN]', r'$F_N$ [nN]']
+    axis_labels = [r'Strain', r'$\langle F_\parallel \rangle$ [nN]', r'$F_N$ [nN]']
     yerr = 'data[\'Ff_std\'][:,:,0]*data[\'Ff\'][:,:,0, 1]'
     # yerr = None
     fig_mean, _ = multi_plot_compare(folders, names, vars, axis_labels, yerr = yerr, rupplot = True)
@@ -231,8 +231,8 @@ def multi_area(path, save = False):
     # Mean
     # vars = ['data[\'stretch_pct\']', 'data[\'Ff\'][:, :, 0, 1]', 'data[\'F_N\']']
     vars = ['data[\'stretch_pct\']', 'data[\'contact_mean\'][:, :, 0]', 'data[\'F_N\']']
-    axis_labels = [r'Stretch', r'$\langle$ Rel. Contact $\rangle$', r'$F_N$ [nN]']
-    # yerr = 'data[\'Ff_std\'][:,:,0]*data[\'contact_mean\'][:, :, 0]'
+    axis_labels = [r'Strain', r'$\langle$ Rel. Contact $\rangle$', r'$F_N$ [nN]']
+    yerr = 'data[\'contact_std\'][:,:,0]*data[\'contact_mean\'][:, :, 0]'
     # yerr = 'data[\'contact_std\'][:, :, 0]'
     # yerr = None
     fig_mean, _ = multi_plot_compare(folders, names, vars, axis_labels, yerr = yerr, rupplot = True)
@@ -771,9 +771,9 @@ if __name__ == "__main__":
     # spring(path, save = False)
     # dt(path, save = False)
     
-    # multi_stretch(path, save = False)
+    multi_stretch(path, save = False)
     # multi_FN(path, save = False)
-    # multi_area(path, save = False)
+    multi_area(path, save = False)
     
     # multi_FN_force_dist(path, save = False)
     

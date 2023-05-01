@@ -1,18 +1,18 @@
 \chapter{Summary}\label{chap:summary}
 
-The work presented in this thesis covers several topics (find a better opening
-line?). We have created an \acrshort{MD} simulation which enabled us to study
+The work presented in this thesis covers several topics \hl{(find a better opening
+line)}. We have created an \acrshort{MD} simulation which enabled us to study
 the frictional behavior of a graphene sheet sliding on a Si substrate. In
 addition, we have created a numerical framework for creating Kirigami design
 patterns and introducing these into the friction simulations. This was used to
 study the effects of the out-of-plane buckling induced by a selected pair of
-Kirigami designs in relation to a non-cut sheet under the influence of strain.
+Kirigami designs in comparison to a non-cut sheet under the influence of strain.
 Further, we have created a dataset of various Kirigami designs for the scope of
 investigating the possibilities with Kirigami design. We have investigated the
 possibility to use machine learning on this dataset and attempted an accelerated
 search. Finally we look into the prospects of achieving a negative friction
 coefficient for a system with coupled load and stretch. In this chapter we will
-summarize the findings and draw some final conclusions. We will also provide
+summarize the findings and draw some conclusions. We will also provide
 some topics for further research.
 
 \section{Summary and conclusions}
@@ -73,25 +73,38 @@ repair the sheet for simulation purposes. The capabilities of the numerical fram
 
 % 3: Control friction using Kirigami
 \subsection{Control friction using Kirigami}
-We find buckling in vacuum which correspond ot a reduciton in contact area in connection with a substrate. We find the honeycomb to buckle most resulting in a reduction of the contact area to approximately 43\%. 
+We have investigated the friction behavior of a non-cut sheet in comparison to
+the Tetrahedron and Honeycomb pattern under various strain and load. Initially
+we observed that straining the Kirigami sheet resulted in a out-of-plane
+buckling in vaccum. When adding the substrate to the simulation this translated
+to a reduced contact area with strain. We find the Honeycomb sheet buckled the
+most resulting in a reduction of the contact area to approximately 43\%. The
+non-cut sheet did not produce any significant buckling in comparison. However,
+when considering the friction effects we found that friction generally increased
+with strain with contradicts the asperity theory hypothesis of decreasing
+friction with decreasing contact area. Moreover, the friction-strain curve
+exhibited highly non-linear trends with strong negative slopes as well as shown
+in~\cref{fig:multi_stretch}. The non-cut sheet did not reveal any significant
+dependency on the strain. This led us to the conclusion that the contact area nor tension alone (for a non-cut sheet) can regarded as a dominant mechanism for friction in the graphene sheet system. When considering the dependency with load we generally found a weak dependency which canassociated to friction coefficients on the order of \num{e-4}--\num{e-5} even though we could not confirm any clear relationship. This is best attributed to the superlubric state of the graphene sheet on the substrate. The slope of the friction-load curves was also not affected by the straining of the Kirigami sheet which led us to the conclusion that the strain-induced effects are dominant in comparison to load-related effects. By proposing a linear coupling between load and strain with ratio $R$ we find that the results allow for negative friction coefficients for the Tetrahedron pattern on $-R\SI{12.75}{nN}$ and Honeycomb $-R\cdot\SI{2.72}{nN}$
 
 
 
-We have investigated the friction behavior of the non-cut sheet and a selected
-Tetrahedron and Honeycomb pattern under various stretch and load. The non-cut
-sheet did not exhibit significant out-of-plane buckling as opposed to the
-Tetrahedron and Honeycomb pattern. This is even when considering that the
-non-cut sheet had a yield strain of $0.35$ while the Tetrahedron had a lower
-yield strain of $0.21$ and the Honeycomb a considerable larger one at $1.27$
-based on a stretch in vacuum. The out-of-plane buckling resulted in a
-signifciant reduction of the contact area as the sheet were stretched, towards a
-minimum of $X$ for the Tetrahedron and $y$ for the Honeycomb pattern. However,
-this disagreed with the asperity theory hypothesis of a decreasing friciton with
-decreasing contact area. We found that the strain-induced buckling was initially
-(at low relative strain) assocated with an increase in friction. Moreover, the
-friction-strain curve produced a no-linear behaviour which was not compatible
-with the approximately monotonic decreasing contact area as strain were
-increased. This is shown in \cref{fig:multi_stretch}.  This led us to the conclusion that the contact area cannot be attributed a dominant mechanism for friction throughout the straining of the studied Kirigami sheets. In general we found a non-existing relationship between friction and load considering the uncertainties in the simulation. This is best attributed to the superlubric state of the graphene sheet on the substrate. The slope of the friction-load curves were not significantly affected by the straining of the Kirigami sheet and thus we conclude that the load effect on friction is neglible cimpared to the strain effects. 
+% increased. This is shown in \cref{fig:multi_stretch}.  This led us to the conclusion that the contact area cannot be attributed a dominant mechanism for friction throughout the straining of the studied Kirigami sheets. In general we found a non-existing relationship between friction and load considering the uncertainties in the simulation. This is best attributed to the superlubric state of the graphene sheet on the substrate. The slope of the friction-load curves were not significantly affected by the straining of the Kirigami sheet and thus we conclude that the load effect on friction is neglible cimpared to the strain effects. 
+
+% However,
+% this disagreed with the asperity theory hypothesis of a decreasing friciton with
+% decreasing contact area. We found that the strain-induced buckling was initially
+% (at low relative strain) assocated with an increase in friction. Moreover, the
+% friction-strain curve produced a no-linear behaviour which was not compatible
+% with the approximately monotonic decreasing contact area as strain were
+
+
+%  This is even when considering that the
+% non-cut sheet had a yield strain of $0.35$ while the Tetrahedron had a lower
+% yield strain of $0.21$ and the Honeycomb a considerable larger one at $1.27$
+% based on a stretch in vacuum. The out-of-plane buckling resulted in a
+% signifciant reduction of the contact area as the sheet were stretched, towards a
+% minimum of $X$ for the Tetrahedron and $y$ for the Honeycomb pattern.
 
 
 % 4: Capture trends with ML
