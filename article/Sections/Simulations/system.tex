@@ -385,7 +385,7 @@ The random walk serves as a method for introducing random patterns into the data
   Min.\ distance  & Integer $\ge$ 0 &The minimum distance required between any future paths and the previous paths in terms of the shortest walking distance in between. \\ \hline
   Bias  & (Direction, strength $\ge0$) & Bias direction and strength defining the discrete probability for the chocie of the next site. \\ \hline
   Connection  & Atoms / Center elements & Whether to walk between atom sites or center elements (removing all adjecent atoms). \\ \hline
-  Avoid unvalid  & True/False & Whether to remove already visited sites from the neighbour list before picking the next site. This prevents jumping to already visited sites and lowers the likelihood of early termination.  \\ \hline
+  Avoid invalid  & True/False & Whether to remove already visited sites from the neighbour list before picking the next site. This prevents jumping to already visited sites and lowers the likelihood of early termination.  \\ \hline
   Stay or break  & $p = [0,1]$ & Probability that the walker will maintain its direction for the next step. \\ \hline
   Periodic  & True/False & Whether to use periodic boundary conditions on all four sides. \\ \hline
   Avoid clustering  & Integer $\ge$ 0 & Amount of times to restart the whole random walk generation in order to arrive at a non-detached configuration. If no valid configuration is reached after this amount of tries, the non-spanning clusters are removed.\\ \hline
@@ -396,7 +396,7 @@ The random walk serves as a method for introducing random patterns into the data
   \end{center}
 \end{table}
 
-\subsubsection{Fundamentals} % M, S, Connection, Periodic, Avoid unvalid
+\subsubsection{Fundamentals} % M, S, Connection, Periodic, Avoid invalid
 For an uncut sheet we deploy $M$ random walkers, one at a time, and let them walk
 for a maximum number of $S$ steps. We can either let the walker travel between
 atom sites, removing the atoms in the path as it goes, or between center
@@ -413,11 +413,11 @@ this ensures that we have three neighbour options for the next step while travel
 center elements this gives six neighbour options. If the walker happens to arrive at
 an already visited site the walk is terminated early. Optionally, we can choose
 to remove any neighbouring sites already visited from the neighbour list,
-\textit{Avoid unvalid: True/False}, and choose uniformly between the remaining
+\textit{Avoid invalid: True/False}, and choose uniformly between the remaining
 options instead. This prolongs the walking distance, but the walker is
 still able to find itself in a situation where no neighboring sites are
 available. Note that it cannot backtrack its own path either, and in such a case
-the walk will be terminated despite the setting of \textit{Avoid unvalid}.
+the walk will be terminated despite the setting of \textit{Avoid invalid}.
 
 
 \subsubsection{Spacing of walking paths} % minimum distance
@@ -545,7 +545,7 @@ One way to mittigate this issue is to use the six directions from the center ele
   \label{fig:stay_or_break}
 \end{figure}
 
-The \textit{Stay or break} feature is still subject to previously defined rules. For instance, in the case where the preferred site is not available, the walker will either terminate when going there, or the preferred site is removed from the neighbor list when \textit{avoid unvalid: True}. In the latter case, the walker will be forced to break out of its direction and follow the new direction that it happens to go in.
+The \textit{Stay or break} feature is still subject to previously defined rules. For instance, in the case where the preferred site is not available, the walker will either terminate when going there, or the preferred site is removed from the neighbor list when \textit{avoid invalid: True}. In the latter case, the walker will be forced to break out of its direction and follow the new direction that it happens to go in.
 
 
 \subsubsection{Deployment schemes} % Grid start, Centering, RN6

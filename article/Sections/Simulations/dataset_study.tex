@@ -53,7 +53,7 @@ This indicates that the correlation might be associated with the flexibility of
 the configurations since these can be taken to higher absolute values of strain.
 This is further supported by the fact that the mean friction and the rupture
 strain are also strongly positively correlated $(0.78)$. From~\cref{fig:corrcoef_matrix} we also observe that the contact is negatively
-correlated with the mean friction $(-0.67)$ and the strain value $(-0.74)$. This is generally consistent with the trend observed in the pilot study in~\cref{fig:multi_stretch} where the increasing strain was correlated with a decreasing contact and mainly increasing mean friction. However, we must note that the correlation coefficient is a measure of the strength and slope of a forced linear fit on the data. Since we have observed a non-linear trend between friction and strain (\cref{fig:multi_stretch_mean_fric}) we should not expect any near 100 \% correlations. Additionally, we also notice that all correlations to normal load are rather low, which aligns well with the findings in the pilot study. 
+correlated with the mean friction $(-0.67)$ and the strain value $(-0.74)$. This is generally consistent with the trend observed in the pilot study in~\cref{fig:multi_stretch} where the increasing strain was correlated with a decreasing contact and mainly increasing mean friction. However, we must note that the correlation coefficient is a measure of the quality of a forced linear fit on the data. Since we have observed a non-linear trend between friction and strain (\cref{fig:multi_stretch_mean_fric}) we should not expect any near 100 \% correlations. Additionally, we also notice that all correlations to normal load are rather low, which aligns well with the findings in the pilot study. 
 
 \cref{fig:corr_vis} shows a visualization of the data (excluding
 the pilot study configurations) for chosen variable pairs on the axes. This
@@ -242,7 +242,7 @@ mainly horizontal-orientated cuts. This has some structural reminiscence with th
 
 
 
-\section{Machine learning}
+\section{Machine learning}\label{eq:ML}
 Given the \acrshort{MD}-based dataset we investigate the possibilities of training a machine learning model to predict the friction behavior from a given Kirigami configuration, strain and load. 
 
 \subsection{Architecture}
@@ -510,7 +510,7 @@ $(1.5\%)$ set. Thus we might get the idea that the relative error is especially
 high on the validation set due to a few cases of very low rupture strains in the
 Random walk patterns which would shift up the average.
 
-\hl{I find it a bit disturbing to use the ``$\sim$'' for all rounding of numbers but can I omit it?}
+\hl{I find it a bit disturbing to use the ``$\sim$'' too much, but I would like to indicate that a round the numbers... can I omit it?}
 
 \cref{fig:final_model_eval} shows the mean friction, max friction and relative contact in comparison to the Tetrahedron $(7, 5, 1)$ and Honeycomb $(2,2,1,5)$ used in the pilot study. We note that these configurations are also partly contained within the training data, but this serves as a visualization of how the fit looks for $R^2$ scores above $98 \%$. We will evaluate a true test set later on based on the proposals from the accelerated search. 
 
@@ -537,28 +537,33 @@ Random walk patterns which would shift up the average.
   \label{fig:final_model_eval}
 \end{figure}  
 
-Using our final model, we evaluate the performance for the task of ranking the configurations by the properties of interest. That is, we go through all the configurations in the dataset for the Tetrahedron, Honeycomb and Random walk respectively, calculate the properties of interest and sort the configurations accordingly. This is shown in~\crefrange{tab:ML_ranking_pop}{tab:ML_ranking_RW} in comparison to the actual ranking in the dataset. Generally, we find that the
-\acrshort{ML} performs rather well in the ranking of the maximum properties, but it is deviating a bit significantly the minimum friction
-property. This can be attributed to the fact that the precision needed for an
-accurate ranking among the minimum friction cases is a lot greater than for the
-remaining properties. The \acrshort{ML} model gives mostly similar predictions
-for the max-categories ranking for the Tetrahedron and Honeycomb pattern but
-struggles a bit more for the Random Walk. Looking at the values for the top
-candidates in the maximum properties we see that it is generally within a
-$\sim 0.2$ nN range which is promising. 
+Using our final model, we evaluate the performance for the task of ranking the
+configurations by the properties of interest. That is, we go through all the
+configurations in the dataset, for the Tetrahedron, Honeycomb and Random walk
+respectively, calculate the properties of interest and sort the configurations
+accordingly. This is shown in~\crefrange{tab:ML_ranking_pop}{tab:ML_ranking_RW}
+in comparison to the actual ranking in the dataset. Generally, we find that the
+\acrshort{ML} performs rather well in the ranking of the maximum properties by
+getting the right configurations into the top 3 three, while it is performing a
+lot worse for the minimum friction property. This latter observation can be
+attributed to the fact that the precision needed for an accurate ranking among
+the minimum friction cases is a lot greater than for the remaining properties.
+This is supported by the fact that the model predicts the Random walk 12
+(\cref{tab:ML_ranking_RW}) to have negative mean friction, showing a lack of
+precision. For the maximum categories, we find that the model gives a slightly
+better ranking for the Tetrahedon and Honeycomb in comparison to the Random walk
+patterns. When considering the actual predicted property scores for the maximum
+properties we find that the model predictions are generally within a $\sim 0.2$
+nN in the top 5. This gives an incentive that our model can be used to perform
+an accelerated search of new configurations yielding a meaningful ranking of
+property scores. 
 
-
-%
-%
-% Working here
-%
-%
-
+% the task of assigning ordinal numbers, i.e.\ predicting the relative ranking, to the configurations. 
 
 \begin{table}[H]
   \begin{center}
   \caption{Tetrahedon}
-  \label{tab:ML_ranking_pop}
+  \label{tab:ML_cranking_pop}
   \begin{tabular}{|c|c|c?{0.3mm}c|c|c|} \hline
     ML & \multicolumn{2}{c?{0.3mm}}{Data} &  \multicolumn{2}{c|}{\acrshort{ML}} & Data \\ \cline{2-5}
     Rank & Config & Value [nN] & Config & Value [nN] & Rank \\ \hline
@@ -663,23 +668,17 @@ $\sim 0.2$ nN range which is promising.
 
 
 \section{Accelerated Search}
-
-Having trained a machine learning (\acrshort{ML}) model we use it for an extended accelerated search for further optimization of the friction properties of interest. We approach this search by two different methods:
+From~\cref{eq:ML} we have found promising results that we can use a machine learning model to predict the friction behavior. This enables us to omit the \acrshort{MD} simulations in the evaluation process and perform an accelerated search through new configurations. We will use the friction properties of interest as our main optimization metrics. We approach the accelerated search by two different methods:
 \begin{enumerate}
-  \item Using the generative algorithms developed for the creation of the Tetrahedron, Honeycomb and Random walk patterns, we create yet an extended dataset and evaluate the performance using the \acrshort{ML}.
-  \item Using the genetic algorithm method we perpetuate the configurations and optimize for the maximum drop property using the \acrshort{ML} model to evaluate the fitness function. 
+  \item Using the generative algorithms developed for the creation of the Tetrahedron, Honeycomb and Random walk patterns, we create an extended dataset and evaluate the performance using the \acrshort{ML} model.
+  \item Using the genetic algorithm method we perturb (mutate) the configurations and optimize for the maximum drop property using the \acrshort{ML} model to evaluate the fitness function. 
 \end{enumerate}
 
 
 \subsection{Patteren generation search}
-% Judging from the ranking in~\cref{tab:ML_ranking_pop},~\cref{tab:ML_ranking_hon} and
-%~\cref{tab:ML_ranking_RW}, the \acrshort{ML} model showcases a reasonable
-% performance with respect to the task of assigning ordinal numbers, i.e.\ predictiong the relative ranking, to the configurations. 
-
-We utilize the pattern generators to create an extended dataset for our search. For the Tetrahedron and Honeycomb patterns, the increment of the parameters will eventually lead to the main structures becoming so large they do exceed the size of the sheet. Thus, we can essentially perform a
-full search ``maxing out'' the parameters of these patterns. We estimate
+We utilize the pattern generators developed in~\cref{chap:system} to create an extended dataset for our search. For the Tetrahedron and Honeycomb patterns, the increment of the parameters will lead to an increased spacing within the pattern. This will eventually lead to the main pattern structures exceeding the size of the sheet. Thus, we can essentially perform a full search ``maxing out'' the parameters of these patterns. We estimate
 that this is done with the max parameters, $(60, 60, 30)$ for the Tetrahedron,
-and $([30, 30, 30, 60])$ for the Honeycomb. We use a random reference position
+and $([30, 30, 30, 60])$ for the Honeycomb pattern. We use a random reference position
 and regenerate each unique parameter 10 times to explore translational effects. This gives in total 135k configurations for the
 Tetrahedron pattern and 2025k for the Honeycomb pattern. For the Random walk
 generator, we do a Monte Carlo sampling. In each sample, we draw the scalar values, either from a uniform (U) or logarithmic uniform (LU) distribution as follows.
@@ -687,57 +686,23 @@ generator, we do a Monte Carlo sampling. In each sample, we draw the scalar valu
   \text{Num. walks} &\sim \text{U}[1, 30] & \text{Max. steps} &\sim \text{U}[1,30]  & \text{Min. dis.} &\sim \text{U}[0,4] \\
   \text{Bias direction} &\sim \text{U}[0, 2\pi] & \text{Bias. strength} &\sim \text{LU}[0,10]  & p_{\text{stay}} &\sim \text{U}[0,1]  
 \end{align*}
-Notice that we use discrete distribution for the parameters requiring integers. For the binary parameters \textit{Connection}, \textit{Avoid unvalid},
-\textit{RN6} and \textit{Grid start} we simply set the values by a 50--50 chance. The remaining parameters are kept constant at \textit{Periodic: True} and \textit{Centering:False} throughout the search. For the handling of clustering, we implement the repair algorithm such that the sheet is repaired by the least modifications approach rather than retrying the generation several times \hl{Make sure that this is introduced somewhere}. Due to the extra computation time associated with the
-random walk and the repair algorithm, we only generate 10k configurations within
-this class. For the evaluation of the configurations we use a normal load of \SI{5}{nN} and generate a strain curve in the domain 0--200 \% using 100 evenly spaced points. Top candidate results for each property are shown in~\cref{tab:pattern_search} including a comparison to the dataset top candidates
-originally shown in~\cref{tab:data_properties}. The random walk top five candidates are visualized in~\cref{fig:RW_search_top5}.
-
-First of all, the search shows a rather consistent result regarding the minimization of friction where the top candidates all share the same feature of being sparsely cut. For the Random walk, we see this visually in\cref{fig:RW_search_top5}, while for the Tetrahedon and Honeycomb patterns, this is evident from the configuration parameters shown in~\cref{tab:pattern_search} where the parameters reveal a high spacing between the
-cuts. The porosity of the minimum friction top candidates are all rather low being $1.5\%$, $5.6\%$, and $1.6\%$ for the Tetrahedron, Honeycomb and Random walk respectively. These results point toward Kirigami modifications not being applicable for a lowering of friction, within the limitations of our numerical setup. This is in agreement with the initial analysis on the \acrshort{MD} dataset, and hence the dataset does not provide evident suggestions for friction minimization. Thus we might argue that the model is limited on the dataset for this property. The fact that the top candidates all take
-negative values also shows that the model is not reliable in this domain. By
-asking for the lowest friction we effectively take advantage of the sparsely populated areas of the model parameter space which can lead to unphysical predictions. In order to resolve this problem one might attempt an extension of the dataset and possibly also applying a physical constraint for positive friction values. 
-% Note that the full ranking did not strictly favor the least amount of
-% atoms removed, but considering that the relative error is high for this domain we can not expect this kind of precision. 
-
-
-Among the remaining maximum-type properties, we find competing values for the
-Honeycomb and Random walk classes. When taking a closer look at the ranking for
-each property it becomes apparent that the predictions are highly sensitive to
-the reference position parameters used for the Tetrahedron and Honeycomb
-pattern. Since we repeated each pattern parameter 10 times for random reference
-positions, we initially expected to get a ranking in sets of 10. However, the
-ranking shows contiguous appearing sets in the range 1--5 which points toward a
-sensitivity for pattern translation. Hence we investigate this further by
-evaluating the scores for a systematic change of the reference position for
-selected configurations. We generally finn the max drop parameter to give the
-highest variation and thus we show scores for the max drop top candidates,
-Tetrahedron $(1,7,1)$, $(5,3,1)$ and Honeycomb $(3,3,5,3)$, $(2,3,3,3)$, in~\cref{fig:ref_search_top_data}. It becomes evident that the predictions vary
-drastically with the translation of these patterns. The emerging question is
-then whether this is actually grounded in a physical phenomenon or simply a
-deficiency in the \acrshort{ML}. Even though the patterns are periodic in the
-x-y-plane, with period matching the unique translations shown in~\cref{fig:ref_search_top_data}, the translation will determine the specific
-configuration of the edge. Previous studies of static friction and stick-slip
-behavior point to the importance of edge effects \hl{look back at theory and
-maybe source}, and thus for a sheet where the atoms sitting on the $\pm x$ free
-sides constitutes about 2.5\% of the inner sheet atom count, it is not
-unreasonable that the translation might result in a significantly different
-outcome. In that case, the search through reference positions highlights that
-the translation can be key to optimizing for certain properties. However, the
-results might also indicate that the model is either overfitted or that we
-simply did not provide enough data to reach a generalization of the complex
-physical behavior of the system. The sensible way forward to unravel this would
-be to generate additional translational variants of the same configurations to
-investigate for any physical edge dependencies or otherwise strengthen the
-model. We earmark this suggestion for another study. When considering some of
-the strain curves we also find that the prediction of the rupture point plays
-an important role for the max drop property. As the rupture was often predicted
-on a descending part of the curve any variation to the rupture point will affect
-the max drop property quite significantly.
-
-
-We use the 20 configurations from the top candidates in the Random walk class as a test set. We sample 30 pseudo uniform strain values and use a normal load of \SI{5}{nN}. The test set gave a loss 2.13 which is two orders of magnitude higher than the validation and an average absolute error for the mean friction of 0.14 and rupture accuracy of 70 \%. This corresponded to an average negative $R^2$ score indicating that we would have been better off guessing on a constant value corresponding to the true data mean. This shows that the model is clearly not generalized. While some parts can be attributed to the overfitting of the model we believe that this is more likely to be a problem of a too small dataset. \hl{This was just recently added so I need to incorporate this in the further discussion... It is a bit sad.}. 
-
+Notice that we use discrete distribution for the parameters requiring integers.
+For the binary parameters \textit{Connection}, \textit{Avoid invalid},
+\textit{RN6} and \textit{Grid start} we simply set the values by a 50--50
+chance. The remaining parameters are kept constant at \textit{Periodic: True}
+and \textit{Centering: False} throughout the search. For the handling of
+clustering, we implement the repair algorithm such that the sheet is repaired by
+the least modifications approach rather than retrying the generation several
+times \hl{Make sure that this is introduced somewhere}. Due to the extra
+computation time associated with the random walk and the repair algorithm, we
+only generate 10k configurations within this class. For the \acrshort{ML}
+evaluation of the configurations we use a normal load of \SI{5}{nN} and generate
+a strain curve in the domain $[0,2]$ using 100 evenly spaced points. We compute
+the properties of interest and rank the configurations accordingly. The top
+candidates for each property are shown in~\cref{tab:pattern_search} including a
+comparison to the original dataset top candidates
+from~\cref{tab:data_properties}. The random walk top five candidates are
+visualized in~\cref{fig:RW_search_top5}.
 
 
 \begin{table}[H]
@@ -753,13 +718,56 @@ We use the 20 configurations from the top candidates in the Random walk class as
   max drop                      & $0.277$        & $1.250$        & $0.269$       &&   0.8841 & 1.2785 & 0.1818 \\ \cline{1-4} \cline{6-8}   
   \multicolumn{8}{c|}{} \\ \cline{2-4} \cline{6-8}
   \multicolumn{1}{c|}{\textbf{Configs.}} & Tetrahedron & Honeycomb & Random walk  && Tetrahedron & Honeycomb & Random walk  \\ \cline{1-4} \cline{6-8}
-  $\min F_{\text{fric}}$         & $(13,11,14)$ & $(14,25,7,19)$  & No naming &&   $(3,9,4)$ & $(2,5,1,1)$ & 12 \\ \cline{1-4} \cline{6-8}
-  $\max F_{\text{fric}}$         & $(1,3,1)$    & $(2,1,1,1)$     & No naming &&   $(5,3,1)$ & $(2,1,1,1)$ & 96 \\ \cline{1-4} \cline{6-8}
-  $\max \Delta F_{\text{fric}}$  & $(1,3,1)$    & $(2,1,1,1)$     & No naming &&   $(5,3,1)$ & $(2,1,5,3)$ & 96 \\ \cline{1-4} \cline{6-8}   
-  max drop                      & $(1,7,1)$    & $(3,3,5,3)$     & No naming &&   $(5,3,1)$ & $(2,3,3,3)$ & 01 \\ \cline{1-4} \cline{6-8}   
+  $\min F_{\text{fric}}$         & $(13,11,14)$ & $(14,25,7,19)$  & \textit{no name} &&   $(3,9,4)$ & $(2,5,1,1)$ & 12 \\ \cline{1-4} \cline{6-8}
+  $\max F_{\text{fric}}$         & $(1,3,1)$    & $(2,1,1,1)$     & \textit{no name} &&   $(5,3,1)$ & $(2,1,1,1)$ & 96 \\ \cline{1-4} \cline{6-8}
+  $\max \Delta F_{\text{fric}}$  & $(1,3,1)$    & $(2,1,1,1)$     & \textit{no name} &&   $(5,3,1)$ & $(2,1,5,3)$ & 96 \\ \cline{1-4} \cline{6-8}   
+  max drop                      & $(1,7,1)$    & $(3,3,5,3)$     & \textit{no name} &&   $(5,3,1)$ & $(2,3,3,3)$ & 01 \\ \cline{1-4} \cline{6-8}   
   \end{tabular}
   \end{center}
 \end{table}
+
+First of all, we notice that the top candidates for the minimum friction are all
+predicted to have a negative friction value. This unphysical prediction aligns with the previous observations that our model does not have the required precision to yield accurate predictions for this property. Moreover, we can argue that pursuing the optimization for a low friction value will eventually highlight the weaknesses of the model as we reward an unphysical negative value. In order to resolve this problem one might need to extend the training dataset and possibly include a physical constraint for positive friction values. However, by consulting the proposed minimum candidates we find that they all share the same feature of being sparsely cut.
+For the Random walk, we see this visually in~\cref{fig:RW_search_top5}, while
+for the Tetrahedon and Honeycomb patterns, this is evident from the
+configuration parameters shown in~\cref{tab:pattern_search} where the parameters
+reveal a high spacing between the cuts. The porosity of the minimum friction top
+candidates are all rather low being $1.5\%$, $5.6\%$, and $1.6\%$ for the
+Tetrahedron, Honeycomb and Random walk respectively. This further supports the idea that the Kirigami sheet can not readily be used to reduce friction within our system domain since the results point toward a non-cut sheet as the best minimum friction candidate.
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{figures/search/RW_search_top5.pdf}
+  \caption{RW search top results.}
+  \label{fig:RW_search_top5}
+\end{figure}  
+
+
+Among the remaining maximum properties, we find competing values for the
+Honeycomb and Random walk classes. However, the top-scoring values for the Honeycomb correspond to configurations within the original dataset which is also the case for the Tetrahedron top candidates. The only difference is the randomized reference position. When taking a closer look at the ranking for
+each property it becomes apparent that the predictions are highly sensitive to
+the reference position parameter used for the Tetrahedron and Honeycomb
+pattern. Since we repeated each pattern parameter 10 times with a random reference
+position, we initially expected to get a ranking in sets of 10. However, the
+ranking only shows contiguous appearing sets in the range of 1--5 which points toward a dependency on pattern translation. Hence we investigate this further by
+evaluating the scores for a systematic change of the reference position. We generally find the max drop parameter to give the
+highest variation and thus we show the max drop scores for the max drop top candidates Tetrahedron $(1,7,1)$, $(5,3,1)$ and Honeycomb $(3,3,5,3)$, $(2,3,3,3)$ in~\cref{fig:ref_search_top_data}. The results show that the max drop property prediction varies drastically with the translation of these patterns. The emerging question is
+then whether this is grounded in a physical phenomenon or simply a
+deficiency in the \acrshort{ML}. Even though the patterns are periodic in the
+x-y-plane, with a period according to the unique number of translations shown in~\cref{fig:ref_search_top_data}, the translation will determine the specific
+configuration of the edge. Previous studies of static friction and stick-slip
+behavior point to the importance of edge effects \hl{refer to theory or directly to the sources?}, and thus for a sheet where the atoms on the $\pm x$ free
+edge constitute about 2.5\% of the inner sheet atom count, it is not
+unreasonable that the translation might result in a significantly different
+outcome. In that case, the search through reference positions highlights that
+the translation can be key to optimizing for certain properties. However, the
+results might also indicate that the model is either overfitted or that we
+simply did not provide enough data to reach a generalization of the complex
+physical behavior of the system. The sensible way forward to unravel this would
+be to generate additional translational variants of the same configurations to
+investigate for any physical edge dependencies or otherwise strengthen the
+model by this data. We earmark this suggestion for another study. When considering some of the friction-strain curves we also find that the prediction of the rupture point plays an important role for the max drop property. As the rupture is often predicted on a descending part of the curve any variation to the rupture strain will affect the max drop property quite significantly.
 
 
 \begin{figure}[H]
@@ -792,22 +800,30 @@ We use the 20 configurations from the top candidates in the Random walk class as
       % \label{fig:}
   \end{subfigure}
   \hfill
-  \caption{\hl{CAPTION}}
+  \caption{\hl{CAPTION} \hl{Fix overlapping annotation text}}
   \label{fig:ref_search_top_data}
 \end{figure}
 
+In order to get insight into the generalization of the model, we
+evaluate the performance on a true test set. We use the 20 configurations given by the top 5 candidates for each of the properties of interest in the Random walk search shown in n~\cref{fig:RW_search_top5}. We calculate the ground truth using \acrshort{MD} simulation by sampling 30 pseudo uniform strain values using a normal load of \SI{5}{nN}. Unfortunately, the test set reveals a significantly worse performance than the validation scores reported so far. It shows a loss
+of 2.13, which is two orders of magnitude higher than the validation scores, an
+average absolute error for the mean friction of \SI{0.14}{nN} and a rupture
+accuracy of 70 \%. The mean friction average $R^2$ score is negative which indicates that our model performs worse than simply guessing on a constant
+value given by the true data mean. This reveals that our model is not
+generalized enough to provide accurate predictions on the newly generated Random
+walk configurations. This can mainly be attributed two reasons: 1) The test set data distribution is not similar to that of the training and validation data drawn from the original data set. 2) The considerations of the selected Tetrahedron and Honeycomb dataset, which overlapped with the training data, has led to an overfitting of the model. However, by going back to the hypertuning process and choosing the best model (C16D8) from the architecture complexity grid test given by the lowest validation score, trained with a constant learning rate, we get similar
+results. This indicates that the poor test result is not simply caused by the hypertuning choices. Instead, it points to the fact that our original training data does not contain a generalized distribution that accurately captures the full complexity of our system. This aligns with the high fluctuation in prediction value when translating the patterns. Thus we conclude that a machine learning approach might be feasible, given the promising validation scores, but that we need a bigger and more generalized dataset for a reliable prediction of new configurations. 
 
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{figures/search/RW_search_top5.pdf}
-  \caption{RW search top results.}
-  \label{fig:RW_search_top5}
-\end{figure}  
+
 
 
 
 \subsection{Genetic algorithm search}
+
+Despite the fact that our machine learning analysis indicates that the model are not generalized for the prediction on new configurations we investigate the appraoch of using a gentic algorithm for an accelerate search.
+
+
 
 % Mention that ve verify the algotithm on a test with maximizng ising enegy for a small image. Should produce chess-board pattern.
 

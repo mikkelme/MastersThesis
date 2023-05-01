@@ -860,8 +860,9 @@ if __name__ == '__main__':
     # mom_weight_search_compare_perf(path = '../ML/mom_weight_search_cyclic', save = False)
     
     
-    final_model_evaluation(model_path = '../ML/mom_weight_search_cyclic/m0w0', save = True)
+    # final_model_evaluation(model_path = '../ML/mom_weight_search_cyclic/m0w0', save = False)
     # final_model_compare_scores(model_path = '../ML/mom_weight_search_cyclic/m0w0')
+    final_model_compare_scores(model_path = '../ML/staircase_4/S16D8')
     plt.show()
 
 

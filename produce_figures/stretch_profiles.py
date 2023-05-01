@@ -368,7 +368,7 @@ if __name__ == "__main__":
     path = '../Data/CONFIGS/RW'
     
     # patterns_and_profiles(save = False)
-    patterns_and_profiles_2(save = True)
+    patterns_and_profiles_2(save = False)
     plt.show()
     
     
