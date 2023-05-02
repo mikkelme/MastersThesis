@@ -104,108 +104,122 @@ This is best attributed to a superlubric state of the graphene sheet as seen in 
 
 
 % 4: Capture trends with ML
-\subsection{Capture trends with ML}
-With the use of \acrshort{MD} simulations, we have generated an extended dataset
-of 9660 data points based on 216 Kirigami configurations (Tetrahedron: 68,
-Honeycomb: 45, Random walk: 100, Pilot study: 3) under various strains and normal loads. The dataset reveals some general correlations with mean friction,
+\subsection{Capture trends with machine learning}
+The dataset reveals some general correlations with mean friction,
 such as a positive correlation to strain (0.77)
 and porosity (0.60), and a negative correlation to contact area (-0.67). These
-results align with the findings from the pilot study suggesting that these
-features are relevant, but not necessarily the cause, of the observed phenomena.
-By defining the friction property metrics: $\min F_{\text{fric}}$,  $\max
-F_{\text{fric}}$, $\max \Delta F_{\text{fric}}$ and max drop (maximum decrease in friciton with strain), we investigated
-the top candidates within our dataset. From these results, we found no incentive of the possibility to reduce friction with the Kirigami approach since
-the non-cut sheet provided the lowest overall friction. Regarding the maximum
+results align with the finding in the pilot study, suggesting that the change in friction is associated with cuts in the sheet (porosity) and a changing contact area. 
+
+By defining the friction property metrics: $\min F_{\text{fric}}$, $\max
+F_{\text{fric}}$, $\max \Delta F_{\text{fric}}$ and max drop (maximum decrease in friction with strain), we investigated the top candidates within our dataset. From these results, we found no incentive for the possibility to reduce friction with the Kirigami approach since the non-cut sheet provided the lowest overall friction. Regarding the maximum
 properties, we found an improvement from the original pilot study values and
 with the Honeycomb pattern producing the highest scores. This suggests that the data contains some relevant information for optimization with respect to
 these properties. Among the top candidates, we found that a flat friction-strain profile is mainly associated with little decrease in the
-contact area and vice versa. 
+contact area and vice versa which again aligns with the pilot study findings.  
 
 For the machine learning investigation, we have implemented a VGGNet-16-inspired
 convolutional neural network with a deep ``stairlike'' architecture:
 C32-C64-C128-C256-C512-C1024-D1024-D512-D256-D128-D64-D32, for convolutional
 layers $C$ with the number denoting channels and fully connected (dense) layers
-$D$ with the number denoting nodes. The final model contains \num{1.3e7} and was
-trained using the ADAM optimizer for a cyclic learning rate and momentum scheme
-for 1000 epochs while saving the best model during training based on the
-validation score. The model validation performance gives a mean friction $R^2$
+$D$ with the number denoting nodes. The final model contains \num{1.3e7} parameters and was trained using the ADAM optimizer for a cyclic learning rate and momentum scheme. We trained the network for a 1000 epochs while saving the best model during training based on the validation score. The model validation performance gives a mean friction $R^2$
 score of $\sim 98\%$ and a rupture accuracy of $\sim 96 \%$. However, we got
 lower scores for a selected subset of the Tetrahedon ($R^2 \sim 88.7 \%$) and
 Honeycomb ($R^2 \sim 96.6$) pattern based on the top 10 max drop scores
 respectively. These scores were lower despite the fact that the selected set was
-partly included in the training data as well and the fact that the hyperparameter selection favored the performance on this selected set. Thus we conclude that these
-selected configurations, associated with a highly non-linear friction-strain
-curve, represent a bigger challennge for machine learning prediction. One interpretation is that these involve
+partly included in the training data as well in addition to the fact that the hyperparameter selection favored the performance on this selected set as well. Thus we conclude that these selected configurations, associated with a highly non-linear friction-strain curve, represent a bigger challenge for the machine learning prediction. One interpretation is that these involve
 the most complex dynamics and perhaps that this is not readily distinguished
-from the behavior of the other configurations which constitutes the majoriry of the data set. By evaluating the ability for the model to rank the dataset according to the property scores we found in general a good representation of the top 3 scores for the maximum categories, while the minimum friction property ranking was lacking. We attribute this latter observation to a higher need for precision in order to rank the lowest friction values properly which the model did not possess.
+from the behavior of the other configurations which constitute the majority of the data set. By evaluating the ability of the model to rank the dataset according to the property scores we found in general a good representation of the top 3 scores for the maximum categories, while the minimum friction property ranking was lacking. We attribute this latter observation to a higher need for precision which the model did not possess.
 
-In order provide a more true evaluation of the model performance we created a test set based on \acrshort{MD} simulations for an extended Random walk search. This test revealed a significantly worse performance than seen for the validation set with a two-order of magnitude higher loss and a negative friction mean $R^2$ score
-which corresponds to the prediction being worse than simply guessing on a
-constant value based on the true data mean. However, by considering one of the early hypertuning choices, regarding architecture complexity, we evaluated the model when prioritizing mainly for the lowest validation loss. This gave similar performance on the test set which indicates that it is not simply a product of a biased hypertuning process, since we based our choices on the selected confgiruation set (which overlapped with the training data). Instead, it points to the fact that our original dataset did not cover a wide enough configuration distribution to accurately capture the full physical complexity of the Kirigami friction behavior.  
+In order to provide a more true evaluation of the model performance we created a
+test set based on \acrshort{MD} simulations for an extended Random walk search.
+This test revealed a significantly worse performance than seen for the
+validation set with a two-order of magnitude higher loss and a negative friction
+mean $R^2$ score which corresponds to the prediction being worse than simply
+guessing on the true data mean. However, by reconsidering the choice of
+architecture complexity hypertuning with respect to the validation loss, we
+found similar poor results on the test set. This indicates, that the test score
+is not simply a product of a biased hypertuning process but instead points to
+the fact that our original dataset did not cover a wide enough configuration
+distribution to accurately capture the full physical complexity of the Kirigami
+friction behavior. Based on the validation scores we conclude that the use of
+machine learning is feasible, but that we need to improve the dataset in order
+to reach a reliable model. 
 
 
 % 5: Accelerated search
 \subsection{Accelerated search}
 Using the \acrshort{ML} model we performed two types of accelerated search. One
 by evaluating the property scores of an extended dataset and another with the
-use of the genetic algorithm approach. For the extended dataset search we used
+use of the genetic algorithm approach. For the extended dataset search, we used
 the developed pattern generators to generate $\SI{135}{k} \times 10$
 Tetrahedon, $\SI{2025}{k} \times 10$ Honeycomb and \SI{10}{k} Random walk
 patterns. For the minimum friction property, the search suggests a favoring of a
 low cut density (low porosity) which aligns with the overall idea that the
-dataset does not provide an incentive for further friction reduction. The
+dataset does not provide an incentive for further friction reduction with the non-cut sheet resulting in the lowest friction. The
 maximum properties resulted in some minor score increases but the suggested
-candidates were overlapping with the original dataset. By investigating the
-sensitivity to translation of the Tetrahedron and Honeycomb patterns we found that the model predictions varied drastically with pattern translation. This can be attributed to a physical dependency since the edge of the sheet is effected by this
-translation. However, due to the poor model performance on the test set, we find it more likely to be a model insufficienty arising from a lacking training dataset. 
+candidates were mainly overlapping with the original dataset. By investigating the model prediction sensitivity to the translation of the Tetrahedron and Honeycomb patterns we found that the model predictions varied drastically with small translations. This can be attributed to a physical dependency since the edge of the sheet is affected by this
+translation. However, due to the poor model performance on the test set, we find it more likely to be a model insufficiency related to the lacking dataset.
 
 For the genetic algorithm approach, we investigated the optimization for the max
-drop property with respect to starting population based on the result from the
+drop property using starting population based on the result from the
 extended dataset accelerated search, and some random noise initializations with
 different porosity values. This approach did not provide any noteworthy
 incentive for new design structures worth more investigation. In general, the
 initialization of the population itself proved to be a more promising strategy
-tha the genetic algroithm. However, this is highly affected by the uncertainty
+than the genetic algroithm. However, this is highly affected by the uncertainty
 of the model predictions, and thus we did not pursue this any further. By
 considering the Grad-CAM explanation method we found that the model predictions
-sometimes seem to pay considerable attention to the top and bottom edge of the
+occasionally payed considerable attention to the top and bottom edge of the
 configurations. This is surprising since these are not true edges but are
 connected to the pull blocks in the simulation. Despite the uncertainties in the
 predictions, we argue that this might be attributed to thermostat effects from
-the pull blocks and thus we note this as a feature worth more studying. 
-
+the pull blocks and thus we note this as a feature worth investigating in the simulations.
 
 
 % 6: Negative friction coefficient
 \subsection{Negative friction coefficient}
-By enforcing a coupling between load and stretch, mimicking a nanomachine attached to the sheet, we investigated the load curves arising from loading of the Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$ pattern from the pilot study. The non-linear trend observed for increasing strain carried over to the coupled system as well producing a highly non-linear friction-load curve. This demonstrates a negative friction coefficient \hl{say something about the values}.
+By enforcing a coupling between load and sheet tension, mimicking a nanomachine
+attached to the sheet, we investigated the load curves arising from the loading
+of the Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$ pattern from the pilot
+study. The non-linear trend observed for increasing strain carried over to the
+coupled system as well producing a highly non-linear friction-load curve. The
+Honeycomb pattern exhibited additionally a non-linear strain-tension curve which
+resulted in an almost discontinuous increase in friction for the initial
+increase in load. We attribute this feature to an unfolding process visually
+confirmed from the simulation frames. For the coupled system with a
+load-to-tension ratio of 6 we found regions in the friction-load curve with
+significant negative slopes. By considering the maximum and minimum points for
+such regions we estimated the average friction coefficient to be $-0.31$ in the
+range $F_N = [4.65, 6.55]$ nN for the Tetrahedron pattern and $-0.38$ in the
+range $F_N = [0.71, 4.31]$ nN for the Honeycomb pattern. .
 
 
+Our findings suggest that the combined use of Kirigami cuts and strain has considerable potential for friction control, especially under the influence of a coupled system of load and strain.
+\section{Outlook}
+In this thesis, we have successfully shown that certain Kirigami designs exhibit non-linear behavior with strain. This discovery was done through a focus on the exploration of the effects of different designs. This invites further investigation of the underlying mechanisms behind this phenomenon. By considering one or two design, based on Tetrahedron and Honeycomb patterns, it would be valuable to investigate the effects on the friction-strain curve under various physical parameters. 
 
-\section{Outlook / Perspective}
-% Now we can lock in on a single Kirigami sheet design for further investigation based on the one we found
+First of all, we suggest an investigation of how the friction-strain curve
+depends on temperature, sliding speed, spring constant, and loads for an
+increased range $F_N > 100 nN$. This is especially interesting in the context of
+physical conditions leading to a stick-slip behavior since our study takes a
+basis in smooth sliding friction. Moreover, it would be valuable to verify that
+the choices for relaxation time, pauses, interatomic potentials and substrate
+material are not critical for the qualitative observations. Especially the
+Adaptive Intermolecular Reactive Empirical Bond Order (AIREBO) potential for the
+modeling of the graphene sheet might be of interest. In this context, it might
+also be useful to investigate the effects of excluding adhesion in the
+simulations. In order to gain further insight into the role of commensurability
+one could vary the scan angle as well. Since we suspect that our simulation
+corresponds to a incommensurable superlubric state, certain scan angles is
+hypothesized to yield higher friction. If the friction-strain curve is based on a commensurability effect this might yield qualitative different results and perhaps also allowing for a lowering of friction with strain. We might also consider investigating the friction-strain relationship under a uniform load to get insight into how the loading distribution effects the out-of-plane buckling and associated frictional effects.
 
-Having successfully demonstrated a non-linear effect on friction with increasing
-strain of the sheet our results invite a series of further studies to investigate this relation. First of all, it would be valuable to investigate how the friction-strain curve depend on temperature, sliding speed, spring constant, and on load for an increased range $F_N > 100 nN$. This is especially interesting in the context up conditions leading to a stick-slip behvaior as our results were carried in the smooth sliding. Moreover, it would be important to verify that the choices for relaxation time and pauses are not critical for the qualitative observations as well as trying a different
-interatomic potential for the graphene and perhaps an entirely different
-substrate material. Especially the Adaptive Intermolecular Reactive Empirical
-Bond Order (AIREBO) potential for the modeling of the graphene sheet might be of interest. The effects from excluding adhesion (the \acrshort{LJ} interaction) can also be useful for the investigation of the observed phenomena. 
+Another topic worth studying is the relation to scale and edge effects. This includes an investigation of scaling effects, considering the ratio of the sheet to the edge, but also a translation of the sheet patterns to study the presence of any Kirigami-induced edge effects. The latter is motivated by the findings from the machine learning predictions. With this regard, we would also suggest a more detailed study of the effect of the thermostat in the pull blocks which is suggested to have a possibly importance when judging from the Grad-CAM analysis. 
 
+For the machine learning approach, our findings suggest that the dataset is extended considerably. This can be done with respect to the aim of exploring Kirigami configurations as done in this thesis, but it can also be done for a single configuration under variation of some of the simulation parameters to support some of the above mentioned investigations. In that context, one could consider more advanced model architectures and machine learning techniques. If successful this would invite further studies of inverse design methods such as GAN or diffusion models. 
 
-In order to get a better understanding of the underlying mechanism for the friction-strain relationship we might investigate commensurability effects further by varying the scan angle. we might also consider investigating the friction-strain relationship under a uniform load to get insight into whether the loading distribution is of importance. Another topic worth studying is the relation to scale. Thus it would be interesting to study size effects but also further look into edge effects by translating the pattern. With this regard, we would also suggest a more detailed study of the effect from the thermostat in the pull blocks which is suggested to have a possibly importance by judging from the machine learning model Grad-CAM analysis. 
-
-For machine learning, we can either try to extend the data set to resolve the issue of the model not being generalized enough. We can also create a dataset for a single kirigami design and include some of the mentioned physical variables above and attempt to use machine learning for unraveling these relations. In that context we would advice for as more detailed investigation of machine learning techniques. If succesfull this would invite a study of inverse design methods such as GAN or diffusion models. 
-
-\begin{itemize}
-  \item How is this behavior effected by scaling?
-  \item How does the distirbution of normal load effect the Kirigami friction behavior?
-  \item Things to vary: load range, scan directions, adhesive forces, longer relaxation time, different potential (AIREBO)
-  \item Investigate if the contact area is effecting the friciton non-linear by turning of friction force for atoms corresopnding to those that lift of from the sheet during the out-of-plane buckling. 
-  \item Investigations of commensurability effects.
-  \item Study dependency of translation of the patterns as suggested by the ML results. 
-  \item Investigate effects from pull blocks...
-  \item Investigate effects from the thermostat since the top and bottom edges was shown interest by the model prediction.
-\end{itemize}
+% \begin{itemize}
+%   \item Investigate if the contact area is effecting the friciton non-linear by turning of friction force for atoms corresopnding to those that lift of from the sheet during the out-of-plane buckling. 
+% \end{itemize}
 
 % Things to include here
 % \begin{itemize}
