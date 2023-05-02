@@ -102,19 +102,25 @@ C9CP05445F, chem_libretexts_LJ}. The Lennard-Jones (\acrshort{LJ}) model is prob
 \end{align}
 where $r$ is the interatomic distance with cut-off $r_c$, $\epsilon$ is the
 depth of the potential well and $\sigma$ the interatomic distance where the
-the potential is zero. By solving for the potential minimum ($dE/dr = 0$) we find the equilibrium distance to be $r_0 = \sigma 2^{1/6}$. This makes for a slightly more intuitive interpretation of $\sigma$ as the parameter which sets the equilibrium distance between atoms, i.e.\ the dividing line for which the force is repulsive or attractive. We will adopt the potential parameters from Li et al.~\cite{li_evolving_2016} with $\sigma = \SI{3.0}{\text{Å}}$ and $\epsilon = \SI{0.0092}{eV}$.
+the potential is zero. The potential is sketched in~\cref{fig:LJ_pot}
+
+By solving for the potential minimum ($dE/dr = 0$) we find the equilibrium distance to be $r_0 = \sigma 2^{1/6}$. This makes for a slightly more intuitive interpretation of $\sigma$ as the parameter which sets the equilibrium distance between atoms, i.e.\ the dividing line for which the force is repulsive or attractive. We will adopt the potential parameters from Li et al.~\cite{li_evolving_2016} with $\sigma = \SI{3.0}{\text{Å}}$ and $\epsilon = \SI{0.0092}{eV}$.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\linewidth]{figures/theory/LJ_pot.pdf}
+  \caption{\hl{Caption}}
+  \label{fig:LJ_pot}
+\end{figure}
 
 
 \subsection{Stillinger-Weber}\label{sec:wb}
-% Todo: Add some potential curve figure? or figure of three body angles?
-\hl{TODO: Add potential figure and or figure illustrating three body angles}.
-
 The theoretical background of this subsection is based on \cite{docs_lammps_sw, PhysRevB.31.5262}. The Stillinger-Weber potential takes the form of a three-body potential
 \begin{align*}
   E &=\sum_i \sum_{j>i} \phi_2(r_{i j})+\sum_i \sum_{j \neq i} \sum_{k>j} \phi_3(r_{ij}, r_{ik}, \theta_{ijk}),
 \end{align*}
 where $r_{ij}$ denotes the distance between atom $i$ and $j$, and $\theta_{ijk}$
-the angle between bond $ij$ and $jk$. The summation is over all neighbors $j$
+the angle between bond $ij$ and $jk$ (see \cref{fig:three_body_angle}). The summation is over all neighbors $j$
 and $k$ of atom $i$ within a cut-off distance $r = a\sigma$. \\
 The two-body term $\phi_2$ builds from the \acrshort{LJ} model with the addition of an exponential cutoff term
 \begin{align}
@@ -136,6 +142,17 @@ where $\theta_{0,ijk}$ is the equilibrium angle. The first term of~\cref{eq:sw_3
 based on a cosine angle distance from the equilibrium angle. The final two terms
 act again as a cut-off function by driving the potential to zero at $r_{ij} =
 a_{ij}\sigma_{ij}$ and $r_{ik} = a_{ik}\sigma_{ik}$ respectively. We adopt the parameters for Si-Si suggested in the original paper by Stillinger and Weber \cite{PhysRevB.31.5262} which is shown in \cref{tab:sw_param} along with an interpretation of each model parameter.
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.4\linewidth]{figures/theory/three_body_angle.pdf}
+  \caption{\hl{Caption}}
+  \label{fig:three_body_angle}
+\end{figure}
+
+
+
 
 
 \begin{table}[H]
@@ -182,7 +199,7 @@ a_{ij}\sigma_{ij}$ and $r_{ik} = a_{ik}\sigma_{ik}$ respectively. We adopt the p
 The theoretical basis in this subsection is based on \cite{docs_lammps_tersoff,PhysRevB.37.6991}. The Tersoff potential abandons the idea of a general $n$-body form and attempts
 instead to build the model on a more physics-informed approach; The more
 neighbors an atom has the weaker the bonds will be. Thus, it introduces the bond
-order (bond strength), which is environment specific and decreases with increasing bond coordination (number of neighbors for a given atom). The potential energy is taken to have the form
+order (bond strength), which is environment specific and decreases with increasing bond coordination (number of neighbors for a given atom). A sketch of the Tersoff potential can be seen in \cite{fig:bond_order}. The potential energy is taken to have the form
 \begin{align*}
   E &= \sum_i E_i = \frac{1}{2}\sum_{i \ne j} V_{ij}, \\
   V_{ij} &= f_C(r_{ij}) \big[f_R(r_{ij}) + b_{ij}f_A(r_{ij})  \big],
@@ -236,6 +253,15 @@ are adopted from J. Tersoff \cite{PhysRevB.39.5566} and summarized in
 \cref{tab:tersoff_param}.
 
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\linewidth]{figures/theory/Bond-order_interatomic_potential.png}
+  \caption{\hl{Caption} \cite{wiki:bond_order}}
+  \label{fig:bond_order}
+\end{figure}
+
+
+
 \begin{table}[H]
   \begin{center}
   \caption{Parameters for the Tersoff potential used for intermolecular interations in the graphene sheet}
@@ -262,53 +288,45 @@ are adopted from J. Tersoff \cite{PhysRevB.39.5566} and summarized in
 \end{table}
 
 
-\section{Integration}\label{sec:integration}
-% https://www.eng.uc.edu/~beaucag/Classes/AdvancedMaterialsThermodynamics/Books/%5BComputational%20science%20(San%20Diego,%20Calif.)%5D%20Daan%20Frenkel_%20Berend%20Smit%20-%20Understanding%20molecular%20simulation%20_%20from%20algorithms%20to%20applications%20(2002,%20Academic%20Press%20)%20-%20libgen.lc.pdf
 
-Assuming that one has defined a system of particles, setting the atom types, initial positions and velocties, and interartomic potentials, we need
-to move the system forward in time. By solving Newtons equations of motion we achieve this by effectively sampling the microcanonical ensemble characterized by a constant
-number of particles $N$, volume $V$ and energy $E$, hence denoted NVE. Newtons
-equaitons of motion read
+
+
+\section{Integration}\label{sec:integration}
+Assuming that one has defined a system of particles, setting the atom types, initial positions and velocities, and interatomic potentials, we need
+to move the system forward in time. By solving Newton's equations of motion we achieve this by effectively sampling the microcanonical ensemble characterized by a constant number of particles $N$, volume $V$ and energy $E$, hence denoted NVE \cite{dfrenkel96:mc}. Newtons equations of motion read
 \begin{align}
   m_i \frac{d^2 \vec{r}_i}{dt^2} = \vec{F}_i = -\nabla U_i,
   \label{eq:NE}
 \end{align}
 where $i$ is the particle index, $m_i$ its mass, $\vec{r}_i = (x_i, y_i,
-z_i)$ the position, $t$ is time,  $\nabla_i = (\frac{\partial}{\partial x_i},
+z_i)$ the position, $t$ is time, $\nabla_i = (\frac{\partial}{\partial x_i},
 \frac{\partial}{\partial y_i}, \frac{\partial}{\partial z_i})$ and $U_i$ the
-potential energy. The potential energy is defined by the interatomic potentials and any external forces applied to the system. Since the forces defined by the potentials is conservative we expect the energy of the solution
+potential energy. The potential energy is defined by the interatomic potentials and any external forces applied to the system. Since the forces defined by the potentials are conservative we expect the energy of the solution
 to be conserved. We can redefine \cref{eq:NE} in terms of two coupled first
 order differential equations 
 \begin{align}
   \dot{\vec{v}}_i(t) = \frac{\vec{F}}{m_i}, \qquad \dot{\vec{r}}_i(t) = \vec{v}_i(t),
   \label{eq:NE_2}
 \end{align}
-where $\dot{x} = dx/dt$ is Newton's notation for the time derivative and $\vec{v} = (v_x, v_y, v_z)$ is velocity. Numerically we can solve the coupled equations by integrating over
-discrete timnesteps. That is, we discretize the solution into temporal steps
-$t_k = t_0 + k\Delta t$ with start time $t_0$ and time-step $\Delta t$. 
-
-% However small erros applied by the discrete integraiton algorithm we end up
-% having an energy error. This is sensitive to time step. 
+where $\dot{x} = dx/dt$ is Newton's notation for the time derivative and $\vec{v} = (v_x,v_y,v_z)$ is velocity. Numerically we can solve the coupled equations by integrating over discrete timesteps. That is, we discretize the solution into temporal steps $t_k = t_0 + k\Delta t$ with start time $t_0$ and time-step $\Delta t$. The choice of timestep should be chosen small enough to avoid instabilities in the simulation. 
 
 
 \subsection{Velocity Verlet}
 % http://www.physics.drexel.edu/~valliere/PHYS305/Diff_Eq_Integrators/Verlet_Methods/Diffrntleqn3.pdf
-% ttps://www2.ph.ed.ac.uk/~dmarendu/MVP/MVP03.pdf
+% https://www2.ph.ed.ac.uk/~dmarendu/MVP/MVP03.pdf
 
-A popular approach to the numerical integration of Newtons equations of motion, when written as two coupled first order differential equations \cref{eq:NE_2}, is the \textit{velocity verlet} algorithm. We can derive the algorithm by
-the use of Taylor expansions. We begin by expanding the next-step position
-vector $\vec{r}_i(t + \Delta t)$ at time $t$
+A popular approach to the numerical integration of Newton's equations of motion, when written as two coupled first-order differential equations~\cref{eq:NE_2}, is the \textit{velocity verlet} algorithm. We can derive the algorithm by the use of Taylor expansions. We begin by expanding the next-step position vector $\vec{r}_i(t + \Delta t)$ at time $t$
 \begin{align}
   \vec{r}_i(t + \Delta t) &= \vec{r}_i(t) + \dot{\vec{r}}_i(t) \Delta t + \frac{\ddot{\vec{r}}_i(t)}{2} \Delta t^2 + \mathcal{O}(\Delta t^3) \label{eq:vv_comp1},
 \end{align}
 where $\ddot{\vec{r}} = d^2\vec{r}/dt^2$ and $\Delta t^n$ is simply the relaxed
-notation for $(\Delta t)^n$. Thus, the remaning $\mathcal{O}(\Delta t^3)$ term is big O notation for the truncation including a dependence of $\Delta t^3$ and higher order. Similarly, we take the expansions of the next-step
+notation for $(\Delta t)^n$. Thus, the remaining $\mathcal{O}(\Delta t^3)$ term is big O notation for the truncation including a dependence of $\Delta t^3$ and higher order. Similarly, we take the expansions of the next-step
 velocity vector $\vec{v}_i(t+\Delta t)$ at time $t$ 
 \begin{align}
   \vec{v}_i(t+\Delta t) = \vec{v}_i(t) + \dot{\vec{v}}_i(t) \Delta t + \frac{\ddot{\vec{v}}_i(t)}{2}\Delta t^2 + \mathcal{O}(\Delta t^3).
   \label{eq:tay_v1}
 \end{align}
-Finnally, by taking the expansion of $\dot{\vec{v}}_i(t+\Delta t)$ we can
+Finally, by taking the expansion of $\dot{\vec{v}}_i(t+\Delta t)$ we can
 eliminate the $\ddot{\vec{v}}_i$-term in \cref{eq:tay_v1} and simplify it as
 shown in the following.
 \begin{align}
@@ -338,7 +356,7 @@ numerically is as stated in the following steps.
 
 
 \section{Thermostats}\label{sec:thermostat}
-In \cref{chap:friction} we introduced friction as an ultimate result of the equipartition theorem stating that the kinetic energy supplied by the sliding motion will tend to transfer to other degress of freedom and eventually dissipate to the environment as heat through phonon transport (and electrons for a metallic system) \cite{Manini_2016}. However, when modelling the system exclusively through the solutions of Newtons equations of motion we have no modelling of such an environment. Instead the energy will reflect back and forth and eventually ``pile up'' in the system in an unphysical manner. In order to resolve this issue we have to include a modelling of the environmeant by adding some kind of heatsink that allow for heat dissipation. This can be approached in a variety of ways, but one of the more common choices, which we will use as well, is the Langevin thermostat.
+In \cref{chap:friction} we introduced friction as an ultimate result of the equipartition theorem stating that the kinetic energy supplied by the sliding motion will tend to transfer to other degrees of freedom and eventually dissipate to the environment as heat through phonon transport (and electrons for a metallic system) \cite{Manini_2016}. However, when modeling the system exclusively through the solutions of Newton's equations of motion we have no dissipation channel in our system. Instead, the energy will reflect back and forth and eventually ``pile up'' in the system in an unphysical manner. In order to resolve this issue we have to include the environment in our modelling by adding some kind of heatsink that allows for heat dissipation. This can be approached in a variety of ways, but one of the more common choices, which we will use as well, is the Langevin thermostat.
 
 
 % Thus, we need to add an energy sink representing the bulk material sourronding the system of interest, which let the heat dissipate add a steady state. 
@@ -366,14 +384,13 @@ In \cref{chap:friction} we introduced friction as an ultimate result of the equi
 
 % http://physics.gu.se/~frtbm/joomla/media/mydocs/LennartSjogren/kap6.pdf
 
-The Langevin thermostat is a stochastic thermostat that modifies Newtons
-equation of motion such that solution lies in the canonical ensemble
+The Langevin thermostat is a stochastic thermostat that modifies Newton's
+equation of motion such that the solution lies in the canonical ensemble
 characterized by a constant number of particles $N$, constant volume $V$ and
-constant temperature $T$, hence denoted $NVT$. When going from the microcanonical ensemble $NVE$, described by Newton's equation of motion \cref{eq:NE}, to the canoncial ensemble $NVT$, we effectively perform a Legendre transformation which substitute temperature for energy in the regard of which variables are held constant. The canonical ensemble system is represented by a finite system being in contact with an infinte heat bath of temperature $T$. The $NVT$ ensemble is equivalent to sampling a system in theromodynamic equilibrium where the weight of each microscopic state is given by the boltzmann factor $\exp[-E/(k_B T)]$ where $k_B$ is the Boltzmann constant. 
+constant temperature $T$, hence denoted $NVT$~\cite{Manini_2016}. When going from the microcanonical ensemble $NVE$, described by Newton's equation of motion~\cref{eq:NE}, to the canonical ensemble $NVT$, we effectively perform a Legendre transformation which substitutes temperature for energy in the regard to which variables are held constant. The canonical ensemble system is represented by a finite system being in contact with an infinite heat bath of temperature $T$. The $NVT$ ensemble is equivalent to sampling a system in thermodynamic equilibrium where the weight of each microscopic state is given by the Boltzmann factor $\exp[-E/(k_B T)]$ where $k_B$ is the Boltzmann constant. 
 
-The Langevin thermostat is governed by the Langevin equation which orginated as the modified version of Newton's equations for a
-Brownian particle. A brownian particle is a small particle suspendend in liquid,
-e.g.\ pollen or dust, named after Robert brown (1773–1858) who was the first to
+The Langevin thermostat is governed by the Langevin equation which originated as the modified version of Newton's equations for a Brownian particle \cite{stat_phys}. A Brownian particle is a small particle suspended in liquid,
+e.g.\ pollen or dust, named after Robert Brown (1773–1858) who was the first to
 observe its jittery motion. The Langevin equation describes this motion as the
 combination of viscous drag force $ -\alpha \vec{v}$, where $\alpha$ is a
 positive friction coefficient and $\vec{v}$ the velocity vector, and a random
@@ -383,20 +400,20 @@ fluctuation force $\vec{R}$. The Langevin equation reads
   \label{eq:Langevin}
 \end{align}
 where $m$ is the particle mass. This effectively describes the particle of
-interest, the brownian particle, as being suspendend in a sea of smaller
-particles. The collision with these smaller particles is modelled by the combinned effects of a drag force and a fluctuation force. If the fluctuation force is excluded \cref{eq:Langevin} becomes 
+interest, the Brownian particle, as being suspended in a sea of smaller
+particles. The collision with these smaller particles is modeled by the combined effects of a drag force and a fluctuation force. If the fluctuation force is excluded~\cref{eq:Langevin} becomes 
 \begin{align*}
   m \frac{d \vec{v}}{dt} = -\alpha \vec{v} \quad \Rightarrow \quad 
   \vec{v}_i(t) = v(0)e^{- \frac{\alpha t}{m}},
 \end{align*}
-where the solution shows that the brownian particle will come to a complete stop
+where the solution shows that the Brownian particle will come to a complete stop
 after a long time ${\vec{v}_i(t\to\infty) \to \vec{0}}$. This is in violation
-with the equipartion theorem which dictates a non zero average squared velcity in equilibrium $\langle v^2 \rangle_{\text{eq}}$ as
+with the equipartition theorem which dictates a non-zero average squared velocity in equilibrium $\langle v^2 \rangle_{\text{eq}}$ as
 \begin{align}
   \frac{1}{2}m\langle v^2 \rangle_{\text{eq}} = \frac{k_B T}{2}.
   \label{eq:equipartion}
 \end{align}
-Hence, the fluctuation force is nessecary to obtain the correct equilibrium. In the following we will introduce the reasoning behiund the Langevin equations in one dimension in order to simplify the notation a bit.
+Hence, the fluctuation force is necessary to obtain the correct equilibrium. In the following, we will introduce the reasoning behind the Langevin equations in one dimension in order to simplify the notation a bit \cite{stat_phys}.
 
 We describe the statistical nature of the collisions as a sum of
 independent momentum transfers
@@ -404,22 +421,21 @@ independent momentum transfers
   \Delta P = \sum_i^N \delta p_i,
 \end{align*}
 where $\Delta P$ denotes the change of momentum after $N$ momentum transfers
-$\delta p_i$ from the environment to the brownian particle. We assume the first
+$\delta p_i$ from the environment to the Brownian particle. We assume the first
 and second moments to be $\langle \delta p \rangle = 0$ and  $\langle \delta p \rangle
 = \sigma^2$. When $N$ is large the central limit theorem states that the random
 variable $\Delta P$ has a gaussian distribution with  $\langle P \rangle = 0$
 and $\langle \Delta P^2 \rangle = N\sigma^2$. If we consider the momentum change
-$\Delta P$  over a discrete time $\Delta t$, where the number of collisiosn is
+$\Delta P$ over a discrete time $\Delta t$, where the number of collisions is
 proportional to time $N \propto \Delta t$, the corresponding fluctuation force
 $R = \Delta P / \Delta t$ will have a variance 
 \begin{align*}
   \langle R^2 \rangle = \frac{\langle \Delta P^2 \rangle}{\Delta t^2} = \frac{N \sigma^2}{\Delta t^2}  \propto \frac{1}{\Delta t}.
 \end{align*}
-In a computer simulation we pick a random force $R(t)$ from a Gaussian
+In a computer simulation, we pick a random force $R(t)$ from a Gaussian
 distribution every time-step $\Delta t$. These forces will not be correlated as
 long as $\Delta t$ is larger than the correlation time of the forces from the
-molecules \hl{(I think there exist corrections
-for this to refer to here)}. By assuming that this criteria is meet we can write the correlation function as 
+molecules. By assuming that this criterion is met we can write the correlation function as 
 \begin{align}
   \langle R(t) R(0) \rangle = 
   \begin{cases}
@@ -428,7 +444,7 @@ for this to refer to here)}. By assuming that this criteria is meet we can write
     \label{eq:disc_corr}
   \end{cases}
 \end{align}
-where the constant $a$ describes the magnitude of the fluctuations. We could in principle determine $a$ from the variance of $\Delta P$, but instead we will determine it from the equipartition principle. In the limit $\Delta t \to 0$ the correlation function becomes
+where the constant $a$ describes the magnitude of the fluctuations. We could in principle determine $a$ from the variance of $\Delta P$, but instead, we will determine it from the equipartition principle. In the limit $\Delta t \to 0$ the correlation function becomes
 \begin{align}
   \langle R(t)R(0) \rangle = a \delta(t),
   \label{eq:F_corr}
@@ -437,21 +453,20 @@ where the constant $a$ describes the magnitude of the fluctuations. We could in 
 % frequencies of the phonon and electron excitations are much shorter than the
 % hopping rate of the tip between the minima of the interaction potential
 % \cite{gnecco_meyer_2015}
-where $\delta$ denotes the dirac delta function. This is valid for all spatial
+where $\delta$ denotes the Dirac delta function. This is valid for all spatial
 coordinates which are all independent of each other. Since both the drag
 force and the fluctuation force originate from the molecular fluid, where the
-drag force $-\alpha \vec{v}$ carries a velocity dependent, it is reasonible to assume that fluctuation force is independent of velocity, i.e. $\langle R_i v_j \rangle = 0$ for all cartesian indices $i$ and $j$.
+drag force $-\alpha \vec{v}$ carries a velocity dependencd, it is reasonable to assume that fluctuation force is independent of velocity, i.e. $\langle R_i v_j \rangle = 0$ for all cartesian indices $i$ and $j$.
 % Since $\langle \tilde{F} \rangle = 0$ the random force (fluctuating force)
 % will not conribute with a average decay (change) to the velocity. The
 % macroscopic decay comes from the friction force (dissipitative force)  $-ma
 % =\alpha v$ (give variable explanation). 
-In the following we attempt to justify the physical motivation for the Langevin equaiton and determine the relationship between the drag coefficient $\alpha$ and
-the random force $R$. From the Langevin equation \cref{eq:Langevin} we can compute the velocity autocorrelation function. Note that we continue to use only one dimension for simplicity. We begin by multiplying by $(e^{\alpha t /m})/m$
+In the following, we attempt to justify the physical motivation for the Langevin equation and determine the relationship between the drag coefficient $\alpha$ and the random force $R$ \cite{stat_phys}. From the Langevin equation~\cref{eq:Langevin} we can compute the velocity autocorrelation function. Note that we continue to use only one dimension for simplicity. We begin by multiplying by $(e^{\alpha t /m})/m$
 \begin{align*}
   \dot{ v}(t)e^{\alpha t /m} + \frac{\alpha}{m} v(t)e^{\frac{\alpha t}{m}}  = \frac{ F}{m}e^{\frac{\alpha t}{m}},
 \end{align*}
 and integrate from $t = -\infty$. By the use of integration by parts on the
-latter term on the left hand side we calculate the velocity 
+latter term on the left-hand side we calculate the velocity 
 \begin{align*}
   \int_{-\infty}^t dt' \ \dot{ v}(t')e^{\frac{\alpha t'}{m}} + \frac{\alpha}{m} v(t)e^{\frac{\alpha t'}{m}} &=  \int_{-\infty}^t dt' \ e^{\frac{\alpha t'}{m}} \frac{ F(t')}{m}  \\
   \int_{-\infty}^t dt' \ \dot{ v}(t')e^{\frac{\alpha t'}{m}} + \left(\Big[ v(t')e^{\frac{\alpha t'}{m}}\Big]_{-\infty}^t - \int_{-\infty}^t dt' \ \dot{ v}(t')e^{\frac{\alpha t'}{m}}\right) &= \int_{-\infty}^t dt' \ e^{\frac{\alpha t'}{m}} \frac{ F(t')}{m}  \\
@@ -472,7 +487,7 @@ equipartition theorem we get
   \frac{1}{2}m\langle  v(0) v(0) \rangle = \frac{a}{4\alpha} &= \frac{k_BT}{2} \\
   a &=  2\alpha k_B T 
 \end{align*}
-We notice the appereance of $\alpha$ meaning that the magnitude of the
+We notice the appearance of $\alpha$ meaning that the magnitude of the
 fluctuations increase both with friction and temperature. Moreover, we can
 integrate the velocity over time to get displacement $x(t)$ and show that the
 variance is 
@@ -492,12 +507,12 @@ for $x\ll 1$ which give
 \begin{align*}
   \big\langle x^2(t) \big\rangle = \frac{k_B T}{m} t^2.
 \end{align*}
-Using $\langle x^2 \rangle / t^2 = \langle v^2 \rangle$ we see that the result is in agreement with the equipartion theorem \cref{eq:equipartion}
+Using $\langle x^2 \rangle / t^2 = \langle v^2 \rangle$ we see that the result is in agreement with the equipartition theorem \cref{eq:equipartion}
 \begin{align*}
   \big\langle v^2(t) \big\rangle = \frac{k_B T}{m} \ \Longleftrightarrow \ \frac{1}{2}m\langle v^2 \rangle_{\text{eq}} = \frac{k_B T}{2}.
 \end{align*}
 Thus, we find the finite correlation time $\alpha/m$ to describe the crossover from the ballistic regime $\sqrt{\langle x^2(t)
-\rangle} \propto \sqrt{t}$ at $t \ll m/\alpha$ to the diffusive regime $\sqrt{\langle x^2(t)\rangle} \propto \sqrt{t}$ at $t \gg m/\alpha$. That is, at short time scales the thermal movement can be thought of as relatively free with low collision rate, while at longer time scales the movement is characterized by a jittery random walk looking motion that is related to diffusion. 
+\rangle} \propto \sqrt{t}$ at $t \ll m/\alpha$ to the diffusive regime $\sqrt{\langle x^2(t)\rangle} \propto \sqrt{t}$ at $t \gg m/\alpha$. That is, at short time scales the thermal movement can be thought of as relatively free with a low collision rate, while at longer time scales the movement is characterized by a jittery random-walk-looking motion that is related to diffusion. 
 
 
 % What do we use for this in the simulation?
@@ -524,13 +539,8 @@ Thus, we find the finite correlation time $\alpha/m$ to describe the crossover f
 
 % \cite{Hunenberger2005}(pp. 115, 120-121) \cite{docs_lammps_langevin}
 
-% Make a note: We only introduce the thermostat to the edges of the parts of
-% interest as the thermostat might disrupt important properties of the
-% simulation (accoridng to Henrik, get a source/example on this).
-
-
-The implementation of the Langevin equation into LAMMPS follows
-\cite{PhysRevB.17.1302} and updates the force vector for each particle as 
+The numerical implementation of the Langevin equation~\cref{eq:Langevin} is done through the simulation software LAMMPS (see~\cref{sec:LAMMPS}) following
+\cite{PhysRevB.17.1302} by defining the force vector for each particle as 
 \begin{align}
   \vec{F} &= \vec{F_c} + \vec{F}_{f} + \vec{F}_{r} \nonumber \\
   &= -\nabla U - \gamma m \vec{v} + \sqrt{\frac{2 k_B T m \gamma}{\Delta t}}\vec{h}(t)
@@ -539,7 +549,7 @@ The implementation of the Langevin equation into LAMMPS follows
 where $\vec{F_c}$ is the added conservative force computed via the usual
 interatomic interactions described by the potential $U$, $\vec{F}_f$ is the
 drag force described as a damping term $-\gamma m \vec{v}$ with $\alpha = \gamma m$, and $\vec{F}_r$ is the random fluctuation force where $\vec{h}$ is a
-random vector drawn from a normal distribution with zero mean and unit variance. The fact that $\Delta t$ now appears in the denomiator for the random force variance $2k_B T m \gamma / \Delta t$ is due to the discretization of time. By applying \cref{eq:Langevin_generalized} we get the refined velocity verlet scheme
+random vector is drawn from a normal distribution with zero mean and unit variance. The fact that $\Delta t$ now appears in the denominator for the random force variance $2k_B T m \gamma / \Delta t$ is due to the discretization of time. By applying~\cref{eq:Langevin_generalized} we get the refined velocity verlet scheme
 \begin{align*}
   \vec{v}_i(t + \Delta t/2)  &= \vec{v}_i(t) - \frac{\Delta t}{2}\left(\frac{\nabla_i U(t)}{m_i} + \gamma \vec{v}_i \right) + \sqrt{\frac{k_B T \gamma \Delta t}{2m_i}} \vec{h}_i \\ 
   \vec{r}_i(t + \Delta t) &= \vec{r}_i(t) + \vec{v}_i(t + \Delta t/2) \Delta t \\
@@ -548,7 +558,7 @@ random vector drawn from a normal distribution with zero mean and unit variance.
 % A little unsure whether the factor 2 in the denominator in the random force is
 % correct.
 with new random vector $\vec{h}_i$ for each particle and each update. Notice
-however, that we will only apply the thermostat to specific regions in our simulation, mainly on the outer egdes, while the main part of interest is modelled exclusively by Newton's equaiton of motion as described in \cref{eq:NE}. We use a damping of $1/\gamma = m/\alpha = \SI{1}{ps}$ as a reasonable default choice. 
+however, we will only apply the thermostat to specific regions in our simulation, mainly on the outer edges, while the main part of interest is modeled exclusively by Newton's equation of motion as described in~\cref{eq:NE}. This is done in order to avoid affecting the governing parts of the friction simulation to much. We use a damping of $1/\gamma = m/\alpha = \SI{1}{ps}$ as a common default choice. 
 
 
 % In practice the implementation of the thermostat is implemented discretely by
@@ -576,9 +586,16 @@ however, that we will only apply the thermostat to specific regions in our simul
 
 
 \section{Limitations}
-One a general note \acrshort{MD} simulations are limited on a relative small time- and size-scales. Thus, for a friction simulation a sliding speed below a few m/s becomes inaccesible as the computing time increases inversely with sliding speed with regard to a fixed total time of the procedure. The modelling is simplified through the interatomic potentials and the solutions which do not take quantum mechanical effetcs into account. One consequence of this is the omission of effects from electron energy transport. Similarly, the modelling of heat transport through a viscous and a random force as done with the Langevin thermostat might be a highly oversimplyfication which reduced the number of dissipation channels heavily. As mentioned, the phonon is expected to have $3N$ frequencies \hl{Go back and match theory of friction}. 
-
-
+On a general note, \acrshort{MD} simulations are limited to relatively small
+time and size scales due to the available computation time. Morden CPUs perform
+on the order of \num{e9} floating-point operations per second (FLOPS) per core
+\cite{Vanossi_2013}. \acrshort{MD} simulations can benefit from medium-scale
+parallelization, demonstrating relatively linear scaling up to around $10^2$
+cores, providing roughly $10^{11}$ FLOPS. In a typical \acrshort{MD} calculation, the computation of the force acting on each atom, which can be the most time-consuming step depending on the complexity and range of the force field, requires $N_{\text{step}}$ being approximately 10 to $10^2$ FLOPS. Therefore, for a typical simulation size of $N = \num{e5}$ atoms with a timestep in the fs range, we find the ratio of simulated time to real-time on the order 
+\begin{align*}
+  \frac{\text{FLOPS}}{N\cdot N_{\text{step}} \cdot dt^{-1}} = \frac{\num{e11}}{\num{e5}\cdot 10 \cdot \num{e15}} = \num{e-10}.
+\end{align*}
+Hence, the simulation can make progress at a rate of \SI{e5}{fs} per second, or roughly $\SI{e9}{fs}=\SI{1}{\mu s}$ per day. For the realism of the simulations, some of the weakness includes the lack of quantum effects and a reduction in the number of dissipation channels available
 
 
 % \cite{Yalin_2011}. Thus, the weaknesses
@@ -619,5 +636,5 @@ One a general note \acrshort{MD} simulations are limited on a relative small tim
 % 207]{gnecco_meyer_2015}
 
 
-\section{LAMMPS}
-We use LAMMPS (Large-scale Atomic/Molecular Massively Parallel Simulator.) \cite{LAMMPS} as the base for our numerical framework. LAMMPS is a C\texttt{++} based libary which provides high-level access to numerical efficient \acrshort{MD} simulations with the option to run the computations in parallel. This allows us to focus on higher-level features of the numerical procedure rather than building the simulation from scratch. 
+\section{LAMMPS}\label{sec:LAMMPS}
+For the implementation of our \acrshort{MD} we will use LAMMPS (Large-scale Atomic/Molecular Massively Parallel Simulator) \cite{LAMMPS}. LAMMPS provides a numerical framework for setting up the system and integrating the equations of motion with easy access to parallelized simulations. This essentially allows us to focus on the higher-level features of the numerical procedure rather than building the simulation from scratch. 
