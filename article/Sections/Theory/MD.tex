@@ -1,52 +1,22 @@
 \chapter{Molecular Dynamics}\label{chap:MD}
-% \cite[p. 18-]{Manini_2016}
+Molecular Dynamics (\acrshort{MD}) is an atomistic simulation method that is commonly employed in the investigation of atomic-scale friction due to its ability to track each atom in a system~\cite{Yalin_2011}. Due to advances in computing algorithms and hardware, \acrshort{MD} simulations have become increasingly capable of simulating tribological systems in recent years \cite{Manini_2016}. We will utilize \acrshort{MD} as our primary numerical approach to simulate and examine the effect of nanoscale kirigami in our system. Such small-scale modifications are still beyond the reach of experimental approaches, and the complexity of the system precludes analytical solutions as well. Hence, \acrshort{MD} simulations represent one of the few viable options for addressing this problem.
 
-Molecular Dynamics (\acrshort{MD}) is an atomistic simulation method which are a
-popular and powerful for the investigation of atomic scale friction due to the
-ability to track every single atom in a system \cite{Yalin_2011}. Thanks to the
-advances in computing algorithms and hardware the recent years has witnessed a
-remarkable increase in our ability to simiulate tribological system
-\cite{Manini_2016}. We are going to use \acrshort{MD} as our main numerical
-approach in order to simulate and investigate the effect of nanoscale kirigami
-on our system. Such small scale modifications are still out of reach for
-experimental approaches while on the other hand the complexity of the system
-rules the possibility of using analytical solutions. This is why atomistic
-simulations like \acrshort{MD} is one of few great choices to tackle this
-problem. Other alternatives like Ab inito methods, which calculate the
-interaction based on quantam mechanis \hl{Check up on thisd and get source},
-gives more detailed results but comes with a higher computational cost.
-\acrshort{MD} simulations are already being limited for its ability to capture
-larger-scale features such as time and large masses, which will only increase
-with choices of more detailed methods. \cite{Yalin_2011}. Thus, the weaknesses
-include the lack of quantum effects.
+An \acrshort{MD} simulation can be viewed as a ``computational experiment'', where we specify a set of initial conditions and evolve the system to measure certain properties of interest. This is done through the definition of interatomic force fields which allows us to solve Newton's equation
+of motion by numerical integration \cite[p. 303]{BHUSHAN20051507}. Other more sophisticated and accurate approaches exist, like Ab initio \acrshort{MD} which utilizes electronic structure calculations at simulation time \cite{carloni_role_2002}. One of the most popular methods is based on density functional theory (DFT) \cite{PhysRev.136.B864} which considers quantum mechanical modeling of the electronic state of the system. However, such methods are rarely used in sliding friction since the computational cost makes it only feasible to handle relatively small systems, typically hundreds of atoms, for relatively short durations, typically much less than \SI{1}{ns}~\cite{Vanossi_2013}. In addition, we aim to perform multiple simulations under the
+change of various parameters which put additional pressure on the
+computational resources. 
 
-% Weak- nesses include a lack of quantum effects in classical atomistic
-% dynamics, and perhaps more importantly, the fact that meaningless results can
-% be obtained if the simulation conditions are incorrectly chosen. \cite[p.
-% 303]{BHUSHAN20051507}
+In this chapter, we will introduce the fundamental principles behind \acrshort{MD} modeling and describe our implementation choices with respect to our system of interest. Our primary objective is to establish a functional simulation that can be used to explore nanoscale friction, so our discussion is focused on the key aspects of the method rather than a comprehensive analysis of all available techniques.
 
 
-% Ab-initio MD, e.g. of the Car-Parrinello type (Car and Parrinello, 1985), has not really been of use so far in sliding friction, mainly because it can han
-% dle only rather small systems, typically hundreds of atoms, for relatively short times, typically ≪ 1 ns. Most MD frictional simulations are therefore based on reason- able empirical interatomic forces (“force fields”), rang- ing from relatively sophisticated energy surfaces account- ing for electrons at the density-functional level or at the tight-binding level (Xu et al., 1992), to angle-dependent many-particle potentials, to simple pairwise potentials (e.g. Lennard-Jones), to basic simple models of elastic springs, extensions of FK-type formulations.
+
+
+
+% However selecting the appropriate force fields can be a difficult task, since different force fields consider different approximations for the chemical ...
+
+
+% Ab-initio MD, e.g. of the Car-Parrinello type (Car and Parrinello, 1985), has not really been of use so far in sliding friction, mainly because it can handle only rather small systems, typically hundreds of atoms, for relatively short times, typically ≪ 1 ns. Most MD frictional simulations are therefore based on reasonable empirical interatomic forces (“force fields”), ranging from relatively sophisticated energy surfaces account- ing for electrons at the density-functional level or at the tight-binding level (Xu et al., 1992), to angle-dependent many-particle potentials, to simple pairwise potentials (e.g. Lennard-Jones), to basic simple models of elastic springs, extensions of FK-type formulations.
 % https://arxiv.org/abs/1112.3234v4
-
-
-An \acrshort{MD} simulation can be considered as a computational ``experiment''.
-Given a set of inital conditions and a mathematically defined model for
-interatomic forces based on relative positions, we can solve Newton's equation
-of motion by numerical integration \cite[p. 303]{BHUSHAN20051507}. Thus the
-interatomic forces are derived from interparticle interaction potentials, which
-is the heart of \acrshort{MD} simulations and the specific choice of potentials
-can often be quite challenging. Even though most potentials can be parameterized
-to fit a given material, some potentials are better suited for different kind of
-materials due to an attention in a variety of materialistic properties and
-mechanics \hl{source}.
-
-
-
-% \begin{itemize} \item MD simulation (classical or ab initio) \item Basics of
-%   classical MD simulations: Integration and stuff \item Ab initio simulation
-%   (quantum mechanics, solving schrödinger) \end{itemize}
 
 
 
@@ -57,19 +27,11 @@ mechanics \hl{source}.
 % approaches. \cite{Manini_2016}
 
 
-% Quantum-mechanical calculations is more accurate but to numerical intensive.
 
 % Despite recent progress in this respect, it is clear that there will always be
 % interesting problems beyond the reach of ab initio approaches
 % \cite{PhysRevB.37.6991}.
 
-
-
-
-
-% The simplest approach to temperature control by adding the Langevin thermostat
-% has been widely adopted, but more refinded methods has also been proposed and
-% adopted (see \cite{Manini_2016} for more).
 
 % Physically relevant quantities like the average friction force can be
 % evaluated by carrying out averages over the model dynamics. The modeling most
@@ -82,14 +44,6 @@ mechanics \hl{source}.
 % [p. 303]{BHUSHAN20051507}
 
 
-% Weak- nesses include a lack of quantum effects in classical atomistic
-% dynamics, and perhaps more importantly, the fact that meaningless results can
-% be obtained if the simulation conditions are incorrectly chosen. \cite[p.
-% 303]{BHUSHAN20051507}
-
-
-% Maybe read ``Computer Simulations 7 of Nanometer-Scale Indentation and
-% Friction'' from \cite{BHUSHAN20051507}
 
 
 
@@ -106,33 +60,18 @@ mechanics \hl{source}.
 % the strength and weaknesses of each potential along with a test of how the
 % friction properties change between different relevant potentials.
 
-The potentials used in an \acrshort{MD} simulations plays a major role for the
-obtained results. In fact development and analysis of the effect on potentials
-in \acrshort{MD} is a whole field in itself \hl{source}? In this thesis, we will
-not be carying out an  extensive analysis for the potential choice as this
-rather quickly becomes too extensive. Instead, we consult with the litterature
-on similar \acrshort{MD} frictional studies in the search for a set of
-potentials that have been proven to produce reasonible result. However, we note
-that this immediately makes room for an extended study of the results to come
-regarding the dependecny of specific potential choices. For the choice of
-potentials, and materials, we take a basis in the numerical \acrshort{MD} study
-by Li et al.\ \cite{li_evolving_2016} simulating a \acrshort{FFM} type setup
-where a Si tip indents a graphene sheet supported by a Si substrate. It obiously
-differs from our system by the fact that we intent to drag the whole sheet
-rather than indenting it with a tip, but in the scope of choosing the potential
-setup this should be a appropiate starting point. The covalent bonds of C-C in
-graphene and Si-Si in the substrate is described by the Tersoff and
-Stillinger–Weber potentials, respectively. A typical 12-6 Lennard–Jones
-potential is used to describe the van der Waals adhesive interaction between
-graphene and the substrate. 
 
-% Discuss more about what potentials are generally used? What about the AIREBO
-% thing not working on GPU. 
+The interatomic force field governing the \acrshort{MD} simulation is derived from the choice of potentials. The selection of potentials has a significant impact on the outcomes obtained. The potentials can vary from intricate energy surfaces that consider electrons at either the density-functional or tight-binding level to angle-dependent many-particle potentials, basic pairwise potentials, or simple models of elastic springs, and extensions of \acrshort{FK}-type formulations~\cite{Vanossi_2013}. For the choice of
+potentials, and materials, we take a basis in the numerical \acrshort{MD} study
+by Li et al.~\cite{li_evolving_2016} simulating a \acrshort{FFM} type setup
+where a Si tip indents a graphene sheet supported by a Si substrate. It is evident that the experimental arrangement utilized by Li et al.\ varies from our system since they impose a Silicon tip on a graphene sheet that is supported by a Silicon substrate, whereas we will be sliding the entire sheet upon the substrate. Nevertheless, we contend that this should serve as an appropriate starting point for selecting the potential setup. We describe the covalent bonds between carbon atoms C-C in the graphene sheet and between silicon atoms Si-Si in the substrate by the Tersoff and
+Stillinger–Weber potentials, respectively. A typical 12--6 Lennard–Jones (\acrshort{LJ}) potential is used to describe the van der Waals adhesive interaction between the graphene sheet and the substrate. 
+
 
 
 \subsection{General formulation of potentials}
 The physical potential governing the mechanics of the atomic system can
-generally be thought of as an the n-body expansion in orders of participating
+generally be thought of as an n-body expansion in order of participating
 atoms as 
 \begin{align*}
   E = \sum_i V_1(\vec{r}_i) + 
@@ -140,105 +79,68 @@ atoms as
       \sum_{\substack{i,j,k \\ i < j < k}} V_3(\vec{r}_i, \vec{r}_j, \vec{r}_i) + \cdots,
 \end{align*} 
 where $\vec{r}_n$ is the position of the $n$th particle and $V_m$ is called an
-$m$-body potential  \cite{PhysRevB.37.6991}. The first one-body term corresponds
+$m$-body potential~\cite{PhysRevB.37.6991}. The first one-body term corresponds
 to an external potential (e.g.\ gravity), followed by the two-body term, the
 three-body term and so on. The simplest model that includes particle interaction
-is the pair potential truncating the expansion after the two-body term. A
-general feature of the pair potentials is that they favor close-packed
-structures which is unsuited to describe covalent bonds that take more open
+is the pair potential truncating the expansion after the two-body term. A general feature of the pair potentials is that they favor close-packed
+structures that are unsuited to describe covalent bonds that take more open
 structures. In particular, pair potentials are completely inapplicable to
-strongly covalent systems \cite{PhysRevB.37.6991}. In order to accomodate the
-description of covalent bonds the natural step is thus to include the next step
-of the expansion, the three-body terms, as we will use for the modeling of the
-C-C bonds in the graphene sheet and the Si-Si bonds in the Silicon substrate.
-For the interaction between the sheet and the substrate we use a Lennard Jones
-pair potential describing the non-bonded van der Waals interaction which has
-come to be the standard way to treat intermaterial interactions in friction
-simulations \cite{zhu_study_2018, ZHANG201585, Yoon2015MolecularDS,
-kim_nano-scale_2009}. 
-\hl{I can put more sources here}
+strongly covalent systems~\cite{PhysRevB.37.6991}. In order to accommodate the
+description of covalent bonds we can include the next step
+of the expansion, which involves the three-body that is used in both the Stillinger–Weber potential for Si-Si bonds and the Tersoff potential for the C-C bonds. For the interaction between the sheet and the substrate, we use the \acrshort{LJ} pair potential describing the non-bonded van der Waals interaction which is often used to treat interactions between surfaces in friction simulations~\cite{zhu_study_2018,ZHANG201585,Yoon2015MolecularDS,kim_nano-scale_2009}. In the following sections~\crefrange{sec:LJ}{sec:tersoff} we will introduce each of the potentials in more detail.
 
-In the following we introduce the potentials in a more formal way. 
 
-\subsection{Lennard Jones}
-\hl{TODO: Add potential curve figure} \\
-
-The theoretical basis in this subsection is based on \cite{docs_lammps_LJ,
-C9CP05445F, chem_libretexts_LJ}.
-
-The Lennard-Jones (\acrshort{LJ}) model is probably one of the most commonly
-used pair potentials for \acrshort{MD} simulations. \acrshort{LJ} models the
-potential energy between two non-bonding atoms solely based on interatomc
-distance. The model accounts for attractive forces arising from dipole-dipole,
-dipole-induced dipole and London interactions, and repulsive forces that capture
-the hard core of overlapping wave functions at small distances (\hl{double check
-this statement}). Thus, it assummes neutrally charged atoms and was orginally
-proposed for noble gases. The classical 12-6 version of the model, referring to
-the powers of the repulsive and attractive forces respectively, reads
+\subsection{Lennard Jones}\label{sec:LJ}
+\hl{TODO: Add potential curve figure} 
+\\
+\\
+The theoretical basis in this subsection is based on~\cite{docs_lammps_LJ,
+C9CP05445F, chem_libretexts_LJ}. The Lennard-Jones (\acrshort{LJ}) model is probably one of the most commonly used pair potentials for \acrshort{MD} simulations. \acrshort{LJ} models the potential energy between two non-bonding atoms solely based on interatomic distance. The model accounts for long-ranged attractive forces arising from London dispersion forces (dipole-induced dipole)and repulsive forces that capture the hard core of overlapping electron orbitals at small distances (Pauli repulsion). Thus, it assumes neutrally charged atoms and was originally proposed for noble gases. The classical 12--6 version of the model, referring to the powers of the repulsive and attractive forces respectively, reads
 \begin{align}
   E = 4\epsilon \left[\left(\frac{\sigma}{r}\right)^{12} - \left(\frac{\sigma}{r}\right)^6 \right ], \qquad r < r_c,
   \label{eq:LJ}
 \end{align}
 where $r$ is the interatomic distance with cut-off $r_c$, $\epsilon$ is the
 depth of the potential well and $\sigma$ the interatomic distance where the
-potential is zero. By solving for the potential minimum ($dE/dr = 0$) we find
-the equilibrium distance to be $r_0 = \sigma 2^{1/6}$. This makes for a slightly
-more intuitive interpration of $\sigma$ as the parameter which sets the
-equilirbium distance between atoms, i.e.\ the dividing line for which the force
-is repulsive or attractive.
-
-\hl{Refer to choosen parameters}.
-
-% While the LJ model in many ways is an oversimplified model that is
-% insufficient in its description of ... (\hl{get source and concrete examples})
-% it is commonly used as a model for intermaterial interactions (between moving
-% object and substrate) in friction studies.
+the potential is zero. By solving for the potential minimum ($dE/dr = 0$) we find the equilibrium distance to be $r_0 = \sigma 2^{1/6}$. This makes for a slightly more intuitive interpretation of $\sigma$ as the parameter which sets the equilibrium distance between atoms, i.e.\ the dividing line for which the force is repulsive or attractive. We will adopt the potential parameters from Li et al.~\cite{li_evolving_2016} with $\sigma = \SI{3.0}{\text{Å}}$ and $\epsilon = \SI{0.0092}{eV}$.
 
 
-\subsection{Stillinger weber}
+\subsection{Stillinger-Weber}\label{sec:wb}
 % Todo: Add some potential curve figure? or figure of three body angles?
 \hl{TODO: Add potential figure and or figure illustrating three body angles}.
 
-The theoretical background of this subsection is based on
-[\cite{docs_lammps_sw}, \cite{PhysRevB.31.5262}]
-
-The stillinger weber potential takes the form of a three body potential
+The theoretical background of this subsection is based on \cite{docs_lammps_sw, PhysRevB.31.5262}. The Stillinger-Weber potential takes the form of a three-body potential
 \begin{align*}
   E &=\sum_i \sum_{j>i} \phi_2(r_{i j})+\sum_i \sum_{j \neq i} \sum_{k>j} \phi_3(r_{ij}, r_{ik}, \theta_{ijk}),
 \end{align*}
 where $r_{ij}$ denotes the distance between atom $i$ and $j$, and $\theta_{ijk}$
-the angle between bond $ij$ and $jk$. The summations is over all neighbours $j$
+the angle between bond $ij$ and $jk$. The summation is over all neighbors $j$
 and $k$ of atom $i$ within a cut-off distance $r = a\sigma$. \\
-The two-body term $\phi_2$ builds from the LJ model with the addition of an
-exponetial cutoff term
+The two-body term $\phi_2$ builds from the \acrshort{LJ} model with the addition of an exponential cutoff term
 \begin{align}
   \phi_2(r_{i j}) & =A_{ij} \epsilon_{ij}\left[B_{ij}\left(\frac{\sigma_{ij}}{r_{ij}}\right)^{p_{ij}} - \left(\frac{\sigma_{ij}}{r_{ij}}\right)^{q_{ij}}\right] \exp (\frac{\sigma_{ij}}{r_{ij}-a_{ij} \sigma_{ij}}).
   \label{eq:sw_2}
 \end{align}
-The model parameters $A$, $\epsilon$, $B$, $\sigma$, $p$, $q$ and $a$ comes with
-$i,j$ indices to indicate that theese parameters should be specified for each
-unique pair of atom types. However, in our case we will only provide a single
+The model parameters $A$, $\epsilon$, $B$, $\sigma$, $p$, $q$ and $a$ come with
+$i,j$ indices to indicate that these parameters should be specified for each
+unique pair of atom types. However, in our case, we will only provide a single
 value for each model parameter as we are exclusively dealing with Si-Si bonds.
-We see that the first term in \cref{eq:sw_2} is reminiscent of the LJ model in
-\cref{eq:LJ} while the last term effectively drives the potential to zero at
-$r=a\sigma$, which is the chosen cut-off distance for the potential
-evaluation. With the model parameters for the Si-Si modelling (see
-\cref{tab:sw_param}) the cut-off becomes $\sim 3.8$ Å. The three body term includes an angle dependency as
+We see that the first term in~\cref{eq:sw_2} is reminiscent of the \acrshort{LJ} model in~\cref{eq:LJ} while the last term effectively drives the potential to zero at $r=a\sigma$, which is the chosen cut-off distance for the potential
+evaluation. With the chosen model parameters for the Si-Si modeling, see
+\cref{tab:sw_param}, the cut-off becomes $\sim \SI{3.8}{\text{Å}}$. The three body term includes an angle dependency as
 \begin{align}
   \phi_3(r_{ij}, r_{ik}, \theta_{ijk}) &= \lambda_{ijk} \ \epsilon_{ijk} \Big[\cos \theta_{ijk}-\cos \theta_{0,ijk}\Big]^2 \exp (\frac{\gamma_{ij} \sigma_{ij}}{r_{ij} - a_{ij} \sigma_{ij}}) \exp (\frac{\gamma_{ik} \sigma_{ik}}{r_{ik} - a_{ik} \sigma_{ik}}),
   \label{eq:sw_3}
 \end{align}
-where $\theta_{0,ijk}$ is the equilibrium angle. The first term of
-\cref{eq:sw_3} includes an angle dependency analog to a harmonic oscillator
+where $\theta_{0,ijk}$ is the equilibrium angle. The first term of~\cref{eq:sw_3} includes an angle dependency analog to a harmonic oscillator
 based on a cosine angle distance from the equilibrium angle. The final two terms
 act again as a cut-off function by driving the potential to zero at $r_{ij} =
 a_{ij}\sigma_{ij}$ and $r_{ik} = a_{ik}\sigma_{ik}$ respectively. We adopt the parameters for Si-Si suggested in the original paper by Stillinger and Weber \cite{PhysRevB.31.5262} which is shown in \cref{tab:sw_param} along with an interpretation of each model parameter.
 
 
-
 \begin{table}[H]
   \begin{center}
-  \caption{Parameters for the stilliner weber potential used for intermolecular interactions in the silicon substrate. The parameters are adopted from \cite{PhysRevB.31.5262}.}
+  \caption{Parameters for the Stilliner-Weber potential used for intermolecular interactions in the silicon substrate. The parameters are adopted from~\cite{PhysRevB.31.5262}.}
   \label{tab:sw_param}
   \begin{tabular}{ | M{2cm} | M{2cm} | X{9cm} |} \hline
     Parameter & Value & Description \\ \hline 
@@ -266,7 +168,7 @@ a_{ij}\sigma_{ij}$ and $r_{ik} = a_{ik}\sigma_{ik}$ respectively. We adopt the p
 \end{table}
 
 
-\subsection{Tersoff}
+\subsection{Tersoff}\label{sec:tersoff}
 % Add figure similar to:
 % https://en.wikipedia.org/wiki/Bond_order_potential#/media/File:Bond-order_interatomic_potential.png,
 % showing bond order curves.
@@ -275,39 +177,32 @@ a_{ij}\sigma_{ij}$ and $r_{ik} = a_{ik}\sigma_{ik}$ respectively. We adopt the p
 % https://interatomic-potentials.readthedocs.io/en/latest/doc/tersoff.html
 % https://chem.libretexts.org/Bookshelves/
 % Physical_and_Theoretical_Chemistry_Textbook_Maps/Supplemental_Modules_(Physical_and_Theoretical_Chemistry)/Chemical_Bonding/Fundamentals_of_Chemical_Bonding/Bond_Order_and_Lengths
-This theoretical background in this subsection is based on
-\cite{docs_lammps_tersoff,PhysRevB.37.6991}.
 
-The Tersoff potential abandon the idea of a general $n$-body form and attempts
-instead to build the model on a more physics informed approach; The more
-neighbours an atom has the weaker the bonds will be. Thus it introduces the bond
-order (bond strentgh), that is environment specific and decrease with increasing
-bond coordination (number of neighbours for a given atom). The potential energy
-is taken to have the form
+
+The theoretical basis in this subsection is based on \cite{docs_lammps_tersoff,PhysRevB.37.6991}. The Tersoff potential abandons the idea of a general $n$-body form and attempts
+instead to build the model on a more physics-informed approach; The more
+neighbors an atom has the weaker the bonds will be. Thus, it introduces the bond
+order (bond strength), which is environment specific and decreases with increasing bond coordination (number of neighbors for a given atom). The potential energy is taken to have the form
 \begin{align*}
   E &= \sum_i E_i = \frac{1}{2}\sum_{i \ne j} V_{ij}, \\
   V_{ij} &= f_C(r_{ij}) \big[f_R(r_{ij}) + b_{ij}f_A(r_{ij})  \big],
 \end{align*}
-% where the total potential energy is decomposed into an atom site energy $E_i$
-% and a bond energy $v_{ij}$. 
 where the total potential energy $E$ is decomposed into a bond energy $V_{ij}$.
 The indices $i$ and $j$ run over the atoms of the system with $r_{ij}$ denoting
 the distance between atom $i$ and $j$. Notice that the sum includes all
-combinations of $i,j$ but $i\ne j$, meaning that an atom cannot bond to itself,
-but we do count other bonds twice, e.g.\ ($(1,2)$ and $(2,1)$), which is the
-explanation for the additional factor $1/2$. The reasoning behind comes from the
-asymmetry of the bond order $b_{ij}\ne b_{ji}$ leading to a $V_{ij}\ne V_{ji}$.
+combinations of $i,j$ but $i\ne j$, meaning that an atom cannot bond to itself. However, we count other bonds twice, e.g.\ $(1,2)$ and $(2,1)$, which is the
+explanation for the additional factor $1/2$. The reasoning for the double counting lies in the asymmetry of the bond order $b_{ij}\ne b_{ji}$ leading to $V_{ij}\ne V_{ji}$.
 The bond energy is composed of a repulsive term $f_R$, arising from overlapping
 wave functions, and an attractive term $f_A$ associated with bonding. $f_C$ is
 simply a smooth cut-off function to increase computational efficiency. $b_{ij}$
-represent the bond order, i.e. the strength of the bonds, which depends
+represent the bond order, i.e.\ the strength of the bonds, which depends
 inversely on the number of bonds, the bond angles ($\theta_{ijk}$) and
-optionally the relative bonds lengths ($r_{ij}$, $r_{jk}$). Notice that an
-additional cut-off term $a_{ij}$ was orginally multiplied to $f_R$ as a way of
-including terms that limit the range of the interactions to the first neighbour
+optionally the relative bond lengths ($r_{ij}$, $r_{jk}$). Notice that an
+additional cut-off term $a_{ij}$ was originally multiplied to $f_R$ as a way of
+including terms that limit the range of the interactions to the first neighbor
 shell. This kind of limitation is already included in $b_{ij}$ for the
 attractive term $f_A$ but is often omitted for the repulsive term $f_R$, and we
-do so to by setting $a_{ij} = 1$. \\
+do so as well by setting $a_{ij} = 1$. \\
 The cut-off function $f_C$ goes from 1 to 0 over a small interval range $R \pm
 D$ as
 \begin{align*}
@@ -319,34 +214,31 @@ D$ as
   \end{cases},
 \end{align*}
 which is continuous and differentiable for all $r$. $R$ is usually chosen to
-include only the first neighbour shell. \\
-The repulsive and attractive terms $f_R$ and $f_A$ is modelled as an exponetial
-function, similar to a morse potential, 
+include only the first neighbor shell. \\
+The repulsive and attractive terms $f_R$ and $f_A$ are modeled as an exponential function, similar to a Morse potential, 
 \begin{align*}
  f_R(r) &= A \exp(-\lambda_1 r), \\
  f_A(r) &= -B \exp \big(-\lambda_2 r\big).
 \end{align*}
-The novel feature of the Tersoff model lies in modeling of the bond order
+The novel feature of the Tersoff model lies in the modeling of the bond order
 $b_{ij}$ which includes three-body interactions by summing over a third atom $k
 \ne i,j$ within the cut-off $r_{ik} < R + D$ as shown in the following.
-
 \begin{align}
   b_{i j} & =\big(1+\beta^n \zeta_{i j}^n\big)^{-\frac{1}{2 n}} \\
   \zeta_{i j} & =\sum_{k \ne i,j} f_C(r_{i k}) g\Big(\theta_{i j k}\left(r_{i j}, r_{i k}\right)\Big) \exp \left(\lambda_3{ }^m\big(r_{i j}-r_{i k}\right)^m\big) \\
   g(\theta) & =\gamma_{i j k}\left(1+\frac{c^2}{d^2}-\frac{c^2}{\left[d^2+\left(\cos \theta-\cos \theta_0\right)^2\right]}\right).
   \label{eq:tersoff_bond_order}
 \end{align}
-In \cref{eq:tersoff_bond_order} $\zeta_{i,j}$ is an effective coordination and
+In~\cref{eq:tersoff_bond_order} $\zeta_{i,j}$ is an effective coordination and
 $g(\theta)$ captures angle dependency as it is minimized at the equilibrium
 angle $\theta = \theta_0$. The parameters used to model the graphene C-C bonds
-is adopted from J. Tersoff \cite{PhysRevB.39.5566} and summarized in
-\cref{tab:tersoff_param}
-
+are adopted from J. Tersoff \cite{PhysRevB.39.5566} and summarized in
+\cref{tab:tersoff_param}.
 
 
 \begin{table}[H]
   \begin{center}
-  \caption{Parameters for the tersoff potential used for intermolecular interations in the graphene sheet}
+  \caption{Parameters for the Tersoff potential used for intermolecular interations in the graphene sheet}
   \label{tab:tersoff_param}
   \begin{tabular}{ | M{2cm} | M{2cm} | X{9cm} |} \hline
     Parameter & Value & Description \\ \hline 
@@ -685,6 +577,19 @@ however, that we will only apply the thermostat to specific regions in our simul
 
 \section{Limitations}
 One a general note \acrshort{MD} simulations are limited on a relative small time- and size-scales. Thus, for a friction simulation a sliding speed below a few m/s becomes inaccesible as the computing time increases inversely with sliding speed with regard to a fixed total time of the procedure. The modelling is simplified through the interatomic potentials and the solutions which do not take quantum mechanical effetcs into account. One consequence of this is the omission of effects from electron energy transport. Similarly, the modelling of heat transport through a viscous and a random force as done with the Langevin thermostat might be a highly oversimplyfication which reduced the number of dissipation channels heavily. As mentioned, the phonon is expected to have $3N$ frequencies \hl{Go back and match theory of friction}. 
+
+
+
+
+% \cite{Yalin_2011}. Thus, the weaknesses
+% include the lack of quantum effects.
+
+% Weak- nesses include a lack of quantum effects in classical atomistic
+% dynamics, and perhaps more importantly, the fact that meaningless results can
+% be obtained if the simulation conditions are incorrectly chosen. \cite[p.
+% 303]{BHUSHAN20051507}
+
+
 
 % Read Size- and time-scale issues
 % https://arxiv.org/abs/1112.3234v4
