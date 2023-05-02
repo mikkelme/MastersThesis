@@ -101,24 +101,7 @@ and mean friction.
 
 
 \section{Properties of interest} 
-In the pilot study (\cref{chap:pilot_study}) we found promising results for the idea of achieving a negative friction coefficient under the assumption of a system with coupled normal force and strain. Hence, we will consider this as a main property of interest for our further exploration. However, it is not obvious how one should rigorously quantify this. The friction coefficient is by our definition (\cref{eq:mu_def2}) given as the slope of the friction $F_f$ vs.\ normal force $F_N$ curve. Hence, for two data points $\{(F_{N,1}, F_{f,1}), (F_{N,2}, F_{f,2})\}$, $F_{N,1} < F_{N,2}$ we can evaluate the associated friction coefficient $\mu_{1,2}$ as 
-\begin{align*}
-  \mu_{1,2} = \frac{F_{f,2} - F_{f,1}}{F_{N,2} - F_{N,1}} = \frac{\Delta F_f}{\Delta F_N}.
-\end{align*}
-In the pilot study, it became apparent that the effects of friction under the
-change of load is negligible in comparison to the effects related to strain $\varepsilon$.
-Thus, by working under the assumption $F(F_N, \varepsilon) \sim F(\varepsilon)$ and a coupling $F_N
-\propto R\cdot \varepsilon$ with linear coupling ratio $R$ we get 
-\begin{align}
-  \mu_{1,2}(\varepsilon_1, \varepsilon_2) = \frac{\Delta F_{f}(\varepsilon_1, \varepsilon_2)}{R(\varepsilon_2 - \varepsilon_1)} \propto \frac{\Delta F_{f}(\varepsilon_1, \varepsilon_2)}{\Delta \varepsilon}.
-  \label{eq:mu_strain}
-\end{align}
-\hl{Change load and strain in the formulation to make R = 6 true}
-With this reasoning, we can in practice substitute load $F_N$ for strain
-$\varepsilon$ in the expression for the friction coefficient of our coupled
-system. This justifies the search for a negative slope on the friction-strain
-curve since this can be related to a negative friction coefficient in our
-proposed coupled system. The remaining question is then how to evaluate the
+In the pilot study (\cref{chap:pilot_study}) we found promising results for the idea of achieving a negative friction coefficient under the assumption of a system with coupled normal force $F_N$ and strain $\varepsilon$. Hence, we will consider this as a main property of interest for our further exploration. By asumming that the frtiction effects from load is negligible $F(F_N, \varepsilon) \sim F(\varepsilon)$ in comparison to that of strain, and a coupling $\varepsilon = R F_N$ with linear coupling ratio $R$, we found that we can in practice substitute load for strain in the expression for the friction coefficient of our coupled system $\mu = R\Delta F_f(\varepsilon) / \Delta \varepsilon$ as shown in~\cref{eq:mu_strain}. This justifies the search for a negative slope on the friction-strain curve since this can be related to a negative friction coefficient in our proposed coupled system. The remaining question is then how to evaluate the
 strength of this property. By definition, the minimum (most negative) slope
 value would give the lowest friction coefficient. However, two data points with
 a small $\Delta \varepsilon$, corresponding to a small denominator

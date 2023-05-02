@@ -816,24 +816,23 @@ between friction and normal load with change in friction that corresponds to fri
 
 \subsection{Prospects of a negative friction coefficient}\label{sec:neg_prospects}
 
-Considering the results from~\cref{sec:stretch_dependency} and~\cref{sec:load_dependency} we find that strain-induced friction effects, on the order of $/SI{1}{nN}$, are generally dominating in comparison to load-induced effects on the order of \SI{0.01}{nN} given a load range of \SI{e2}{nN}. This is promising for the idea of achieving a negative friction coefficient for a nanomachine system that couples load and strain. By applying load on the nanomachine we would increase both the load and the strain on the sheet simultaneously. However, since the friction dependency to strain dominates in comparison to load effects such a system can be designed entirely by considering the strain dependency. The friction coefficient is by our definition (\cref{eq:mu_def2}) given as the slope of the friction $F_f$ vs.\ normal force $F_N$ curve. Hence, for two data points $\{(F_{N,1}, F_{f,1}), (F_{N,2}, F_{f,2})\}$, $F_{N,1} < F_{N,2}$ we can evaluate the associated friction coefficient $\mu_{1,2}$ as 
+Considering the results from~\cref{sec:stretch_dependency} and~\cref{sec:load_dependency} we find that strain-induced friction effects, on the order of $/SI{1}{nN}$, are generally dominating in comparison to load-induced effects on the order of \SI{0.01}{nN} given a load range of \SI{e2}{nN}. This is promising for the idea of achieving a negative friction coefficient for a nanomachine system that couples load and strain. By applying load on the nanomachine we would increase both the load and the strain on the sheet simultaneously. However, since the friction dependency to strain dominates in comparison to load effects such a system can be designed entirely by considering the strain dependency. The friction coefficient is by our definition (\cref{eq:mu_def2}) given as the slope of the friction $F_f$ vs.\ normal force $F_N$ curve. Hence, for two points $\{(F_{N,1}, F_{f,1}), (F_{N,2}, F_{f,2})\}$, $F_{N,1} < F_{N,2}$ we can evaluate the associated friction coefficient $\mu_{1,2}$ as 
 \begin{align*}
   \mu_{1,2} = \frac{F_{f,2} - F_{f,1}}{F_{N,2} - F_{N,1}} = \frac{\Delta F_f}{\Delta F_N}.
 \end{align*}
-If we neglect load effects $F_f(F_N, \varepsilon) \sim F_f(\varepsilon)$ and consider a coupling $\varepsilon = F_NR $ with linear coupling ratio $R$ we get 
+If we neglect load effects $F_f(F_N, \varepsilon) \sim F_f(\varepsilon)$ and consider a coupling $\varepsilon = R F_N$ with linear coupling ratio $R$ we get 
 \begin{align}
   \mu_{1,2}(\varepsilon_1, \varepsilon_2) = \frac{\Delta F_{f}(\varepsilon_1, \varepsilon_2)}{\frac{1}{R}(\varepsilon_2 - \varepsilon_1)} = R\frac{\Delta F_{f}(\varepsilon_1, \varepsilon_2)}{\Delta \varepsilon}.
+  \label{eq:mu_strain}
 \end{align}
 When considering the ratios found for the reduction in friction with strain for the Tetrahedron and Honeycomb patterns in~\cref{sec:stretch_dependency} we find the corresponding coupled system friction coefficients to be 
 \begin{align*}
   &\text{Tetrahedron:} \quad R\frac{-\SI{0.51}{nN}}{0.04} = -R\cdot\SI{12.75}{nN},& &\text{Honeycomb:} \quad R\frac{-\SI{0.98}{nN}}{0.36} = -R\cdot\SI{2.72}{nN}&
+  \label{eq:pilot_study_mu_estimate}
 \end{align*}
 This showcases that we might be able to utilize the strain effect to achieve a negative friction for the system of coupled strain and load
 
 
-
-
-% \hl{Henrik: Her kan du godt skrive litt mer. Poengtere akkurat hvor mye friksjonen faller. Og spekulere litt i hvordan man kan bruke dette til ae designe noe med negativ friksjonskoeffisient.}
 
 
 
