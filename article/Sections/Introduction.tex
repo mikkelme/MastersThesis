@@ -90,7 +90,7 @@ In the papers by Hanakata et al.\ both the \textit{accelerated search} and the
 \textit{inverse design} approach was proven successful to create novel
 metamaterial Kirigami designs with the graphene sheet. 
 
-Hanakata et al.\ attribute the variation in mechanical properties to the non-linear effects arising from the out-of-plane buckling of the sheet. Since it is
+Hanakata et al.\ attributes the variation in mechanical properties to the non-linear effects arising from the out-of-plane buckling of the sheet. Since it is
 generally accepted that the surface roughness is of great importance for
 frictional properties it can be hypothesized that Kirigami-induced out-of-plane buckling can also be exploited for the design of frictional metamaterials. For
 certain designs, we might hope to find a relationship between the stretching of the
@@ -226,46 +226,79 @@ properties of a graphene sheet through the application of Kirigami-inspired cuts
 
 
 \section{Contributions}
+Through the fulfillment of the study goals described in~\cref{sec:goals} we have
+discovered a non-linear relationship between the kinetic friction and the strain
+for certain Kirigami patterns. This phenomenon was found to be associated with
+the out-of-plane buckling of the Kirigami sheet but with no \hl{clear} relationship
+to the contact area or the tension in the sheet. We found that this method does
+not provide any incentive for a reduction in friction, in comparison to a
+non-cut sheet, but the straining of certain Kirigami sheets allows for both a
+relative increase and decrease in friction. The relationship to load was proven
+negligible in this context and we have demonstrated that a coupled system
+of load and strain (through sheet tension) can exhibit a negative friction
+coefficient in certain load ranges. Moreover, we have created a dataset of roughly 10,000 data points for assessing the employment of machine learning and accelerated search of Kirigami designs. We have found, that this approach might be useful, but that it requires an extended dataset in order to produce reliable results for search.
 
-The goals of this study \cite{sec:goals}
-
-We have discovered this and that. On the numerical side. 
-
-We have developed a numerical procedure to simulate and evaluate the frictional properties of a graphene sheet sliding on a substrate. This was done using LAMMPS~\cite{LAMMPS} and might serve as useful for further studies within this topic. In addition, we have generated a framework for generating Kirigami patterns and implemented those in the simulation. This includes two classes of patterns inspired by macrscale design and a random walk algorithm for randomized designs. 
-
-
-% Also running multiple simulations in a structered way bu submitting it to clusters. 
-
-\hl{What did I actually achieve}
-\hl{Include Githib link} 
+During our investigations, we have built three major numerical frameworks, beyond the regular scripts associated with data analysis, which can be found on Github~\cite{Github}. The frameworks are summarized in the following. 
+\begin{itemize}
+    \item We have written a LAMMPS-based~\cite{LAMMPS} framework for simulating and measuring the frictional properties of a graphene sheet sliding on a substrate. The code is generally made flexible concerning the choice of sheet configuration, system size, simulation parameters and \acrshort{MD} potentials, which makes it applicable for further studies within this topic. We have also built an automized procedure to carry out multiple simulations under varying parameters by submitting jobs to a computational cluster via an ssh connection. This was done by adding minor additions to the python package developed by E. M. Nordhagen~\cite{lammps_simulator}.
+    \item We have generated a Python-based framework for generating Kirigami patterns and exporting these in a compatible format with the simulation software. The generation of molecular structures is done with the use of ASE~\cite{ase-paper}. Our software includes two classes of patterns inspired by macroscale designs and a random walk algorithm which allow for a variety of different designs through user-defined biases and constraints. Given our system size of choice, the first two pattern generators are capable of generating on the order of \num{e8} unique designs while the random walk generator allows for significantly more. 
+    \item We have built a machine learning framework based on Pytorch~\cite{NEURIPS2019_9015} which includes setting up the data loaders, a convolutional network architecture, a loss function, and general algorithms for training and validating the results. Additionally, we have written several scripts for performing grid searches and analyzing the model predictions in the context of the frictional properties of graphene. 
+\end{itemize}
+All numerical implementations used for this thesis have been originally developed for the purpose with the exception of the usage of libraries as mentioned above and commonly known Python libraries such as Numpy and Matplotlib.
 
 \section{Thesis structure}
+The thesis is divided into two parts. In~\cref{part:theory} we introduce the
+relevant theoretical background, and in~\cref{part:simulations} we present the
+numerical implementations and the results of this thesis.
 
-In \cref{part:theory}: Background Theory, we cover the theoretical background related to Friction (\cref{chap:friction}), Molecular Dynamics (\cref{chap:MD}) and Machine Learning (\cref{chap:ML}). 
+\cref{part:theory} contains a description of the theoretical background related to
+Friction (\cref{chap:friction}), Molecular Dynamics (\cref{chap:MD}) and Machine
+Learning (\cref{chap:ML}). In~\cref{sec:research_questions} we fill formulate our research questions n the light of the friction theory.  
 
-In \cref{chap:friction}: Friction, we introduce the most relevant theoretical concepts of friction through a division by scale: Macroscale (\cref{sec:macroscale}), Microscale (\cref{sec:microscale}) and nanoscale (\cref{sec:nanoscale}). We emphasize the nanoscale since this is of the most importance for our study. This is followed by a summary of relevant experimental and numerical results \cref{sec:prev_results} and a more formal specification of our research questions (\cref{sec:research_questions}). 
+In~\cref{part:simulations}, we begin by presenting our definition and setting up of the systemm in~\cref{chap:system}. This includes the \acrshort{MD} simulations and the generation of Kirigami designs. This is followed by a pilot study
+in~\cref{chap:pilot_study} where we evaluate the simulation results for various
+physical conditions and compare a non-cut sheet to two different Kirigami
+designs. Further explorations of the Kirigami configurations are carried out in~\cref{chap:dataset_study} which includes the generation of a dataset and the
+employment of machine learning and an accelerated search. We use the results
+from the pilot study to demonstrate the possibility to achieve a negative
+friction coefficient for a system with coupled load and strain
+in~\cref{chap:negative_coef}. Finally, we summarize our results and provide an
+outlook for further studies in~\cref{chap:summary}. Additional figures are shown
+in \cref{sec:sheet_stretch}, \cref{sec:data_stretch_profiles} and
+\cref{sec:dataset_conf}. 
 
-In \cref{chap:MD}: Molecular Dynamics, we introduce the main concepts related to the simulations used in this thesis. The main parts involve a description of the potentials used (\cref{sec:potentials}), the numerical solutions (\cref{sec:integration}) and the modeling of temperature (\cref{sec:thermostat})
 
-In \cref{chap:ML}: Machine Learning, we introduce the basics of machine learning through a general presentation of the neural network \cref{sec:NN} followed by the convolutional network (\cref{sec:CNN}) which we will use in our study. Additionally, we discuss a strategy for choosing model hypertuning (\cref{sec:hypertuning}) and a simple approach for model prediction explanations (\label{sec:explanation}). Finally, we introduce a version of the genetic algorithm applicable for accelerated search based on a machine learning model (\cref{sec:GA}).
-\\
-\\
-In \cref{part:simulations}: Simulations, we define our numerical procedure and present and discuss the main findings of this thesis. 
-% our definition of the system  (\cref{chap:system}), an initial pilot study of a subset of Kirigami designs (\cref{chap:pilot_study})
+% \hl{get appendix with only letter A., B. and C}.
 
 
-In \cref{chap:system}: System, we ...
 
-In \cref{sec:pilot_study}: Pilot study, we ...
 
-In \cref{chap:dataset_study}: XXX ...
 
-In \cref{chap:negative_coef}: XXX, ...
+% In \cref{part:theory}: Background Theory, we cover the theoretical background related to Friction (\cref{chap:friction}), Molecular Dynamics (\cref{chap:MD}) and Machine Learning (\cref{chap:ML}). 
 
-The thesis is summarized in \cref{chap:summary}
-\\
-\\
-Additional figures are shown in \cref{sec:sheet_stretch}, \cref{sec:data_stretch_profiles} and \cref{sec:dataset_conf}. \hl{get appendix with only letter A., B. and C}.
+% In \cref{chap:friction}: Friction, we introduce the most relevant theoretical concepts of friction through a division by scale: Macroscale (\cref{sec:macroscale}), Microscale (\cref{sec:microscale}) and nanoscale (\cref{sec:nanoscale}). We emphasize the nanoscale since this is of the most importance for our study. This is followed by a summary of relevant experimental and numerical results \cref{sec:prev_results} and a more formal specification of our research questions (\cref{sec:research_questions}). 
+
+% In \cref{chap:MD}: Molecular Dynamics, we introduce the main concepts related to the simulations used in this thesis. The main parts involve a description of the potentials used (\cref{sec:potentials}), the numerical solutions (\cref{sec:integration}) and the modeling of temperature (\cref{sec:thermostat})
+
+% In \cref{chap:ML}: Machine Learning, we introduce the basics of machine learning through a general presentation of the neural network \cref{sec:NN} followed by the convolutional network (\cref{sec:CNN}) which we will use in our study. Additionally, we discuss a strategy for choosing model hypertuning (\cref{sec:hypertuning}) and a simple approach for model prediction explanations (\label{sec:explanation}). Finally, we introduce a version of the genetic algorithm applicable for accelerated search based on a machine learning model (\cref{sec:GA}).
+% \\
+% \\
+% In \cref{part:simulations}: Simulations, we define our numerical procedure and present and discuss the main findings of this thesis. 
+% % our definition of the system  (\cref{chap:system}), an initial pilot study of a subset of Kirigami designs (\cref{chap:pilot_study})
+
+
+% In \cref{chap:system}: System, we ...
+
+% In \cref{sec:pilot_study}: Pilot study, we ...
+
+% In \cref{chap:dataset_study}: XXX ...
+
+% In \cref{chap:negative_coef}: XXX, ...
+
+% The thesis is summarized in \cref{chap:summary}
+% \\
+% \\
+
 
 
 
