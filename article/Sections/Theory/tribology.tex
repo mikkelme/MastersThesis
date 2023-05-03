@@ -366,7 +366,7 @@ forces, this leads to a similar linear relationship $F_{\text{fric}} \propto F_N
 while adding van der Waals adhesion to the simulation gave a sublinear
 relationship matching microscale single asperity theory, even though the
 $F_{\text{fric}} \propto A_{\text{real}}$ was maintained. This result emphasizes
-that the predictions of continuum mechanchs might still apply at the nanoscale
+that the predictions of continuum mechanisms might still apply at the nanoscale
 and that the contact area can be expected to play an important role for
 nanoscale asperity contacts. It is simply the definition of the contact area that
 changes when transitioning from micro- to nanoscale. 
@@ -400,19 +400,18 @@ simplified system of atomic-scale contacts based on three essential parts: 1) A
 periodic potential modeling the substrate as a rigid crystalline surface. 2) An
 interacting particle, or collection of particles, placed in the potential. 3) A
 moving body, moving at a steady speed, connected to the particles through a
-harmonic spring. In figure \cref{fig:PT_FK_FKT} three of the most common 1D
+harmonic spring. In figure~\cref{fig:PT_FK_FKT} three of the most common 1D
 models are displayed which we will address in the following sections. The
-time-honored Prandtl-Tomlinson (PT) model describes a point-like tip sliding
+time-honored Prandtl-Tomlinson (\acrshort{PT}) model describes a point-like tip sliding
 over a space-periodic fixed crystalline surface with a harmonic coupling to the
 moving body. This is analog to that of an experimental cantilever used for
-Atomic Force Microscopy which we will introduce in more detail in
-\cref{sec:SPM}. Further extensions were added in the Frenkel-Kontorova
+Atomic Force Microscopy which we will introduce in more detail in~\cref{sec:SPM}. Further extensions were added in the Frenkel-Kontorova
 (\acrshort{FK}) model by substituting the tip with a chain of harmonically coupled
 particles dragged from the end, and finally combined in the
 Frenkel-Kontorova-Tomlinson (\acrshort{FKT}) with the addition of a more
 rigorous harmonic coupling between the moving body and each of the atoms in the
 chain. While these models cannot provide the same level of detail as atomistic
-simulations such as \acrshort{MD} they enable investigation of atomic friction
+simulations, such as \acrshort{MD}, they enable investigation of atomic friction
 under most conditions, some of which are inaccessible to \acrshort{MD}~\cite{Yalin_2011}. This makes these models an appropriate tool for investigating
 individual parameters and mechanisms governing friction.
 
@@ -420,7 +419,7 @@ individual parameters and mechanisms governing friction.
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.4\linewidth]{figures/theory/PT_FK_FKT.png}
-  \caption{\hl{Temporary} figure from~\cite{Yalin_2011}. Be careful to align the notation on the figures with the text later on.}
+  \caption{Illustration of the key features of the Prandtl-Tomlinson (\acrshort{PT}), Frenkel-Kontorova (\acrshort{FK}) and Frenkel-Kontorova-Tomlinson (\acrshort{FKT}) respectively~\cite{Yalin_2011}. \hl{Rights and permissions} \hl{Be careful to align the notation on the figures with the text later on}. \hl{consider to cut up and put side by side.}}
   \label{fig:PT_FK_FKT}
 \end{figure}
 
@@ -428,51 +427,72 @@ individual parameters and mechanisms governing friction.
 % Analytical Models for Atomic Friction~\cite{Yalin_2011}
 % \textbf{Analytical Models for Atomic Friction}
 \subsection{Prandtl–Tomlinson} % Sources for PT model~\cite[2,3]{Yalin_2011} 
-The Prandtl–Tomlinson model (\acrshort{PT}) considers a 1D simplfification of
+The Prandtl–Tomlinson model (\acrshort{PT}) considers a 1D simplification of
 the frictional system as a single ball-tip sliding along the rigid substrate as
-shown in \cref{fig:PT_FK_FKT}. The tip is coupled harmonically to a support
-moving at a constant speed which drives the tip forward. The interaction between
-the tip and the substrate is modeled as a sinusoidal corrugation potential
-mimicking the periodicity found in a crystalline substrate. We will consider
+shown in~\cref{fig:PT_FK_FKT}. The tip is coupled harmonically to a moving support, moving at a constant speed, which drives the tip forward. The interaction between
+the tip and the substrate is modeled by a sinusoidal corrugation potential
+mimicking the periodicity found in a crystalline substrate. We will consider the
 Prandtl–Tomlinson model with added thermal activation as proposed by Gnecco et
 al.~\cite{PhysRevLett.84.1172}. For the theoretical foundation of this section,
-we generally refer to~\cite{Yalin_2011}. The potential energy for the tip at position $x$ for time $t$ is
-given as
+we generally refer to~\cite{Yalin_2011}. The potential energy for the tip at position $x$ for time $t$ is given as
 \begin{align}
   V(x,t) = \frac{1}{2}K(vt - x)^2 - \frac{1}{2}U_0 \cos \left(\frac{2\pi x}{a} \right).
   \label{eq:V_PT}
 \end{align}
 The first term describes the harmonic coupling with spring constant $K$, between the tip at position $x$ and the moving body at position $vt$, given by its constant speed $v$. The second term describes the corrugation potential with amplitude $U_0$ and period $a$ representing the lattice spacing of the substrate. The dynamics of the tip can be described by the Langevin equations 
 \begin{align}
-  m \ddot{x}+m \mu \dot{x}=-\frac{\partial V(x, t)}{\partial x}+\xi(t),
+  m \ddot{x}+m \mu \dot{x}=-\frac{\partial V(x, t)}{\partial x}+R(t),
   \label{eq:Langevin_PT}
 \end{align}
-\hl{Match notation with later use}. \\
-where $m$ is the mass of the tip, $\mu$ the viscous friction and $\xi(t)$ the thermal activation term. The equation is solved for tip position $x$ and the friction force is retrieved as the force acting on the moving body
+where $m$ is the mass of the tip, $\mu$ the viscous friction and $R(t)$ the thermal activation term. The equation is solved for tip position $x$ and the friction force is retrieved as the force acting on the moving body
 \begin{align*}
   F_{\text{fric}} = K(vt - x).
 \end{align*}
-The governing equation \cref{eq:Langevin_PT} belongs to a family of stochastic differential equations composed of both deterministic dynamics and stochastic processes. In this case, the deterministic term is the viscous friction, $m\mu\dot{x}$, to resist the movement of the tip and the force acting from the corrugation potential. The stochastic term is a random force field modeling thermal noise according to the Fluctuation-dissipation relation. Thus, there is no single path but rather multiple paths the tip can take. While the Langevin equations is one of the most common ways to handle thermal activation other methods exist to solve this problem such as Monte Carlo sampling methods. We omit the numerical scheme for the solving of the Langevin equations here and refer instead to a more in-depth discussion of the Langevin equations regarding the \acrshort{MD} simulations in \cref{sec:langevin}. 
+The governing equation~\cref{eq:Langevin_PT} belongs to a family of stochastic differential equations composed of both deterministic dynamics and stochastic processes. In this case, the deterministic term is the viscous friction, $m\mu\dot{x}$, to resist the movement of the tip and the force acting from the corrugation potential. The stochastic term is a random force field modeling thermal noise according to the Fluctuation-dissipation relation. Thus, there is no single path but rather multiple paths the tip can take. While the Langevin equation is one of the most common ways to handle thermal activation other methods exist to solve this problem such as Monte Carlo sampling methods. We omit the numerical scheme for the solving of the Langevin equations here and refer instead to a more in-depth discussion of the Langevin equation regarding the \acrshort{MD} simulations in~\cref{sec:langevin}. 
 
 
 \subsubsection{Thermal activation}
-The solving of the Langevin equations, as opposed to Newton's equation of motion, introduces thermal effects to the system. Generally, when the energy barrier comes close to $k_B T$ (0.026 eV at room temperature) thermal effects can not be neglected. In the case of a single asperity contact the energy barrier is on the order 1 eV which makes thermal activation significant~\cite{Yalin_2011}. Due to the moving body traveling at a constant speed, the potential energy will increase steadily. Without any temperature, $T = 0$, the slip will only occur when the energy barrier between the current potential well (i) and the adjacent (j) is zero $\Delta V_{i\to j} = 0$. However, in the presence of temperature, we get thermal activation, meaning that the tip can slip to the next potential well sooner $\Delta V_{i\to j} > 0$. Provided that the sliding speed is slow enough (\hl{Elaborate}) the transition rate $\kappa$ for a slip from the current to the next well is given by
+The solving of the Langevin equation, as opposed to Newton's equation of motion, introduces thermal effects to the system. Generally, when the energy barrier comes close to $k_B T$ (\SI{0.026}{eV} at room temperature) thermal effects can not be neglected. In the case of a single asperity contact the energy barrier is on the order \SI{1}{eV} which makes thermal activation significant~\cite{Yalin_2011}. Due to the moving body traveling at a constant speed, the potential energy will increase steadily. Without any temperature, $T = 0$, the slip will only occur when the energy barrier between the current potential well $(i)$ and the adjacent $(j)$ is zero $\Delta V_{i\to j} = 0$. However, in the presence of temperature, we get thermal activation, meaning that the tip can slip to the next potential well sooner at $\Delta V_{i\to j} > 0$. Provided that the sliding speed is slow enough the transition rate $\kappa$ for a slip from the current to the next well is given by
 \begin{align}
   \kappa = f_0 e^{-\Delta V / k_B T},
   \label{eq:PT_kappa}
 \end{align}
-with $\Delta V$ being the energy barrier and $f_0$ the attempt rate. The attempt rate following Kramer’s rate theory~\cite{RevModPhys.62.251} is related to the mass and damping of the system and can be thought of as the frequency at which the tip ``attempts'' to overcome the barrier. Notice that \cref{eq:PT_kappa} resembles a microstate probability in the canonical ensemble with $f_0$ in place of the inverse partition function $Z^{-1}$ which provides an additional interpretation of $f_0$. The probability $p_i$ that the tip occupies the current well $i$ relative to the adjacent well $j$, as illustrated in \cref{fig:PT_slip} is governed by 
-\begin{align*}
+with $\Delta V$ being the energy barrier and $f_0$ the attempt rate. The attempt rate following Kramer’s rate theory~\cite{RevModPhys.62.251} and is related to the mass and damping of the system and can be thought of as the frequency at which the tip ``attempts'' to overcome the barrier. Notice that~\cref{eq:PT_kappa} resembles a microstate probability in the canonical ensemble with $f_0$ in place of the inverse partition function $Z^{-1}$ which provides an additional interpretation of $f_0$. The probability $p_i$ that the tip occupies the current well $(i)$ relative to the adjacent well $(j)$, as illustrated in~\cref{fig:PT_slip} is governed by 
+\begin{align}
   \frac{dp_i}{dt} = -\kappa_{i\to j}p_i + \kappa_{j\to i}p_j.
-\end{align*}
+  \label{eq:dpdt_PT}
+\end{align}
 This probability is related to temperature, speed and mass~\cite{Yalin_2011}.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.6\linewidth]{figures/theory/PT_slip.png}
-  \caption{\hl{Temporary} figure from~\cite{Yalin_2011}}
+  \caption{An illustration of slip between two adjacent energy minima. $p_i$ is the probability of the tip residing in the current potential well, $i$, where the energy barrier is $\Delta V_{i \rightarrow j}$. $p_j$ is the probability of the tip residing at the next minima, $j$, where $\Delta V_{j \rightarrow i}$ is the corresponding energy barrier. Figure and caption from~\cite{Yalin_2011}. \hl{Rights and permission}}
   \label{fig:PT_slip}
 \end{figure}
+
+
+Generally, there exist two temperature regimes in the Prandtl–Tomlinson model: The \textit{thermal activation} regime at low temperatures and the \textit{thermal drift} at high temperatures as shown in~\cref{fig:PT_temp}. At lower temperatures, the system is subject to standard thermal activation with a much lower energy barrier for slipping forward than backward $\Delta V_{j \to i} \gg \Delta V_{i \to j}$. This results in a higher transition rate for forward slips, $\kappa_{j \to i} \ll \kappa_{i \to j}$, which effectively inhibits any backward slip. This leads to the simplified expression for~\cref{eq:dpdt_PT}
+\begin{align*}
+  \frac{dp_i}{dt} = -\kappa_{i\to j}p_i,
+\end{align*}
+which makes the relationship between friction, temperature and speed follow Sang et al.’s prediction~\cite{Sang_2001}
+\begin{align}
+  F=F_c-\left|\beta k_B T \ln \left(\frac{v_c}{v}\right)\right|^{2 / 3}, \qquad v_c = \frac{2f_0\beta k_B T}{3 C_{\text{eff}} \sqrt{F_c}},
+  \label{eq:F_thermal_ac}
+\end{align}
+where $F_c$ is the maximum friction at $T = 0$, $v_c$ a critical velocity, $f_0$
+is the attempt rate, $c_{eff}$ the effective stiffness, and $\beta$ a
+parameter determined by the shape of the corrugation well. \cref{eq:F_thermal_ac} characterizes the decrease in friction with temperature
+in the thermal activation regime, shown in~\cref{fig:PT_temp_a} at low temperature. This corresponds with the assumption of only forward slips, as seen in the force trace in~\cref{fig:PT_temp_a}. When the temperature is high enough for the system to be consistently close to thermal equilibrium, it enters the regime of thermal drift~\cite{PhysRevE.71.065101}. This regime transition can be understood through a comparison between two time scales: The time it takes for the moving body to travel one lattice spacing
+$t_v = a/v$ and the average time for a slip to occur due to thermal activation
+$\tau = 1/\kappa = f^{-1}\exp(\Delta V / k_BT)$. If $t_v \gg \tau$ the system falls within the thermal drift regime, where slips happens both in the forward and backward direction as shown in the force trace in~\cref{fig:PT_temp_b}. For the thermal drift regime, the friction follows the prediction by Krylov et
+al.~\cite{Krylow_2007, PhysRevE.71.065101, Jinesh_2008}
+\begin{align}
+  F \propto \frac{v}{T}e^{1/T}.
+  \label{eq:PT_thermal_drift}
+\end{align}
+Notice that the friction dependence on sliding speed changes from~\cref{eq:F_thermal_ac} to \cref{eq:PT_thermal_drift} as it transitions from the thermal activation to the thermal drift regime. 
 
 
 \begin{figure}[H]
@@ -492,117 +512,87 @@ This probability is related to temperature, speed and mass~\cite{Yalin_2011}.
   \end{subfigure}
   \hfill
   \hfill
-     \caption{\hl{Temporary} figures from~\cite{Yalin_2011}}
+     \caption{Illustration of the temperature difference between the thermal activation regime and the thermal drift regime. (a) shows the mean friction as a function of temperature showcasing the regime transition. The figure corresponds to the numerical results of Dong et al.~\cite{Yalin_2011} of a Prandtl–Tomlinson model with model parameters: $m=\SI{e-12}{kg}$, $U_0={0.6}{eV}$, $v=\SI{4e3}{nm/s}$, $\mu=\SI{2}{\sqrt{k/m}}$, $a=\SI{0.288}{nm}$. (b) shows the force traces of a simulation in the thermal activation regime (top) and thermal drift regime (bottom) with several characteristic forward and backward slips identified by dashed lines for the latter case. Figures from from~\cite{Yalin_2011} \hl{Rights and permission}.}
      \label{fig:PT_temp}
 \end{figure}
 
-Generally, there exist two temperature regimes in the model: \textit{Thermal activation} at low temperatures and \textit{thermal drift} at high temperatures as shown in \cref{fig:PT_temp}. At lower temperatures, the system is subject to standard thermal activation with $\Delta V_{j \to i} \gg \Delta V_{i \to j}$ resulting in  $\kappa_{j \to i} \ll \kappa_{i \to j}$. Effectively, this inhibits any backward slip and we get  
-\begin{align*}
-  \frac{dp_i}{dt} = -\kappa_{i\to j}p_i,
-\end{align*}
-which makes the relationship between friction, temperature and speed follow Sang et al.’s prediction~\cite{Sang_2001}
-\begin{align}
-  F=F_c-\left|\beta k_B T \ln \left(\frac{v_c}{v}\right)\right|^{2 / 3}, \qquad v_c = \frac{2f_0\beta k_B T}{3 C_{\text{eff}} \sqrt{F_c}},
-  \label{eq:F_thermal_ac}
-\end{align}
-where $F_c$ is the maximum friction at $T = 0$, $v_c$ a critical velocity, $f_0$
-is the attempt rate, $c_{eff}$ the effective stiffness, and $\beta$ a
-parameter determined by the shape of the corrugation well.
-\cref{eq:F_thermal_ac} characterizes the decrease in friction with temperature
-in the thermal activation regime, shown in \cref{fig:PT_temp_a} at low temperature. This corresponds with the assumption of only forward slips, as seen in the force trace shown in \cref{fig:PT_temp_a}. When the temperature is high enough for the system to be consistently close to thermal equilibrium, it enters the regime of thermal drift~\cite{PhysRevE.71.065101}. This regime transition can be understood through a comparison between two time scales: The time it takes for the moving body to travel one lattice spacing
-$t_v = a/v$ and the average time for a slip to occur due to thermal activation
-$\tau = 1/\kappa = f^{-1}\exp(\Delta V / k_BT)$. If $t_v \gg \tau$ the system falls within the thermal drift regime, with slips both backward and forwards as shown in \cref{fig:PT_temp_b}, and the friction follows the prediction of Krylov et
-al.~\cite{Krylow_2007, PhysRevE.71.065101, Jinesh_2008}
-\begin{align}
-  F \propto \frac{v}{T}e^{1/T}.
-  \label{eq:PT_thermal_drift}
-\end{align}
-
-Notice that the friction dependence on sliding speed changes between the temperature regimes as well.
-
-
-
-  
-% \begin{figure}[H]
-%   \centering
-%   \includegraphics[width=0.6\linewidth]{figures/theory/PT_temp.png}
-%   \caption{\hl{Temporary} figure from~\cite{Yalin_2011}}
-%   \label{fig:PT_temp}
-% \end{figure}
-
-% \begin{figure}[H]
-%   \centering
-%   \includegraphics[width=0.6\linewidth]{figures/theory/PT_temp_force.png}
-%   \caption{\hl{Temporary} figure from~\cite{Yalin_2011}}
-%   \label{fig:PT_temp_force}
-% \end{figure}
 
 
 \subsubsection{Sliding speed}
-In the thermal activation regime (low temperature) and at low speeds the friction relation follows \cref{eq:F_thermal_ac} making friction scale logarithmically with speed. For higher speed, above the critical velocity $v > v_c$, if only thermal effects are considered, \cref{eq:F_thermal_ac} predicts that friction will eventually saturate and come to a plateau at $F_{\text{fric}} = F_C$. This is illustrated in \cref{fig:PT_speed} with this prediction being represented by the dotted line. However, as given away by the figure, for higher speed the model will enter an athermal regime where the thermal effects are negligible compared to other contributions~\cite{PhysRevLett.89.224301}. In the athermal regime the damping term $m\mu \dot{x}$ will dominate yielding $F_{\text{fric}}
-\propto v$. The athermal regime is often observed in reduced-models if the system is overdamped or at high speeds. This concept is related to \acrshort{MD} simulations where the accessible speeds often fall into the athermal regime~\cite{Li_2011}. It is unclear how this affects real physical systems for which there exist more dissipation channels than just a single viscous term~\cite{Dong_2013}. For the thermal drift regime at higher temperatures the linear relation $F_{\text{fric}} \propto v$ as given by \cref{eq:PT_thermal_drift}.
+In the thermal activation regime (low temperature) and at low sliding speeds, the
+friction relation follows~\cref{eq:F_thermal_ac} which means that friction
+increases logarithmically with speed. For higher speeds, above the critical
+velocity $v > v_c$, if only thermal effects are considered,
+\cref{eq:F_thermal_ac} predicts that friction will eventually saturate and come
+to a plateau at $F_{\text{fric}} = F_C$. This is illustrated in
+\cref{fig:PT_speed} with this prediction being represented by the dotted line.
+However, as given away by the figure, for higher speeds the model will enter an
+\textit{athermal} regime where the thermal effects are negligible compared to
+other contributions~\cite{PhysRevLett.89.224301}. In the athermal regime, the
+damping term $m\mu \dot{x}$ will dominate yielding $F_{\text{fric}}\propto v$.
+The athermal regime is often observed in reduced-models if the system is
+overdamped or at high speeds. This concept is related to \acrshort{MD}
+simulations as well where the accessible speeds often fall into the athermal
+regime~\cite{Li_2011}. It is unclear how this affects real physical systems for
+which there exist more dissipation channels than just a single viscous
+term~\cite{Dong_2013}. For the thermal drift regime, at higher temperatures, friction increase linearly with sliding speed $F_{\text{fric}} \propto v$ as given by~\cref{eq:PT_thermal_drift}.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.6\linewidth]{figures/theory/PT_speed.png}
-  \caption{\hl{Temporary} figure from~\cite{Yalin_2011}}
+  \caption{The friction dependence on sliding speed for the simulated Prandtl–Tomlinson by Dong et al.~\cite{Yalin_2011} revealing two different regimes. In the thermal regime, friction increases logarithmically with speed, and in the athermal regime, friction is governed by damping such that $F\propto v$. The friction plateau ($F_c = \SI{0.39}{nN}$) predicted by thermal activation is shown as a dotted line. Other models parameters: $m=\SI{e-12}{kg}$, $U_0={0.6}{eV}$, $T = \SI{300}{K}$, $\mu=\SI{2}{\sqrt{k/m}}$, $a=\SI{0.288}{nm}$. Figure from~\cite{Yalin_2011} \hl{Rights and permission}}
   \label{fig:PT_speed}
 \end{figure}
 
 
 \subsubsection{Tip mass}
-The mass of the tip affects the dynamics due to a change of inertia, which changes the attempt rate $f_0$. Smaller inertia leads to a larger attempt rate and vice versa. Effectively, this will affect the transition point for the temperature and speed regimes described previously. A smaller inertia, giving a larger attempt rate, will cause an earlier transition (i.e.\ at a lower temperature) to the thermal drift regime, and result in a later speed saturation such that it transitions to the athermal regime at a higher speed. 
+The mass of the tip affects the dynamics due to a change of inertia, which changes the attempt rate $f_0$. Smaller inertia leads to a larger attempt rate and vice versa. Effectively, this will affect the transition point for the temperature and speed regimes described previously. A smaller inertia, giving a larger attempt rate, will cause an earlier transition (i.e.\ at a lower temperature) to the thermal drift regime. Additionally, this will result in a later speed saturation such that it transitions to the athermal regime at a higher speed. 
 
 
 \subsubsection{Friction Regimes: Smooth Sliding, Single Slip, and Multiple Slip}
 Stick-slip motion is a crucial instability mechanism associated with high energy dissipation and high friction. Thus, controlling the transition between smooth sliding and stick-slip is considered key to controlling friction. We can divide the frictional stick-slip behavior into three regimes: 1) Smooth sliding, where the tip slides smoothly on the substrate. 2) Single slip, where the tip stick at one potential well before jumping one lattice spacing to the next. 3) Multiple slip, where the tip jumps more than one lattice spacing for a slip event. The underlying mechanisms behind these regimes can be understood through static and dynamic contributions. 
 
-To understand the static mechanism we consider a quasistatic process for which temperature, speed and damping can be neglected and where we must have $\partial(V)/\partial x = 0$. This simplifies \cref{eq:V_PT} to 
+To understand the static mechanism we consider a quasistatic process for which temperature, speed and damping can be neglected. For a quasistatic process, we require $\partial(V)/\partial x = 0$. This simplifies~\cref{eq:V_PT} to 
 \begin{align}
   \frac{\pi U_0}{a} \sin\left(\frac{2\pi x}{a}\right) \frac{2 \pi}{a} = K(vt - x).
   \label{eq:static_V}
 \end{align}
-The friction regime is determined by the number of solutions $x$ to \cref{eq:static_V}. Only one solution corresponds to
+The friction regime is determined by the number of solutions $x$ to~\cref{eq:static_V}. Only one solution corresponds to
 smooth sliding, two solutions to a single slip and so on. It turns out that the
 regimes can be defined by the parameter $\eta = 2\pi^2U_0/a^2K$~\cite{Johnson_1998, Medyanik_2006} yielding transitions at $\eta = 1, 4.6, 7.79, 10.95, \hdots$, such that $\eta \le 1$
-corresponds too smooth sliding, $1<\eta \le 4.6$ to a single slip and so on. These static derivations lay out the fundamental probabilities for being in one of the stick-slip regimes. Notice that increasing the spring constant $K$ (stiff spring) will decrease the possibilities for stick-slip behavior. Similarly, the potential corrugation $U_0$ can be altered trough an increased load of the system
-$U_0$ can be altered by an increasing load~\cite{Vanossi_2013}
-
+corresponds too smooth sliding, $1<\eta \le 4.6$ to a single slip and so on. These static derivations lay out the fundamental probabilities for being in one of the stick-slip regimes. Notice that increasing the spring constant $K$ (stiff spring) will decrease the possibilities for stick-slip behavior. Similarly, the potential corrugation $U_0$ can be altered by an increasing load~\cite{Vanossi_2013}.
 
 Considering the dynamics on top, one finds that damping, speed and temperature will affect this probability. High damping, equivalent to a high transfer
 of kinetic energy to heat, will result in less energy available for the slip events. This will make multiple slip less likely. By a similar argument, we find that increasing the speed will contribute to more kinetic energy which will increase the likelihood of multiple slip. Finally, the temperature will contribute to earlier slips, due to thermal activation, such that
-less potential energy can be accumulated and it will result in fewer multiple slip. The effects of damping, speed and temperature are illustrated for the force traces in \cref{fig:PT_slip_var}
+less potential energy can be accumulated and it will result in fewer multiple slip. 
+
+% The effects of damping, speed and temperature are illustrated for the force traces in~\cref{fig:PT_slip_var}
 
 
-
-
-
-\begin{figure}[H]
-  \centering
-  \begin{subfigure}[t]{0.32\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/theory/PT_slip_damping.png}
-      \caption{}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.32\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/theory/PT_slip_speed.png}
-      \label{fig:PT_slip_vel}
-      \caption{}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.32\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/theory/PT_slip_temp.png}
-      \caption{}
-  \end{subfigure}
-  \hfill
-     \caption{\hl{Temporary} figure from~\cite{Yalin_2011}. \hl{Consider removing since the interpretation of smooth sliding might get a bit tricky.}}
-     \label{fig:PT_slip_var}
-\end{figure}
-
-
+% \begin{figure}[H]
+%   \centering
+%   \begin{subfigure}[t]{0.32\textwidth}
+%       \centering
+%       \includegraphics[width=\textwidth]{figures/theory/PT_slip_damping.png}
+%       \caption{}
+%   \end{subfigure}
+%   \hfill
+%   \begin{subfigure}[t]{0.32\textwidth}
+%       \centering
+%       \includegraphics[width=\textwidth]{figures/theory/PT_slip_speed.png}
+%       \label{fig:PT_slip_vel}
+%       \caption{}
+%   \end{subfigure}
+%   \hfill
+%   \begin{subfigure}[t]{0.32\textwidth}
+%       \centering
+%       \includegraphics[width=\textwidth]{figures/theory/PT_slip_temp.png}
+%       \caption{}
+%   \end{subfigure}
+%   \hfill
+%      \caption{\hl{Temporary} figure from~\cite{Yalin_2011}. \hl{Consider removing since the interpretation of smooth sliding might get a bit tricky.}}
+%      \label{fig:PT_slip_var}
+% \end{figure}
 
 
 
@@ -616,12 +606,10 @@ less potential energy can be accumulated and it will result in fewer multiple sl
 
 
 
-
-% Double check that I got it right regarding connection to the moving body and how the model is driven. 
 \subsection{Frenkel-Kontorova}
 % Based on~\cite{Manini_2016} and~\cite{FK2D}.
 
-The Frenkel-Kontorova (\acrshort{FK}) model~\cite{Frenkel_1938} extends the \acrshort{PT} model by considering a chain of atoms in contrast to just a single particle (tip). This extension is useful for understanding the importance of the alignment between the atoms and the substrate, the so-called \textit{commensurability}.
+The Frenkel-Kontorova (\acrshort{FK}) model~\cite{Frenkel_1938} extends the Prandtl–Tomlinson model by considering a chain of atoms in contrast to just a single particle (tip). This extension is useful for understanding the importance of the alignment between the atoms and the substrate, the so-called \textit{commensurability}.
 
 The standard (\acrshort{FK}) model consists of a 1D chain of $N$ classical particles of equal mass, representing atoms, interacting via harmonic forces and moving in a sinusoidal potential as sketched in \cref{fig:FK_model}~\cite{Manini_2016}. The Hamiltonian is 
 \begin{align}
@@ -631,7 +619,7 @@ The standard (\acrshort{FK}) model consists of a 1D chain of $N$ classical parti
 where the atoms are labelled sequently $i = 1, \hdots, N$. The first term $p_i^2/2m$ represents the kinetic energy with momentum $p_i$
 and mass $m$. Often the effects of inertia are neglected, referred to as the static \acrshort{FK} model, while the inclusion in \cref{eq:H_FK} is known as the dynamic \acrshort{FK} model~\cite{FK2D}. The next term describes the harmonic interaction with elastic
 constant $K$, nearest neighbour distance $\Delta x = x_{i+1} - x_i$ and 
-corresponding nearest neighbour equilibrium distance $a_c$. The final term represents the periodic corrugation potential, with amplitude $U_0$ and period $a_b$. By comparison to the potential used in the \acrshort{PT} model \cref{eq:V_PT}, the only difference is the introduction of a harmonic coupling between particles in the chain as opposed to the moving body, and that we have not yet specified any force incentivizing sliding. Different boundary choices can be made where both free ends and periodic conditions give similar results. The choice of fixed ends however makes the chain incapable of sliding.
+corresponding nearest neighbour equilibrium distance $a_c$. The final term represents the periodic corrugation potential, with amplitude $U_0$ and period $a_b$. By comparison to the potential used in the Prandtl–Tomlinson model \cref{eq:V_PT}, the only difference is the introduction of a harmonic coupling between particles in the chain as opposed to the moving body, and that we have not yet specified any force incentivizing sliding. Different boundary choices can be made where both free ends and periodic conditions give similar results. The choice of fixed ends however makes the chain incapable of sliding.
 
 \begin{figure}[H]
   \centering
@@ -640,7 +628,7 @@ corresponding nearest neighbour equilibrium distance $a_c$. The final term repre
   \label{fig:FK_model}
 \end{figure}
 
-To probe static friction one can apply an external adiabatically increasing force until sliding occurs. This corresponds to the static \acrshort{FK} model, and it turns out that the sliding properties are entirely governed by its topological excitations referred to as so-called \textit{kinks} and \textit{antikinks}
+To probe static friction one can apply an external \hl{adiabatically} increasing force until sliding occurs. This corresponds to the static \acrshort{FK} model, and it turns out that the sliding properties are entirely governed by its topological excitations referred to as so-called \textit{kinks} and \textit{antikinks}
 
 \subsubsection{Commensurability} We can subdivide the frictional behavior in terms of commensurability, that is, how well the spacing of the atoms matches the periodic substrate potential. We describe this by the length ratio $\theta = a_b / a_c = N / M$ where $M$ denotes the number of minima in the potential (within the length of the chain). A rational number for $\theta$ means that we can achieve a perfect alignment between the atoms in the chain and the potential minima, without stretching the chain, corresponding to a \textit{commensurate} case. If $\theta$ is irrational the chain and substrate cannot fully align without some stretching of the chain, and we denote this as being \textit{incommensurate}.
 
@@ -664,7 +652,7 @@ extra atoms (atom vacancies), is representing the fundamental mechanism for
 mass transport. These displacements are responsible for the mobility,
 diffusivity and conductivity within this model. 
 
-In the zero temperature commensurable case with an adiabatical increase in force, all atoms would be put into an accelerating motion as soon as the potential barrier energy is present. However, just as discussed for the \acrshort{PT} model, thermal activations will excite the system at an earlier stage resulting in kink-antikink pairs traveling down the chain. For a chain of finite length, these often occur at the end of the chain running in opposite directions. This cascade of kink-antikink excitations is shown in \cref{fig:kink_antikink}. Notice, that for the 2D case, where an island (or flake) is deposited on a surface, we generally also expect the sliding to be initiated by kink-antikink pairs at the boundaries. 
+In the zero temperature commensurable case with an adiabatical increase in force, all atoms would be put into an accelerating motion as soon as the potential barrier energy is present. However, just as discussed for the Prandtl–Tomlinson model, thermal activations will excite the system at an earlier stage resulting in kink-antikink pairs traveling down the chain. For a chain of finite length, these often occur at the end of the chain running in opposite directions. This cascade of kink-antikink excitations is shown in \cref{fig:kink_antikink}. Notice, that for the 2D case, where an island (or flake) is deposited on a surface, we generally also expect the sliding to be initiated by kink-antikink pairs at the boundaries. 
 % As a kink travels down the chain the atoms are advanced by one lattice spacing $a_b$ along the substrate potential. 
 
 \begin{figure}[H]
@@ -735,7 +723,7 @@ layers of graphene), exhibits extremely low friction at certain orientations as
 shown in \cref{fig:graphene_rot}. Here we clearly see that friction changes as a
 function of orientation angles with only two spikes of considerable friction
 force. This relates back to the concept of frictional regimes introduced through
-the simpler \acrshort{PT} model, where the change in orientation affects the
+the simpler Prandtl–Tomlinson model, where the change in orientation affects the
 effective substrate potential. Merely from the static consideration, we found that
 lowering the potential amplitude $U_0$ will decrease the parameter $\eta =
 2\pi^2U_0/a^2K$ shifting away from the regime of multiple slips towards smooth
@@ -773,7 +761,7 @@ potential and corresponding 2D effects of the sliding path~\cite{Yalin_2011}.
 
 
 
-While many of the same arguments used for the \acrshort{PT} model regarding velocity dependence for friction can be made for the \acrshort{FK} model, the addition of multiple atoms introduces the possibility of resonance. In the \acrshort{FK} model the kinetic friction is primarily attributed to resonance between the sliding induced vibrations and phonon modes in the chain~\cite{FK2D}. The specific dynamics are found to be highly model and dimension specific, and even for the 1D case, this is rather complex. However, we make a simplified analysis of the 1D rigid chain case to showcase the reasoning behind the phenomena.
+While many of the same arguments used for the Prandtl–Tomlinson model regarding velocity dependence for friction can be made for the \acrshort{FK} model, the addition of multiple atoms introduces the possibility of resonance. In the \acrshort{FK} model the kinetic friction is primarily attributed to resonance between the sliding induced vibrations and phonon modes in the chain~\cite{FK2D}. The specific dynamics are found to be highly model and dimension specific, and even for the 1D case, this is rather complex. However, we make a simplified analysis of the 1D rigid chain case to showcase the reasoning behind the phenomena.
 
 When all atoms are sliding rigidly with center of mass velocity $v_{{\text{CM}}}$ the atoms will pass the potential maxima with the so-called \textit{washboard frequency} $\Omega = 2\pi v_{{\text{CM}}} / a_b$. For a weak coupling between the chain and the potential we can use the zero potential case as an approximation for which the known dispersion relation for the 1D harmonic chain is given~\cite[p. 92]{Kittel2004}
 \begin{align*}
@@ -795,7 +783,7 @@ occurrence of certain velocities at which the friction is enhanced, correspondin
 to the washboard frequency of the system~\cite{Manini_2016}, where the friction response was observed to be highly non-linear as the resonance velocities were
 approached. 
 
-The analysis of the phonon dynamics is highly simplified here, and a numerical study of the \acrshort{FK} by Norell et al.~\cite{FK2D} showed that the behavior was highly dependent on model parameter choices, but that the friction generally increased with velocity and temperature. Here the latter observation differs qualitatively from that of the \acrshort{PT} model.
+The analysis of the phonon dynamics is highly simplified here, and a numerical study of the \acrshort{FK} by Norell et al.~\cite{FK2D} showed that the behavior was highly dependent on model parameter choices, but that the friction generally increased with velocity and temperature. Here the latter observation differs qualitatively from that of the Prandtl–Tomlinson model.
 
 
 
@@ -873,7 +861,7 @@ The analysis of the phonon dynamics is highly simplified here, and a numerical s
 A final extension of the atomic models worth mentioning here is the
 Frenkel-Kontorova-Tomlinson (\acrshort{FKT}) model~\cite{weiss_dry_1997}, which
 introduces a harmonic coupling of the sliding atom chain to the driving moving
-body, effectively combining \acrshort{PT} and \acrshort{FK} (see \cref{fig:PT_FK_FKT}). This introduces
+body, effectively combining Prandtl–Tomlinson and \acrshort{FK} (see \cref{fig:PT_FK_FKT}). This introduces
 more degrees of freedom to the model based on the intention of getting a more realistic connection between the moving body and the chain. Dong et al. carried out a numerical analysis using the 1D \acrshort{FKT} model investigating the effect of chain length. They observed that the friction increased linearly with the number of atoms in the chain on a long-range, but certain lattice mismatch resulted in local non-linear relationships as shown in \cref{fig:FKT_contact}. Similarly, by extending the \acrshort{FKT} model to 2D they were able to achieve a similar sensitivity to commensurability as observed experimentally by~\cite{DIENWIEBEL2005197} (shown in
 \cref{fig:graphene_rot}) with the numerical result shown in \cref{fig:FKT_2D_rot}. Besides a demonstration of the commensurability effect in 2D they also observed increasing friction with an increasing flake size. Combined, the 1D and 2D results support the idea of increasing friction with contact size although it might showcase non-linear behavior depending on commensurability.
 
@@ -1070,7 +1058,7 @@ substrate layers moving relative to each other using the graphene as a solid
 lubricant. 3) A graphene flake sliding on a substrate, either being dragged by
 an \acrshort{AFM} tip or by more complex arrangements in numerical simulations.
 Considering that even the sharpest \acrshort{AFM} tip will effectively put
-multiple atoms in contact with the sample, all methods are relatable to the study of nanoscale surface contacts. However, the \acrshort{FFM} type is more reminiscent of asperity theory as we expect it to deform with increasing load, while the latter two are more aligned with the \acrshort{PT} type models and our specific system of interest. Nonetheless, we will consider results across all three types of systems with the relevant studies summarized in \cref{tab:friction_ref} for convenience. 
+multiple atoms in contact with the sample, all methods are relatable to the study of nanoscale surface contacts. However, the \acrshort{FFM} type is more reminiscent of asperity theory as we expect it to deform with increasing load, while the latter two are more aligned with the Prandtl–Tomlinson type models and our specific system of interest. Nonetheless, we will consider results across all three types of systems with the relevant studies summarized in \cref{tab:friction_ref} for convenience. 
 
 
 \begin{table}[H]
@@ -1112,16 +1100,16 @@ which is also observed in \acrshort{FFM} setups both experimentally
 \cite{li_evolving_2016, zhu_study_2018}. Moreover, they found an agreement with
 the qualitative observation that soft springs allow for a clean stick-slip
 motion while hard springs ($\sim \SI{40}{N/m}$) inhibited it, which also aligns
-with the \acrshort{PT} model. In \acrshort{AFM} and \acrshort{SFA} experiments,
+with the Prandtl–Tomlinson model. In \acrshort{AFM} and \acrshort{SFA} experiments,
 the stick-slip motion tends to transition into smooth sliding when the speed
 exceeds $\sim \SI{1}{\mu/s}$ while in \acrshort{MD} modeling the same transition
 is observed in the $\sim \SI{1}{m/s}$ region~\cite{Manini_2016}. More precisely
 Liu et al.~\cite{liu_high-speed_2014} findes the transistion \acrshort{MD}
 simulations at \SI{15}{m/S}. This 6-order-of-magnitude discrepancy has been
 largely discussed in connection to simplifying assumptions in \acrshort{MD}
-simulations. On the other hand, the \acrshort{PT} model qualitatively disagrees
+simulations. On the other hand, the Prandtl–Tomlinson model qualitatively disagrees
 as it predicts smooth sliding for low speeds and stick-slip for high speeds.
-However, in an extension of the \acrshort{PT} for the study of nanoscale rolling
+However, in an extension of the Prandtl–Tomlinson for the study of nanoscale rolling
 friction by Sircar and Patra~\cite{Sircar_2020}, they found smooth sliding for
 high speeds.
 
@@ -1224,13 +1212,13 @@ coefficient, these results correspond to a negative friction coefficient. More r
 % Speed
 The dependency of velocity is generally found to increase logarithmically with
 velocity in experimental \acrshort{AFM} studies~\cite[p. 201]{gnecco_meyer_2015}
-which match the low-velocity regime of the \acrshort{PT} type models. At higher
+which match the low-velocity regime of the Prandtl–Tomlinson type models. At higher
 velocities, thermally activated processes are less important and friction becomes
-independent of velocity according to the \acrshort{PT} model result \cref{eq:F_thermal_ac} when ignoring the athermal regime. Saturation of the velocity dependency has been observed numerically for Si tips interacting with diamond, graphite and amorphous carbon surfaces respectively with scan velocities above \SI{1}{\mu/s}~\cite{zworner1998velocity}.  Guerra et al.~\cite{Guerra_2010}, studying gold clusters on graphite using \acrshort{MD} simulations, found a viscous friction response, friction being proportional to sliding velocity, in both low and high speed domains. However, thermal effects reversed as they found friction to decrease with increasing temperature at low speed (diffusive regime), but for high speed (ballistic regime) they found an increasing friction with temperatur. In the \acrshort{MD} simulations this crossover from ballistic to diffusive occurred between 10 and \SI{1}{m/s}. 
+independent of velocity according to the Prandtl–Tomlinson model result \cref{eq:F_thermal_ac} when ignoring the athermal regime. Saturation of the velocity dependency has been observed numerically for Si tips interacting with diamond, graphite and amorphous carbon surfaces respectively with scan velocities above \SI{1}{\mu/s}~\cite{zworner1998velocity}.  Guerra et al.~\cite{Guerra_2010}, studying gold clusters on graphite using \acrshort{MD} simulations, found a viscous friction response, friction being proportional to sliding velocity, in both low and high speed domains. However, thermal effects reversed as they found friction to decrease with increasing temperature at low speed (diffusive regime), but for high speed (ballistic regime) they found an increasing friction with temperatur. In the \acrshort{MD} simulations this crossover from ballistic to diffusive occurred between 10 and \SI{1}{m/s}. 
 
 
 % Temperature
-Regarding temperature itself, the general experimental trend is decreasing friction with increasing temperature as found by Zhao et al.~\cite{zhao_thermally_2007} in a series of \acrshort{AFM} graphene on graphite experiments yielding $F_{\text{fric}} \propto \exp{(1/T)}$. This agrees with the thermal drift regime of the \acrshort{PT} model even though the exact temperature range does not agree. Morevoer, Wijn et al.~\cite{Wijn_2011} found that friction commensurability can be lost at higher temperatures (above 200K) where they found a power law behavior $F_k \propto T^{-1.13 \pm0.04}$. Numerically, Zhang et al.~\cite{ma12091425} found that friction increased with temperature, using a sliding speed of \SI{10}{m/s}. Considering the findings of~\cite{Guerra_2010} this qualitative different behavior might be attributed to an \acrshort{MD} related effect associated with the transition from low speed diffusive behavior as to high speed ballistic behavior.
+Regarding temperature itself, the general experimental trend is decreasing friction with increasing temperature as found by Zhao et al.~\cite{zhao_thermally_2007} in a series of \acrshort{AFM} graphene on graphite experiments yielding $F_{\text{fric}} \propto \exp{(1/T)}$. This agrees with the thermal drift regime of the Prandtl–Tomlinson model even though the exact temperature range does not agree. Morevoer, Wijn et al.~\cite{Wijn_2011} found that friction commensurability can be lost at higher temperatures (above 200K) where they found a power law behavior $F_k \propto T^{-1.13 \pm0.04}$. Numerically, Zhang et al.~\cite{ma12091425} found that friction increased with temperature, using a sliding speed of \SI{10}{m/s}. Considering the findings of~\cite{Guerra_2010} this qualitative different behavior might be attributed to an \acrshort{MD} related effect associated with the transition from low speed diffusive behavior as to high speed ballistic behavior.
 \\
 \\
 From the review of previous results, we find several gaps and discrepancies in
