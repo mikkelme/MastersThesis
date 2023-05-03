@@ -608,29 +608,29 @@ less potential energy can be accumulated and it will result in fewer multiple sl
 
 \subsection{Frenkel-Kontorova}
 % Based on~\cite{Manini_2016} and~\cite{FK2D}.
+The Frenkel-Kontorova (\acrshort{FK}) model~\cite{Frenkel_1938} extends the Prandtl–Tomlinson model by considering a chain of atoms in contrast to just a single particle (tip). This extension is useful for understanding the importance of the alignment between the atoms and the substrate, the so-called \textit{commensurability}. Our review of the Frenkel-Kontorova is based on~\cite{Manini_2016, Vanossi_2013}.
 
-The Frenkel-Kontorova (\acrshort{FK}) model~\cite{Frenkel_1938} extends the Prandtl–Tomlinson model by considering a chain of atoms in contrast to just a single particle (tip). This extension is useful for understanding the importance of the alignment between the atoms and the substrate, the so-called \textit{commensurability}.
-
-The standard (\acrshort{FK}) model consists of a 1D chain of $N$ classical particles of equal mass, representing atoms, interacting via harmonic forces and moving in a sinusoidal potential as sketched in \cref{fig:FK_model}~\cite{Manini_2016}. The Hamiltonian is 
+The standard Frenkel-Kontorova model consists of a 1D chain of $N$ classical particles of equal mass, representing atoms, interacting via harmonic forces and moving in a sinusoidal potential as sketched in~\cref{fig:FK_model}~\cite{Manini_2016}. The Hamiltonian is 
 \begin{align}
   H = \sum_{i=1}^N \left[\frac{p_i^2}{2m} + \frac{1}{2}K(x_{i+1} - x_i - a_c)^2 + \frac{1}{2}U_0 \cos{\left(\frac{2\pi x_i}{a_b}\right)}\right],
   \label{eq:H_FK}
 \end{align}
 where the atoms are labelled sequently $i = 1, \hdots, N$. The first term $p_i^2/2m$ represents the kinetic energy with momentum $p_i$
-and mass $m$. Often the effects of inertia are neglected, referred to as the static \acrshort{FK} model, while the inclusion in \cref{eq:H_FK} is known as the dynamic \acrshort{FK} model~\cite{FK2D}. The next term describes the harmonic interaction with elastic
-constant $K$, nearest neighbour distance $\Delta x = x_{i+1} - x_i$ and 
-corresponding nearest neighbour equilibrium distance $a_c$. The final term represents the periodic corrugation potential, with amplitude $U_0$ and period $a_b$. By comparison to the potential used in the Prandtl–Tomlinson model \cref{eq:V_PT}, the only difference is the introduction of a harmonic coupling between particles in the chain as opposed to the moving body, and that we have not yet specified any force incentivizing sliding. Different boundary choices can be made where both free ends and periodic conditions give similar results. The choice of fixed ends however makes the chain incapable of sliding.
+and mass $m$. Often the effects of inertia are neglected, referred to as the static Frenkel-Kontorova model, while the inclusion in‘\cref{eq:H_FK} is known as the dynamic Frenkel-Kontorova model~\cite{FK2D}. The next term describes the harmonic interaction with elastic
+constant $K$, nearest neighbor distance $\Delta x = x_{i+1} - x_i$ and 
+corresponding nearest neighbor equilibrium distance $a_c$. The final term represents the periodic corrugation potential, with amplitude $U_0$ and period $a_b$. By comparison to the potential used in the Prandtl–Tomlinson model \cref{eq:V_PT}, the difference is the introduction of a harmonic coupling between particles in the chain as opposed to the moving body. Different boundary choices can be made where both free ends and periodic conditions give similar results. The choice of fixed ends however makes the chain incapable of sliding.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.8\linewidth]{figures/theory/FK_model.png}
-  \caption{\hl{Temporary} figure from~\cite{Manini_2016}}
+  \caption{\hl{Waiting for reuse permission} figure from~\cite{Manini_2016}}
+  % https://powerxeditor.aptaracorp.com/sciprisaps/RnPRequest/List
   \label{fig:FK_model}
 \end{figure}
 
-To probe static friction one can apply an external \hl{adiabatically} increasing force until sliding occurs. This corresponds to the static \acrshort{FK} model, and it turns out that the sliding properties are entirely governed by its topological excitations referred to as so-called \textit{kinks} and \textit{antikinks}
+To probe static friction one can apply an external adiabatically increasing force until sliding occurs, i.e.\ without loss or gain of heat. This corresponds to the static Frenkel-Kontorova model, and it turns out that the sliding properties are entirely governed by its topological excitations referred to as so-called \textit{kinks} and \textit{antikinks}
 
-\subsubsection{Commensurability} We can subdivide the frictional behavior in terms of commensurability, that is, how well the spacing of the atoms matches the periodic substrate potential. We describe this by the length ratio $\theta = a_b / a_c = N / M$ where $M$ denotes the number of minima in the potential (within the length of the chain). A rational number for $\theta$ means that we can achieve a perfect alignment between the atoms in the chain and the potential minima, without stretching the chain, corresponding to a \textit{commensurate} case. If $\theta$ is irrational the chain and substrate cannot fully align without some stretching of the chain, and we denote this as being \textit{incommensurate}.
+\subsubsection{Commensurability} We can subdivide the frictional behavior in terms of commensurability, that is, how well the spacing of the atoms matches the periodic substrate potential. We describe this by the length ratio $\theta = a_b / a_c = N / M$ where $M$ denotes the number of minima in the potential within the length of the chain. A rational number for $\theta$ means that we can achieve a perfect alignment between the atoms in the chain and the potential minima, without stretching the chain, corresponding to a \textit{commensurate} case. If $\theta$ is irrational the chain and substrate cannot fully align without some stretching of the chain, and we denote this as being \textit{incommensurate}.
 
 We begin with the simplest commensurate case of $\theta = 1$ where the spacing
 of the atoms matches perfectly with the substrate potential periodicity, i.e.\
@@ -639,32 +639,29 @@ where each atom is aligned with one of the substrate minima. By adding an extra
 atom to the chain we would effectively shift some of the atoms, out of this
 ideal state, giving rise to a kink excitation. This leads to the case where two
 atoms will have to ``share'' the same potential corrugation as sketched in
-\cref{fig:incommensurable_example}.  On the other hand, removing an atom from
+\cref{fig:incommensurable_example}. On the other hand, removing an atom from
 the chain results in an antikink excitation where one potential corrugation will
 be left ``atomless''. In order to reach a local minimum the kink (antikink) will
 expand in space over a finite length such that the chain undertakes a local
-compression (expansion). Notice that for low ratios of $\theta$, fewer atoms than minima, the chain will not be able to fill each corrugation well in any case, meaning that commensurability can instead be thought of as whether the atoms are forced to deviate, by a lattice spacing, from the spacing otherwise dictated by the spring forces in-between. When applying a tangential force to the chain it is much
+compression (expansion). Notice that for low ratios of $\theta$, fewer atoms than minima, the chain will not be able to fill each corrugation well in any case. In this case, commensurability can instead be thought of as whether the atoms are forced to deviate, by a lattice spacing, from the spacing otherwise dictated by the spring forces in-between. When applying a tangential force to the chain it is much
 easier for an excitation to move along the chain than it is for the non-excited
-atoms since the activation energy $\epsilon_{PN}$ for a kink/antikink
+atoms since the activation energy for a kink/antikink
 displacement is systematically smaller (often much smaller) than the potential
 barrier $U_0$. Thus, the motion of kinks (antikinks), i.e.\ the displacement of
 extra atoms (atom vacancies), is representing the fundamental mechanism for
 mass transport. These displacements are responsible for the mobility,
 diffusivity and conductivity within this model. 
 
-In the zero temperature commensurable case with an adiabatical increase in force, all atoms would be put into an accelerating motion as soon as the potential barrier energy is present. However, just as discussed for the Prandtl–Tomlinson model, thermal activations will excite the system at an earlier stage resulting in kink-antikink pairs traveling down the chain. For a chain of finite length, these often occur at the end of the chain running in opposite directions. This cascade of kink-antikink excitations is shown in \cref{fig:kink_antikink}. Notice, that for the 2D case, where an island (or flake) is deposited on a surface, we generally also expect the sliding to be initiated by kink-antikink pairs at the boundaries. 
-% As a kink travels down the chain the atoms are advanced by one lattice spacing $a_b$ along the substrate potential. 
+In the zero temperature commensurable case with an adiabatical increase in force, all atoms would be put into an accelerating motion as soon as the potential barrier energy is present. However, similar to our discussion on the Prandtl-Tomlinson model, thermal activations will excite the system at an earlier stage resulting in kink-antikink pairs traveling down the chain. For a chain of finite length, these often occur at the end of the chain running in opposite directions. This cascade of kink-antikink excitations is shown in \cref{fig:kink_antikink}. Notice, that for the 2D case, where an island (flake) is deposited on a surface, we generally also expect the sliding to be initiated by kink-antikink pairs at the boundaries. 
+
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.8\linewidth]{figures/theory/kink_antikink.png}
-  \caption{\hl{Temporary} figure from~\cite{Manini_2016}}
+  \caption{\hl{Waiting for reuse permission} figure from~\cite{Manini_2016}}
+  % https://powerxeditor.aptaracorp.com/sciprisaps/RnPRequest/List
   \label{fig:kink_antikink}
 \end{figure}
-
-
-For the case of incommensurability, i.e.\ $\theta = a_b/a_c$ is irrational, the
-\acrshort{GS} is characterized by a sort of ``staircase''  deformation. That is, the chain will exhibit regular periods of regions approximate commensurability seperated by reguraly spaced kinks or antikinks.
 
 
 % where the chain is slightly compressed (expanded) to match the substrate potential, separated by kinks (antikinks), where the increased stress is eventually released.
@@ -687,23 +684,25 @@ For the case of incommensurability, i.e.\ $\theta = a_b/a_c$ is irrational, the
 
 % Maybe use the strength $\lambda = U_0 / (K a_b^2)$ with critical strength $\lambda_c$ instead of critical $K$?
 
-The incommensurable \acrshort{FK} model contains a critical elastic constant $K_c$, such that for $K > K_c$ the static friction $F_s$ drops to zero, making the chain able to initiate a slide at no energy cost, while the low-velocity kinetic friction is dramatically reduced. This can be explained by the
+For the case of incommensurability, i.e.\ $\theta = a_b/a_c$ being irrational, the
+\acrshort{GS} is characterized by a sort of ``staircase''  deformation. That is, the chain will exhibit regular periods of regions with approximate commensurability separated by reguraly spaced kinks or antikinks. 
+
+
+The incommensurable Frenkel-Kontorova model contains a critical elastic constant $K_c$, such that for $K > K_c$ the static friction $F_s$ drops to zero, making the chain able to initiate a slide at no energy cost, while the low-velocity kinetic friction is dramatically reduced. This can be explained by the
 fact that the displacement occurring in the incommensurable case will yield just
-as many atoms climbing up a corrugation as there are atoms climbing down. For a big (infinite) chain this will exactly balance the forces making it
+as many atoms climbing up a corrugation as atoms climbing down. For a big (infinite) chain this will exactly balance the forces making it
 non-resistant to sliding. Generally, incommensurability guarantees that the
 total energy (at $T=0$) is independent of the relative position to the
 potential. However, when sliding freely, a single atom will eventually occupy a
 maximum of the potential, and thus when increasing the potential magnitude $U_0$ or
 softening the chain stiffness, lowering $K$, the possibility to occupy such a
-maximum disappears. This marks the so-called \text{Aubry transition},
+maximum disappears. This marks the so-called \text{aubry transition},
 at the critical elastic constant $K = K_c(U_0, \theta)$, where the chain goes
 from a free sliding to a \textit{pinned} state with nonzero static friction.
 $K_c$ is a discontinuous function of the ratio $\theta$, due to the reliance on
 irrational numbers for incommensurability. The minimal
 value $K_c \simeq 1.0291926 $ in units $[2 U_0 (\pi / a_b)^2]$ is achieved for
-the golden-mean ratio $\theta = (1+\sqrt{5}/2)$. Notice that the pinning is
-provided despite translational invariance due to the inaccessibility to move
-past the energy barrier which acts as a dynamical constraint. The Aubry transition can be investigated as a first-order phase transition for which power laws can be defined for the order parameter, but this is beyond the scope of this thesis.
+the golden-mean ratio $\theta = (1+\sqrt{5}/2)$. The Aubry transition can be investigated as a first-order phase transition for which power laws can be defined for the order parameter, but this is beyond the scope of this thesis.
 
 
 % The term superlubricity has been criticized as mislead-
@@ -713,23 +712,18 @@ past the energy barrier which acts as a dynamical constraint. The Aubry transiti
 
 The phenomena of non-pinned configurations are named \textit{superlubricity} in
 tribological context. Despite the misleading name, this refers to the case
-where the static friction is zero while the kinetic friction is nonzero but
+where the static friction is zero while the kinetic friction is nonzero, but
 reduced. For the case of a 2D sheet, it is possible to alter the
 commensurability, not only by changing the lattice spacing through material
 choice but also by changing the orientation of the sheet relative to the
 substrate. Dienwiebel et al.~\cite{DIENWIEBEL2005197} have shown that the
 kinetic friction, for a graphene flake sliding over a graphite surface (multiple
 layers of graphene), exhibits extremely low friction at certain orientations as
-shown in \cref{fig:graphene_rot}. Here we clearly see that friction changes as a
-function of orientation angles with only two spikes of considerable friction
-force. This relates back to the concept of frictional regimes introduced through
-the simpler Prandtl–Tomlinson model, where the change in orientation affects the
+shown in \cref{fig:graphene_rot}. As the orientation is changed they observed two spikes of considerable friction while the remaining valleys correspond to effectively zero friction in consideration of the measurement uncertainty. This phenomenon relates to the transition between frictional regimes, as introduced through the Prandtl–Tomlinson model, since the change in orientation affects the
 effective substrate potential. Merely from the static consideration, we found that
 lowering the potential amplitude $U_0$ will decrease the parameter $\eta =
 2\pi^2U_0/a^2K$ shifting away from the regime of multiple slips towards smooth
-sliding associated with low friction. Such transitions will also be affected by the shape of the
-potential and corresponding 2D effects of the sliding path~\cite{Yalin_2011}.
-% Say more here
+sliding associated with low friction. Such transitions will also be affected by the shape of the potential and corresponding 2D effects of the sliding path~\cite{Yalin_2011}.
 
 \begin{figure}[H]
   \centering
@@ -752,22 +746,20 @@ potential and corresponding 2D effects of the sliding path~\cite{Yalin_2011}.
 %Based on~\cite{FK2D}
 
 
-% The \acrshort{FK} model can also describe phonons and heat in the lattices, which absorb the kinetic energy of the sliding[4].~\cite{FK2D}
+% The Frenkel-Kontorova model can also describe phonons and heat in the lattices, which absorb the kinetic energy of the sliding[4].~\cite{FK2D}
 
-% Consequently, the \acrshort{FK} model is the simplest model in which dynamic friction is emergent, while in other models some form of heuristic damping must be included.\cite{FK2D}
+% Consequently, the Frenkel-Kontorova model is the simplest model in which dynamic friction is emergent, while in other models some form of heuristic damping must be included.\cite{FK2D}
 \subsubsection{Velocity resosnance} % Velocity resosnance 
 % The kinetic friction properties of the FK model (Strunz and Elmer, 1998a,b) are probed by adding a (e.g. Langevin) thermostat as described for the PT model above. Even where (above the Aubry transition) Fs = 0 the kinetic friction force Fk is nonzero, because the dy- namics at any finite speed results in the excitation of phonons in the chain.
 % https://arxiv.org/abs/1112.3234v4
 
+While many of the same arguments used for the Prandtl–Tomlinson model regarding velocity dependence for friction can be made for the Frenkel-Kontorova model, the addition of multiple atoms introduces the possibility of resonance. In the Frenkel-Kontorova model, the kinetic friction is primarily attributed to resonance between the sliding-induced vibrations and phonon modes in the chain~\cite{FK2D}. The specific dynamics are found to be highly model and dimension specific, and even for the 1D case, this is rather complex. However, we make a simplified analysis of the 1D rigid chain in order to showcase the reasoning behind the phenomena.
 
-
-While many of the same arguments used for the Prandtl–Tomlinson model regarding velocity dependence for friction can be made for the \acrshort{FK} model, the addition of multiple atoms introduces the possibility of resonance. In the \acrshort{FK} model the kinetic friction is primarily attributed to resonance between the sliding induced vibrations and phonon modes in the chain~\cite{FK2D}. The specific dynamics are found to be highly model and dimension specific, and even for the 1D case, this is rather complex. However, we make a simplified analysis of the 1D rigid chain case to showcase the reasoning behind the phenomena.
-
-When all atoms are sliding rigidly with center of mass velocity $v_{{\text{CM}}}$ the atoms will pass the potential maxima with the so-called \textit{washboard frequency} $\Omega = 2\pi v_{{\text{CM}}} / a_b$. For a weak coupling between the chain and the potential we can use the zero potential case as an approximation for which the known dispersion relation for the 1D harmonic chain is given~\cite[p. 92]{Kittel2004}
+When all atoms are sliding rigidly with center of mass (\acrshort{CM}) velocity $v_{{\text{CM}}}$ the atoms will pass the potential maxima with the so-called \textit{washboard frequency} $\Omega = 2\pi v_{{\text{CM}}} / a_b$. For a weak coupling between the chain and the potential we can use the zero potential case as an approximation for which the known dispersion relation for the 1D harmonic chain is given~\cite[p. 92]{Kittel2004}
 \begin{align*}
   \omega_k = \sqrt{\frac{4 K}{m}} \left|\sin{\left(\frac{k}{2}\right)}\right|,
 \end{align*}
-where $\omega_k$ is the phonon frequency and $k = 2\pi i / N$ the wavenumber with $i\in [N/2, N/2)$. Resonance will occur when the washboard frequency $\Omega$ is close to the frequency of the phonon modes $\omega_q$ in the chain with wavenumber $q = 2\pi a_c / a_b = 2\pi \theta^{-1}$ or its harmonics $nq$ for $n = 1, 2, 3, \hdots$~\cite{van_den_Ende_2012}. Thus, we can approximate the resonance center of mass speed as
+where $\omega_k$ is the phonon frequency and $k = 2\pi i / N$ the wavenumber with $i\in [N/2, N/2)$. Resonance will occur when the washboard frequency $\Omega$ is close to the frequency of the phonon modes $\omega_q$ in the chain with wavenumber $q = 2\pi a_c / a_b = 2\pi \theta^{-1}$ or its harmonics $nq$ for $n = 1, 2, 3, \hdots$~\cite{van_den_Ende_2012}. Thus, we can approximate the resonance \acrshort{CM} speed as
 \begin{align*}
     n \Omega &\sim \omega_{nq} \\
     n \frac{2\pi v_{\text{CM}}}{a_b} &\sim \sqrt{\frac{4K}{m}} \left| \sin{\left(\frac{2n \pi \theta^{-1}}{2}\right)}\right| \\
@@ -776,14 +768,14 @@ where $\omega_k$ is the phonon frequency and $k = 2\pi i / N$ the wavenumber wit
 When the chain slides with a velocity around resonance speed, the washboard
 frequency can excite acoustic phonons which will dissipate to other phonon modes
 as well. At zero temperature, the energy will transform back and forth between
-internal degrees of freedom and center of mass movement of the chain. Without any dissipation mechanism this is theorized to speed up the translational decay~\cite{FK2D}. However, as soon as we add a dissipation channel through the substrate, energy will dissipate from the chain to the substrate's degrees of freedom. This suggests that certain sliding speeds will exhibit relatively high kinetic friction while
+internal degrees of freedom and \acrshort{CM} movement of the chain. Without any dissipation mechanism, this is theorized to speed up the translational decay~\cite{FK2D}. However, as soon as we add a dissipation channel through the substrate, energy will dissipate from the chain to the substrate's degrees of freedom. This suggests that certain sliding speeds will exhibit relatively high kinetic friction while
 others will be subject to relatively low kinetic friction. Simulations of
-concentric nanotubes in relative motion (telescopic sliding) support this idea as it has revealed the
-occurrence of certain velocities at which the friction is enhanced, corresponding
-to the washboard frequency of the system~\cite{Manini_2016}, where the friction response was observed to be highly non-linear as the resonance velocities were
-approached. 
+concentric nanotubes in relative motion (telescopic sliding) support this idea
+as it has revealed the occurrence of certain velocities at which the friction is
+enhanced, corresponding to the washboard frequency of the
+system~\cite{Zhang_2007, Zhang_2009}. The friction response was observed to be highly non-linear as the resonance velocities were approached. 
 
-The analysis of the phonon dynamics is highly simplified here, and a numerical study of the \acrshort{FK} by Norell et al.~\cite{FK2D} showed that the behavior was highly dependent on model parameter choices, but that the friction generally increased with velocity and temperature. Here the latter observation differs qualitatively from that of the Prandtl–Tomlinson model.
+The analysis of the phonon dynamics is highly simplified here, and a numerical study of the Frenkel-Kontorova by Norell et al.~\cite{FK2D} showed that the behavior was highly dependent on model parameter choices, but that the friction generally increased with velocity and temperature. Here the latter observation differs qualitatively from that of the Prandtl–Tomlinson model.
 
 
 
@@ -796,7 +788,7 @@ The analysis of the phonon dynamics is highly simplified here, and a numerical s
 % thermostat, which models the dissipation of heat by adding a viscous damping
 % force and thermal fluctuations by the addition of Gaussian random forces with
 % variance proportional to the temperature (see \cref{sec:langevin} for more details). In combination, this gives rise to a kinetic
-% friction that is both velocity and temperature dependent. By extending the \acrshort{FK} model into 2D~\cite{FK2D} it can be shown numerically that
+% friction that is both velocity and temperature dependent. By extending the Frenkel-Kontorova model into 2D~\cite{FK2D} it can be shown numerically that
 % the friction coefficient generally increases with increasing velocity and
 % temperature resepectively, although the specific of the trend is highly
 % sensitive to model parameters. 
@@ -807,7 +799,7 @@ The analysis of the phonon dynamics is highly simplified here, and a numerical s
 % As the system is Hamiltonian (no heuristic damping) the total energy is conserved. Nevertheless, energy can be transferred from the centre of mass to the internal degrees of freedom, leading to the arrest of the chain in time. This effect can be interpreted as an effective friction.~\cite{van_den_Ende_2012}
 
 
-% The majority [6–12] examines the steady state of the dynamical \acrshort{FK} model in the presence of dissipation, rep- resenting the coupling of phonons to other, undescribed degrees of freedom.~\cite{PhysRevLett.85.302}
+% The majority [6–12] examines the steady state of the dynamical Frenkel-Kontorova model in the presence of dissipation, rep- resenting the coupling of phonons to other, undescribed degrees of freedom.~\cite{PhysRevLett.85.302}
 
 
 % Static friciton behvaiour is robust and remains similar in 2D but dynamical friction is strongly influenced. 
@@ -860,41 +852,55 @@ The analysis of the phonon dynamics is highly simplified here, and a numerical s
 \subsection{Frenkel-Kontorova-Tomlinson}
 A final extension of the atomic models worth mentioning here is the
 Frenkel-Kontorova-Tomlinson (\acrshort{FKT}) model~\cite{weiss_dry_1997}, which
-introduces a harmonic coupling of the sliding atom chain to the driving moving
-body, effectively combining Prandtl–Tomlinson and \acrshort{FK} (see \cref{fig:PT_FK_FKT}). This introduces
-more degrees of freedom to the model based on the intention of getting a more realistic connection between the moving body and the chain. Dong et al. carried out a numerical analysis using the 1D \acrshort{FKT} model investigating the effect of chain length. They observed that the friction increased linearly with the number of atoms in the chain on a long-range, but certain lattice mismatch resulted in local non-linear relationships as shown in \cref{fig:FKT_contact}. Similarly, by extending the \acrshort{FKT} model to 2D they were able to achieve a similar sensitivity to commensurability as observed experimentally by~\cite{DIENWIEBEL2005197} (shown in
-\cref{fig:graphene_rot}) with the numerical result shown in \cref{fig:FKT_2D_rot}. Besides a demonstration of the commensurability effect in 2D they also observed increasing friction with an increasing flake size. Combined, the 1D and 2D results support the idea of increasing friction with contact size although it might showcase non-linear behavior depending on commensurability.
+introduces a harmonic coupling of the sliding atom chain to the moving body,
+effectively combining Prandtl–Tomlinson and Frenkel-Kontorova
+(see~\cref{fig:PT_FK_FKT}). This introduces more degrees of freedom to the model
+which is based on the intention of getting a more realistic connection between
+the moving body and the chain. Dong et al.~\cite{Yalin_2011} carried out a numerical analysis
+using the 1D Frenkel-Kontorova-Tomlinson model to investigate the effect of
+chain length. They observed that the friction increased linearly with the number
+of atoms in the chain on a long range, but certain lattice mismatches resulted in
+local non-linear relationships as shown in~\cref{fig:FKT_contact}. Similarly, by
+extending the Frenkel-Kontorova-Tomlinson model to 2D they were able to achieve
+a similar sensitivity to commensurability as observed experimentally
+by~\cite{DIENWIEBEL2005197} (see ~\cref{fig:graphene_rot}) with the numerical
+result shown in~\cref{fig:FKT_2D_rot}. Besides a demonstration of the
+commensurability effect in 2D they also observed increasing friction with an
+increasing flake size. Combined, the 1D and 2D results support the idea of
+increasing friction with contact size although it might showcase non-linear
+behavior depending on commensurability.
 
 
 \begin{figure}[H]
   \centering
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
-      \includegraphics[width=\textwidth]{figures/theory/FKT_contact}
+      \includegraphics[width=\textwidth]{figures/theory/FKT_contact.png}
       \label{fig:FKT_contact}
-      \caption{\hl{Temporary} figure from~\cite{Yalin_2011} }
   \end{subfigure}
   \hfill
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/theory/FKT_2D_rot.png}
       \label{fig:FKT_2D_rot}
-      \caption{\hl{Temporary} figure from~\cite{Yalin_2011} }
-  \end{subfigure}
-  \hfill
-    %  \caption{}
-    %  \label{fig:FKT_size}
+    \end{subfigure}
+    \hfill
+     \caption{Friction in the Frenkel-Kontorova-Tomlinson model for varying size and Commensurability corresponding to numerical result by Dong et al.~\cite{Yalin_2011}. $K_t$ describes the interatomic spring constant and $K$ the coupling to the moving body. (a) The 1D case with an increasing number of atoms in the chain and different mismatch length ratios $\theta = a_b / a_c$, given as $a/b$ in their notation. The model parameters are $K = \SI{5}{N/m}$, $K_t = \SI{50}{N/m}$. (b) The 2D case with varying angles (misfit angle) between the flake and the substrate. The model parameters are $K = \SI{10}{N/m}$, $K_t = \SI{50}{N/m}$. Figure from~\cite{Yalin_2011}. \hl{Rights and permission}.}
+     \label{fig:FKT_size}
 \end{figure}
 
 
+\subsection{Shortcomings of reduced-models}
+On a final note, we point out that the reduced-models describe the friction behavior in a highly simplified manner. Some shortcomings include the fact that they assume a rigid substrate with a simple sinusoidal potential shape. In reality, the substrate reaction to sliding motion will make for a changing potential throughout the simulation which makes the dynamics more complex. Similarly, the energy dissipation is simplified through a viscous term $-m\mu \dot{x}$ from the Langevin equations \cref{eq:Langevin_PT}. This does not capture the full complexity associated with electron and phonon dissipation~\cite{Yalin_2011}. Taking phonon dissipation as an example there are $3N$ vibration modes, and thus many dissipation channels for the tip. Finally, we also point out that the moving body is simplified as a constantly moving rigid body, while in reality, this might also be subject to more complex dynamic behavior.
 
-\subsection{Shortcomings of atomic models}
-\hl{To-DO: Shortcomings of PT-based reduced-models} %~\cite{Yalin_2011}. 
-\begin{itemize}
-  \item Assumes a rigid substrate with a simplified potential shape. 
-  \item Energy dissipation is added through a viscous term $-m\mu \dot{x}$ being the only dissipation channel availble. Does not capture a more complex real-life electron and phonon dissipation. Taking phonon dissipation as an example there are many vibration modes (3N). This will affect the thermal activation derivation. 
-  \item The moving body is simplified as a constantly moving rigid body, while in fact this will also be subject to a more complex dynamic behavior.
-\end{itemize}
+
+
+% \hl{To-DO: Shortcomings of PT-based reduced-models} %~\cite{Yalin_2011}. 
+% \begin{itemize}
+%   \item Assumes a rigid substrate with a simplified potential shape. 
+%   \item Energy dissipation is added through a viscous term $-m\mu \dot{x}$ being the only dissipation channel availble. Does not capture a more complex real-life electron and phonon dissipation. Taking phonon dissipation as an example there are many vibration modes (3N). This will affect the thermal activation derivation. 
+%   \item The moving body is simplified as a constantly moving rigid body, while in fact this will also be subject to a more complex dynamic behavior.
+% \end{itemize}
 
 
 % However, Weiss and Elmer (1995) proposed that the model had a deficiency. They suggested that in the FK model, there was no connection between the atoms and the sliding body. Therefore, Frenkel-Kontorova-Tomlinson (FKT) model that combines the FK model with the Tomlinson model was proposed.~\cite{kim_nano-scale_2009}
