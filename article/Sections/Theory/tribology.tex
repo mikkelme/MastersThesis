@@ -891,7 +891,10 @@ behavior depending on commensurability.
 
 
 \subsection{Shortcomings of reduced-models}
-On a final note, we point out that the reduced-models describe the friction behavior in a highly simplified manner. Some shortcomings include the fact that they assume a rigid substrate with a simple sinusoidal potential shape. In reality, the substrate reaction to sliding motion will make for a changing potential throughout the simulation which makes the dynamics more complex. Similarly, the energy dissipation is simplified through a viscous term $-m\mu \dot{x}$ from the Langevin equations \cref{eq:Langevin_PT}. This does not capture the full complexity associated with electron and phonon dissipation~\cite{Yalin_2011}. Taking phonon dissipation as an example there are $3N$ vibration modes, and thus many dissipation channels for the tip. Finally, we also point out that the moving body is simplified as a constantly moving rigid body, while in reality, this might also be subject to more complex dynamic behavior.
+It should be noted that the reduced-models presented in this work provide a simplified description of the friction behavior. One major limitation is that all models assume a rigid substrate with a sinusoidal potential shape, whereas in reality, the substrate reaction to sliding motion results in a constantly changing potential, making the dynamics more intricate. Moreover, the energy dissipation is simplified through a viscous term $-m\mu \dot{x}$ in the Langevin equations \cref{eq:Langevin_PT}, which neglects the complexity associated with electron and phonon dissipation. For example, considering phonon dissipation, there exist many vibration modes ($3N$), and thus many dissipation channels for the tip. Lastly, it should be mentioned that the moving body is simplified as a constantly moving rigid body, whereas in reality, it may exhibit a more complicated dynamic behavior.
+
+
+% On a final note, we point out that the reduced-models describe the friction behavior in a highly simplified manner. Some shortcomings include the fact that they assume a rigid substrate with a simple sinusoidal potential shape. In reality, the substrate reaction to sliding motion will make for a changing potential throughout the simulation which makes the dynamics more complex. Similarly, the energy dissipation is simplified through a viscous term $-m\mu \dot{x}$ from the Langevin equations \cref{eq:Langevin_PT}. This does not capture the full complexity associated with electron and phonon dissipation~\cite{Yalin_2011}. Taking phonon dissipation as an example there are $3N$ vibration modes, and thus many dissipation channels for the tip. Finally, we also point out that the moving body is simplified as a constantly moving rigid body, while in reality, this might also be subject to more complex dynamic behavior.
 
 
 
@@ -1005,11 +1008,12 @@ forces on the scale of nano-newtons along with the difficulties of mapping the
 nano-scale topography of the sample. In contrast to numerical simulations, which provide full
 transparency regarding atomic-scale structures, sampling of forces, velocities
 and temperature, the experimental results are limited by the state-of-the-art
-experimental methods. To compare numerical and experimental results we adress a few of the most relevamt experimental methods.
+experimental methods. To facilitate the comparison of numerical and experimental results, we will address a few of the most relevant experimental methods.
 
-\subsubsection{Scanning Probe Microscopy}\label{sec:SPM} Scanning probe
-microscopy (\acrshort{SPM}) includes a variety of experimental methods which is
-used to examine surfaces with atomic resolution~\cite[pp.
+
+\subsubsection{Scanning Probe Microscopy}\label{sec:SPM} 
+Scanning probe microscopy (\acrshort{SPM}) includes a variety of experimental
+methods which are used to examine surfaces with atomic resolution~\cite[pp.
 6-27]{BHUSHAN20051507}. This was originally developed for surface topography
 imaging, but today it plays a crucial role in nanoscale science as it is used
 for probe-sampling regarding tribological, electronic, magnetic, biological and
@@ -1017,40 +1021,29 @@ chemical character. The family of methods involving the measurement of forces is
 generally referred to as \textit{scanning force microscopies} (\acrshort{SFM})
 or for friction purposes \textit{friction force microscopes} (\acrshort{FFM}).
 
-One such method arose from the \textit{atomic force microscope} \acrshort{AFM}, which consists of a sharp micro-fabricated tip attached to a cantilever force sensor, usually with a sensitivity below 1 nN all the way down to pN. The force is measured by recording the bending of
+One such method arose from the \textit{atomic force microscope} \acrshort{AFM}, which consists of a sharp micro-fabricated tip attached to a cantilever force sensor, usually with a sensitivity below \SI{1}{nN} all the way down to pN. The force is measured by recording the bending of
 the cantilever, either as a change in electrical conduction or more commonly, by
 a light beam reflected from the back of the cantilever into a photodetector
-\cite[p. 183]{gnecco_meyer_2015}. By adjusting the tip-sample height to keep a constant normal force while scanning across the surface, the \acrshort{AFM} can be used to produce a
-surface topography map. By tapping the material (dynamic force microscopy) with
-a sinusoidally vibrated tip the effects from friction and other disturbing forces
-can be minimized to produce an even clearer image (\hl{include example,
-preferably showing the surface structure of graphene}). However, when scanning
+\cite[p. 183]{gnecco_meyer_2015} as shown in \cref{fig:AFM}. By adjusting the tip-sample height to keep a constant normal force while scanning across the surface, the \acrshort{AFM} can be used to produce a
+surface topography map.  However, when scanning perpendicularly to the cantilever axis, the frictional force can be measured as the torsion of the cantilever. By utilizing a photodetector with four quadrants (as depicted in Figure \ref{fig:AFM}), the normal force and friction force can be simultaneously measured as the probes scan across the surface. However, when scanning
 perpendicularly to the cantilever axis, one is also able to measure the
 frictional force as torsion of the cantilever. By having four quadrants in the
-photodetector (as shown in figure \cref{fig:AFM}), one can simultaneously
+photodetector (see~\cref{fig:AFM}), one can simultaneously
 measure the normal force and friction force as the probes scan across the
-surface. 
+surface. \acrshort{AFM} can also be utilized to drag a nanoflake across the substrate, as demonstrated by Dienwiebel et al.~\cite{DIENWIEBEL2005197}, who attached a graphene flake to a \acrshort{FFM} tip and dragged it across graphite. However, it should be noted that this method concentrates the normal loading to a single point on the flake, rather than achieving an evenly distributed load.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.6\linewidth]{figures/theory/AFM.png}
-  \caption{\hl{Temporary} figure from~\cite[p. 184]{gnecco_meyer_2015}}
+  \caption{Schematic diagram of a beam-deflection atomic force microscope. Figure and caption from~\cite[p. 184]{gnecco_meyer_2015} \hl{Rights and permission}}
   \label{fig:AFM}
 \end{figure}
 
 
-\acrshort{AFM} can also be used to drag a nanoflake across the substrate as done by
-Dienwiebel et al.~\cite{DIENWIEBEL2005197}, where a graphene flake was attached
-to a \acrshort{FFM} tip and dragged across graphite. Notice that this makes the normal
-loading concentrated to a single point on the flake rather than achieving an evenly distributed load. 
-
 
 
 \subsubsection{Surface Force Apparatus}
-The Surface force apparatus \acrshort{SFA} is based on two curved molecularly smooth surfaces brought into contact~\cite[p. 188]{gnecco_meyer_2015}. The sample is placed in between the two surfaces as a lubricant film for which the friction properties can be studied by applying a tangential force to the surfaces. 
-
-
-
+Finally, it is worth mentioning the Surface Force Apparatus (\acrshort{SFA}), which consists of two curved, molecularly smooth surfaces brought into contact~\cite[p. 188]{gnecco_meyer_2015}. The material of choice is usually mica since it can be easily cleaved into atomically flat surfaces over macroscopic areas. The sample is then placed between the two surfaces as a lubricant film, and the friction properties can be studied by applying a tangential force to the surfaces.
 
 \section{Summary of previous results}\label{sec:prev_results}
 Several studies have investigated the frictional behavior of graphene by varying
@@ -1059,39 +1052,45 @@ commensurability and graphene thickness~\cite{penkov_tribology_2014}. In
 general, we find three types of relevant systems being studied: 1) An
 \acrshort{FFM} type setup where the graphene, either resting on a substrate or
 suspended, is probed by an \acrshort{AFM} tip scanning across the surface. 2) A
-\acrshort{SFA} setup with the graphene ``sandwiched'' in between two
-substrate layers moving relative to each other using the graphene as a solid
-lubricant. 3) A graphene flake sliding on a substrate, either being dragged by
-an \acrshort{AFM} tip or by more complex arrangements in numerical simulations.
+\acrshort{SFA} setup with the graphene ``sandwiched'' in between two substrate
+layers moving relative to each other using the graphene as a solid lubricant. 3)
+A graphene flake sliding on a substrate, either being dragged by an
+\acrshort{AFM} tip or by a more complex arrangement in numerical simulations.
 Considering that even the sharpest \acrshort{AFM} tip will effectively put
-multiple atoms in contact with the sample, all methods are relatable to the study of nanoscale surface contacts. However, the \acrshort{FFM} type is more reminiscent of asperity theory as we expect it to deform with increasing load, while the latter two are more aligned with the Prandtl–Tomlinson type models and our specific system of interest. Nonetheless, we will consider results across all three types of systems with the relevant studies summarized in \cref{tab:friction_ref} for convenience. 
+multiple atoms in contact with the sample, all methods are relatable to the
+study of nanoscale surface contacts. However, the \acrshort{FFM} type is more
+closely related to asperity theory since it is expected to deform under
+increasing load, while the latter two are more aligned with the
+Prandtl–Tomlinson type models and our specific system of interest. Nonetheless,
+we will consider results across all three types of systems with the relevant
+studies summarized in \cref{tab:friction_ref} for convenience. 
 
 
 \begin{table}[H]
   % \begin{center}
   \centering
-  \caption{\hl{Update multirow line span after completing the table...}}
+  \caption{A summary of the studies considered for the review of previous results in~\cref{sec:prev_results}. The table provides a distinction between the different types of systems in the study: \acrshort{FFM}, \acrshort{SFA} or flake on a substrate, as well as whether they were numerically (num.) or experimentally.}
   \label{tab:friction_ref}
   \begin{tabular}{ |M{1cm}|M{1cm}|M{1.5cm}|X{2.5cm}|X{4cm}|X{4cm}| } \hline
   System & Type & Year & Researcher & Materials & Keywords \\ \hline
-  \parbox[t]{2mm}{\multirow{12}{*}{\rotatebox[origin=c]{90}{FFM}}} & \multirow{3}{*}{Exp.} & 2007~\cite{zhao_thermally_2007} & Zhao et al.\ & Si\textsubscript{3}N\textsubscript{4} tip on graphite. & Temperature dependence \\ \cline{3-6} 
-  & & 2015~\cite{Paolicelli_2015} & G. Paolicelli et al.\ & Si tip, graphene on SiO2 and Ni(111) substrate  & Layers, load, shear strength \\ \cline{2-6} 
-  & \multirow{4}{*}{Both}& 2019~\cite{zhang_tuning_2019} & Zhang et al.\ & Monolayer graphene  & Straining sheet \\ \cline{3-6} 
-  &  & 2019~\cite{Vazirisereshk_2019} & Vazirisereshk et al.\ & Graphene,  MoS\textsubscript{2} and Graphene/MoS\textsubscript{2} heterostructure & Low friction? \\ \cline{2-6} 
-  & \multirow{4}{*}{Num.} & 2015~\cite{Yoon2015MolecularDS} & Yoon et al.\ & Si tip, graphene on SiO\textsubscript{2} & Stick-slip: tip size, scan angle, layer thickness, substrate flexibility \\ \cline{3-6} 
-  & & 2016~\cite{li_evolving_2016} & Li et al.\ & Si tip, graphene on a-Si substrate & Increasing layers \\ \cline{1-6} 
-  \parbox[t]{2mm}{\multirow{3}{*}{\rotatebox[origin=c]{90}{SFA}}} & \multirow{4}{*}{Num.} & 2011~\cite{Wijn_2011} & Wijn et al.\ & Graphene flakes between graphite  & Rotational dynamics, superlubricity, temperature  \\ \cline{3-6} 
+  \parbox[t]{2mm}{\multirow{10}{*}{\rotatebox[origin=c]{90}{\acrshort{FFM}}}} & \multirow{3}{*}{Exp.} & 2007~\cite{zhao_thermally_2007} & Zhao et al.\ & Si\textsubscript{3}N\textsubscript{4} tip on graphite. & Temperature dependence. \\ \cline{3-6} 
+  & & 2015~\cite{Paolicelli_2015} & G. Paolicelli et al.\ & Si tip, graphene on SiO2 and Ni(111) substrate  &  Load, environment, graphene layers. \\ \cline{2-6} 
+  & Both & 2019~\cite{zhang_tuning_2019} & Zhang et al.\ & Monolayer graphene  & Straining of graphene sheet. \\ \cline{2-6} 
+  & \multirow{3}{*}{Num.} & 2015~\cite{Yoon2015MolecularDS} & Yoon et al.\ & Si tip, graphene on SiO\textsubscript{2} & Stick-slip: tip size, scan angle, layer thickness, substrate flexibility. \\ \cline{3-6} 
+  & & 2016~\cite{li_evolving_2016} & Li et al.\ & Si tip, graphene on a-Si substrate & Graphene layers, friction strengthening, stick-slip \\ \cline{1-6} 
+  \parbox[t]{2mm}{\multirow{3}{*}{\rotatebox[origin=c]{90}{\acrshort{SFA}}}} & \multirow{3}{*}{Num.} & 2011~\cite{Wijn_2011} & Wijn et al.\ & Graphene flakes between graphite  & Commensurability, rotational dynamics, superlubricity, temperature.  \\ \cline{3-6} 
   & & 2012~\cite{Kim_2012} & H.\ J.\ Kim and D.\ E.\ Kim. & Carbon sheet  & Corrugated nano-structured surfaces  \\ \cline{1-6} 
-  \parbox[t]{2mm}{\multirow{12}{*}{\rotatebox[origin=c]{90}{Flake}}} & \multirow{3}{*}{Exp.} & 2005~\cite{DIENWIEBEL2005197} & Dienwiebel et al.\ & Graphene on graphite & Commensurability, superlubricity  \\ \cline{3-6} 
-   &  & 2013~\cite{feng_superlubric_2013}  & Feng et al.\ & Graphene on graphite &  Free sliding  \\ \cline{2-6} 
-   & \multirow{9}{*}{Num.} & 2009~\cite{bonelli_atomistic_2009} & Bonelli et al.\ & Graphene on graphite  & Tight-binding, commensurability, load, flake size \\ \cline{3-6} 
-   &  & 2012~\cite{Reguzzoni_2012} & Reguzzoni et al.\ & Graphene on graphite & Graphite thickness  \\ \cline{3-6} 
-   &  & 2014~\cite{liu_high-speed_2014} & Liu et al.\ & Graphene on graphite & Thickness, deformations, high speed \\ \cline{3-6} 
-   &  & 2018~\cite{zhu_study_2018} & P. Zhu and Li & Graphene on gold & Flake size, commensurability  \\ \cline{3-6} 
-   &  & 2019~\cite{ma12091425} & Zhang et al.\  & Graphene on diamond & Temperature, sliding angle, friction coefficient  \\ \cline{1-6} 
-  \end{tabular}
-  % \end{center}
+  \parbox[t]{2mm}{\multirow{18}{*}{\rotatebox[origin=c]{90}{Flake}}} & \multirow{5}{*}{Exp.} & 2005~\cite{DIENWIEBEL2005197} & Dienwiebel et al.\ & Graphene on graphite & Commensurability, superlubricity, load.  \\ \cline{3-6} 
+  &  & 2013~\cite{feng_superlubric_2013}  & Feng et al.\ & Graphene on graphite &  Commensurability, superlubricity, temperature.  \\ \cline{2-6} 
+  & \multirow{13}{*}{Num.} & 2009~\cite{bonelli_atomistic_2009} & Bonelli et al.\ & Graphene on graphite  & Tight-binding, commensurability, load, flake size. \\ \cline{3-6} 
+  &  & 2012~\cite{Reguzzoni_2012} & Reguzzoni et al.\ & Graphene on graphite & Graphite layers. \\ \cline{3-6} 
+  &  & 2014~\cite{liu_high-speed_2014} & Liu et al.\ & Graphene on graphite & High speed, superlubricity, rotational dynamics, sheet strain. \\ \cline{3-6} 
+  &  & 2018~\cite{zhu_study_2018} & P. Zhu and Li & Graphene on gold & Stick-slip, commensurability, flake size and shape. \\ \cline{3-6} 
+  &  & 2019~\cite{ma12091425} & Zhang et al.\  & Graphene on diamond & Temperature, commensurability, friction coefficient.  \\ \cline{1-6} 
+\end{tabular}
+% \end{center}
 \end{table}
+% &  & 2019~\cite{Vazirisereshk_2019} & Vazirisereshk et al.\ & Graphene,  MoS\textsubscript{2} and Graphene/MoS\textsubscript{2} heterostructure & Low friction? \\ \cline{2-6} 
 
 
 % Stick-slip
@@ -1140,7 +1139,15 @@ pN with loads $\sim [-10, 20] nN$, the change in friction with applied load was
 as low as 0.05--0.4 \% for the incommensurable orientations. When using the slope definition for the frictional coefficient \cref{eq:mu_def2}, this corresponds to a coefficient in the range of 0.0005--0.004. Bonelli et al.\ attribute the low dependency to a lacking change in contact area as the flake is loaded. 
 
 % Flake size
-Furthermore, Bonelli et al.~\cite{bonelli_atomistic_2009} found friction to decrease with increasing flake size which is also reported in \acrshort{MD} simulations for graphene on gold~\cite{zhu_study_2018}. Bonelli et al.\ mainly attribute this to boundary effects, but also note that the coupling to the support made for decreased rotational freedom as flake size was increased. Thus, they hypothesized that the decreased freedom led to the graphene taking a more forced path which is associated with a decreased stick-slip behavior. The general observation however, disagrees with the \acrshort{FK} and \acrshort{FKT} model which predicts the reverse; an increase in friction with increasing size. 
+Furthermore, Bonelli et al.~\cite{bonelli_atomistic_2009} found friction to
+decrease with increasing flake size which is also reported in \acrshort{MD}
+simulations for graphene on gold~\cite{zhu_study_2018}. Bonelli et al.\ mainly
+attribute this to boundary effects, but also note that the coupling to the
+support made for decreased rotational freedom as flake size was increased. Thus,
+they hypothesized that the decreased freedom led to the graphene taking a more
+forced path which is associated with a decreased stick-slip behavior. The
+general observation however, disagrees with the \acrshort{FK} and \acrshort{FKT}
+model which predicts the reverse; an increase in friction with increasing size. 
 
 An additional numerical study of monolayer islands of krypton on copper by
 Reguzzoni and Righi~\cite{PhysRevB.85.201412}, supports the importance of
@@ -1165,6 +1172,8 @@ dependency. While flake size nor contact area is easily measured in experimental
 \acrshort{FFM}, Mo et al.~\cite{mo_friction_2009} found in an \acrshort{MD} simulation that friction is proportional to contact area for an indenting sphere on a nanoscale.
 
 
+% The typical decrease of friction force with increasing number of layers has been observed on graphene over Si/SiO2 in all environment including vacuum
+% \cite{Paolicelli_2015}
 
 % Evolution effects and graphene layers
 Evolution effects, or so-called friction strengthening, are also observed. That
@@ -1185,9 +1194,20 @@ et al., they reported a general decrease in friction with an increasing number o
 
 
 % Deformations
-A few numerical studies investigate friction under mechanical deformations. 
-Zhang et al.~\cite{zhang_tuning_2019} found that straining a suspended graphene sheet will lower the kinetic friction. They attribute this to modulation of flexibility which consequently changes the local pinning capability of the contact interface. Liu et al.~\cite{liu_high-speed_2014} carried out an \acrshort{MD} simulation of high-speed ($\SI{400}{m/s}$) ballistic nanofriction of graphene on graphite. They found that a biaxial stretching of the graphitic substrate could be used to suppress frictional scattering and achieve persistent superlubricity. Another surface manipulating study was performed by H.\ J.\ Kim and D.\ E.\ Kim~\cite{Kim_2012} who investigated the effects of corrugated
-nano-structured surfaces. The study revealed that corrugated surfaces with altered contact areas and structural stiffness could result in both increased or slightly decreased friction under certain load ranges. Altogether these studies highlight the importance of surface structure and mechanical conditions. 
+A few numerical studies investigate friction under mechanical deformations.
+Zhang et al.~\cite{zhang_tuning_2019} found that straining a suspended graphene
+sheet will lower the kinetic friction. They attribute this to modulation of
+flexibility which consequently changes the local pinning capability of the
+contact interface. Liu et al.~\cite{liu_high-speed_2014} carried out an
+\acrshort{MD} simulation of high-speed ($\SI{400}{m/s}$) ballistic nanofriction
+of graphene on graphite. They found that a biaxial stretching of the graphitic
+substrate could be used to suppress frictional scattering and achieve persistent
+superlubricity. Another surface manipulating study was performed by H.\ J.\ Kim
+and D.\ E.\ Kim~\cite{Kim_2012} who investigated the effects of corrugated
+nano-structured surfaces. The study revealed that corrugated surfaces with
+altered contact areas and structural stiffness could result in both increased or
+slightly decreased friction under certain load ranges. Altogether these studies
+highlight the importance of surface structure and mechanical conditions. 
 
 
 % Normal load
