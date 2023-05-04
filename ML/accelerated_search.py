@@ -691,10 +691,12 @@ def ising_max(conf):
     Lx, Ly = conf.shape[0], conf.shape[1]
     for i in range(Lx):
         for j in range(Ly):
-            set1 = [conf[i,j], conf[(i + 1 + Lx)%Lx,j]]
-            set2 = [conf[i,j], conf[i, (j + 1 + Ly)%Ly]]
-            score += np.sum(set1) + np.sum(set2) - 2*np.min(set1) - 2*np.min(set2)
-    
+            # set1 = [conf[i,j], conf[(i + 1 + Lx)%Lx,j]]
+            # set2 = [conf[i,j], conf[i, (j + 1 + Ly)%Ly]]
+            # score += np.sum(set1) + np.sum(set2) - 2*np.min(set1) - 2*np.min(set2)
+            nn1 = [2*conf[i,j]-1, 2*conf[(i + 1 + Lx)%Lx,j]-1]
+            nn2 = [2*conf[i,j]-1, 2*conf[i, (j + 1 + Ly)%Ly]-1]
+            score += -nn1[0]*nn1[1] -nn2[0]*nn2[1]
     return score 
 
 
@@ -852,11 +854,11 @@ if __name__ == '__main__':
     
     # ## TEST
     # GA = Genetic_algorithm(model_weights, model_info, N = 10, image_shape = (10,10), repair = False)
-    GA = Genetic_algorithm(model_weights, model_info, N = 10, image_shape = (100,100), repair = False)
-    # GA.set_fitness_func(ising_max)
-    GA.set_fitness_func(porosity_target)
-    GA.init_population([0])
-    GA.evolution(num_generations = 10, save_history = 'porosity_05_history.txt')
+    GA = Genetic_algorithm(model_weights, model_info, N = 10, image_shape = (10,10), repair = False)
+    GA.set_fitness_func(ising_max)
+    # GA.set_fitness_func(porosity_target)
+    GA.init_population([0.5])
+    GA.evolution(num_generations = 300, save_history = 'ising_max_history.txt')
     plt.imshow(GA.A[0])
     plt.show()
     

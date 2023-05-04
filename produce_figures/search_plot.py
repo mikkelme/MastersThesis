@@ -95,15 +95,17 @@ def plot_search_history(filename, save = False):
         min_score.append(float(words[1]))
         mean_score.append(float(words[2]))
         max_score.append(float(words[3]))
+        if gen[-1] == 300:
+            break
         
     plt.figure(num=0, dpi=80, facecolor='w', edgecolor='k')
-    plt.plot(gen, min_score, label = 'Minimum')
-    plt.plot(gen, mean_score, label = 'Mean')
-    plt.plot(gen, max_score, label = 'Maximum')
+    plt.plot(gen, max_score, label = 'Maximum', color = color_cycle(1))
+    plt.plot(gen, mean_score, label = 'Mean', color = color_cycle(2))
+    plt.plot(gen, min_score, label = 'Minimum', color = color_cycle(0))
     hline(plt.gca(), max_score[-1], linestyle = '--', color = 'black', linewidth = 1)
     plt.xlabel('Generation', fontsize=14)
     plt.ylabel('Score', fontsize=14)
-    plt.legend(fontsize = 13)
+    plt.legend(loc = 'lower right', fontsize = 13)
     plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
     if save:
         plt.savefig('../article/figures/search/ising_max_history.pdf', bbox_inches='tight')
@@ -122,7 +124,6 @@ if __name__ == '__main__':
     # plot_RW_top5(save = False)
     
     
-    # plot_search_history(filename = '../ML/ising_score_history.txt', save = False)
-    plot_search_history(filename = '../ML/porosity_05_history.txt', save = False)
+    plot_search_history(filename = '../ML/best_ising_max_history.txt', save = False)
     
     plt.show()
