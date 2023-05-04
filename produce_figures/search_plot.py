@@ -85,6 +85,28 @@ def plot_RW_top5(save = False):
         fig.savefig('../article/figures/search/RW_search_top5.pdf', bbox_inches='tight')
 
 
+def plot_search_history(filename, save = False):
+    # read score history
+    infile = open(filename, 'r')
+    gen, min_score, mean_score, max_score = [], [], [], []
+    for line in infile:
+        words = line.split(',')
+        gen.append(int(words[0]))
+        min_score.append(float(words[1]))
+        mean_score.append(float(words[2]))
+        max_score.append(float(words[3]))
+        
+    plt.figure(num=0, dpi=80, facecolor='w', edgecolor='k')
+    plt.plot(gen, min_score, label = 'Minimum')
+    plt.plot(gen, mean_score, label = 'Mean')
+    plt.plot(gen, max_score, label = 'Maximum')
+    hline(plt.gca(), max_score[-1], linestyle = '--', color = 'black', linewidth = 1)
+    plt.xlabel('Generation', fontsize=14)
+    plt.ylabel('Score', fontsize=14)
+    plt.legend(fontsize = 13)
+    plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    if save:
+        plt.savefig('../article/figures/search/ising_max_history.pdf', bbox_inches='tight')
         
     
 
@@ -97,5 +119,10 @@ if __name__ == '__main__':
     # plot_ref_search(filename = '../ML/ref_search/hon_2_1_1_1_ref_search.npy')
     # plot_ref_search(filename = '../ML/ref_search/hon_2_1_5_3_ref_search.npy')
     # pass
-    plot_RW_top5(save = True)
+    # plot_RW_top5(save = False)
+    
+    
+    # plot_search_history(filename = '../ML/ising_score_history.txt', save = False)
+    plot_search_history(filename = '../ML/porosity_05_history.txt', save = False)
+    
     plt.show()

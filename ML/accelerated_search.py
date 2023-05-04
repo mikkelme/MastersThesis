@@ -223,7 +223,7 @@ class Genetic_algorithm: # Genetic algorithm
             flip1 = np.logical_and(RN < np.maximum(self.P[:, :, 1, 0]*a[i], clip[i]), ~zeros)
             self.A[i][flip0] = 1
             self.A[i][flip1] = 0
-            
+        
             if self.repair:
                 self.A[i] = self.repair_sheet(self.A[i])
 
@@ -241,9 +241,22 @@ class Genetic_algorithm: # Genetic algorithm
         
         # No crossover for now
         # Mutate
+      
+    def save_history(self, filename):
         
+        if self.gen == 0: # Create file
+            try:
+                self.outfile = open(filename, 'w')
+            except FileNotFoundError:
+                path = filename.split('/')
+                os.makedirs(os.path.join(*path[:-1]))
+                self.outfile = open(filename, 'w')
+                self.outfile.write('Gen, Min, Mean, Max\n')
+        
+        self.outfile.write(f'{self.gen}, {self.min_score}, {self.mean_score}, {self.max_score}\n')
     
-    def evolution(self, num_generations = 1000):
+    def evolution(self, num_generations = 1000, save_history = False):
+        
         
         timer_start = perf_counter() 
 
@@ -253,19 +266,10 @@ class Genetic_algorithm: # Genetic algorithm
             try:
                 best_porosity = 1-np.mean(self.A[0])
                 print(f'Gen = {self.gen} | Min score = {self.min_score:g}, Mean score = {self.mean_score:g}, Max score = {self.max_score:g}, mean P01 = {np.mean(self.P[:, :, 0, 1]):g}, mean P10 = {np.mean(self.P[:, :, 1, 0]):g}, porosity = {best_porosity:g}')
+                if save_history:
+                    self.save_history(save_history)
                 
-                # if self.gen % 10 == 0:
-                #     fig = self.show_status()
-                #     fig.savefig(f'AS/gen{self.gen}.pdf', bbox_inches='tight')
-                #     # plt.show()
-                #     fig.clf()
-                    
-                    # self.show_sheet()
-                # if self.gen % 100 == 1:
-                #     self.show_status()
-                #     plt.show()
-                    
-                    
+
                 self.evolve()
             except KeyboardInterrupt: 
                 break
@@ -277,6 +281,9 @@ class Genetic_algorithm: # Genetic algorithm
         s = int(elapsed_time % 60)
         self.s_timing = f'{h:02d}:{m:02d}:{s:02d}'
         print(f'Elapsed time: {self.s_timing}')
+        
+        if save_history:
+            self.outfile.close()
         
     def show_sheet(self, conf):
         builder = config_builder(conf)
@@ -675,7 +682,7 @@ class Genetic_algorithm: # Genetic algorithm
         
 def porosity_target(conf):
     porosity = np.mean(conf)
-    target_porosity = 0.2
+    target_porosity = 0.5
     score = 1 - np.abs(porosity - target_porosity)
     return score
 
@@ -844,10 +851,12 @@ if __name__ == '__main__':
     
     
     # ## TEST
-    GA = Genetic_algorithm(model_weights, model_info, N = 100, image_shape = (10,10), repair = False)
-    GA.set_fitness_func(ising_max)
-    GA.init_population([0.5])
-    GA.evolution(num_generations = 200)
+    # GA = Genetic_algorithm(model_weights, model_info, N = 10, image_shape = (10,10), repair = False)
+    GA = Genetic_algorithm(model_weights, model_info, N = 10, image_shape = (100,100), repair = False)
+    # GA.set_fitness_func(ising_max)
+    GA.set_fitness_func(porosity_target)
+    GA.init_population([0])
+    GA.evolution(num_generations = 10, save_history = 'porosity_05_history.txt')
     plt.imshow(GA.A[0])
     plt.show()
     

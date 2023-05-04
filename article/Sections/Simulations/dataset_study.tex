@@ -1,10 +1,10 @@
 \chapter{Kirigami configuration exploration}\label{chap:dataset_study}
-Building upon the discoveries of the Pilot Study~\cref{chap:pilot_study}, we will further explore the impact of Kirigami designs on strain-dependent friction. Our focus is primarily to optimize the friction force and friction coefficient towards their maximum or minimum values. To achieve this goal, we will utilize \acrshort{MD} simulations to generate an extended dataset that encompasses a wider range of Kirigami designs. This is motivated by the aim of gaining gain a broader understanding of the friction-strain relationship. We will then leverage this dataset to explore the potential of employing machine learning for predicting friction behavior based on Kirigami design, strain, and load. Finally, we plan to utilize the developed machine learning model for an accelerated search. 
+Building upon the discoveries of the Pilot Study~\cref{chap:pilot_study}, we will further explore the impact of Kirigami designs on strain-dependent friction. Our focus is primarily to optimize the friction force and friction coefficient towards their maximum or minimum values. To achieve this goal, we will utilize \acrshort{MD} simulations to generate an extended dataset that encompasses a wider range of Kirigami designs. This is motivated by the aim of gaining a broader understanding of the friction-strain relationship. We will then leverage this dataset to explore the potential of employing machine learning for predicting friction behavior based on Kirigami design, strain, and load. Finally, we plan to utilize the developed machine learning model for an accelerated search through new Kirigami designs. 
 
 
 \section{Generating the dataset}
-We aim to create a dataset that contains an extended series of Kirigami design configurations based on the pattern generation methods developed in~\cref{chap:system} for which we will vary the strain and load for each configuration. For each configuration, we sample 15 pseudo uniform strain values (see~\cref{sec:stretch_dependency}) between zero and the rupture strain according to the rupture test. Since the normal force did not prove to be dominant in the friction description we only sample 3 values per configuration, uniformly sampled in the range $[0.1, 10]$ nN. In total, this gives $3\times 15 = 45$ data points for each configuration. For the remaining parameters, we use the
-values presented in the pilot study (see~\cref{tab:param}). We are mainly
+We aim to create a dataset that contains an extended series of Kirigami design configurations based on the pattern generation methods developed in~\cref{chap:system} for which we will vary the strain and load for each configuration. For each configuration, we sample 15 pseudo uniform strain values (see~\cref{sec:stretch_dependency}) between zero and the rupture strain according to the rupture test. Since the normal force did not prove to be dominant in the friction description we only sample 3 normal force values per configuration, uniformly sampled in the range $[0.1, 10]$ nN. In total, this gives $3\times 15 = 45$ data points for each configuration. For the remaining parameters, we use the
+values presented in the pilot study (see~\cref{tab:final_param}). We are mainly
 concerned with the mean friction and whether the sheet ruptures during the simulation. However, we also include the maximum friction, the relative contact, the rupture strain (from the rupture test) and the porosity (void fraction) in the dataset. We generate 68 configurations of the Tetrahedron pattern type, 45 of the Honeycomb type and 100 of the Random walk type. For the Tetrahedron and Honeycomb patterns, we choose a random reference position that results in translation of the patterns. A summary of the dataset is given in~\cref{tab:dataset_summary} while all configurations are shown visually in~\cref{sec:dataset_conf}. The Tetrahedron and Honeycomb parameters are chosen to
 provide additional variations of the configurations evaluated in~\cref{chap:pilot_study} which exhibited interesting properties. The Random
 walk configurations are chosen with the aim of introducing as much variety as possible within our Random walk framework. Notice that not all submitted data points ``make it'' to the final dataset. This
@@ -14,12 +14,12 @@ performing the rupture test the simulation is restarted with a new substrate
 size, corresponding to the measured rupture strain limit, but also with a new
 random velocity and thermostat initialization. The sheet is then strained and
 checkpoints of the simulation state (LAMMPS restart files) are stored for each of
-the targeted strain samples. However, if the rupture point arrives earlier than suggested by the rupture test, due to randomness from the initialization, some of the planned strain samples do not get a corresponding checkpoint file. Thus, these data points are not included in the dataset even though they ideally should have been noted as a rupture event. This could quite have been mitigated by a rewrite of the code, but it was first discovered after the dataset had been created. We notice, however, that the dataset still contains 11.57 \% rupture events which provide a reasonable amount of rupture events to incorporate in the machine learning model}.
+the targeted strain samples. However, if the rupture point arrives earlier than suggested by the rupture test, due to randomness from the initialization, some of the planned strain samples do not get a corresponding checkpoint file. Thus, these data points are not included in the dataset even though they ideally should have been noted as a rupture event. This could have been mitigated by a rewrite of the code, but it was first discovered after the dataset had been created. Despite the issue, the dataset still contains a notable 11.57\% of rupture events, which is deemed sufficient for the machine learning model to learn to identify ruptures. Therefore we conclude that this issue is not critical for machine learning training.}.
 
 
 \begin{table}[H]
   \begin{center}
-  \caption{Summary of the number of generated data points in the dataset. Due to slight deviations in the rupture strain and the specific numerical procedure not all submitted simulations ``make it'' to the final dataset. Notice that the Tetrahedon $(7, 5, 2)$ and Honeycomb $(2, 2, 1, 5)$ from the pilot study are rerun as a part of the Tetrahedon and the Honeycomb datasets separately. In the latter datasets, the reference point for the pattern is randomized and thus these configurations are not fully identical. This is the reason for the ambiguousness in the total sum.}
+  \caption{Summary of the number of generated data points in the dataset. Due to slight deviations in the rupture strain and the specific numerical procedure not all submitted simulations are included in the final dataset. Notice that the Tetrahedon $(7, 5, 2)$ and Honeycomb $(2, 2, 1, 5)$ from the pilot study are rerun as a part of the Tetrahedon and the Honeycomb datasets separately. In the latter datasets, the reference point for the pattern is randomized and thus these configurations are not fully identical. This is the reason for the ambiguousness in the total sum.}
   \label{tab:dataset_summary}
   \begin{tabular}{ | c | c | c | c | c |} \hline
   \textbf{Type} & \textbf{Configurations} & \textbf{Submitted data points} & \textbf{Final data points} & \textbf{Ruptures} \\ \hline
@@ -122,7 +122,7 @@ F_{\text{fric}}$. The extrema of these four properties for each of the
 categories: Tetrahedron, Honeycomb, Random walk and Pilot study, are summarized
 in~\cref{tab:data_properties}. The corresponding strain profiles and
 configurations are shown in~\crefrange{fig:PP_min}{fig:PP_max_drop} (excluding
-the pilot study). The strain profiles for the full dataset are shown in
+the strain profiles already shown in the pilot study~\cref{chap:pilot_study}). The strain profiles for the full dataset are shown in
 appendix~\ref {sec:data_stretch_profiles}. 
 
 From the property comparison in~\cref{tab:data_properties} we find that both the
@@ -136,18 +136,17 @@ remaining properties indicates that the dataset contains the necessary
 information to provide a direction for further optimization of the maximum properties. Considering the Random walk we find that the max property scores are generally lower than that of the Tetrahedron and Honeycomb structures. However, since these are found to be on a comparable order of magnitude we argue that contain relevant information for populating configuration space with respect to machine learning training. The Random walk patterns also contribute with some immediate insight into the structures that we can associate with each of the properties of interest due to its increased diversity in comparison to the other patterns.
 
 For the $\min F_{\text{fric}}$ top candidates (\cref{fig:PP_min}) we find that
-the Random walk candidate has a rather cut density (low porosity) and with
+the Random walk candidate has a rather low cut density (low porosity) and with
 vertical cuts. Since these cuts run parallel to the stretching direction one can
 hypothesize that this minimizes the induced buckling effect which agrees with
 the constant level of contact. For the minimum candidate for the Tetrahedron
 pattern, we also observe a low decrease in contact, and in both these cases this
 corresponds with a relatively flat friction-strain curve. When considering the
-remaining friction-strain curve
-throughout~\crefrange{fig:PP_min}{fig:PP_max_drop} we find a rising
+remaining friction-strain curve throughout~\crefrange{fig:PP_min}{fig:PP_max_drop} we find a rising
 friction-strain curve which is accompanied by a decreasing relative contact.
-When looking at the Random walk 96 pattern, which is the top candidate for both
+When looking at the $96\text{th}$ Random walk pattern, which is the top candidate for both
 the $\max F_{\text{fric}}$ (\cref{fig:PP_max}) and $\max \Delta f_{\text{fric}}$
-(\cref{fig:PP_max_diff}) property, we find a rather porous configuration with
+(\cref{fig:PP_max_diff}) properties, we find a rather porous configuration with
 mainly horizontal-orientated cuts. This has some structural reminiscence with the Honeycomb pattern. Finally, the best random walk candidate for the max drop category, Random walk 01, did not produce a big drop. We find that the contact area is decreasing with strain but not as strongly as seen for the other configurations. The configuration contains some slanted cuts which might be reminiscent of parts of the Tetrahedron pattern. 
 
 
@@ -156,16 +155,16 @@ mainly horizontal-orientated cuts. This has some structural reminiscence with th
 
 \begin{table}[H]
   \begin{center}
-  \caption{Evaluation of the properties of interest for our dataset.}
+  \caption{Evaluation of the properties of interest for our dataset. Each table shows the top scores for each of the four properties of interest within each of the separate data categories: Tetrahedron, Honeycomb, Random walk and pilot study (the three configurations used in the pilot study). The tables denote the names of the top candidate configurations, the relevant strain values for the property and the property values themselves. For the Tetrahedon and Honeycomb category, we compare the top candidate scores to the scores of the Tetrahedon $(7,5,1)$ and Honeycomb $(2,2,1,5)$ pattern used in the pilot study. This latter comparison is shown in the right-most column.}
   \label{tab:data_properties}
   \begin{tabular}{| c | c | c | c | c |} \hline
-  \textbf{Tetrahedron} & Configuration & Strain & Value [nN] & Hon. $(2,2,1,5)$ [nN]  \\ \hline
+  \textbf{Tetrahedron} & Configuration & Strain & Value [nN] & Tetrahedon $(7,5,1)$ [nN]  \\ \hline
   $\min F_{\text{fric}}$ & $(3,9,4)$ &  0.0296 & 0.0067 & 0.0262 \\ \hline
   $\max F_{\text{fric}}$ & $(5,3,1)$ & 0.1391 & 1.5875 & 0.8891 \\ \hline
   $\max \Delta F_{\text{fric}}$  & $(5, 3, 1)$ & $[0.0239, 0.1391]$ & 1.5529 & 0.8603  \\ \hline
   max drop & $(5,3,1)$ & $[0.1391, 0.1999]$ & 0.8841 & 0.5098 \\ \hline
   \multicolumn{5}{c}{} \\ \hline
-  \textbf{Honeycomb} & Configuration & Strain & Value [nN]  & Tetra. $(7,5,1)$ [nN]  \\ \hline
+  \textbf{Honeycomb} & Configuration & Strain & Value [nN]  & Hon. $(2,2,1,5)$ [nN]  \\ \hline
   $\min F_{\text{fric}}$ & $(2, 5, 1, 1)$ &  0.0267 & 0.0177 & 0.0623 \\ \hline
   $\max F_{\text{fric}}$ & $(2, 1, 1, 1)$ & 1.0654 & 2.8903 & 1.5948 \\ \hline
   $\max \Delta F_{\text{fric}}$  & $(2, 1, 5, 3)$ & $[0.0856, 1.4760]$ & 2.0234 & 1.5325 \\ \hline
@@ -179,55 +178,89 @@ mainly horizontal-orientated cuts. This has some structural reminiscence with th
   \multicolumn{5}{c}{} \\ \cline{1-4}
   \textbf{Pilot study} & Configuration & Strain & Value [nN]  & \multicolumn{1}{c}{} \\ \cline{1-4}
   $\min F_{\text{fric}}$ & No cut & 0.2552 & 0.0012 & \multicolumn{1}{c}{} \\ \cline{1-4}
-  $\max F_{\text{fric}}$ & Honeycomb & 0.7279 & 1.5948 & \multicolumn{1}{c}{} \\ \cline{1-4}
-  $\max \Delta F_{\text{fric}}$  & Honeycomb & 0.7279 & 1.5325 & \multicolumn{1}{c}{} \\ \cline{1-4}
-  max drop & Honeycomb & $[0.7279, 1.0463]$ & 0.9674 & \multicolumn{1}{c}{} \\ \cline{1-4}
+  $\max F_{\text{fric}}$ & Hon. $(2,2,1,5)$ & 0.7279 & 1.5948 & \multicolumn{1}{c}{} \\ \cline{1-4}
+  $\max \Delta F_{\text{fric}}$  & Hon. $(2,2,1,5)$ & 0.7279 & 1.5325 & \multicolumn{1}{c}{} \\ \cline{1-4}
+  max drop & Hon. $(2,2,1,5)$ & $[0.7279, 1.0463]$ & 0.9674 & \multicolumn{1}{c}{} \\ \cline{1-4}
 \end{tabular}
 \end{center}
 \end{table}
 
 
 
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=\linewidth]{figures/stretch_profiles/PP_min.pdf}
+%   \caption{Minimum friction: Configurations corresponding to the minimum friction.}
+%   \label{fig:PP_min}
+% \end{figure}
+
+
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=\linewidth]{figures/stretch_profiles/PP_max.pdf}
+%   \caption{Maximum friction: Configurations corresponding to the maximum friction.}
+%   \label{fig:PP_max}
+% \end{figure}
+
+
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=\linewidth]{figures/stretch_profiles/PP_max_diff.pdf}
+%   \caption{Maximum Difference: Configurations corresponding to the biggest difference in friction in the dataset for each pattern.}
+%   \label{fig:PP_max_diff}
+% \end{figure}  
+
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=\linewidth]{figures/stretch_profiles/PP_max_drop.pdf}
+%   \caption{Maximum drop: Configuratiosn corresponding to the biggest friction drop in the dataset for each pattern.}
+%   \label{fig:PP_max_drop}
+% \end{figure}  
+
+
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth]{figures/stretch_profiles/PP_min.pdf}
-  \caption{Minimum friction: Configurations corresponding to the minimum friction.}
-  \label{fig:PP_min}
+  \begin{subfigure}[t]{1\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{figures/stretch_profiles/PP_min.pdf}
+      \caption{Minimum friction $\min F_{\text{fric}}$.}
+      \label{fig:PP_min}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{1\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{figures/stretch_profiles/PP_max.pdf}
+      \caption{Maximum friction  $\max F_{\text{fric}}$}
+      \label{fig:PP_max}
+  \end{subfigure}
+  \hfill
+  \caption{(The figure continues on the next page)}
 \end{figure}
 
-
-\begin{figure}[H]
+\begin{figure}[H]\ContinuedFloat
   \centering
-  \includegraphics[width=\linewidth]{figures/stretch_profiles/PP_max.pdf}
-  \caption{Maximum friction: Configurations corresponding to the maximum friction.}
-  \label{fig:PP_max}
+  \begin{subfigure}[t]{1\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{figures/stretch_profiles/PP_max_diff.pdf}
+      \caption{Maximum friction difference $\max \Delta F_{\text{fric}}$.}
+      \label{fig:PP_max_diff}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{1\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{figures/stretch_profiles/PP_max_drop.pdf}
+      \caption{Maximum drop in friction.}
+      \label{fig:PP_max_drop}
+  \end{subfigure}
+  \hfill
+  \caption{Illustration of top candidates within each of the four properties of interest: (a) Minimum friction $\min F_{\text{fric}}$ (b) maximum friction  $\max F_{\text{fric}}$ (c) maximum friction difference $\max \Delta F_{\text{fric}}$  (d) maximum drop in friction.  The upper row shows the friction-strain curve with dotted points (with friction on the left y-axis) and the contact-strain curve with a solid line (with relative contact on the right y-axis). The lower row shows the corresponding Kirigami patterns.}
+  \label{fig:PP}
 \end{figure}
-
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{figures/stretch_profiles/PP_max_diff.pdf}
-  \caption{Maximum Difference: Configurations corresponding to the biggest difference in friction in the dataset for each pattern.}
-  \label{fig:PP_max_diff}
-\end{figure}  
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{figures/stretch_profiles/PP_max_drop.pdf}
-  \caption{Maximum drop: Configuratiosn corresponding to the biggest friction drop in the dataset for each pattern.}
-  \label{fig:PP_max_drop}
-\end{figure}  
-
-
-
-
-
-
 
 
 
 \section{Machine learning}\label{eq:ML}
-Given the \acrshort{MD}-based dataset we investigate the possibilities of training a machine learning model to predict the friction behavior from a given Kirigami configuration, strain and load. 
+Given the \acrshort{MD}-based dataset presented in the previous section: Honeycomb, Tetrahedron and random walk geometries, we investigate the possibilities of training a machine learning model to predict the friction behavior from a given Kirigami configuration, strain and load. 
 
 \subsection{Architecture}
 Due to the spatial dependencies in the Kirigami configurations, we use a convolutional neural network (\acrshort{CNN}). Similar studies which predict mechanical properties for graphene sheets have used a VGGNet style network, Hanakata et al.~\cite{PhysRevLett.121.255304, PhysRevResearch.2.042006} and Wan et al.~\cite{graphene/hBN}, which we adopt for this study as well. The VGGNet-16 architecture illustrated in~\cref{fig:VGGNet16} shows the key features that we will include:
@@ -251,9 +284,10 @@ We deviate from the VGGNet-16 architecture by including batch normalization and 
   \text{Wan et al.~\cite{graphene/hBN}} & \qquad C16 \ C32 \ D32 \ D16,
 \end{align*}
 where $C$ denotes a convolutional block with the number denoting the number of channels, and $D$ a fully connected (dense) block with the number denoting the number of nodes. For the process of determining a suiting complexity for the architecture, we adopt the approach by Wan et al.~\cite{graphene/hBN} who used a ``staircase'' pattern for combining convolutional and fully connected blocks. By defining a starting number of channels $S$ and network depth $D$ we fill the first half of the network layers with convolutional blocks, doubling in channel number for each layer, and the latter half with fully connected blocks having the number of nodes decrease in a reverse pattern. For instance, the architecture $S4D8$ will take the form
-\begin{align*}
+\begin{align}
   \text{Input} \to \underbrace{\overbrace{C4}^{S \ = \ 4}C8 \ C16 \ C32 \ D32 \ D16 \ D8 \ D4}_{D \ = \ 8} \to \text{Output}.
-\end{align*} 
+  \label{eq:staircase_example}
+\end{align} 
 This provides a simple description where $S$ and $S$ can be varied systematically for a grid search over architecture complexity. 
 
 
@@ -263,10 +297,10 @@ We use three variables as input: Kirigami configuration, strain of the sheet
 and applied normal load. The configuration is given as a two-dimensional input by the binary matrix while the strain and load are both scaler values. This gives rise to two different options for the data structure:
 \begin{enumerate}
   \item Expand the scalar values (strain and load) into 2D matrices of the same
-  size as the Kirigami configuration by copying the scaler value to all matrix coordinates. This can then be merged into an image of three channels used as a single input.  
+  size as the Kirigami configuration by copying the scalar value to all matrix coordinates. This can then be merged into an image of three channels used as a single input.  
   \item Pass only the Kirigami configuration through the convolutional part of the network and introduce the remaining scalar values into the fully connected part of the network halfway in. 
 \end{enumerate}
-Both options utilize the same data, but the latter option is more directed towards independent processing of the data while the first makes for an intertwined ude of the configuration, strain and load. We implemented both options but found immediately that option 1 was producing the most promising results during the initial test runs, and thus we settled for this data structure. 
+Both options utilize the same data, but the latter option is more directed towards independent processing of the data while the first makes for an intertwined use of the configuration, strain and load. We implemented both options but found immediately that option 1 was producing the most promising results during the initial test runs, and thus we settled for this data structure. 
 
 \subsubsection{Output}
 For the output, we are mainly concerned with mean friction and the rupture
@@ -289,7 +323,7 @@ remaining 5 variables, thus sharing the loss evenly for the remaining 50\% of th
 
 \subsection{Hypertuning}
 % Show overfitting curve for some of the training results?
-For the hypertuning we focus on architecture complexity, learning rate, momentum and weight decay. We will use the ADAM optimizer with the initial default values of $beta_1 = 0.9, \beta_2 = 0.999$ and zero weight decay (we will change momentum $\beta_1$ and weight decay). We use a batch size of 32 and train the model for a maximum of 100 epochs while storing the best model based on the validation scores.
+For the hypertuning we focus on architecture complexity, learning rate, momentum and weight decay. We will use the ADAM optimizer with the initial default values of $\beta_1 = 0.9, \beta_2 = 0.999$ and zero weight decay (we will change momentum $\beta_1$ and weight decay). We use a batch size of 32 and train the model for a maximum of 100 epochs while storing the best model based on the validation scores.
 Since the learning rate is considered to be one of the most important hyperparameters we will determine a suitable choice for the learning rate using the learning rate range test for each of the two major grid searches:
 \begin{enumerate}
   \item Architecture complexity grid search of $S$ vs.\ $D$ with individually chosen learning rates for each complexity combination.
@@ -315,37 +349,33 @@ complexity, we perform an initial learning rate range test and determine the sui
       % \label{fig:}
   \end{subfigure}
   \hfill
-  \caption{Learning rate range test for various model complexities. We increase the learning rate exponentially from num{e-7} to 10 during one epoch corresponding to an exponent increment of roughly $1/30$ per batch iteration. $(a)$ shows a few examples of the training loss history as a function of the learning rate. The exemplary architectures are S[2, 16]D8 with the corresponding number of model parameters shown in parentheses in the legend. The dot indicates the suggested learning rate at the steepest decline of the slope. $(b)$ shows the full results of suggested learning rates depending on the number of model parameters with color coding differentiating the number of start channels and marker types differentiating different model depths. }
+  \caption{Learning rate range test for various model complexities. We increase the learning rate exponentially from \num{e-7} to 10 during one epoch corresponding to an exponent increment of roughly $1/30$ per batch iteration. $(a)$ shows a few examples of the training loss history as a function of the learning rate. The exemplary architectures are S[2, 16]D8 with the corresponding number of model parameters shown in parentheses in the legend. The dot indicates the suggested learning rate at the steepest decline of the slope. $(b)$ shows the full results of suggested learning rates depending on the number of model parameters with color coding differentiating the number of start channels and marker types differentiating different model depths. }
   \label{fig:LR_range}
 \end{figure}
 With the use of the suggested learning rates from~\cref{fig:LR_range} we perform
 a grid search over the corresponding $S$ and $D$ parameters. We evaluate both
-the validation loss and the mean friction $R_2$ score for the validation data which is shown in~\cref{fig:A_search_perf} together with the best epoch and the number of model parameters. Additionally, we evaluate the mean friction $R_2$ score for a selected set of configurations. This set consists of the top 10 configurations with respect to the max drop property for the Tetrahedron and Honeycomb patterns respectively. This is done as a way of evaluating the performance on the non-linear strain curves which we immediately found to be the more difficult trend to capture. The selected evaluation is shown in~\cref{fig:A_search_compare}. Note that these configurations already are a part of the full dataset and thus the data points related to these configurations are most likely present in both the training and the validation data set. Hence, the performance must be considered in conjunction with the actual validation performance in~\cref{fig:A_search_perf}.
+the validation loss and the mean friction $R^2$ score for the validation data which is shown in~\cref{fig:A_search_perf} together with the best epoch and the number of model parameters. Additionally, we evaluate the mean friction $R^2$ score for a selected set of configurations. This set consists of the top 10 configurations with respect to the max drop property for the Tetrahedron and Honeycomb patterns respectively. This is done as a way of evaluating the performance on the non-linear strain curves which we immediately found to be the more difficult trend to capture. The selected evaluation is shown in~\cref{fig:A_search_compare}. Note that these configurations already are a part of the full dataset and thus the data points related to these configurations are most likely present in both the training and the validation data set. Hence, the performance must be considered in conjunction with the actual validation performance in~\cref{fig:A_search_perf}.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{figures/ML/A_search_perf.pdf}
-  \caption{Architecture search.}
+  \caption{Architecture complexity grid search using a staircase-like VGG-net structure. The x-axis denotes the number of layers in the network (Depth) and the y-axis is the starting number of channels. See~\cref{eq:staircase_example} for an example. For each architecture complexity, we evaluate the friction mean $R^2$ validation score (top left), the validation loss (top right), the best epoch stored based on validation scores (bottom left) and the number of model parameters (bottom right).}
   \label{fig:A_search_perf}
 \end{figure}  
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{figures/ML/A_search_compare_perf}
-  \caption{Selected pseudo validation set. \hl{Fix the missing grey fields in the top which are replaced by < 0.01.}}
+  \caption{Architecture grid search similar to that of~\cref{fig:A_search_perf} on a selected set of configurations. The selected set consists of the top 10 candidates for the max drop property for the Tetrahedron and Honeycomb category in the dataset respectively. }
   \label{fig:A_search_compare}
 \end{figure}  
 
 From the validation scores in~\cref{fig:A_search_perf}, looking at both the loss and the $R^2$ scores, we find that models
-S(8-32)D(8-12) generally give the best performance. When looking at the best epoch we find that models of low depth result in a later best epoch which is compatible
-with underfitting. As the depth is increased we find more models with a lower
-best epoch, in the range $\sim [300, 600]$, which on the other hand suggest
-cases of overfitting. Since our training stores the best model during training,
-we do not have to worry too much about overfitting, but we can take this
-transition from underfitting to overfitting as a sign that our search is
+S(8-32)D(8-12) generally give the best performance. When looking at the best epoch, we find that models of low depth result in a later best epoch in comparison to models of high depth yielding the best epoch in the range $\sim [300, 600]$. This indicates a transition from underfitting to overfitting of the model since the best validation scores are found earlier in the training process. However, since our training stores the best model during training, we do not have to worry too much about overfitting, but we can take this
+transition as a sign that our search is
 conducted in an appropriate complexity range. When consulting the evaluation on the
 selected set in~\cref{fig:A_search_compare} we find
-significantly lower $R_2$ scores, especially for the Tetrahedron pattern. Considering, that some of these data points are also present in the training data, this shows clearly that these configurations are more challenging to predict. While the peak $R_2$ value for the validation score in~\cref{fig:A_search_perf} was found for the model S16D10 model (98.23 \%) the selected set test shows a slight preference for more complexity in the model. In the Tetrahedron selected set grid search, we find the best model to be S32D12, with an $R_2$ score of $\sim 87 \%$. This model choice is more or less compatible with the overall performance as it is among the top candidates for the $R_2$ score and loss in~\cref{fig:A_search_perf} and the $R_2$ score for the Honeycomb pattern in~\cref{fig:A_search_compare} as well. Hence, we settle on this architecture. 
+significantly lower $R^2$ scores, especially for the Tetrahedron pattern. Considering, that some of these data points are also present in the training data, this shows clearly that these configurations are more challenging to predict. While the peak $R^2$ value for the validation score in~\cref{fig:A_search_perf} was found for the model S16D10 model (98.23 \%) the selected set test shows a slight preference for more complexity in the model. In the Tetrahedron selected set grid search, we find the best model to be S32D12, with an $R^2$ score of $\sim 87 \%$. This model choice is more or less compatible with the overall performance as it is among the top candidates for the $R^2$ score and loss in~\cref{fig:A_search_perf} and the $R^2$ score for the Honeycomb pattern in~\cref{fig:A_search_compare} as well. Hence, we settle on this architecture. 
 
 Next, we consider momentum $m$ and weight decay $\lambda$ in the range $m \in
 [0.85, 0.99]$ and $\lambda \in [0, \num{1e-2}]$. For each choice of momentum, we
@@ -354,7 +384,7 @@ constant learning rate as used until this point and a one-cycle policy. In the
 one-cycle policy, we set a maximum bound for the learning rate and start from a
 factor $1/20$ of this bound and increase towards the maximum bound during the
 first 30\% of the training. For the final 70\% of training, we decrease towards
-a final minimum given as a factor $1e-4$ of the maximum bound. The increase and
+a final minimum given as a factor \num{e-4} of the maximum bound. The increase and
 decrease are done by a cosine function. The suggested learning rate for the
 constant learning rate scheme is once again determined by the steepest slope on
 the loss curve while the maximum bound used for the one-cycle policy is
@@ -364,8 +394,8 @@ without getting too close and causing instabilities. The learning rate range
 test for momentum is shown in~\cref{fig:LR_range_mom}. We observe generally that
 a higher momentum corresponds to a higher suggested learning rate for both
 schemes. Using these results we perform a grid search of momentum and weight
-decay. We examine again the validation loss and validation mean friction $R_2$
-score in addition to the friction mean $R_2$ score for the selected set of
+decay. We examine again the validation loss and validation mean friction $R^2$
+score in addition to the friction mean $R^2$ score for the selected set of
 Tetrahedron and Honeycomb patterns. This is shown for the constant learning rate
 scheme in~\cref{fig:mom_weight_search_constant} and for the cyclic scheme
 in~\cref{fig:mom_weight_search_cyclic}.
@@ -386,7 +416,7 @@ in~\cref{fig:mom_weight_search_cyclic}.
       % \label{fig:}
   \end{subfigure}
   \hfill
-  \caption{Momentum learning rate range tets}
+  \caption{Learning rate range test for different momentum values $m$. (a) show the validation loss as the learning rate is increased exponentially from \num{e-7} towards 10 with increments for each batch iteration during 1 epoch (yielding a total of 242 possible increments). As the curve diverges the test is halted. The dots on the validation loss vs.\ learning rate curve represent the steepest decline (at a lower learning rate) as an estimate for the constant learning scheme, and the minimum (at a higher learning rate) as an estimate for the maximum for the cyclic learning rate scheme. (b) Shows the corresponding learning rate suggestion for the constant learning rate scheme and the maximum for the cyclic scheme as a function of momentum choice. }
   \label{fig:LR_range_mom}
 \end{figure}
 
@@ -407,7 +437,7 @@ in~\cref{fig:mom_weight_search_cyclic}.
       % \label{fig:}
   \end{subfigure}
   \hfill
-  \caption{Constant learning rate and momentum scheme}
+  \caption{Momentum and weight decay grid search using a constant learning rate corresponding to the results from the learning rate range test in~\cref{fig:LR_range_mom}. (a) Shows the friction mean $R^2$ validation score (left) and the validation loss (right). (b) Shows the friction mean $R^2$ validation score for the selected set of Honeycomb (left) and Tetrahedron (right) patterns respectively, similar to that used in~\cref{fig:A_search_compare}.}
   \label{fig:mom_weight_search_constant}
 \end{figure}
 
@@ -427,16 +457,25 @@ in~\cref{fig:mom_weight_search_cyclic}.
       % \label{fig:}
   \end{subfigure}
   \hfill
-  \caption{Cyclic learning rate and momentum scheme}
+  \caption{Momentum and weight decay grid search using a cyclic learning rate and cyclic momentum scheme. The learning rate maximum bound is chosen according to the learning rate range test in~\cref{fig:LR_range_mom}. The learning rate starts from a factor $1/20$ of the maximum bound, increases towards the maximum bound during the first $30 \%$ of training and decreases toward a factor \num{e-4} of the maximum bound for the remaining 70\% of training. This is done by following a cosine curve. The momentum performs an inverse cycling with the lowest momentum of 0.80 at the highest learning rate and a peak in momentum, corresponding to the values in the grid search, at the lowest learning rate. (a) Shows the friction mean $R^2$ validation score (left) and the validation loss (right). (b) Shows the friction mean $R^2$ validation score for the selected set of Honeycomb (left) and Tetrahedron (right) patterns respectively, similar to that used in~\cref{fig:A_search_compare}.}
   \label{fig:mom_weight_search_cyclic}
 \end{figure}
 
+In the
+one-cycle policy, we set a maximum bound for the learning rate and start from a
+factor $1/20$ of this bound and increase towards the maximum bound during the
+first 30\% of the training. For the final 70\% of training, we decrease towards
+a final minimum given as a factor \num{e-4} of the maximum bound. The increase and
+decrease are done by a cosine function. The suggested learning rate for the
+constant learning rate scheme is once again determined by the steepest slope on
+the loss curve while the maximum bound used for the one-cycle policy i
+
 
 The original validation scores, before varying momentum and weight decay, were a
-validation loss of 0.02124 and a mean friction $R_2$ score of 0.9816. By varying
+validation loss of 0.02124 and a mean friction $R^2$ score of 0.9816. By varying
 momentum and weight decay, we can improve these scores slightly for the constant
-learning rate scheme (loss: 0.02038, $R_2$: 0.9823) and even more for the cyclic
-scheme (loss: 0.0176, $R_2$: 0.9831). However, these values are not taken from the same hyperparameter settings and we did not find a better option across all evaluation metrics. The comparison among best scores is
+learning rate scheme (loss: 0.02038, $R^2$: 0.9823) and even more for the cyclic
+scheme (loss: 0.0176, $R^2$: 0.9831). However, these values are not taken from the same hyperparameter settings and we did not find a better option across all evaluation metrics. The comparison among best scores is
 summarized in~\cref{tab:mom_weight_search}. In general, the constant scheme
 shows rather stable results for all momentum settings $m \in [0.85, 0.99]$ in
 combination with a low weight decay $\lambda \le \num{e-4}$. For the cyclic scheme
@@ -445,25 +484,25 @@ $\lambda \le \num{e-4}$. Looking at the summary in~\cref{tab:mom_weight_search} 
 see that the cyclic scheme can produce a high score among all four
 performance metrics, but since these scores do not share common hyperparameters we need to choose which of them to prioritize. Due to our interest in capturing the non-linear trends, we prioritize the score from the
 selected set of Tetrahedron patterns as this provided the greatest challenge for our model to capture. We recognize that this choice introduces a greater risk of
-overfitting since the data points within this evaluation set are partly included in the training set as well. This is especially alarming since the abscent of weight decay allow for more overfitting in general. However, for the purpose of performing an accelerated search, we find it more important to increase the chances of discovering novel designs than to reduce the chance of getting false positive results. Since we retain the option to verify the properties of a given design through \acrshort{MD} simulations afterward, we do not have to rely on the machine learning prediction as a final score. Thus we choose the cyclic trained model with low momentum $m = 0.85$ and zero weight decay as our final model. On a final note we also point out that our choice of hyperparameters corresponded to the edge of our grid search, and it would have been natural to perform an extended search in that range. This was omitted due to time prioritization and the belief that the potential gain of doing so was not huge.
+overfitting since the data points within this evaluation set are partly included in the training set as well. This is especially alarming since the absence of weight decay allows for more overfitting in general. However, for the purpose of performing an accelerated search, we find it more important to increase the chances of discovering novel designs than to reduce the chance of getting false positive results. Since we retain the option to verify the properties of a given design through \acrshort{MD} simulations afterward, we do not have to rely on the machine learning prediction as a final score. Thus we choose the cyclic trained model with low momentum $m = 0.85$ and zero weight decay as our final model. On a final note, we also point out that our choice of hyperparameters corresponded to the edge of our grid search, and it would have been natural to perform an extended search in that range. This was omitted due to time prioritization and the belief that the potential gain of doing so was not huge.
 
 
 \begin{table}[H]
   \begin{center}
-  \caption{Momentum and weight decay grid search using S32D12 model.}
+  \caption{The best validation loss and $R^2$ scores from the momentum and weight grid search using the S32D12 model. We compare the scores from the constant and cycling learning rate and momentum scheme against the original scores from the S32D12 model in the architecture complexity grid search. The scores correspond to different hyperparameter choices that maximize each score respectively.}
   \label{tab:mom_weight_search}
   \begin{tabular}{|c|c|c|c|c|} \hline
      &  & Score [\num{e2}] & Momentum & Weight decay \\ \hline
      \multirow{3}{*}{Validation loss} & Original & 2.124 & 0.9 & 0  \\ 
       & Constant & 2.038 & 0.97 & \num{e-4} \\ 
       & Cyclic & 1.761 & 0.85 & \num{e-4} \\ \hline
-     \multirow{3}{*}{Validation $R_2$} & Original & 98.16 & 0.9 & 0  \\ 
+     \multirow{3}{*}{Validation $R^2$} & Original & 98.16 & 0.9 & 0  \\ 
       & Constant & 98.23 & 0.93 & 0 \\ 
       & Cyclic & 98.31 & 0.93 & \num{e-5} \\ \hline
-     \multirow{3}{*}{Tetrahedron $R_2$} & Original & 87.07 & 0.9 & 0  \\ 
+     \multirow{3}{*}{Tetrahedron $R^2$} & Original & 87.07 & 0.9 & 0  \\ 
       & Constant & 87.31 & 0.85 & \num{e-5} \\ 
       & Cyclic & 88.12 & 0.85 & 0 \\ \hline
-     \multirow{3}{*}{Honeycomb $R_2$} & Original & 94.78 & 0.9 & 0  \\ 
+     \multirow{3}{*}{Honeycomb $R^2$} & Original & 94.78 & 0.9 & 0  \\ 
       & Constant & 95.67 & 0.93 & 0 \\ 
       & Cyclic & 96.37 & 0.85 & 0 \\ \hline
   \end{tabular}
@@ -494,17 +533,16 @@ $(1.5\%)$ set. Thus we might get the idea that the relative error is especially
 high on the validation set due to a few cases of very low rupture strains in the
 Random walk patterns which would shift up the average.
 
-\hl{I find it a bit disturbing to use the ``$\sim$'' too much, but I would like to indicate that a round the numbers... can I omit it?}
 
 \cref{fig:final_model_eval} shows the mean friction, max friction and relative contact in comparison to the Tetrahedron $(7, 5, 1)$ and Honeycomb $(2,2,1,5)$ used in the pilot study. We note that these configurations are also partly contained within the training data, but this serves as a visualization of how the fit looks for $R^2$ scores above $98 \%$. We will evaluate a true test set later on based on the proposals from the accelerated search. 
 
 
 \begin{table}[H]
   \begin{center}
-  \caption{Mean values are used over different configurations.}
+  \caption{Evaluation of the final model performance considering all the model outputs. Mean values are taken over the score for each configuration in the categories: The validation set, the selected Tetrahedron set and the selected Honeycomb set.}
   \label{tab:final_model_eval}
   \begin{tabular}{ | c | c | c | c | c | c | c | c |} \hline
-    & Loss [\num{e2}] & \multicolumn{3}{c|}{$R_2$ [\num{e2}]} & Abs. [\num{e2}] & Rel. [\num{e2}]  & Acc. [\num{e2}] \\ \hline
+    & Loss [\num{e2}] & \multicolumn{3}{c|}{$R^2$ [\num{e2}]} & Abs. [\num{e2}] & Rel. [\num{e2}]  & Acc. [\num{e2}] \\ \hline
     & Total & Mean $F_f$ & Max $F_f$ & Contact & Porosity & Rup.\ Strain & Rupture \\ \hline
   Validation  & 2.1488 & 98.067 & 93.558 & 94.598 & 2.325 & 12.958 & 96.102 \\ \hline
   Tetrahedron & 4.0328 & 88.662 & 85.836 & 64.683 & 1.207 & \phantom{0}5.880 & 99.762 \\ \hline
@@ -517,7 +555,7 @@ Random walk patterns which would shift up the average.
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{figures/ML/final_model_evaluation.pdf}
-  \caption{With \num{e3} points in the strain range [0, 1.5] and stopping after first rupture prediction.}
+  \caption{Visual evaluation of the final model performance on the Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$ used in the pilot study, for the mean friction $\langle F_{\parallel} \rangle$, maximum friction $\max F_\parallel$ and the relative contact as a function of strain. The model predictions (solid line) is based on \num{e3} data points in the strain range [0, 1.5], with the curve being cut off after the first rupture prediction. This is compared to the data points (dots) with the color denoting the normal load which. The $R^2$ scores are shown for each prediction fit for each load value. }
   \label{fig:final_model_eval}
 \end{figure}  
 
@@ -527,7 +565,7 @@ configurations in the dataset, for the Tetrahedron, Honeycomb and Random walk
 respectively, calculate the properties of interest and sort the configurations
 accordingly. This is shown in~\crefrange{tab:ML_ranking_pop}{tab:ML_ranking_RW}
 in comparison to the actual ranking in the dataset. Generally, we find that the
-\acrshort{ML} performs rather well in the ranking of the maximum properties by
+\acrshort{ML} model performs rather well in the ranking of the maximum properties by
 getting the right configurations into the top 3 three, while it is performing a
 lot worse for the minimum friction property. This latter observation can be
 attributed to the fact that the precision needed for an accurate ranking among
@@ -538,7 +576,7 @@ precision. For the maximum categories, we find that the model gives a slightly
 better ranking for the Tetrahedon and Honeycomb in comparison to the Random walk
 patterns. When considering the actual predicted property scores for the maximum
 properties we find that the model predictions are generally within a $\sim 0.2$
-nN in the top 5. This gives an incentive that our model can be used to perform
+nN in the top 5. This gives an indication that our model can be used to perform
 an accelerated search of new configurations yielding a meaningful ranking of
 property scores. 
 
@@ -546,8 +584,8 @@ property scores.
 
 \begin{table}[H]
   \begin{center}
-  \caption{Tetrahedon}
-  \label{tab:ML_cranking_pop}
+  \caption{\hl{Tetrahedon}}
+  \label{tab:ML_ranking_pop}
   \begin{tabular}{|c|c|c?{0.3mm}c|c|c|} \hline
     ML & \multicolumn{2}{c?{0.3mm}}{Data} &  \multicolumn{2}{c|}{\acrshort{ML}} & Data \\ \cline{2-5}
     Rank & Config & Value [nN] & Config & Value [nN] & Rank \\ \hline
@@ -581,7 +619,7 @@ property scores.
 
 \begin{table}[H]
   \begin{center}
-  \caption{Honeycomb}
+  \caption{\hl{Honeycomb}}
   \label{tab:ML_ranking_hon}
   \begin{tabular}{|c|c|c?{0.3mm}c|c|c|} \hline
     ML & \multicolumn{2}{c?{0.3mm}}{Data} &  \multicolumn{2}{c|}{\acrshort{ML}} & Data \\ \cline{2-5}
@@ -617,7 +655,7 @@ property scores.
 
 \begin{table}[H]
   \begin{center}
-  \caption{RW}
+  \caption{\hl{RW}}
   \label{tab:ML_ranking_RW}
   \begin{tabular}{|c|c|c?{0.3mm}c|c|c|} \hline
     ML & \multicolumn{2}{c?{0.3mm}}{Data} &  \multicolumn{2}{c|}{\acrshort{ML}} & Data \\ \cline{2-5}
@@ -655,7 +693,7 @@ property scores.
 From~\cref{eq:ML} we have found promising results that we can use a machine learning model to predict the friction behavior. This enables us to omit the \acrshort{MD} simulations in the evaluation process and perform an accelerated search through new configurations. We will use the friction properties of interest as our main optimization metrics. We approach the accelerated search by two different methods:
 \begin{enumerate}
   \item Using the generative algorithms developed for the creation of the Tetrahedron, Honeycomb and Random walk patterns, we create an extended dataset and evaluate the performance using the \acrshort{ML} model.
-  \item Using the genetic algorithm method we perturb (mutate) the configurations and optimize for the maximum drop property using the \acrshort{ML} model to evaluate the fitness function. 
+  \item Using a genetic algorithm method we perturb (mutate) the configurations and optimize for the maximum drop property using the \acrshort{ML} model to evaluate the fitness function. 
 \end{enumerate}
 
 
@@ -663,8 +701,8 @@ From~\cref{eq:ML} we have found promising results that we can use a machine lear
 We utilize the pattern generators developed in~\cref{chap:system} to create an extended dataset for our search. For the Tetrahedron and Honeycomb patterns, the increment of the parameters will lead to an increased spacing within the pattern. This will eventually lead to the main pattern structures exceeding the size of the sheet. Thus, we can essentially perform a full search ``maxing out'' the parameters of these patterns. We estimate
 that this is done with the max parameters, $(60, 60, 30)$ for the Tetrahedron,
 and $([30, 30, 30, 60])$ for the Honeycomb pattern. We use a random reference position
-and regenerate each unique parameter 10 times to explore translational effects. This gives in total 135k configurations for the
-Tetrahedron pattern and 2025k for the Honeycomb pattern. For the Random walk
+and regenerate each unique parameter 10 times to explore translational effects. This gives in total \num{135e3} configurations for the
+Tetrahedron pattern and \num{2.025e6} for the Honeycomb pattern. For the Random walk
 generator, we do a Monte Carlo sampling. In each sample, we draw the scalar values, either from a uniform (U) or logarithmic uniform (LU) distribution as follows.
 \begin{align*}
   \text{Num. walks} &\sim \text{U}[1, 30] & \text{Max. steps} &\sim \text{U}[1,30]  & \text{Min. dis.} &\sim \text{U}[0,4] \\
@@ -723,7 +761,7 @@ Tetrahedron, Honeycomb and Random walk respectively. This further supports the i
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{figures/search/RW_search_top5.pdf}
-  \caption{RW search top results.}
+  \caption{\hl{RW search top results.}}
   \label{fig:RW_search_top5}
 \end{figure}  
 
@@ -751,7 +789,7 @@ simply did not provide enough data to reach a generalization of the complex
 physical behavior of the system. The sensible way forward to unravel this would
 be to generate additional translational variants of the same configurations to
 investigate for any physical edge dependencies or otherwise strengthen the
-model by this data. We earmark this suggestion for another study. When considering some of the friction-strain curves we also find that the prediction of the rupture point plays an important role for the max drop property. As the rupture is often predicted on a descending part of the curve any variation to the rupture strain will affect the max drop property quite significantly.
+model by this data. We leave this suggestion for another study. When considering some of the friction-strain curves we also find that the prediction of the rupture point plays an important role for the max drop property. As the rupture is often predicted on a descending part of the curve any variation to the rupture strain will affect the max drop property quite significantly.
 
 
 \begin{figure}[H]
@@ -804,6 +842,7 @@ results. This indicates that the poor test result is not simply caused by the hy
 
 
 \subsection{Genetic algorithm search}
+\hl{Hard to follow. Go over this.}
 Despite the fact that our machine learning analysis indicates that the model is not generalized enough for an accurate prediction on new configurations, we investigate the prospects of using a genetic algorithm based accelerated search. So far we have concluded that a minimization of the friction is not
 promising, and hence we discard this property for further study. We have also
 seen that the maximum style properties often share similar top candidates, and
@@ -813,6 +852,18 @@ aim of creating a negative friction coefficient. We verify our implementation of
   H = -J\sum_{\langle kl \rangle} s_k s_l,
 \end{align*}
 for the square lattice sites $s$ with the sum running over nearest neighbouring sites $k$ and $l$. The sites take a binary value, either $-1$ or $+1$, and thus the highest energy for the system is reached for a checkboard pattern of every other side is $-1$ and the remaining being $+1$. We find that the algorithm converges toward the optimal solution within a hundred generations most of the time, which shows that it can handle some spatial dependencies in the matrix.
+
+% ising lowering and porosity target is very easy, but the ising max is difficult since it gets stuck in checkboard regions not aligning
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\linewidth]{figures/search/ising_max_history.pdf}
+  \caption{Converge fast in the beginning but then often get stuck with two regions of checkboard not aligning. }
+  \label{fig:ising_max_history}
+\end{figure}  
+
+
+
 
 For the genetic algorithm search we use the top candidates from the pattern generation search as a starting point for the populations. That is, we generate the population based on the parameter associated with the max drop top candidates for the Tetrahedron, Honeycomb and Random walk search respectively. We generate a population of 100 configurations and run the search for  50 generations as we did not see much improvement for longer runs. The Tetrahedron and Honeycomb search did immediately give any useful results as the highest scoring individual from the population was not improved throughout the search even though the average score was rising initially. For the Random walk performed 5 runs based on the top 5 candidates. Most of them gave a similar result as seen for the Tetrahedon and
 Honeycomb patterns with only a single run providing a new generated candidate. The score of this candidate was \SI{0.240}{nN} which is only a small improvement from the otherwise best Random walk max drop score of

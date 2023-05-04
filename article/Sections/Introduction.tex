@@ -2,8 +2,7 @@
 
 
 \section{Motivation}
-Friction is the force that prevents the relative motion of objects in contact. Even though the everyday person might not be familiar with the
-term \textit{friction} we recognize it as the inherent resistance to sliding
+Friction is the force that prevents the relative motion of objects in contact. From our everyday life, we recognize it as the inherent resistance to sliding
 motion. Some surfaces appear slippery and some rough, and we know intuitively
 that sliding down a snow-covered hill is much more exciting than its grassy
 counterpart. Without friction, it would not be possible to walk across a flat
@@ -86,7 +85,7 @@ algorithm} based on mutation and crossing of the best candidates so far. Another
 more sophisticated approach is through generative methods such as
 \textit{Generative Adversarial Networks} (\acrshort{GAN}) or diffusion models. The latter is being used in state-of-the-art AI systems such as OpenAI's DALL$\sq$E2~\cite{DALLE} or Midjourney~\cite{Midjourney}. By working with a so-called \textit{encoder-decoder}
 network structure, one can build a model that reverses the prediction process. This is often referred to as \textit{reverse design}, where the model predicts a design from a set of physical target properties.
-In the papers by Hanakata et al.\ both the \textit{accelerated search} and the
+In the papers by Hanakata et al.~\cite{PhysRevLett.121.255304, PhysRevResearch.2.042006} both the \textit{accelerated search} and the
 \textit{inverse design} approach was proven successful to create novel
 metamaterial Kirigami designs with the graphene sheet. 
 
@@ -226,23 +225,23 @@ properties of a graphene sheet through the application of Kirigami-inspired cuts
 
 
 \section{Contributions}
-Through the fulfillment of the study goals described in~\cref{sec:goals} we have
+By working towards the goals outlined above (\cref{sec:goals}), I have
 discovered a non-linear relationship between the kinetic friction and the strain
 for certain Kirigami patterns. This phenomenon was found to be associated with
-the out-of-plane buckling of the Kirigami sheet but with no \hl{clear} relationship
-to the contact area or the tension in the sheet. We found that this method does
-not provide any incentive for a reduction in friction, in comparison to a
+the out-of-plane buckling of the Kirigami sheet but with no clear relationship
+to the contact area or the tension in the sheet. I found that this method does
+not provide any mechanism for a reduction in friction, in comparison to a
 non-cut sheet, but the straining of certain Kirigami sheets allows for both a
-relative increase and decrease in friction. The relationship to load was proven
-negligible in this context and we have demonstrated that a coupled system
+relative increase and decrease in friction \hl{Henrik}. The relationship to normal load was proven
+negligible in this context and I have demonstrated that a coupled system
 of load and strain (through sheet tension) can exhibit a negative friction
-coefficient in certain load ranges. Moreover, we have created a dataset of roughly 10,000 data points for assessing the employment of machine learning and accelerated search of Kirigami designs. We have found, that this approach might be useful, but that it requires an extended dataset in order to produce reliable results for search.
+coefficient in certain load ranges. Moreover, I have created a dataset of roughly 10,000 data points for assessing the employment of machine learning and accelerated search of Kirigami designs. I have found, that this approach might be useful, but that it requires an extended dataset in order to produce reliable results for search.
 
-During our investigations, we have built three major numerical frameworks, beyond the regular scripts associated with data analysis, which can be found on Github~\cite{Github}. The frameworks are summarized in the following. 
+During our investigations, I have built three numerical tools, beyond the regular scripts associated with data analysis, which can be found on Github~\cite{Github}. The tools are summarized in the following. 
 \begin{itemize}
-    \item We have written a LAMMPS-based~\cite{LAMMPS} framework for simulating and measuring the frictional properties of a graphene sheet sliding on a substrate. The code is generally made flexible concerning the choice of sheet configuration, system size, simulation parameters and \acrshort{MD} potentials, which makes it applicable for further studies within this topic. We have also built an automized procedure to carry out multiple simulations under varying parameters by submitting jobs to a computational cluster via an ssh connection. This was done by adding minor additions to the python package developed by E. M. Nordhagen~\cite{lammps_simulator}.
-    \item We have generated a Python-based framework for generating Kirigami patterns and exporting these in a compatible format with the simulation software. The generation of molecular structures is done with the use of ASE~\cite{ase-paper}. Our software includes two classes of patterns inspired by macroscale designs and a random walk algorithm which allow for a variety of different designs through user-defined biases and constraints. Given our system size of choice, the first two pattern generators are capable of generating on the order of \num{e8} unique designs while the random walk generator allows for significantly more. 
-    \item We have built a machine learning framework based on Pytorch~\cite{NEURIPS2019_9015} which includes setting up the data loaders, a convolutional network architecture, a loss function, and general algorithms for training and validating the results. Additionally, we have written several scripts for performing grid searches and analyzing the model predictions in the context of the frictional properties of graphene. 
+    \item I have written a LAMMPS-based~\cite{LAMMPS} tool for simulating and measuring the frictional properties of a graphene sheet sliding on a substrate. The code is generally made flexible concerning the choice of sheet configuration, system size, simulation parameters and \acrshort{MD} potentials, which makes it applicable for further studies within this topic. I have also built an automized procedure to carry out multiple simulations under varying parameters by submitting jobs to a computational cluster via an ssh connection. This was done by adding minor additions to the python package developed by E. M. Nordhagen~\cite{lammps_simulator}.
+    \item I have generated a Python-based tool for generating Kirigami patterns and exporting these in a compatible format with the simulation software. The generation of molecular structures is done with the use of ASE~\cite{ase-paper}. Our software includes two classes of patterns inspired by macroscale designs and a random walk algorithm which allow for a variety of different designs through user-defined biases and constraints. Given our system size of choice, the first two pattern generators are capable of generating on the order of \num{e8} unique designs while the random walk generator allows for significantly more. 
+    \item I have built a machine learning tool based on Pytorch~\cite{NEURIPS2019_9015} which includes setting up the data loaders, a convolutional network architecture, a loss function, and general algorithms for training and validating the results. Additionally, I have written several scripts for performing grid searches and analyzing the model predictions in the context of the frictional properties of graphene. 
 \end{itemize}
 All numerical implementations used for this thesis have been originally developed for the purpose with the exception of the usage of libraries as mentioned above and commonly known Python libraries such as Numpy and Matplotlib.
 

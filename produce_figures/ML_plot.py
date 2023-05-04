@@ -290,7 +290,7 @@ def A_search_perf(path, save):
     cmap = sns.cm.rocket
     ax = axes[0,0]
     annot = annotation_array(mat, fmt = '.02f', mask_swap = [mat < 0.01, '< 0.01'])
-    sns.heatmap(mat, xticklabels = D_axis, yticklabels = S_axis, cbar_kws={'label': r'$R_2$ $\langle F_{\parallel} \rangle$ [$10^2$] '}, annot=annot, fmt='', vmin=vmin, vmax=vmax, cmap = cmap, ax=ax)
+    sns.heatmap(mat, xticklabels = D_axis, yticklabels = S_axis, cbar_kws={'label': r'$R^2$ $\langle F_{\parallel} \rangle$ [$10^2$] '}, annot=annot, fmt='', vmin=vmin, vmax=vmax, cmap = cmap, ax=ax)
 
 
     # Val loss
@@ -359,7 +359,7 @@ def A_search_compare_perf(path, save = False):
     
     # Evaluation on selected configurations
     paths = P['path']
-    R2 = np.zeros((len(compare_folder), paths.shape[0], paths.shape[1]))
+    R2 = np.full((len(compare_folder), paths.shape[0], paths.shape[1]), np.nan)
     for f, folder in enumerate(compare_folder):
         print(f'{f+1}/{len(compare_folder)}')
         
@@ -400,6 +400,8 @@ def A_search_compare_perf(path, save = False):
     fig, axes = plt.subplots(1, 2,  figsize = figsize)
     vmin, vmax = 60, 100
     
+   
+    
     # Tetrahedron
     ax = axes[0]
     ax.set_title('Tetrahedron')
@@ -407,7 +409,7 @@ def A_search_compare_perf(path, save = False):
     # vmin, vmax = get_vmin_max(mat, p = 0.98)
     cmap = sns.cm.rocket
     annot = annotation_array(mat, fmt = '.02f', mask_swap = [mat < 0.01, '< 0.01'])
-    sns.heatmap(mat, xticklabels = D_axis, yticklabels = S_axis, cbar_kws={'label': r'$R_2$ $\langle F_{\parallel} \rangle$ [$10^2$] '}, annot=annot, fmt='', vmin=vmin, vmax=vmax, cmap = cmap, ax=ax)
+    sns.heatmap(mat, xticklabels = D_axis, yticklabels = S_axis, cbar_kws={'label': r'$R^2$ $\langle F_{\parallel} \rangle$ [$10^2$] '}, annot=annot, fmt='', vmin=vmin, vmax=vmax, cmap = cmap, ax=ax)
     
     # Honeycomb
     ax = axes[1]
@@ -416,7 +418,7 @@ def A_search_compare_perf(path, save = False):
     # vmin, vmax = get_vmin_max(mat, p = 0.98)
     cmap = sns.cm.rocket
     annot = annotation_array(mat, fmt = '.02f', mask_swap = [mat < 0.01, '< 0.01'])
-    sns.heatmap(mat, xticklabels = D_axis, yticklabels = S_axis, cbar_kws={'label': r'$R_2$ $\langle F_{\parallel} \rangle$ [$10^2$] '}, annot=annot, fmt='', vmin=vmin, vmax=vmax, cmap = cmap, ax=ax)
+    sns.heatmap(mat, xticklabels = D_axis, yticklabels = S_axis, cbar_kws={'label': r'$R^2$ $\langle F_{\parallel} \rangle$ [$10^2$] '}, annot=annot, fmt='', vmin=vmin, vmax=vmax, cmap = cmap, ax=ax)
     
     
     # Suplot settings
@@ -448,7 +450,7 @@ def mom_weight_search_perf(path, save):
     cmap = sns.cm.rocket
     ax = axes[0]
     annot = annotation_array(mat, fmt = '.02f', mask_swap = [mat < 0.01, '< 0.01'])
-    sns.heatmap(mat, xticklabels = M_axis, yticklabels = W_axis, cbar_kws={'label': r'$R_2$ $\langle F_{\parallel} \rangle$ [$10^2$] '}, annot=annot, fmt='', vmin=vmin, vmax=vmax, cmap = cmap, ax=ax)
+    sns.heatmap(mat, xticklabels = M_axis, yticklabels = W_axis, cbar_kws={'label': r'$R^2$ $\langle F_{\parallel} \rangle$ [$10^2$] '}, annot=annot, fmt='', vmin=vmin, vmax=vmax, cmap = cmap, ax=ax)
 
 
     # Val loss
@@ -507,7 +509,8 @@ def mom_weight_search_compare_perf(path, save = False):
     
     # Evaluation on selected configurations
     paths = P['path']
-    R2 = np.zeros((len(compare_folder), paths.shape[0], paths.shape[1]))
+    R2 = np.full((len(compare_folder), paths.shape[0], paths.shape[1]), np.nan)
+    
     for f, folder in enumerate(compare_folder):
         print(f'{f+1}/{len(compare_folder)}')
         
@@ -555,7 +558,7 @@ def mom_weight_search_compare_perf(path, save = False):
     # vmin, vmax = get_vmin_max(mat, p = 0.98)
     cmap = sns.cm.rocket
     annot = annotation_array(mat, fmt = '.02f', mask_swap = [mat < 0.01, '< 0.01'])
-    sns.heatmap(mat, xticklabels = M_axis, yticklabels = W_axis, cbar_kws={'label': r'$R_2$ $\langle F_{\parallel} \rangle$ [$10^2$] '}, annot=annot, fmt='', vmin=vmin, vmax=vmax, cmap = cmap, ax=ax)
+    sns.heatmap(mat, xticklabels = M_axis, yticklabels = W_axis, cbar_kws={'label': r'$R^2$ $\langle F_{\parallel} \rangle$ [$10^2$] '}, annot=annot, fmt='', vmin=vmin, vmax=vmax, cmap = cmap, ax=ax)
     
     # Honeycomb
     ax = axes[1]
@@ -564,7 +567,7 @@ def mom_weight_search_compare_perf(path, save = False):
     # vmin, vmax = get_vmin_max(mat, p = 0.98)
     cmap = sns.cm.rocket
     annot = annotation_array(mat, fmt = '.02f', mask_swap = [mat < 0.01, '< 0.01'])
-    sns.heatmap(mat, xticklabels = M_axis, yticklabels = W_axis, cbar_kws={'label': r'$R_2$ $\langle F_{\parallel} \rangle$ [$10^2$] '}, annot=annot, fmt='', vmin=vmin, vmax=vmax, cmap = cmap, ax=ax)
+    sns.heatmap(mat, xticklabels = M_axis, yticklabels = W_axis, cbar_kws={'label': r'$R^2$ $\langle F_{\parallel} \rangle$ [$10^2$] '}, annot=annot, fmt='', vmin=vmin, vmax=vmax, cmap = cmap, ax=ax)
     
     
     # Suplot settings
@@ -675,7 +678,7 @@ def final_model_evaluation(model_path, save = False):
                 rup_start = np.argmin(output[:,-1] < 0.5)
                 
                 color = get_color_value(F_N[k], colorbar_scale[0][0], colorbar_scale[0][1], scale = colorbar_scale[1], cmap = cmap)
-                ax.plot(stretch_space[:rup_start], output[:rup_start, o], color = color, label = rf'$R_2$ = {R2:0.4f}', zorder = -1)
+                ax.plot(stretch_space[:rup_start], output[:rup_start, o], color = color, label = rf'$R^2$ = {R2:0.4f}', zorder = -1)
                 ax.legend(fontsize = 13)
     # Colorbar 
     norm = matplotlib.colors.LogNorm(colorbar_scale[0][0], colorbar_scale[0][1])
@@ -850,11 +853,11 @@ if __name__ == '__main__':
     # LR_range_momentum(save = False)
     
     # A_search_perf(path = '../ML/staircase_4', save = False)
-    # A_search_compare_perf(path = '../ML/staircase_4', save = False)
+    # A_search_compare_perf(path = '../ML/staircase_4', save = Fase)
     
     
-    # mom_weight_search_perf(path = '../ML/mom_weight_search_constant', save =  True)
-    # mom_weight_search_perf(path = '../ML/mom_weight_search_cyclic', save =  True)
+    # mom_weight_search_perf(path = '../ML/mom_weight_search_constant', save =  False)
+    # mom_weight_search_perf(path = '../ML/mom_weight_search_cyclic', save =  False)
     
     # mom_weight_search_compare_perf(path = '../ML/mom_weight_search_constant', save = False)
     # mom_weight_search_compare_perf(path = '../ML/mom_weight_search_cyclic', save = False)
@@ -862,7 +865,7 @@ if __name__ == '__main__':
     
     # final_model_evaluation(model_path = '../ML/mom_weight_search_cyclic/m0w0', save = False)
     # final_model_compare_scores(model_path = '../ML/mom_weight_search_cyclic/m0w0')
-    final_model_compare_scores(model_path = '../ML/staircase_4/S16D8')
+    # final_model_compare_scores(model_path = '../ML/staircase_4/S16D8')
     plt.show()
 
 

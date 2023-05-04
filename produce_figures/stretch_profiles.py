@@ -255,7 +255,7 @@ def PP(patterns, names, save = None):
         
     # Stretch profiles
     vars = ['data[\'stretch_pct\']', 'data[\'Ff\'][:, :, 0, 1]', 'data[\'F_N\']']
-    axis_labels = [r'Stretch', r'$\langle F_\parallel \rangle$ [nN]', r'$F_N$ [nN]']
+    axis_labels = [r'Strain', r'$\langle F_\parallel \rangle$ [nN]', r'$F_N$ [nN]']
     multi_plot_compare(patterns, names, vars, axis_labels, figsize, axes = axes[0], add_contact = True)
     # fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2); return
 
@@ -368,7 +368,7 @@ if __name__ == "__main__":
     path = '../Data/CONFIGS/RW'
     
     # patterns_and_profiles(save = False)
-    patterns_and_profiles_2(save = False)
+    patterns_and_profiles_2(save = True)
     plt.show()
     
     
