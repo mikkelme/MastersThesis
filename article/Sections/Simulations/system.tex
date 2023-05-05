@@ -53,7 +53,7 @@ the attachment to a moving body, and a 3D silicon bulk substrate.
   \label{fig:system_variations}
 \end{figure}
 
-% \begin{figure}[H]
+% \begin{figure}[h]
 %   \centering
 %   \includegraphics[width=0.8\linewidth]{figures/system/system_variations.png}
 %   \caption{\hl{TMP} System variations}
@@ -207,48 +207,49 @@ between encounters with the sheet, similar to the initial relaxation time.
 % (https://community.wvu.edu/~miholcomb/graphene.pdf)
 % https://www.physics-in-a-nutshell.com/article/4/lattice-basis-and-crystal
 
-The sheet consists of graphene, which is a single layer of carbon atoms arranged in a hexagonal lattice structure. The bulk version of graphene is graphite and is a stacked structure of multiple graphene layers. We can describe the 2D crystal structure in terms of its primitive lattice vectors $\vec{a_1}$ and $\vec{a_2}$ and a basis. The basis describes the atoms associated with each lattice site, and we populate the lattice by translating the basis by any linear combination of the lattice vectors 
+The sheet consists of graphene, which is a single layer of carbon atoms arranged in a hexagonal lattice structure. The bulk version of graphene is graphite and is a stacked structure of multiple graphene layers. We can describe the graphene 2D crystal structure in terms of its primitive lattice vectors $\vec{a_1}$ and $\vec{a_2}$ and a basis. The basis describes the atoms associated with each lattice site, and we populate the lattice by translating the basis by any linear combination of the lattice vectors 
 \begin{align*}
   \vec{T}_{mn} = m\vec{a_1} + n\vec{a_2}, \qquad m,n \in \mathbb{N}.
 \end{align*}
-For graphene, we have the primitive lattice vectors 
-\begin{align*}
-  \vec{a_1} = a \left(\frac{\sqrt{3}}{2}, -\frac{1}{2}\right), \qquad \vec{a_2} = a \left(\frac{\sqrt{3}}{2}, \frac{1}{2}\right), \qquad |\vec{a_1}| = |\vec{a_2}| = 2.46 \ \text{Å}.
-\end{align*}
+For graphene, we have the primitive lattice vectors~\cite{gray2009crystal} 
+\begin{align}
+  \vec{a_1} = a \left(\frac{\sqrt{3}}{2}, -\frac{1}{2}\right), \qquad \vec{a_2} = a \left(\frac{\sqrt{3}}{2}, \frac{1}{2}\right), \qquad |\vec{a_1}| = |\vec{a_2}| = a = 2.46 \ \text{Å}.
+  \label{eq:prim_vec}
+  %, \qquad |\vec{a_1}| = |\vec{a_2}| = 2.46 \ \text{Å}.
+\end{align}
 Notice that we deliberately excluded the third coordinate as we only consider a
-single graphene layer and thus we do not have to consider the stacking structure of 3D graphite. The basis consist of two carbon atoms given as 
-\begin{align*}
-  \Big\{\Big(0,0\Big), \frac{a}{2}\Big(\frac{1}{\sqrt{3}}, 1 \Big) \Big\}
-\end{align*}
-The crystal structure is visualized in \cref{fig:graphene_crystal}. It turns out that the spacing between atoms is equal for all pairs of atoms with an interatomic distance
+single graphene layer and thus we do not have to consider the stacking structure of 3D graphite. The basis consists of two carbon atoms given as 
+\begin{align}
+  \Big\{\Big(0,0\Big), \frac{a}{2}\Big(\frac{1}{\sqrt{3}}, 1 \Big) \Big\}.
+  \label{eq:basis}
+\end{align}
+The crystal structure is visualized in \cref{fig:graphene_crystal}. The hexagonal lattice structure makes for an equal spacing all pairs of atoms with an interatomic distance
 \begin{align*}
   \left|\left|\frac{a}{2}\Big(\frac{1}{\sqrt{3}}, 1 \Big)\right|\right| \approx 1.42 \ \text{Å}.
 \end{align*}
 
 
-\begin{figure}[H]
+\begin{figure}[h]
   \centering
   \includegraphics[width=0.3\linewidth]{figures/system/crystal.png}
-  \caption{Graphene crystal structure with basis.}
+  \caption{Illustration of the graphene crystal structure. The dots represent atom sites, blue dots denote the basis atoms (\cref{eq:basis}) and the red arrows denote the primitive lattice vectors (\cref{eq:prim_vec}). }
   \label{fig:graphene_crystal}
 \end{figure}
 
 
 
 \subsection{Indexing}
-In order to define the kirigami cut patterns applied to the graphene sheet we need to
-define an indexing system. We must ensure that this gives a unique description
-of the atoms as we eventually want to pass a binary matrix, containing 0 for
-removed atoms and 1 for present atoms, that uniquely describes the sheet. We do
-this by letting the x-coordinate allign with the so-called \textit{armchair} direction of the sheet and making the y-coordinate increment along the
-so-called \textit{zigzag} direction. Notice that the x-coordinate will point
-to \textit{zigzag} chains of atoms for which the starting point, at $y = 0$ is not evenly spaced as illustrated in figure \cref{fig:atom_indexing}. Other solutions
-might naturally involve the lattice vectors, but since these are used to
-translate between similar basis atoms it introduces an unfortunate duality as
+In order to describe the Kirigami cut patterns applied to the graphene sheet we require an indexing system that provides a unique representation of the atoms in the lattice. This allows us to represent the pattern as a binary matrix, where 0 denotes removed atoms and 1 denotes present atoms. We let the x-coordinate correspond with the so-called \textit{armchair} direction of the sheet and the y-coordinate with the so-called \textit{zigzag} direction. Notice that the x-coordinate will point to \textit{zigzag} chains of atoms for which the starting point $(x, 0)$ is not evenly spaced as illustrated in figure~\cref{fig:atom_indexing}. Other
+solutions might naturally involve the lattice vectors, but since these are used
+to translate between similar basis atoms it introduces an unfortunate duality as
 one would then need to include the basis atom of choice into the indexing system
 as well. Additionally, we want an indexing system that conserves the relative
 physical position of neighbors. That is, atom $(i, j)$ should be in the
-proximity of $\{(i+1, j), (i-1, j), (i, j+1), (i, j-1)\}$. However, due to the hexagonal structure of the lattice, only three said neighbor indexes willl be actual nearest neighbors in the lattice. While $(i, j\pm 1)$ is always a nearest neighbor, the index of the nearest neighbor in the x-direction oscillates for each incrementing of the x- or y-coordinate. That is, the nearest neighbors are decided as
+proximity of $\{(i+1, j), (i-1, j), (i, j+1), (i, j-1)\}$. However, due to the
+hexagonal structure of the lattice, only three said neighbor indexes will be
+actual nearest neighbors in the lattice. While $(i, j\pm 1)$ is always the nearest
+neighbor, the index of the nearest neighbor in the x-direction oscillates for
+each incrementing of the x- or y-coordinate. That is, the nearest neighbors \acrshort{NN} are decided as
 \begin{equation}
   \begin{aligned}
     (i + j) \ \text{is even} &\rightarrow \text{\acrshort{NN}} = \{(i-1, j), (i, j+1), (i, j-1)\}, \\
@@ -256,66 +257,64 @@ proximity of $\{(i+1, j), (i-1, j), (i, j+1), (i, j-1)\}$. However, due to the h
   \end{aligned}
   \label{eq:atom_neigh_idx}
 \end{equation}
-By consulting \cref{fig:atom_indexing} we can verify this visually, and it basically comes down to the fact whether the atom is oriented to the right or the left side in the zigzag chain.
+We can visually verify this by consulting~\cref{fig:atom_indexing}, which shows that the nearest neighbor indexes depend on whether the atom is oriented to the right or left side in the zigzag chain.
 
-\begin{figure}[H]
+\begin{figure}[h]
   \centering
   \includegraphics[width=0.7\linewidth]{figures/system/atom_indexing.pdf}
-  \caption{Graphene atom indexing}
+  \caption{Illustration of the graphene atom site indexing. The x-coordinate increment along the armchair direction (pointing to zigzag chains) while the y-coordinate increment along the zigzag direction.}
   \label{fig:atom_indexing}
 \end{figure}
 
 
-
 \subsection{Removing atoms}
-As a means to ease the formulation of the cut patterns we introduce the \textit{center element} placed in each gap of the hexagonal honeycomb structure as shown in figure \cref{fig:center_indexing}. These are not populated by any atoms but will serve as a temporary reference for the algorithmic approaches of defining a cut pattern.
+To simplify the formulation of the cut patterns, we introduce the \textit{center element} which is placed in each gap of the hexagonal honeycomb structure. This is shown in~figure~\cref{fig:center_indexing}. These are not populated by any atoms but will serve as a reference for the algorithmic approaches of defining a cut pattern.
 
-\begin{figure}[H]
+\begin{figure}[h]
   \centering
   \includegraphics[width=0.7\linewidth]{figures/system/center_indexing.pdf}
-  \caption{Graphene center indexing}
+  \caption{Illustration of the indexing for the introduced center element. The y-coordinate increment along the zigzag direction (pointing to armchair chains) while the x-coordinate increment along the armchair direction.}
   \label{fig:center_indexing}
 \end{figure}
 
-Similar to the case of the atom indexing, the nearest neighbours center elements alternate with position, this time only along the x-coordinate index. Each center element has six nearest neighbours, in clockwise
+The nearest neighbors of the center element alternate with position, similar to the atom site indexing. However, this time it is only dependent on the x-coordinate position. Each center element has six nearest neighbors, in a clockwise
 direction we can denote them: ``up'', ``upper right'', ``lower right'',
-``down'', ``lower left'', ``upper left''. The ``up'' and ``down'' is always
-accesed as $(i,j\pm 1)$, but for even $i$ the $(i+1,j)$ index corresponds to the
+``down'', ``lower left'', ``upper left''. The ``up'' and ``down'' neighbors are always accessible as $(i,j\pm 1)$. However, for even $i$ the $(i+1,j)$ index corresponds to the
 ``lower right'' neighbour while for odd $i$ this corresponds to the ``upper
-right'' neighbour. This shifting applies for all left or right oriented neighbours and the full neighbour list is illustrated in \cref{fig:center_directions}. 
+right'' neighbour. This shifting applies for all left- or right-oriented neighbors and the full neighbor list is illustrated in~\cref{fig:center_directions}. 
 
-
-\begin{figure}[H]
+\begin{figure}[h]
   \centering
   \includegraphics[width=0.7\linewidth]{figures/system/center_directions.pdf}
-  \caption{Graphene center elements directions}
+  \caption{Illustration of the center element neighbor indexes for the case when the x-coordinate $i$ is even (left) and $i$ is odd (right).}
   \label{fig:center_directions}
 \end{figure}
 
-We define a cut pattern by connecting center elements into connected paths. As
+We define a cut pattern by connecting center elements in connected paths. As
 we walk from center element to center element we remove atoms according to one of two rules 
 \begin{enumerate}
-  \item Remove intersection atoms: We remove the pair of atoms placed directly
+  \item Remove intersecting atoms: We remove the pair of atoms placed directly
   in the path we are walking. That is, when jumping to the ``up'' center
   element we remove the two upper atoms located in the local hexagon of atoms.
   This method is sensitive to the order of the center elements in the path. 
   \item Remove all surrounding atoms: We simply remove all atoms in the local
-  hexagon surrounding each center element. This method is indepdent of the
+  hexagon surrounding each center element. This method is independent of the
   ordering of center elements in the path.
 \end{enumerate}
-We notice that removing atoms using either of these rules will not garuantee an injective, one to one, mapping. The first rule, being path dependent, will more often result in a unique result. However, for both methods it is possible to construct two different paths leading to the same cut pattern as shown in the following example:
+We notice that removing atoms using either of these rules will not guarantee an injective, one-to-one, mapping. The first rule, being path dependent, will more often result in a unique result. However, for both methods, it is possible to construct two different paths leading to the same cut pattern as shown in the following example:
 \begin{align*}
   \text{Path 1:} \quad (i, j) &\rightarrow \underbrace{(i+1,j+1)}_{\text{upper right}} \rightarrow \underbrace{(i, j+1)}_{\text{up}} \rightarrow \underbrace{(i+1, j+2)}_{\text{upper right + up}} \rightarrow \underbrace{(i+1, j+1)}_{\text{upper right}} \\
   \text{Path 2:} \quad (i, j) &\rightarrow \underbrace{(i+1,j+1)}_{\text{upper right}} \rightarrow \underbrace{(i+1, j+2)}_{\text{upper right + up}} \rightarrow \underbrace{(i, j+1)}_{\text{up}}
 \end{align*}
 \hl{Illustrate the example path, because I think it is otherwise impossible to follow.}
 
-For the second rule it is even more abovious that different paths can result in the same final pattern. For instance, if we incircle a center element completely there will be no surrounding atoms left to delete when jumping to that center element. This highlights the importance of defining the atom based indexing system will yield an injective mapping for the binary cut matrix. However, using the center elements for reference makes the following definitions of the cut patterns a lot easier to design as we always can always go in the same six directions as opposed to the atom indexing system which have alternating directions for its neighbours. 
+For the second rule, it is even more obvious that different paths can result in the same final pattern. For instance, if we incircle a center element completely there will be no surrounding atoms left to remove when jumping to that center element. This highlights the motivation for defining the atom-based indexing system which yields an injective mapping between the binary matrix and the graphene lattice. However, using the center elements as a reference makes it easier to design the cut patterns since we can always go in one of the six principal directions defined by the center element neighbors. In contrast, the atom indexing system has alternating directions for its neighbors, making it more complicated to define cut patterns.
+ 
 
 \section{Kirigami patterns}
 We propose a series of kirigami inspired cut patterns for the altering of the graphene sheet. We seek inspiration from macroscale patterns that showcases a considerable amount of out of plane buckling when stretched. We choose to imitate two different designs: 1) An alternating repeating series of perpendicular cuts as shown in \cref{fig:kirigami_inspiration_a} popularly used in studies of morphable metematerials \cite{new_pop_up}. This patteren produce surface buckling with a tetrahedron (three sided pyramid) shape when stretched. 2) A more intricate pattern shown in \cref{fig:kirigami_inspiration_b} which is used commercially by Scotch\textsuperscript{TM} Cushion Lock\textsuperscript{TM} \cite{cushion_wrap} as protective wrap for items during shipping. This pattern buckles into a hexagoal honeycomb structure when stretched. In addition to the modeling of the so-called \textit{Tetrahedron} and \textit{Honeycomb} patterns we also create a series of random walk cut patterns.
 
-\begin{figure}[H]
+\begin{figure}[h]
   \centering
   \begin{subfigure}[t]{0.48\textwidth}
       \centering
@@ -348,7 +347,7 @@ We let line 1 run along the center elemnts in the direction of the
 direction between the ``down'' and ``lower right'' (``up'' and ``upper left'') center elements, corresponding to the direction $(1/\sqrt{3}, -1)$. We define variations of the pattern by the number of center elements $L_1$ and $L_2$ in line 1 and 2 respectively, together with the spacing between the lines $d$, as the tuple $(L_1, L_2, d)$. The pattern is constructed by translating the two lines to the whole sheet according to the spacing. Due to the alignment criterias of having one line point to the center of the other line we can only have odd line length. Furthermore, in order to ensure that each center element is translated to an $i$-index of similar odd or evenness, we must in practice require that $|L_2 - L_1| = 2, 6, 10, \ldots \ $. \cref{fig:pop_up} shows a visual representation of the pattern components for the $(7, 5, 2)$ patteren. 
 
 
-\begin{figure}[H]
+\begin{figure}[h]
   \centering
   \begin{subfigure}[t]{0.48\textwidth}
       \centering
@@ -370,7 +369,7 @@ direction between the ``down'' and ``lower right'' (``up'' and ``upper left'') c
 
 In addition to the three parameters $L_1, L_2, d$, the pattern is also anchored to a reference point which describes the position of line 1 and 2 before translating to the whole sheet. Due to the repeating structure of the pattern there exist a small finite number of unique reference positions. For the pattern $(7, 5, 2)$ used as an example in \cref{fig:pop_up}, there are 140 \footnote{The general formula for this number is rather complicated in comparision to the importance in this context. Thus, we exclude the formula for this calculation as the derivation is rather handwavy executed, but the number stated here is numerically backed for this specific parameter set.} unique reference points. Some additional variation of the pattern is showcased in \cref{fig:pop_up_flavors} all with a reference position in the center of the sheet. Note that a smaller sheet size is used in both \cref{fig:pop_up} and \cref{fig:pop_up_flavors} for illustrative purposes.
 
-\begin{figure}[H]
+\begin{figure}[h]
   \centering
   \includegraphics[width=\linewidth]{figures/system/pop_up_flavors.pdf}
   \caption{\hl{Sheet size used in example}}
@@ -391,7 +390,7 @@ is described in terms of the parameters: (x-width, y-width, bridge thickness,
 bridge length) which is annotated in \cref{fig:honeycomb_a} with the parameters (2, 2, 1, 5) used as an example. Some additional variations of the pattern class is showcased in \cref{fig:honeycomb_flavors}.
 
 
-\begin{figure}[H]
+\begin{figure}[h]
   \centering
   \begin{subfigure}[t]{0.48\textwidth}
       \centering
@@ -412,7 +411,7 @@ bridge length) which is annotated in \cref{fig:honeycomb_a} with the parameters 
 \end{figure}
 
 
-\begin{figure}[H]
+\begin{figure}[h]
   \centering
   \includegraphics[width=\linewidth]{figures/system/honeycomb_flavors.pdf}
   \caption{}
@@ -425,7 +424,7 @@ bridge length) which is annotated in \cref{fig:honeycomb_a} with the parameters 
 \subsection{Random walk}
 The random walk serves as a method for introducing random patterns into the dataset with the scope of populating the configuration space more broadly than achieved purely with the more systematic patterns described above. By this argument, a straightforward way to create random configurations could be achieved simply by random noise, either uniform or gaussian. However, this would often leave the sheet detached with lots of non-connected atom clusters. Intuitively, we do not find this promising for the generation of large scale organized structures which we hypothesize to be of interest. The random walk pattern generation is characterized by the parameters summarized in \cref{tab:RW_params} which will be introduced throughout the following paragraphs. 
 
-\begin{table}[H]
+\begin{table}[h]
   \begin{center}
   \caption{Parameters for the random walk generator.}
   \label{tab:RW_params}
@@ -482,7 +481,7 @@ when the distance counter hits the distance limit. The function will
 then return the final neighbor lists which are accumulated into a final output
 corresponding to a list of all sites within the minimum distance to the path.
 
-\begin{algorithm}[H]
+\begin{algorithm}[h]
   \caption{Recursive algorithm implemented as a class method to mark sites within a distance of the class attribute self.min\_dis.}
   \label{algo:walk_dis}
   \begin{algorithmic}[1]
@@ -544,7 +543,7 @@ jumping to site $i$ as
  the step destination weighted by the discrete probability distribution $p_i$. In
  \cref{fig:bias_prob} we have illustrated how a bias of different strengths impacts the probability distribution for a random walk between center elements. We can visually confirm that the bias will favorise the directions that lie closes to the bias direction. This factorization is more distinct at high bias strengths while at low strength $B\to0$ we get a uniform distribution that aligns with the default unbiased random walk. 
 
-\begin{figure}[H]
+\begin{figure}[h]
   \centering
   \begin{subfigure}[t]{0.48\textwidth}
       \centering
@@ -582,7 +581,7 @@ nearest atom neighbour indexes alternates for each increment in x or y index (se
 \end{align*}
 One way to mittigate this issue is to use the six directions from the center element walk as the common direction to ``stay or break'' from. As showcased in \cref{fig:stay_or_break}, for each center element direction (black arrows) there are two possible atom directions (red and orange arrows) that are equally close to the center element direction. The red and orange arrows represent $(i+j)$ being even or odd respectively, and we notice that these appear in pairs such that we can always determine which of the atom directions that are closest to the center element direction. Following this idea we can map each center direction to an atom direction depending on the even or oddness of the position. For $p_{\text{stay}} = 1$ this results in a garuanteed zigzag motion along the center element direction that it happens to start on. 
 
-\begin{figure}[H]
+\begin{figure}[h]
   \centering
   \includegraphics[width=0.5\linewidth]{figures/system/stay_or_break.pdf}
   \caption{\hl{Caption}}
@@ -605,7 +604,7 @@ used\footnote{In hindsight, it would have been less biased to choose a random pa
 importance for the usage of this feature in final dataset }. The population of the grid is visualized in \cref{fig:grid_start} for 1-9 walkers in total with color coding for the order of deployment. 
 
 
-\begin{figure}[H]
+\begin{figure}[h]
   \centering
   \includegraphics[width=\linewidth]{figures/system/grid_start.pdf}
   \caption{Populaiton of starting points with the centering parameter toggled on in a $14\times 18$ sheet. This is shown for 1-9 number of random walkers with the color map conveying the order of the population.}
@@ -627,7 +626,7 @@ In order to accommodate these requirements we count the number of clusters and s
 
 Some examples of the random walk patterns are illustrated in \cref{fig:RW_flavors}.
 
-\begin{figure}[H]
+\begin{figure}[h]
   \centering
   \includegraphics[width=\linewidth]{figures/system/RW_flavors.pdf}
   \caption{Some example uses of the random walking class. \hl{Give information of parameters? Henrik says Yes :D}}
