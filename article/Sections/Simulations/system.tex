@@ -1,59 +1,110 @@
-% \chapter{Defining the system}\label{chap:system}
 \chapter{Creating a graphene kirigami system}\label{chap:system}
 
-The system definition plays an essential role in the ``friction experiment'' that we are going to carry out through \acrshort{MD} simulations. The purpose of the simulations is to quantify the friction that arises when a stretched Kirigami graphene sheet slides over a substrate. Thus we aim to design the simplest possible system that allows such a measurement for different variations on Kirigami design, stretch and load.
+The system definition plays an essential role in the ``friction experiment''
+that we are going to carry out through \acrshort{MD} simulations. The purpose of
+the simulations is to quantify the friction that arises when a stretched
+Kirigami graphene sheet slides over a substrate. We aim to design the simplest
+possible system that allows for such a measurement under variations of Kirigami
+design, strain and load.
 
-For this purpose, two approaches were considered as sketched in \cref{fig:system_variations}. One approach is simply to mimic a \acrshort{FFM} type experiment where the graphene sheet is resting on a substrate and a moving body  scans across the graphene surface. This setup allows for a variety of tip designs connected to the moving body, and alternatively, the
-tip can be substituted with a flat surface making the setup resemble a
-\acrshort{SFA} experiment instead. For this setup, we would have to attach a pre-stretched sheet to the substrate and require the edges to be fixated in order to ... the stretch sustain the stretch. We would essentially regard the sheet as a part of the substrate, and the possible applications would regard to certain effects being associated constant stretch. Another approach is to have the sheet ends fixated on the moving body instead. This allows for the connection to a nanomachine design which couples the load and the stretch of the sheet. Thus, the possible applications allow for a dynamic effect with changing stretch through the loading of the sheet. While both methods serve as novel approaches with prospects of providing valuable insight into a sparsely covered field, we choose the latter option due to the increased application possibilities.
+For this purpose, two approaches were considered as sketched in
+\cref{fig:system_variations}. One approach is simply to mimic a \acrshort{FFM}
+type experiment where the graphene sheet is resting on a substrate and a moving
+body scans across the graphene surface as seen in~\cref{fig:system_variation_b}.
+This setup allows for a variety of tip designs, and we can even substitute the
+tip for a flat surface making the setup resemble a \acrshort{SFA} experiment
+instead. For this setup, we would attach a pre-stretched sheet to the substrate
+and require the edges of the sheet to be fixated on the substrate to sustain the
+stretch. Thus, the sheet and substrate would constitute the manufactured object
+and the moving body would represent the contact to the outside world. In this
+approach, the potential applications would relate to certain effects being
+associated with a constant strain value. Another approach is to have the sheet
+ends fixated on the moving body instead as shown in
+\cref{fig:system_variation_a}. This switches the roles of the involved parts as
+we now view the moving body and the sheet as the manufactured object
+while contact with the substrate represents the outside world. This allows
+for the introduction of a nanomachine design that converts the load to a strain of the of the sheet. Thus, the possible applications allow for a dynamic effect
+with changing strain through the loading of the sheet. While both methods serve
+as novel approaches with prospects of providing valuable insight into a sparsely
+covered field, we choose the latter option (\cref{fig:system_variation_a}) due to the increased application possibilities.
 
-We do not attempt to model the nanomachine explicitly, but we will use the conceptual idea of a coupling between load and stretch to motivate our study. Our system of choice consists of a 2D graphene sheet with locked ends, mimicking the attachment to a moving body, and a 3D silicon bulk substrate. 
+We do not attempt to model the nanomachine explicitly, but we will use the
+conceptual idea of a coupling between load and strain to motivate our study. Hence our system of choice consists of a 2D graphene sheet with locked ends, mimicking
+the attachment to a moving body, and a 3D silicon bulk substrate. 
 
 
-
-% This would allow for an investigation of the frictional behavior as a different amount of pre-stretching can be used between simulations. If any interesting behavior is found at a certain stretch amount, a possible application would call for the attachment of a pre-stretched sheet as a surface coating. 
-
-% Another option is to attach the graphene sheet to the moving body instead and introduce some sort of nanomachine that couples the normal load with a stretching of the sheet. This gives more design room to utilize any stretch-related friction effects during loading. 
-
-
-
-\begin{figure}[H]
+\begin{figure}[h]
   \centering
-  \includegraphics[width=0.8\linewidth]{figures/system/system_variations.png}
-  \caption{\hl{TMP} System variations}
+  \begin{subfigure}[b]{0.49\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/system/system_variations_a.png}
+    \caption{}
+    \label{fig:system_variation_a}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.49\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/system/system_variations_b.png}
+    \caption{}
+    \label{fig:system_variation_b}
+  \end{subfigure}
+  \hfill
+  \caption{Conceptual visualization of two different system setups considered. The wiggly line represents the Kirigami sheet. (a) The chosen setup with a manufactured object connected to the sheet. The contact with the substrate represents the contact with the outside world. (b) An alternative setup where the sheet is fixed in the substrate constituting the manufactured object. The contact with the outside world is then represented through an indention by objects with various shapes and sizes. }
   \label{fig:system_variations}
 \end{figure}
 
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.8\linewidth]{figures/system/system_variations.png}
+%   \caption{\hl{TMP} System variations}
+%   \label{fig:system_variations}
+% \end{figure}
+
+
+
+
+
+% Note that the rigid parts on both sides of the
+% sheet is then considered as a single rigid object even though they are
+% physically seperated. This means that all force interactions concerning the
+% rigid parts will be applied as a common average making them move in total
+% synchronization. 
 
 
 \section{Region definitions}
-We subdivide the two main parts of the simmulation, the sheet and the substrate, into specific regions according their functionality in the \acrshort{MD} simmulations. For the sheet, we denote a subsection of the ends, with respect to the sliding direction, as so-called \textit{pull blocks}, which is reserved for the application of normal load, stretching and
-dragging of the sheet, and for applying the thermostat. The remaining \textit{inner
-sheet} is left for the kirigami cuts and are simulated as an $NVE$ ensemble. The pull blocks are equally split between a thermostat part and a rigid part. The rigid part is however thermolized during the initial relaxation period but made rigid for the final duration of the simulation. Note that the rigid parts on both sides of the sheet is then considered as a single rigid object even though
-they are physically seperated. This means that all force interactions concerning the rigid parts will be applied as a common average making them move in total synchronization. The substrate is equally divided into three parts: The
-\textit{upper layers} ($NVE$) responsible for the sheet-substrate interaction, the
-\textit{middle layers} being a thermostat ($NVT$), and the \textit{bottom layers} being frozen, made rigid and fixed, in the initial lattice structure to ensure that the substrate stays in place. In \cref{fig:system} the system is displayed
-with colors matching the three distinct roles:
+We subdivide the two main parts of the system, the sheet and the substrate, into
+specific regions according to their functionality in the \acrshort{MD}
+simulations. For the sheet, we denote a subsection of the ends, with respect to
+the sliding direction, as so-called \textit{pull blocks}, which is reserved for
+the application of normal load, stretching, dragging of the sheet, and for
+applying the thermostat. The remaining \textit{inner sheet} is left for the
+Kirigami cuts and is simulated as an $NVE$ ensemble. This partitioning is motivated by the idea that we want to minimize direct manipulations on the inner sheet, given its presumed critical role in governing friction behavior. The pull blocks are
+equally split between a thermostat part and a rigid part. It should be noted that the rigidness of the pull blocks is enforced only after a relaxation period to ensure that the crystal structure is fully relaxed. This is further explained in~\cref{sec:num_proc}. The substrate is equally divided into three parts: The
+\textit{upper layers} ($NVE$) responsible for the sheet-substrate interaction,
+the \textit{middle layers} being a thermostat ($NVT$), and the \textit{bottom
+layers} being frozen, made rigid and fixed, in the initial lattice structure to
+ensure that the substrate stays in place. \cref{fig:system} show the system is
+displayed with colors matching the three distinct roles:
 \begin{enumerate}
-  \item Red: $NVE$ parts which is governing the frictional behaviour of interest.
-  \item Green: Thermostats ($NVT$) sourrounding the $NVE$ parts in order to modify the temperature without making disturbing changes to the interaction of the sheet and substrate.
-  \item Blue: Parts that are initially or eventually turned in to rigid objects. For the substrate this refers to an addtionally fixation as well.
+  \item Red: $NVE$ parts which are governing the frictional behavior of interest.
+  \item Green: Thermostats ($NVT$) surrounding the $NVE$ parts in order to modify the temperature without making disturbing changes to the interaction of the sheet and substrate.
+  \item Blue: Parts that are initially or eventually turned into rigid objects. For the substrate, this refers to an additional fixation as well.
 \end{enumerate}
-The full sheet is given a size $\sim 130 \times \SI{163}{\text{Å}}$ while the substrate is scaled accordingly to the sheet which is further specified in \cref{sec:substrate}. For an expected stretch of 200\% the total system size is roughly 55k atoms. The specific distribution is shown in \cref{tab:system_count} along with the spatial x-y-measures in \cref{tab:sheet_dim}.
+The full sheet is given a size $\sim 130 \times \SI{163}{\text{Å}}$ while the substrate is scaled accordingly to the sheet which is further specified in~\cref{sec:substrate}. For an expected strain of 200\% the total system size is roughly \num{55e3} atoms. The specific distribution of atoms is shown in \cref{tab:system_count} along with the spatial x-y-measures in \cref{tab:sheet_dim}. An example of a strained sheet is shown in~\cref{fig:kirigami_stretch}
 
 
-\begin{figure}[H]
+\begin{figure}[h]
   \centering
-  \begin{subfigure}[b]{0.80\textwidth}
+  \begin{subfigure}[b]{0.70\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/system/system_sideview.png}
       \caption{Side view showing sheet on top of the substrate.}
       \label{fig:sideview}
   \end{subfigure}
   \hfill
-  \begin{subfigure}[b]{0.80\textwidth}
+  \begin{subfigure}[b]{0.70\textwidth}
       \centering
-      \includegraphics[width=\textwidth]{figures/system/system_topview.png}
+      \includegraphics[width=\textwidth]{figures/system/system_topview_annotated.png}
       \caption{Top view showing only the sheet.}
       \label{fig:topview}
   \end{subfigure}
@@ -63,10 +114,17 @@ The full sheet is given a size $\sim 130 \times \SI{163}{\text{Å}}$ while the s
 \end{figure}
 
 
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.9\linewidth]{figures/system/hon_stretch.png}
+  \caption{Stretched Kirigami sheet against a substrate. The substrate is excluded from the image for better visability. The pattern used is the Honeycomb $(2,2,1,5)$ (see \cref{chap:system}) at a 100\% strain level.}
+  \label{fig:kirigami_stretch}
+\end{figure}
 
-\begin{table}[H]
+
+\begin{table}[h]
   \begin{center}
-  \caption{Specification of the spatial size of the system for the x-y-dimensions with a substrate scaled for an expected stretch of 200\%. The first column denotes the size relative to the full sheet size $x_S \times y_S$, while the second column denotes the corresponding length in Å.}
+  \caption{Specification of the spatial size of the system for the x-y-dimensions with a substrate scaled for an expected sheet strain of 200\%. The first column denotes the size relative to the full sheet size $x_S \times y_S$, while the second column denotes the corresponding length in Å.}
   \label{tab:sheet_dim}
   \begin{tabular}{ | l | r@{}l | r@{}l | c |} \hline
     \textbf{Region} & \multicolumn{2}{c|}{Dim} & \multicolumn{2}{c|}{Dim
@@ -81,9 +139,9 @@ The full sheet is given a size $\sim 130 \times \SI{163}{\text{Å}}$ while the s
 
 
 
-\begin{table}[H]
+\begin{table}[h]
   \begin{center}
-  \caption{Specification of the system size in number of atoms for various system regions. These numbers corresponds with the case of no cuts applied to the sheet and a substrate scaled for the expected stretch of 200 \%.}
+  \caption{Specification of the system size regarding the number of atoms for various system regions. These numbers correspond with the case of no cuts applied to the sheet and a substrate scaled for the expected stretch of 200\%.}
   \label{tab:system_count}
   \begin{tabular}{ |c?{0.3mm} c | c | c | c | c | c |} \hline
     \textbf{Region} & \textbf{Total}  & Sub region & Sub total & \textbf{NVE} &
@@ -101,7 +159,7 @@ The full sheet is given a size $\sim 130 \times \SI{163}{\text{Å}}$ while the s
 \end{table}
 
 
-\section{Numerical procedure}
+\section{Numerical procedure}\label{sec:num_proc}
 After implementing the initial configuration to the system we first need to let the system relax and reach a stable equilibrium state. This involves an adjustment to the system temperature and the sheet-substrate distance. We then stretch the sheet to the desired length before applying normal load the pull blocks. The full numerical procedure can be arranged into the following steps. Some steps have been given a default duration denoted in parentheses in units of ps, \num{e-12} seconds.
 \begin{enumerate}
   \item \textbf{Relaxation} (\SI{15}{ps}): The sheet and substrate are relaxed for 
