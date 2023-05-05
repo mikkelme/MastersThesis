@@ -618,33 +618,55 @@ One way to mitigate this issue is to use the six directions from the center elem
   \label{fig:stay_or_break}
 \end{figure}
 
-The \textit{stay or break} feature is still subject to previously defined rules. For instance, in the case where the preferred site is not available, the walker will either terminate when going there, or the preferred site is removed from the neighbor list when \textit{avoid invalid} is set to true. In the latter case, the walker will be forced to break out of its direction and follow the new direction that it happens to choose.
+The \textit{stay or break} feature is still subject to previously defined rules.
+For instance, in the case where the preferred site is not available, the walker
+will either terminate when going there, or the preferred site is removed from
+the neighbor list when \textit{avoid invalid} is set to true. In the latter
+case, the walker will be forced to break out of its direction and follow the new
+direction that it happens to choose.
 
 
 \subsubsection{Deployment schemes} % Grid start, Centering, RN6
 By default, each random walker is given a uniform random starting point among
-the non-visited availble sites left on the sheet. This includes any modifications in relation to the minimum distance parameter. By setting the \textit{grid start} parameter to true, the starting points are instead predefined on an evenly
-spaced grid. That is, the sheet is subdivided into the least amount of squares
-that will accomodate a space for each starting point. 1 walker leads to a
-$1\times 1$ partition, $\{2,3,4\}$ walkers lead to a $2\times 2$ partition,
-$\{5,6,7,8,9\}$ walker lead to a $3\times 3$ partition and so on. For each partition square the starting point is placed as central as possible. The lower left partition square is then choosen as a default starting place for the first
-walker and the remaining sites are filled according to the order that
-maximizes the minimum distance between a new starting point and the ones already
-used\footnote{In hindsight, it would have been less biased to choose a random partition square, but we do not consider this to be of great
-importance for the usage of this feature in final dataset }. The population of the grid is visualized in \cref{fig:grid_start} for 1-9 walkers in total with color coding for the order of deployment. 
+the non-visited available sites left on the sheet. This includes any
+modifications in relation to the minimum distance parameter. By setting the
+\textit{grid start} parameter to true, the starting points are instead
+predefined on an evenly spaced grid. That is, the sheet is subdivided into the
+least amount of squares that will accommodate space for each starting point. 1
+walker leads to a $1\times 1$ partition, $\{2,3,4\}$ walkers lead to a $2\times
+2$ partition, $\{5,6,7,8,9\}$ walker lead to a $3\times 3$ partition and so on.
+For each partition square, the starting point is placed as centrally as
+possible. The lower left partition square is then chosen as a default starting
+place for the first walker and the remaining sites are filled according to the
+order that maximizes the minimum distance between a new starting point and the
+ones already used\footnote{In hindsight, it would have been less biased to
+choose a random partition square as the starting one, but we do not consider
+this to be of great importance for the usage of this feature in final dataset}.
+An example of the deployment is shown in~\cref{fig:grid_start}.
 
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=\linewidth]{figures/system/grid_start.pdf}
-  \caption{Populaiton of starting points with the centering parameter toggled on in a $14\times 18$ sheet. This is shown for 1-9 number of random walkers with the color map conveying the order of the population.}
+  \caption{The figure illustrates the distribution of starting points when the \textit{grid start} parameter is turned on for a $14\times 18$ sheet, for varying numbers of deployed random walkers ranging from 1 to 9. The color map is used to indicate the order in which the walkers were deployed.}
   \label{fig:grid_start}
 \end{figure}
 
-The \textit{centering} parameter let us relocate the path of the random walker such that the path center of mass alligns better with the starting point. When toggled on, the path is moved in the direction defined by the center of mass and the starting point for which the closest valid relocation on the direct translation line is choosen. This can be used in combination with the grid start and the bias parameter to make rather ordered configurations. In addition, the \textit{RN6} parameter can be used to update the bias direction to one of the six directions of the center element walk for each new walker deployed. This lets us create configurations like the one shown in \cref{fig:RW_flavors}\textcolor{red!50!black}{b}. 
+
+The \textit{centering} parameter lets us relocate the path of the random walker
+such that the path center of mass gets closer to the starting point. When
+toggled on, the path is moved in the direction defined by the center of mass and
+the starting point for which the closest valid relocation on the direct
+translation line is chosen. This can be used in combination with the
+\textit{grid start} and the \textit{bias parameter} to make rather ordered
+configurations. In addition, the \textit{RN6} parameter can be used to update
+the bias direction to one of the six center element directions for each new
+walker deployed. This lets us create configurations like the one shown
+in~\cref{fig:RW_flavors}\textcolor{red!50!black}{b}. 
 
 
 \subsubsection{Validity}
+
 The simulation procedure requires the sheet to be fully attatched, non ruptured, which can be summarized as the following requirements. 
 \begin{enumerate}
   \item There exist only a single cluster on the sheet. We define a cluster as the set of atoms which can all be reached through nearest neighbour walking on the cluster.
@@ -652,6 +674,7 @@ The simulation procedure requires the sheet to be fully attatched, non ruptured,
 \end{enumerate}
 In order to accommodate these requirements we count the number of clusters and search for a spanning cluster after all walkers have terminated. If the requirements are not met we simply rerun the random walk from scratch. This is done according to \textit{avoid clustering} parameter which takes integer values corresponding to the number of times to repeat this process. If the requirements are not met during any of those reruns the non-spanning clusters are simply removed. In the case of no spanning cluster the configuration is skipped. This crude scheme was later reinvented as a more refined repair scheme which alters the sheet by the intention of performing the least amount of changes (addition or subtraction of atoms) in order to meet the attatchment requirements. This was done as a part of the accelerated search procedure and hence it was not utilized in the creation of the random walk dataset. 
 
+\hl{Talk about the new repair algorithm}
 \subsubsection{Random walk examples}
 
 Some examples of the random walk patterns are illustrated in \cref{fig:RW_flavors}.
@@ -662,3 +685,38 @@ Some examples of the random walk patterns are illustrated in \cref{fig:RW_flavor
   \caption{Some example uses of the random walking class. \hl{Give information of parameters? Henrik says Yes :D}}
   \label{fig:RW_flavors}
 \end{figure}
+
+%
+%
+% Working here
+%
+%
+
+
+% \begin{table}[H]
+%   \begin{center}
+%   \caption{RW flavors}
+%   \label{tab:RW_flavors}
+%   \begin{tabular}{ |c|c|c|c|c|c|c|} \hline
+%   Fig. num. 
+%   Num. walks 
+%   Max Steps 
+%   Min dis 
+%   Bias 
+%   center elem 
+%   avoid invalid 
+%   RN6 
+%   grid start 
+%   centering 
+%   stay or break 
+%    avoid clustering 
+%    periodic \\ \hline
+%   % a  num_walks = 25, max_steps = 15, min_dis = 0, bias = [direc['up_right'], 100], center_elem = False,  avoid_unvalid = False,  RN6 = False,  grid_start = True,  centering = True,  stay_or_break = 0,  avoid_clustering = 10,  periodic = True)]
+%   % b  num_walks = 25, max_steps = 15, min_dis = 0, bias = [direc['up_right'], 100], center_elem = False,  avoid_unvalid = False,  RN6 = True,  grid_start = True,  centering = True,  stay_or_break = 0,  avoid_clustering = 10,  periodic = True)]
+%   % c  num_walks = 20, max_steps = 30, min_dis = 4, bias = [(0,0), 0], center_elem = False,  avoid_unvalid = True,  RN6 = True,  grid_start = False,  centering = False,  stay_or_break = 0.9,  avoid_clustering = 10,  periodic = True)]
+%   % d  num_walks = 30, max_steps = 40, min_dis = 4, bias = [(0,0), 0], center_elem = False,  avoid_unvalid = True,  RN6 = False,  grid_start = False,  centering = False,  stay_or_break = 0,  avoid_clustering = 10,  periodic = True)]
+%   % e  num_walks = 20, max_steps = 30, min_dis = 4, bias = [direc['down_right'], 1.2], center_elem = False,  avoid_unvalid = True,  RN6 = False,  grid_start = False,  centering = False,  stay_or_break = 0,  avoid_clustering = 10,  periodic = True)]
+%   % f  num_walks = 32, max_steps = 30, min_dis = 4, bias = [direc['down_left'], 1.2], center_elem = 'full', avoid_unvalid = True,  RN6 = False,  grid_start = False,  centering = False,  stay_or_break = 0,  avoid_clustering = 10,  periodic = True)]
+% \end{tabular}
+% \end{center}
+% \end{table}
