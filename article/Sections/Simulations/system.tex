@@ -95,29 +95,29 @@ The full sheet is given a size $\sim 130 \times \SI{163}{\text{Å}}$ while the s
 
 \begin{figure}[h]
   \centering
-  \begin{subfigure}[b]{0.70\textwidth}
+  \begin{subfigure}[b]{0.60\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/system/system_sideview.png}
-      \caption{Side view showing sheet on top of the substrate.}
+      \caption{}
       \label{fig:sideview}
   \end{subfigure}
   \hfill
-  \begin{subfigure}[b]{0.70\textwidth}
+  \begin{subfigure}[b]{0.60\textwidth}
       \centering
-      \includegraphics[width=\textwidth]{figures/system/system_topview_annotated.png}
-      \caption{Top view showing only the sheet.}
+      \includegraphics[width=\textwidth]{figures/system/system_topview_anno.png}
+      \caption{}
       \label{fig:topview}
   \end{subfigure}
   \hfill
-     \caption{System configuration colorized to indicate NVE parts (red), thermostat parts (green) and rigid parts (blue).}
+     \caption{System configuration colorized to indicate NVE parts (red), thermostat parts (green) and rigid parts (blue). (a) Side view showing the sheet on top of the substrate. (b) Top view showing only the sheet}
      \label{fig:system}
 \end{figure}
 
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.9\linewidth]{figures/system/hon_stretch.png}
-  \caption{Stretched Kirigami sheet against a substrate. The substrate is excluded from the image for better visability. The pattern used is the Honeycomb $(2,2,1,5)$ (see \cref{chap:system}) at a 100\% strain level.}
+  \includegraphics[width=0.7\linewidth]{figures/system/hon_stretch.png}
+  \caption{Stretched Kirigami sheet against a substrate. The substrate is excluded from the image for better visibility. The atoms are coloredized to indicate NVE parts (red), thermostat parts (green) and rigid parts (blue). The pattern used is the Honeycomb $(2,2,1,5)$ (see \cref{chap:system}) at a 100\% strain level.}
   \label{fig:kirigami_stretch}
 \end{figure}
 
@@ -160,23 +160,18 @@ The full sheet is given a size $\sim 130 \times \SI{163}{\text{Å}}$ while the s
 
 
 \section{Numerical procedure}\label{sec:num_proc}
-After implementing the initial configuration to the system we first need to let the system relax and reach a stable equilibrium state. This involves an adjustment to the system temperature and the sheet-substrate distance. We then stretch the sheet to the desired length before applying normal load the pull blocks. The full numerical procedure can be arranged into the following steps. Some steps have been given a default duration denoted in parentheses in units of ps, \num{e-12} seconds.
+Following the system setup as described previously, the next step involves letting the system relax and reach a stable equilibrium. During this phase, slight modifications to the sheet-substrate distance and lattice spacing take place, both of which are influenced by the thermostat's target temperature. We then stretch the sheet to the desired length, apply normal load and finally slide it along the substrate. The full numerical procedure can be arranged into the following steps. Some steps have been given a default duration denoted in parentheses in units of ps, \num{e-12} seconds.
 \begin{enumerate}
   \item \textbf{Relaxation} (\SI{15}{ps}): The sheet and substrate are relaxed for 
   \SI{15}{ps} after being added in their crystalline form with a separation distance of \SI{3}{\text{Å}}. Given that the equilibrium separation distance will vary with temperature, this value is based on an average estimate suiting our temperature range of interest. In order to avoid any sheet drift we constrain it with the use of three hard spring forces with a spring constant
-  $\SI{e5}{eV/\text{Å}^2} \sim \SI{1.6e6}{N/m}$: One spring attaches the sheet center of mass (\acrshort{CM}) to its original position, preventing \acrshort{CM} drift, while the remaining two springs are attached to the pull blocks \acrshort{CM}, to prevent rotation. In principle, it would be sufficient to fixate only one of the pull blocks, but we fixate both for the sake of symmetry. During the relaxation phase, we consider the pull blocks to be rigid with respect to the z-direction only (perpendicular to the sheet). That is, all the forces in the z-direction are summed up and applied as a uniform external force, while the pull blocks are free to expand and contract in the x-y-plane. This feature is introduced to allow the sheet pull blocks to readjust the lattice spacing according to the temperature of the system. For the following phases, the pull blocks are made truly rigid with respect to all directions, and the spring forces are terminated. 
-  \item \textbf{Stretch}: The sheet is stretched by seperating the two opposing rigid parts of the pullblock at constant velocity until the desired stretch amount is met. The duration of this phase is thus governed by the  \textit{stretch speed} and \textit{stretch amount} parameters. 
-  \item \textbf{Pause} (\SI{5}{ps}): The sheet is relaxed for \SI{5}{ps} to ensure that the sheet is stable and equilibrized after the applied stretch deformation. 
-  \item \textbf{Normal load} (\SI{5}{ps}): A normal load is applied to the rigid
-  parts of the pull blocks. Initially a viscous damping force, $F = -\gamma \vec{v}$, is added to the sheet to resist the rapid acceleraction of the sheet and prevent a hard impact between the sheet and substrate. The damping coefficient is set to $\gamma = \SI{8e-4}{nN/(m/s)}$ and terminated after 0.5 ps which was found to be suitable for the extreme load cases of our intended range. The remaining 4.5 ps is simply devoted for further relaxation. 
+  $\SI{e5}{eV/\text{Å}^2} \sim \SI{1.6e6}{N/m}$: One spring attaches the sheet center of mass (\acrshort{CM}) to its original position, preventing \acrshort{CM} drift, while the remaining two springs are attached to the pull blocks \acrshort{CM}, to prevent rotation. In principle, fixing only one of the pull blocks would suffice, but we choose to fixate both to maintain symmetry. During the relaxation phase, we consider the pull blocks to be rigid with respect to the z-direction only (perpendicular to the sheet). That is, all the forces in the z-direction are summed up and applied as a uniform external force, while the pull blocks are free to expand and contract in the x-y-plane. This feature is incorporated to allow the sheet pull blocks to readjust the lattice spacing according to the temperature of the system. For the following steps, the pull blocks are made truly rigid with respect to all directions, and the spring forces are terminated. 
+  \item \textbf{Stretch}: To stretch the sheet, the two opposing rigid parts of the pull blocks are moved apart at a constant velocity until the desired strain level is achieved. The duration of this phase is determined by the values of the \textit{stretch speed} and \textit{stretch amount} parameters.
+  \item \textbf{Pause} (\SI{5}{ps}): The sheet is relaxed for \SI{5}{ps} to ensure that the sheet is stable and equilibrated after the applied strain deformation. 
+  \item \textbf{Normal load} (\SI{5}{ps}): The pull blocks are subjected to a uniformly applied load in the negative z-direction, thereby pushing the sheet perpendicularly into the substrate. Initially a viscous damping force, $F = -\gamma \vec{v}$ with damping factor $\gamma$ and velocity $v$, is added to resist rapid acceleration of the sheet and prevent a hard impact between the sheet and substrate. The damping coefficient is set to $\gamma = \SI{8e-4}{nN/(m/s)}$ and terminated after \SI{0.5}{ps} which was found to be suitable for the extreme load cases of our intended range. The remaining \SI{4.5}{ps} is devoted to further relaxation in order to reach a sheet-substrate distance equilibrium.
   \item \textbf{Sliding}: A virtual atom is introduced into the simulation which
-  exclusively interacts with the rigid parts of the pull blocks through a spring force
-  with variable spring constant $K$ in the x-y-plane. The z-direction is not
-  affected by the spring force and is purely governed by the balancing forces of the normal load and the normal response from the sheet-substrate interaction. The
-  virtual atom is immediately given a constant velocity, in accordance with
-  the \textit{sliding speed} parameter, which makes the sliding force increase linearly, $F_{\textit{slide}} \propto Kv_{\text{slide}}t$, with sliding speed. An infinite spring constant can also be enforced for which the spring is omitted and the pull blocks are moved rigidly with a constant speed according to the sliding speed.
+  exclusively interacts with the rigid parts of the pull blocks through a spring force with spring constant $K$ in the x-y-plane. The force in the z-direction is not influenced by the spring force and is instead governed by the equilibrium between the normal load and the normal response from the sheet-substrate interaction. The virtual atom is immediately given a constant velocity, given by the \textit{sliding speed} parameter. This results in an initial linear increase in sliding force proportional to sliding speed and spring constant $F_{\textit{slide}} \propto Kv_{\text{slide}}t$. An infinite spring constant can also be enforced for which the spring is omitted and the pull blocks are moved rigidly with a constant speed.
 \end{enumerate}
-To limit the complexity of our prediction task, we want to consider systems without wear. To make sure that no wear is taking place for the sheet, we monitor the nearest neighbors for each atom throughout the simulation. At the initial timestep the three nearest neighbors, sitting at a distance \SI{1.42}{\text{Å}}, of all graphene atoms are recorded. If any of these nearest neighbors exceeds a threshold distance of \SI{4}{\text{Å}}, indicating a bond breakage, this is marked as a rupture and we halt the simulation. The substrate was proven to be way more resistant to wear than the sheet, and by running a few test simulations of high load and sliding speed we confirmed visually that no wear is occurring.
+To limit the complexity of the friction behavior we want to consider systems without wear. To make sure that no wear is taking place for the sheet, we monitor the nearest neighbors for each atom throughout the simulation. At the initial timestep the three nearest neighbors, sitting at a distance \SI{1.42}{\text{Å}}, of all graphene atoms are recorded. If any of these nearest neighbors exceeds a threshold distance of \SI{4}{\text{Å}}, indicating a bond breakage, this is marked as a rupture and we halt the simulation. By conducting several test simulations involving high loads and sliding speeds, we have visually confirmed that no wear occurs in the substrate, which demonstrates significantly greater wear resistance than the sheet. Therefore, we do not need to monitor the substrate for any signs of wear.
 
 
 \section{Setting up the substrate}\label{sec:substrate}
@@ -189,22 +184,20 @@ dimensions are chosen to match the dimensions of the sheet. That is, we define a
 margin between the sheet edge and the substrate edge for the x- and y-direction
 respectively. Since we use periodic boundary conditions a too small margin would
 result in the sheet edges interacting with themselves through the boundary. The
-absolute lower limit for the margin choice is thus half the cut-off distance for
+absolute lower limit for the margin choice is half the cut-off distance for
 the Tersoff potential, governing the graphene sheet interaction, at $R + D =
-2.1$ Å. However, due to fluctuations in the sheet, we cannot set the margin too
-close to that limit. Additionally, we must take into account the buckling of the
-sheet as it is stretched, which might induce an expansion in the x-direction for
-certain configurations. We choose a x-margin of 20 Å which provides $2\cdot
+\SI{2.1}{\text{Å}}$. However, due to fluctuations in the sheet, we cannot set the margin too
+close to that limit. In addition, we need to consider the buckling of the sheet as it is stretched, which might cause an expansion in the x-direction for certain configurations. We choose an x-margin of \SI{20}{\text{Å}} which provides $2\cdot
 \SI{20}{\text{Å}} - \SI{2.1}{\text{Å}} = \SI{37.9}{\text{Å}}$ of additional
 spacing with respect to the absolute lower limit. By looking over the simulation
 result visually we confirm that this leaves more than enough room in the cases
 of extreme buckling. For the y-direction the rigid parts of the pull-blocks
-moves a certain distance based on the stretch value exclusively, and we define
+moves a certain distance based on the strain value exclusively, and we define
 the y-margin based on the remaining distance to the edge after stretching.
 However, as the sheet travels through the periodic boundaries in the y-direction
 when sliding, we want to add some additional spacing through the y-margin in
 order to let the substrate surface relax before interacting with the sheet a
-second time. We choose a y-margin of 15 Å for which the preferred sliding speed
+second time. We choose a y-margin of \SI{15}{\text{Å}} for which the preferred sliding speed
 of $\SI{20}{m/s} = \SI{2}{\text{Å}/ps}$ gives \SI{15}{ps} of relaxation time
 between encounters with the sheet, similar to the initial relaxation time. 
 
