@@ -312,7 +312,7 @@ For the second rule, it is even more obvious that different paths can result in 
  
 
 \section{Kirigami patterns}
-We propose a series of kirigami inspired cut patterns for the altering of the graphene sheet. We seek inspiration from macroscale patterns that showcases a considerable amount of out of plane buckling when stretched. We choose to imitate two different designs: 1) An alternating repeating series of perpendicular cuts as shown in \cref{fig:kirigami_inspiration_a} popularly used in studies of morphable metematerials \cite{new_pop_up}. This patteren produce surface buckling with a tetrahedron (three sided pyramid) shape when stretched. 2) A more intricate pattern shown in \cref{fig:kirigami_inspiration_b} which is used commercially by Scotch\textsuperscript{TM} Cushion Lock\textsuperscript{TM} \cite{cushion_wrap} as protective wrap for items during shipping. This pattern buckles into a hexagoal honeycomb structure when stretched. In addition to the modeling of the so-called \textit{Tetrahedron} and \textit{Honeycomb} patterns we also create a series of random walk cut patterns.
+We propose a series of Kirigami-inspired cut patterns for the altering of the graphene sheet. We seek inspiration from macroscale patterns that showcases a considerable amount of out-of-plane buckling when stretched. We choose to imitate two different designs: 1) An alternating repeating series of perpendicular cuts as shown in~\cref{fig:kirigami_inspiration_a} popularly used in studies of morphable metematerials~\cite{new_pop_up}. This pattern produces surface buckling with a tetrahedron (three-sided pyramid) shape when stretched. 2) A more intricate pattern shown in~\cref{fig:kirigami_inspiration_b} which is used commercially by Scotch\textsuperscript{TM} Cushion Lock\textsuperscript{TM} \cite{cushion_wrap} as protective wrap for items during shipping. This pattern buckles into a hexagonal honeycomb structure when stretched. In addition to the modeling of the so-called \textit{Tetrahedron} and \textit{Honeycomb} patterns, we also create a series of random walk patterns.
 
 \begin{figure}[h]
   \centering
@@ -330,21 +330,32 @@ We propose a series of kirigami inspired cut patterns for the altering of the gr
       \label{fig:kirigami_inspiration_b}
   \end{subfigure}
   \hfill
-     \caption{Macroscale kirigami cut patterns used as inspiraton for the nanoscale implementation. (a) Tetrahedron: Alternating perpendicular cuts producing a tetrahedron shaped surface buckling when stretched \cite{new_pop_up}. (b) Honeycomb: Scotch\textsuperscript{TM} Cushion Lock\textsuperscript{TM} \cite{cushion_wrap} producing a honeycomb shaped surface buckling when stretched.}
+     \caption{Macroscale kirigami cut patterns used as inspiration for the nanoscale implementation. (a) Tetrahedron: Alternating perpendicular cuts producing a tetrahedron shaped surface buckling when stretched. Reprinted from~\cite{new_pop_up}. (b) Honeycomb: Scotch\textsuperscript{TM} Cushion Lock\textsuperscript{TM} \cite{cushion_wrap} producing a honeycomb-shaped surface buckling when stretched.}
      \label{fig:kirigami_inspiration}
 \end{figure}
 
 \subsection{Tetrahedron}
 The \textit{Tetrahedron} pattern is defined in terms of center elements for
-which all atoms sourrounding a given center element are removed. The pattern is
-characterized by two straight cuts, denoted line 1 and line 2, arranged
-perpendicular to each other. This is done in such a way such that one line aligns with the center of the
-other line and with a given spacing in between. This is illustarted in \cref{fig:pop_up}. In order to achieve
+which all atoms surrounding a given center element are removed. The pattern
+consists of two straight cuts, referred to as line 1 and line 2, that are
+arranged perpendicular to each other. The lines are positioned such that the
+center of one line aligns with the other line, and with a given spacing in
+between. This is illustrated in~\cref{fig:pop_up}. In order to achieve
 perpendicular cuts we cannot rely purely on the six principal directions
-corresponding to the center element neighbours which is spaced by 60$^\circ$.
-We let line 1 run along the center elemnts in the direction of the
-``upper right'' (and ``lower left'') center elements  while line 2 goes in the
-direction between the ``down'' and ``lower right'' (``up'' and ``upper left'') center elements, corresponding to the direction $(1/\sqrt{3}, -1)$. We define variations of the pattern by the number of center elements $L_1$ and $L_2$ in line 1 and 2 respectively, together with the spacing between the lines $d$, as the tuple $(L_1, L_2, d)$. The pattern is constructed by translating the two lines to the whole sheet according to the spacing. Due to the alignment criterias of having one line point to the center of the other line we can only have odd line length. Furthermore, in order to ensure that each center element is translated to an $i$-index of similar odd or evenness, we must in practice require that $|L_2 - L_1| = 2, 6, 10, \ldots \ $. \cref{fig:pop_up} shows a visual representation of the pattern components for the $(7, 5, 2)$ patteren. 
+corresponding to the center element neighbors which are spaced by 60$^\circ$. We
+let line 1 run along the center elements in the direction of the ``upper right''
+(and ``lower left'') center elements, while line 2 goes in the direction between
+the ``down'' and ``lower right'' (``up'' and ``upper left'') center elements,
+corresponding to the direction $(1/\sqrt{3}, -1)$. We define variations of the
+pattern by the number of center elements $L_1$ and $L_2$ in line 1 and 2
+respectively, together with the spacing between the lines $d$, as the tuple
+$(L_1, L_2, d)$. The pattern is constructed by translating the two lines to the
+whole sheet according to the spacing. Due to the alignment criteria of having
+one line point to the center of the other line, we can only allow an odd line
+length. Furthermore, in order to ensure that each center element is translated
+to an $i$-index of similar odd or evenness, we must in practice require that
+$|L_2 - L_1| = 2, 6, 10, \ldots \ $. \cref{fig:pop_up} shows a visual
+representation of the pattern components for the $(7, 5, 2)$ patteren. 
 
 
 \begin{figure}[h]
@@ -363,31 +374,50 @@ direction between the ``down'' and ``lower right'' (``up'' and ``upper left'') c
       \label{fig:pop_up_b}
   \end{subfigure}
   \hfill
-     \caption{Visual representation of the tetrahedron pattern consisting of two perpendicular lines, line 1 and line 2, of length $L_1$ and $L_2$ respectively with spacing $d$. This example used $(L_1, L_2, d) = (7, 5, 2)$. $(a)$ Highlight of the atoms removed. Line 1 is shown in green and line 2 in orange, with lighter colors for the translated variations, and the spacing is shown in light blue. $(b)$ The sheet after applying the cut pattern where the grey circles denote atoms and the transparent white denotes removed atoms. The small blue circles show the center elements for reference. \hl{Sheet size used in example}}
+     \caption{Visual representation of the Tetrahedron pattern consisting of two perpendicular lines, line 1 and line 2, of length $L_1$ and $L_2$ respectively, with spacing $d$. This example uses $(L_1, L_2, d) = (7, 5, 2)$ and a sheet matrix size $40 \times 50$ corresponding to 2000 atom sites and an approximate sheet size of $84 \times \SI{77}{\text{Å}}$. The non-filled circles represent the possible atom site positions and the blue dots are the center elements. (a) Highlights the removed atoms in the pattern. Line 1 is shown in green and line 2 in orange, with lighter colors for the translated variations. The spacing is indicated in light blue. (b) The sheet after applying the cut pattern with grey circles denoting present atoms.}
      \label{fig:pop_up}
 \end{figure}
 
-In addition to the three parameters $L_1, L_2, d$, the pattern is also anchored to a reference point which describes the position of line 1 and 2 before translating to the whole sheet. Due to the repeating structure of the pattern there exist a small finite number of unique reference positions. For the pattern $(7, 5, 2)$ used as an example in \cref{fig:pop_up}, there are 140 \footnote{The general formula for this number is rather complicated in comparision to the importance in this context. Thus, we exclude the formula for this calculation as the derivation is rather handwavy executed, but the number stated here is numerically backed for this specific parameter set.} unique reference points. Some additional variation of the pattern is showcased in \cref{fig:pop_up_flavors} all with a reference position in the center of the sheet. Note that a smaller sheet size is used in both \cref{fig:pop_up} and \cref{fig:pop_up_flavors} for illustrative purposes.
+In addition to the three parameters $L_1, L_2, d$, the pattern is also anchored
+to a reference point that describes the position of line 1 and line 2 before
+being translated to span the sheet. Due to the repeating structure of the
+pattern, there exist a small finite number of unique reference positions. For
+the pattern $(7, 5, 2)$ used as an example in~\cref{fig:pop_up}, there are
+140\footnote{The general formula for calculating this number is rather
+complicated in comparison to its importance in this context. Therefore, we have
+omitted the formula and only provide the numerically backed result for the
+specific parameter set. The derivation of the formula was also deemed not to be
+rigorous enough.} unique reference points. Some additional variation of the
+pattern is showcased in~\cref{fig:pop_up_flavors} each with a reference position
+at the center of the sheet. Note that a smaller sheet size is used in
+both~\cref{fig:pop_up} and ~\cref{fig:pop_up_flavors} for illustrative purposes.
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=\linewidth]{figures/system/pop_up_flavors.pdf}
-  \caption{\hl{Sheet size used in example}}
+  \caption{Example of different Tetrahedron cut pattern variations. The specific parameters are noted as titles and all of the patterns use the center of the sheet as a reference position. The circles in the figure represent atom sites, where grey-filled circles indicate the presence of atoms and transparent circles indicate removed atoms. The blue dots in the figure indicate the center elements The sheet matrix size is $40 \times 80$ corresponding to 3200 atom sites and an approximate sheet size of $84 \times \SI{123}{\text{Å}}$.}
   \label{fig:pop_up_flavors}
 \end{figure}
 
 
-
 \subsection{Honeycomb}
 The \textit{Honeycomb} pattern is defined, similarly to the Tetrahedron pattern,
-in terms of the center elements for which all sourrounding atoms are removed. The Honeycomb pattern is build from a repeating series of
-cuts remniscient of the roman numeral one rotated by 90$^{\circ}$
-(\rotatebox[origin=c]{90}{\MakeUppercase{\romannumeral 1}}). For a given spacing these are put next to each other in the x-direction, \rotatebox[origin=c]{90}{\MakeUppercase{\romannumeral 1}}
+in terms of the center elements for which all surrounding atoms are removed. The
+Honeycomb pattern is built from a repeating series of cuts reminiscent of the
+Roman numeral one rotated by 90$^{\circ}$
+(\rotatebox[origin=c]{90}{\MakeUppercase{\romannumeral 1}}). For a given spacing
+these are put next to each other in the x-direction,
+\rotatebox[origin=c]{90}{\MakeUppercase{\romannumeral 1}}
 \rotatebox[origin=c]{90}{\MakeUppercase{\romannumeral 1}}
 \rotatebox[origin=c]{90}{\MakeUppercase{\romannumeral 1}}, to achieve a row
-where only a thin \textit{bridge} in between is left to connect the sheet vertically in the y-direction. By placing multiple rows along the y-direction with alternating x-offsett we get the class of honeycomb patterns as visualized in \cref{fig:honeycomb}. The pattern
-is described in terms of the parameters: (x-width, y-width, bridge thickness,
-bridge length) which is annotated in \cref{fig:honeycomb_a} with the parameters (2, 2, 1, 5) used as an example. Some additional variations of the pattern class is showcased in \cref{fig:honeycomb_flavors}.
+where only a thin \textit{bridge} in between is left to connect the sheet
+vertically in the y-direction. By placing multiple rows along the y-direction
+with alternating x-offset we get the class of honeycomb patterns as visualized
+in~\cref{fig:honeycomb}. The pattern is described in terms of the parameters:
+(x-width, y-width, bridge thickness, bridge length) which is annotated
+in~\cref{fig:honeycomb_a} with the parameters (2, 2, 1, 5) used as an example.
+Some additional variations of the pattern class are showcased
+in~\cref{fig:honeycomb_flavors}.
 
 
 \begin{figure}[h]
@@ -406,7 +436,7 @@ bridge length) which is annotated in \cref{fig:honeycomb_a} with the parameters 
       \label{fig:honeycomb_b}
   \end{subfigure}
   \hfill
-     \caption{}
+     \caption{Visual representation of the Honeycomb pattern defined by the (x-width, y-width, bridge thickness, bridge length) parameters as annotated on the figure. This example uses the parameters $(2,2,1,5)$ and a sheet matrix size $40 \times 50$ corresponding to 2000 atom sites and an approximate sheet size of $84 \times \SI{77}{\text{Å}}$. The non-filled circles represent the possible atom site positions and the blue dots are the center elements. (a) Highlights the removed atoms in the pattern with annotations for the four defining parameters. (b) The sheet after applying the cut pattern with grey circles denoting present atoms. }
      \label{fig:honeycomb}
 \end{figure}
 
@@ -414,15 +444,15 @@ bridge length) which is annotated in \cref{fig:honeycomb_a} with the parameters 
 \begin{figure}[h]
   \centering
   \includegraphics[width=\linewidth]{figures/system/honeycomb_flavors.pdf}
-  \caption{}
+  \caption{Example of different Honeycomb cut pattern variations. The specific parameters are noted as titles and all of the patterns use the center of the sheet as a reference position. The circles in the figure represent atom sites, where grey-filled circles indicate the presence of atoms and transparent circles indicate removed atoms. The blue dots in the figure indicate the center elements. 
+  The sheet matrix size is $40 \times 80$ corresponding to 3200 atom sites and an approximate sheet size of $84 \times \SI{123}{\text{Å}}$.}
   \label{fig:honeycomb_flavors}
 \end{figure}
 
 
 
-
 \subsection{Random walk}
-The random walk serves as a method for introducing random patterns into the dataset with the scope of populating the configuration space more broadly than achieved purely with the more systematic patterns described above. By this argument, a straightforward way to create random configurations could be achieved simply by random noise, either uniform or gaussian. However, this would often leave the sheet detached with lots of non-connected atom clusters. Intuitively, we do not find this promising for the generation of large scale organized structures which we hypothesize to be of interest. The random walk pattern generation is characterized by the parameters summarized in \cref{tab:RW_params} which will be introduced throughout the following paragraphs. 
+The random walk serves as a method for generating Kirigami patterns with ranomized features. The motivation for doing this is to create an ensemble of patterns that populate the configuration space more broadly than the more systematic patterns described earlier. This is thought to be important for the quality of the dataset used for machine learning. By this argument, a straightforward way to create random configurations could be achieved simply by random noise, either uniform or Gaussian. However, this would often leave the sheet detached with lots of non-connected atom clusters. Intuitively, we do not find this promising for the generation of large-scale structures which we hypothesize to be of interest. The random walk pattern generation is characterized by the parameters summarized in ~\cref{tab:RW_params} which will be introduced throughout the following paragraphs. 
 
 \begin{table}[h]
   \begin{center}
@@ -433,9 +463,9 @@ The random walk serves as a method for introducing random patterns into the data
   Num.\ walkers ($M$) & Integer $\ge$ 1 & Number of random walks to be initiated on the sheet (one at a time). \\ \hline
   Max.\ steps ($S$)  & Integer $\ge$ 1 &The maximum steps allowed for any random walker. \\ \hline
   Min.\ distance  & Integer $\ge$ 0 &The minimum distance required between any future paths and the previous paths in terms of the shortest walking distance in between. \\ \hline
-  Bias  & (Direction, strength $\ge0$) & Bias direction and strength defining the discrete probability for the chocie of the next site. \\ \hline
-  Connection  & Atoms / Center elements & Whether to walk between atom sites or center elements (removing all adjecent atoms). \\ \hline
-  Avoid invalid  & True/False & Whether to remove already visited sites from the neighbour list before picking the next site. This prevents jumping to already visited sites and lowers the likelihood of early termination.  \\ \hline
+  Bias  & (direction, strength $\ge0$) & Bias direction and strength defining the discrete probability for the choice of the next site. \\ \hline
+  Connection  & Atoms / Center elements & Whether to walk between atom sites or center elements removing all adjacent atoms. \\ \hline
+  Avoid invalid  & True/False & Whether to remove already visited sites from the neighbor list before picking the next site. This prevents jumping to already visited sites and lowers the likelihood of early termination.  \\ \hline
   Stay or break  & $p = [0,1]$ & Probability that the walker will maintain its direction for the next step. \\ \hline
   Periodic  & True/False & Whether to use periodic boundary conditions on all four sides. \\ \hline
   Avoid clustering  & Integer $\ge$ 0 & Amount of times to restart the whole random walk generation in order to arrive at a non-detached configuration. If no valid configuration is reached after this amount of tries, the non-spanning clusters are removed.\\ \hline
@@ -450,25 +480,29 @@ The random walk serves as a method for introducing random patterns into the data
 For an uncut sheet, we deploy $M$ random walkers, one at a time, and let them walk
 for a maximum number of $S$ steps. We can either let the walker travel between
 atom sites, removing the atoms in the path as it goes, or between center
-elements, removing all surrounding atoms. This is managed by setting the \textit{connection} parameter to either \textit{atom} or \textit{center elements}. The method of removing only the intersecting atoms between center elements was also incorporated, but we ended up not using it due to plenty of other interesting options. Nonetheless, we will always remove a site once visited such that the
-walker itself, or any other walkers, cannot use this site again. This corresponds
-with the property of a self-avoiding random walk, but it furthermore constraint
-the walkers not to visit any path previously visited by other walkers which we might denote ``other avoiding'' then. By default, the walker has an equal chance of choosing any of its adjacent
-neighbours for the next step, i.e.\ we draw the next step from a discrete
-uniform distribution. Optionally we can use periodic boundary conditions, by setting the parameter \textit{periodic} to true or false, allowing neighboring sites to be connected
-through the edge in both the x and y-direction. When traveling on atom sites
+elements, removing all surrounding atoms. This is managed by setting the \textit{connection} parameter to either \textit{atom} or \textit{center elements}. The method of removing only the intersecting atoms between center elements were also incorporated, but we ended up not using it due to plenty of other interesting options. Nonetheless, we will always remove a site once visited such that the
+walker itself, or any other walkers, cannot use this site again. This leads to a self-avoiding random walk, meaning that the walker does not cross its own path. However, it furthermore constrains the walkers to avoid the path taken by any previous walker, and thus we might denote this property ``other avoiding''. By default, the walker has an equal chance of choosing any of its adjacent
+neighbors for the next step, i.e.\ we draw the next step from a discrete
+uniform distribution. Optionally we can use periodic boundary conditions, by setting the parameter \textit{periodic} to true or false, allowing neighboring sites to be connected through the edge in both the x and y-direction. When traveling on atom sites
 this ensures that we have three neighbor options for the next step while traveling on the
 center elements this gives six neighbor options. If the walker happens to arrive at
 an already visited site the walk is terminated early. Optionally, we can choose
 to remove any neighboring sites already visited from the neighbor list and choose uniformly between the remaining options instead. This is done by setting the parameter \textit{avoid invalid} to true. This prolongs the walking distance, but the walker is still able to find itself in a situation where no neighboring sites are
-available. Note that it cannot backtrack its own path either, and in such a case
+available. Note that walker are not allowed to backtrack its own path either, and thus in such a case
 the walk will be terminated despite the setting of \textit{avoid invalid}.
 
 
 \subsubsection{Spacing of walking paths} % minimum distance
-In order to control the spacing between the paths of the various walkers we
-implement a so-called \textit{minimum distance} parameter, taking integer values $\ge 0$, describing the spacing required between paths in terms of the least amount of
-steps. When a walker has ended its walk, either by early termination or hitting
+To control the spacing between the paths of the various walkers, we implement a so-called \textit{minimum distance} parameter taking integer values $\ge 0$. This parameter describes the minimum spacing required between paths in terms of the least amount of walking steps.
+
+
+%
+%
+% Working here
+%
+%
+
+When a walker has ended its walk, either by early termination or hitting
 the maximum limits of steps, all sites within walking distance of the minimum
 distance is marked as visited, although they are not removed from the sheet.
 This prevents any subsequent walkers to visit those sites in their walk
