@@ -770,7 +770,7 @@ if __name__ == "__main__":
     # spring(path, save = False)
     # dt(path, save = False)
     
-    # multi_stretch(path, save = False)
+    multi_stretch(path, save = False)
     # multi_FN(path, save = False)
     # multi_area(path, save = False)
     
@@ -779,5 +779,5 @@ if __name__ == "__main__":
     # contact_vs_time(path, save = False)
     # vaccum_normal_buckling(path, save = False)
     
-    computational_cost(save = True)
+    # computational_cost(save = False)
     plt.show()

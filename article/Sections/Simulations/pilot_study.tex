@@ -733,52 +733,49 @@ lower values were computationally expensive. The sliding speed was chosen primar
 So far, we have carried out a general analysis of the system behavior under the influence of various simulation parameters. This lays the foundation for the remaining study as we now shift our intention towards the friction dependence of strain and load.
 
 \subsection{Pressure reference for normal load}
-We consider a load range of 0.1--\SI{10}{nN} which coincide with the general investigated range in other \acrshort{MD} studies~\cite{li_evolving_2016, zhu_study_2018, zhu_study_2018}. In order to relate the magnitude of this load we provide a short calculation of the corresponding pressure. We will use the pressure underneath a stiletto-heeled shoe as a high-pressure reference from our macroscale perspective. The diameter of a stiletto-heeled
+We consider a load range of 0.1--\SI{10}{nN} which coincides with the general investigated range in other \acrshort{MD} studies~\cite{li_evolving_2016, zhu_study_2018, zhu_study_2018}. In order to relate the magnitude of this load we provide a short calculation of the corresponding pressure. We will use the pressure underneath a stiletto-heeled shoe as a high-pressure reference from a macroscale perspective. The diameter of a stiletto-heeled
 shoe can be less than \SI{1}{cm}~\cite{stiletto_1}, and hence an \SI{80}{kg} man\footnote{Yes, a man can certainly
-wear stiletto heels.} standing on one stiletto heel, with all the weight on the heel, will correspond to a pressure
+wear stiletto heels.} standing on one stiletto heel, with all the weight on the heel, will generate a pressure
 \begin{align*}
   P = \frac{F}{A} = \frac{mg}{r^2\pi} = \frac{\SI{80}{kg} \cdot \SI{9.8}{\frac{m}{s^2}}}{(\frac{\SI{e-2}{m}}{2})^2 \pi} = \SI{9.98}{MPa}.
 \end{align*} 
 The fact that the pressure under a stiletto heel can get this high, actually greater than the pressure under an elephant foot, is an interesting realization in itself that is often used in
-introductory physics courses~\cite{stiletto_2}, but this also serves as a reasonable upper bound for human executed pressure. With
-a full sheet area of $\sim\SI{21e3}{{\text{Å}}^2}$ our load range of 0.1--\SI{10}{nN} corresponds to a pressure of 0.47--\SI{47}{MPa} which relates nicely to our macroscale reference. This pressure might be incompatible with various industrial purposes, but with no specific application in mind, this serves as a decent reference point. Notice, that if we consider a human foot with area \SI{113}{cm^2}~\cite{stiletto_3} the pressure drops to a mere \SI{70}{kPa} corresponding to only $\sim \SI{0.01}{nN}$.
+introductory physics courses~\cite{stiletto_2}. Nonetheless, this serves as a reasonable upper bound for human executed pressure. With
+a full sheet area of $\sim \SI{212}{nm^2}$ our load range of 0.1--\SI{10}{nN} corresponds to a pressure of 0.47--\SI{47}{MPa} which relates reasonably to our macroscale reference. This pressure might be incompatible with various industrial purposes, but with no specific application in mind, this serves as a decent reference point. Notice, that if we consider a human foot with the area \SI{113}{cm^2}~\cite{stiletto_3} the pressure drops to a mere \SI{70}{kPa} corresponding to only $\sim \SI{0.01}{nN}$.
 
 
 \subsection{Strain dependency}\label{sec:stretch_dependency}
-We consider the effects of stretching the sheet using the non-cut, Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$ sheet as used so far. For each configuration, we run a rupture test where the given sheet is stretched under zero load, but still under the influence of adhesion from the substrate. The rupture strain is then recorded, and multiple new simulations are initiated with strain values between zero and the rupture strain. For the sampling of the stretch values in the available range, we use a pseudo-uniform distribution, meaning that we divide the given interval into equal segments and pick a value from each segment by a uniform
-distribution. This is due to numerical limitations in LAMMPS\footnote{In LAMMPS, we sample the various strain values by storing restart files during the straining of the sheet. The restart values are stored at specific timesteps governed by a LAMMPS variable. Such variables allow for a vector of uniform randomly chosen values, but unfortunately, we are not able to sort the vector for ascending values. This will lead to the script waiting to store each restart file according to the timesteps in the unsorted vector. As soon as the next timestep value is less than the current timestep the program will stop producing restart files and thus skip most of them. However, by first defining a series of intervals we can draw a uniform number for each interval without getting into trouble.}, but we find that this gives evenly spaced values which also carry some randomness. For the load we use 0.1, 1 and \SI{10}{nN}.
+We consider the effects of straining the sheet using the non-cut, Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$ sheet as used so far. For each configuration, we run a rupture test where the given sheet is strained under zero load, but still under the influence of adhesion from the substrate. The rupture strain is then recorded, and multiple new simulations are initiated with strain values between zero and the rupture strain. For the sampling of the strain values in the available range, we use a pseudo-uniform distribution, meaning that we divide the given interval into equal segments and pick a value from each segment by a uniform
+distribution. This is due to numerical limitations in LAMMPS\footnote{In LAMMPS, we sample the various strain values by storing restart files during the straining of the sheet. The restart values are stored at specific timesteps governed by a LAMMPS variable. Such variables allow for a vector of uniform randomly chosen values, but unfortunately, we are not able to sort the vector for ascending values. This will lead to the script waiting to store the restart file according to the next timestep in the unsorted vector. As soon as the next timestep value is less than the current timestep the program will stop producing restart files and thus skip most of them. However, by first defining a series of intervals we can draw a uniform number for each interval without getting into trouble.}, but we find that this gives evenly spaced values which also carry some randomness. For the load we use 0.1, 1 and \SI{10}{nN}.
 
-First, we aim to reproduce the contact investigation from~\cref{fig:contact_vs_stretch}. We quantify the relative contact as described in~\cref{sec:out-of-plane_buckling}, but we convert this into a single metric for a given simulation by considering the average of the last 50\% of data points, similar
+First, we aim to reproduce the contact investigation from~\cref{fig:contact_vs_stretch}. We quantify the relative contact as described in~\cref{sec:out-of-plane_buckling}, but we convert this into a single metric for a given simulation by considering the average of the last 50\% of the data points, similar
 to what we have done for the mean friction. We also adopt a similar method for quantifying the error (see~\cref{sec:fric_metrics}). The results are shown
 in~\cref{fig:contact_vs_stretch} where we observe a significant decrease in
-relative contact for the kirigami patterns which qualitatively agrees with the non-loaded continuous stretch simulation in~\cref{fig:contact_vs_stretch}. This result implies that the change in contact is not governed by a momentum effect during stretching, as each simulation now keeps the strain constant throughout the simulation. The absolute error for the mean rel.\ contact was generally quite low on the order of $0.01$ for all configurations. 
-
-From an asperity theory point of view, this reduction in contact is theorized to
-induce a similar reduction in friction. However, when considering the kinetic
-friction in~\cref{fig:multi_stretch_mean_fric} we find that this is not the
-case. For the Tetrahedron and Honeycomb patterns, we find that the friction
-initially increases with a decreasing contact area. Yet, these are not simply
-inversely proportional as the friction force suddenly dips down and up again, in
-the strain range of 0.08--0.11 for the Tetrahedron and 0.73--1.05 for the
-Honeycomb pattern. When considering the non-cut sheet, we find that both the
+relative contact with strain for the kirigami patterns. This agrees qualitatively with the non-loaded continuous strain simulations in~\cref{fig:contact_vs_stretch}. This result implies that the change in contact is not governed by a momentum effect during stretching, as each simulation now keeps a constant strain throughout. 
+From an asperity theory point of view, the reduction in contact area is
+theorized to induce a similar reduction in friction. However, when considering
+the kinetic friction in~\cref{fig:multi_stretch_mean_fric} we find that this is
+not the case. For the Tetrahedron and Honeycomb patterns, we find that the
+friction initially increases with a decreasing contact area. Yet, these are not
+simply inversely proportional as the friction force suddenly dips down and up
+again, in the strain range of 0.08--0.11 for the Tetrahedron and 0.73--1.05 for
+the Honeycomb pattern. When considering the non-cut sheet, we find that both the
 contact area and friction remain seemingly unaffected by strain. This indicates
 that the contact area is not a dominating mechanism for friction in our system,
-but the underlying mechanism might make for a correlation between a decreasing
-contact area and the non-linear friction-strain curve observed here. The latter
-point can be supported by the fact that the contact-strain and friction-strain
-curve both show signs of a discontinuous jump around a strain of 0.32. Since the
-non-cut sheet exhibits a flat friction-strain profile we cannot attribute the
-behavior to an increased tension either. The friction effect of tension of a
-graphene sheet has been investigated by Zhang et al.~\cite{zhang_tuning_2019}.
-However, they report a decreasing friction with tension which qualitatively
-contradicts our observation as the direction of the effect is opposite. Instead,
-we might point to a commensurability effect or perhaps a change in the
+although the non-linear friction-strain curve might be correlated with a
+decrease in contact area through an underlying mechanism related to the out-of-plane buckling. This can be supported
+by the fact that the contact-strain and friction-strain curves for the Honeycomb
+pattern both show signs of a discontinuous jump around a strain of 0.32. Since
+the non-cut sheet exhibits a flat friction-strain profile we cannot attribute
+the behavior to an increased tension either. Zhang et
+al.~\cite{zhang_tuning_2019} reported that the friction for a graphene sheet
+decreases with tension which qualitatively contradicts our observation and
+supports that tension is not a governing mechanism. Instead,
+we might attribute the results to a commensurability effect or perhaps a change in the
 structural stiffness which is reported as an important feature by
-\cite{Kim_2012}. We observe that the initial friction value of the non-strained
-sheet varies across configurations, with the initial friction increasing from
-the non-cut sheet, through the Tetrahedron sheet, to the Honeycomb sheet. This
-is more evident from the parameter investigation from~\cref{fig:main_param}, but the size of this effect is within a range on the order of $[0.01, 0.1]$ nN.
-We notice also that the two orders of magnitude increase in normal load did not
+\cite{Kim_2012}. 
+
+We notice that the initial friction value of the non-strained sheet varies among different configurations, with the non-cut sheet exhibiting the lowest initial friction value ($\sim \SI{7e-4}{nN}$), the Tetrahedron sheet having a slightly higher value ($\sim \SI{0.03}{nN}$), and the Honeycomb sheet exhibiting the highest ($\sim \SI{0.07}{nN}$). This is more clearly shown in the parameter investigation in~\cref{fig:main_param}. The magnitude of this effect is generally one order of magnitude lower than the strain-induced friction effect. We notice also that the two orders of magnitude increase in normal load did not
 make a significant difference in the results. The estimated absolute error
 marked by a shaded area in~\cref{fig:multi_stretch_mean_fric} were fairly low
 for both friction on the order \SI{e-3}{nN} and relative contact on the order of
@@ -801,7 +798,7 @@ for both friction on the order \SI{e-3}{nN} and relative contact on the order of
       \label{fig:multi_stretch_mean_fric}
   \end{subfigure}
   \hfill
-     \caption{Average relative contact and average friction for multiple simulations, consisting of 30 stretch values sampled from a pseudo uniform distribution between 0 and the rupture point in combination with loads 0.1, 1 and \SI{10}{nN}, for each of the configurations: non-cut, Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$. The average is taken over the last half of the sliding phase. The red shade denotes the stretch range where ruptures accoured during sliding while the black-dotted line represent the rupture point in the no load rupture test. (a) The average relative contact defined as the relative number of atoms within a contact threshold of 4 Å to the substarte. The absolute error is on the order 0.01 (b) The average mean friction force parallel to the sliding direction. The absolute error for the mean friction is on the order 0.001--\SI{0.01}{nN}. \hl{Mention error for contact being on the order e-4--e-5}}
+     \caption{Average relative contact and average friction for multiple simulations, consisting of 30 strain values sampled from a pseudo uniform distribution between 0 and the rupture strain in combination with loads 0.1, 1 and \SI{10}{nN}, for each of the configurations: non-cut, Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$. The average is taken over the last half of the sliding phase, and the shaded area connecting the dots linearly indicates the absolute error. The red shade denotes the strain range where ruptures occurred during sliding while the black-dotted line represents the rupture point in the non-loaded rupture test. (a) The average relative contact defined as the relative number of atoms within a contact threshold of \SI{4}{\text{Å}} to the substrate. The absolute error is generally on the order \num{e-4}. (b) The average mean friction force parallel to the sliding direction. The absolute error for the mean friction is on the order \SI{e-3}{nN}.}
      \label{fig:multi_stretch}
 \end{figure}
 
@@ -809,14 +806,11 @@ By considering the increase in friction from zero strain towards the first peak
 of the friction-strain curve we find that the Tetrahedron pattern exhibits a
 relative friction increase of $\sim 27.7$ while the Honeycomb pattern exhibits a
 relative increase of $\sim 22.4$. This is in itself a remarkable result, but
-considering that the friction drops almost as dramatically afterward makes for
-an even more unexpected behavior. For the Tetrahedron sheet the friction drops by
+considering that the friction drops almost as dramatically afterward is even more unexpected. For the Tetrahedron pattern, the friction drops by
 $\sim \SI{0.51}{nN}$ during an increased strain $\Delta \varepsilon \sim 0.04$
-while Honeycomb drops $\sim\SI{0.98}{nN}$ during a strain increase of $\Delta \varepsilon \sim 0.36$. These results are promising for the aim of demonstrating a negative friction coefficient for a system with coupled load and stretch. We will discuss this further at the end of this chapter in~\cref{sec:neg_prospects}.
+while for the Honeycomb pattern the friction drops $\sim\SI{0.98}{nN}$ during a strain increase of $\Delta \varepsilon \sim 0.36$. These results are promising for the aim of demonstrating a negative friction coefficient for a system with coupled load and strain. We will discuss this further at the end of this chapter in~\cref{sec:neg_prospects}.
 
-\hl{Compare figure} \cref{fig:contact_vs_stretch} \hl{to that of figure} \cref{fig:multi_stretch_contact} \hl{where multiple simulations constitute the stretch-contact curve.}
 
-\hl{Be sure to mention the independent effect from Kirigami sheet without strain as this is mentioned in the hypothesis in the summary}
 
 % get a relative friction increase and increase vs. stretch ratios as described in \cref{tab:first_peak_stretch}. While the honeycomb force increase towards the first peak is approximately linear the popup exhibits seemingly exponential growth which yield a slope on the order $\sim \SI{30}{nN}$. 
 
