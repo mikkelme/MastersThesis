@@ -3,7 +3,17 @@ Building upon the discoveries of the Pilot Study~\cref{chap:pilot_study}, we wil
 
 
 \section{Generating the dataset}
-We aim to create a dataset that contains an extended series of Kirigami design configurations based on the pattern generation methods developed in~\cref{chap:system} for which we will vary the strain and load for each configuration. For each configuration, we sample 15 pseudo uniform strain values (see~\cref{sec:stretch_dependency}) between zero and the rupture strain according to the rupture test. Since the normal force did not prove to be dominant in the friction description we only sample 3 normal force values per configuration, uniformly sampled in the range $[0.1, 10]$ nN. In total, this gives $3\times 15 = 45$ data points for each configuration. For the remaining parameters, we use the
+We aim to create a dataset that contains an extended series of Kirigami design configurations based on the pattern generation methods developed in~\cref{chap:system} for which we will vary the strain and load for each configuration. For each configuration, we sample 15 pseudo uniform strain values
+
+
+For the sampling of the strain values in the available range, we use a pseudo-uniform distribution, meaning that we divide the given interval into equal segments and pick a value from each segment by a uniform
+distribution \hl{No this is first in the creation of the dataset... FIX THIs}. This is due to numerical limitations in LAMMPS\footnote{In LAMMPS, we sample the various strain values by storing restart files during the straining of the sheet. The restart values are stored at specific timesteps governed by a LAMMPS variable. Such variables allow for a vector of uniform randomly chosen values, but unfortunately, we are not able to sort the vector for ascending values. This will lead to the script waiting to store the restart file according to the next timestep in the unsorted vector. As soon as the next timestep value is less than the current timestep the program will stop producing restart files and thus skip most of them. However, by first defining a series of intervals we can draw a uniform number for each interval without getting into trouble.}, but we find that this gives evenly spaced values which also carry some randomness. For the load we use 0.1, 1 and \SI{10}{nN}.
+
+
+
+
+
+(see~\cref{sec:stretch_dependency}) between zero and the rupture strain according to the rupture test. Since the normal force did not prove to be dominant in the friction description we only sample 3 normal force values per configuration, uniformly sampled in the range $[0.1, 10]$ nN. In total, this gives $3\times 15 = 45$ data points for each configuration. For the remaining parameters, we use the
 values presented in the pilot study (see~\cref{tab:final_param}). We are mainly
 concerned with the mean friction and whether the sheet ruptures during the simulation. However, we also include the maximum friction, the relative contact, the rupture strain (from the rupture test) and the porosity (void fraction) in the dataset. We generate 68 configurations of the Tetrahedron pattern type, 45 of the Honeycomb type and 100 of the Random walk type. For the Tetrahedron and Honeycomb patterns, we choose a random reference position that results in translation of the patterns. A summary of the dataset is given in~\cref{tab:dataset_summary} while all configurations are shown visually in~\cref{sec:dataset_conf}. The Tetrahedron and Honeycomb parameters are chosen to
 provide additional variations of the configurations evaluated in~\cref{chap:pilot_study} which exhibited interesting properties. The Random

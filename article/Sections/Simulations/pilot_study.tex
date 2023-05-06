@@ -745,10 +745,7 @@ a full sheet area of $\sim \SI{212}{nm^2}$ our load range of 0.1--\SI{10}{nN} co
 
 
 \subsection{Strain dependency}\label{sec:stretch_dependency}
-We consider the effects of straining the sheet using the non-cut, Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$ sheet as used so far. For each configuration, we run a rupture test where the given sheet is strained under zero load, but still under the influence of adhesion from the substrate. The rupture strain is then recorded, and multiple new simulations are initiated with strain values between zero and the rupture strain. For the sampling of the strain values in the available range, we use a pseudo-uniform distribution, meaning that we divide the given interval into equal segments and pick a value from each segment by a uniform
-distribution. This is due to numerical limitations in LAMMPS\footnote{In LAMMPS, we sample the various strain values by storing restart files during the straining of the sheet. The restart values are stored at specific timesteps governed by a LAMMPS variable. Such variables allow for a vector of uniform randomly chosen values, but unfortunately, we are not able to sort the vector for ascending values. This will lead to the script waiting to store the restart file according to the next timestep in the unsorted vector. As soon as the next timestep value is less than the current timestep the program will stop producing restart files and thus skip most of them. However, by first defining a series of intervals we can draw a uniform number for each interval without getting into trouble.}, but we find that this gives evenly spaced values which also carry some randomness. For the load we use 0.1, 1 and \SI{10}{nN}.
-
-First, we aim to reproduce the contact investigation from~\cref{fig:contact_vs_stretch}. We quantify the relative contact as described in~\cref{sec:out-of-plane_buckling}, but we convert this into a single metric for a given simulation by considering the average of the last 50\% of the data points, similar
+We consider the effects of stretching the sheet using the non-cut, Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$ sheet as used so far. For each configuration, we run a rupture test where the given sheet is strained under zero load, but still under the influence of adhesion from the substrate. The rupture strain is then recorded, and multiple new simulations are initiated with strain values between zero and the rupture strain. For the sampling of the strain values, we use uniformly spaced values between zero and the rupture strain. First, we aim to reproduce the contact investigation from~\cref{fig:contact_vs_stretch}. We quantify the relative contact as described in~\cref{sec:out-of-plane_buckling}, but we convert this into a single metric for a given simulation by considering the average of the last 50\% of the data points, similar
 to what we have done for the mean friction. We also adopt a similar method for quantifying the error (see~\cref{sec:fric_metrics}). The results are shown
 in~\cref{fig:contact_vs_stretch} where we observe a significant decrease in
 relative contact with strain for the kirigami patterns. This agrees qualitatively with the non-loaded continuous strain simulations in~\cref{fig:contact_vs_stretch}. This result implies that the change in contact is not governed by a momentum effect during stretching, as each simulation now keeps a constant strain throughout. 
@@ -798,7 +795,19 @@ for both friction on the order \SI{e-3}{nN} and relative contact on the order of
       \label{fig:multi_stretch_mean_fric}
   \end{subfigure}
   \hfill
-     \caption{Average relative contact and average friction for multiple simulations, consisting of 30 strain values sampled from a pseudo uniform distribution between 0 and the rupture strain in combination with loads 0.1, 1 and \SI{10}{nN}, for each of the configurations: non-cut, Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$. The average is taken over the last half of the sliding phase, and the shaded area connecting the dots linearly indicates the absolute error. The red shade denotes the strain range where ruptures occurred during sliding while the black-dotted line represents the rupture point in the non-loaded rupture test. (a) The average relative contact defined as the relative number of atoms within a contact threshold of \SI{4}{\text{Å}} to the substrate. The absolute error is generally on the order \num{e-4}. (b) The average mean friction force parallel to the sliding direction. The absolute error for the mean friction is on the order \SI{e-3}{nN}.}
+     \caption{Mean relative contact and mean friction for multiple simulations,
+     consisting of 30 strain values uniformly spaced 0 and the rupture strain in combination with loads 0.1, 1 and
+     \SI{10}{nN}, for each of the configurations: non-cut, Tetrahedron $(7,5,1)$
+     and Honeycomb $(2,2,1,5)$. The average is taken over the last half of the
+     sliding phase, and the shaded area connecting the dots linearly indicates
+     the absolute error. The red shade denotes the strain range where ruptures
+     occurred during sliding while the black-dotted line represents the rupture
+     point in the non-loaded rupture test. (a) The average relative contact
+     defined as the relative number of atoms within a contact threshold of
+     \SI{4}{\text{Å}} to the substrate. The absolute error is generally on the
+     order \num{e-4}. (b) The average mean friction force parallel to the
+     sliding direction. The absolute error for the mean friction is on the order
+     \SI{e-3}{nN}.}
      \label{fig:multi_stretch}
 \end{figure}
 
@@ -812,25 +821,8 @@ while for the Honeycomb pattern the friction drops $\sim\SI{0.98}{nN}$ during a 
 
 
 
-% get a relative friction increase and increase vs. stretch ratios as described in \cref{tab:first_peak_stretch}. While the honeycomb force increase towards the first peak is approximately linear the popup exhibits seemingly exponential growth which yield a slope on the order $\sim \SI{30}{nN}$. 
-
-% \begin{table}[H]
-%   \begin{center}
-%   \caption{(stretch, kinetic friction) coordinates from \cref{fig:multi_stretch_mean_fric} at start and the first peak respectively used to approximate the relative increase in friction force and the ratio for friction increaese vs. stretch for sait range. In practice  the latter ratio denotes the slope of a forced linear trend. }
-%   \label{tab:first_peak_stretch}
-%   \begin{tabular}{ | c | c | c | c | c |} \hline
-%   Configuration & Start & First peak & Relative increase & Friction force vs. stretch ratio [nN]  \\ \hline
-%   Popup & $\sim (0, 0.03)$ & $\sim(0.082, 0.83)$ & 27.7 & 9.76  \\ \hline
-%   Honeycomb & $\sim (0, 0.07)$ &  $\sim (0.728, 1.57)$ & 22.4 & 2.06 \\ \hline
-%   \end{tabular}
-%   \end{center}
-% \end{table}
-
-% Additionally, we notice that booth the popup and honeycomb also exhibits stretch ranges where the kinetic friction force decrease with increasing stretch. Qualitatively we assign the slope to be on the same order of magnitude as those towrds the first peak. This is useful for the prospect of taking advantage of this phenonama as we can essentially achieve booth higher and lower friction for increasing stretch for different starting points. 
-
-
 \subsection{Load dependency}\label{sec:load_dependency}
-From the investigation of the stretch dependency we saw that increasing the normal load from 0.1 to \SI{10}{nN} did not make a considerable impact on the friction in comparison to the effect associated with strain. One special feature of our system is that we only apply load to the pull blocks, and thus one might suspect this to be of importance. Therefore, we investigate the friction under varying loads for a non-cut sheet comparing the case of loading the pull block against a more traditional uniform loading of the sheet as shown in~\cref{fig:load_dist}. Both load distributions show a seemingly non-dependent relationship between friction and load considering the size of our estimated error. Nonetheless, we do not see any indications that the uniform loading changes the qualitative behavior.
+From the investigation of the strain dependency we saw that increasing the normal load from 0.1 to \SI{10}{nN} did not make a considerable impact on the friction in comparison to the effect associated with strain. One special feature of our system is that we only apply load to the pull blocks, and thus one might suspect this to be of importance. Therefore, we investigate the friction under varying loads for a non-cut sheet comparing the case of loading the pull block against a  uniform loading of the sheet as shown in~\cref{fig:load_dist}. Both load distributions show a seemingly non-dependent relationship between friction and load considering the size of our estimated error. Thus, we do not find any indications that the uniform loading changes the qualitative behavior of our system.
 
 \begin{figure}[H]
   \centering
@@ -848,23 +840,59 @@ From the investigation of the stretch dependency we saw that increasing the norm
       \label{fig:load_dist_b}
   \end{subfigure}
   \hfill
-     \caption{Multiple simulations of non-cut sheet under different load. Mean friction is plotted against load for two different variations of loading distribution. (a) Normal loading is applied to the pull blocks. (b) Normal loading is applied uniformly to the sheet. }
+     \caption{Multiple simulations of a non-cut sheet under various uniformly sampled load values $F_N \in [0.1, 10]$ nN for two different variations of loading distribution. The shading and the error bars denotes the absolute error. (a) The loading is applied to the pull blocks. (b) The loading is applied uniformly to the full sheet. }
      \label{fig:load_dist}
 \end{figure}
 
-In order to further investigate the friction dependency of normal load for the Kirigami patterns as they are stretched, we select a subset of stretch stages from ~\cref{fig:multi_stretch_mean_fric} and perform additional simulations with a logarithmically increasing normal load in the extended load range 0.1--\SI{100}{nN}, using 30 load data points for each strain. The results are shown in~\cref{fig:load_dependency}. When spanning three orders of magnitude for the normal load we find some increase in friction with load. This goes for all
-patterns, but it is only really visible for the non-cut sheet as the values on the friction axis show a more narrow range. Notice that the load is plotted for a logarithmic axis which makes any seemingly linear trends on the figure 
-sublinear. However, as the normal load approaches \SI{100}{nN} we do start to see an increase that is more reminiscent of a linear relationship, but this is difficult to judge given that the change in friction is small in comparison to the noise in the data. Note that we omitted the error bars for visual purposes but they are on the same order of magnitude as shown in \cref{fig:load_dist}.
+To examine the relationship between friction and normal load as the Kirigami patterns undergo strain, we conduct additional simulations with a logarithmically increasing normal load in the range of 0.1 to \SI{100}{nN}. This is done for a selected subset of strain stages from~\cref{fig:multi_stretch_mean_fric}, with 30 load data points for each strain. We monitor the relative contact as well. The results are shown in~\cref{fig:load_dependency}. Upon varying the normal load over three orders of magnitude, we notice a small increase in friction with load for all Kirigami patterns. However, this effect is more pronounced for the non-cut sheet as the friction axis shows a narrower range for this pattern. 
+
+It should be noted that due to the logarithmic scale of the load axis, any apparent linear trends in the figure is actually sublinear. However, as the normal load approaches \SI{100}{nN}, there is some indication of an increase in friction that is more reminiscent of a linear relationship. Nevertheless, it is difficult to draw firm conclusions as the change in friction is relatively small compared to the level of noise in the data. We find an increasing contact area with load, for which the increase is 
+
+%
+%
+% Working here
+%
+%
+
+. However the increase from \SI{0.1}{nN} to \SI{}
+
+
+We generally find that the contact area increases with load which is somewhat expected due to the increased pressure on the sheet. However, the change in contact area is relatively low and thus it is difficult to draw any further conlusion to the relationship between friction and contact area.  
+
+
+
+Note that we omitted the error bars for visual purposes but the absolute erros for both the relative contact and friction are on the same order of magnitude as shown in~\cref{fig:multi_stretch} and ~\cref{fig:load_dist}.
 
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth]{figures/baseline/multi_FN_mean_compare.pdf}
-  \caption{Mean friction force vs.\ load in the range 0.1--100 nN, for the non-cut, Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$ sheet resepctively, at different stretch stages relative to their rupture point. }
-  \label{fig:load_dependency}
+  \begin{subfigure}[t]{\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/baseline/multi_FN_contact_compare.pdf}
+      \caption{}
+      \label{fig:fig:multi_load_contact}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/baseline/multi_FN_mean_compare.pdf}
+      \caption{}
+      \label{fig:multi_load_fric}
+  \end{subfigure}
+  \hfill
+     \caption{Mean relative contact and mean friction for multiple simulations, consisting of 30 logarithmically spaced load values in the range 0.1--\SI{100}{nN} for the non-cut, Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$ sheet respectively, at different strain stages relative to their rupture strains. (a) The average relative contact. (b) The average mean friction. We omitted the indication of the absolute errors as they were similarly low as seen in~\cref{fig:multi_stretch}.}
+     \label{fig:multi_load}
 \end{figure}
 
-From the friction measurements in \cref{fig:load_dependency} we see that the
+%
+%
+%
+%
+%
+%
+
+
+From the friction measurements in~\cref{fig:multi_load_fric} we see that the
 non-cut sheet generally produces a friction force in the order of 0.005--\SI{0.0025}{nN} throughout the 0.1--\SI{100}{nN} load range. Using a ratio based friction coefficient definition \cref{eq:mu_def1}, $\mu_1 = F_{\text{fric}}/{F_N}$, this would lead to a coefficient roughly in the range
 \begin{align*}
   &\mu_1,  \ \text{\cref{eq:mu_def1}:}& &\text{No cut}\sim [\num{e-4}, 0.13],&  &\text{Tetrahedron}\sim [\num{4e-4},8.7],& &\text{Honeycomb}\sim [\num{9e-4}, 15.2].&

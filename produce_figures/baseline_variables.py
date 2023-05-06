@@ -248,15 +248,20 @@ def multi_FN(path, save = False):
                os.path.join(path, 'honeycomb', common_folder)]
     names = ['No cut', 'Tetrahedron (7,5,1)', 'Honeycomb (2,2,1,5)']
     
-    # Mean
+    # Mean friction
     
-    vars = ['data[\'F_N\']', 'data[\'Ff\'][:, :, 0, 1].T', 'data[\'stretch_pct\']/(int(0==f)*0.36 + int(1==f)*0.21 + int(2==f)*1.27)']
-     
-    axis_labels = [r'$F_N$ [nN]', r'$\langle F_\parallel \rangle$ [nN]', r'Rel. Stretch']
-    # yerr = 'data[\'Ff_std\'][:,:,0]*data[\'Ff\'][:,:,0, 1]'
-    fig_mean, _ = multi_plot_compare(folders, names, vars, axis_labels, axis_scale = ['log', 'linear'], colorbar_scale = [[0, 0.9167264826629], 'linear'], equal_axes = [False, False], rupplot = False)
+    # vars = ['data[\'F_N\']', 'data[\'Ff\'][:, :, 0, 1].T', 'data[\'stretch_pct\']/(int(0==f)*0.36 + int(1==f)*0.21 + int(2==f)*1.27)']
+    # axis_labels = [r'$F_N$ [nN]', r'$\langle F_\parallel \rangle$ [nN]', r'Rel. Strain']
+    # # yerr = 'data[\'Ff_std\'][:,:,0]*data[\'Ff\'][:,:,0, 1]'
+    # fig_mean, _ = multi_plot_compare(folders, names, vars, axis_labels, axis_scale = ['log', 'linear'], colorbar_scale = [[0, 0.9167264826629], 'linear'], equal_axes = [False, False], rupplot = False)
     
-    # return 
+    # # Contact 
+    vars = ['data[\'F_N\']', 'data[\'contact_mean\'][:, :, 0].T', 'data[\'stretch_pct\']/(int(0==f)*0.36 + int(1==f)*0.21 + int(2==f)*1.27)']
+    axis_labels = [r'$F_N$ [nN]', r'$\langle$ Rel. Contact $\rangle$', r'Rel. Strain']
+    yerr = None
+    fig_contact, _ = multi_plot_compare(folders, names, vars, axis_labels, axis_scale = ['log', 'linear'], colorbar_scale = [[0, 0.9167264826629], 'linear'], equal_axes = [False, False], rupplot = False)
+
+
     # Max
     # vars = ['data[\'F_N\']', 'data[\'Ff\'][:, :, 0, 0].T', 'data[\'stretch_pct\']']
     # axis_labels = [r'$F_N$ [nN]', r'$\max \ F_\parallel$ [nN]', r'Stretch']
@@ -264,6 +269,7 @@ def multi_FN(path, save = False):
     
     if save:
         fig_mean.savefig("../article/figures/baseline/multi_FN_mean_compare.pdf", bbox_inches="tight")
+        fig_contact.savefig("../article/figures/baseline/multi_FN_contact_compare.pdf", bbox_inches="tight")
         # fig_max.savefig("../article/figures/baseline/multi_FN_max_compare.pdf", bbox_inches="tight")
 
    
@@ -371,9 +377,10 @@ def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yer
             # Plot
             if yerr is not None:
                 f_yerr = eval(yerr)
-                print(f'-------> {f} | {np.mean(f_yerr[~np.isnan(f_yerr)])}')
+                # print(f'-------> {f} | {np.mean(f_yerr[~np.isnan(f_yerr)])}')
                 
             for k in range(len(z)):
+                print(np.min(y[:,k]), np.max(y[:,k]), np.max(y[:,k])-np.min(y[:,k]))
                 if len(z) > 1 or True:
                     # color = get_color_value(z[k], np.min(z), np.max(z), scale = colorbar_scale[-1], cmap = cmap)
                     
@@ -384,9 +391,8 @@ def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yer
                     # print(f'F/FN (f = {f}, z = {z[k]}): min = {np.min(test)}, max = {np.max(test)}')
                     notnan = ~np.isnan(y[:, k])
                     a, b, a_err, b_err = lin_fit(x[notnan],y[notnan, k])
-                    print(f'linfit (f = {f}, z = {z[k]}):  a = {a:g}, b = {b:g}, a_err = {a_err:g}, b_err = {b_err:g}')
+                    # print(f'linfit (f = {f}, z = {z[k]}):  a = {a:g}, b = {b:g}, a_err = {a_err:g}, b_err = {b_err:g}')
                     
-                    # axes[f].plot(x, y[:,k]/x, **line_and_marker, color = color)
                     
                 
                 
@@ -770,8 +776,8 @@ if __name__ == "__main__":
     # spring(path, save = False)
     # dt(path, save = False)
     
-    multi_stretch(path, save = False)
-    # multi_FN(path, save = False)
+    # multi_stretch(path, save = False)
+    multi_FN(path, save = False)
     # multi_area(path, save = False)
     
     # multi_FN_force_dist(path, save = False)
