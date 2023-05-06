@@ -822,7 +822,7 @@ while for the Honeycomb pattern the friction drops $\sim\SI{0.98}{nN}$ during a 
 
 
 \subsection{Load dependency}\label{sec:load_dependency}
-From the investigation of the strain dependency we saw that increasing the normal load from 0.1 to \SI{10}{nN} did not make a considerable impact on the friction in comparison to the effect associated with strain. One special feature of our system is that we only apply load to the pull blocks, and thus one might suspect this to be of importance. Therefore, we investigate the friction under varying loads for a non-cut sheet comparing the case of loading the pull block against a  uniform loading of the sheet as shown in~\cref{fig:load_dist}. Both load distributions show a seemingly non-dependent relationship between friction and load considering the size of our estimated error. Thus, we do not find any indications that the uniform loading changes the qualitative behavior of our system.
+From the investigation of the strain dependency we saw that increasing the normal load from 0.1 to \SI{10}{nN} did not make a considerable impact on the friction in comparison to the effect associated with strain. One special feature of our system is that we only apply load to the pull blocks, and thus one might suspect this to be of importance. Therefore, we investigate the friction under varying loads for a non-cut sheet comparing the case of loading only the pull block against a uniform loading of the entire sheet as shown in~\cref{fig:load_dist}. Both load distributions show a seemingly non-dependent relationship between friction and load considering the size of our estimated error. Thus, we do not find any indications that the uniform loading changes the qualitative behavior of our system.
 
 \begin{figure}[H]
   \centering
@@ -840,28 +840,43 @@ From the investigation of the strain dependency we saw that increasing the norma
       \label{fig:load_dist_b}
   \end{subfigure}
   \hfill
-     \caption{Multiple simulations of a non-cut sheet under various uniformly sampled load values $F_N \in [0.1, 10]$ nN for two different variations of loading distribution. The shading and the error bars denotes the absolute error. (a) The loading is applied to the pull blocks. (b) The loading is applied uniformly to the full sheet. }
+     \caption{Multiple simulations of a non-cut sheet under various uniformly spaced load values $F_N \in [0.1, 10]$ nN for two different variations of loading distribution. The shading and the error bars denote the absolute error. (a) The loading is applied to the pull blocks only. (b) The loading is applied uniformly to the full sheet. }
      \label{fig:load_dist}
 \end{figure}
 
-To examine the relationship between friction and normal load as the Kirigami patterns undergo strain, we conduct additional simulations with a logarithmically increasing normal load in the range of 0.1 to \SI{100}{nN}. This is done for a selected subset of strain stages from~\cref{fig:multi_stretch_mean_fric}, with 30 load data points for each strain. We monitor the relative contact as well. The results are shown in~\cref{fig:load_dependency}. Upon varying the normal load over three orders of magnitude, we notice a small increase in friction with load for all Kirigami patterns. However, this effect is more pronounced for the non-cut sheet as the friction axis shows a narrower range for this pattern. 
+To examine the relationship between friction and normal load as the Kirigami
+patterns undergo strain, we conduct additional simulations with a
+logarithmically increasing normal load in the range of 0.1 to \SI{100}{nN}. This
+is done for a selected subset of strain stages
+from~\cref{fig:multi_stretch_mean_fric}, with 30 load data points for each
+strain. We monitor the relative contact as well. The results are shown
+in~\cref{fig:load_dependency}. Upon varying the normal load over three orders of
+magnitude, we notice a small increase in friction with load for all Kirigami
+patterns. This effect is more pronounced for the non-cut sheet in the figure as
+the friction axis shows a narrower range for this pattern. It should be noted
+that due to the logarithmic scale of the load axis, any apparent linear trends
+in the figure are in fact sublinear. However, as the normal load approaches
+\SI{100}{nN}, there is some indication of an increase in friction
+reminiscent of a linear relationship. Nevertheless, it is difficult to draw firm
+conclusions as the change in friction is relatively small compared to the level
+of noise in the data. 
 
-It should be noted that due to the logarithmic scale of the load axis, any apparent linear trends in the figure is actually sublinear. However, as the normal load approaches \SI{100}{nN}, there is some indication of an increase in friction that is more reminiscent of a linear relationship. Nevertheless, it is difficult to draw firm conclusions as the change in friction is relatively small compared to the level of noise in the data. We find an increasing contact area with load, for which the increase is 
-
-%
-%
-% Working here
-%
-%
-
-. However the increase from \SI{0.1}{nN} to \SI{}
-
-
-We generally find that the contact area increases with load which is somewhat expected due to the increased pressure on the sheet. However, the change in contact area is relatively low and thus it is difficult to draw any further conlusion to the relationship between friction and contact area.  
-
-
-
-Note that we omitted the error bars for visual purposes but the absolute erros for both the relative contact and friction are on the same order of magnitude as shown in~\cref{fig:multi_stretch} and ~\cref{fig:load_dist}.
+For the contact area, we generally find an increasing contact are with load. By
+considering the full load increase from \SI{0.1}{nN} to \SI{100}{nN} we find the
+largest increase in relative contact, among the values of relative strain, to be
+0.007 for the non-cut, 0.014 for the Tetrahedron and 0.025 for the Honeycomb
+sheet. This constitutes a rather small change and thus it is difficult to assess
+how this relates to a connection between the contact area and the friction.
+However, we do see that the Tetrahedron and Honeycomb patterns exhibit a larger
+change which aligns with the idea that the out-of-plane buckling makes them
+behave more like an asperity system. Thus we might take this as an indication of
+a possible relationship between contact area and friction, but this is
+nonetheless negligible in comparison to the strain-induced effects observed
+from~\cref{fig:multi_stretch}. By studying an even larger load range we might
+get more insight into this relationship. Note that we omitted the error bars for
+visual purposes but the absolute errors for both the relative contact and
+friction are on the same order of magnitude as shown in~\cref{fig:multi_stretch}
+and ~\cref{fig:load_dist}.
 
 
 \begin{figure}[H]
@@ -884,14 +899,6 @@ Note that we omitted the error bars for visual purposes but the absolute erros f
      \label{fig:multi_load}
 \end{figure}
 
-%
-%
-%
-%
-%
-%
-
-
 From the friction measurements in~\cref{fig:multi_load_fric} we see that the
 non-cut sheet generally produces a friction force in the order of 0.005--\SI{0.0025}{nN} throughout the 0.1--\SI{100}{nN} load range. Using a ratio based friction coefficient definition \cref{eq:mu_def1}, $\mu_1 = F_{\text{fric}}/{F_N}$, this would lead to a coefficient roughly in the range
 \begin{align*}
@@ -905,11 +912,18 @@ depending on the strain values. These numbers should be interpreted cautiously,
 but we can take it as a rough estimate of the friction coefficient being on
 the order \num{e-4}--\num{e-5}. This relates to the finding by
 \cite{DIENWIEBEL2005197} who reported a seemingly non-existing relationship
-between friction and normal load with change in friction that corresponds to friction coefficients in the range \num{e-3}--\num{e-4} when using the slope definition \cref{eq:mu_def2}. This supports the idea that the graphene sheet does in fact exhibit superlubric behavior in these conditions. Moreover, the fact that the increase with load is relatively unaffected by the stretching points to the fact that the strain-induced effect mainly shifts the load curve towards higher friction but does not significantly alter its slope. 
+between friction and normal load with change in friction that corresponds to friction coefficients in the range \num{e-3}--\num{e-4} when using the slope definition \cref{eq:mu_def2}. This supports the idea that the graphene sheet does in fact exhibit superlubric behavior in these conditions. Moreover, the fact that the increase with load is relatively unaffected by the straining points to the fact that the strain-induced effect mainly shifts the load curve towards higher friction but does not significantly alter its slope. 
+
+
+%
+%
+% Working here
+%
+%
+%
 
 
 \subsection{Prospects of a negative friction coefficient}\label{sec:neg_prospects}
-
 Considering the results from~\cref{sec:stretch_dependency} and~\cref{sec:load_dependency} we find that strain-induced friction effects, on the order of $/SI{1}{nN}$, are generally dominating in comparison to load-induced effects on the order of \SI{0.01}{nN} given a load range of \SI{e2}{nN}. This is promising for the idea of achieving a negative friction coefficient for a nanomachine system that couples load and strain. By applying load on the nanomachine we would increase both the load and the strain on the sheet simultaneously. However, since the friction dependency to strain dominates in comparison to load effects such a system can be designed entirely by considering the strain dependency. The friction coefficient is by our definition (\cref{eq:mu_def2}) given as the slope of the friction $F_f$ vs.\ normal force $F_N$ curve. Hence, for two points $\{(F_{N,1}, F_{f,1}), (F_{N,2}, F_{f,2})\}$, $F_{N,1} < F_{N,2}$ we can evaluate the associated friction coefficient $\mu_{1,2}$ as 
 \begin{align*}
   \mu_{1,2} = \frac{F_{f,2} - F_{f,1}}{F_{N,2} - F_{N,1}} = \frac{\Delta F_f}{\Delta F_N}.

@@ -380,7 +380,9 @@ def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yer
                 # print(f'-------> {f} | {np.mean(f_yerr[~np.isnan(f_yerr)])}')
                 
             for k in range(len(z)):
-                print(np.min(y[:,k]), np.max(y[:,k]), np.max(y[:,k])-np.min(y[:,k]))
+                start = np.argmin(x)
+                end = np.argmax(x)
+                print(x[start], x[end], y[start,k], y[end,k], y[end,k]-y[start,k])
                 if len(z) > 1 or True:
                     # color = get_color_value(z[k], np.min(z), np.max(z), scale = colorbar_scale[-1], cmap = cmap)
                     
