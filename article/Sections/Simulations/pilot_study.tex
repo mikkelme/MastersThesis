@@ -357,29 +357,31 @@ In order to evaluate the frictional properties of the sheet we aim to reduce the
 We measure kinetic friction as the mean of the friction force trace. More
 precisely, we take the mean value of the last half of the dataset in order to
 ensure that we are sampling from a stable system. For a full sliding simulation
-of \SI{400}{\text{Å}} our mean value will be founded on the last \SI{200}{\text{Å}}
-(\SI{1000}{ps}) of sliding. In~\cref{fig:runmean} we have shown the force trace
-for the first \SI{10}{\text{Å}} of sliding together with a 50\% running mean window.
-The choice of such a short sliding distance is merely to illustrate the sampling
-procedure, and we see that the final mean estimate (marked with a dot) takes a
-negative value due to the specific cut-off of the few oscillations captured
-here. Nonetheless, one approach to quantify the uncertainty of the final mean
-estimate is to consider the variation of the running mean preceding the final
-mean value. The more the running mean fluctuates the more uncertainty associated
-with the final estimate. Only the running mean ``close'' to the ending should be
-considered, since the first part will rely on data from the beginning of the
-simulation. From the Fourier analyze in section~\cref{sec:force_oscillations} we
-found the longest significant oscillation period to be $\sim \SI{71}{\text{Å}}$.
-Hence, we find it reasonable to use the standard deviation (\acrshort{std}) for
-the last $\sim \SI{71}{\text{Å}}$ of the running mean window to evaluate the
-fluctuations. When including the full sliding length this corresponds to the
-last $\sim 35 \%$ of the running mean window. We consider the \acrshort{std} as
-an estimate of the absolute error and calculate the relative error by a division
-of the final mean value. In~\cref{fig:runstd} we showcase a running relative
-error based on the \acrshort{std}, with a window of length 35\% the mean window,
-in a continuation of the illustrative case of a \SI{10}{\text{Å}} sliding
-from~\cref{fig:runmean}. In this case, we get an extremely high relative error of
-$\sim 257\%$, but this is consistent with the fact that the short sampling period leads to an unphysical negative value which should be associated with high uncertainty. 
+of \SI{400}{\text{Å}} our mean value will be founded on the last
+\SI{200}{\text{Å}} (\SI{1000}{ps}) of sliding. In~\cref{fig:runmean} we have
+shown the force trace for the first \SI{10}{\text{Å}} of sliding together with a
+50\% running mean window. The choice of such a short sliding distance is merely
+to illustrate the sampling procedure, and we see that the final mean estimate
+(marked with a dot) takes a negative value due to the specific cut-off of the
+few oscillations captured here. Nonetheless, one approach to quantifying the
+uncertainty of the final mean estimate is to consider the variation of the
+running mean preceding the final mean value. The more the running mean
+fluctuates the more uncertainty associated with the final estimate. Only the
+running mean ``close'' to the ending should be considered, since the first part
+will rely on data from the beginning of the simulation. From the Fourier analysis
+in~\cref{sec:force_oscillations} we found the longest significant
+oscillation period to be $\sim \SI{71}{\text{Å}}$. Hence, we find it reasonable
+to use the standard deviation (\acrshort{std}) for the last $\sim
+\SI{71}{\text{Å}}$ of the running mean window to evaluate the fluctuations. When
+including the full sliding length this corresponds to the last $\sim 35 \%$ of
+the running mean window ($\SI{400}{\text{Å}}\cdot 50\% \cdot 35\% \approx \SI{71}{\text{Å}}$). We consider the \acrshort{std} as an estimate of the
+absolute error and calculate the relative error by a division of the final mean
+value. In~\cref{fig:runstd} we showcase a running relative error based on the
+\acrshort{std}, with a window of length 35\% the mean window, in a continuation
+of the illustrative case of a \SI{10}{\text{Å}} sliding from~\cref{fig:runmean}.
+In this case, we get an extremely high relative error of $\sim 257\%$, but this
+is consistent with the fact that the short sampling period leads to an
+unphysical negative value which should be associated with high uncertainty. 
 
 \begin{figure}[H]
   \centering
@@ -396,9 +398,16 @@ $\sim 257\%$, but this is consistent with the fact that the short sampling perio
       \caption{Running std with window length $\SI{1.75}{\text{Å}}$ (35\% the mean window length.)}
       \label{fig:runstd}
   \end{subfigure}
-  \caption{Running mean (a) and running relative error (std) (b) on the friction force data from a reduced sliding distance of \SI{10}{{\text{Å}}}. The running mean window is 50\% the data length while the running std window is 35\% the running mean window length. The values are plotted at the end of their respective windows such that windowprecedess the actual point on the graph.}
-  \label{fig:running}
+  \caption{Supporting figures for the description of the kinetic friction with uncertainty. 
+  % Running mean (a) and running relative error (std) (b) on the friction force data from a reduced sliding distance of \SI{10}{{\text{Å}}}. The running mean window is 50\% the data length while the running std window is 35\% the running mean window length. The values are plotted at the end of their respective windows such that windowprecedess the actual point on the graph.}
+  % \label{fig:running}
 \end{figure}
+
+%
+%
+% Working here
+%
+%
 
 When including the full dataset of \SI{400}{\text{Å}} of sliding, such that the \acrshort{std} window actually matches with the longest period of oscillations expected, we get a final relative error of $\sim 12 \%$ as shown in fig \cref{fig:runstd_long}. This is arguable just at the limit of an acceptable error, but as we shall see later on in~\cref{sec:load_and_stretch} this high relative error is mainly associated with the cases of low friction. When investigating different configurations under variation of load and strain we see a considerably lower relative error as the mean friction evaluates to higher values. One interpretation of this finding is simply that the oscillations in the running mean are to some degree independent of the magnitude of the friction. In that case, the relative error will spike for the low friction cases, and the absolute error might be the more reliable measure, i.e.\ using simply the \acrshort{std} without dividing by the final mean value.
 
