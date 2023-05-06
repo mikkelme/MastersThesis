@@ -584,15 +584,18 @@ if __name__ == "__main__":
     
     # mat = honeycomb(shape = (62, 106), xwidth = 3, ywidth = 3,  bridge_thickness = 3, bridge_len = 3, ref = (12,0))
     # mat = pop_up(shape = (62, 106), size = (3, 1), sp = 1, ref = (0, 53))
-    mat = np.load('../ML/pop_search/Ff_min0_conf.npy')
-    mat = np.load('../ML/hon_search/Ff_min0_conf.npy')
-    mat = np.load('../ML/RW_search/Ff_min0_conf.npy')
-    porosity = np.sum(mat < 0.5)/np.sum(mat)
-    print(porosity)
-    builder = config_builder(mat)
-    builder.build()
-    builder.view()
-   
+    # mat = np.load('../ML/pop_search/Ff_min0_conf.npy')
+    # mat = np.load('../ML/hon_search/Ff_min0_conf.npy')
+    # mat = np.load('../ML/RW_search/Ff_min0_conf.npy')
+    # porosity = np.sum(mat < 0.5)/np.sum(mat)
+    # print(porosity)
+    
+    
+    
+    # mat = np.ones((62, 106))
+    # builder = config_builder(mat)
+    # builder.build()
+    # builder.view()
     
     
     # builder.add_pullblocks()

@@ -33,7 +33,7 @@ conceptual idea of a coupling between load and strain to motivate our study. Hen
 the attachment to a moving body, and a 3D silicon bulk substrate. 
 
 
-\begin{figure}[h]
+\begin{figure}[!htb]
   \centering
   \begin{subfigure}[b]{0.49\textwidth}
     \centering
@@ -52,16 +52,6 @@ the attachment to a moving body, and a 3D silicon bulk substrate.
   \caption{Conceptual visualization of two different system setups considered. The wiggly line represents the Kirigami sheet. (a) The chosen setup with a manufactured object connected to the sheet. The contact with the substrate represents the contact with the outside world. (b) An alternative setup where the sheet is fixed in the substrate constituting the manufactured object. The contact with the outside world is then represented through an indention by objects with various shapes and sizes. }
   \label{fig:system_variations}
 \end{figure}
-
-% \begin{figure}[h]
-%   \centering
-%   \includegraphics[width=0.8\linewidth]{figures/system/system_variations.png}
-%   \caption{\hl{TMP} System variations}
-%   \label{fig:system_variations}
-% \end{figure}
-
-
-
 
 
 % Note that the rigid parts on both sides of the
@@ -90,39 +80,10 @@ displayed with colors matching the three distinct roles:
   \item Green: Thermostats ($NVT$) surrounding the $NVE$ parts in order to modify the temperature without making disturbing changes to the interaction of the sheet and substrate.
   \item Blue: Parts that are initially or eventually turned into rigid objects. For the substrate, this refers to an additional fixation as well.
 \end{enumerate}
-The full sheet is given a size $\sim 130 \times \SI{163}{\text{Å}}$ while the substrate is scaled accordingly to the sheet which is further specified in~\cref{sec:substrate}. For an expected strain of 200\% the total system size is roughly \num{55e3} atoms. The specific distribution of atoms is shown in \cref{tab:system_count} along with the spatial x-y-measures in \cref{tab:sheet_dim}. An example of a strained sheet is shown in~\cref{fig:kirigami_stretch}
+The full sheet is given a size $\sim 130 \times \SI{163}{\text{Å}}$ while the substrate is scaled accordingly to the sheet which is further specified in~\cref{sec:substrate}. For an expected strain of 200\% the total system size is roughly \num{57e3} atoms. The specific distribution of atoms is shown in \cref{tab:system_count} along with the spatial x-y-measures in \cref{tab:sheet_dim}. An example of a strained sheet is shown in~\cref{fig:kirigami_stretch}
 
 
-\begin{figure}[h]
-  \centering
-  \begin{subfigure}[b]{0.60\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/system/system_sideview.png}
-      \caption{}
-      \label{fig:sideview}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[b]{0.60\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/system/system_topview_anno.png}
-      \caption{}
-      \label{fig:topview}
-  \end{subfigure}
-  \hfill
-     \caption{System configuration colorized to indicate NVE parts (red), thermostat parts (green) and rigid parts (blue). (a) Side view showing the sheet on top of the substrate. (b) Top view showing only the sheet}
-     \label{fig:system}
-\end{figure}
-
-
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=0.7\linewidth]{figures/system/hon_stretch.png}
-  \caption{Stretched Kirigami sheet against a substrate. The substrate is excluded from the image for better visibility. The atoms are coloredized to indicate NVE parts (red), thermostat parts (green) and rigid parts (blue). The pattern used is the Honeycomb $(2,2,1,5)$ (see \cref{chap:system}) at a 100\% strain level.}
-  \label{fig:kirigami_stretch}
-\end{figure}
-
-
-\begin{table}[h]
+\begin{table}[H]
   \begin{center}
   \caption{Specification of the spatial size of the system for the x-y-dimensions with a substrate scaled for an expected sheet strain of 200\%. The first column denotes the size relative to the full sheet size $x_S \times y_S$, while the second column denotes the corresponding length in Å.}
   \label{tab:sheet_dim}
@@ -138,25 +99,55 @@ The full sheet is given a size $\sim 130 \times \SI{163}{\text{Å}}$ while the s
 \end{table}
 
 
-
-\begin{table}[h]
+\begin{table}[H]
   \begin{center}
   \caption{Specification of the system size regarding the number of atoms for various system regions. These numbers correspond with the case of no cuts applied to the sheet and a substrate scaled for the expected stretch of 200\%.}
   \label{tab:system_count}
   \begin{tabular}{ |c?{0.3mm} c | c | c | c | c | c |} \hline
     \textbf{Region} & \textbf{Total}  & Sub region & Sub total & \textbf{NVE} &
     \textbf{NVT} & \textbf{Rigid} \\ \hline   
-    \multirow{2}{*}{Full sheet} & \multirow{2}{*}{7800} & Inner sheet & 6360 & 6360 &
+    \multirow{2}{*}{Full sheet} & \multirow{2}{*}{8060} & Inner sheet & 6572 & 6572 &
     0 & 0 \\ %\hline
-    & & Pull blocks & 1440 & 0 & 720 & 720 \\ \hline   
-    \multirow{3}{*}{Substrate} & \multirow{3}{*}{47376} & Upper & 15792 & 15792 &
+    & & Pull blocks & 1488 & 0 & 744 & 744 \\ \hline   
+    \multirow{3}{*}{Substrate} & \multirow{3}{*}{49068} & Upper & 16356 & 16356 &
     0 & 0 \\ %\hline
-    & & Middle & 15792 & 0 & 15792 & 0 \\ %\hline
-    & & Bottom & 15792 & 0 & 0 & 15792 \\ \Xhline{2\arrayrulewidth}   
-    All & 55176 & \multicolumn{2}{r|}{} & 22152 & 16512 & 16512 \\ \hline 
+    & & Middle & 16356 & 0 & 16356 & 0 \\ %\hline
+    & & Bottom & 16356 & 0 & 0 & 16356 \\ \Xhline{2\arrayrulewidth}   
+    All & 57128 & \multicolumn{2}{r|}{} & 22928 & 17100 & 17100 \\ \hline 
   \end{tabular}
   \end{center}
 \end{table}
+
+
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[b]{0.65\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/system/system_sideview.png}
+      \caption{}
+      \label{fig:sideview}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.70\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/system/system_topview_anno.png}
+      \caption{}
+      \label{fig:topview}
+  \end{subfigure}
+  \hfill
+     \caption{System configuration colorized to indicate NVE parts (red), thermostat parts (green) and rigid parts (blue). (a) Side view showing the sheet on top of the substrate. (b) Top view showing only the sheet}
+     \label{fig:system}
+\end{figure}
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.80\linewidth]{figures/system/hon_stretch.png}
+  \caption{Stretched Kirigami sheet against a substrate. The substrate is excluded from the image for better visibility. The atoms are coloredized to indicate NVE parts (red), thermostat parts (green) and rigid parts (blue). The pattern used is the Honeycomb $(2,2,1,5)$ (see \cref{chap:system}) at a 100\% strain level.}
+  \label{fig:kirigami_stretch}
+\end{figure}
+
 
 
 \section{Numerical procedure}\label{sec:num_proc}
@@ -206,16 +197,17 @@ between encounters with the sheet, similar to the initial relaxation time.
 % \subsection{Graphene}
 % (https://community.wvu.edu/~miholcomb/graphene.pdf)
 % https://www.physics-in-a-nutshell.com/article/4/lattice-basis-and-crystal
+The sheet consists of graphene, which is a single layer of carbon atoms arranged in a hexagonal lattice structure. The bulk version of graphene is graphite and is a stacked structure of multiple graphene layers. 
 
-The sheet consists of graphene, which is a single layer of carbon atoms arranged in a hexagonal lattice structure. The bulk version of graphene is graphite and is a stacked structure of multiple graphene layers. We can describe the graphene 2D crystal structure in terms of its primitive lattice vectors $\vec{a_1}$ and $\vec{a_2}$ and a basis. The basis describes the atoms associated with each lattice site, and we populate the lattice by translating the basis by any linear combination of the lattice vectors 
+\begin{multicols}{2}
+We can describe the graphene 2D crystal structure in terms of its primitive lattice vectors $\vec{a_1}$ and $\vec{a_2}$ and a basis. The basis describes the atoms associated with each lattice site, and we populate the lattice by translating the basis by any linear combination of the lattice vectors 
 \begin{align*}
   \vec{T}_{mn} = m\vec{a_1} + n\vec{a_2}, \qquad m,n \in \mathbb{N}.
 \end{align*}
 For graphene, we have the primitive lattice vectors~\cite{gray2009crystal} 
 \begin{align}
-  \vec{a_1} = a \left(\frac{\sqrt{3}}{2}, -\frac{1}{2}\right), \qquad \vec{a_2} = a \left(\frac{\sqrt{3}}{2}, \frac{1}{2}\right), \qquad |\vec{a_1}| = |\vec{a_2}| = a = 2.46 \ \text{Å}.
-  \label{eq:prim_vec}
-  %, \qquad |\vec{a_1}| = |\vec{a_2}| = 2.46 \ \text{Å}.
+  \vec{a_1} &= a \left(\frac{\sqrt{3}}{2}, -\frac{1}{2}\right), \qquad \vec{a_2} = a \left(\frac{\sqrt{3}}{2}, \frac{1}{2}\right) \label{eq:prim_vec} \\
+  |\vec{a_1}| &= |\vec{a_2}| = a = 2.46 \ \text{Å}. \nonumber
 \end{align}
 Notice that we deliberately excluded the third coordinate as we only consider a
 single graphene layer and thus we do not have to consider the stacking structure of 3D graphite. The basis consists of two carbon atoms given as 
@@ -227,14 +219,17 @@ The crystal structure is visualized in \cref{fig:graphene_crystal}. The hexagona
 \begin{align*}
   \left|\left|\frac{a}{2}\Big(\frac{1}{\sqrt{3}}, 1 \Big)\right|\right| \approx 1.42 \ \text{Å}.
 \end{align*}
-
-
-\begin{figure}[h]
+  
+\begin{figure}[H]
   \centering
-  \includegraphics[width=0.3\linewidth]{figures/system/crystal.png}
+  \includegraphics[width=0.9\linewidth]{figures/system/crystal.png}
   \caption{Illustration of the graphene crystal structure. The dots represent atom sites, blue dots denote the basis atoms (\cref{eq:basis}) and the red arrows denote the primitive lattice vectors (\cref{eq:prim_vec}). }
   \label{fig:graphene_crystal}
 \end{figure}
+  
+\end{multicols}
+
+
 
 
 
@@ -259,7 +254,7 @@ each incrementing of the x- or y-coordinate. That is, the nearest neighbors \acr
 \end{equation}
 We can visually verify this by consulting~\cref{fig:atom_indexing}, which shows that the nearest neighbor indexes depend on whether the atom is oriented to the right or left side in the zigzag chain.
 
-\begin{figure}[h]
+\begin{figure}[!htb]
   \centering
   \includegraphics[width=0.7\linewidth]{figures/system/atom_indexing.pdf}
   \caption{Illustration of the graphene atom site indexing. The x-coordinate increment along the armchair direction (pointing to zigzag chains) while the y-coordinate increment along the zigzag direction.}
@@ -270,7 +265,7 @@ We can visually verify this by consulting~\cref{fig:atom_indexing}, which shows 
 \subsection{Removing atoms}
 To simplify the formulation of the cut patterns, we introduce the \textit{center element} which is placed in each gap of the hexagonal honeycomb structure. This is shown in~figure~\cref{fig:center_indexing}. These are not populated by any atoms but will serve as a reference for the algorithmic approaches of defining a cut pattern.
 
-\begin{figure}[h]
+\begin{figure}[!htb]
   \centering
   \includegraphics[width=0.7\linewidth]{figures/system/center_indexing.pdf}
   \caption{Illustration of the indexing for the introduced center element. The y-coordinate increment along the zigzag direction (pointing to armchair chains) while the x-coordinate increment along the armchair direction.}
@@ -283,9 +278,9 @@ direction we can denote them: ``up'', ``upper right'', ``lower right'',
 ``lower right'' neighbour while for odd $i$ this corresponds to the ``upper
 right'' neighbour. This shifting applies for all left- or right-oriented neighbors and the full neighbor list is illustrated in~\cref{fig:center_directions}. 
 
-\begin{figure}[h]
+\begin{figure}[!htb]
   \centering
-  \includegraphics[width=0.7\linewidth]{figures/system/center_directions.pdf}
+  \includegraphics[width=0.70\linewidth]{figures/system/center_directions.pdf}
   \caption{Illustration of the center element neighbor indexes for the case when the x-coordinate $i$ is even (left) and $i$ is odd (right).}
   \label{fig:center_directions}
 \end{figure}
@@ -314,7 +309,7 @@ For the second rule, it is even more obvious that different paths can result in 
 \section{Kirigami patterns}
 We propose a series of Kirigami-inspired cut patterns for the altering of the graphene sheet. We seek inspiration from macroscale patterns that showcases a considerable amount of out-of-plane buckling when stretched. We choose to imitate two different designs: 1) An alternating repeating series of perpendicular cuts as shown in~\cref{fig:kirigami_inspiration_a} popularly used in studies of morphable metematerials~\cite{new_pop_up}. This pattern produces surface buckling with a tetrahedron (three-sided pyramid) shape when stretched. 2) A more intricate pattern shown in~\cref{fig:kirigami_inspiration_b} which is used commercially by Scotch\textsuperscript{TM} Cushion Lock\textsuperscript{TM} \cite{cushion_wrap} as protective wrap for items during shipping. This pattern buckles into a hexagonal honeycomb structure when stretched. In addition to the modeling of the so-called \textit{Tetrahedron} and \textit{Honeycomb} patterns, we also create a series of random walk patterns.
 
-\begin{figure}[h]
+\begin{figure}[!htb]
   \centering
   \begin{subfigure}[t]{0.48\textwidth}
       \centering
@@ -358,16 +353,16 @@ $|L_2 - L_1| = 2, 6, 10, \ldots \ $. \cref{fig:pop_up} shows a visual
 representation of the pattern components for the $(7, 5, 2)$ patteren. 
 
 
-\begin{figure}[h]
+\begin{figure}[!htb]
   \centering
-  \begin{subfigure}[t]{0.48\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/system/pop_up_inverse.pdf}
       \caption{}
       \label{fig:pop_up_a}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[t]{0.48\textwidth}
+    \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/system/pop_up_pattern.pdf}
       \caption{}
@@ -392,7 +387,7 @@ pattern is showcased in~\cref{fig:pop_up_flavors} each with a reference position
 at the center of the sheet. Note that a smaller sheet size is used in
 both~\cref{fig:pop_up} and ~\cref{fig:pop_up_flavors} for illustrative purposes.
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{figures/system/pop_up_flavors.pdf}
   \caption{Example of different Tetrahedron cut pattern variations. The specific parameters are noted as titles and all of the patterns use the center of the sheet as a reference position. The circles in the figure represent atom sites, where grey-filled circles indicate the presence of atoms and transparent circles indicate removed atoms. The blue dots in the figure indicate the center elements The sheet matrix size is $40 \times 80$ corresponding to 3200 atom sites and an approximate sheet size of $84 \times \SI{123}{\text{Å}}$.}
@@ -420,7 +415,7 @@ Some additional variations of the pattern class are showcased
 in~\cref{fig:honeycomb_flavors}.
 
 
-\begin{figure}[h]
+\begin{figure}[!htb]
   \centering
   \begin{subfigure}[t]{0.48\textwidth}
       \centering
@@ -441,7 +436,7 @@ in~\cref{fig:honeycomb_flavors}.
 \end{figure}
 
 
-\begin{figure}[h]
+\begin{figure}[!htb]
   \centering
   \includegraphics[width=\linewidth]{figures/system/honeycomb_flavors.pdf}
   \caption{Example of different Honeycomb cut pattern variations. The specific parameters are noted as titles and all of the patterns use the center of the sheet as a reference position. The circles in the figure represent atom sites, where grey-filled circles indicate the presence of atoms and transparent circles indicate removed atoms. The blue dots in the figure indicate the center elements. 
@@ -516,7 +511,7 @@ according to the general behavior introduced in the previous paragraph. In
 practice, this is done through a recursive algorithm as described in ~\cref{algo:walk_dis}. For a given path the function \textit{walk\_distance()} is called with the input being a list of all sites in the given paths. The function gathers all the neighbors of each site, regardless of their state on the sheet. It then calls itself recursively using this neighbor list as input, while incrementing a distance counter that is also passed along as an argument. This results in an expansion along all possible outgoing paths from the initial path of interest. Once the distance limit is reached, the function returns the final neighbor lists, which are then accumulated into a final output. This output corresponds to a list of all sites within the minimum distance to the path.
 
 
-\begin{algorithm}[h]
+\begin{algorithm}[!htb]
   \caption{Recursive algorithm implemented as a class method of the random walk generator. For a given path input it flags all sites within a distance given by the class attribute \textit{self.min\_dis}.}
   \label{algo:walk_dis}
   \begin{algorithmic}[1]
@@ -577,7 +572,7 @@ jumping to site $i$ is
  division by the sum of all $p_i$. In the numerical implementation, we then pick
  the next step by the weighted discrete probability distribution $p_i$. In~\cref{fig:bias_prob} we have illustrated how a bias of different strengths impacts the probability distribution for a random walk between center elements. We can visually confirm that the bias will favor the directions that lie close to the bias direction. This preference is more distinct at high bias strengths while at low strength $B\to0$ we get a uniform distribution that aligns with the default unbiased random walk. 
 
-\begin{figure}[h]
+\begin{figure}[!htb]
   \centering
   \begin{subfigure}[t]{0.48\textwidth}
       \centering
@@ -611,7 +606,7 @@ nearest atom neighbor indexes alternate for each increment in the x or y index (
 \end{align*}
 One way to mitigate this issue is to use the six directions from the center element walk as the common direction to ``stay or break'' from. As showcased in~\cref{fig:stay_or_break}, in each center element direction (black arrows) there are two possible atom site directions (red and orange arrows) that are equally close to the center element direction. The red and orange arrows represent $(i+j)$ being even or odd respectively, and we notice that these appear in pairs such that we can always determine which of the atom directions is closest to the center element direction. Following this idea we can map each center direction to an atom direction depending on the even or oddness of the position. For $p_{\text{stay}} = 1$ this results in a guaranteed zigzag motion along the center element direction that it happens to start on. 
 
-\begin{figure}[h]
+\begin{figure}[!htb]
   \centering
   \includegraphics[width=0.5\linewidth]{figures/system/stay_or_break.pdf}
   \caption{Visualization of the center element directions (black arrows) connecting the center elements depicted as blue dots, and the atom site directions (red and orange arrows) connection the atom sites depicted as grey circles. The red arrows correspond to the case where the sum of the atom site indexes $(i,j)$ is even, while the orange arrows correspond to the case where the sum is odd. Notably, for each case, there is always one atom site direction that is uniquely closest to a given center element direction.}
@@ -645,13 +640,12 @@ this to be of great importance for the usage of this feature in final dataset}.
 An example of the deployment is shown in~\cref{fig:grid_start}.
 
 
-\begin{figure}[h]
+\begin{figure}[!htb]
   \centering
-  \includegraphics[width=\linewidth]{figures/system/grid_start.pdf}
+  \includegraphics[width=0.95\linewidth]{figures/system/grid_start.pdf}
   \caption{The figure illustrates the distribution of starting points when the \textit{grid start} parameter is turned on for a $14\times 18$ sheet, for varying numbers of deployed random walkers ranging from 1 to 9. The color map is used to indicate the order in which the walkers were deployed.}
   \label{fig:grid_start}
 \end{figure}
-
 
 The \textit{centering} parameter lets us relocate the path of the random walker
 such that the path center of mass gets closer to the starting point. When
@@ -666,57 +660,48 @@ in~\cref{fig:RW_flavors}\textcolor{red!50!black}{b}.
 
 
 \subsubsection{Validity}
-
 The simulation procedure requires the sheet to be fully attatched, non ruptured, which can be summarized as the following requirements. 
 \begin{enumerate}
   \item There exist only a single cluster on the sheet. We define a cluster as the set of atoms which can all be reached through nearest neighbour walking on the cluster.
-  \item The cluster of atoms is spanning the sheet in the y-direction. This means that there exist at least one path through nearest neighbour walks that connect the bottom and the top of the sheet. This is due to the reason that the sheet must be attatched to the pull blocks.
+  \item The cluster of atoms is spanning the sheet in the y-direction. This means that there exist at least one path through nearest neighbour walking that connects the bottom and the top of the sheet. This is rewuired because the sheet must be attatched to the pull blocks.
 \end{enumerate}
-In order to accommodate these requirements we count the number of clusters and search for a spanning cluster after all walkers have terminated. If the requirements are not met we simply rerun the random walk from scratch. This is done according to \textit{avoid clustering} parameter which takes integer values corresponding to the number of times to repeat this process. If the requirements are not met during any of those reruns the non-spanning clusters are simply removed. In the case of no spanning cluster the configuration is skipped. This crude scheme was later reinvented as a more refined repair scheme which alters the sheet by the intention of performing the least amount of changes (addition or subtraction of atoms) in order to meet the attatchment requirements. This was done as a part of the accelerated search procedure and hence it was not utilized in the creation of the random walk dataset. 
-
-\hl{Talk about the new repair algorithm}
+In order to accommodate these requirements we count the number of clusters and search for a spanning cluster after all walkers have terminated. If the requirements are not met we simply rerun the random walk from scratch. This is done according to the \textit{avoid clustering} parameter which takes integer values corresponding to the number of times to repeat this process. If the requirements are not met during any of those reruns the non-spanning clusters are simply removed. In the case of no spanning cluster the configuration is skipped. This crude scheme was later reinvented as a more refined repair scheme which alters the sheet by the intention of performing the least amount of changes,addition or subtraction of atoms, in order to meet the attatchment requirements. This was done as a part of the accelerated search procedure and hence it was not utilized in the creation of the random walk dataset. However we give a brief description of the algorithm here:
+\begin{enumerate}
+  \item Find all clusters and rank them in descending order of size, such that the largest cluster is labeled as cluster 1.
+  \item Deploy walkers from the edges of the smallest cluster, allowing them to walk in all possible directions similar to what was done with~\cref{algo:walk_dis}. Here the allowed walking distance is defined as the number of atoms within the starting cluster.
+  \item If a walker from the starting cluster reaches another cluster within the allowed walking distance, these two clusters are connected through the walking path. Otherwise, the starting cluster is deleted. This decision is based on the consideration that the amount of atoms required to connect the clusters should not exceed the amount of atoms removed if the starting cluster is deleted. However, if the starting cluster is the last cluster connected to the top or bottom edge, an unlimited number of walks are allowed to ensure the creation of a spanning cluster.
+  \item If there is only one cluster remaining on the sheet, the repair procedure is complete. If there are still multiple clusters, then repeat the steps from 1.
+\end{enumerate}  
 \subsubsection{Random walk examples}
+Some examples of the random walk patterns are illustrated in \cref{fig:RW_flavors} with corresponding parameters in~\cref{tab:RW_flavors}.
 
-Some examples of the random walk patterns are illustrated in \cref{fig:RW_flavors}.
-
-\begin{figure}[h]
+\begin{figure}[!htb]
   \centering
-  \includegraphics[width=\linewidth]{figures/system/RW_flavors.pdf}
-  \caption{Some example uses of the random walking class. \hl{Give information of parameters? Henrik says Yes :D}}
+  \includegraphics[width=1\linewidth]{figures/system/RW_flavors.pdf}
+  \caption{Example of different Random walk cut pattern variations. The specific parameters are given in‘\cref{tab:RW_flavors}. The circles in the figure represent atom sites, where grey-filled circles indicate the presence of atoms and transparent circles indicate removed atoms. The sheet matrix size is $62 \times 106$ corresponding to the full size system used in the \acrshort{MD} simulations with 6572 atom sites and an approximate sheet size of $130 \times \SI{163}{\text{Å}}$.}
   \label{fig:RW_flavors}
 \end{figure}
 
-%
-%
-% Working here
-%
-%
+\begin{table}[h]
+  \begin{center}
+  \caption{Parameters for the random walk patterns shown in~\cref{fig:RW_flavors}.}
+  \label{tab:RW_flavors}
+  \begin{tabular}{ |c|M{2.2cm}|M{2.2cm}|c|c|M{2.2cm}|M{2.2cm}|} \hline
+  Fig.\ num. & (a) & (b) & (c) & (d) & (e) & (f) \\ \hline 
+  Num.\ walkers & 25 & 25 & 20 & 30 & 20 & 32 \\ \hline 
+  Max.\ Steps & 15 & 15 & 30 & 40 & 30 & 30 \\ \hline 
+  Min.\ distance & 0 & 0 & 4 & 4 & 4 & 4 \\ \hline 
+  Bias & $\begin{pmatrix} \text{upper right} \\ 100 \end{pmatrix}$ & $\begin{pmatrix} \text{upper right} \\ 100 \end{pmatrix}$ & None & None & $\begin{pmatrix} \text{lower right} \\ 1.2 \end{pmatrix}$ & $\begin{pmatrix} \text{lower left} \\ 1.2 \end{pmatrix}$ \\ \hline 
+  Connection & Atoms & Atoms & Atoms & Atoms & Atoms & Center elements \\ \hline  
+  Avoid invalid & False & False & True & True & True & True \\ \hline  
+  Stay or break & 0 & 0 & 0.9 & 0 & 0 & 0 \\ \hline  
+  Periodic & True & True & True & True & True & True \\ \hline  
+  Avoid clustering & 10 & 10 & 10 & 10 & 10 & 10 \\ \hline  
+  RN6 & False & True & True & False & False & False \\ \hline 
+  Grid start & True & True & False & False & False & False \\ \hline 
+  Centering & True & True & False & False & False & False \\ \hline 
+  \end{tabular}
+\end{center}
+\end{table}
 
 
-% \begin{table}[H]
-%   \begin{center}
-%   \caption{RW flavors}
-%   \label{tab:RW_flavors}
-%   \begin{tabular}{ |c|c|c|c|c|c|c|} \hline
-%   Fig. num. 
-%   Num. walks 
-%   Max Steps 
-%   Min dis 
-%   Bias 
-%   center elem 
-%   avoid invalid 
-%   RN6 
-%   grid start 
-%   centering 
-%   stay or break 
-%    avoid clustering 
-%    periodic \\ \hline
-%   % a  num_walks = 25, max_steps = 15, min_dis = 0, bias = [direc['up_right'], 100], center_elem = False,  avoid_unvalid = False,  RN6 = False,  grid_start = True,  centering = True,  stay_or_break = 0,  avoid_clustering = 10,  periodic = True)]
-%   % b  num_walks = 25, max_steps = 15, min_dis = 0, bias = [direc['up_right'], 100], center_elem = False,  avoid_unvalid = False,  RN6 = True,  grid_start = True,  centering = True,  stay_or_break = 0,  avoid_clustering = 10,  periodic = True)]
-%   % c  num_walks = 20, max_steps = 30, min_dis = 4, bias = [(0,0), 0], center_elem = False,  avoid_unvalid = True,  RN6 = True,  grid_start = False,  centering = False,  stay_or_break = 0.9,  avoid_clustering = 10,  periodic = True)]
-%   % d  num_walks = 30, max_steps = 40, min_dis = 4, bias = [(0,0), 0], center_elem = False,  avoid_unvalid = True,  RN6 = False,  grid_start = False,  centering = False,  stay_or_break = 0,  avoid_clustering = 10,  periodic = True)]
-%   % e  num_walks = 20, max_steps = 30, min_dis = 4, bias = [direc['down_right'], 1.2], center_elem = False,  avoid_unvalid = True,  RN6 = False,  grid_start = False,  centering = False,  stay_or_break = 0,  avoid_clustering = 10,  periodic = True)]
-%   % f  num_walks = 32, max_steps = 30, min_dis = 4, bias = [direc['down_left'], 1.2], center_elem = 'full', avoid_unvalid = True,  RN6 = False,  grid_start = False,  centering = False,  stay_or_break = 0,  avoid_clustering = 10,  periodic = True)]
-% \end{tabular}
-% \end{center}
-% \end{table}
