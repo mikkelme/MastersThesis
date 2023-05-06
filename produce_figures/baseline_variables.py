@@ -635,7 +635,7 @@ def vaccum_normal_buckling(path, save = False):
     for ax in axes:
         ax.set_ylim([-max_ylim, max_ylim])
 
-    fig.supxlabel('Stretch', fontsize = 14)
+    fig.supxlabel('Strain', fontsize = 14)
     fig.supylabel('z-position [Å]', fontsize = 14)
     
     handles, labels = axes[0].get_legend_handles_labels()
@@ -654,7 +654,6 @@ def computational_cost(save = False):
     K_path = 'spring'
     dt_path = 'dt2'
     
-    # TODO: HANDLE 0 --> inf for spring constant
     
     param_paths = [T_path, vel_path, K_path, dt_path]
     param_names = ['$T$ [K]', 'Sliding speed [m/s]', '$K$ [N/m]', '$dt$ [fs]'] 
@@ -702,7 +701,7 @@ def computational_cost(save = False):
             time = np.array(time)
             time /= 3600 # s --> h
             var = np.array(var)
-            ax.plot(var, time, linestyle = '', marker = config_markers[c], markersize = 2.5, color = config_colors[c], label = config_names[c])
+            ax.plot(var, time, linestyle = '', marker = config_markers[c], markersize = 4, color = config_colors[c], label = config_names[c])
             
             if param_loglog[p]:
                 a, b, a_err, b_err = lin_fit(np.log(var), np.log(time))
@@ -771,14 +770,14 @@ if __name__ == "__main__":
     # spring(path, save = False)
     # dt(path, save = False)
     
-    multi_stretch(path, save = False)
+    # multi_stretch(path, save = False)
     # multi_FN(path, save = False)
-    multi_area(path, save = False)
+    # multi_area(path, save = False)
     
     # multi_FN_force_dist(path, save = False)
     
     # contact_vs_time(path, save = False)
     # vaccum_normal_buckling(path, save = False)
     
-    # computational_cost(save = True)
+    computational_cost(save = True)
     plt.show()

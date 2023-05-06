@@ -6,6 +6,7 @@ from plot_set import *
 from analysis.analysis_utils import *
 
 from scipy.signal import argrelextrema
+from brokenaxes import brokenaxes
 
 
 def raw_data(filename, save = False):
@@ -520,35 +521,39 @@ def maxarg_vs_K(dirs, save = False):
         
     
     
-    plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
-    plt.plot(K, argmax, 'o')
-    hline(plt.gca(), 71, linestyle = '--', color = 'black', linewidth = 1, zorder = 0, label = "Slow period $= 71 \pm 15$ Å")
-    
-    ax = plt.gca()
-    xlim = ax.get_xlim()
-    ylim = ax.get_ylim()
-    plt.fill_between([K.min() - 20, K.max() + 20], [71-15, 71-15], [71+15, 71+15], color = 'black', alpha = 0.1, zorder = 0)
-    ax.set_xlim(xlim)
-    ax.set_ylim(ylim)
+    fig = plt.figure(num = unique_fignum(), dpi=80, facecolor='w', edgecolor='k')
+    bax = brokenaxes(xlims=((-5, 210), (240, 260)), hspace=.05, wspace = .05)
+    bax.plot(K, argmax, 'o')
     
     
-    # xfill(plt.gca(), 71-15, 71+15, color = 'black', alpha = 0.2, linewidth = 1, zorder = 0)
+    xlim = bax.get_xlim()
+    bax.hlines(71, xlim[0][0], xlim[1][1], linestyle = '--', color = 'black', linewidth = 1, zorder = 0, label = "$71 \pm 15$ Å")
+    bax.fill_between([K.min() - 20, K.max() + 20], [71-15, 71-15], [71+15, 71+15], color = 'black', alpha = 0.1, zorder = 0)
     
     
-    plt.xlabel(r'Spring constant $K$ [N/m]', fontsize=14)
-    plt.ylabel(r'$\arg \min{F_{\parallel}}$ [Å]', fontsize=14)
-    plt.legend(loc = 'upper right', fontsize = 13)
+    ax = fig.axes
+    xtick_labels = ax[1].get_xticks()
+    xtick_labels[-2] = 'inf'
+    ax[1].set_xticklabels(xtick_labels)
+
+    
+    bax.set_xlabel(r'Spring constant $K$ [N/m]', fontsize=14)
+    bax.set_ylabel(r'$\arg \max \ F_{\parallel}$ [Å]', fontsize=14)
+    bax.legend(loc = 'upper right', fontsize = 13)
     plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    for handle in bax.diag_handles:
+        handle.remove()
+    bax.draw_diags()
     if save:
         plt.savefig('../article/figures/baseline/max_vs_K', bbox_inches='tight')
     
-
+    
 
 if __name__ == '__main__':
     path = '../Data/Baseline'
     # filename = os.path.join(path,'nocut/temp/T300/system_2023-01-17_Ff.txt')
     # filename = os.path.join(path,'nocut/special/v1/system_v1_Ff.txt')
-    filename = os.path.join(path,'nocut/special/v10/system_v10_Ff.txt')
+    # filename = os.path.join(path,'nocut/special/v10/system_v10_Ff.txt')
     
     # path = '../Data/Baseline_fixmove' # XXX
     # filename = os.path.join(path,'nocut/temp/T300/system_T300_Ff.txt') # XXX
@@ -558,7 +563,7 @@ if __name__ == '__main__':
     # raw_data(filename, save = False)
     # ft(filename, save = False)
     # decomp(filename, save = False)
-    COM(filename, save = False)
+    # COM(filename, save = False)
     # mean_values(filename, save = False)
     # plt.show()
     
@@ -571,7 +576,7 @@ if __name__ == '__main__':
     
     # path = '../Data/Baseline_fixmove'
     # files = get_dirs_in_path(os.path.join(path, 'nocut/spring'))
-    # maxarg_vs_K(files, save = False)
+    # maxarg_vs_K(files, save = True)
     
     
     
