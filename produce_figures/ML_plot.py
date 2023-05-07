@@ -850,7 +850,7 @@ def final_model_compare_scores(model_path):
 if __name__ == '__main__':
     # LR_range_specific(A_staircase_subset(mode = 0, batchnorm = True), save = False)
     # LR_range_full(filename = '../ML/staircase_lr/lr.txt', save = False)
-    # LR_range_momentum(save = False)
+    LR_range_momentum(save = False)
     
     # A_search_perf(path = '../ML/staircase_4', save = False)
     # A_search_compare_perf(path = '../ML/staircase_4', save = Fase)
