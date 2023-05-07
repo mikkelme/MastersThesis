@@ -272,7 +272,7 @@ applied load. In fact, this is exactly how the theoretical model explains the fr
   \end{subfigure}
   \hfill
      \caption{Qualitatively illustration of the microscopic asperity deformation
-     under increasing load from frame (a) to (b)~\cite{wiki:asperities}. While this figure seemingly portrays plastic deformation the concept of increased contact area with increased load applies to elastic deformation as well.}
+     under increasing load from frame (a) to (b). While this figure seemingly portrays plastic deformation the concept of increased contact area with increased load applies to elastic deformation as well. Reprinted from ~\cite{wiki:asperities}.}
      \label{fig:asperity_contact}
 \end{figure}
 
@@ -419,7 +419,7 @@ individual parameters and mechanisms governing friction.
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.4\linewidth]{figures/theory/PT_FK_FKT.png}
-  \caption{Illustration of the key features of the Prandtl-Tomlinson (\acrshort{PT}), Frenkel-Kontorova (\acrshort{FK}) and Frenkel-Kontorova-Tomlinson (\acrshort{FKT}) respectively~\cite{Yalin_2011}. Reproduced from~\cite{Yalin_2011} with permission from the American Physical Society.  \hl{Be careful to align the notation on the figures with the text later on}. \hl{consider to cut up and put side by side.}}
+  \caption{Illustration of the key features of the Prandtl-Tomlinson (\acrshort{PT}), Frenkel-Kontorova (\acrshort{FK}) and Frenkel-Kontorova-Tomlinson (\acrshort{FKT}) respectively~\cite{Yalin_2011}. Reproduced from~\cite{Yalin_2011}. \hl{Be careful to align the notation on the figures with the text later on}. \hl{consider to cut up and put side by side.}}
   \label{fig:PT_FK_FKT}
 \end{figure}
 
@@ -466,8 +466,8 @@ This probability is related to temperature, speed and mass~\cite{Yalin_2011}.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.6\linewidth]{figures/theory/PT_slip.png}
-  \caption{An illustration of slip between two adjacent energy minima. $p_i$ is the probability of the tip residing in the current potential well, $i$, where the energy barrier is $\Delta V_{i \rightarrow j}$. $p_j$ is the probability of the tip residing at the next minima, $j$, where $\Delta V_{j \rightarrow i}$ is the corresponding energy barrier. Figure and caption from~\cite{Yalin_2011}. \hl{Rights and permission}}
+  \includegraphics[width=0.5\linewidth]{figures/theory/PT_slip.png}
+  \caption{An illustration of slip between two adjacent energy minima. $p_i$ is the probability of the tip residing in the current potential well, $i$, where the energy barrier is $\Delta V_{i \rightarrow j}$. $p_j$ is the probability of the tip residing at the next minima, $j$, where $\Delta V_{j \rightarrow i}$ is the corresponding energy barrier. Figure and caption reproduced from~\cite{Yalin_2011}.}
   \label{fig:PT_slip}
 \end{figure}
 
@@ -495,29 +495,6 @@ al.~\cite{Krylow_2007, PhysRevE.71.065101, Jinesh_2008}
 Notice that the friction dependence on sliding speed changes from~\cref{eq:F_thermal_ac} to \cref{eq:PT_thermal_drift} as it transitions from the thermal activation to the thermal drift regime. 
 
 
-\begin{figure}[H]
-  \centering
-  \begin{subfigure}[t]{0.49\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/theory/PT_temp.png}
-      \caption{}
-      \label{fig:PT_temp_a}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.49\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{figures/theory/PT_temp_force.png}
-      \caption{}
-      \label{fig:PT_temp_b}
-  \end{subfigure}
-  \hfill
-  \hfill
-     \caption{Illustration of the temperature difference between the thermal activation regime and the thermal drift regime. (a) shows the mean friction as a function of temperature showcasing the regime transition. The figure corresponds to the numerical results of Dong et al.~\cite{Yalin_2011} of a Prandtl–Tomlinson model with model parameters: $m=\SI{e-12}{kg}$, $U_0={0.6}{eV}$, $v=\SI{4e3}{nm/s}$, $\mu=\SI{2}{\sqrt{k/m}}$, $a=\SI{0.288}{nm}$. (b) shows the force traces of a simulation in the thermal activation regime (top) and thermal drift regime (bottom) with several characteristic forward and backward slips identified by dashed lines for the latter case. Figures from from~\cite{Yalin_2011} \hl{Rights and permission}.}
-     \label{fig:PT_temp}
-\end{figure}
-
-
-
 \subsubsection{Sliding speed}
 In the thermal activation regime (low temperature) and at low sliding speeds, the
 friction relation follows~\cref{eq:F_thermal_ac} which means that friction
@@ -537,10 +514,34 @@ regime~\cite{Li_2011}. It is unclear how this affects real physical systems for
 which there exist more dissipation channels than just a single viscous
 term~\cite{Dong_2013}. For the thermal drift regime, at higher temperatures, friction increase linearly with sliding speed $F_{\text{fric}} \propto v$ as given by~\cref{eq:PT_thermal_drift}.
 
-\begin{figure}[H]
+
+\begin{figure}[!htb]
   \centering
-  \includegraphics[width=0.6\linewidth]{figures/theory/PT_speed.png}
-  \caption{The friction dependence on sliding speed for the simulated Prandtl–Tomlinson by Dong et al.~\cite{Yalin_2011} revealing two different regimes. In the thermal regime, friction increases logarithmically with speed, and in the athermal regime, friction is governed by damping such that $F\propto v$. The friction plateau ($F_c = \SI{0.39}{nN}$) predicted by thermal activation is shown as a dotted line. Other models parameters: $m=\SI{e-12}{kg}$, $U_0={0.6}{eV}$, $T = \SI{300}{K}$, $\mu=\SI{2}{\sqrt{k/m}}$, $a=\SI{0.288}{nm}$. Figure from~\cite{Yalin_2011} \hl{Rights and permission}}
+  \begin{subfigure}[t]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/theory/PT_temp.png}
+      \caption{}
+      \label{fig:PT_temp_a}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/theory/PT_temp_force.png}
+      \caption{}
+      \label{fig:PT_temp_b}
+  \end{subfigure}
+  \hfill
+  \hfill
+     \caption{Illustration of the temperature difference between the thermal activation regime and the thermal drift regime. (a) shows the mean friction as a function of temperature showcasing the regime transition. The figure corresponds to the numerical results of Dong et al.~\cite{Yalin_2011} of a Prandtl–Tomlinson model with model parameters: $m=\SI{e-12}{kg}$, $U_0={0.6}{eV}$, $v=\SI{4e3}{nm/s}$, $\mu=\SI{2}{\sqrt{k/m}}$, $a=\SI{0.288}{nm}$. (b) shows the force traces of a simulation in the thermal activation regime (top) and thermal drift regime (bottom) with several characteristic forward and backward slips identified by dashed lines for the latter case. Reproduced from~\cite{Yalin_2011}.}
+     \label{fig:PT_temp}
+\end{figure}
+
+
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.5\linewidth]{figures/theory/PT_speed.png}
+  \caption{The friction dependence on sliding speed for the simulated Prandtl–Tomlinson by Dong et al.~\cite{Yalin_2011} revealing two different regimes. In the thermal regime, friction increases logarithmically with speed, and in the athermal regime, friction is governed by damping such that $F\propto v$. The friction plateau ($F_c = \SI{0.39}{nN}$) predicted by thermal activation is shown as a dotted line. Other models parameters: $m=\SI{e-12}{kg}$, $U_0={0.6}{eV}$, $T = \SI{300}{K}$, $\mu=\SI{2}{\sqrt{k/m}}$, $a=\SI{0.288}{nm}$. Reproduced from~\cite{Yalin_2011}.}
   \label{fig:PT_speed}
 \end{figure}
 
@@ -569,7 +570,7 @@ less potential energy can be accumulated and it will result in fewer multiple sl
 % The effects of damping, speed and temperature are illustrated for the force traces in~\cref{fig:PT_slip_var}
 
 
-% \begin{figure}[H]
+% \begin{figure}[!htb]
 %   \centering
 %   \begin{subfigure}[t]{0.32\textwidth}
 %       \centering
@@ -620,11 +621,10 @@ and mass $m$. Often the effects of inertia are neglected, referred to as the sta
 constant $K$, nearest neighbor distance $\Delta x = x_{i+1} - x_i$ and 
 corresponding nearest neighbor equilibrium distance $a_c$. The final term represents the periodic corrugation potential, with amplitude $U_0$ and period $a_b$. By comparison to the potential used in the Prandtl–Tomlinson model \cref{eq:V_PT}, the difference is the introduction of a harmonic coupling between particles in the chain as opposed to the moving body. Different boundary choices can be made where both free ends and periodic conditions give similar results. The choice of fixed ends however makes the chain incapable of sliding.
 
-\begin{figure}[H]
+\begin{figure}[!htb]
   \centering
-  \includegraphics[width=0.8\linewidth]{figures/theory/FK_model.png}
-  \caption{\hl{Waiting for reuse permission} figure from~\cite{Manini_2016}}
-  % https://powerxeditor.aptaracorp.com/sciprisaps/RnPRequest/List
+  \includegraphics[width=0.6\linewidth]{figures/theory/FK_model.png}
+  \caption{A sketch of the Frenkel-Kontorova model with the two competing lengths: interparticle and substrate periodicities. Figure and caption reproduced from~\cite{Vanossi_2013} with permission from the American Physical Society.}
   \label{fig:FK_model}
 \end{figure}
 
@@ -652,14 +652,21 @@ extra atoms (atom vacancies), is representing the fundamental mechanism for
 mass transport. These displacements are responsible for the mobility,
 diffusivity and conductivity within this model. 
 
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.55\linewidth]{figures/theory/incommensurable_example.png}
+  \caption{Qualitative example of an incommensurable case where the atoms sit slightly closer together than otherwise dictated by the substrate potential. This results in a single kink here seen as the presence of two atoms within the same potential corrugation well. Reproduced from \cite{BRAUN19981}.}
+  \label{fig:incommensurable_example}
+\end{figure}
+
+
 In the zero temperature commensurable case with an adiabatical increase in force, all atoms would be put into an accelerating motion as soon as the potential barrier energy is present. However, similar to our discussion on the Prandtl-Tomlinson model, thermal activations will excite the system at an earlier stage resulting in kink-antikink pairs traveling down the chain. For a chain of finite length, these often occur at the end of the chain running in opposite directions. This cascade of kink-antikink excitations is shown in \cref{fig:kink_antikink}. Notice, that for the 2D case, where an island (flake) is deposited on a surface, we generally also expect the sliding to be initiated by kink-antikink pairs at the boundaries. 
 
 
-\begin{figure}[H]
+\begin{figure}[!htb]
   \centering
-  \includegraphics[width=0.8\linewidth]{figures/theory/kink_antikink.png}
-  \caption{\hl{Waiting for reuse permission} figure from~\cite{Manini_2016}}
-  % https://powerxeditor.aptaracorp.com/sciprisaps/RnPRequest/List
+  \includegraphics[width=0.45\linewidth]{figures/theory/kink_antikink.png}
+  \caption{Detailed behavior (atomic trajectories vs time) at the depinning transition at a small nonzero temperature of the Frenkel-Kontorova chain with $\theta = 1$. The onset of motion is marked by the creation of one kink-antikink pair. The kink and antikink move in opposite directions, collide quasielastically (because of the periodic boundary conditions), and soon a second kink-antikink pair is created in the tail of the primary kink. This process repeats with an exponential (avalanchelike) growth of the kink-antikink concentration, leading to the totally sliding state. Adapted from~\cite{PhysRevLett.79.3692}, figure and caption reproduced from~\cite{Vanossi_2013} with permission from the American Physical Society.}
   \label{fig:kink_antikink}
 \end{figure}
 
@@ -670,22 +677,13 @@ In the zero temperature commensurable case with an adiabatical increase in force
 
 % \hl{Go through this last part  again. Even though this is what the source says I'm not quite sure I understand why it is not opposite ``...released through a localized compression (expansion)''?}.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.5\linewidth]{figures/theory/incommensurable_example.png}
-  \caption{\hl{Temporary} figure from
-  url{http://www.iop.kiev.ua/~obraun/myreprints/surveyfk.pdf} p. 14.
-  Incommensurable case ($\theta = ?$) where atoms sits slightly closer than
-  otherwise dictated by the substrate potential for which this regular result in
-  a kink here seen as the presence of two atoms closely together in one of the
-  potential corrugations.}
-  \label{fig:incommensurable_example}
-\end{figure}
 
 % Maybe use the strength $\lambda = U_0 / (K a_b^2)$ with critical strength $\lambda_c$ instead of critical $K$?
 
-For the case of incommensurability, i.e.\ $\theta = a_b/a_c$ being irrational, the
-\acrshort{GS} is characterized by a sort of ``staircase''  deformation. That is, the chain will exhibit regular periods of regions with approximate commensurability separated by reguraly spaced kinks or antikinks. 
+For the case of incommensurability, i.e.\ $\theta = a_b/a_c$ being irrational,
+the \acrshort{GS} is characterized by a sort of ``staircase''  deformation. That
+is, the chain will exhibit regular periods of regions with approximate
+commensurability separated by reguraly spaced kinks or antikinks. 
 
 
 The incommensurable Frenkel-Kontorova model contains a critical elastic constant $K_c$, such that for $K > K_c$ the static friction $F_s$ drops to zero, making the chain able to initiate a slide at no energy cost, while the low-velocity kinetic friction is dramatically reduced. This can be explained by the
@@ -711,26 +709,42 @@ the golden-mean ratio $\theta = (1+\sqrt{5}/2)$. The Aubry transition can be inv
 
 
 The phenomena of non-pinned configurations are named \textit{superlubricity} in
-tribological context. Despite the misleading name, this refers to the case
-where the static friction is zero while the kinetic friction is nonzero, but
-reduced. For the case of a 2D sheet, it is possible to alter the
-commensurability, not only by changing the lattice spacing through material
-choice but also by changing the orientation of the sheet relative to the
-substrate. Dienwiebel et al.~\cite{DIENWIEBEL2005197} have shown that the
-kinetic friction, for a graphene flake sliding over a graphite surface (multiple
-layers of graphene), exhibits extremely low friction at certain orientations as
-shown in \cref{fig:graphene_rot}. As the orientation is changed they observed two spikes of considerable friction while the remaining valleys correspond to effectively zero friction in consideration of the measurement uncertainty. This phenomenon relates to the transition between frictional regimes, as introduced through the Prandtl–Tomlinson model, since the change in orientation affects the
-effective substrate potential. Merely from the static consideration, we found that
+tribological context. Despite the misleading name, this refers to the case where
+the static friction is zero while the kinetic friction is nonzero, but reduced.
+For the case of a 2D sheet, it is possible to alter the commensurability, not
+only by changing the lattice spacing through material choice but also by
+changing the orientation of the sheet relative to the substrate. Dienwiebel et
+al.~\cite{DIENWIEBEL2005197} have shown that the kinetic friction, for a
+graphene flake sliding over a graphite surface (multiple layers of graphene),
+exhibits extremely low friction at certain orientations as shown in
+\cref{fig:graphene_rot}. As the orientation is changed they observed two spikes
+of considerable friction while the remaining valleys correspond to effectively
+zero friction in consideration of the measurement uncertainty. This phenomenon
+relates to the transition between frictional regimes, as introduced through the
+Prandtl–Tomlinson model, since the change in orientation affects the effective
+substrate potential. Merely from the static consideration, we found that
 lowering the potential amplitude $U_0$ will decrease the parameter $\eta =
 2\pi^2U_0/a^2K$ shifting away from the regime of multiple slips towards smooth
-sliding associated with low friction. Such transitions will also be affected by the shape of the potential and corresponding 2D effects of the sliding path~\cite{Yalin_2011}.
+sliding associated with low friction. Such transitions will also be affected by
+the shape of the potential and corresponding 2D effects of the sliding
+path~\cite{Yalin_2011}.
 
-\begin{figure}[H]
+\begin{figure}[!htb]
   \centering
-  \includegraphics[width=0.5\linewidth]{figures/theory/graphene_rot.png}
-  \caption{\hl{Temporary} figure from~\cite{DIENWIEBEL2005197} showing superlubricity for incommensurable orientations between graphene and graphite. \hl{temporary}}
+  \includegraphics[width=0.55\linewidth]{figures/theory/graphene_rot.png}
+  \caption{Average friction force versus rotation angle $\Phi$ of the
+  graphite sample around an axis normal to the sample surface.
+  Two narrow peaks of high friction are observed at 0$^{\circ}$ and 61$^{\circ}$,
+  respectively. Between these peaks a wide angular range with
+  ultra-low friction, close the detection limit of the instrument, is
+  found. The first peak has a maximum friction force of $306 \pm \SI{40}{pN}$, and the second peak has a maximum of $203 \pm \SI{20}{pN}$.
+  The curve through the data points shows results from a
+  Tomlinson model for a symmetric 96-atom graphite flake
+  sliding over the graphite surface (for details about the calculation see~\cite{PhysRevB.70.165418}). Figure and caption adapted from~\cite{DIENWIEBEL2005197}, reproduced from~\cite{Vanossi_2013} with permission from the American Physical Society.}
   \label{fig:graphene_rot}
 \end{figure}
+
+
 
 
 
@@ -871,7 +885,7 @@ increasing friction with contact size although it might showcase non-linear
 behavior depending on commensurability.
 
 
-\begin{figure}[H]
+\begin{figure}[!htb]
   \centering
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
@@ -885,7 +899,7 @@ behavior depending on commensurability.
       \label{fig:FKT_2D_rot}
     \end{subfigure}
     \hfill
-     \caption{Friction in the Frenkel-Kontorova-Tomlinson model for varying size and Commensurability corresponding to numerical result by Dong et al.~\cite{Yalin_2011}. $K_t$ describes the interatomic spring constant and $K$ the coupling to the moving body. (a) The 1D case with an increasing number of atoms in the chain and different mismatch length ratios $\theta = a_b / a_c$, given as $a/b$ in their notation. The model parameters are $K = \SI{5}{N/m}$, $K_t = \SI{50}{N/m}$. (b) The 2D case with varying angles (misfit angle) between the flake and the substrate. The model parameters are $K = \SI{10}{N/m}$, $K_t = \SI{50}{N/m}$. Figure from~\cite{Yalin_2011}. \hl{Rights and permission}.}
+     \caption{Friction in the Frenkel-Kontorova-Tomlinson model for varying size and Commensurability corresponding to numerical result by Dong et al.~\cite{Yalin_2011}. $K_t$ describes the interatomic spring constant and $K$ the coupling to the moving body. (a) The 1D case with an increasing number of atoms in the chain and different mismatch length ratios $\theta = a_b / a_c$, given as $a/b$ in their notation. The model parameters are $K = \SI{5}{N/m}$, $K_t = \SI{50}{N/m}$. (b) The 2D case with varying angles (misfit angle) between the flake and the substrate. The model parameters are $K = \SI{10}{N/m}$, $K_t = \SI{50}{N/m}$. Reproduced from~\cite{Yalin_2011}.}
      \label{fig:FKT_size}
 \end{figure}
 
@@ -1032,18 +1046,18 @@ photodetector (see~\cref{fig:AFM}), one can simultaneously
 measure the normal force and friction force as the probes scan across the
 surface. \acrshort{AFM} can also be utilized to drag a nanoflake across the substrate, as demonstrated by Dienwiebel et al.~\cite{DIENWIEBEL2005197}, who attached a graphene flake to a \acrshort{FFM} tip and dragged it across graphite. However, it should be noted that this method concentrates the normal loading to a single point on the flake, rather than achieving an evenly distributed load.
 
-\begin{figure}[H]
+
+\subsubsection{Surface Force Apparatus}
+Finally, it is worth mentioning the Surface Force Apparatus (\acrshort{SFA}), which consists of two curved, molecularly smooth surfaces brought into contact~\cite[p. 188]{gnecco_meyer_2015}. The material of choice is usually mica since it can be easily cleaved into atomically flat surfaces over macroscopic areas. The sample is then placed between the two surfaces as a lubricant film, and the friction properties can be studied by applying a tangential force to the surfaces.
+
+\begin{figure}[!htb]
   \centering
-  \includegraphics[width=0.6\linewidth]{figures/theory/AFM.png}
-  \caption{Schematic diagram of a beam-deflection atomic force microscope. Figure and caption from~\cite[p. 184]{gnecco_meyer_2015} \hl{Rights and permission}}
+  \includegraphics[width=0.5\linewidth]{figures/theory/AFM.png}
+  \caption{Schematic diagram of a beam-deflection atomic force microscope. Figure and caption reproduced from~\cite[p. 184]{gnecco_meyer_2015}.}
   \label{fig:AFM}
 \end{figure}
 
 
-
-
-\subsubsection{Surface Force Apparatus}
-Finally, it is worth mentioning the Surface Force Apparatus (\acrshort{SFA}), which consists of two curved, molecularly smooth surfaces brought into contact~\cite[p. 188]{gnecco_meyer_2015}. The material of choice is usually mica since it can be easily cleaved into atomically flat surfaces over macroscopic areas. The sample is then placed between the two surfaces as a lubricant film, and the friction properties can be studied by applying a tangential force to the surfaces.
 
 \section{Summary of previous results}\label{sec:prev_results}
 Several studies have investigated the frictional behavior of graphene by varying
@@ -1065,7 +1079,7 @@ Prandtl–Tomlinson type models and our specific system of interest. Nonetheless
 we will consider results across all three types of systems. The majority of the studies considers are summarized in \cref{tab:friction_ref} for convenience. 
 
 
-\begin{table}[H]
+\begin{table}[!htb]
   % \begin{center}
   \centering
   \caption{A summary of the main studies considered for the review of previous results in~\cref{sec:prev_results}. The table provides a distinction between the different types of systems in the study: \acrshort{FFM}, \acrshort{SFA} or flake on a substrate, as well as whether they were numerically (num.) or experimentally.}
