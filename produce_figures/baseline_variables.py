@@ -255,11 +255,18 @@ def multi_FN(path, save = False):
     # # yerr = 'data[\'Ff_std\'][:,:,0]*data[\'Ff\'][:,:,0, 1]'
     # fig_mean, _ = multi_plot_compare(folders, names, vars, axis_labels, axis_scale = ['log', 'linear'], colorbar_scale = [[0, 0.9167264826629], 'linear'], equal_axes = [False, False], rupplot = False)
     
-    # # Contact 
-    vars = ['data[\'F_N\']', 'data[\'contact_mean\'][:, :, 0].T', 'data[\'stretch_pct\']/(int(0==f)*0.36 + int(1==f)*0.21 + int(2==f)*1.27)']
-    axis_labels = [r'$F_N$ [nN]', r'$\langle$ Rel. Contact $\rangle$', r'Rel. Strain']
+    # # # Contact 
+    # vars = ['data[\'F_N\']', 'data[\'contact_mean\'][:, :, 0].T', 'data[\'stretch_pct\']/(int(0==f)*0.36 + int(1==f)*0.21 + int(2==f)*1.27)']
+    # axis_labels = [r'$F_N$ [nN]', r'$\langle$ Rel. Contact $\rangle$', r'Rel. Strain']
+    # yerr = None
+    # fig_contact, _ = multi_plot_compare(folders, names, vars, axis_labels, axis_scale = ['log', 'linear'], colorbar_scale = [[0, 0.9167264826629], 'linear'], equal_axes = [False, False], rupplot = False)
+  
+  
+    # # fric vs contact
+    vars = ['data[\'contact_mean\'][:, :, 0].T', 'data[\'Ff\'][:, :, 0, 1].T',  'data[\'stretch_pct\']/(int(0==f)*0.36 + int(1==f)*0.21 + int(2==f)*1.27)']
+    axis_labels = [r'$\langle$ Rel. Contact $\rangle$',  r'$\langle F_\parallel \rangle$ [nN]',  r'Rel. Strain']
     yerr = None
-    fig_contact, _ = multi_plot_compare(folders, names, vars, axis_labels, axis_scale = ['log', 'linear'], colorbar_scale = [[0, 0.9167264826629], 'linear'], equal_axes = [False, False], rupplot = False)
+    fig_fric_contact, _ = multi_plot_compare(folders, names, vars, axis_labels, axis_scale = ['linear', 'linear'], colorbar_scale = [[0, 0.9167264826629], 'linear'], equal_axes = [False, False], rupplot = False)
 
 
     # Max
@@ -268,9 +275,10 @@ def multi_FN(path, save = False):
     # fig_max = multi_plot_compare(folders, names, vars, axis_labels, axis_scale = ['log', 'linear'], colorbar_scale = 'linear', equal_axes = [False, False], rupplot = False)
     
     if save:
-        fig_mean.savefig("../article/figures/baseline/multi_FN_mean_compare.pdf", bbox_inches="tight")
-        fig_contact.savefig("../article/figures/baseline/multi_FN_contact_compare.pdf", bbox_inches="tight")
-        # fig_max.savefig("../article/figures/baseline/multi_FN_max_compare.pdf", bbox_inches="tight")
+        # fig_mean.savefig("../article/figures/baseline/multi_FN_mean_compare.pdf", bbox_inches="tight")
+        # fig_contact.savefig("../article/figures/baseline/multi_FN_contact_compare.pdf", bbox_inches="tight")
+        fig_fric_contact.savefig("../article/figures/baseline/multi_FN_fric_contact_compare.pdf", bbox_inches="tight")
+       
 
    
 def multi_FN_force_dist(path, save = False):
@@ -382,17 +390,18 @@ def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yer
             for k in range(len(z)):
                 start = np.argmin(x)
                 end = np.argmax(x)
-                print(x[start], x[end], y[start,k], y[end,k], y[end,k]-y[start,k])
+                # print(x[start], x[end], y[start,k], y[end,k], y[end,k]-y[start,k])
                 if len(z) > 1 or True:
                     # color = get_color_value(z[k], np.min(z), np.max(z), scale = colorbar_scale[-1], cmap = cmap)
                     
                     color = get_color_value(z[k], colorbar_scale[0][0], colorbar_scale[0][1], scale = colorbar_scale[-1], cmap = cmap)
                     # axes[f].plot(x, y[:,k], **line_and_marker, color = color)
-                    axes[f].scatter(x, y[:,k], **line_and_marker, color = color)
+                    # axes[f].scatter(x, y[:,k], **line_and_marker, color = color)
+                    axes[f].scatter(x[:,k], y[:,k], **line_and_marker, color = color)
                     # test = y[:, k]/x
                     # print(f'F/FN (f = {f}, z = {z[k]}): min = {np.min(test)}, max = {np.max(test)}')
-                    notnan = ~np.isnan(y[:, k])
-                    a, b, a_err, b_err = lin_fit(x[notnan],y[notnan, k])
+                    # notnan = ~np.isnan(y[:, k])
+                    # a, b, a_err, b_err = lin_fit(x[notnan],y[notnan, k])
                     # print(f'linfit (f = {f}, z = {z[k]}):  a = {a:g}, b = {b:g}, a_err = {a_err:g}, b_err = {b_err:g}')
                     
                     
@@ -779,7 +788,7 @@ if __name__ == "__main__":
     # dt(path, save = False)
     
     # multi_stretch(path, save = False)
-    multi_FN(path, save = False)
+    multi_FN(path, save = True)
     # multi_area(path, save = False)
     
     # multi_FN_force_dist(path, save = False)

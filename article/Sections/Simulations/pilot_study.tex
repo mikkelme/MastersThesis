@@ -33,11 +33,11 @@ later in the chapter. Note that the default values in~\cref{tab:final_param}
 will be used when nothing else is stated explicitly.
 
 
-\begin{table}[H]
+\begin{table}[h]
   \begin{center}
   \caption{Parameters involved in the numerical \acrshort{MD} simulation for measuring friction. The default values correspond to the final choice used for the dataset. The shaded cells denote the parameters varied in the \acrshort{ML} dataset.}
   \label{tab:final_param}
-  \begin{tabular}{ | M{4cm} | M{3.5cm} | X{6cm}|} \hline
+  \begin{tabular}{ | M{4cm} | M{3.5cm} | X{8cm}|} \hline
     \textbf{Parameter} & \textbf{Default value} &  \textbf{Description} \\ \hline
     $T$ & \SI{300}{K} &  Temperature of the system. \\ \hline
     $v_{\text{slide}}$ &\SI{20}{m/s} & Sliding speed for the sheet. \\ \hline
@@ -227,7 +227,7 @@ graphene with a lattice constant of \SI{2.46}{Å}. The longer period $T_b = 71 \
 \SI{15}{\text{Å}}$ is not obviously explained. We notice a similarly long period oscillation for all three cases \cref{fig:drag_Ff_100}, \cref{fig:drag_Ff_100_K10_v10} and \cref{fig:drag_Ff_100_K10_v1}, and thus we have no reason to believe that this is dependent on the stick-slip behavior. The initial build-up in friction force is reminiscent of friction strengthening, which is often reported~\cite{zhang_tuning_2019, li_evolving_2016}, but the periodicity goes against this idea. Instead, we might attribute it to a phonon
 resonance effect which might be further affected by the fact that we use periodic boundary conditions for a finite substrate.
 
-\begin{figure}[H]
+\begin{figure}[!htb]
   \centering
   \begin{subfigure}[t]{0.49\textwidth}
     \centering
@@ -285,7 +285,7 @@ parallel component. However, we omit such compromises as this might make the
 measurement interpretation unessercary complex, and we use only the parallel
 component going forward. 
 
-\begin{figure}[H]
+\begin{figure}[!htb]
   \centering
   \begin{subfigure}[t]{0.49\textwidth}
     \centering
@@ -323,7 +323,7 @@ Finally we have the $K = \SI{10}{\frac{N}{m}}$, $v = \SI{10}{\frac{m}{s}}$ in~\c
 movement between accelerations, but with the rapid parts aligning visually well with the timing of the slips seen in~\cref{fig:drag_Ff_100_K10_v1}. We might associate the chaotic motion with thermal contributions as these are thought to be dominant at lower sliding speeds.  
 
 
-\begin{figure}[H]
+\begin{figure}[!htb]
   \centering
   \begin{subfigure}[t]{0.85\textwidth}
     \centering
@@ -383,7 +383,7 @@ In this case, we get an extremely high relative error of $\sim 257\%$, but this
 is consistent with the fact that the short sampling period leads to an
 unphysical negative value which should be associated with high uncertainty. 
 
-\begin{figure}[H]
+\begin{figure}[!htb]
   \centering
   \begin{subfigure}[t]{0.49\textwidth}
     \centering
@@ -406,9 +406,9 @@ unphysical negative value which should be associated with high uncertainty.
 When including the full dataset of \SI{400}{\text{Å}} of sliding, such that the \acrshort{std} window actually matches with the longest period of oscillations expected, we get a final relative error of $\sim 12 \%$ as shown in fig~\cref{fig:runstd_long}. This is arguable just at the limit of an acceptable error, but as we shall see later on in~\cref{sec:load_and_stretch} this high relative error is mainly associated with the cases of low friction. When investigating different configurations under variation of load and strain we see a considerably lower relative error as the mean friction evaluates to higher values. One interpretation of this finding is that the oscillations in the running mean are not substantially influenced by the magnitude of the friction. In that case, the relative error will spike for the low friction cases, and the absolute error might be the more reliable measure, i.e.\ using simply the \acrshort{std} without dividing by the final mean value.
 
 
-\begin{figure}[H]
+\begin{figure}[!htb]
   \centering
-  \includegraphics[width=0.6\linewidth]{figures/baseline/Ff_runstd_long.pdf}
+  \includegraphics[width=0.5\linewidth]{figures/baseline/Ff_runstd_long.pdf}
   \caption{Running standard deviation (std) for a full \SI{400}{{\text{Å}}} sliding simulation. The running std window is \SI{70}{\text{Å}} (35\% of the running mean window, which is 50\% of the full sliding length).}
   \label{fig:runstd_long}
 \end{figure}
@@ -449,7 +449,7 @@ concern ourselves with kinetic friction in the remainder of this thesis.
 % In most numerical studies \cite{bonelli_atomistic_2009, zhu_study_2018} they define static friction as the max peak or top 5\% quantile throughout the simulation and do not consern themselves with a requirement for an initial increasement toward this max. Thus, we interpret this as a measure of the force oscillation magnitude which is highly related to the stick-slip behaviour. 
 
 
-\begin{figure}[H]
+\begin{figure}[!htb]
   \centering
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
@@ -469,7 +469,7 @@ concern ourselves with kinetic friction in the remainder of this thesis.
 \end{figure}
 
 
-% \begin{figure}[H]
+% \begin{figure}[!htb]
 %   \centering
 %   \begin{minipage}{.47\textwidth}
 %     \centering
@@ -531,12 +531,6 @@ The out-of-plane buckling is one of the motivations for investigating
 the application of Kirigami cuts in the context of friction properties. Therefore, we perform a stretch simulation, at low temperature ($T = \SI{5}{K}$) without any substrate, in order to verify that we can reproduce an out-of-plane buckling with the Tetrahedron and Honeycomb patterns. For this investigation, we consider the Tetrahedron $(7,5,1)$ and the Honeycomb $(2,2,1,5)$ pattern in comparison to the non-cut sheet. We quantify the out-of-plane buckling by assessing the distribution of atoms along the z-direction (perpendicular to the plane) during straining. We calculate the
 minimum and maximum z-value as well as the atom count quartiles 1\%, 10\%, 25\%, 50\% (median), 75\%, 90\% and 99\% as shown in~\cref{fig:buckling_quartiles}. The Tetrahedron and Honeycomb patterns show significant buckling in comparison to the non-cut sheet, which only exhibits minor buckling of $\sim \SI{2}{\text{Å}}$, which is of the same order as the lattice spacing. We notice that the Tetrahedron pattern buckles more in consideration to the min.\ and max.\ peaks while the remaining quantiles seem to be more closely spaced than for the Honeycomb. By addressing the simulation results visually, using the \textit{Open Visualization Tool OVITO}, we find that this can be attributed to fringes on the edge ``flapping around'' and thus increasing the min.\ and max.\ values. This is also evident from the simulation with the substrate seen in \cref{fig:tetrahedron_strain_j} in~\cref{sec:sheet_stretch}.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{figures/baseline/vacuum_normal_buckling.pdf}
-  \caption{The out-of-plane buckling during straining for three different sheet patterns, namely the No cut, Tetrahedron $(7,5,1)$, and Honeycomb $(2,2,1,5)$ pattern, in vacuum at low temperature $T = \SI{5}{K}$. The buckling is quantified by the distribution of the atom z-positions, which are perpendicular to the sheet plane, and the colors indicate selected quantiles. The yield strain for each pattern, from left to right, is 0.38, 0.22, and 1.37, respectively. The results indicate that the Tetrahedron and Honeycomb patterns exhibit significantly out-of-plane buckling in comparison to the non-cut sheet.}
-  \label{fig:buckling_quartiles}
-\end{figure}
 
 Given the confirmation of out-of-plane buckling in a vacuum, as seen
 in~\cref{fig:buckling_quartiles}, we reintroduce the substrate in order to
@@ -574,12 +568,42 @@ are approaching their yield strain, which agrees with the results from ~\cref{fi
 rupture strain.
 
 
+% \begin{figure}[!htb]
+%   \centering
+%   \includegraphics[width=\linewidth]{figures/baseline/vacuum_normal_buckling.pdf}
+%   \caption{The out-of-plane buckling during straining for three different sheet patterns, namely the No cut, Tetrahedron $(7,5,1)$, and Honeycomb $(2,2,1,5)$ pattern, in vacuum at low temperature $T = \SI{5}{K}$. The buckling is quantified by the distribution of the atom z-positions, which are perpendicular to the sheet plane, and the colors indicate selected quantiles. The yield strain for each pattern, from left to right, is 0.38, 0.22, and 1.37, respectively. The results indicate that the Tetrahedron and Honeycomb patterns exhibit significant out-of-plane buckling in comparison to the non-cut sheet.}
+%   \label{fig:buckling_quartiles}
+% \end{figure}
+
+
+% \begin{figure}[!htb]
+%   \centering
+%   \includegraphics[width=0.5\linewidth]{figures/baseline/contact_vs_stretch.pdf}
+%   \caption{Relative contact, given as the relative number of atoms in the sheet being within chemical interaction range, vs.\ straining of the sheet. The cut-off for the interaction range is \SI{4}{\text{Å}} corresponding to $\sim 120 \%$ the \acrshort{LJ} equilibrium distance. No normal force is applied and temperature is kept at $T = \SI{300}{K}$.}
+%   \label{fig:contact_vs_stretch}
+% \end{figure}
+
+
+
+
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.6\linewidth]{figures/baseline/contact_vs_stretch.pdf}
-  \caption{Relative contact, given as the relative number of atoms in the sheet being within chemical interaction range, vs.\ straining of the sheet. The cut-off for the interaction range is \SI{4}{\text{Å}} corresponding to $\sim 120 \%$ the \acrshort{LJ} equilibrium distance. No normal force is applied and temperature is kept at $T = \SI{300}{K}$.}
-  \label{fig:contact_vs_stretch}
-\end{figure}
+  \begin{minipage}{\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/baseline/vacuum_normal_buckling.pdf}
+    \captionof{figure}{The out-of-plane buckling during straining for three different sheet patterns, namely the No cut, Tetrahedron $(7,5,1)$, and Honeycomb $(2,2,1,5)$ pattern, in vacuum at low temperature $T = \SI{5}{K}$. The buckling is quantified by the distribution of the atom z-positions, which are perpendicular to the sheet plane, and the colors indicate selected quantiles. The yield strain for each pattern, from left to right, is 0.38, 0.22, and 1.37, respectively. The results indicate that the Tetrahedron and Honeycomb patterns exhibit significant out-of-plane buckling in comparison to the non-cut sheet.}
+    \label{fig:buckling_quartiles}
+  \end{minipage}%
+  \vspace{1cm}
+  \newline
+  \begin{minipage}{.5\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/baseline/contact_vs_stretch.pdf}
+    \captionof{figure}{Relative contact, given as the relative number of atoms in the sheet being within chemical interaction range, vs.\ straining of the sheet. The cut-off for the interaction range is \SI{4}{\text{Å}} corresponding to $\sim 120 \%$ the \acrshort{LJ} equilibrium distance. No normal force is applied and temperature is kept at $T = \SI{300}{K}$.}
+    \label{fig:contact_vs_stretch}
+  \end{minipage}
+  \end{figure}
+
 
 
 
@@ -592,7 +616,7 @@ experimental results, and partly to understand how these parameters affect
 the stability of our system. We use the default parameters presented in~\cref{tab:final_param} and investigate the results as we change parameters, one at a time. We keep the load at \SI{1}{nN}. We consider the mean
 friction force, sampled from the last half of the simulation as described in~\cref{sec:fric_metrics}, representing the kinetic friction. The results are shown in~\cref{fig:main_param}, where the shaded area (connected linearly) denotes the absolute error defined by the \acrshort{std} as described in~\cref{sec:fric_metrics} as well. 
 
-\begin{figure}[H]
+\begin{figure}[!htb]
   \centering
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
@@ -672,7 +696,7 @@ parameter investigation in~\cref{fig:main_param} we get the timing shown in~\cre
 necessary for more reliable data. 
 
 
-\begin{figure}[H]
+\begin{figure}[!htb]
   \centering
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
@@ -745,86 +769,103 @@ a full sheet area of $\sim \SI{212}{nm^2}$ our load range of 0.1--\SI{10}{nN} co
 
 
 \subsection{Strain dependency}\label{sec:stretch_dependency}
-We consider the effects of stretching the sheet using the non-cut, Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$ sheet as used so far. For each configuration, we run a rupture test where the given sheet is strained under zero load, but still under the influence of adhesion from the substrate. The rupture strain is then recorded, and multiple new simulations are initiated with strain values between zero and the rupture strain. For the sampling of the strain values, we use uniformly spaced values between zero and the rupture strain. First, we aim to reproduce the contact investigation from~\cref{fig:contact_vs_stretch}. We quantify the relative contact as described in~\cref{sec:out-of-plane_buckling}, but we convert this into a single metric for a given simulation by considering the average of the last 50\% of the data points, similar
-to what we have done for the mean friction. We also adopt a similar method for quantifying the error (see~\cref{sec:fric_metrics}). The results are shown
-in~\cref{fig:contact_vs_stretch} where we observe a significant decrease in
-relative contact with strain for the kirigami patterns. This agrees qualitatively with the non-loaded continuous strain simulations in~\cref{fig:contact_vs_stretch}. This result implies that the change in contact is not governed by a momentum effect during stretching, as each simulation now keeps a constant strain throughout. 
-From an asperity theory point of view, the reduction in contact area is
-theorized to induce a similar reduction in friction. However, when considering
-the kinetic friction in~\cref{fig:multi_stretch_mean_fric} we find that this is
-not the case. For the Tetrahedron and Honeycomb patterns, we find that the
-friction initially increases with a decreasing contact area. Yet, these are not
-simply inversely proportional as the friction force suddenly dips down and up
-again, in the strain range of 0.08--0.11 for the Tetrahedron and 0.73--1.05 for
-the Honeycomb pattern. When considering the non-cut sheet, we find that both the
-contact area and friction remain seemingly unaffected by strain. This indicates
-that the contact area is not a dominating mechanism for friction in our system,
-although the non-linear friction-strain curve might be correlated with a
-decrease in contact area through an underlying mechanism related to the out-of-plane buckling. This can be supported
-by the fact that the contact-strain and friction-strain curves for the Honeycomb
-pattern both show signs of a discontinuous jump around a strain of 0.32. Since
-the non-cut sheet exhibits a flat friction-strain profile we cannot attribute
-the behavior to an increased tension either. Zhang et
-al.~\cite{zhang_tuning_2019} reported that the friction for a graphene sheet
-decreases with tension which qualitatively contradicts our observation and
-supports that tension is not a governing mechanism. Instead,
-we might attribute the results to a commensurability effect or perhaps a change in the
-structural stiffness which is reported as an important feature by
-\cite{Kim_2012}. 
-
-We notice that the initial friction value of the non-strained sheet varies among different configurations, with the non-cut sheet exhibiting the lowest initial friction value ($\sim \SI{7e-4}{nN}$), the Tetrahedron sheet having a slightly higher value ($\sim \SI{0.03}{nN}$), and the Honeycomb sheet exhibiting the highest ($\sim \SI{0.07}{nN}$). This is more clearly shown in the parameter investigation in~\cref{fig:main_param}. The magnitude of this effect is generally one order of magnitude lower than the strain-induced friction effect. We notice also that the two orders of magnitude increase in normal load did not
-make a significant difference in the results. The estimated absolute error
-marked by a shaded area in~\cref{fig:multi_stretch_mean_fric} were fairly low
-for both friction on the order \SI{e-3}{nN} and relative contact on the order of
-\num{e-4}.
+We consider the effects of stretching the sheet using the non-cut, Tetrahedron
+$(7,5,1)$ and Honeycomb $(2,2,1,5)$ sheet as used so far. While we consider the
+actions of ``stretching'' and ``straining'' to be synonyms we will describe the
+sheet deformation state with the technical term \textit{strain}. The strain
+describes the change in length relative to a reference length. We use the
+relaxed sheet as our reference length $L_0$ for which the straining towards a
+length $L$ corresponds to the strain $\epsilon = (L-L_0)/L_0$. Thus a strain of
+0 corresponds to the relaxed sheet and a strain of 1 corresponds to a doubling
+of sheet length. Notice that the measure of strain is dimension specific, but we will only consider the y-direction which corresponds to the direction of applied strain in the simulations. For each configuration, we run a rupture
+test where the given sheet is stretched under zero load, but still under the
+influence of adhesion from the substrate. The rupture strain is then recorded,
+and multiple new simulations are initiated with strain values uniformly spaced between zero and the rupture strain. First, we aim to reproduce
+the contact investigation from~\cref{fig:contact_vs_stretch}. We quantify the
+relative contact as described in~\cref{sec:out-of-plane_buckling}, but we
+convert this into a single metric for a given simulation by considering the
+mean of the last 50\% of the data points, similar to what we have done for
+the mean friction. We also adopt a similar method for quantifying the error
+(see~\cref{sec:fric_metrics}). \cref{fig:multi_stretch_contact} shows a significant decrease in
+relative contact with strain for the kirigami patterns. This agrees
+qualitatively with the non-loaded continuous strain simulations
+in~\cref{fig:contact_vs_stretch}. This result implies that the change in contact
+is not governed by a momentum effect during stretching, as each simulation now
+keeps a constant strain throughout. From an asperity theory point of view, the
+reduction in contact area is theorized to induce a linearly dependent reduction in
+friction. However, when considering the kinetic friction
+in~\cref{fig:multi_stretch_mean_fric} we find that this is not the case. For the
+Tetrahedron and Honeycomb patterns, we find that the friction initially
+increases with a decreasing contact area. Yet, these are not simply inversely
+proportional as the friction force suddenly dips down and up again, in the
+strain range of 0.08--0.11 for the Tetrahedron and 0.73--1.05 for the Honeycomb
+pattern. When considering the non-cut sheet, we find that both the contact area
+and friction remain seemingly unaffected by strain. This indicates that the
+contact area is not a dominating mechanism for friction in our system, although
+the non-linear friction-strain curve might be correlated with a decrease in
+contact area through an underlying mechanism related to the out-of-plane
+buckling. This can be supported by the fact that the contact-strain and
+friction-strain curves for the Honeycomb pattern both show signs of a
+discontinuous jump around a strain of 0.32. 
 
 
 \begin{figure}[H]
   \centering
   \begin{subfigure}[t]{\textwidth}
       \centering
-      \includegraphics[width=\textwidth]{figures/baseline/multi_stretch_area_compare.pdf}
+      \includegraphics[width=0.8\textwidth]{figures/baseline/multi_stretch_area_compare.pdf}
       \caption{}
-      \label{fig:fig:multi_stretch_contact}
+      \label{fig:multi_stretch_contact}
   \end{subfigure}
   \hfill
   \begin{subfigure}[t]{\textwidth}
       \centering
-      \includegraphics[width=\textwidth]{figures/baseline/multi_stretch_mean_compare.pdf}
+      \includegraphics[width=0.8\textwidth]{figures/baseline/multi_stretch_mean_compare.pdf}
       \caption{}
       \label{fig:multi_stretch_mean_fric}
   \end{subfigure}
   \hfill
-     \caption{Mean relative contact and mean friction for multiple simulations,
-     consisting of 30 strain values uniformly spaced 0 and the rupture strain in combination with loads 0.1, 1 and
-     \SI{10}{nN}, for each of the configurations: non-cut, Tetrahedron $(7,5,1)$
-     and Honeycomb $(2,2,1,5)$. The average is taken over the last half of the
-     sliding phase, and the shaded area connecting the dots linearly indicates
+     \caption{Investigation of the frictional behavior for the non-cut, Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$ sheet under varying strain, consisting of 30 strain values uniformly spaced between 0 and the rupture strain in combination with loads 0.1, 1 and
+     \SI{10}{nN}. The shaded area, connecting the dots linearly, denotes the
      the absolute error. The red shade denotes the strain range where ruptures
      occurred during sliding while the black-dotted line represents the rupture
      point in the non-loaded rupture test. (a) The average relative contact
      defined as the relative number of atoms within a contact threshold of
      \SI{4}{\text{Å}} to the substrate. The absolute error is generally on the
-     order \num{e-4}. (b) The average mean friction force parallel to the
-     sliding direction. The absolute error for the mean friction is on the order
-     \SI{e-3}{nN}.}
+     order \num{e-4}. (b) The average mean friction force. The absolute error is generally on the order \SI{e-3}{nN}.}
      \label{fig:multi_stretch}
 \end{figure}
+
+
+
+Since the non-cut sheet exhibits a
+flat friction-strain profile we cannot attribute the behavior to an increased
+tension either. Zhang et al.~\cite{zhang_tuning_2019} reported that the friction
+for a graphene sheet decreases with tension which qualitatively contradicts our
+observation and supports that tension is not a governing mechanism. Instead, we
+might attribute the results to a commensurability effect which is predicted by the Frenkel-Kontorov models and observed in both numerical and experimental studies, or perhaps a change in the structural stiffness which is reported as an important feature by~\cite{Kim_2012}. 
+
+We notice that the initial friction value of the non-strained sheet varies among different configurations, with the non-cut sheet exhibiting the lowest initial friction value ($\sim \SI{7e-4}{nN}$), the Tetrahedron sheet having a slightly higher value ($\sim \SI{0.03}{nN}$), and the Honeycomb sheet exhibiting the highest ($\sim \SI{0.07}{nN}$). This is more clearly shown in the parameter investigation in~\cref{fig:main_param}. This supports the idea of a commensurability effect as the removal of atoms might affect the lattice structure of the sheet slightly. However, the magnitude of this effect is generally one order of magnitude lower than the strain-induced friction effect. We attribute this to the idea that the reorganization of the contacting atoms has significantly more impact on commensurability than removing some atoms from the lattice. We notice also that the two orders of magnitude increase in normal load did not
+make a significant difference in the results. The estimated absolute error
+marked by a shaded area in~\cref{fig:multi_stretch_mean_fric} were fairly low
+for both friction on the order \SI{e-3}{nN} and relative contact on the order of
+\num{e-4}.
+
 
 By considering the increase in friction from zero strain towards the first peak
 of the friction-strain curve we find that the Tetrahedron pattern exhibits a
 relative friction increase of $\sim 27.7$ while the Honeycomb pattern exhibits a
-relative increase of $\sim 22.4$. This is in itself a remarkable result, but
+relative increase of $\sim 22.4$. This is in itself an interesting result, but
 considering that the friction drops almost as dramatically afterward is even more unexpected. For the Tetrahedron pattern, the friction drops by
 $\sim \SI{0.51}{nN}$ during an increased strain $\Delta \varepsilon \sim 0.04$
-while for the Honeycomb pattern the friction drops $\sim\SI{0.98}{nN}$ during a strain increase of $\Delta \varepsilon \sim 0.36$. These results are promising for the aim of demonstrating a negative friction coefficient for a system with coupled load and strain. We will discuss this further at the end of this chapter in~\cref{sec:neg_prospects}.
+while for the Honeycomb pattern the friction drops $\sim\SI{0.98}{nN}$ during a strain increase of $\Delta \varepsilon \sim 0.36$. These results are promising for the aim of achieving a negative friction coefficient for a system with coupled load and strain. We will discuss this further at the end of this chapter in~\cref{sec:neg_prospects}.
 
 
 
 \subsection{Load dependency}\label{sec:load_dependency}
-From the investigation of the strain dependency we saw that increasing the normal load from 0.1 to \SI{10}{nN} did not make a considerable impact on the friction in comparison to the effect associated with strain. One special feature of our system is that we only apply load to the pull blocks, and thus one might suspect this to be of importance. Therefore, we investigate the friction under varying loads for a non-cut sheet comparing the case of loading only the pull block against a uniform loading of the entire sheet as shown in~\cref{fig:load_dist}. Both load distributions show a seemingly non-dependent relationship between friction and load considering the size of our estimated error. Thus, we do not find any indications that the uniform loading changes the qualitative behavior of our system.
+From the investigation of the strain dependency we saw that increasing the normal load from 0.1 to \SI{10}{nN} did not make a considerable impact on the friction in comparison to the effect associated with strain. One special feature of our system is that we only apply load to the pull blocks, and thus we might suspect this to be of importance. Therefore, we investigate the friction under varying loads for a non-cut sheet comparing the case of loading only the pull blocks against a uniform loading of the entire sheet as shown in~\cref{fig:load_dist}. Both load distributions show a seemingly non-dependent relationship between friction and load considering the size of our estimated error. Thus, we do not find any indications that the uniform loading changes the qualitative behavior of our system.
 
-\begin{figure}[H]
+\begin{figure}[!htb]
   \centering
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
@@ -845,100 +886,98 @@ From the investigation of the strain dependency we saw that increasing the norma
 \end{figure}
 
 To examine the relationship between friction and normal load as the Kirigami
-patterns undergo strain, we conduct additional simulations with a
-logarithmically increasing normal load in the range of 0.1 to \SI{100}{nN}. This
+patterns undergo strain, we conduct additional simulations with logarithmically spaced normal loads in the range of 0.1 to \SI{100}{nN}. This
 is done for a selected subset of strain stages
 from~\cref{fig:multi_stretch_mean_fric}, with 30 load data points for each
-strain. We monitor the relative contact as well. The results are shown
-in~\cref{fig:load_dependency}. Upon varying the normal load over three orders of
-magnitude, we notice a small increase in friction with load for all Kirigami
-patterns. This effect is more pronounced for the non-cut sheet in the figure as
-the friction axis shows a narrower range for this pattern. It should be noted
-that due to the logarithmic scale of the load axis, any apparent linear trends
-in the figure are in fact sublinear. However, as the normal load approaches
-\SI{100}{nN}, there is some indication of an increase in friction
-reminiscent of a linear relationship. Nevertheless, it is difficult to draw firm
-conclusions as the change in friction is relatively small compared to the level
-of noise in the data. 
+strain. We also monitor the relative contact during the increased load. The
+results are shown in~\cref{fig:multi_load}. From~\cref{fig:multi_load_fric} we observe that three orders of magnitude load increase yields a small increase in friction for all Kirigami patterns. This effect
+is more pronounced in the figure for the non-cut sheet, but this is mainly because the friction axis shows a narrower range for this figure. It
+should be noted that due to the logarithmic scale of the load axis, any apparent
+linear trends in the figure are in fact sublinear. Nonetheless, as the normal load
+approaches \SI{100}{nN}, there is some indication of an increase in friction
+reminiscent of a linear relationship. However, it is difficult to draw firm
+conclusions as the magnitude of the increase in friction is relatively small
+compared to the level of noise in the data. 
 
-For the contact area, we generally find an increasing contact are with load. By
-considering the full load increase from \SI{0.1}{nN} to \SI{100}{nN} we find the
-largest increase in relative contact, among the values of relative strain, to be
-0.007 for the non-cut, 0.014 for the Tetrahedron and 0.025 for the Honeycomb
+For the investigation of contact area in~\cref{fig:multi_load_contact}, we generally find an increasing contact area with load. By
+considering the full load from \SI{0.1}{nN} to \SI{100}{nN} we find the largest increase in relative contact, among the various values of relative strain, to be 0.007 for the non-cut, 0.014 for the Tetrahedron and 0.025 for the Honeycomb
 sheet. This constitutes a rather small change and thus it is difficult to assess
-how this relates to a connection between the contact area and the friction.
+how this relates to a dependency between the contact area and the friction.
 However, we do see that the Tetrahedron and Honeycomb patterns exhibit a larger
-change which aligns with the idea that the out-of-plane buckling makes them
-behave more like an asperity system. Thus we might take this as an indication of
-a possible relationship between contact area and friction, but this is
-nonetheless negligible in comparison to the strain-induced effects observed
-from~\cref{fig:multi_stretch}. By studying an even larger load range we might
-get more insight into this relationship. Note that we omitted the error bars for
-visual purposes but the absolute errors for both the relative contact and
-friction are on the same order of magnitude as shown in~\cref{fig:multi_stretch}
-and ~\cref{fig:load_dist}.
+change in contact area which aligns with the idea that the out-of-plane buckling makes them
+behave more like an asperity system. When plotting friction against relative contact in~\cref{fig:multi_FN_fric_vs_contact} we do not find any significant evidence for a linear relationship between contact area and friction as otherwise proposed by asperity theory. Instead, from the Tetrahedron and Honeycomb pattern, we confirm that the strain-induced effects are dominant in comparison to any effects from the contact area. By studying an even larger load range we might
+get more insight into this relationship. Note that we have omitted the error bars in~\cref{fig:multi_load} for visual purposes, but the absolute errors for both the relative contact and friction are on the same order of magnitude as shown in both~\cref{fig:multi_stretch} and ~\cref{fig:load_dist}.
 
+From the friction measurements in~\cref{fig:multi_load_fric} we find that the
+non-cut sheet generally produces a friction force in the order of 0.005--\SI{0.0025}{nN} throughout the 0.1--\SI{100}{nN} load range. Using a ratio based friction coefficient definition \cref{eq:mu_def1}, $\mu_1 = F_{\text{fric}}/{F_N}$, this would lead to a coefficient roughly in the range
+\begin{align*}
+  &\mu_1,  \ \text{\cref{eq:mu_def1}:}& &\text{No cut}\sim [\num{e-4}, 0.13],&  &\text{Tetrahedron}\sim [\num{4e-4},8.7],& &\text{Honeycomb}\sim [\num{9e-4}, 15.2].&
+\end{align*}
+However, these values mainly reflect the poorness of this definition, as we find the values to diverge at low load and decrease towards high load due to the lacking linear relationship and an offset in the load curve corresponding to a finite friction at zero load. This offset is drastically enhanced for the Kirigami patterns under strain. Due to the small changes in friction compared to the noise in the data, it is not sensible to calculate the slope $dF_{\text{fric}}/dF_N$ as a function of load. Nonetheless, if we force a linear fit for the whole range and use the second definition~\cref{eq:mu_def2} as $\langle \mu_2 \rangle = \Delta F_{\text{fric}}/\Delta F_N$, we get average coefficients in the range
+\begin{align*}
+  &\mu_2,  \ \text{\cref{eq:mu_def2}:}& &\text{No cut} \sim [4, 9]\times \num{e-5},&  &\text{Tetrahedron} \sim 5\times[\num{e-5}, \num{e-4}],& &\text{Honeycomb} \sim [1,9]\times \num{e-4},&
+\end{align*}
+depending on the strain values. These numbers should be interpreted cautiously,
+but we can take it as a rough estimate of the friction coefficient being on the
+order \num{e-4}--\num{e-5}. This relates to the finding
+by~\cite{DIENWIEBEL2005197} who reported a seemingly non-existing relationship
+between friction and normal load for a graphene sheet with changes in friction
+that corresponds to friction coefficients in the range \num{e-3}--\num{e-4} when
+using the slope definition \cref{eq:mu_def2}. This supports the idea that the
+graphene sheet does exhibit superlubric behavior in these conditions and that the initial non-strained sheet is in an incommensurable
+configuration. Thus any strain-induced effects might introduce a more
+commensurable configuration. This aligns with the observed increase in friction
+and the fact that the friction never gets smaller than the initial friction
+value. The non-linear effects can then be attributed to transitions in and out
+of commensurable phases. The observation that the friction dependency on load is
+relatively unaffected by the straining suggests that the strain-induced effects
+are independent of any load-related effects on friction. That is, the
+introduction of strain mainly shifts the friction-load curve but does not
+significantly alter its slope. 
+\vspace{5cm}
 
 \begin{figure}[H]
   \centering
-  \begin{subfigure}[t]{\textwidth}
+  \begin{subfigure}[t]{0.8\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/multi_FN_contact_compare.pdf}
       \caption{}
-      \label{fig:fig:multi_load_contact}
+      \label{fig:multi_load_contact}
   \end{subfigure}
   \hfill
-  \begin{subfigure}[t]{\textwidth}
+  \begin{subfigure}[t]{0.8\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/multi_FN_mean_compare.pdf}
       \caption{}
       \label{fig:multi_load_fric}
   \end{subfigure}
+  \begin{subfigure}[t]{0.8\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/baseline/multi_FN_fric_contact_compare.pdf}
+      \caption{}
+     \label{fig:multi_FN_fric_vs_contact}
+  \end{subfigure}
   \hfill
-     \caption{Mean relative contact and mean friction for multiple simulations, consisting of 30 logarithmically spaced load values in the range 0.1--\SI{100}{nN} for the non-cut, Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$ sheet respectively, at different strain stages relative to their rupture strains. (a) The average relative contact. (b) The average mean friction. We omitted the indication of the absolute errors as they were similarly low as seen in~\cref{fig:multi_stretch}.}
+     \caption{Investigation of the frictional behavior for the non-cut, Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$ sheet under varying load, consisting of 30 logarithmically spaced load values in the range 0.1--\SI{100}{nN}, at different strain stages relative to their rupture strains. (a) The average relative contact. (b) The average mean friction. We omitted the indication of the absolute errors as they were similarly low as seen in~\cref{fig:multi_stretch}. (c)}
      \label{fig:multi_load}
 \end{figure}
 
-From the friction measurements in~\cref{fig:multi_load_fric} we see that the
-non-cut sheet generally produces a friction force in the order of 0.005--\SI{0.0025}{nN} throughout the 0.1--\SI{100}{nN} load range. Using a ratio based friction coefficient definition \cref{eq:mu_def1}, $\mu_1 = F_{\text{fric}}/{F_N}$, this would lead to a coefficient roughly in the range
-\begin{align*}
-  &\mu_1,  \ \text{\cref{eq:mu_def1}:}& &\text{No cut}\sim [\num{e-4}, 0.13],&  &\text{Tetrahedron}\sim [\num{4e-4},8.7],& &\text{Honeycomb}\sim [\num{9e-4}, 15.2].&
-\end{align*}
-However, these values mainly reflect the poorness of this definition, as we find the values to diverge at low load and decrease towards high load due to the lacking linear relationship and an offset in the load curve corresponding to a finite friction at zero load. This offset is drastically enhanced for the Kirigami patterns under strain. Due to the small changes in friction compared to the noise in the data, it is not sensible to calculate the slope $dF_{\text{fric}}/dF_N$ as a function of load. Nonetheless, if we force a linear fit for the whole range and use the second definition \cref{eq:mu_def2} as $\langle \mu_2 \rangle = \Delta F_{\text{fric}}/\Delta F_N$, we get average coefficients in the range
-\begin{align*}
-  &\mu_2,  \ \text{\cref{eq:mu_def2}:}& &\text{No cut} \sim [4, 9]\times \num{e-5},&  &\text{Tetrahedron} \sim 5\times[\num{e-5}, \num{e-4}],& &\text{Honeycomb} \sim [1,9]\times \num{e-4},&
-\end{align*}
-depending on the strain values. These numbers should be interpreted cautiously,
-but we can take it as a rough estimate of the friction coefficient being on
-the order \num{e-4}--\num{e-5}. This relates to the finding by
-\cite{DIENWIEBEL2005197} who reported a seemingly non-existing relationship
-between friction and normal load with change in friction that corresponds to friction coefficients in the range \num{e-3}--\num{e-4} when using the slope definition \cref{eq:mu_def2}. This supports the idea that the graphene sheet does in fact exhibit superlubric behavior in these conditions. Moreover, the fact that the increase with load is relatively unaffected by the straining points to the fact that the strain-induced effect mainly shifts the load curve towards higher friction but does not significantly alter its slope. 
-
-
-%
-%
-% Working here
-%
-%
-%
-
-
 \subsection{Prospects of a negative friction coefficient}\label{sec:neg_prospects}
-Considering the results from~\cref{sec:stretch_dependency} and~\cref{sec:load_dependency} we find that strain-induced friction effects, on the order of $/SI{1}{nN}$, are generally dominating in comparison to load-induced effects on the order of \SI{0.01}{nN} given a load range of \SI{e2}{nN}. This is promising for the idea of achieving a negative friction coefficient for a nanomachine system that couples load and strain. By applying load on the nanomachine we would increase both the load and the strain on the sheet simultaneously. However, since the friction dependency to strain dominates in comparison to load effects such a system can be designed entirely by considering the strain dependency. The friction coefficient is by our definition (\cref{eq:mu_def2}) given as the slope of the friction $F_f$ vs.\ normal force $F_N$ curve. Hence, for two points $\{(F_{N,1}, F_{f,1}), (F_{N,2}, F_{f,2})\}$, $F_{N,1} < F_{N,2}$ we can evaluate the associated friction coefficient $\mu_{1,2}$ as 
+Considering the results from~\cref{sec:stretch_dependency} and~\cref{sec:load_dependency} we find that strain-induced friction effects, on the order of $/SI{1}{nN}$, are generally dominating in comparison to load-induced effects on the order of \SI{0.01}{nN} given a load range of \SI{e2}{nN}. This is promising for the idea of achieving a negative friction coefficient for a nanomachine system that couples load and strain. By applying load on the nanomachine we would increase both the load and the strain on the sheet simultaneously. However, since the friction dependency to strain dominates in comparison to load effects such a system can in practice be designed entirely by considering the strain dependency. The friction coefficient is by our definition (\cref{eq:mu_def2}) given as the slope of the friction $F_f$ vs.\ normal force $F_N$ curve. Hence, for two points $\{(F_{N,1}, F_{f,1}), (F_{N,2}, F_{f,2})\}$, $F_{N,1} < F_{N,2}$ we can evaluate the associated friction coefficient $\mu_{1,2}$ as 
 \begin{align*}
   \mu_{1,2} = \frac{F_{f,2} - F_{f,1}}{F_{N,2} - F_{N,1}} = \frac{\Delta F_f}{\Delta F_N}.
 \end{align*}
-If we neglect load effects $F_f(F_N, \varepsilon) \sim F_f(\varepsilon)$ and consider a coupling $\varepsilon = R F_N$ with linear coupling ratio $R$ we get 
+If we neglect load effects, $F_f(F_N, \varepsilon) \sim F_f(\varepsilon)$, and consider a load-strain coupling $\varepsilon = R F_N$ with linear coupling ratio $R$ we get 
 \begin{align}
   \mu_{1,2}(\varepsilon_1, \varepsilon_2) = \frac{\Delta F_{f}(\varepsilon_1, \varepsilon_2)}{\frac{1}{R}(\varepsilon_2 - \varepsilon_1)} = R\frac{\Delta F_{f}(\varepsilon_1, \varepsilon_2)}{\Delta \varepsilon}.
   \label{eq:mu_strain}
 \end{align}
-When considering the ratios found for the reduction in friction with strain for the Tetrahedron and Honeycomb patterns in~\cref{sec:stretch_dependency} we find the corresponding coupled system friction coefficients to be 
+When considering the ratios $\Delta F_f / \Delta \epsilon$ for the reduction in friction with strain for the Tetrahedron and Honeycomb patterns in~\cref{sec:stretch_dependency} we find the corresponding coupled system friction coefficients to be 
 \begin{align}
-  &\text{Tetrahedron:} \quad R\frac{-\SI{0.51}{nN}}{0.04} = -R\cdot\SI{12.75}{nN},& &\text{Honeycomb:} \quad R\frac{-\SI{0.98}{nN}}{0.36} = -R\cdot\SI{2.72}{nN}&
+  &\text{Tetrahedron:} \quad R\frac{-\SI{0.51}{nN}}{0.04} = -R\cdot\SI{12.75}{nN},& &\text{Honeycomb:} \quad R\frac{-\SI{0.98}{nN}}{0.36} = -R\cdot\SI{2.72}{nN}.&
   \label{eq:pilot_study_mu_estimate}
 \end{align}
-This showcases that we might be able to utilize the strain effect to achieve a negative friction for the system of coupled strain and load
+This showcases that we might be able to utilize the strain effect to achieve a negative friction coefficient for the system of coupled strain and load. This is investigated further in \cref{chap:negative_coef}.
 
 
 
