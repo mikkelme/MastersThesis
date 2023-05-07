@@ -34,7 +34,8 @@ def plot_ref_search(filename, save = False):
         rel_std = std/np.mean(data[key][valid])
         print(f'{key}: rel.std = {rel_std:0.4f}, std = {std:0.4f}')
         
-        sns.heatmap(score.T, cmap = cmap, cbar_kws={'label': zlabel[i]}, annot = True, ax=ax)
+        # sns.heatmap(score.T, cmap = cmap, cbar_kws={'label': zlabel[i]},  annot = True, ax=ax)
+        sns.heatmap(score.T, cmap = cmap, cbar_kws={'label': zlabel[i]}, annot_kws={'size': 8, 'rotation': 90}, fmt='1.1f',  annot = True, ax=ax) # Honeycomb
         ax.invert_yaxis()
         ax.set_xlabel(r"$x$ (armchair direction)", fontsize = 14)
         ax.set_ylabel(r"$y$ (zigzag direction)", fontsize = 14)
@@ -115,15 +116,13 @@ def plot_search_history(filename, save = False):
 if __name__ == '__main__':
     # plot_ref_search(filename = '../ML/ref_search/pop_1_7_1_ref_search.npy', save = False)
     # plot_ref_search(filename = '../ML/ref_search/pop_5_3_1_ref_search.npy', save = False)
-    # plot_ref_search(filename = '../ML/ref_search/hon_3_3_5_3_ref_search.npy', save = False)
-    # plot_ref_search(filename = '../ML/ref_search/hon_2_3_3_3_ref_search.npy', save = False)
+    plot_ref_search(filename = '../ML/ref_search/hon_3_3_5_3_ref_search.npy', save = True)
+    plot_ref_search(filename = '../ML/ref_search/hon_2_3_3_3_ref_search.npy', save = False)
     # 
-    # plot_ref_search(filename = '../ML/ref_search/hon_2_1_1_1_ref_search.npy')
-    # plot_ref_search(filename = '../ML/ref_search/hon_2_1_5_3_ref_search.npy')
     # pass
     # plot_RW_top5(save = False)
     
     
-    plot_search_history(filename = '../ML/best_ising_max_history.txt', save = False)
+    # plot_search_history(filename = '../ML/best_ising_max_history.txt', save = False)
     
     plt.show()
