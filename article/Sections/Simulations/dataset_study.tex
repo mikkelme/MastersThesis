@@ -68,7 +68,7 @@ Therefore we conclude that this issue is not critical for machine learning
 training.}.
 
 
-\begin{table}[H]
+\begin{table}[!htb]
   \begin{center}
   \caption{Summary of the number of generated data points in the dataset. Due to slight deviations in the rupture strain and the specific numerical procedure not all submitted simulations are included in the final dataset. Notice that the Tetrahedon $(7, 5, 2)$ and Honeycomb $(2, 2, 1, 5)$ from the pilot study are rerun as a part of the Tetrahedon and the Honeycomb datasets separately. In the latter datasets, the reference point for the pattern is randomized and thus these configurations are not fully identical. This is the reason for the ambiguousness in the total sum.}
   \label{tab:dataset_summary}
@@ -91,12 +91,8 @@ In order to gain insight into the correlations in the data we calculate the corr
   \label{eq:pearson}
 \end{align}
 where $\mathrm{Cov}(X,Y)$ is the covariance, $\mu$ the mean value and $\sigma$ the standard deviation. The correlation coefficients range from a perfect negative correlation $(-1)$ through no correlation $(0)$ to a perfect positive correlation $(1)$. The correlation coefficients are shown in~\cref{fig:corrcoef_matrix}.
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{figures/ML/corrcoef_matrix.pdf}
-  \caption{Pearson product-moment correlation coefficients~\cref{eq:pearson} for the full datset (see~\cref{tab:dataset_summary}). Here the relative strain refers to the strain relative to the rupture strain. }
-  \label{fig:corrcoef_matrix}
-\end{figure}
+
+
 From~\cref{fig:corrcoef_matrix} we especially notice that the mean friction
 force $\langle F_{\parallel} \rangle$ has a significant positive correlation
 with strain $(0.77)$ and porosity $(0.60)$. However, the relative strain, the
@@ -110,32 +106,51 @@ correlated with the mean friction $(-0.67)$ and the strain value $(-0.74)$. This
 \cref{fig:corr_vis} shows a visualization of the data (excluding
 the pilot study configurations) for chosen variable pairs on the axes. This allows us to visually identify certain correlations and gain a qualitative understanding of the variations in different planes of the feature space which we eventually will base our machine learning model on. 
 
+ 
+
+\section{Properties of interest} 
+In the pilot study (\cref{chap:pilot_study}) we found promising results for the idea of achieving a negative friction coefficient under the assumption of a system with coupled normal force $F_N$ and strain $\varepsilon$. Hence, we will consider this as a main property of interest for our further exploration. We assume that the friction dependence on load is negligible $F(F_N, \varepsilon) \sim F(\varepsilon)$ in comparison to that on strain, and propose a coupling $\varepsilon = R F_N$ with linear coupling ratio $R$. From these assumptions, we can in practice substitute load for strain in the expression for the friction coefficient of our coupled system $\mu = R\Delta F_f(\varepsilon) / \Delta \varepsilon$ as shown in~\cref{eq:mu_strain}. This justifies the search for a negative slope on the friction-strain curve since this can be related to a negative friction coefficient in our proposed coupled system. 
+
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.81\linewidth]{figures/ML/corrcoef_matrix.pdf}
+  \caption{Pearson product-moment correlation coefficients~\cref{eq:pearson} for the full datset (see~\cref{tab:dataset_summary}). Here the relative strain refers to the strain relative to the rupture strain. }
+  \label{fig:corrcoef_matrix}
+\end{figure}
+
+
 \begin{figure}[H]
   \centering
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
-      \includegraphics[width=\textwidth]{figures/ML/corr_stretch_Ff.pdf}
+      \raggedleft
+      \includegraphics[width=0.82\textwidth]{figures/ML/corr_stretch_Ff.pdf}
       \caption{}
       % \label{fig:}
   \end{subfigure}
   \hfill
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
-      \includegraphics[width=\textwidth]{figures/ML/corr_stretch_contact.pdf}
+      \raggedright
+      \includegraphics[width=0.82\textwidth]{figures/ML/corr_stretch_contact.pdf}
       \caption{}
       % \label{fig:}
   \end{subfigure}
   \hfill
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
-      \includegraphics[width=\textwidth]{figures/ML/corr_contact_Ff.pdf}
+      \raggedleft
+      \includegraphics[width=0.82\textwidth]{figures/ML/corr_contact_Ff.pdf}
       \caption{}
       % \label{fig:}
   \end{subfigure}
   \hfill
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
-      \includegraphics[width=\textwidth]{figures/ML/corr_porosity_Ff.pdf}
+      \raggedright
+      \includegraphics[width=0.82\textwidth]{figures/ML/corr_porosity_Ff.pdf}
       \caption{}
       % \label{fig:}
   \end{subfigure}
@@ -143,11 +158,8 @@ the pilot study configurations) for chosen variable pairs on the axes. This allo
      \caption{Scatter plot of various feature pairs in the data for the Tetrahedron, Honeycomb and Random Walk subsets respectively. (a) Mean friction vs.\ strain. (b) Relative contact vs.\ strain (c) Mean friction vs.\ relative contact (d) Mean friction vs.\ porosity.}
      \label{fig:corr_vis}
 \end{figure}
- 
 
-
-\section{Properties of interest} 
-In the pilot study (\cref{chap:pilot_study}) we found promising results for the idea of achieving a negative friction coefficient under the assumption of a system with coupled normal force $F_N$ and strain $\varepsilon$. Hence, we will consider this as a main property of interest for our further exploration. We assume that the friction dependence on load is negligible $F(F_N, \varepsilon) \sim F(\varepsilon)$ in comparison to that on strain, and propose a coupling $\varepsilon = R F_N$ with linear coupling ratio $R$. From these assumptions, we can in practice substitute load for strain in the expression for the friction coefficient of our coupled system $\mu = R\Delta F_f(\varepsilon) / \Delta \varepsilon$ as shown in~\cref{eq:mu_strain}. This justifies the search for a negative slope on the friction-strain curve since this can be related to a negative friction coefficient in our proposed coupled system. The remaining question is then how to evaluate the
+\noindent The remaining question is then how to evaluate the
 strength of this property. By definition, the minimum (most negative) slope
 value would give the lowest friction coefficient. However, two data points with
 a small $\Delta \varepsilon$, corresponding to a small denominator
@@ -172,7 +184,7 @@ the friction-strain profiles already shown in the pilot study~\cref{chap:pilot_s
 
 
 
-\begin{table}[H]
+\begin{table}[!htb]
   \begin{center}
   \caption{Evaluation of the properties of interest for the dataset. Each table shows the top scores for each of the four properties of interest within each of the separate data categories: Tetrahedron, Honeycomb, Random walk and pilot study (the three configurations used in the pilot study). The tables denote the names of the top candidate configurations, the relevant strain values for the property and the property values themselves. For the Tetrahedon and Honeycomb category, we compare the top candidate scores to the scores of the Tetrahedon $(7,5,1)$ and Honeycomb $(2,2,1,5)$ pattern used in the pilot study in the right-most column. }
   \label{tab:data_properties}
@@ -207,34 +219,42 @@ the friction-strain profiles already shown in the pilot study~\cref{chap:pilot_s
 From the property comparison in~\cref{tab:data_properties} we find that both the
 Tetrahedron and Honeycomb subsets contain improved candidates for each of the
 property scores in comparison to the Tetrahedron $(7,5,1)$ and Honeycomb
-$(2,2,1,5)$ examined in the pilot study. Overall, the Honeycomb pattern type is resulting in the highest scores for the maximum properties while the
-minimum friction is still achieved by the non-cut sheet. This latter observation confirms the findings of the pilot study since our dataset does not provide any indication that friction can be reduced for a Kirigami sheet under strain. However, the improvement in the
-remaining properties indicates that the dataset contains
-information that can provide a direction for further optimization of the maximum properties. Considering the Random walk we find that the max property scores are generally lower than that of the Tetrahedron and Honeycomb structures. However, since these are found to be on a comparable order of magnitude we argue that these contribute with relevant information for the frictional dependency to the configuration space. 
-
-The Random walk patterns exhibit greater diversity compared to the other
-patterns and therefore provide some immediate insights into which structures can
-be associated with each of the properties of interest. For the $\min
-F_{\text{fric}}$ top candidates (\cref{fig:PP_min}) we find that the Random walk
-candidate has a rather low cut density (low porosity) and with vertical cuts.
-Since these cuts run parallel to the stretching direction one can hypothesize
-that this minimizes the induced buckling effect which agrees with the
-contact-strain curve being seemingly constant. For the minimum candidate of the
-Tetrahedron pattern, we also observe a low decrease in contact area, and in both
-these cases this corresponds with a relatively flat friction-strain curve as
-well. When considering the remaining friction-strain curves
-throughout~\crefrange{fig:PP_min}{fig:PP_max_drop} we find that a rising
-friction-strain curve are always seen together with a declining contact-strain
-curve. This supports the general observation of a correlation between the
-strain-induced friction effects and the contact area. When looking at the
-$96\text{th}$ Random walk pattern, which is the top candidate for both the $\max
-F_{\text{fric}}$ (\cref{fig:PP_max}) and $\max \Delta f_{\text{fric}}$
-(\cref{fig:PP_max_diff}) properties, we find a rather porous configuration with
-mainly horizontal-orientated cuts. This has some structural reminiscence with
-the general shape of the Honeycomb pattern. Finally, for the Random walk max
-drop candidate, Random walk 01, we do see a small drop in friction. Although,
-this is not as significant as seen for the Tetrahedron and Honeycomb candidates. We notice that the configuration contains some
-slanted cuts which might be reminiscent of parts of the general Tetrahedron pattern. 
+$(2,2,1,5)$ examined in the pilot study. Overall, the Honeycomb pattern type is
+resulting in the highest scores for the maximum properties while the minimum
+friction is still achieved by the non-cut sheet. This latter observation
+confirms the findings of the pilot study since our dataset does not provide any
+indication that friction can be reduced for a Kirigami sheet under strain.
+However, the improvement in the remaining properties indicates that the dataset
+contains information that can provide a direction for further optimization of
+the maximum properties. Considering the Random walk we find that the max
+property scores are generally lower than that of the Tetrahedron and Honeycomb
+structures. However, since these are found to be on a comparable order of
+magnitude we argue that these contribute with relevant information for the
+frictional dependency to the configuration space. The Random walk patterns
+exhibit greater diversity compared to the other patterns and therefore provide
+some immediate insights into which structures can be associated with each of the
+properties of interest. For the $\min F_{\text{fric}}$ top candidates
+(\cref{fig:PP_min}) we find that the Random walk candidate has a rather low cut
+density (low porosity) and vertical cuts. Since these cuts run parallel to
+the stretching direction one can hypothesize that this minimizes the induced
+buckling effect which agrees with the contact-strain curve being seemingly
+constant. For the minimum candidate of the Tetrahedron pattern, we also observe
+a low decrease in contact area, and in both these cases this corresponds with a
+relatively flat friction-strain curve as well. When considering the remaining
+friction-strain curves throughout~\crefrange{fig:PP_min}{fig:PP_max_drop} we
+find that a rising friction-strain curve is always seen together with a
+declining contact-strain curve. This supports the general observation of a
+correlation between the strain-induced friction effects and the contact area.
+When looking at the $96\text{th}$ Random walk pattern, which is the top
+candidate for both the $\max F_{\text{fric}}$ (\cref{fig:PP_max}) and $\max
+\Delta f_{\text{fric}}$ (\cref{fig:PP_max_diff}) properties, we find a rather
+porous configuration with mainly horizontal-orientated cuts. This has some
+structural reminiscence with the general shape of the Honeycomb pattern.
+Finally, for the Random walk max drop candidate, Random walk 01, we do see a
+small drop in friction. Although, this is not as significant as seen for the
+Tetrahedron and Honeycomb candidates. We notice that the configuration contains
+some slanted cuts which might be reminiscent of parts of the general Tetrahedron
+pattern. 
 
 
 
@@ -292,7 +312,7 @@ Due to the spatial dependencies in the Kirigami configurations, we use a convolu
   \item The latter part of the network consists of a fully connected part using the ReLu activation as well. The transition from the convolutional to the fully connected part is achieved by applying a filter with the same dimensions as the last convolutional feature map. This essentially performs a linear mapping from the spatial output to the fully connected layer where the number of channels corresponds to the nodes in the first fully connected layer.
 \end{itemize}
 
-\begin{figure}[H]
+\begin{figure}[!htb]
   \centering
   \includegraphics[width=0.7\linewidth]{figures/ML/VGGNet16.jpg}
   \caption{Illustration of the convolutional network architecture for the VGGNet-16 proposed by K.\ Simonyan and A.\ Zisserman \cite{simonyan2015deep}. Reproduced from \cite{VGGNet_16_image}.}
@@ -363,7 +383,7 @@ We consider first the architecture complexities in the range $S \times D =
 \{2,4,8,16,32,64,128,256\} \times \{4,6,8,10,12,14\}$. For each architecture
 complexity, we perform an initial learning rate range test and determine the suitable choice as the point for which the validation loss decreases most rapidly. The learning rate is increased exponentially within the range \num{e-7} to 10 with increments for each training batch iteration. This is done for just a single epoch where a batch size of 32 yields a total of 242 possible increments. This corresponds to an exponent increment of approximately $1/30$ giving a relative increase $10^{1/30} \sim 108\%$ per batch iteration. The learning rate range test is presented in~\cref{fig:LR_range} for various model complexities. We notice that the suggested learning rate decreases with an increasing number of model parameters. This decrease is further independent of the specific relationship between $S$ and $D$.
 
-\begin{figure}[H]
+\begin{figure}[!htb]
   \centering
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
@@ -388,16 +408,16 @@ With the use of the suggested learning rates from~\cref{fig:LR_range} we perform
 a grid search over the corresponding $S$ and $D$ parameters. We evaluate both
 the validation loss and the mean friction $R^2$ score for the validation data which is shown in~\cref{fig:A_search_perf} together with the best epoch and the number of model parameters. Additionally, we evaluate the mean friction $R^2$ score for a selected set of configurations. This set consists of the top 10 configurations with respect to the max drop property for the Tetrahedron and Honeycomb patterns respectively. This is done as a way of evaluating the performance on the non-linear friction-strain curves which we found to be the more difficult trend to capture. The selected evaluation is shown in~\cref{fig:A_search_compare}. Note that these configurations already are a part of the full dataset and thus the data points related to these configurations are most likely present in both the training and the validation data set. Hence, the performance must be considered in conjunction with the actual validation performance in~\cref{fig:A_search_perf}.
 
-\begin{figure}[H]
+\begin{figure}[!htb]
   \centering
-  \includegraphics[width=\linewidth]{figures/ML/A_search_perf.pdf}
+  \includegraphics[width=0.88\linewidth]{figures/ML/A_search_perf.pdf}
   \caption{Architecture complexity grid search using a staircase-like VGG-net structure. The x-axis denotes the number of layers in the network (Depth) and the y-axis is the starting number of channels. See~\cref{eq:staircase_example} for an example of the staircase architecture. For each architecture complexity, we evaluate the friction mean $R^2$ validation score (top left), the validation loss (top right), the best epoch stored based on validation scores (bottom left) and the number of model parameters (bottom right).}
   \label{fig:A_search_perf}
 \end{figure}  
 
-\begin{figure}[H]
+\begin{figure}[!htb]
   \centering
-  \includegraphics[width=\linewidth]{figures/ML/A_search_compare_perf}
+  \includegraphics[width=0.88\linewidth]{figures/ML/A_search_compare_perf}
   \caption{Architecture grid search similar to that of~\cref{fig:A_search_perf} on a selected set of configurations. The selected set consists of the top 10 candidates for the max drop property for the Tetrahedron and Honeycomb categories in the dataset respectively.}
   \label{fig:A_search_compare}
 \end{figure}  
@@ -439,7 +459,7 @@ patterns. This is shown for the constant learning rate scheme
 in~\cref{fig:mom_weight_search_constant} and for the cyclic scheme
 in~\cref{fig:mom_weight_search_cyclic}.
 
-\begin{figure}[H]
+\begin{figure}[!htb]
   \centering
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
@@ -460,7 +480,7 @@ in~\cref{fig:mom_weight_search_cyclic}.
 \end{figure}
 
 
-\begin{figure}[H]
+\begin{figure}[!htb]
   \centering
   \begin{subfigure}[t]{1.0\textwidth}
       \centering
@@ -480,7 +500,7 @@ in~\cref{fig:mom_weight_search_cyclic}.
   \label{fig:mom_weight_search_constant}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[!htb]
   \centering
   \begin{subfigure}[t]{1.0\textwidth}
       \centering
@@ -532,7 +552,7 @@ edge of our grid search. Thus, it would have been natural to perform an extended
 search in that range, but due to time constraints and the belief that the potential gain from doing so was not significant, we decided to omit it.
 
 
-\begin{table}[H]
+\begin{table}[!htb]
   \begin{center}
   \caption{The best validation loss and $R^2$ scores from the momentum and weight grid search using the S32D12 model. We compare the scores from the constant and cycling learning rate and momentum scheme against the original scores from the S32D12 model in the architecture complexity grid search. The scores correspond to different hyperparameter choices that maximize each score respectively.}
   \label{tab:mom_weight_search}
@@ -574,7 +594,7 @@ a score of $88 \%$ corresponding to simply predicting no ruptures at all. We fin
 $\sim 13 \%$. However, this error is lower for the Tetrahedron ($5.9\%$) and Honeycomb ($1.5\%$) sets. Hence, it is possible to infer that the high relative error in the validation set is due to some instances of very low rupture strains in the Random walk patterns that might shift up the average. \cref{fig:final_model_eval} shows the mean friction, max friction and relative contact in comparison to the Tetrahedron $(7, 5, 1)$ and Honeycomb $(2,2,1,5)$ patterns used in the pilot study. We note that these configurations are also partly contained in the training data, but this serves as a way of comparing the prediction quality estimated for the $R^2$ scores with an visual evaluation. Later on, we will evaluate a true test set based on the proposals from the accelerated search. 
 
 
-\begin{table}[H]
+\begin{table}[!htb]
   \begin{center}
   \caption{Evaluation of the final model performance considering all the model outputs. Mean values are taken over the scores for each configuration in the categories: The validation set, the selected Tetrahedron set and the selected Honeycomb set.}
   \label{tab:final_model_eval}
@@ -589,26 +609,15 @@ $\sim 13 \%$. However, this error is lower for the Tetrahedron ($5.9\%$) and Hon
 \end{table}
 
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{figures/ML/final_model_evaluation.pdf}
-  \caption{Visual evaluation of the final model performance on the Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$ used in the pilot study, for the mean friction $\langle F_{\parallel} \rangle$, maximum friction $\max F_\parallel$ and the relative contact as a function of strain. The model predictions (solid line) are based on \num{e3} data points in the strain range [0, 1.5], with the curve being cut off after the first rupture prediction. This is compared to the data points (dots). The color denotes the corresponding normal loads. The $R^2$ scores are shown for each prediction fit for each load value.}
-  \label{fig:final_model_eval}
-\end{figure}  
-
 With the use of our final model, we evaluate the performance for the task of
 ranking the configurations by the properties of interest. That is, we go through
 all the configurations in the dataset, for the Tetrahedron, Honeycomb and Random
 walk respectively, calculate the properties of interest and sort the
-configurations accordingly. This is shown
-in~\crefrange{tab:ML_ranking_pop}{tab:ML_ranking_RW} in comparison to the actual
+configurations accordingly. This is shown~in\cref{tab:ML_ranking} in comparison to the actual
 ranking in the dataset. Generally, we find that the \acrshort{ML} model performs
 rather well in the ranking of the maximum properties getting the right
 configurations into the top 3 three, while it is performing a lot worse for the
-minimum friction property. 
-
-
-This latter observation can be
+minimum friction property. This latter observation can be
 attributed to the fact that the precision needed for an accurate ranking among
 the minimum friction cases is a lot higher than for the remaining properties. This lack of precision is especially highlighted by the fact that the model predicts the $12\text{th}$ Random walk pattern (see \cref{tab:ML_ranking_RW}) to have negative mean friction, which is clearly outside the bound of reasonable values. For the maximum categories, we find that the model gives a slightly
 better ranking for the Tetrahedon and Honeycomb in comparison to the Random walk
@@ -619,46 +628,54 @@ an accelerated search of new configurations yielding a meaningful ranking of
 property scores. 
 
 
-\begin{table}[H]
-  \begin{center}
-  \caption{\hl{Tetrahedon}}
-  \label{tab:ML_ranking_pop}
-  \begin{tabular}{|c|c|c?{0.3mm}c|c|c|} \hline
-    ML & \multicolumn{2}{c?{0.3mm}}{Data} &  \multicolumn{2}{c|}{\acrshort{ML}} & Data \\ \cline{2-5}
-    Rank & Config & Value [nN] & Config & Value [nN] & Rank \\ \hline
-    \multicolumn{6}{|c|}{$\min F_{\text{fric}}$} \\ \hline
-    20 & (3, 9, 4) & 0.0067 & (3, 1, 2) & 0.0041 & 5  \\ \hline
-    5 & (3, 1, 3) & 0.0075 & (1, 3, 4) & 0.0049 & 11 \\ \hline
-    6 & (5, 3, 4) & 0.0084 & (1, 3, 3) & 0.0066 & 6  \\ \hline
-    21 & (1, 7, 3) & 0.0084 & (3, 1, 4) & 0.0066 & 8  \\ \hline
-    1 & (3, 1, 2) & 0.0097 & (3, 1, 3) & 0.0078 & 2  \\ \hline
-    \multicolumn{6}{|c|}{$\max F_{\text{fric}}$} \\ \hline
-    1 & (5, 3, 1) & 1.5875 & (5, 3, 1) & 1.5920 & 1 \\ \hline
-    2 & (1, 3, 1) & 1.4310 & (1, 3, 1) & 1.2739 & 2 \\ \hline
-    4 & (3, 1, 2) & 1.0988 & (9, 3, 1) & 1.1162 & 4 \\ \hline
-    3 & (9, 3, 1) & 1.0936 & (3, 1, 2) & 0.7819 & 3 \\ \hline
-    5 & (7, 5, 1) & 0.7916 & (7, 5, 1) & 0.7740 & 5 \\ \hline
-    \multicolumn{6}{|c|}{$\max \Delta F_{\text{fric}}$} \\ \hline
-    1 & (5, 3, 1) & 1.5529 & (5, 3, 1) & 1.5578 & 1 \\ \hline 
-    2 & (1, 3, 1) & 1.3916 & (1, 3, 1) & 1.2331 & 2 \\ \hline 
-    4 & (3, 1, 2) & 1.0891 & (9, 3, 1) & 1.0807 & 4 \\ \hline 
-    3 & (9, 3, 1) & 1.0606 & (3, 1, 2) & 0.7778 & 3 \\ \hline 
-    5 & (7, 5, 1) & 0.7536 & (7, 5, 1) & 0.7399 & 5 \\ \hline 
-    \multicolumn{6}{|c|}{max drop} \\ \hline
-    1 & (5, 3, 1) & 0.8841 & (5, 3, 1) & 0.8603 & 1 \\ \hline 
-    2 & (3, 5, 1) & 0.4091 & (3, 5, 1) & 0.3722 & 2 \\ \hline 
-    4 & (7, 5, 1) & 0.3775 & (1, 1, 1) & 0.2879 & 5 \\ \hline 
-    5 & (9, 7, 1) & 0.2238 & (7, 5, 1) & 0.2478 & 3 \\ \hline 
-    3 & (1, 1, 1) & 0.1347 & (9, 7, 1) & 0.1302 & 4 \\ \hline 
-  \end{tabular}
-  \end{center}
-\end{table}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{figures/ML/final_model_evaluation.pdf}
+  \caption{Visual evaluation of the final model performance on the Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$ used in the pilot study, for the mean friction $\langle F_{\parallel} \rangle$, maximum friction $\max F_\parallel$ and the relative contact as a function of strain. The model predictions (solid line) are based on \num{e3} data points in the strain range [0, 1.5], with the curve being cut off after the first rupture prediction. This is compared to the data points (dots). The color denotes the corresponding normal loads. The $R^2$ scores are shown for each prediction fit for each load value.}
+  \label{fig:final_model_eval}
+\end{figure}  
+
+
 
 \begin{table}[H]
-  \begin{center}
-  \caption{\hl{Honeycomb}}
-  \label{tab:ML_ranking_hon}
-  \begin{tabular}{|c|c|c?{0.3mm}c|c|c|} \hline
+  \begin{subtable}[t]{1\textwidth}
+    \centering
+    \begin{tabular}{|c|C{2cm}|c?{0.3mm}C{2cm}|c|c|} \hline
+      ML & \multicolumn{2}{c?{0.3mm}}{Data} &  \multicolumn{2}{c|}{\acrshort{ML}} & Data \\ \cline{2-5}
+      Rank & Config & Value [nN] & Config & Value [nN] & Rank \\ \hline
+      \multicolumn{6}{|c|}{$\min F_{\text{fric}}$} \\ \hline
+      20 & (3, 9, 4) & 0.0067 & (3, 1, 2) & 0.0041 & 5  \\ \hline
+      5 & (3, 1, 3) & 0.0075 & (1, 3, 4) & 0.0049 & 11 \\ \hline
+      6 & (5, 3, 4) & 0.0084 & (1, 3, 3) & 0.0066 & 6  \\ \hline
+      21 & (1, 7, 3) & 0.0084 & (3, 1, 4) & 0.0066 & 8  \\ \hline
+      1 & (3, 1, 2) & 0.0097 & (3, 1, 3) & 0.0078 & 2  \\ \hline
+      \multicolumn{6}{|c|}{$\max F_{\text{fric}}$} \\ \hline
+      1 & (5, 3, 1) & 1.5875 & (5, 3, 1) & 1.5920 & 1 \\ \hline
+      2 & (1, 3, 1) & 1.4310 & (1, 3, 1) & 1.2739 & 2 \\ \hline
+      4 & (3, 1, 2) & 1.0988 & (9, 3, 1) & 1.1162 & 4 \\ \hline
+      3 & (9, 3, 1) & 1.0936 & (3, 1, 2) & 0.7819 & 3 \\ \hline
+      5 & (7, 5, 1) & 0.7916 & (7, 5, 1) & 0.7740 & 5 \\ \hline
+      \multicolumn{6}{|c|}{$\max \Delta F_{\text{fric}}$} \\ \hline
+      1 & (5, 3, 1) & 1.5529 & (5, 3, 1) & 1.5578 & 1 \\ \hline 
+      2 & (1, 3, 1) & 1.3916 & (1, 3, 1) & 1.2331 & 2 \\ \hline 
+      4 & (3, 1, 2) & 1.0891 & (9, 3, 1) & 1.0807 & 4 \\ \hline 
+      3 & (9, 3, 1) & 1.0606 & (3, 1, 2) & 0.7778 & 3 \\ \hline 
+      5 & (7, 5, 1) & 0.7536 & (7, 5, 1) & 0.7399 & 5 \\ \hline 
+      \multicolumn{6}{|c|}{max drop} \\ \hline
+      1 & (5, 3, 1) & 0.8841 & (5, 3, 1) & 0.8603 & 1 \\ \hline 
+      2 & (3, 5, 1) & 0.4091 & (3, 5, 1) & 0.3722 & 2 \\ \hline 
+      4 & (7, 5, 1) & 0.3775 & (1, 1, 1) & 0.2879 & 5 \\ \hline 
+      5 & (9, 7, 1) & 0.2238 & (7, 5, 1) & 0.2478 & 3 \\ \hline 
+      3 & (1, 1, 1) & 0.1347 & (9, 7, 1) & 0.1302 & 4 \\ \hline 
+    \end{tabular}
+  \caption{Tetrahedron ranking. }
+  \label{tab:ML_ranking_pop}
+  \end{subtable}
+  \vspace{5mm}
+  \newline
+  \begin{subtable}[t]{1\textwidth}
+  \centering
+  \begin{tabular}{|c|C{2cm}|c?{0.3mm}C{2cm}|c|c|} \hline
     ML & \multicolumn{2}{c?{0.3mm}}{Data} &  \multicolumn{2}{c|}{\acrshort{ML}} & Data \\ \cline{2-5}
     Rank & Config & Value [nN] & Config & Value [nN] & Rank \\ \hline
     \multicolumn{6}{|c|}{$\min F_{\text{fric}}$} \\ \hline
@@ -686,19 +703,20 @@ property scores.
     4 & (2, 1, 5, 3) & 0.8638 & (2, 1, 5, 3) & 0.9556 & 4 \\ \hline 
     13 & (2, 5, 1, 1) & 0.8468 & (2, 4, 5, 3) & 0.8999 & 8 \\ \hline 
   \end{tabular}
-  \end{center}
-\end{table}
+  \caption{Honeycomb ranking.}
+  \label{tab:ML_ranking_hon}
+  \end{subtable}  
+  \caption{(Table continues on the next page)}
+  \end{table}
 
-
-\begin{table}[H]
-  \begin{center}
-  \caption{\hl{RW}}
-  \label{tab:ML_ranking_RW}
-  \begin{tabular}{|c|c|c?{0.3mm}c|c|c|} \hline
+\begin{table}[H]\ContinuedFloat
+  \begin{subtable}[t]{1\textwidth}
+  \centering
+  \begin{tabular}{|c|C{2cm}|c?{0.3mm}C{2cm}|c|c|} \hline
     ML & \multicolumn{2}{c?{0.3mm}}{Data} &  \multicolumn{2}{c|}{\acrshort{ML}} & Data \\ \cline{2-5}
     Rank & Config & Value [nN] & Config & Value [nN] & Rank \\ \hline
     \multicolumn{6}{|c|}{$\min F_{\text{fric}}$} \\ \hline
-    1 & 12 & 0.0024 & 12 & -0.0011 & 1 \\ \hline 
+    1 & 12 & 0.0024 & 12 & $-0.0011 \ $ & 1 \\ \hline 
     24 & 76 & 0.0040 & 06 & 0.0036  & 27 \\ \hline 
     6 & 13 & 0.0055 & 14 & 0.0074  & 23 \\ \hline 
     31 & 08 & 0.0065 & 05 & 0.0082  & 19 \\ \hline 
@@ -722,15 +740,124 @@ property scores.
     11 & 37 & 0.1022 & 04 & 0.0591 & 8 \\ \hline 
     28 & 34 & 0.0879 & 56 & 0.0552 & 20 \\ \hline 
   \end{tabular}
-  \end{center}
-\end{table}
+  \caption{Random walk ranking.}
+  \label{tab:ML_ranking_RW}
+  \end{subtable}  
+  \label{tab:ML_ranking}
+  \caption{Ranking of the dataset according to the four properties of interest using the final machine learning (\acrshort{ML}) model for the Tetrahedon (a), Honeycomb (b) and Random walk (c) patterns in the dataset respectively. The ranking is shown in descending order for each section of rows corresponding to the four properties of interest. The left of the vertical center line denotes the true data ranking showing the top 5 in descending order (the top row show rank 1 and the bottom row shows rank 5). The outermost left column (\acrshort{ML} rank) then denotes the corresponding ranks given by the \acrshort{ML} model. The right of the vertical center line shows the top 5 ranking given by the \acrshort{ML} model for which the outermost right column shows the corresponding true data ranks. If the model gets the top 5 ranking right both the outermost left and right column show $1,2,3,4,5$ in descending order.}
+  \end{table}
 
-%
-%
-% Workin here
-%
-%
-%
+
+
+
+
+
+% \begin{table}[H]
+%   \begin{center}
+%   \caption{\hl{Tetrahedon}}
+%   \label{tab:ML_ranking_pop}
+%   \begin{tabular}{|c|c|c?{0.3mm}c|c|c|} \hline
+%     ML & \multicolumn{2}{c?{0.3mm}}{Data} &  \multicolumn{2}{c|}{\acrshort{ML}} & Data \\ \cline{2-5}
+%     Rank & Config & Value [nN] & Config & Value [nN] & Rank \\ \hline
+%     \multicolumn{6}{|c|}{$\min F_{\text{fric}}$} \\ \hline
+%     20 & (3, 9, 4) & 0.0067 & (3, 1, 2) & 0.0041 & 5  \\ \hline
+%     5 & (3, 1, 3) & 0.0075 & (1, 3, 4) & 0.0049 & 11 \\ \hline
+%     6 & (5, 3, 4) & 0.0084 & (1, 3, 3) & 0.0066 & 6  \\ \hline
+%     21 & (1, 7, 3) & 0.0084 & (3, 1, 4) & 0.0066 & 8  \\ \hline
+%     1 & (3, 1, 2) & 0.0097 & (3, 1, 3) & 0.0078 & 2  \\ \hline
+%     \multicolumn{6}{|c|}{$\max F_{\text{fric}}$} \\ \hline
+%     1 & (5, 3, 1) & 1.5875 & (5, 3, 1) & 1.5920 & 1 \\ \hline
+%     2 & (1, 3, 1) & 1.4310 & (1, 3, 1) & 1.2739 & 2 \\ \hline
+%     4 & (3, 1, 2) & 1.0988 & (9, 3, 1) & 1.1162 & 4 \\ \hline
+%     3 & (9, 3, 1) & 1.0936 & (3, 1, 2) & 0.7819 & 3 \\ \hline
+%     5 & (7, 5, 1) & 0.7916 & (7, 5, 1) & 0.7740 & 5 \\ \hline
+%     \multicolumn{6}{|c|}{$\max \Delta F_{\text{fric}}$} \\ \hline
+%     1 & (5, 3, 1) & 1.5529 & (5, 3, 1) & 1.5578 & 1 \\ \hline 
+%     2 & (1, 3, 1) & 1.3916 & (1, 3, 1) & 1.2331 & 2 \\ \hline 
+%     4 & (3, 1, 2) & 1.0891 & (9, 3, 1) & 1.0807 & 4 \\ \hline 
+%     3 & (9, 3, 1) & 1.0606 & (3, 1, 2) & 0.7778 & 3 \\ \hline 
+%     5 & (7, 5, 1) & 0.7536 & (7, 5, 1) & 0.7399 & 5 \\ \hline 
+%     \multicolumn{6}{|c|}{max drop} \\ \hline
+%     1 & (5, 3, 1) & 0.8841 & (5, 3, 1) & 0.8603 & 1 \\ \hline 
+%     2 & (3, 5, 1) & 0.4091 & (3, 5, 1) & 0.3722 & 2 \\ \hline 
+%     4 & (7, 5, 1) & 0.3775 & (1, 1, 1) & 0.2879 & 5 \\ \hline 
+%     5 & (9, 7, 1) & 0.2238 & (7, 5, 1) & 0.2478 & 3 \\ \hline 
+%     3 & (1, 1, 1) & 0.1347 & (9, 7, 1) & 0.1302 & 4 \\ \hline 
+%   \end{tabular}
+%   \end{center}
+% \end{table}
+
+% \begin{table}[H]
+%   \begin{center}
+%   \caption{\hl{Honeycomb}}
+%   \label{tab:ML_ranking_hon}
+%   \begin{tabular}{|c|c|c?{0.3mm}c|c|c|} \hline
+%     ML & \multicolumn{2}{c?{0.3mm}}{Data} &  \multicolumn{2}{c|}{\acrshort{ML}} & Data \\ \cline{2-5}
+%     Rank & Config & Value [nN] & Config & Value [nN] & Rank \\ \hline
+%     \multicolumn{6}{|c|}{$\min F_{\text{fric}}$} \\ \hline
+%     1 & (2, 5, 1, 1) & 0.0177 & (2, 5, 1, 1) & 0.0113 & 1 \\ \hline 
+%     9 & (2, 4, 5, 1) & 0.0187 & (2, 5, 5, 3) & 0.0149 & 7 \\ \hline 
+%     7 & (2, 4, 1, 1) & 0.0212 & (2, 5, 5, 1) & 0.0182 & 4 \\ \hline 
+%     3 & (2, 5, 5, 1) & 0.0212 & (2, 5, 3, 1) & 0.0186 & 5 \\ \hline 
+%     4 & (2, 5, 3, 1) & 0.0226 & (2, 4, 1, 3) & 0.0198  & 15 \\ \hline 
+%     \multicolumn{6}{|c|}{$\max F_{\text{fric}}$} \\ \hline
+%     1 & (2, 1, 1, 1) & 2.8903 & (2, 1, 1, 1) & 2.9171 & 1 \\ \hline 
+%     2 & (2, 1, 5, 3) & 2.2824 & (2, 1, 5, 3) & 2.4004 & 2 \\ \hline 
+%     6 & (2, 1, 3, 1) & 2.0818 & (2, 1, 5, 1) & 2.1060 & 5 \\ \hline 
+%     4 & (2, 1, 3, 3) & 2.0313 & (2, 1, 3, 3) & 1.9458 & 4 \\ \hline 
+%     3 & (2, 1, 5, 1) & 2.0164 & (2, 4, 1, 1) & 1.9381 & 6 \\ \hline 
+%     \multicolumn{6}{|c|}{$\max \Delta F_{\text{fric}}$} \\ \hline
+%     1 & (2, 1, 5, 3) & 2.0234 & (2, 1, 5, 3) & 2.1675 & 1 \\ \hline 
+%     2 & (2, 1, 1, 1) & 1.9528 & (2, 1, 1, 1) & 2.0809 & 2 \\ \hline 
+%     3 & (2, 4, 1, 1) & 1.8184 & (2, 4, 1, 1) & 1.9157 & 3 \\ \hline 
+%     4 & (2, 1, 3, 3) & 1.7645 & (2, 1, 3, 3) & 1.6968 & 4 \\ \hline 
+%     5 & (2, 4, 1, 3) & 1.4614 & (2, 4, 1, 3) & 1.5612 & 5 \\ \hline 
+%     \multicolumn{6}{|c|}{max drop} \\ \hline
+%     1 & (2, 3, 3, 3) & 1.2785 & (2, 3, 3, 3) & 1.3642 & 1 \\ \hline 
+%     2 & (2, 1, 3, 1) & 1.1046 & (2, 1, 3, 1) & 0.9837 & 2 \\ \hline 
+%     3 & (2, 3, 3, 5) & 0.8947 & (2, 3, 3, 5) & 0.9803 & 3 \\ \hline 
+%     4 & (2, 1, 5, 3) & 0.8638 & (2, 1, 5, 3) & 0.9556 & 4 \\ \hline 
+%     13 & (2, 5, 1, 1) & 0.8468 & (2, 4, 5, 3) & 0.8999 & 8 \\ \hline 
+%   \end{tabular}
+%   \end{center}
+% \end{table}
+
+
+% \begin{table}[H]
+%   \begin{center}
+%   \caption{\hl{RW}}
+%   \label{tab:ML_ranking_RW}
+%   \begin{tabular}{|c|c|c?{0.3mm}c|c|c|} \hline
+%     ML & \multicolumn{2}{c?{0.3mm}}{Data} &  \multicolumn{2}{c|}{\acrshort{ML}} & Data \\ \cline{2-5}
+%     Rank & Config & Value [nN] & Config & Value [nN] & Rank \\ \hline
+%     \multicolumn{6}{|c|}{$\min F_{\text{fric}}$} \\ \hline
+%     1 & 12 & 0.0024 & 12 & -0.0011 & 1 \\ \hline 
+%     24 & 76 & 0.0040 & 06 & 0.0036  & 27 \\ \hline 
+%     6 & 13 & 0.0055 & 14 & 0.0074  & 23 \\ \hline 
+%     31 & 08 & 0.0065 & 05 & 0.0082  & 19 \\ \hline 
+%     26 & 07 & 0.0069 & 63 & 0.0085  & 57 \\ \hline 
+%     \multicolumn{6}{|c|}{$\max F_{\text{fric}}$} \\ \hline
+%     3 & 96 & 0.5758 & 99 & 0.5155 & 2 \\ \hline 
+%     1 & 99 & 0.5316 & 98 & 0.4708 & 3 \\ \hline 
+%     2 & 98 & 0.4478 & 96 & 0.4356 & 1 \\ \hline 
+%     4 & 97 & 0.3624 & 97 & 0.3503 & 4 \\ \hline 
+%     11 & 58 & 0.3410 & 55 & 0.2817 & 7 \\ \hline 
+%     \multicolumn{6}{|c|}{$\max \Delta F_{\text{fric}}$} \\ \hline
+%     3 & 96 & 0.5448 & 99 & 0.4669 & 2 \\ \hline 
+%     1 & 99 & 0.4769 & 98 & 0.4314 & 3 \\ \hline 
+%     2 & 98 & 0.4085 & 96 & 0.4128 & 1 \\ \hline 
+%     4 & 97 & 0.3268 & 97 & 0.3080 & 4 \\ \hline 
+%     78 & 57 & 0.2978 & 55 & 0.2542 & 7 \\ \hline 
+%     \multicolumn{6}{|c|}{max drop} \\ \hline
+%     3 & 01 & 0.1818 & 00 & 0.1883 & 3 \\ \hline 
+%     2 & 96 & 0.1733 & 96 & 0.1654 & 2 \\ \hline 
+%     1 & 00 & 0.1590 & 01 & 0.1532 & 1 \\ \hline 
+%     11 & 37 & 0.1022 & 04 & 0.0591 & 8 \\ \hline 
+%     28 & 34 & 0.0879 & 56 & 0.0552 & 20 \\ \hline 
+%   \end{tabular}
+%   \end{center}
+% \end{table}
+
 
 \section{Accelerated Search}
 From~\cref{eq:ML} we have found promising results that we can use a machine learning model to predict the friction behavior. This enables us to omit the \acrshort{MD} simulations in the evaluation process and perform an accelerated search through new configurations. We will use the friction properties of interest as our main optimization metrics. We approach the accelerated search by two different methods:
@@ -770,7 +897,7 @@ from~\cref{tab:data_properties}. The random walk top five candidates are
 visualized in~\cref{fig:RW_search_top5}.
 
 
-\begin{table}[H]
+\begin{table}[!htb]
   \begin{center}
   \caption{Pattern search. The values are in units nN.}
   \label{tab:pattern_search}
@@ -801,7 +928,7 @@ candidates are all rather low being $1.5\%$, $5.6\%$, and $1.6\%$ for the
 Tetrahedron, Honeycomb and Random walk respectively. This further supports the idea that the Kirigami sheet can not readily be used to reduce friction within our system domain since the results point toward a non-cut sheet as the best minimum friction candidate.
 
 
-\begin{figure}[H]
+\begin{figure}[!htb]
   \centering
   \includegraphics[width=\linewidth]{figures/search/RW_search_top5.pdf}
   \caption{\hl{RW search top results.}}
@@ -835,7 +962,7 @@ investigate for any physical edge dependencies or otherwise strengthen the
 model by this data. We leave this suggestion for another study. When considering some of the friction-strain curves we also find that the prediction of the rupture point plays an important role for the max drop property. As the rupture is often predicted on a descending part of the curve any variation to the rupture strain will affect the max drop property quite significantly.
 
 
-\begin{figure}[H]
+\begin{figure}[!htb]
   \centering
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
@@ -909,7 +1036,7 @@ has a probability of $p$ being $-1$ and $p-1$ being $+1$. Hence, the probability
 represents the average porosity of the configuration and we choose $p = 0.5$ as an unbiased choice. When
 considering the minimization of energy, the algorithm converges relatively fast (within tens of generations) to the best possible score. Thus, we consider the more challenging problem of maximizing energy which requires the configuration to reach the checkerboard pattern. \cref{fig:ising_max_history} shows the score for a maximization of the energy using the genetic algorithm. We observe that the score converges faster initially, but that it eventually reaches the best score at generation 257. This indicates that the algorithm can handle an optimization problem with some level of spatial dependency. However, we note that some initializations were resulting in a saturating convergence, where two unsynchronized checkerboard patterns formed in distinct regions of the lattice. This leads to a local maximum because transitioning from two unsynchronized checkerboard patterns to a single synchronized pattern would necessitate a slight decrease in the score initially.
 
-\begin{figure}[H]
+\begin{figure}[!htb]
   \centering
   \includegraphics[width=0.6\linewidth]{figures/search/ising_max_history.pdf}
   \caption{Optimization for the maximum Ising energy given by \cref{eq:H_ising} for a $10 \times 10$ lattice using a population size of 10. The population was initialized with random noise having a probability of 0.5 being $-1$ and 0.5 being $+1$. The three curves indicate the minimum, mean, and maximum scores in the population. The best score is reached at generation 257. }
@@ -955,14 +1082,14 @@ One possible explanation is that the dissipation of energy related to the thermo
 
 
 
-% \begin{figure}[H]
+% \begin{figure}[!htb]
 %   \centering
 %   \includegraphics[width=0.8\linewidth]{figures/search/grad_cam_GA_RN_start_top0.pdf}
 %   \caption{$p \in \{0.01, 0.05, 0.1, 0.2, 0.3\}$.}
 %   \label{fig:GC_mixed_p}
 % \end{figure}  
 
-% \begin{figure}[H]
+% \begin{figure}[!htb]
 %   \centering
 %   \includegraphics[width=0.8\linewidth]{figures/search/grad_cam_pop_1_7_1_1_4.pdf}
 %   \caption{Tetrahedron $(1,7,1)$, ref = $(1,4)$}
@@ -970,14 +1097,14 @@ One possible explanation is that the dissipation of energy related to the thermo
 % \end{figure}  
 
 
-% \begin{figure}[H]
+% \begin{figure}[!htb]
 %   \centering
 %   \includegraphics[width=0.8\linewidth]{figures/search/grad_cam_hon_3_3_5_3_12_0.pdf}
 %   \caption{Honeycomb $(3,3,5,3)$, ref = $(12,0)$}
 %   \label{fig:GC_hon_search}
 % \end{figure}  
 
-% \begin{figure}[H]
+% \begin{figure}[!htb]
 %   \centering
 %   \includegraphics[width=0.8\linewidth]{figures/search/grad_cam_RW_search_max_drop0.pdf}
 %   \caption{RW.}
@@ -987,7 +1114,7 @@ One possible explanation is that the dissipation of energy related to the thermo
 
 
 
-\begin{figure}[H]
+\begin{figure}[!htb]
   \centering
   \begin{subfigure}[t]{1\textwidth}
       \centering
@@ -1009,7 +1136,7 @@ One possible explanation is that the dissipation of energy related to the thermo
   \caption{(The figure continues on the next page)}
 \end{figure}
 
-\begin{figure}[H]\ContinuedFloat
+\begin{figure}[!htb]\ContinuedFloat
   \centering
   \begin{subfigure}[t]{1\textwidth}
       \centering
