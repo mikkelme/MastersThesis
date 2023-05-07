@@ -1,16 +1,20 @@
 \chapter{Summary}\label{chap:summary}
-
-In this thesis, we have studied the nanoscale friction of a Kirigami graphene sheet
-under the influence of load and strain using \acrshort{MD} simulations. We have
-developed a numerical framework for generating diverse Kirigami designs which we have utilized to create a dataset for the frictional behavior depending on Kirigami pattern, strain, and loading. Our findings suggest that the frictional
-behavior of a Kirigami sheet is highly dependent on the geometry of the pattern
-and the strain conditions. We observed that the out-of-plane buckling can be
-associated with a non-linear friction-strain curve which can be utilized to
-demonstrate a negative friction coefficient in a system with coupled load and
-strain. Moreover, we have investigated the possibility to use machine learning
-on this dataset and attempted an accelerated search. Our findings imply that 
-machine learning can be feasible for this approach,  additional data is required to
-establish a more reliable foundation for a search for new Kirigami patterns. In this chapter, we will provide a summary of our findings and draw conclusions based on the results obtained. Finally, we will suggest some topics for further research.
+In this thesis, we have studied the nanoscale friction of a Kirigami graphene
+sheet under the influence of strain using molecular dynamics (\acrshort{MD})
+simulations. We have developed a numerical tool for generating diverse Kirigami
+designs which we have utilized to create a dataset for the frictional behavior
+depending on Kirigami pattern, strain, and loading. Our findings suggest that
+the frictional behavior of a Kirigami sheet is highly dependent on the geometry
+of the pattern and the strain conditions. We observed that the out-of-plane
+buckling can be associated with a non-linear friction-strain relationship which
+can be utilized to demonstrate a negative friction coefficient in a system with
+coupled load and strain. Moreover, we have investigated the possibility to use
+machine learning on this dataset and attempted an accelerated search. Our
+findings imply that machine learning can be feasible for this approach, but
+additional data is required to establish a more reliable foundation for a search
+for new Kirigami patterns. In this chapter, we will provide a summary of our
+findings and draw conclusions based on the results obtained. Finally, we will
+suggest some topics for further research.
 
 
 \section{Summary and conclusions}
@@ -22,13 +26,19 @@ a graphene sheet sliding on a silicon substrate. The key system features were
 the introduction of the pull blocks, defined as the end regions of the sheet
 with respect to the sliding direction, which was utilized for applying normal
 load and sliding the sheet. The pull blocks were made partly rigid and used to
-employ a thermostat as well. Through an analysis of the friction forces retrieved from sliding simulations, we have established a standardized metric for kinetic friction. In particular, we measured the force exerted by the substrate on the full sheet, including the pull blocks, with respect to the sliding direction, and determined the kinetic friction as the mean value of the last half of the simulation. The uncertainties were estimated based on the fluctuations in the running mean. We found that the assessment of static friction was ambiguous for our simulation and did not pursue this further. From the analysis of the
+employ a thermostat as well. Through an analysis of the friction forces retrieved from sliding simulations, we have established a standardized metric for kinetic friction. In particular, we measured the force exerted by the substrate on the full sheet, including the pull blocks, with respect to the sliding direction. We then determined the kinetic friction as the mean value of the last half of the simulation. The uncertainties were estimated based on the fluctuations in the running mean. We found that the assessment of static friction was ambiguous for our simulation and did not pursue this further. From the analysis of the
 force traces, friction force vs.\ time, we identify the friction behavior in our
 simulation domain as being in the smooth sliding regime. This is attributed to the choice of a relatively high sliding speed (\SI{20}{m/s}) and infinitely stiff springs for the tethering of the sheet. This was supported by a demonstration of a transition to the stick-slip regime through the use of softer springs and a decrease in sliding speed. By conducting a more systematic investigation of the
-effects of temperature, sliding speed, spring constant and timestep, we identified a set of default values based on numerical stability and computational cost. During this process, we aimed to select the variables that would maintain a relatively stable measured friction with moderate perturbations around these default values.
-We found that friction increased with temperature which we attribute to being in
-the ballistic sliding regime. In the absence of clear indications from the investigation regarding an appropriate temperature, we opted for the standard choice of room temperature, \SI{300}{K}. Furthermore, we found friction to increase with velocity as
-expected, with some signs of phonon resonance at certain sliding speeds as well.
+effects of temperature, sliding speed, spring constant and timestep, we identified a set of default values based on numerical stability and computational cost. During this process, we aimed to select the variables that would maintain relatively stable measured friction with moderate perturbations around these default values. We found that friction increased with temperature which is in disagreement with the Prandtl–Tomlinson model and most experimental results. However, this agrees with the predictions from the Frenkel-Kontorova models and other \acrshort{MD} studies which attribute this to ballistic sliding. In the absence of clear indications from the investigation regarding an appropriate temperature, we opted for the standard choice of room temperature, \SI{300}{K}. Furthermore, we found friction to increase with velocity as
+expected from previous result, with some signs of phonon resonance at certain sliding speeds as well which aligns with predictions from the Frenkel-Kontorova models.
+%
+%
+% Working here
+%
+%
+
+
+.
 We chose a rather high velocity of \SI{20}{m/s} mainly for the consideration of
 computational costs. For the spring constant, we found decreasing friction with
 increasing stiffness of the springs. This is associated with the transition from
@@ -40,7 +50,7 @@ simulations might be higher than first estimated. For the non-strained Kirigami 
 
 
 % 2: Design Kirigami framework
-\subsection{Generetig Kirigami patterns}
+\subsection{Generating Kirigami patterns}
 In order to investigate the effects of Kirigami design we have created a
 numerical framework for generating various patterns. By defining an indexing
 system for the hexagonal lattice structure we were able to define the Kirigami

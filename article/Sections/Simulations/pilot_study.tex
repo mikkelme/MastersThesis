@@ -646,7 +646,7 @@ friction force, sampled from the last half of the simulation as described in~\cr
         \label{fig:var_dt}
     \end{subfigure}
     \hfill
-    \caption{Investigation of the friction dependencies to the selected parameters: temperature (a) sliding speed (b), spring constant (c) and timestep (d), the non-cut sheet, non-cut sheet, the Tetrahedron $(7,5,1)$, and the Honeycomb $(2,2,1,5)$ patterns. The dotted line denotes the default parameter choice and the shaded area denotesthe estimated ($\pm$) absolute error.}
+    \caption{Investigation of the friction dependencies to the selected parameters: temperature (a) sliding speed (b), spring constant (c) and timestep (d), the non-cut sheet, non-cut sheet, the Tetrahedron $(7,5,1)$, and the Honeycomb $(2,2,1,5)$ patterns. The dotted line denotes the default parameter choice and the shaded area denotes the estimated ($\pm$) absolute error.}
     \label{fig:main_param}
 \end{figure}
 
@@ -659,7 +659,8 @@ start (10--30 K) and end region (480--500 K). Similar fluctuations are also seen
 from the Honeycomb pattern, although it shows an underlying increasing trend
 throughout. When comparing the non-cut sheet and the Honeycomb pattern we
 observe that the slope for the increasing trend is higher for the Honeycomb
-pattern. From the predictions of the Prandtl–Tomlinson model and experimental results we expect to find a decrease in friction with increasing temperature. However, in similar \acrshort{MD}-based studies by Guerra et al.~\cite{Guerra_2010} they report that the frictional temperature dependence reverses at high sliding speed. They attribute this to the crossover from the diffusive to the ballistic regime taking place at a sliding speed of 1 to \SI{10}{m/s}. This agrees with our observations since we are using a sliding speed of \SI{20}{m/s}. In the absence of any clear suggestions from the results regarding an appropriate temperature, we take the common choice of using the room temperature \SI{300}{K}. The non-cut and Tetrahedon friction shows to be rather
+pattern. From the predictions of the Prandtl–Tomlinson model and experimental results we expect to find a decrease in friction with increasing temperature. However, in similar \acrshort{MD}-based studies by Guerra et al.~\cite{Guerra_2010} they report that the frictional temperature dependence reverses at high sliding speed. They attribute this to the crossover from the diffusive to the ballistic regime taking place at a sliding speed of 1 to \SI{10}{m/s}. This agrees with our observations since we are using a sliding speed of \SI{20}{m/s}. The increase in friction with temperature agrees with the predictions from the Frenkel-Kontorova models~\cite{FK2D}
+In the absence of any clear suggestions from the results regarding an appropriate temperature, we take the common choice of using the room temperature \SI{300}{K}. The non-cut and Tetrahedon friction shows to be rather
 stable around our temperature of choice, although we do see some significant fluctuations for the Honeycomb pattern in this range. However, we do not regard this as a critical feature.
 
 From the sliding speed investigation in~\cref{fig:var_vel} we generally find
@@ -881,7 +882,7 @@ From the investigation of the strain dependency we saw that increasing the norma
       \label{fig:load_dist_b}
   \end{subfigure}
   \hfill
-     \caption{Multiple simulations of a non-cut sheet under various uniformly spaced load values $F_N \in [0.1, 10]$ nN for two different variations of loading distribution. The shading and the error bars denote the absolute error. (a) The loading is applied to the pull blocks only. (b) The loading is applied uniformly to the full sheet. }
+     \caption{Multiple simulations of a non-cut sheet under various uniformly spaced normal load values $F_N \in [0.1, 10]$ nN for two different variations of loading distribution. The shading and the error bars denote the absolute error. (a) The normal loading is applied to the pull blocks only. (b) The normal loading is applied uniformly to the full sheet. }
      \label{fig:load_dist}
 \end{figure}
 

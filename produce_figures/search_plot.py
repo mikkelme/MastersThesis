@@ -116,8 +116,8 @@ def plot_search_history(filename, save = False):
 if __name__ == '__main__':
     # plot_ref_search(filename = '../ML/ref_search/pop_1_7_1_ref_search.npy', save = False)
     # plot_ref_search(filename = '../ML/ref_search/pop_5_3_1_ref_search.npy', save = False)
-    plot_ref_search(filename = '../ML/ref_search/hon_3_3_5_3_ref_search.npy', save = True)
-    plot_ref_search(filename = '../ML/ref_search/hon_2_3_3_3_ref_search.npy', save = False)
+    # plot_ref_search(filename = '../ML/ref_search/hon_3_3_5_3_ref_search.npy', save = False)
+    # plot_ref_search(filename = '../ML/ref_search/hon_2_3_3_3_ref_search.npy', save = False)
     # 
     # pass
     # plot_RW_top5(save = False)
