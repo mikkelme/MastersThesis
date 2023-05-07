@@ -565,6 +565,7 @@ def RW_dataset(shape = (62,106)):
     
 
 if __name__ == "__main__":
+    pass
     # --- Generate datasets --- #
     # pop_up_dataset(shape = (62, 106), min_sp = 1, max_sp = 4, max_cut = (9,13))
     # honeycomb_dataset(shape = (62, 106), min_val = (2, 1, 1, 1), max_val = (3, 5, 5, 5))

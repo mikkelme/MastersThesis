@@ -191,7 +191,7 @@ def plot_profiles_together(path, save = False):
     if save: 
         for fig in figs:
             ax = fig.axes[0]
-            ax.set_xlabel(r'Stretch / rupture stretch', fontsize=14)
+            ax.set_xlabel(r'Strain / rupture strain', fontsize=14)
             ax.set_ylabel(r'$\langle F_{\parallel}\rangle$ [nN]', fontsize=14)
             ax.legend(loc='upper left', bbox_to_anchor=(1.00, 1.00), ncol=1, fancybox=True, shadow=False)
             fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
@@ -368,13 +368,13 @@ if __name__ == "__main__":
     path = '../Data/CONFIGS/RW'
     
     # patterns_and_profiles(save = False)
-    patterns_and_profiles_2(save = True)
-    plt.show()
+    # patterns_and_profiles_2(save = True)
+    # plt.show()
     
     
     
     
     # plot_individual_profiles(path, save = False)
-    # plot_profiles_together(path, save = False)
+    plot_profiles_together(path, save = True)
     # plt.show()    
     

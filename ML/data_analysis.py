@@ -143,7 +143,7 @@ def plot_corrcoef(save = False):
                                'rupture_stretch': 'rup. strain',
                                'F_N': '$F_N$', 
                                'Ff_mean': r'$\langle F_\parallel \rangle$', 
-                               'Ff_max': 'max Ff',
+                               'Ff_max': r'max $F_\parallel$',
                                'contact': 'contact',
                                'Ff_mean_std': r'std $\langle F_\parallel \rangle$',
                                'contact_std': 'std contact'
@@ -409,8 +409,8 @@ def get_config_data_property_score(folder):
     
         
 if __name__ == '__main__':
-    # plot_corrcoef(save = False)
-    # plot_corr_scatter(save = False)
+    plot_corrcoef(save = True)
+    plot_corr_scatter(save = True)
     # plt.show()
     
     # model_performance('training_1')
@@ -426,10 +426,10 @@ if __name__ == '__main__':
     # part = np.sum(data['is_ruptured']) / len(data['is_ruptured'])
     # print(part)
     
-    folder = '../Data/baseline_fixmove/nocut/multi_stretch'
-    folder = '../Data/baseline_fixmove/popup/multi_stretch'
-    folder = '../Data/baseline_fixmove/honeycomb/multi_stretch'
-    get_config_data_property_score(folder)
+    # folder = '../Data/baseline_fixmove/nocut/multi_stretch'
+    # folder = '../Data/baseline_fixmove/popup/multi_stretch'
+    # folder = '../Data/baseline_fixmove/honeycomb/multi_stretch'
+    # get_config_data_property_score(folder)
     
     pass
     
