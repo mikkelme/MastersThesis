@@ -5,7 +5,7 @@ chapter, we introduce the key concept behind machine learning and some of the co
 
 
 \section{Neural network}\label{sec:NN}
-The neural network, or more precisely the \textit{feed forward dense neural
+The neural network, or more precisely the \textit{feed-forward dense neural
 network}, is one of the original concepts in machine learning arising from the attempt of mimicking the way neurons work in the
 brain~\cite{lederer2021activation, Shankar_2022} brain. The neural network can
 be considered in terms of three major parts: The input layer, the so-called
@@ -33,7 +33,7 @@ Often the same activation function is used throughout the network, except for th
 \begin{figure}[!htb]
   \centering
   \includegraphics[width=0.9\linewidth]{figures/theory/ffnn.png}
-  \caption{Illustration of a general feed forward dense neural network with $n_x$ input features and $n_y$ outputs. Reproduced from~\cite{IN5400_slides}.}
+  \caption{Illustration of a general feed-forward dense neural network with $n_x$ input features and $n_y$ outputs. Reproduced from~\cite{IN5400_slides}.}
   \label{fig:ffnn}
 \end{figure}
 
@@ -209,7 +209,6 @@ intermediate value, increase toward a maximum bound and then decrease toward a
 final lower learning rate bound. We do this by following a cosine function that is shifted and scaled to increase towards the maximum bound for the first 30\% of the training length and decrease toward the lower learning rate bound for the remaining epochs. 
 
 
-
 \section{Convolutional Neural Network}\label{sec:CNN}
 Convolutional Neural Networks (\acrshort{CNN}s) build upon many of the same
 concepts as introduced with the feed-forward neural network in~\cref{sec:NN}.
@@ -224,46 +223,60 @@ within the input, i.e.\ being translational invariant. This is achieved by
 having a so-called \textit{kernel} or \textit{filter} which slides over the
 images\footnote{Note, that we will be using the word ``image'' as a reference
 for a spatially dependent input, but in reality, it does not have to be an
-actual image in the classical sense.} as it processes the input. The overall flow of data for a typical convolutional network is illustrated in \cref{fig:CNN}. A convolutional layer contains multiple kernels, each consisting of a set of trainable weights
-and a bias. Each kernel will produce a separate output channel to the resulting
-\textit{feature map} layer. The kernel has a 2D spatial size, specific to the
-model architecture, and a depth that matches the number of input channels to the
-layer. For instance, a typical RGB will have three channels, while the number of
-channels usually increases for each layer in the model. The kernel lines up with
-the image and calculates the feature map output as a dot product between the
-weights in the kernel and the aligning subset of the input. This is done for
-each input channel and summed up with the addition of a bias as illustrated
-in~\cref{fig:conv_calculation}. The kernel then slides over by a step size given
-by the \textit{stride} model parameter and repeats the calculation. Choosing a
-stride of 2 or higher results in a reduction of the output spatial size. If we want to
-preserve the spatial size we must keep a stride of one and additionally apply
-\textit{padding} to the input images, such that we can achieve one kernel
-position for each input ``pixel''. The spatial size of the feature map is given
-as
-\begin{align}
-  N_d^{[l+1]} = \left\lfloor \frac{N_d^{[l]} - F_d + 2P}{S} + 1 \right\rfloor,
-  \label{eq:down_scaling}
-\end{align}
-for padding $P$, stride $S$, spatial size of the kernel filter $F_d$, spatial size
-of input $N_d^{[l]}$, for dimension $d = {x, y}$ and layer $l$. The \textit{down-sampling} is often done through a pooling layer. A pooling layer is reminiscent of a kernel, but instead of calculating the output as a dot product, it utilizes the mean (mean pooling) or the max value (max pooling) of the values within its scope. For instance, by using a max pooling of size $2 \times 2$ and stride two we essentially half the dimensions of the image as dictated by~\cref{eq:down_scaling}. \acrshort{CNN}s will often use repeating series of convolution (applying a kernel), pooling and then an activation function. Most architectures aim to slowly down-sample the spatial input while increasing the number of channels throughout the model layers.
-
+actual image in the classical sense.} as it processes the input. The overall flow of data for a typical convolutional network including a final fully connected neural network is illustrated in \cref{fig:CNN}. 
 
 \begin{figure}[!htb]
   \centering
-  \includegraphics[width=0.9\linewidth]{figures/theory/CNN.png}
-  \caption{\hl{TMP}}
-  % https://www.researchgate.net/figure/Representation-of-a-Convolutional-Neural-Network-The-CNN-performs-automatic-spatial_fig3_359896672
+  \includegraphics[width=0.8\linewidth]{figures/theory/CNN.png}
+  \caption{Representation of a Convolutional Neural Network (\acrshort{CNN}). The \acrshort{CNN} performs automatic spatial feature extraction from images by successively applying feature filters that create feature maps (Convolutional layer) and compressing these maps (Pooling layer). Based on the final feature maps, a fully-connected neural network does a prediction, which can be a classification or regression. Figure and caption reproduced from \cite{cunha2022review}.}  
   \label{fig:CNN}
 \end{figure}
+
+A convolutional layer contains multiple kernels, each consisting of a set of
+trainable weights and a bias. Each kernel will produce a separate output channel
+to the resulting \textit{feature map} layer. The kernel has a 2D spatial size,
+specific to the model architecture, and a depth that matches the number of input
+channels to the layer. For instance, a typical RGB image will have three
+channels, while the number of channels usually increases for each layer in the
+model. The kernel lines up with the image and calculates the feature map output
+as a dot product between the weights in the kernel and the aligning subset of
+the input. This is done for each input channel and summed up with the addition
+of a bias as illustrated in~\cref{fig:conv_calculation}. The kernel then slides over by a
+step size given by the \textit{stride} parameter and repeats the
+calculation. Choosing a stride of 2 or higher results in a reduction of the
+output spatial size. If we want to preserve the spatial size we must keep a
+stride of one and additionally apply \textit{padding} to the input images, such
+that we can achieve one kernel position for each input ``pixel''. The spatial
+size of the feature map is given as
+\begin{align}
+  N_d^{[l]} = \left\lfloor \frac{N_d^{[l-1]} - F_d + 2P}{S} + 1 \right\rfloor,
+  \label{eq:down_scaling}
+\end{align}
+for padding $P$, stride $S$, spatial size of the kernel filter $F_d$, spatial
+size of the input $N_d^{[l-1]}$, for dimension $d = \{x, y\}$ and layer $l$. The
+\textit{down-sampling} is often done through a pooling layer. A pooling layer is
+reminiscent of a kernel, but instead of calculating the output as a dot product,
+it calculates the mean (mean pooling) or the max value (max pooling) of the
+values within its scope. For instance, by using a max pooling of size $2 \times
+2$ and stride 2 we essentially half the dimensions of the image as dictated
+by~\cref{eq:down_scaling}. \acrshort{CNN}s will often use repeating series of
+convolution (applying a kernel), pooling and then an activation function. Most
+architectures aim to down-sample the spatial input while increasing the number
+of channels throughout the model layers. This results in a smaller set of
+features extracted from the input which then can then be fed into a dense
+network, or \textit{fully connected} connected neural network, as also
+illustrated in \cref{fig:CNN}. The convolution part aims to
+handle the transition from a spatial input into some internal features. For a model which recognizes animals, we would perhaps think of features such as the number of legs, size, color and so on. In practice, the network will not give readily interpreted features for the processing in the fully connected layer, but the concept is still the same. 
+
+
 
 \begin{figure}[!htb]
   \centering
   \begin{subfigure}[t]{0.26\textwidth}
     \centering
-    \includegraphics[width=\textwidth]{figures/theory/conv_kernel_movement.png}
-    % \includegraphics[width=\textwidth]{figures/theory/conv_input_channels.png}
+    \raggedleft
+    \raisebox{0.20\height}{\includegraphics[width=0.8\textwidth]{figures/theory/conv_kernel_movement.png}}
     \caption{}
-    % \label{fig:}
   \end{subfigure}
   \hfill
   \begin{subfigure}[t]{0.70\textwidth}
@@ -273,38 +286,37 @@ of input $N_d^{[l]}$, for dimension $d = {x, y}$ and layer $l$. The \textit{down
     \label{fig:conv_calculation}
   \end{subfigure}
   \hfill
-  % https://towardsdatascience.com/a-comprehensive-guide-to-convolutional-neural-networks-the-eli5-way-3bd2b1164a53
-  \caption{\hl{TMP}}
+
+  \caption{Illustration of the convolution procedure for a $3 \times 3$ kernel matching with a depth of 3 matching an RGB input with 3 channels (a) The kernel goes through the various positions aligning with the input as sketched with the arrow. The precise number of positions along this path depends on the stride parameter and the choice of padding. (b) A specific example of the calculations involved in the convolution process. Here a rim of zero padding is included. For each kernel position, a dot product is calculated between the aligning input and the kernel weights for each corresponding channel. This results in a number for each channel which is then summed up and added with a bias to constitute the final output in the feature map. Reproduced from~\cite{CNN_calc}.}
   \label{fig:conv_example}
 \end{figure}
 
 For a \acrshort{CNN}, we often consider the \textit{receptive field}. The
 receptive field relates to the spatial size of the input that affects a given
-node in the feature map at a given layer of the model. Often this term is used in consideration of the output nodes. In \cref{fig:receptive_field} the receptive field is illustrated for a 1D
-representation of a \acrshort{CNN} with repetitive use of a kernel of width 1 and  stride 1. Going from the output and backward, we see that the output layers are connected to two nodes in the previous layer. Each of these nodes is connected to two nodes in the layer before that, however with one of them being the same due to the stride of 1. By back-tracking to the input we see that this
-corresponds to a receptive field of $D = 5$. By increasing the filter size and
-the stride the 2D receptive field will grow a lot faster than shown in this
-simple 1D example. For a receptive field $D_d$, with respect to the spatial dimension $d$, a
-spatial size of the filter $F_d$, stride $S_l$ (from layer $l-1$ to $l$) we have
+node in the feature map at a given layer in the model. Often this term is used
+in consideration of the output nodes. \cref{fig:receptive_field} illustrates the
+receptive field for a 1D representation of a \acrshort{CNN} with repetitive use
+of a kernel of width 1 and stride 1. Going from the output and backward, we see that the output layers are connected to two nodes in the previous layer. Each of these nodes is connected to two nodes in the layer before that, however with one of them being the same due to the stride of 1. By back-tracking to the input layer we see that this corresponds to a receptive field of $D = 5$. This means that a single output node is only affected by the 5 input nodes within its receptive field. By increasing the filter size and
+the stride the receptive field will grow a lot faster than shown in this example. If we assume a constant filter size throughout the network $F$, a stride $S_l$ from layer $l-1$ to $l$ we get that the receptive field $D_l$ with respect to a certain layer and in a given spatial dimension is
 \begin{align}
-    D_l = D_{l-1} + \left[(F_l - 1) \cdot \prod_{i=1}^{l-1}S_i \right],
+    D_l = D_l + \left[(F_l - 1) \cdot \prod_{i=1}^{l-1}S_i \right],
     \label{eq:receptive_field}
 \end{align}
 with $D_0 = 1$ and $l=0$ as the input layer. Note that by convention, the
-product of zero elements is 1, such that for the first layer, the product is 1. The receptive field is important in understanding the connectivity in the model. The model output will be completely independent of the inputs and feature maps outside the receptive field. Furthermore, we differentiate between the theoretical
+product of zero elements is 1, such that for the first layer, the product is 1. \cref{eq:receptive_field} apply for both spatial dimensions. 
+
+The receptive field is important in understanding the connectivity in the model since the output will be completely independent of the inputs and feature maps outside the receptive field. Furthermore, we differentiate between the theoretical
 receptive field and the effective receptive field. The effective receptive field
-will have a Gaussian distribution within the theoretical receptive field because the nodes in the center of the receptive field will have more connections leading to the output, as seen in~\cref{fig:receptive_field}. Thus, in practice, the effective receptive field will be smaller than the theoretical. Implementations like dilated convolutions, which make the filter expand in circumference and skipping positions within the filter, can be used to further increase the effective field. \hl{The receptive field is perhaps not that relevant... Should I remove it?}
+will have a Gaussian distribution within the theoretical receptive field because the nodes in the center of the receptive field will have more connections leading to the output, as seen in~\cref{fig:receptive_field}. Thus, in practice, the effective receptive field will be smaller than the theoretical. Implementations like dilated convolutions, which make the filter expand in circumference and skip positions within the filter, can be used to further increase the effective field.
 
 \begin{figure}[!htb]
   \centering
   \includegraphics[width=0.7\linewidth]{figures/theory/receptive_field.png}
-  \caption{\hl{TMP}}
-  % https://lukeguerdan.com/blog/2019/intro-to-tcns/
+  \caption{An illustration of the receptive field $D$ with respect to an output node in a 1D convolutional network. This example uses a width of 2 for the kernel and a stride of 1. Reproduced from~\cite{receptive_field_1D}}
   \label{fig:receptive_field}
 \end{figure}
 
-
-On a final note regarding the \acrshort{CNN} we point out that convolution is often used in combination with a dense network, or \textit{fully connected}, at the end. We can then think of the convolution part to handle the translation from a spatial input to some internal features. For the animal detection network, we would perhaps think of features such as the number of legs, size, color and so on. In practice, the network will not create easily interpreted features for the processing of the fully connected layer to see. We discuss one approach for the interpreting of the model internals in~\cref{sec:explanation}
+% On a final note regarding the \acrshort{CNN} we point out that convolution is often used in combination with a dense network, or \textit{fully connected}, at the end. We can then think of the convolution part to handle the translation from a spatial input to some internal features. For the animal detection network, we would perhaps think of features such as the number of legs, size, color and so on. In practice, the network will not create easily interpreted features for the processing of the fully connected layer to see. We discuss one approach for the interpreting of the model internals in~\cref{sec:explanation}
 
 
 \subsection{Training, validation and test data}
