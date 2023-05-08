@@ -362,36 +362,7 @@ reliable performance metric for the model. However, it is important that this se
 The balance between underfitting and overfitting is essential in model training
 and it is closely related to the complexity of the model and the selected
 hyper-parameters. A typical textbook visualization of underfitting and
-overfitting is given in~\cref{fig:fitting_vs_time}. As we begin to train or
-model both the training and validation loss is decreasing. At some point, the
-model will start to pick up, not only the general trends in the data, but also
-specific trends in the training data which might be related to noise. This marks
-the transition into the overfitting regime where the validation loss will
-increase due to a loss of generalization. However, the training loss will
-continue its steady decline as the training procedure optimize exclusively for
-the training data. \textit{Early stopping} can be utilized to detect this
-transition and stop the training early in an attempt to hit the sweet spot
-between under- and overfitting. We will use a variation of this technique which
-is to store the best model based on the validation performance history. For this
-approach, we let the training finish and then store the model corresponding to
-the best validation score found during the entirety of the training. In
-principle, we can ``get lucky'' and find the model settings at a state that is
-overfitted for the validation set, but we consider this highly unlikely for a
-reasonably big amount of data and a complex model with many model parameters to
-tune. The underfitting and overfitting phenomena can also be thought of as a
-consequence of model complexity and not just training time. For a certain amount
-of epochs a simple model will yield underfitting and an overly complex model
-will yield overfitting. This can be expected to follow a similar qualitative
-trend as shown in~\cref{fig:fitting_vs_time} with the substitution for
-\textit{model complexity} on the x-axis. \cref{fig:fitting_quality} visualizes
-the concept of underfitting and overfitting in terms of the complexity regarding
-the fitting of a second-order polynomial. The figure shows how a simple linear
-function will make a crude approximation for the true curve, while an overly
-complex model will pick up the noise in the data and miss the general trend as
-well. However, the problem is that we do not know the true curve in practice. If
-we did, we would not need machine learning to approximate it in the first place.
-Without having additional insight into the governing source of the data the
-overfitting case from~\cref{fig:fitting_quality} seems to produce the most confident fit for all we know. Thus, it is important to utilize the validation loss in order to avoid overfitting. 
+overfitting is given in~\cref{fig:fitting_vs_time}. 
 
 
 \begin{figure}[!htb]
@@ -410,118 +381,137 @@ overfitting case from~\cref{fig:fitting_quality} seems to produce the most confi
     \label{fig:fitting_quality}
   \end{subfigure}
   \hfill
-  \caption{Illustrations regarding the concept of underfitting and overfitting. (a) A typical textbook representation of the transition from underfitting to overfitting during prolonged training. Initially both the training and validation loss decreases for each epoch, but at some point, the validation will begin to increase again marking the beginning of overfitting. This motivates the idea of an early stopping point at the minimum of the validation loss curve. (b) A 2D example of fitting a curve (solid line) to a series of data points (red dots) generated from a second-order polynomial (dotted line) with additional noise. In the underfitting case, we fail to capture the general trend due to a low complexity in our fit, while in the overfitting case, our fit captures the noise in the data as well. Reproduced from~\cite{kaggle}.}
+  \caption{Illustrations regarding the concept of underfitting and overfitting. (a) A typical textbook representation of the transition from underfitting to overfitting during prolonged training. Initially, both the training and validation loss decreases for each epoch, but at some point, the validation will begin to increase again marking the beginning of overfitting. This motivates the idea of an early stopping point at the minimum of the validation loss curve. (b) A 2D example of fitting a curve (solid line) to a series of data points (red dots) generated from a second-order polynomial (dotted line) with additional noise. In the underfitting case, we fail to capture the general trend due to a low complexity in our fit, while in the overfitting case, our fit captures the noise in the data as well. Reproduced from~\cite{kaggle}.}
   \label{fig:over_under_fitting}
 \end{figure}
 
-%
-%
-% Working here
-%
-%
+As we begin to train or
+model both the training and validation loss is decreasing. At some point, the
+model will start to pick up, not only the general trends in the data, but also
+specific trends in the training data which might be related to noise. This marks
+the transition into the overfitting regime where the validation loss will
+increase due to a loss of generalization. However, the training loss will
+continue its steady decline as the training procedure optimize exclusively for
+the training data. \textit{Early stopping} can be utilized to detect this
+transition and stop the training early in an attempt to hit the sweet spot
+between under- and overfitting. We will use a variation of this technique which
+is to store the best model based on the validation performance history. For this
+approach, we let the training finish and then store the model corresponding to
+the best validation score found during the entirety of the training. In
+principle, we can ``get lucky'' and find the model settings at a state that is
+overfitted for the validation set, but we consider this highly unlikely for a
+reasonably big amount of data and a complex model with many model parameters to
+tune.
+
+
+The underfitting and overfitting phenomena can also be thought of as a
+consequence of model complexity and not just training time. For a certain amount
+of epochs a simple model will yield underfitting and an overly complex model
+will yield overfitting. This can be expected to follow a similar qualitative
+trend as shown in~\cref{fig:fitting_vs_time} with the substitution for
+\textit{model complexity} on the x-axis. \cref{fig:fitting_quality} visualizes
+the concept of underfitting and overfitting in terms of the complexity regarding
+the fitting of a second-order polynomial. The figure shows how a simple linear
+function will make a crude approximation for the true curve, while an overly
+complex model will pick up the noise in the data and miss the general trend as
+well. However, the problem is that we do not know the true curve in practice. If
+we did, we would not need machine learning to approximate it in the first place.
+Without having additional insight into the governing source of the data the
+overfitting case from~\cref{fig:fitting_quality} seems to produce the most confident fit for all we know. Thus, it is important to utilize the validation loss in order to avoid overfitting. 
+
+
 
 
 \section{Hypertuning}\label{sec:hypertuning}
-The training of a machine learning model revolves around tuning the model parameters such as weights and biases. However, as mentioned already, a handful of \textit{hyper-parameters} remains for us to decide. First of all, we need to choose an architecture for the model. This includes high-level considerations, for instance, whether to use a neural network or a convolutional network, but also lower-level considerations, such as the depth and the width of the model, i.e.\ how many layers and how many nodes/channels. In addition, we have to define and consider the loss function and the optimizer which come with hyper-parameters such as learning rate, momentum and weight decay. This extensive list of choices makes the designing of a functional machine learning procedure more complicated than simply hitting ``run'' for the learning algorithm. As N. Smith~\cite{smith2018disciplined} puts it: ``Setting the
+The training of a machine learning model revolves around tuning the model parameters such as weights and biases. However, as mentioned already, a handful of \textit{hyper-parameters} remains for us to decide. First of all, we need to choose an architecture for the model. This includes high-level considerations, for instance, whether to use a neural network or a convolutional network, but also lower-level considerations, such as the depth and the width of the model, i.e.\ how many layers and how many nodes/channels. In addition, we have to define and consider the loss function and the optimizer which come with hyper-parameters such as learning rate, momentum and weight decay. This extensive list of choices makes the designing of a functional machine learning procedure more complicated than simply hitting ``run'' for the learning algorithm. As N. Smith~\cite{smith2018disciplined} puts it ``Setting the
 hyper-parameters remains a black art that requires years of experience to
 acquire''. In the following, we will review a general approach for choosing the learning rate, momentum and weight decay hyper-parameters based on the findings of~\cite{smith2018disciplined}. The traditional approach is to
-perform a \textit{grid search}, trying out different combinations of hyper-parameters different training sessions, but this might rather quickly become computationally expensive and ineffective. In addition, hyper-parameters will depend on the training data, the model architecture and not at least each other, which make it difficult to narrow down the choice one by one. N. Smith points to the fact that validation loss can be examined early on for
+perform a \textit{grid search}, trying out different combinations of hyper-parameters in different training sessions, but this might rather quickly become computationally expensive and ineffective. In addition, hyper-parameters will depend on the training data, the model architecture and not at least each other. This makes it difficult to narrow down the choice one by one. N.\ Smith points to the fact that validation loss can be examined early on for
 clues of either underfitting or overfitting. 
 
 The learning rate is often regarded as the most important hyper-parameter to
 tune~\cite{Bengio2012}. Typical values are in the range $[\num{e-6}, 1]$.
-Instead of simply running a grid search, we can perform a so-called \textit{learning rate range test} (LR range test). One then specifies the minimum and maximum learning rate
-boundaries and a learning rate step size. A minimum and maximum bound of
-$\num{e-7}$ to 10 will most likely cover an appropriate range, but the test will
-reveal this immediately. The idea is then to vary the learning rate throughout
-the given range in small steps during a short pre-training. We will vary the learning
-rate for each iteration, i.e.\ each parameter update following a mini-batch, and
-thus we can run this test for a few epochs, or even a single one, depending on
-the number of mini-batches. The learning rate can be varied in a linear
-increasing or decreasing manner which is found to produce similar results
-\cite{smith2017cyclical}. We chose the linear increasing version for
-simplicity. For small learning rates, the model will converge slowly. As the
-learning rate approaches an appropriate value the convergence will accelerate
-which we see as a drop in the validation loss. Eventually, the convergence will
-stop and the validation loss will pass a minimum for which it will begin to
-diverge. This general behavior can be understood for the simplified 1D example
-of finding the minima of a second-order polynomial as shown in
-\cref{fig:lr_descents}. Small learning rates will step in the right direction,
-but for very small values this will result in a slow convergence. If
-the learning rate becomes too large, we will effectively step past the minimum. Each following step will overshoot the minimum more and more (the step is proportional to the gradient os the loss) leading to a diverging
-trend. The point of divergence can be used as an upper bound for the learning
-rates when considering a cyclic learning rate scheme. The steepest
-decline of the validation loss can be used as an estimate for the best constant
-learning rate choice~\cite{smith2018disciplined}.
+Instead of simply running a grid search, we can perform a so-called
+\textit{learning rate range test}. One then specifies the
+minimum and maximum learning rate boundaries and a learning rate step size. A
+minimum and maximum bound of $\num{e-7}$ to 10 will most likely cover an
+appropriate range, but the test will reveal this immediately. The idea is to
+vary the learning rate throughout the given range in small steps during a short
+pre-training. We will increase the learning rate for each iteration, i.e.\ each
+parameter update following a mini-batch, and thus we can run this test for a few
+epochs, or even a single one, depending on the number of mini-batches. For small
+learning rates, the model will converge slowly. As the learning rate approaches
+an appropriate value, the convergence speed will increase, which can be observed
+as a decrease in the validation loss. Eventually, the convergence will stop and
+the validation loss will pass a minimum for which it will begin to diverge. This
+general behavior can be understood for the simplified 1D example of finding the
+minima of a second-order polynomial as shown in~\cref{fig:lr_descents}. For
+small learning rates, the gradient descent update will provide a small step in
+the parameter space toward the minimum. However, if the learning rate is too
+small this will yield a slow convergence. On the other hand, if the learning
+rate becomes too large, we will effectively step past the minimum in one step.
+Each following step will overshoot the then minimum more and more since the step
+length is proportional to the gradient of the loss, which leads to a diverging
+trend. From the learning rate range test, we can use the point of divergence as an upper bound for the learning rates when considering a cyclic learning rate scheme. For a constant learning rate scheme we can use the point of steppest decline of the validation loss as an estimate for the best learning rate choice~\cite{smith2018disciplined}.
 
 
 \begin{figure}[!htb]
   \centering
   \includegraphics[width=0.9\linewidth]{figures/theory/lr_descents.png}
-  \caption{\hl{TMP}  }
-  % https://www.javatpoint.com/gradient-descent-in-machine-learning
+  \caption{Qualitative illustration of the effect of learning rate choice for gradient descent on a simplified 1D problem. The left frame shows the gradient descent steps using a small learning rate where several steps are needed to approach the minimum of the loss. The right frame shows the corresponding steps with the choice of a too large learning rate which yields a diverging behavior. Reproduced from~\cite{JavaTpoint}  }
   \label{fig:lr_descents}
 \end{figure}
 
 
-Next, we consider the choice of momentum. Momentum and learning rates are found to affect each other considerably. From the gradient descent scheme with momentum~\cref{eq:mom} we see that the momentum parameter $\alpha$ and the learning rate $\eta$ have a similar effect on the parameter update
+Next, we consider the choice of momentum. From the gradient descent scheme with
+momentum~\cref{eq:mom} we see that the momentum parameter $\alpha$ and the
+learning rate $\eta$ have a similar effect on the parameter update
 \begin{align*}
   \theta_t = \theta_{t-1} - \eta g_t - \alpha m_{t-1},
 \end{align*}
-since $m_t$ is a moving average of the gradient $g_t$ as well. Like the
-learning rate, we want to set the momentum value as high as possible without
-causing instabilities in the training. However, it is found that these values
-are highly related. N. Smith~\cite{smith2018disciplined}
-reports that a momentum range test is not useful to find the right momentum.
-Instead, he suggests doing a few short runs with different values of momentum,
+since $m_t$ is a moving average of the gradient $g_t$ as well. Like the learning
+rate, we want to set the momentum value as high as possible without causing
+instabilities in the training. However, since the two are related to each other,
+they must also be considered together. N. Smith~\cite{smith2018disciplined}
+reports that a momentum range test is not a useful approach to determine the
+optimal momentum value. Instead, he suggests doing a few short runs with different values of momentum,
 such as 0.99, 0.97, 0.95, and 0.9, to determine a suitable choice. By including
-momentum in the LR range test we can balance the learning rate accordingly. Moreover, for a cyclic learning rate scheme he reports that a cycling momentum scheme, reversed with respect to the learning rate, is beneficial. When the
+momentum in the learning range test we can balance the learning rate accordingly. Moreover, for a cyclic learning rate scheme he reports that a cycling momentum scheme, reversed with respect to the learning rate, is beneficial. When the
 learning rate increase toward the upper bound the learning rate should
 decrease toward the lower bound and vice versa. Choosing a lower momentum of
-0.80--0.85 often gives similar stabile results \cite{smith2018disciplined}.
+0.80--0.85 is reported to give similar stable results \cite{smith2018disciplined}. 
 
-Finally, we address weight decay. N. Smith \cite{smith2018disciplined} reports that weight decay is different from learning rate and momentum by the fact that weight decay is better chosen as a constant value as opposed to a cyclic scheme. However, the weight decay is dependent on the model complexity, learning rate and momentum choice and this can often be dialed in after setting those. We can estimate a suitable choice by doing a rough grid search for values such as 0, $\num{e-6}$, $\num{e-5}$ and $\num{e-4}$ for complex architectures and $\num{e-4}$, $\num{e-3}$ and $\num{e-2}$ for more shallow architectures. Choosing the weight decay on the scale of exponential exponents will often provide good enough precision in practice. 
-
+Finally, we address weight decay. N.\ Smith \cite{smith2018disciplined} reports that weight decay is different from learning rate and momentum by the fact that weight decay is better chosen as a constant value as opposed to a cyclic scheme. However, the weight decay is dependent on the model complexity, learning rate and momentum choice. Hence, this can often be chosen after setting those. We can estimate a suitable choice by doing a rough grid search for values such as 0, $\num{e-6}$, $\num{e-5}$ and $\num{e-4}$ for complex architectures and $\num{e-4}$, $\num{e-3}$ and $\num{e-2}$ for more shallow architectures. Choosing the weight decay on the scale of exponential exponents will often provide good enough precision in practice. 
 
 
 \section{Prediction explanation}\label{sec:explanation}
-On a final note, we present a simple method for providing some insight into the prediction from a convolutional neural network. The high complexity of deep learning models limits our ability to gain insight into the decision-making process behind a prediction beyond the input data. This is known as the \textit{black box} problem. A lot of effort is currently being developed for making more transparent models, like decision trees with interpretable rules, and numerical tools for unpacking the inner workings of the model. We will consider a gradient based method called \textit{Grad-CAM}~\cite{Selvaraju_2019} which aim to highlight some of the important features from the input image. The algorithm is based on the idea use the gradients for a certain feature map with respect to the loss. 
+On a final note, we present a simple method for providing some insight into the prediction from a convolutional neural network. The high complexity of deep learning models limits our ability to understand the decision-making going into the model predictions beyond the input data. This is known as the \textit{black box} problem. A lot of effort is currently being developed for making more transparent models, like decision trees with interpretable rules, and numerical tools for unpacking the inner workings of the model. We will consider a gradient-based method called \textit{Grad-CAM}~\cite{Selvaraju_2019} which aims to highlight some of the important features of a convolutional network model prediction. The method utilizes the gradients for a certain feature map with respect to the loss. 
 
-First, we forward propagate the input through the model and decide on a feature
-map of interest. We then calculate the gradients for the feature map with
-respect to the loss of a certain target output. For a classification task, one
-would often choose the predicted class, the class with the highest score, as the
-target output. The gradients can then be used as an estimate of which part of
-the feature maps is most important for the prediction. a ReLU activation layer
-is then applied to keep only the positive contributions. Since the convolutional
-layers preserve spatial information we can rescale the heatmap provided by the
-feature map gradient to make an input-sized heatmap allowing for an overlaid
-visualization of the on the input image. This provides a visual clue of which
-part of the image the prediction is most strongly based on. We can do this for
-different depths of the model and even combine the results for multiple layers.
-\cref{fig:grad_cam_example} show an exemplary use, where the Grad-CAM analysis reveals the difference between a biased and unbiased prediction model for the task of predicting professions. The biased model shows to be considering the person more than the actual objective clues given by relevant equipment and work-related clothing
+
+To begin, we forward propagate the input through the model. Next, we decide on a
+feature map of interest and calculate the gradients with respect to the loss of
+a certain target output. In classification tasks, one would often choose the
+predicted class with the highest score. By doing so, the gradients can be
+utilized to determine which parts of the feature map are more important for the
+prediction. Additionally, we apply a ReLU activation layer to keep only the
+positive contributions. Since the convolutional layers preserve spatial
+information we can rescale the feature map gradients to make an input-sized
+heatmap allowing for an overlaid visualization on top of the input image. By using this method, we can obtain a visual indication of the specific regions in the image that plays a key role in the prediction. We can apply this technique to multiple layers of the model and even merge the outcomes as well.
+
+\cref{fig:grad_cam_example} show an exemplary use, where the Grad-CAM analysis reveals the difference between a biased and unbiased prediction model for the task of predicting professions. The biased model shows to be considering the person more than the actual objective clues given by relevant equipment and work-related clothing.
 
 
 \begin{figure}[!htb]
   \centering
   \includegraphics[width=0.7\linewidth]{figures/theory/grad_cam_example.png}
-  \caption{\hl{TMP}~\cite{Selvaraju_2019} }
+  \caption{An example of the Grad-CAM method in use: In the first row, we can see that even though both models made the right decision, the biased model was looking at the face of the person to decide if the person was a nurse, whereas the unbiased model was looking at the short sleeves to make the decision. For the example image in the second row, the biased model made the wrong prediction (misclassifying a doctor as a nurse) by looking at the face and the hairstyle, whereas the unbiased model made the right prediction looking at the white coat, and the stethoscope. Figure and caption reproduced from~\cite{Selvaraju_2019}. }
   \label{fig:grad_cam_example}
 \end{figure}
 
 
-% This has spiked interest in developing methods to unravel the inner parts of
-% the network. This effort lies partly in the development of better analytic tools
-% but also in the aim of creating simpler and more transparent models. We will be
-% using a deep-learning convolutional network that is not immediately
-% transparent. Since the feature maps in the network preserve the relative spatial
-% relations of the input one approach is to consult the feature maps for
-% information on which parts of the input it considers the most. However, this is
-% often not readily interpreted. 
-
 
 \section{Accelerated search using genetic algorithm}\label{sec:GA}
-For the scope of finding new Kirigami designs which exhibit certain frictional properties, we are interested in utilizing a trained machine-learning model for further exploration. This reverses the design process as one has to find the right input to achieve a certain output. A possible strategy is to explore a range of inputs and use the model predictions as a guiding metric. One approach to this is the genetic algorithm (\acrshort{GA}) which is inspired by biological evolution and mimics the Darwin theory of the survival of the fittest. \cite{katoch_review_2021}. \acrshort{GA} is a population-based algorithm for
+For the scope of finding new Kirigami designs which exhibit certain frictional properties, we are interested in utilizing a trained machine-learning model for further exploration. This reverses the design process as one has to find the right input to achieve a certain output. A possible strategy is to explore a range of inputs and use the model predictions as a guiding metric. One approach to this strategy is the genetic algorithm (\acrshort{GA}) which is inspired by biological evolution and mimics the Darwin theory of the survival of the fittest~\cite{katoch_review_2021}. \acrshort{GA} is a population-based algorithm for
 which the basic elements are chromosome representation, fitness selection and
 biological-inspired operators. The chromosomes represent the genes for each
 individual in the population and typically take the form of a binary string.
@@ -531,8 +521,8 @@ all chromosomes based on some optimization objective. This plays a role for the
 biologically inspired operators for which the main ones are selection, mutation
 and crossover. Selection is the process of selecting chromosomes based on their
 fitness score for further processing. In mutation, some of the loci within a
-chromosome are flipped and in crossover, chromosomes are merged to create
-offspring. \acrshort{GA} has been implemented in many areas such as the traveling salesman problem~\cite{jiang2000distributed}, function optimization~\cite{szeto1998effects}, adaptive agents in stock markets~\cite{szeto2000adaptive} and airport scheduling~\cite{shiu2008self}. Wang et al.~\cite{Wang2010} note that a general drawback is a need for expertise when choosing parameters that match specific applications. They propose an accelerated genetic algorithm based on a Markov chain transition probability matrix to perform a guided search that reduces the number of parameter choices one has to make. The following introduction of this method is thus based on~\cite{Wang2010}.
+chromosome are changed and in crossover, chromosomes are merged to create
+offspring. \acrshort{GA} has been implemented in many areas such as the traveling salesman problem~\cite{jiang2000distributed}, function optimization~\cite{szeto1998effects}, adaptive agents in stock markets~\cite{szeto2000adaptive} and airport scheduling~\cite{shiu2008self}. Wang et al.~\cite{Wang2010} note that a general drawback is a need for expertise when choosing parameters that match specific applications. They propose an accelerated genetic algorithm based on a Markov chain transition probability matrix to perform a guided search that reduces the number of parameter choices one has to make. The following introduction of this method will bebased on their work~\cite{Wang2010}.
 
 We define the binary population matrix $A_{ij}(t)$ at generation $t$, consisting of
 $N$ rows denoting chromosomes $i \in \{0, 1, \ldots, N\}$ and $L$ columns denoting the loci $j \in \{0, 1, \ldots L\}$. For our application, we let the locus represent an atom in the Kirigami pattern matrix which is flattened to fit the format of the population matrix. We carry forward the binary values with 0 meaning a removed atom and 1 a present atom. By the use of a fitness function $f(t)$, we sort the population matrix row-wise in descending order by fitness score, i.e.\ $f_i(t) \le f_k(t)$ for $i \ge k$. In the spirit of Markov chains, we assume that some transitions probability exists for the transition between the current state
@@ -547,7 +537,7 @@ fitness function and the chromosome at the $i^{\text{th}}$ fittest place is assi
     1, &\text{else}
   \end{cases}
 \end{align*}
-with $N' = N/2$ from~\cite{Wang2010}. We assign a row mutation probability $a_i(t)$ meaning that the probability for a mutation will increase towards the lower fitness scores. For the considerations of mutation with respect to each locus in the columns of $A_{ij}(t)$, we define the count of 0's and 1's as $C_0(j)$ and $C_1(j)$ respectively. These are normalized as
+with $N' = N/2$ from~\cite{Wang2010}. We assign a row mutation probability $a_i(t) = r_i(t)$ meaning that the probability for a mutation will increase towards the lower fitness scores. For the considerations of mutation with respect to each binary locus in the columns of $A_{ij}(t)$, we define the count of 0's and 1's as $C_0(j)$ and $C_1(j)$ respectively. These are normalized as
 \begin{align*}
   n_0(j, t) = \frac{C_0(j)}{C_0(j) + C_1(j)}, \quad n_1(j, t) = \frac{C_1(j)}{C_0(j) + C_1(j)}.
 \end{align*}
@@ -558,7 +548,7 @@ We can thus describe the state of the $j^{\text{th}}$ locus column as the state 
 \end{align*}
 These are normalized
 \begin{align}
-  n_0(j, t+1) = \frac{C'_0(j)}{C'_0(j) + C'_1(j)}, \quad n_1(j, t+1) = \frac{C'_1(j)}{C'_0(j) + C'_1(j)}.
+  n_0(j, t+1) = \frac{C'_0(j)}{C'_0(j) + C'_1(j)}, \quad n_1(j, t+1) = \frac{C'_1(j)}{C'_0(j) + C'_1(j)},
   \label{eq:target_states}
 \end{align}
 to produce the target state vector $\vec{n}(j,t+1)=(n_0(j, t+1), n_1(j, t+1))$.  This will serve as a direction for each locus to evolve in and thus we can formulate the Markov chain as
@@ -577,7 +567,7 @@ to produce the target state vector $\vec{n}(j,t+1)=(n_0(j, t+1), n_1(j, t+1))$. 
     n_1(j, t)
   \end{bmatrix},
 \end{align*}
-where the matrix represents the transition matrix. Since the probability must sum to one for the rows in the transition matrix we get 
+where the matrix represents the transition matrix. Since the probability must sum to one for the columns in the transition matrix we get 
 \begin{align*}
   P_{00}(j, t) = 1 - P_{01}(j, t), \quad P_{11}(j, t) = 1 - P_{10}(j, t).
 \end{align*}
@@ -587,7 +577,7 @@ These conditions allow us to solve for the transition probability $P_{10}(j,t)$ 
   P_{01}(j,t) &= 1 - P_{00}(j,t) \label{eq:trans_prop_p01} \\
   P_{11}(j,t) &= 1 - P_{10}(j,t) \label{eq:trans_prop_p11}
 \end{align}
-The remaining part is to define $P_{00}(j,t)$. We adopt the choice from~\cite{Wang2010} and start from $P_{00}(j, t = 0) = 0.5$ and choose $P_{00}(j,t) = n_0(j,t)$ for the following generations. Thus for a locus $A_{ij}(t)$ we mutate it, changing the binary value, by the probability
+The remaining part is to define $P_{00}(j,t)$. We adopt the choice from~\cite{Wang2010} and start from $P_{00}(j, t = 0) = 0.5$ and choose $P_{00}(j,t) = n_0(j,t)$ for the following generations $t>0$. Thus for a locus $A_{ij}(t)$ we mutate it, changing the binary value, by the probability
 \begin{align}
   p_{ij}(t) = 
   \begin{cases}
@@ -598,15 +588,11 @@ The remaining part is to define $P_{00}(j,t)$. We adopt the choice from~\cite{Wa
 \end{align}
 In summary, each generation update involves the following steps.
 \begin{enumerate}
-  \item For generation $t$ calculate the fitness score $f_i(t)$ of each chromosome $i$ and sort the population matrix $A_{ij}(t)$ row-wise according to a descending score. 
-  \item From a defined ranking scheme $r_i(t)$ set the chromosome mutation probability to $a_i(t) = r_i(t)$ and the weighting of each row $W_i(t) = 1 - r_i(t)$.
+  \item For generation $t$ calculate the fitness score $f_i(t)$ of each chromosome $i$ and sort the population matrix $A_{ij}(t)$ row-wise with descending score. 
+  \item From the chosen ranking scheme $r_i(t)$ set the chromosome mutation probability to $a_i(t) = r_i(t)$ and the weighting of each row $W_i(t) = 1 - r_i(t)$.
   \item Calculate the target states~\cref{eq:target_states} and the transition probabilities using~\crefrange{eq:trans_prop_p10}{eq:trans_prop_p11} and $P_{00}(j, t = 0) = 0.5$, $P_{00}(j,t>0) = n_0(j,t>0)$.
-  \item Mutate (flip) each locus $A_{ij}(t)$ by the $p_{ij}$ given by~\cref{eq:p_flip}.
+  \item Mutate ($0\to1$ or $1\to0$) each locus $A_{ij}(t)$ by the probability $p_{ij}$ given by~\cref{eq:p_flip}.
 \end{enumerate}
-Notice that this algorithm treats every locus as an independent gene. Thus, we do not incorporate any effects from spatial dependencies in the Kirigami pattern matrix.
+Notice that this algorithm treats every locus as an independent gene, which means that we do not take the spatial dependencies in the Kirigami pattern into account.
 
 
-
-\subsubsection{Repair function}
-\hl{A numerical scheme for repairing the Kirigami matrix to correspond to a non-detached sheet. This was implemented in order to get candidates that are not immediately marked as a rupture. But it might be better placed in the Random walk section even though we did not make this algorithm before creating the random walk configurations.}
-.
