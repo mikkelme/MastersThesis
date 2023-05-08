@@ -431,9 +431,24 @@ This indicates a transition from underfitting to overfitting of the model since
 the best validation scores are found earlier in the training process. However,
 since our training stores the best model during training, we do not have to
 worry too much about overfitting. Nonetheless, we can take this transition as a
-sign that our search is conducted in an appropriate complexity range. When consulting the evaluation on the
-selected set in~\cref{fig:A_search_compare} we find
-significantly lower $R^2$ scores, especially for the Tetrahedron pattern. This observation indicates that the prediction of these configurations is more difficult, especially since some of these data points are also included in the training data. While the peak $R^2$ value for the validation score in~\cref{fig:A_search_perf} was found for the model S16D10 model (98.23 \%) the selected set test shows a slight preference for more complexity in the model. In the Tetrahedron selected set grid search, we find the best model to be S32D12, with an $R^2$ score of $\sim 87 \%$. This model choice is more or less compatible with the overall performance since it is among the top candidates for the $R^2$ score and loss in~\cref{fig:A_search_perf} and the $R^2$ score for the selected Honeycomb set in~\cref{fig:A_search_compare} as well. Hence, we settle on this architecture. 
+sign that our search is conducted in an appropriate complexity range. When
+consulting the evaluation on the selected set in~\cref{fig:A_search_compare} we
+find significantly lower $R^2$ scores, especially for the Tetrahedron pattern.
+This observation indicates that the prediction of these configurations is more
+difficult, especially since some of these data points are also included in the
+training data. While the peak $R^2$ value for the validation score
+in~\cref{fig:A_search_perf} was found for the model S16D10 model (98.23 \%) the
+selected set test shows a slight preference for more complexity in the model. In
+the Tetrahedron selected set grid search, we find the best model to be S32D12,
+with an $R^2$ score of $\sim 87 \%$. This model choice is more or less
+compatible with the overall performance since it is among the top candidates for
+the $R^2$ score and loss in~\cref{fig:A_search_perf} and the $R^2$ score for the
+selected Honeycomb set in~\cref{fig:A_search_compare} as well. Hence, we settle
+on this architecture. We note that the theoretical receptive field for the last
+convolutional layers (layer 6) is $13 \times 13$ according to~\cref{eq:receptive_field}, and thus each node in the first fully connected
+layer does not connect to the entirety of the $62\times106$ input image. Hence,
+some spatial dependence will have to be encoded in the fully connected part as
+well, and we note that an enlargement of the receptive field might be interesting for the improvement of the model in further studies. One possible method is to increase the stride or use dilated convolutions.
 
 Next, we consider momentum $m$ and weight decay $\lambda$ in the range $m \in
 [0.85, 0.99]$ and $\lambda \in [0, \num{e-2}]$. For each choice of momentum, we

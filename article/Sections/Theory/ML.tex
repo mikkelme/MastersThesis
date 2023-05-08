@@ -290,9 +290,10 @@ corresponds to a receptive field of $D = 5$. By increasing the filter size and
 the stride the 2D receptive field will grow a lot faster than shown in this
 simple 1D example. For a receptive field $D_d$, with respect to the spatial dimension $d$, a
 spatial size of the filter $F_d$, stride $S_l$ (from layer $l-1$ to $l$) we have
-\begin{align*}
+\begin{align}
     D_l = D_{l-1} + \left[(F_l - 1) \cdot \prod_{i=1}^{l-1}S_i \right],
-\end{align*}
+    \label{eq:receptive_field}
+\end{align}
 with $D_0 = 1$ and $l=0$ as the input layer. Note that by convention, the
 product of zero elements is 1, such that for the first layer, the product is 1. The receptive field is important in understanding the connectivity in the model. The model output will be completely independent of the inputs and feature maps outside the receptive field. Furthermore, we differentiate between the theoretical
 receptive field and the effective receptive field. The effective receptive field
