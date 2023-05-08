@@ -269,7 +269,6 @@ illustrated in \cref{fig:CNN}. The convolution part aims to
 handle the transition from a spatial input into some internal features. For a model which recognizes animals, we would perhaps think of features such as the number of legs, size, color and so on. In practice, the network will not give readily interpreted features for the processing in the fully connected layer, but the concept is still the same. 
 
 
-
 \begin{figure}[!htb]
   \centering
   \begin{subfigure}[t]{0.26\textwidth}
@@ -316,57 +315,83 @@ will have a Gaussian distribution within the theoretical receptive field because
   \label{fig:receptive_field}
 \end{figure}
 
-% On a final note regarding the \acrshort{CNN} we point out that convolution is often used in combination with a dense network, or \textit{fully connected}, at the end. We can then think of the convolution part to handle the translation from a spatial input to some internal features. For the animal detection network, we would perhaps think of features such as the number of legs, size, color and so on. In practice, the network will not create easily interpreted features for the processing of the fully connected layer to see. We discuss one approach for the interpreting of the model internals in~\cref{sec:explanation}
-
 
 \subsection{Training, validation and test data}
-So far, we have simply considered the concept of \textit{training data} as a means to update the model parameters. Yet, we want to evaluate the model performance as
-it improves. The problem arises immediately from the fact that a complex model can fit about any function. More precisely, it has been proven that a deep convolutional neural network is universal (follows the universal approximation theorem), meaning that can approximate any continuous function to an arbitrary accuracy when the depth of the network is large enough \cite{cybenko_approximation_1989}. Thus for a complex model, it is just a matter of time before the model eventually finds a good approximation for the training data. However, we want the model to learn general trends and not to ``memorize'' all the data points which are known as \textit{overfitting}. While the predictions for the training data can grow arbitrarily good in most cases, the performance on unseen data within the domain will yield poor performance in the case of overfitting. The common way to address this issue is by putting aside a subset of the
-data, the so-called \textit{validation} data, which we use to validate the model performance during and after training. By keeping this \textit{validation} set separate from the training data we can get a more reliable performance estimate for the model. Random partitioning is crucial for ensuring an equal distribution of data across both sets. To strike a balance between the quality of training and validation, a commonly used partitioning ratio is usually around 20:80 in favor of the training set. Other techniques exist which aim to optimize the
-data used for sparse data situations, like cross-validation and bootstrap \hl{right?}, but we will not consider such methods for this thesis. A third
-data set that is often forgotten is the \textit{test} set. While the
-validation set should be kept unseen from the model training, the test set
-should be kept unseen from the model developer. As we choose the model
-architecture and hyper-parameters. We define a hyper-parameter as a variable to be set prior to the actual application of the learning algorithm, one that is not selected by the learning algorithm itself~\cite{Bengio2012}. This includes parameters such as learning rate, momentum and weight decay, but not the weights and biases as these are updated by the learning algorithm. When adjusting the hyper-parameters we will use the performance on the validation set as a guiding metric. Hence, our choices can eventually lead to a higher level of overfitting through the hyper-parameter choices. Hence, we should denote a test set for the final evaluation of our model which has not been considered before the end. Formally, this is the only reliable performance metric for the model. 
+So far, we have simply considered the concept of \textit{training data} as a
+means to update the model parameters. Yet, we want to evaluate the model
+performance as it improves. The problem arises immediately from the fact that a
+complex model can fit about any function. More precisely, it has been proven
+that a deep convolutional neural network is universal (it follows the universal
+approximation theorem), meaning that it can approximate any continuous function
+to an arbitrary accuracy when the depth of the network is large enough
+\cite{cybenko_approximation_1989}. Thus for a complex model, it is just a matter
+of time (epochs) before the model eventually finds a good approximation for the
+training data. However, we want the model to learn general trends and not to
+``memorize'' all the data points which are known as \textit{overfitting}. While
+the
+predictions for the training data can grow arbitrarily good in most cases, the
+performance on unseen data within the same domain will yield poor performance in the
+case of overfitting. The common way to address this issue is by putting aside a
+subset of the data, the so-called \textit{validation} data, which we use to
+validate the model performance during and after training. By keeping this
+\textit{validation} set separate from the training data we can get a more
+reliable performance estimate for the model. Random partitioning is crucial for
+ensuring an equal distribution of data across both sets. To strike a balance
+between the quality of training and validation, a commonly used partitioning
+ratio is usually around 20:80 in favor of the training set which we will adapt as well. Other techniques
+exist which aim to optimize the data used for sparse data situations, like
+cross-validation and bootstrap, but we will not consider such
+methods for this thesis. A third data set that is often forgotten is the
+\textit{test} set. While the validation set should be kept unseen from the model
+training, the test set should be kept unseen from the model developer when choosng the the model architecture and hyper-parameters. We define a hyper-parameter
+as a variable to be set prior to the actual application of the learning
+algorithm, one that is not selected by the learning algorithm
+itself~\cite{Bengio2012}. This includes parameters such as learning rate,
+momentum and weight decay, but not the weights and biases as these are updated
+by the learning algorithm. When adjusting the hyper-parameters we will use the
+performance on the validation set as a guiding metric. Hence, our choices can
+eventually lead to a higher level of overfitting through the hyper-parameter
+choices. Hence, we should denote a test set for the final evaluation of our
+model which has not been considered before the end. Formally, this is the only
+reliable performance metric for the model. However, it is important that this set also possesses the same data distribution to ensure a reliable performance estimate.
 
 
 \section{Overfitting and underfitting}\label{sec:under_over_fit}
 % THE UNDERFITTING AND OVERFITTING TRADE-OFF~\cite{smith2018disciplined}. 
 
-Underfitting and overfitting represent a crucial balance going on when training
-a model. This concept is highly related to the model complexity and the chosen
-hyper-parameters. The textbook visualization of underfitting and overfitting is
-shown in \cref{fig:fitting_vs_time}. As we begin to train or model both the
-training and validation loss is decreasing. At some point, the model will start
-to pick up, not only the general data trends but also specific trends in the
-training data. This marks the transition into the overfitting regime where the
-validation loss will increase again, even though the training loss is steadily
-declining.  \textit{Early stopping} can be utilized to detect this transition
-and stop the training in an attempt to hit the sweet spot between under- and
-overfitting. We will use a variation of this which is to store the best model
-based on validation performance. For this approach, we let the training finish
-but only keep the model corresponding to the best validation score. In
+The balance between underfitting and overfitting is essential in model training
+and it is closely related to the complexity of the model and the selected
+hyper-parameters. A typical textbook visualization of underfitting and
+overfitting is given in~\cref{fig:fitting_vs_time}. As we begin to train or
+model both the training and validation loss is decreasing. At some point, the
+model will start to pick up, not only the general trends in the data, but also
+specific trends in the training data which might be related to noise. This marks
+the transition into the overfitting regime where the validation loss will
+increase due to a loss of generalization. However, the training loss will
+continue its steady decline as the training procedure optimize exclusively for
+the training data. \textit{Early stopping} can be utilized to detect this
+transition and stop the training early in an attempt to hit the sweet spot
+between under- and overfitting. We will use a variation of this technique which
+is to store the best model based on the validation performance history. For this
+approach, we let the training finish and then store the model corresponding to
+the best validation score found during the entirety of the training. In
 principle, we can ``get lucky'' and find the model settings at a state that is
-specially overfitted for the validation set, but we consider this highly
-unlikely when having a reasonable amount of data and a complex model with many
-model parameters. The underfitting and overfitting phenomena can also be thought
-of as a function of the complexity and not just training time. For a certain
-amount of epochs a simple model will yield underfitting and an overly complex
-model will yield overfitting, and this can be expected to follow a similar
-qualitative trend as in~\cref{fig:fitting_vs_time} with the substitution for
+overfitted for the validation set, but we consider this highly unlikely for a
+reasonably big amount of data and a complex model with many model parameters to
+tune. The underfitting and overfitting phenomena can also be thought of as a
+consequence of model complexity and not just training time. For a certain amount
+of epochs a simple model will yield underfitting and an overly complex model
+will yield overfitting. This can be expected to follow a similar qualitative
+trend as shown in~\cref{fig:fitting_vs_time} with the substitution for
 \textit{model complexity} on the x-axis. \cref{fig:fitting_quality} visualizes
 the concept of underfitting and overfitting in terms of the complexity regarding
-the fitting of a second-order polynomial. We see how a simple linear function
-will make a crude approximation for the true curve. An overly complex model will
-pick up the noise in the data and miss the general trend. However, the problem
-is that we do not know the true curve. If we did, we would not need machine
-learning to approximate it in the first place. Without having additional insight
-into the governing source of the data the overfitting case seems to produce the
-most confident fit for all we know. 
-
-
-% practice, the diagnosticating of underfitting and overfitting is not as simple
-% as the figures in~\cref{fig:over_under_fitting} imply. 
+the fitting of a second-order polynomial. The figure shows how a simple linear
+function will make a crude approximation for the true curve, while an overly
+complex model will pick up the noise in the data and miss the general trend as
+well. However, the problem is that we do not know the true curve in practice. If
+we did, we would not need machine learning to approximate it in the first place.
+Without having additional insight into the governing source of the data the
+overfitting case from~\cref{fig:fitting_quality} seems to produce the most confident fit for all we know. Thus, it is important to utilize the validation loss in order to avoid overfitting. 
 
 
 \begin{figure}[!htb]
@@ -385,10 +410,15 @@ most confident fit for all we know.
     \label{fig:fitting_quality}
   \end{subfigure}
   \hfill
-  \caption{\hl{TMP}}
+  \caption{Illustrations regarding the concept of underfitting and overfitting. (a) A typical textbook representation of the transition from underfitting to overfitting during prolonged training. Initially both the training and validation loss decreases for each epoch, but at some point, the validation will begin to increase again marking the beginning of overfitting. This motivates the idea of an early stopping point at the minimum of the validation loss curve. (b) A 2D example of fitting a curve (solid line) to a series of data points (red dots) generated from a second-order polynomial (dotted line) with additional noise. In the underfitting case, we fail to capture the general trend due to a low complexity in our fit, while in the overfitting case, our fit captures the noise in the data as well. Reproduced from~\cite{kaggle}.}
   \label{fig:over_under_fitting}
 \end{figure}
 
+%
+%
+% Working here
+%
+%
 
 
 \section{Hypertuning}\label{sec:hypertuning}
