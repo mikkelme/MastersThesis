@@ -1,22 +1,30 @@
 \chapter{Machine Learning}\label{chap:ML}
-We will use machine learning to predict the friction resulting from the stretching
-and loading of a given Kirigami pattern. To this end, we will generate data through \acrshort{MD} simulations that will serve as the ground truth for training the machine learning model. The advantage of using machine learning is that it can significantly speed up the exploration of new configurations compared to full \acrshort{MD} simulations. However, there is no guarantee that the machine learning model can accurately capture the physical mechanisms governing our system. Hence, a key objective is to assess
-the viability of this approach for further studies of Kirigami friction, It is not guaranteed that the machine learning model can accurately
-capture the physical mechanisms of our system. Hence, one of our objectives is to evaluate the applicability of this approach in the study of Kirigami friction, which we will pursue using a rather traditional machine-learning approach. In this
+We will use machine learning to predict the friction resulting from the straining and loading of a given Kirigami sheet. To this end, we will generate data through \acrshort{MD} simulations that will serve as the ground truth for training a machine learning model. The advantage of using machine learning for this purpose is that it can significantly speed up the exploration of new configurations compared to full \acrshort{MD} simulations. However, there is no guarantee that the machine learning model can accurately capture the physical mechanisms governing our system. Hence, a key objective is to assess
+the viability of this approach in the study of Kirigami friction, which we will pursue using traditional machine-learning methods. In this
 chapter, we introduce the key concept behind machine learning and some of the concepts and techniques relevant to our implementation. For the numerical implementation, we will use the machine learning framework PyTorch~\cite{NEURIPS2019_9015}
 
 
+%
+%
+% Working here
+%
+%
+
 \section{Neural network}\label{sec:NN}
 The neural network, or more precisely the \textit{feed forward dense neural
-network}, is one of the original concepts in machine learning arising from the attempt of mimicking the way neurons work in the brain~\cite{lederer2021activation, Shankar_2022} brain. The neural network can be considered in terms of three major parts: The input layer, the
-so-called \textit{hidden layers} and finally the output layer as shown in
-\cref{fig:ffnn}. The input is described as a vector $\vec{x} = x_0, x_1, \ldots,
-x_{n_x}$ where each input $x_i$ is usually denoted as a \textit{feature}. The
-input features are densely connected to each of the \textit{nodes} in the first
-hidden layer as indicated by the straight lines in~\cref{fig:ffnn}. Each line
-represents a weighted connection that can be adjusted to configure the
-importance of that feature. Similar dense connections are present throughout the
-hidden layers to the final output layer. For a given note $a_j^{[l]}$ in layer $l$ the input from all the nodes in the previous layer $l-1$ are processed as
+network}, is one of the original concepts in machine learning arising from the
+attempt of mimicking the way neurons work in the
+brain~\cite{lederer2021activation, Shankar_2022} brain. The neural network can
+be considered in terms of three major parts: The input layer, the so-called
+\textit{hidden layers} and finally the output layer as shown in \cref{fig:ffnn}.
+The input is described as a vector $\vec{x} = x_0, x_1, \ldots, x_{n_x}$ where
+each input $x_i$ is usually denoted as a \textit{feature}. The input features
+are densely connected to each of the \textit{nodes} in the first hidden layer as
+indicated by the straight lines in~\cref{fig:ffnn}. Each line represents a
+weighted connection that can be adjusted to configure the importance of that
+feature. Similar dense connections are present throughout the hidden layers to
+the final output layer. For a given note $a_j^{[l]}$ in layer $l$ the input from
+all the nodes in the previous layer $l-1$ are processed as
 \begin{align*}
   a_j^{[l]} = f\left(\sum_i w^{[l]}_{ij}a_i^{[l-1]} + b_j^{[l]}\right),
 \end{align*}
@@ -33,7 +41,7 @@ Often the same activation function is used throughout the network, except for th
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.9\linewidth]{figures/theory/ffnn.png}
-  \caption{\hl{From overleaf IN5400}}
+  \caption{\hl{Caption}. Reproduced from \cite{IN5400_slides}}
   \label{fig:ffnn}
 \end{figure}
 The model training relies on two core concepts: \textit{backpropagation} and \textit{gradient descent} optimization. First, we define the error associated with a model prediction, otherwise known as the \textit{loss}, through the \textit{loss function} $L$ that evaluates the model output $\hat{\vec{y}}$ against the ground truth $\vec{y}$. For a continuous scalar output, we might simply use the mean squared error (\acrshort{MSE})
