@@ -72,7 +72,7 @@ further studies on an extended dataset.
 
 
 % 3: Control friction using Kirigami
-\subsection{Control friction using Kirigami}
+\subsection{Friction control using Kirigami design and strain}
 We have investigated the frictional behavior of the Tetrahedron and Honeycomb
 patterns in comparison to a non-cut sheet under various strains and loads.
 Initially, we observed that straining the Kirigami sheets in a vacuum resulted
@@ -131,7 +131,7 @@ lowering in friction with respect to the starting point.
 
 
 % 4: Capture trends with ML
-\subsection{Capturing trends in friction data with machine learning}
+\subsection{Capturing trends with machine learning}
 By utilizing the numerical tool for generating Kirigami designs we have
 created a \acrshort{MD}-based dataset for the frictional behavior depending on
 Kirigami design, load and strain. The dataset reveals some general correlations
@@ -217,7 +217,6 @@ than the genetic algorithm. We acknowledge that further effort could potentially
 By considering the Grad-CAM explanation method, we observed that the model predictions were often substantially reliant on the top and bottom edges of the Kirigami configurations. This was unexpected since these edges are not true edges but are connected to the pull blocks used in the simulation. Despite the model's uncertain predictions, we speculate that this may be due to the thermostat effects from the pull blocks. Therefore, we note this as a feature worth investigating in the simulations.
 
 
-
 % 6: Negative friction coefficient
 \subsection{Negative friction coefficient}
 Based on our initial investigations of the Kirigami sheet, we have discovered a
@@ -244,10 +243,8 @@ range $F_N = [0.71, 4.31]$ nN for the Honeycomb pattern. These results can be sc
 Based on our investigations, we have found that the combination of Kirigami cuts and strain has significant potential for controlling friction. Specifically, we have demonstrated that by enforcing a coupling between load and strain through tension, it is possible to achieve a negative friction coefficient. Therefore, we believe that this approach could be promising for developing novel friction-control strategies.
 
 
-
-
 \section{Outlook}
-In this thesis, we have demonstrated that certain Kirigami designs exhibit non-linear friction behavior with strain. This discovery was made through an exploration of different designs, which invites further investigation into the underlying mechanisms of this phenomenon. To this end, it would be valuable to one or two selected designs, such as the Tetrahedron and Honeycomb patterns, and study the effects of various physical parameters on the friction-strain curve.
+In this thesis, we have demonstrated that certain Kirigami designs exhibit non-linear friction behavior with strain. This discovery was made through an exploration of different designs, which invites further investigation into the underlying mechanisms of this phenomenon. To this end, it would be valuable to choose only one or two selected designs, such as the Tetrahedron and Honeycomb patterns, and study the effects of various physical parameters on the friction-strain curve.
 
 First of all, we suggest an investigation of how the friction-strain curve
 depends on temperature, sliding speed, spring constant, and loads for an
@@ -255,16 +252,21 @@ increased range $F_N > 100 nN$. This is especially interesting in the context of
 physical conditions leading to a stick-slip behavior since our study takes a
 basis in smooth sliding friction. Moreover, it would be valuable to verify that
 the choices for relaxation time, pauses, interatomic potentials and substrate
-material are not critical for the qualitative observations. Especially the
-Adaptive Intermolecular Reactive Empirical Bond Order (AIREBO) potential for the
-modeling of the graphene sheet might be of interest. In this context, it might
-also be useful to investigate the effects of excluding adhesion from the
-simulations. 
+material are not critical for the qualitative observations found for the
+friction-strain relationship. Especially the Adaptive Intermolecular Reactive
+Empirical Bond Order (AIREBO) potential for the modeling of the graphene sheet
+might be of interest. In this context, it might also be useful to investigate
+the effects of excluding adhesion from the simulations. 
 
-In order to investigate the hypothesis of commensurability as a governing mechanism we suggest an investigation of the friction-strain curve for different scan angles. 
-If commensurability is an important factor, we hypothesize that the friction-strain curve will exhibit different qualitative shapes at varying scan angles Additionally, it may be interesting to investigate the friction-strain relationship under a uniform load to gain insight into how the loading distribution affects the out-of-plane buckling and associated commensurability effect.
+In order to investigate the hypothesis of commensurability as a governing
+mechanism we suggest an investigation of the friction-strain curve for different
+scan angles. If commensurability is an important factor, we hypothesize that the friction-strain curve will exhibit different qualitative shapes at varying scan
+angles. Additionally, it may be interesting to investigate the friction-strain
+relationship under a uniform load to gain insight into how the loading
+distribution affects the out-of-plane buckling and associated commensurability
+effect.
 
-Another topic worth studying is the relation to scale and edge effects. This includes an investigation of scaling effects, considering the ratio of the sheet area to the edge length, but also a translation of the sheet patterns to study the presence of any Kirigami-induced edge effects. The latter is motivated by the findings from the machine learning predictions. With this regard, we would also suggest a more detailed study of the effect of the thermostat in the pull blocks which is suggested to have a possible importance when judging from the Grad-CAM analysis. 
+Another topic worth exploring is the impact of scale and edge effects. This includes an investigation of scaling the ratio of the sheet area to the sheet edge length. However, the machine learning predictions also suggest a study of Kirigami-induced edge effects as we translate the patterns on the sheet. With this regard, we would also suggest a more detailed study of the effect of the thermostat in the pull blocks which is suggested to have a possible importance when judging from the Grad-CAM analysis. 
 
 Regarding the machine learning approach, our findings indicate that there is a
 significant need to expand the dataset. In order to get more insight into this
@@ -276,22 +278,5 @@ That is, we extend the dataset using the top candidates of a machine
 learning-driven accelerated search and repeat the process of training the model,
 searching for new candidates and extending the dataset. This provides a
 direction for the extension of the dataset which could lead to a more efficient
-approach to address the complex space of Kirigami designs. We note that one can also create a dataset of a fixed kirigami designs and vary the physical parameters to support the investigations mentioned above. For both variations we believe that the results could benefit from a consideration of more advanced model architectures and machine learning techniques. If successful this would invite further studies of inverse design methods such as \acrshort{GAN} or diffusion models. 
+approach to address the dataset problem. We note that one can also create a dataset based on a fixed Kirigami design and vary the physical parameters to support the investigations mentioned above. For both variations, we believe that the results could benefit from a consideration of more advanced model architectures and machine learning techniques. If successful this would invite further studies of inverse design methods such as \acrshort{GAN} or diffusion models. 
 
-
-
-% \begin{itemize}
-%   \item Are there any interesting approaches for compressed kirigami structures?
-%   \item Since the normal force is applied at the pull blocks the normal force distribution changes from the sides more towards and even distribution as the sheet is put under tension (stretched). If we imagined a sheet for which the center part was either a different material or had some kind of pre-placed asperity on it, could we then exploit this force distirbution to get exotic properties as well? By studying this we might get a clearer understanding of what is the cause of my results. 
-%   \item Possibility to study hysteresis effects. Maybe the frictional behvaiours change significantly through repeated cycles of stretch and relax. 
-%   \item Try making substrate rigid to investigate the effect of this. 
-%   \item Is there any effects from going over the same substrate multiple times. This is probably mainly interesting in the context of discussing velocity relationship where the substrate has less time to relax.
-%   \item Could be interesting to optimize solely for the pop-up effect, i.e.\ through the biggest change in contact area. Maybe this is the key, since the succesfull pattern is choosen in that way. The correlation supports this, and the fact that the correlation is only about 60\% can be explained by the fact that the cases without considerable pop-up might not make any difference or perhaps that only some kinds of pop-up triggers the effect. 
-% \end{itemize}
-
-
-
-% Thinks to do better in the simulation procedure:
-% The graphene is first relaxed using conjugate gradient energy minimization and the relaxed within an NVT (fixed number of particles N, volume V and temperature T ) ensemble for 50 ps with non-periodic boundary conditions in all directions at a fixed temperature T = 4.2 K. The graphene is then stretched by moving the right and left edges at a constant strain rate of ∼ 0.005/ps which is slower than our previous work. \cite{PhysRevResearch.2.042006}
-
-% Also to use AIREBO which is also used in the above.
