@@ -1,12 +1,11 @@
 \chapter{Molecular Dynamics}\label{chap:MD}
-Molecular Dynamics (\acrshort{MD}) is an atomistic simulation method that is commonly employed in the investigation of atomic-scale friction due to its ability to track each atom in a system~\cite{Yalin_2011}. Due to advances in computing algorithms and hardware, \acrshort{MD} simulations have become increasingly capable of simulating tribological systems in recent years \cite{Manini_2016}. We will utilize \acrshort{MD} as our primary numerical approach to simulate and examine the effect of nanoscale kirigami in our system. Such small-scale modifications are still beyond the reach of experimental approaches, and the complexity of the system precludes analytical solutions as well. Hence, \acrshort{MD} simulations represent one of the few viable options for addressing this problem.
+Molecular Dynamics (\acrshort{MD}) is an atomistic simulation method that is commonly employed in the investigation of atomic-scale friction due to its ability to track each atom in a system~\cite{Yalin_2011}. In recent years, advances in computing algorithms and hardware have made \acrshort{MD} simulations increasingly capable of simulating tribological systems~\cite{Manini_2016}. We will utilize \acrshort{MD} as our primary numerical approach to examine the frictional behavior of a nanoscale Kirigami sheet sliding on a substrate. The small-scale modifications associated with nanoscale Kirigami are still beyond the reach of experimental approaches, and the complexity of the system precludes analytical solutions as well. Hence, \acrshort{MD} simulations represent one of the few viable options for addressing this problem.
 
 An \acrshort{MD} simulation can be viewed as a ``computational experiment'', where we specify a set of initial conditions and evolve the system to measure certain properties of interest. This is done through the definition of interatomic force fields which allows us to solve Newton's equation
-of motion by numerical integration \cite[p. 303]{BHUSHAN20051507}. Other more sophisticated and accurate approaches exist, like Ab initio \acrshort{MD} which utilizes electronic structure calculations at simulation time \cite{carloni_role_2002}. One of the most popular methods is based on density functional theory (DFT) \cite{PhysRev.136.B864} which considers quantum mechanical modeling of the electronic state of the system. However, such methods are rarely used in sliding friction since the computational cost makes it only feasible to handle relatively small systems, typically hundreds of atoms, for relatively short durations, typically much less than \SI{1}{ns}~\cite{Vanossi_2013}. In addition, we aim to perform multiple simulations under the
-change of various parameters which put additional pressure on the
-computational resources. 
+of motion by numerical integration \cite[p. 303]{BHUSHAN20051507}. Other more sophisticated and accurate approaches exist, like ab initio \acrshort{MD} which utilizes electronic structure calculations at simulation time~\cite{carloni_role_2002}. One of the most popular methods is based on density functional theory (DFT)~\cite{PhysRev.136.B864} which considers quantum mechanical modeling of the electronic state of the system. However, such methods are rarely used in sliding friction simulations since the computational cost makes it only feasible to handle relatively small systems, typically hundreds of atoms, for relatively short durations, typically much less than \SI{1}{ns}~\cite{Vanossi_2013}. In addition, we aim to perform multiple simulations under the
+change of various physical parameters which adds extra demands on the computational resources.
 
-In this chapter, we will introduce the fundamental principles behind \acrshort{MD} modeling and describe our implementation choices with respect to our system of interest. Our primary objective is to establish a functional simulation that can be used to explore nanoscale friction, so our discussion is focused on the key aspects of the method rather than a comprehensive analysis of all available techniques.
+In this chapter, we introduce the fundamental principles of \acrshort{MD} modeling and describe our implementation choices for the system of interest. We will focus on the key aspects related to our implementation rather than providing a comprehensive analysis of all available techniques.
 
 
 
@@ -61,7 +60,18 @@ In this chapter, we will introduce the fundamental principles behind \acrshort{M
 % friction properties change between different relevant potentials.
 
 
-The interatomic force field governing the \acrshort{MD} simulation is derived from the choice of potentials. The selection of potentials has a significant impact on the outcomes obtained. The potentials can vary from intricate energy surfaces that consider electrons at either the density-functional or tight-binding level to angle-dependent many-particle potentials, basic pairwise potentials, or simple models of elastic springs, and extensions of \acrshort{FK}-type formulations~\cite{Vanossi_2013}. For the choice of
+The interatomic force fields governing the \acrshort{MD} simulation are given from the choice of interatomic potentials and have a significant impact on the outcomes obtained. The potentials can vary from intricate energy surfaces that consider electrons at either the density-functional or tight-binding level to angle-dependent many-particle potentials, basic pairwise potentials, or simple models of elastic springs, and extensions of Frenkel-Kontorova-type formulations~\cite{Vanossi_2013}. 
+
+
+
+%
+%
+% Working here
+%
+%
+
+
+For the choice of
 potentials, and materials, we take a basis in the numerical \acrshort{MD} study
 by Li et al.~\cite{li_evolving_2016} simulating a \acrshort{FFM} type setup
 where a Si tip indents a graphene sheet supported by a Si substrate. It is evident that the experimental arrangement utilized by Li et al.\ varies from our system since they impose a Silicon tip on a graphene sheet that is supported by a Silicon substrate, whereas we will be sliding the entire sheet upon the substrate. Nevertheless, we contend that this should serve as an appropriate starting point for selecting the potential setup. We describe the covalent bonds between carbon atoms C-C in the graphene sheet and between silicon atoms Si-Si in the substrate by the Tersoff and
