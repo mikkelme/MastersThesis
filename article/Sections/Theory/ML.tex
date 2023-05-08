@@ -4,79 +4,73 @@ the viability of this approach in the study of Kirigami friction, which we will 
 chapter, we introduce the key concept behind machine learning and some of the concepts and techniques relevant to our implementation. For the numerical implementation, we will use the machine learning framework PyTorch~\cite{NEURIPS2019_9015}
 
 
-%
-%
-% Working here
-%
-%
-
 \section{Neural network}\label{sec:NN}
 The neural network, or more precisely the \textit{feed forward dense neural
-network}, is one of the original concepts in machine learning arising from the
-attempt of mimicking the way neurons work in the
+network}, is one of the original concepts in machine learning arising from the attempt of mimicking the way neurons work in the
 brain~\cite{lederer2021activation, Shankar_2022} brain. The neural network can
 be considered in terms of three major parts: The input layer, the so-called
-\textit{hidden layers} and finally the output layer as shown in \cref{fig:ffnn}.
+\textit{hidden layers} and finally the output layer as shown in~\cref{fig:ffnn}.
 The input is described as a vector $\vec{x} = x_0, x_1, \ldots, x_{n_x}$ where
 each input $x_i$ is usually denoted as a \textit{feature}. The input features
 are densely connected to each of the \textit{nodes} in the first hidden layer as
-indicated by the straight lines in~\cref{fig:ffnn}. Each line represents a
-weighted connection that can be adjusted to configure the importance of that
+indicated by the straight lines in~\cref{fig:ffnn}. Each line represents a weighted connection that can be adjusted to configure the importance of that
 feature. Similar dense connections are present throughout the hidden layers to
 the final output layer. For a given note $a_j^{[l]}$ in layer $l$ the input from
 all the nodes in the previous layer $l-1$ are processed as
 \begin{align*}
   a_j^{[l]} = f\left(\sum_i w^{[l]}_{ij}a_i^{[l-1]} + b_j^{[l]}\right),
 \end{align*}
-where $w^{[l]}_{ij}$ is the weight connection node $a_i^{[l-1]}$ of the previous layer to the node $a_j^{[l]}$ in the current layer. Note that having the weight belong to layer $l$ as opposed to $l-1$ is simply a notation choice. $b_j^{[l]}$ denotes a bias and $f(\cdot)$ the \textit{activation function}. The activation function provides a non-linear mapping of the input to each node. Without this, the network will only be capable of approximate linear functions~\cite{lederer2021activation}. Two common activation functions are the \textit{sigmoid}, mapping the input to the range $(0,1)$, and the \textit{ReLU} which cuts off negative contributions
+where $w^{[l]}_{ij}$ is the weight connection node $a_i^{[l-1]}$ of the previous layer to the node $a_j^{[l]}$ in the current layer. Note that having the weight belong to layer $l$ as opposed to $l-1$ is simply a notation choice. $b_j^{[l]}$ denotes a bias and $f(\cdot)$ is the so-called \textit{activation function}. The activation function provides a non-linear mapping of the input to each node. Without this, the network will only be capable of approximate linear functions~\cite{lederer2021activation}. Two common activation functions are the \textit{sigmoid}, mapping the input to the range $(0,1)$, and the \textit{ReLU} which cuts off negative contributions
 \begin{align*}
   \text{Sigmoid:} \quad f(z) = \frac{1}{1 + e^{-z}}, \qquad \qquad
   \text{ReLU:} \quad 
   f(z)= \begin{cases}
     z & z > 0   \\
-    0 & z \leq 0.
-    \end{cases}
+    0 & z \leq 0
+    \end{cases}.
 \end{align*}
 Often the same activation function is used throughout the network, except for the output layer where the activation function is usually omitted or the sigmoid is used for classification tasks. The whole process of sending data through the model is called \textit{forward propagation} and constitutes the mechanism for mapping an input $\vec{x}$ to the model output $\hat{\vec{y}}$. In order to get useful predictions we must \textit{train} the model which involves tuning the model parameters, i.e.\ the weight and biasses.
-\begin{figure}[H]
+\begin{figure}[!htb]
   \centering
   \includegraphics[width=0.9\linewidth]{figures/theory/ffnn.png}
-  \caption{\hl{Caption}. Reproduced from \cite{IN5400_slides}}
+  \caption{Illustration of a general feed forward dense neural network with $n_x$ input features and $n_y$ outputs. Reproduced from~\cite{IN5400_slides}.}
   \label{fig:ffnn}
 \end{figure}
-The model training relies on two core concepts: \textit{backpropagation} and \textit{gradient descent} optimization. First, we define the error associated with a model prediction, otherwise known as the \textit{loss}, through the \textit{loss function} $L$ that evaluates the model output $\hat{\vec{y}}$ against the ground truth $\vec{y}$. For a continuous scalar output, we might simply use the mean squared error (\acrshort{MSE})
+
+The model training relies on two core concepts: \textit{backpropagation} and \textit{gradient descent} optimization. First, we define the error associated with a model prediction, otherwise known as the \textit{loss}, through the \textit{loss function} $L(\hat{\vec{y}}, \vec{y})$ that evaluates the model output $\hat{\vec{y}}$ against the ground truth $\vec{y}$. For a continuous scalar output, we might simply use the mean squared error (\acrshort{MSE})
 \begin{align}
-  L_{\text{\acrshort{MSE}}} = \frac{1}{N_y} \sum_{i = 1}^N (y_i - \hat{y}_i)^2.
+  L_{\text{\acrshort{MSE}}} = \frac{1}{n_y} \sum_{i = 1}^{n_y} (y_i - \hat{y}_i)^2.
   \label{eq:MSE}
 \end{align}
-For a binary classification problem, meaning that the true output is True or False (1 or 0), a common choice is binary cross entropy (BSE)
+For a binary classification problem, meaning that the output is True or False (1 or 0), a common choice is binary cross entropy (BSE)
 \begin{align}
-  L_{\text{BSE}} =  -\sum_{i=1}^n \ \Big[y_i\log(\hat{y_i}) + (1-y_i)\log(1 - \hat{y_i}) \Big] =  \sum_{i=1}^n   \begin{cases}
+  L_{\text{BSE}} =  -\sum_{i=1}^{n_y} \ \Big[y_i\log(\hat{y_i}) + (1-y_i)\log(1 - \hat{y_i}) \Big] =  \sum_{i=1}^{n_y}   \begin{cases}
     - \log{(\hat{y_i})},& \quad y_i = 1 \\
     -\log{(1-\hat{y_i})},& \quad y_i = 0.
   \label{eq:BSE}
 \end{cases}
 \end{align}
-The cross-entropy loss can be derived from a maximum likelihood estimation \hl{SOURCE}. Without going into details with the derivation we can convince ourselves that the error is minimized for the correct prediction and maximized for the worst prediction. When $y_i = 1$ we get the negative term $-\log(\hat{y_i})$ where a correct prediction $\hat{y}_i \to 1$ yields a loss contribution $L_i \to 0$. For a wrong prediction $\hat{y}_i \to 0$ the loss contribution will diverge $L_i \to \infty$. Similar applies to the case of $y_i = 0$ with opposite directions. 
+% The cross-entropy loss can be derived from a maximum likelihood estimation.
+Without going into details with the derivation we can convince ourselves that the error is minimized for the correct prediction and maximized for the worst prediction. When $y_i = 1$ we get the negative loss contribution $-\log(\hat{y_i})$ where a correct prediction $\hat{y}_i \to 1$ yields $L_i \to 0$. For a wrong prediction $\hat{y}_i \to 0$ the loss contribution will diverge $L_i \to \infty$. Similar applies to the case of $y_i = 0$ with opposite directions. 
 
-Given a loss function, we can calculate the loss gradient $\nabla_\theta L$ with respect to each of the weights and biases in the model. This is called \textit{backpropagation} since we follow the propagation of the errors as we go backward back through the model layers calculating the gradient using the chain rule. These gradients express how each parameter is connected to the loss and the overall idea is then to ``nudge'' each parameter in the right direction for reducing the loss. We usually denote a full cycle of forward-, backpropagation and an update of all model parameters as an \textit{epoch}. We calculate the updated parameter $\theta_t$ for epoch $t$ using the \textit{gradient descent} method
+Given a loss function, we can calculate the loss gradient $\nabla_\theta L$ with respect to each of the weights and biases in the model. This is called \textit{backpropagation} since we follow the propagation of the errors as we go backward through the model layers calculating the gradient using the chain rule. These gradients express how each parameter is connected to the loss and the overall idea is then to ``nudge'' each parameter in the right direction to reduce the loss. We usually denote a full cycle of forward propagation, backpropagation and an update of all model parameters as one \textit{epoch}. We calculate the updated parameter $\theta_t$ for epoch $t$ using the \textit{gradient descent} method
 \begin{align}
   \theta_{t} = \theta_{t-1} - \eta \nabla_\theta L(\theta_t).
   \label{eq:grad_descent}
 \end{align}
 Gradient descent is analog to taking a step in parameter space in the direction
 that yields the biggest decrease in the loss. If we imagine a simplified case
-with only two parameters $\theta_1$ and $\theta_2$ we can think of these as directions on a map and the loss being the terrain height. The gradient descent steps in the direction perpendicular to the contour lines shaped by loss function terrain as shown in~\cref{fig:gd}. Notice, however, that state-of-the-art models in general contain on the order of $\num{e6}-\num{e9}$ parameters \cite{thompson2022computational} which poses some challenges for the visualization.  The length of each step is proportional to the gradient norm and the learning rate $\eta$. There are three main flavors to the gradient descent: Batch,
+with only two parameters $\theta_1$ and $\theta_2$ we can think of these as longitude and latitude coordinates on a map and the loss being the terrain height. The gradient descent steps in the direction perpendicular to the contour lines shaped by the loss function terrain as shown in~\cref{fig:gradient_descent}. Notice, however, that state-of-the-art models in general contain on the order of \num{e6}--\num{e9} parameters \cite{thompson2022computational} which poses some challenges for the visualization.  The length of each step is proportional to the gradient norm and the learning rate $\eta$. There are three main flavors to the gradient descent: Batch,
 stochastic and mini-batch gradient descent. In \textit{batch gradient descent} we simply
 calculate the gradient based on the entire dataset by averaging the contribution
 from each data point before updating the parameters. This gives the most robust estimate of the gradient and thus the most direct path through parameter space in terms of minimizing the loss function as
 indicated in~\cref{fig:gd}. However, for big datasets, this calculation can be
 computationally heavy as it must carry the entire dataset in memory at once. A
 solution to this issue is provided by \textit{stochastic gradient descent}
-(\acrshort{SGD}) which considers only one data point at a time. Each data point is chosen randomly and the parameters are updated based on the corresponding gradient. This leads to more frequent updates of the parameters and a more ``noisy'' path through parameter space as shown in~\cref{fig:sgd}.  Under some circumstances, this might compromise the precision. However, the presence of noise can actually increase the chances of avoiding local minima in parameter space The \textit{mini-batch gradient descent} serves as a middle ground between the above methods by dividing the full dataset into a subset of mini-batches. Each parameter update is then based on the gradient within a mini-batch. By choosing a suitable batch size we get the robustness of the (full) batch gradient descent and the computational efficiency and resistance to local minima of the \acrshort{SGD} method. 
+(\acrshort{SGD}) which considers only one data point at a time. Each data point is chosen randomly and the parameters are updated based on the corresponding gradient. This leads to more frequent updates of the parameters and a more ``noisy'' path through parameter space as shown in~\cref{fig:sgd}. Under some circumstances, this might compromise the precision. However, the presence of noise can increase the likelihood of avoiding local minima in parameter space. The \textit{mini-batch gradient descent} serves as a middle ground between the above-mentioned methods by dividing the full dataset into a subset of mini-batches. Each parameter update is then based on the gradient within a mini-batch. By choosing a suitable batch size we get the robustness of the (full) batch gradient descent and the computational efficiency and resistance to local minima of the \acrshort{SGD} method. 
 
 
-\begin{figure}[H]
+\begin{figure}[!htb]
   \centering
   \begin{subfigure}[t]{0.49\textwidth}
     \centering
@@ -92,20 +86,18 @@ solution to this issue is provided by \textit{stochastic gradient descent}
     \label{fig:sgd}
   \end{subfigure}
   \hfill
-  % https://www.samlau.me/test-textbook/ch/11/gradient_stochastic.html
-  \caption{\hl{TMP}}
+  \caption{Qualitative illustration of the gradient descent method for a simplified problem with only two parameters $\theta_1$ and $\theta_2$. The blue shade and lines indicate the contour map of the loss function with the darker shade denoting a lower loss. (a) The batch gradient descent method resulting in a relatively straight path toward the optimal parameters. (b) The stochastic gradient descent method resulting in a more noisy path toward the optimal parameters. Reproduced from~\cite{grad_descent_analog}.}
   \label{fig:gradient_descent}
 \end{figure}
 
 
-
 \subsection{Optimizers}
-The name \textit{optimizers} covers a variety of gradient descent methods. In our study, we will use the ADAM (adaptive moment estimation)~\cite{kingma2017adam}. ADAM combines several ``tricks in the book'' which we will introduce in the following.
+The name \textit{optimizers} covers a variety of gradient descent methods. In our study, we will use the ADAM (adaptive moment estimation) optimizer~\cite{kingma2017adam}. ADAM combines several ``tricks in the book'' which we will introduce in the following.
 
 % Momentum 
 One considerable extension of the gradient descent scheme is by the introduction of a momentum term $m_t$ such that we get
 \begin{align}
-  \theta_t = \theta_{t-1} - m_t, \qquad m_t = \alpha m_{t-1} + \eta \nabla_\theta L(\theta_t)
+  \theta_t = \theta_{t-1} - m_t, \qquad m_t = \alpha m_{t-1} + \eta \nabla_\theta L(\theta_t),
   \label{eq:mom}
 \end{align}
 with $m_0 = 0$. If we introduce the shorthand $g_t = \nabla_\theta L(\theta_t)$ we find
@@ -128,19 +120,19 @@ which is similar to that of momentum~\cref{eq:mom_rec}, but with the explicit we
 \begin{align*}
   \theta_{t+1} = \theta_t - \eta g_t \ \Longrightarrow \ ||\theta_{t+1}-\theta_{t}|| = \eta ||g_t||,
 \end{align*}
-we might get the idea of normalizing the gradient step by division by the norm $|||g_t|$. However, this does not immediately solve the problem of long plateaus as we need to consider multiple past gradients as can be done with the use of the \acrshort{EMA}. When reentering a steep region again we need to ``quickly'' downscale the gradient steps which can be achieved more efficiently by using the squared norm $||g_t||^2$ for the \acrshort{EMA} which makes it more sensitive to outliers. The \acrshort{RMSProp} update scheme is given
+we might get the idea of normalizing the gradient step by the norm $|||g_t|$. However, this does not immediately solve the problem of long plateaus as we need to consider multiple past gradients, but this can be done with the use of the \acrshort{EMA}. When reentering a steep region again we need to ``quickly'' downscale the gradient steps which can be achieved more efficiently by using the squared norm $||g_t||^2$ for the \acrshort{EMA} which makes it more sensitive to outliers. From this motivation the \acrshort{RMSProp} update scheme is given
 \begin{align}
   \theta_t = \theta_{t-1} - \eta \frac{g_t}{\sqrt{\text{EMA}(||g_t||^2)}+ \epsilon},
   \label{eq:RMSProp}
 \end{align}
 where $\epsilon$ is simply a small number to avoid division by zero issues. 
 
-ADAM merges the idea of first order \acrshort{EMA} for the momentum $m_t$, and the second order \acrshort{EMA} $v_t$, as used in the root mean square propagation technique in~\cref{eq:RMSProp}
+ADAM merges the idea of first order \acrshort{EMA} for the momentum $m_t$, and the second order \acrshort{EMA} $v_t$ for gradient normalization similar to the root mean square propagation technique in~\cref{eq:RMSProp}
 \begin{align*}
   m_t &= \beta_1 m_{t-1} + (1-\beta_1)g_t, \\
   v_t &= \beta_2 v_{t-1} + (1-\beta_2)g_t^2. 
 \end{align*}
-Since these are initially set to zero ADAM introduces the scaling terms  $(1-\beta^t_1)$ and $(1-\beta^t_2)$ to correct for a bias towards zero. The ADAM scheme is given~\cite{kingma2017adam}
+Since $m_t$ and $v_t$ are initially set to zero ADAM introduces the scaling terms  $(1-\beta^t_1)$ and $(1-\beta^t_2)$ to correct for a bias towards zero. The ADAM scheme is given~\cite{kingma2017adam}
 \begin{align}
   \theta_{t+1} = \theta_t - \eta \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \epsilon}, \qquad \qquad \hat{m}_t = \frac{m_t}{1-\beta^t_1}, \qquad \hat{v}_t = \frac{v_t}{1-\beta^t_2}.
   \label{eq:ADAM}
@@ -148,7 +140,7 @@ Since these are initially set to zero ADAM introduces the scaling terms  $(1-\be
 
 
 \subsection{Weight decay}
-By adding a so-called \textit{regularization} to the loss function we can penalize high magnitudes of the model parameters, usually intended for the model weights primarily. This is motivated by the idea of preventing overfitting during training. The most common way to do this is by the use of L2 regularization, adding the squared $l^2$ norm $||\theta||_2^2$, where $||\theta||_2 = \sqrt{\theta_1^2 + \theta_2^2 + \ldots}$, to the model. The loss and gradient then become
+By adding a so-called \textit{regularization} to the loss function we can penalize high magnitudes of the model parameters, usually intended for the model weights. This is motivated by the idea of preventing overfitting during training, which we will address in more detail in~\cref{sec:under_over_fit}.  The most common way to regularize the loss function is by the use of L2 regularization, adding the squared $l^2$ norm $||\theta||_2^2$, where $||\theta||_2 = \sqrt{\theta_1^2 + \theta_2^2 + \ldots}$, to the model. The loss and gradient then become
 \begin{align}
   L_{l^2}(\theta) &= L(\theta) + \frac{1}{2}\lambda ||\theta||^2_2 \label{eq:weight_decay_L} \\
   \nabla_\theta L_{l2}(\theta) &=  \nabla_\theta L(\theta) + \lambda \theta,
@@ -158,16 +150,15 @@ where $\lambda\in [0,1]$ is the weight decay parameter. The name \textit{weight 
 \begin{align}
   \theta_{t+1} = \theta_t - \eta g_t - \eta\lambda \theta_t = \theta_t\underbrace{(1-\eta\lambda)}_{\text{weight decay}} - \eta g_t. \label{eq:weight_decay_descent}
 \end{align}
-Thus we notice that choosing a high weight decay ($\lambda \to 1$) will downscale the model parameters while choosing a low weight decay ($\lambda \to 0$) yields the original gradient descent scheme. Note that we will use the weight decay principle in combination with ADAM. In~\cref{eq:weight_decay_descent} we have simply used the original gradient descent scheme~\cref{eq:grad_descent} since this makes it easier to demonstrate the consequences of introducing the L2 regularization into the loss function~\cref{eq:weight_decay_L}.
+We notice that choosing a large weight decay ($\lambda \to 1$) will downscale the model parameters while choosing a low weight decay ($\lambda \to 0$) yields the original gradient descent scheme. Note that we will use the weight decay principle in combination with ADAM. In~\cref{eq:weight_decay_descent} we have simply used the original gradient descent scheme~\cref{eq:grad_descent} since this makes it easier to demonstrate the consequences of introducing the L2 regularization into the loss function~\cref{eq:weight_decay_L}.
 
 
 \subsection{Parameter distributions}
 In order to get optimal training conditions it has been found that the initial
-state of the weight and biases are important \hl{SOURCE}. First of all, we must
-initialize the weight by sampling from some distribution. If the weights are set
+state of the weight and biases are important \cite{salimans2016weight}. First of all, we must initialize the weight by sampling from some distribution. If the weights are set
 to equal values the gradient across a layer would be the same. This results in a
 complexity reduction as the model can only encode the same values across the
-layer \hl{SOURCE?}. Further, we want to consider the gradient flow during training. Especially for deep networks, networks with many layers, we must pay attention to the problem of \textit{vanishing} or \textit{exploding} gradients. If we for instance consider the sigmoid activation function and its derivative 
+layer. Further, we want to consider the gradient flow during training. Especially for deep networks, networks with many layers, we must pay attention to the problem of \textit{vanishing} or \textit{exploding} gradients. If we for instance consider the sigmoid activation function and its derivative 
 \begin{align*}
   f(z) = \frac{1}{1 + e^{-z}}, \qquad f'(z) = \frac{df(z)}{dz} = \frac{e^{-z}}{(1+e^{-z})^2} = \frac{e^{z}}{(1+e^{z})^2},
 \end{align*}
@@ -177,52 +168,49 @@ network as the calculation of the gradient involves the chain rule. This gives
 rise to a gradient that potentially gets smaller and smaller for each layer it
 passes in the backpropagation. A similar problem can be found with the ReLU
 activation function which contributes toward a gradient of zero for inputs
-$z<0$. This can be mitigated by the so-called leaky RelU which maps the $z<0$
-to a small negative slope $a<0$ as $f(z) = az$. On the other hand, we have
+$z<0$. This can be mitigated by the so-called leaky RelU which maps the $z<0$ to
+a small negative slope $a<0$ as $f(z) = az$. On the other hand, we have
 exploding gradients, which are simply a result of the chain rule gradient
 calculation. For a sufficiently deep network, the gradient can grow
-exponentially large and sometimes result in a numerical overflow. While there
-exist techniques to accommodate the problem of vanishing or exploding gradients,
-like for instance the leaky ReLU for the vanishing gradients and so-called
-gradient clipping, cutting off the gradient at a maximum, they both benefit from
-a properly initialized set of weights \hl{SOURCE?}. That is, we want the
-gradients across a given layer to have a zero mean while the variance is similar
-between layers in the model. This balanced gradient flow is more likely to
-happen if we initialize the weight by the same set of criteria \hl{SOURCE?}. The
-specific actions to achieve this depend on the model architecture, including the
-choice of activation functions. For instance, using the ReLU activation
-functions it was found that the node standard deviation will depend on the
-number of input nodes from the previous layer $N^{[l-1]}$ as $\sim
-\sqrt{N^{[l-1]}}/\sqrt{2}$. Thus we can simply generate the weight from a zero mean uniform distribution scaled by this value. This is part of the Kaiming initialization scheme which is standard in Pytorch \hl{SOURCe}. The bias is initialized from a similar consideration.
+exponentially large and sometimes result in a numerical overflow. One approach
+to mitigate this is with the use of gradient clipping, where all gradients above
+a certain value are manually set to a predefined maximum number. While there
+exist techniques to accommodate the problem of vanishing or exploding gradients
+as mentioned above, they both benefit from a properly initialized set of
+weights. That is, we want the gradients across a given layer to have a zero mean
+while the variance is similar between layers in the model. This balanced
+gradient flow is more likely to happen if we initialize the weight by the same
+criteria \cite{salimans2016weight}. The specific actions to achieve this depend
+on the model architecture, including the choice of activation functions. For
+instance, using the ReLU activation functions it was found that the node
+standard deviation will depend on the number of input nodes from the previous
+layer $N^{[l-1]}$ as $\sqrt{N^{[l-1]}/2}$ \cite{he2015delving}. Thus we can
+simply generate the weights from a zero mean normal distribution $N \sim (0,
+2/N^{[l-1]})$ with the standard deviation $\sqrt{2/N^{[l-1]}}$ to ensure a balanced initialization of weights. This is part of the Kaiming initialization scheme which is standard in Pytorch.
+The bias is initialized from a similar consideration.
 
-\textit{Batch normalization} is another technique that can also help reduce the issue of poor gradient flow. Furthermore, it can benefit by speeding up convergence and making the training process more stable \hl{SOURCE}. In general, model parameters are modified throughout training meaning that the range of values coming from a previous layer will shift, even though the same training data is fed through the network repeatedly. By scaling the input for a given layer, for each mini-batch, we can mitigate this problem and make for a more standardized input range. This often results in a faster training convergence. For layer $l$ we calculate the mean $\mu^{[l]}$ and variance $\sigma^{2[l]}$ across the layer with nodes $x_1^{[l]}, x_2^{[l]}, \ldots, x_d^{[l]}$ for each mini-batch of size $m$ as
+\textit{Batch normalization} is another technique that can help reduce the issue of poor gradient flow. Furthermore, it can benefit by speeding up convergence and making the training process more stable \cite{ioffe2015batch}. In general, model parameters are modified throughout training meaning that the range of values coming from a previous layer will shift (internal covariate shift), even though the same training data is fed through the network repeatedly. By scaling the input for a given layer, for each mini-batch, we can mitigate this problem and make for a more standardized input range. This often results in a faster training convergence. For layer $l$ we calculate the mean $\mu^{[l]}$ and variance $(\sigma^{[l]})^{2}$ across the layer with nodes $x_1^{[l]}, x_2^{[l]}, \ldots, x_m^{[l]}$ for each mini-batch of size $m$ as
 \begin{align*}
-  \mu^{[l]} = \frac{1}{m} \sum_i z^i, \qquad \sigma^{2[l]} = \frac{1}{m} \sum_i^d (x^i-\mu)^2.
+  \mu^{[l]} = \frac{1}{m} \sum_i^m x_i, \qquad (\sigma^{[l]})^{2} = \frac{1}{m} \sum_i^m (x^i-\mu)^2.
 \end{align*}
 We then perform a normal scaling of the inputs within the batch
 \begin{align*}
-  \hat{x}_i^{[l]} = \frac{x_i^{[l]} - \mu^{[l]}}{\sqrt{\sigma^{2[l]} + \epsilon}},
+  \hat{x}_i^{[l]} = \frac{x_i^{[l]} - \mu^{[l]}}{\sqrt{(\sigma^{[l]})^{2} + \epsilon}},
 \end{align*}
 where $\epsilon$ is a small number to ensure numerical stability (similar to what we used for \acrshort{RMSProp} gradient descent). In the final step, the input values are rescaled as
 \begin{align*}
   \tilde{x_i} = \gamma^{[l]} \hat{x}_i^{[l]} + \beta^{[l]}
 \end{align*}
-with trainable parameters $\gamma$ and $\beta$. \hl{Comment about the reason for the final step}.
-
+with trainable parameters $\gamma$ and $\beta$. 
 
 \subsection{Learning rate decay strategies}
-Until now we have assumed a constant learning rate, but many training variations use a changing learning rate beyond the adaptiveness included in the optimizers covered so far. Under some circumstances, it can be beneficial to start with a higher learning rate to speed up the initial part of training and then lower the learning rate for the final gradient descent~\cite{smith2018disciplined}. One straightforward strategy is a step-wise learning rate decay where the learning rate is reduced by a factor $\gamma \in (0,1)$ every $K$ steps. A more smooth change can be achieved by for instance a polynomial decay $\eta_t = \eta_0/t^{\alpha}$ for $\alpha > 0$. More advanced approaches use multiple cycles of increasing and decreasing cycles. We will mainly concern ourselves with a one-cycle policy for which we start at an
+Until now we have assumed a constant learning rate, but many training schemes use a changing learning rate beyond the adaptiveness included in the optimizers covered so far. Under some circumstances, it can be beneficial to start with a higher learning rate to speed up the initial part of training and then lower the learning rate for the final gradient descent~\cite{smith2018disciplined}. One straightforward strategy is a step-wise learning rate decay where the learning rate is reduced by a factor $\gamma \in (0,1)$ every $K$ steps. A more smooth change can be achieved by for instance a polynomial decay $\eta_t = \eta_0/t^{\alpha}$ for $\alpha > 0$. More advanced approaches use multiple cycles of increasing and decreasing cycles. We will mainly concern ourselves with a one-cycle policy for which we start at an
 intermediate value, increase toward a maximum bound and then decrease toward a
-final lower learning rate bound. We do this by following a cosine function that is shifted and stretched to increase towards the first 30\% of the training length and decrease toward the lower bound learning rate for the remaining epochs. 
+final lower learning rate bound. We do this by following a cosine function that is shifted and scaled to increase towards the maximum bound for the first 30\% of the training length and decrease toward the lower learning rate bound for the remaining epochs. 
 
 
 
 \section{Convolutional Neural Network}\label{sec:CNN}
-
-% For
-% our task we will consider the Kirigami configuration, load and stretch of the system as input features on which we want the model to base its prediction.
-
-
 Convolutional Neural Networks (\acrshort{CNN}s) build upon many of the same
 concepts as introduced with the feed-forward neural network in~\cref{sec:NN}.
 The difference lies in its specialization for a spatially correlated input, such
@@ -260,7 +248,7 @@ for padding $P$, stride $S$, spatial size of the kernel filter $F_d$, spatial si
 of input $N_d^{[l]}$, for dimension $d = {x, y}$ and layer $l$. The \textit{down-sampling} is often done through a pooling layer. A pooling layer is reminiscent of a kernel, but instead of calculating the output as a dot product, it utilizes the mean (mean pooling) or the max value (max pooling) of the values within its scope. For instance, by using a max pooling of size $2 \times 2$ and stride two we essentially half the dimensions of the image as dictated by~\cref{eq:down_scaling}. \acrshort{CNN}s will often use repeating series of convolution (applying a kernel), pooling and then an activation function. Most architectures aim to slowly down-sample the spatial input while increasing the number of channels throughout the model layers.
 
 
-\begin{figure}[H]
+\begin{figure}[!htb]
   \centering
   \includegraphics[width=0.9\linewidth]{figures/theory/CNN.png}
   \caption{\hl{TMP}}
@@ -268,7 +256,7 @@ of input $N_d^{[l]}$, for dimension $d = {x, y}$ and layer $l$. The \textit{down
   \label{fig:CNN}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[!htb]
   \centering
   \begin{subfigure}[t]{0.26\textwidth}
     \centering
@@ -307,7 +295,7 @@ product of zero elements is 1, such that for the first layer, the product is 1. 
 receptive field and the effective receptive field. The effective receptive field
 will have a Gaussian distribution within the theoretical receptive field because the nodes in the center of the receptive field will have more connections leading to the output, as seen in~\cref{fig:receptive_field}. Thus, in practice, the effective receptive field will be smaller than the theoretical. Implementations like dilated convolutions, which make the filter expand in circumference and skipping positions within the filter, can be used to further increase the effective field. \hl{The receptive field is perhaps not that relevant... Should I remove it?}
 
-\begin{figure}[H]
+\begin{figure}[!htb]
   \centering
   \includegraphics[width=0.7\linewidth]{figures/theory/receptive_field.png}
   \caption{\hl{TMP}}
@@ -330,7 +318,7 @@ should be kept unseen from the model developer. As we choose the model
 architecture and hyper-parameters. We define a hyper-parameter as a variable to be set prior to the actual application of the learning algorithm, one that is not selected by the learning algorithm itself~\cite{Bengio2012}. This includes parameters such as learning rate, momentum and weight decay, but not the weights and biases as these are updated by the learning algorithm. When adjusting the hyper-parameters we will use the performance on the validation set as a guiding metric. Hence, our choices can eventually lead to a higher level of overfitting through the hyper-parameter choices. Hence, we should denote a test set for the final evaluation of our model which has not been considered before the end. Formally, this is the only reliable performance metric for the model. 
 
 
-\section{Overfitting and underfitting}
+\section{Overfitting and underfitting}\label{sec:under_over_fit}
 % THE UNDERFITTING AND OVERFITTING TRADE-OFF~\cite{smith2018disciplined}. 
 
 Underfitting and overfitting represent a crucial balance going on when training
@@ -369,7 +357,7 @@ most confident fit for all we know.
 % as the figures in~\cref{fig:over_under_fitting} imply. 
 
 
-\begin{figure}[H]
+\begin{figure}[!htb]
   \centering
   \begin{subfigure}[t]{0.42\textwidth}
     \centering
@@ -425,7 +413,7 @@ decline of the validation loss can be used as an estimate for the best constant
 learning rate choice~\cite{smith2018disciplined}.
 
 
-\begin{figure}[H]
+\begin{figure}[!htb]
   \centering
   \includegraphics[width=0.9\linewidth]{figures/theory/lr_descents.png}
   \caption{\hl{TMP}  }
@@ -472,7 +460,7 @@ different depths of the model and even combine the results for multiple layers.
 \cref{fig:grad_cam_example} show an exemplary use, where the Grad-CAM analysis reveals the difference between a biased and unbiased prediction model for the task of predicting professions. The biased model shows to be considering the person more than the actual objective clues given by relevant equipment and work-related clothing
 
 
-\begin{figure}[H]
+\begin{figure}[!htb]
   \centering
   \includegraphics[width=0.7\linewidth]{figures/theory/grad_cam_example.png}
   \caption{\hl{TMP}~\cite{Selvaraju_2019} }
