@@ -4,7 +4,7 @@ In this chapter, we begin by analyzing the frictional properties of our system. 
 
 \section{Friction simulation parameters}
 The \acrshort{MD} simulations we will carry out to measure friction are governed
-by a small set of parameters. Since we aim to develop a machine learning model,
+by a small set of parameters. Since we aim to develop a machine-learning model,
 it is necessary to standardize these parameters. Therefore, we keep the majority
 of the parameters constant and only modify a small subset of them, which
 includes sheet configuration, strain, and load. Instead of starting with the
@@ -50,7 +50,7 @@ will be used when nothing else is stated explicitly.
     Initial relaxation time &  \SI{15}{ps} & Initial relaxation time before straining. \\ \hline
     Pauses & \SI{5}{ps} & Relaxation pauses after strain, and during the normal load phase (before sliding). \\ \hline
     Strain Speed & \SI{0.01}{ps^{-1}} & The rate of straining for the sheet. \\ \hline
-    Slide distance & \SI{400}{Å} & How far the sheet is slided. \\ \hline
+    Slide distance & \SI{400}{Å} & How far the sheet is slid. \\ \hline
     Sheet size & $130.029 \times \SI{163.219}{\text{Å}}$ & Spatial 2D size of the sheet.  \\ \hline
     Pull block size & $2 \times 130.029 \times \SI{15.183}{\text{Å}}$ & Spatial 2D size of the pull blocks. \\ \hline
   \end{tabular}
@@ -196,7 +196,7 @@ chapter.
       \label{fig:drag_Ff_100_K10_v1}
   \end{subfigure}
   \hfill
-     \caption{Force traces of the friction force component $F_\parallel$ parallel to the sliding direction acting from the substrate on the full sheet. The force traces are plotted against the sliding distance (lower x-axis) and the corresponding sliding time (upper x-axis). The sliding distance is measured by the displacement of the virtual atom tethering the sheet. The red line represents a Savgol filter with polynomial order 5 and a window length of 150 timesteps (corresponding to a sliding distance of \SI{3}{Å} or a time window of \SI{15}{ps}). Each row, (a,b), (c,d), (e,f), represents a different choice of the spring constant $K$ and sliding speed $v$, while the columns show the same result for two different time scales. The default settings are represented in figure (a) and (b).}
+     \caption{Force traces of the friction force component $F_\parallel$ parallel to the sliding direction acting from the substrate on the full sheet. The force traces are plotted against the sliding distance (lower x-axis) and the corresponding sliding time (upper x-axis). The sliding distance is measured by the displacement of the virtual atom tethering the sheet. The red line represents a Savgol filter with polynomial order 5 and a window length of 150 timesteps (corresponding to a sliding distance of \SI{3}{Å} or a time window of \SI{15}{ps}). Each row, (a,b), (c,d), (e,f), represents a different choice of the spring constant $K$ and sliding speed $v$, while the columns show the same result for two different time scales. The default settings are represented in figures (a) and (b).}
      \label{fig:drag_Ff}
 \end{figure}
 
@@ -282,7 +282,7 @@ shift the mean friction force up as we see both negative and positive
 contributions in the parallel force trace. One option to accommodate this issue
 is by using the vector length for the magnitude but keeping the sign from the
 parallel component. However, we omit such compromises as this might make the
-measurement interpretation unessercary complex, and we use only the parallel
+measurement interpretation unessecary complex, and we use only the parallel
 component going forward. 
 
 \begin{figure}[!htb]
@@ -344,7 +344,7 @@ movement between accelerations, but with the rapid parts aligning visually well 
     \caption{$K = \SI{10}{\frac{N}{m}}$, $v = \SI{1}{\frac{m}{s}}$.}
     \label{fig:CM_path_K10_v1}
   \end{subfigure}
-  \caption{Sheet Center of Mass (\acrshort{CM}) position relative to the start of the sliding phase in terms of the direction parallel to the sliding direction $\Delta COM_{\parallel}$ and the axis perpendicular to the sliding direction $\Delta COM_{\perp}$. The colors denote the absolute speed of the \acrshort{CM} motion. Figure (a)-(c) shows different parameters used for the spring constant $K$ and sliding speed $v$ similar to that used in~\cref{fig:drag_Ff}. (a) Default: $K = \inf$, $v = \SI{20}{\frac{m}{s}}$. (b) Values adopted from Zhu
+  \caption{Sheet Center of Mass (\acrshort{CM}) position relative to the start of the sliding phase in terms of the direction parallel to the sliding direction $\Delta COM_{\parallel}$ and the axis perpendicular to the sliding direction $\Delta COM_{\perp}$. The colors denote the absolute speed of the \acrshort{CM} motion. Figure (a)--(c) shows different parameters used for the spring constant $K$ and sliding speed $v$ similar to that used in~\cref{fig:drag_Ff}. (a) Default: $K = \inf$, $v = \SI{20}{\frac{m}{s}}$. (b) Values adopted from Zhu
   and Li~\cite{zhu_study_2018}: $K = \SI{10}{\frac{N}{m}}$, $v = \SI{10}{\frac{m}{s}}$. (c) $K = \SI{10}{\frac{N}{m}}$, $v = \SI{1}{\frac{m}{s}}$ }
   \label{fig:CM_path}
 \end{figure}
@@ -564,7 +564,7 @@ spikes, as the name suggests. In the Honeycomb pattern, on the other hand, the
 deformations initiate from one side first. As the sheet stretches more rows of
 the pattern are activated, producing the honeycomb-looking shape when seen from
 above. Both patterns exhibit a small increase in relative contact when they
-are approaching their yield strain, which agrees with the results from ~\cref{fig:buckling_quartiles} where the buckling reduces slightly towards the
+are approaching their yield strain, which agrees with the results from~\cref{fig:buckling_quartiles} where the buckling reduces slightly towards the
 rupture strain.
 
 
@@ -729,7 +729,7 @@ necessary for more reliable data.
     \hfill
     \caption{The computational cost related to the parameter choice of temperature, sliding speed, spring
     constant and timestep, in terms of CPU hours running on 16 cores on the
-    CPU cluster. The timing of the sliding speed is found to $t \propto
+    CPU cluster. The timing of the sliding speed is found to be $t \propto
     v^{-0.977 \pm 0.005}$ while the timing for the timestep follows $t \propto \text{dt}^{-0.87\pm 0.02}$.}
     \label{fig:comp_cost}
 \end{figure}
@@ -762,7 +762,7 @@ We consider a load range of 0.1--\SI{10}{nN} which coincides with the general in
 shoe can be less than \SI{1}{cm}~\cite{stiletto_1}, and hence an \SI{80}{kg} man\footnote{Yes, a man can certainly
 wear stiletto heels.} standing on one stiletto heel, with all the weight on the heel, will generate a pressure
 \begin{align*}
-  P = \frac{F}{A} = \frac{mg}{r^2\pi} = \frac{\SI{80}{kg} \cdot \SI{9.8}{\frac{m}{s^2}}}{(\frac{\SI{e-2}{m}}{2})^2 \pi} = \SI{9.98}{MPa}.
+  P = \frac{F}{A} = \frac{mg}{r^2\pi} = \frac{\SI{80}{kg} \cdot \SI{9.8}{\frac{m}{s^2}}}{{(\frac{\SI{e-2}{m}}{2})}^2 \pi} = \SI{9.98}{MPa}.
 \end{align*} 
 The fact that the pressure under a stiletto heel can get this high, actually greater than the pressure under an elephant foot, is an interesting realization in itself that is often used in
 introductory physics courses~\cite{stiletto_2}. Nonetheless, this serves as a reasonable upper bound for human executed pressure. With
@@ -907,7 +907,7 @@ how this relates to a dependency between the contact area and the friction.
 However, we do see that the Tetrahedron and Honeycomb patterns exhibit a larger
 change in contact area which aligns with the idea that the out-of-plane buckling makes them
 behave more like an asperity system. When plotting friction against relative contact in~\cref{fig:multi_FN_fric_vs_contact} we do not find any significant evidence for a linear relationship between contact area and friction as otherwise proposed by asperity theory. Instead, from the Tetrahedron and Honeycomb pattern, we confirm that the strain-induced effects are dominant in comparison to any effects from the contact area. By studying an even larger load range we might
-get more insight into this relationship. Note that we have omitted the error bars in~\cref{fig:multi_load} for visual purposes, but the absolute errors for both the relative contact and friction are on the same order of magnitude as shown in both~\cref{fig:multi_stretch} and ~\cref{fig:load_dist}.
+get more insight into this relationship. Note that we have omitted the error bars in~\cref{fig:multi_load} for visual purposes, but the absolute errors for both the relative contact and friction are on the same order of magnitude as shown in both~\cref{fig:multi_stretch} and~\cref{fig:load_dist}.
 
 From the friction measurements in~\cref{fig:multi_load_fric} we find that the
 non-cut sheet generally produces a friction force in the order of 0.005--\SI{0.0025}{nN} throughout the 0.1--\SI{100}{nN} load range. Using a ratio based friction coefficient definition~\cref{eq:mu_def1}, $\mu_1 = F_{\text{fric}}/{F_N}$, this would lead to a coefficient roughly in the range

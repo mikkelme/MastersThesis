@@ -74,7 +74,7 @@ description of covalent bonds we include the three-body term in both the Stillin
 
 
 \subsection{Lennard Jones}\label{sec:LJ}
-The theoretical basis in section is based on~\cite{docs_lammps_LJ,
+The theoretical basis in this section is based on~\cite{docs_lammps_LJ,
 C9CP05445F, chem_libretexts_LJ}. The Lennard-Jones (\acrshort{LJ}) model is one of the most commonly used pair potentials for \acrshort{MD} simulations. \acrshort{LJ} models the potential energy between two non-bonding atoms solely based on interatomic distance. The model accounts for long-ranged attractive forces arising from London dispersion forces (dipole-induced dipole) and repulsive forces that capture the hard core of overlapping electron orbitals at small distances (Pauli repulsion). Thus, it assumes neutrally charged atoms and was originally proposed for noble gases. The classical 12--6 version of the model, referring to the powers of the repulsive and attractive forces respectively, reads
 \begin{align}
   U = 4\epsilon \left[\left(\frac{\sigma}{r}\right)^{12} - \left(\frac{\sigma}{r}\right)^6 \right ], \qquad r < r_c,
@@ -125,7 +125,7 @@ value for each model parameter since we are exclusively dealing with Si--Si bond
 where $\theta_{0,ijk}$ is the equilibrium angle. The first term of~\cref{eq:sw_3} includes an angle dependency analog to a harmonic oscillator
 based on a cosine angle distance from the equilibrium angle. The final two terms
 act again as a cut-off function by driving the potential to zero at $r_{ij} =
-a_{ij}\sigma_{ij}$ and $r_{ik} = a_{ik}\sigma_{ik}$ respectively. We adopt the parameters for Si--Si modelling suggested in the original paper by Stillinger and Weber~\cite{PhysRevB.31.5262} which is shown in~\cref{tab:sw_param} along with an interpretation of each model parameter.
+a_{ij}\sigma_{ij}$ and $r_{ik} = a_{ik}\sigma_{ik}$ respectively. We adopt the parameters for Si--Si modeling suggested in the original paper by Stillinger and Weber~\cite{PhysRevB.31.5262} which is shown in~\cref{tab:sw_param} along with an interpretation of each model parameter.
 
 
 
@@ -257,7 +257,7 @@ are adopted from J.\ Tersoff~\cite{PhysRevB.39.5566} and summarized in
     $\lambda_2$ & 2.2119 Å$^{-1}$ & Decay of attractive potential term $f_A$. \\ \hline
     $A$ & 1393.6 eV & Repulsion potential maximum at the core ($f_R(r_{ij} = 0)$). \\ \hline
     $B$ & 346.74 eV & Attractive potential minimum at core ($f_A(r_{ij} = 0)$). \\ \hline
-    $\beta$ & \num{1.5724e-7} & Base for the exponetial scaling of the effective coordination effect on bond strength $b_{ij}$. \\ \hline
+    $\beta$ & \num{1.5724e-7} & Base for the exponential scaling of the effective coordination effect on bond strength $b_{ij}$. \\ \hline
     $n$ & 0.72751 & Power law exponent for the bond order dependency. \\ \hline
     $\lambda_3$ & 0.0 Å$^{-1}$ & Base for the exponential cut-off of the effective coordination $\zeta_{ij}$. \\ \hline
     $m$ & --- & Exponent for the exponential cut-off of the effective coordination $\zeta_{ij}$. Not relevant since $\lambda_3 = 0$. \\ \hline
@@ -531,7 +531,7 @@ drag force described as a damping term $-\gamma m \vec{v}$ with $\alpha = \gamma
 % A little unsure whether the factor 2 in the denominator in the random force is
 % correct.
 with new random vector $\vec{h}_i$ for each particle and each update. Notice
-however, we will only apply the thermostat to specific regions in our simulation, mainly on the outer edges, while the main part of interest is modeled exclusively by Newton's equation of motion as described in~\cref{eq:NE}. This is done in order to avoid affecting the governing parts of the friction simulation to much. We use a damping of $1/\gamma = m/\alpha = \SI{1}{ps}$ as a common default choice. 
+however, we will only apply the thermostat to specific regions in our simulation, mainly on the outer edges, while the main part of interest is modeled exclusively by Newton's equation of motion as described in~\cref{eq:NE}. This is done in order to avoid affecting the governing parts of the friction simulation too much. We use a damping of $1/\gamma = m/\alpha = \SI{1}{ps}$ as a common default choice. 
 
 
 % In practice the implementation of the thermostat is implemented discretely by
@@ -561,8 +561,7 @@ however, we will only apply the thermostat to specific regions in our simulation
 \section{Limitations}
 On a general note, \acrshort{MD} simulations are limited to relatively small
 time and size scales due to the available computation time. Morden CPUs perform
-on the order of \num{e9} floating-point operations per second (FLOPS) per core
-\cite{Vanossi_2013}. \acrshort{MD} simulations can benefit from medium-scale
+on the order of \num{e9} floating-point operations per second (FLOPS) per core~\cite{Vanossi_2013}. \acrshort{MD} simulations can benefit from medium-scale
 parallelization, demonstrating relatively linear scaling up to around $10^2$
 cores, providing roughly $10^{11}$ FLOPS. In a typical \acrshort{MD} calculation, the computation of the force acting on each atom, which can be the most time-consuming step depending on the complexity and range of the force field, requires $N_{\text{step}}$ steps being approximately 10 to $10^2$ FLOPS. Therefore, for a typical simulation size of $N = \num{e5}$ atoms with a timestep in the fs range, we find the ratio of simulated time to real-time on the order 
 \begin{align*}

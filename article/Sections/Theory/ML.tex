@@ -53,7 +53,7 @@ For a binary classification problem, meaning that the output is True or False (1
 % The cross-entropy loss can be derived from a maximum likelihood estimation.
 Without going into details with the derivation we can convince ourselves that the error is minimized for the correct prediction and maximized for the worst prediction. When $y_i = 1$ we get the negative loss contribution $-\log(\hat{y_i})$ where a correct prediction $\hat{y}_i \to 1$ yields $L_i \to 0$. For a wrong prediction $\hat{y}_i \to 0$ the loss contribution will diverge $L_i \to \infty$. Similar applies to the case of $y_i = 0$ with opposite directions. 
 
-Given a loss function, we can calculate the loss gradient $\nabla_\theta L$ with respect to each of the weights and biases in the model. This is called \textit{backpropagation} since we follow the propagation of the errors as we go backward through the model layers calculating the gradient using the chain rule. These gradients express how each parameter is connected to the loss and the overall idea is then to ``nudge'' each parameter in the right direction to reduce the loss. We usually denote a full cycle of forward propagation, backpropagation and an update of all model parameters as one \textit{epoch}. We calculate the updated parameter $\theta_t$ for epoch $t$ using the \textit{gradient descent} method
+Given a loss function, we can calculate the loss gradient $\nabla_\theta L$ with respect to each of the weights and biases in the model. This is called \textit{backpropagation} since we follow the propagation of the errors as we go back through the model layers calculating the gradient using the chain rule. These gradients express how each parameter is connected to the loss and the overall idea is then to ``nudge'' each parameter in the right direction to reduce the loss. We usually denote a full cycle of forward propagation, backpropagation and an update of all model parameters as one \textit{epoch}. We calculate the updated parameter $\theta_t$ for epoch $t$ using the \textit{gradient descent} method
 \begin{align}
   \theta_{t} = \theta_{t-1} - \eta \nabla_\theta L(\theta_t).
   \label{eq:grad_descent}
@@ -120,7 +120,7 @@ which is similar to that of momentum~\cref{eq:mom_rec}, but with the explicit we
 \begin{align*}
   \theta_{t+1} = \theta_t - \eta g_t \ \Longrightarrow \ ||\theta_{t+1}-\theta_{t}|| = \eta ||g_t||,
 \end{align*}
-we might get the idea of normalizing the gradient step by the norm $|||g_t|$. However, this does not immediately solve the problem of long plateaus as we need to consider multiple past gradients, but this can be done with the use of the \acrshort{EMA}. When reentering a steep region again we need to ``quickly'' downscale the gradient steps which can be achieved more efficiently by using the squared norm $||g_t||^2$ for the \acrshort{EMA} which makes it more sensitive to outliers. From this motivation the \acrshort{RMSProp} update scheme is given
+we might get the idea of normalizing the gradient step by the norm $|||g_t|$. However, this does not immediately solve the problem of long plateaus as we need to consider multiple past gradients, but this can be done with the use of the \acrshort{EMA}. When reentering a steep region again we need to ``quickly'' downscale the gradient steps which can be achieved more efficiently by using the squared norm $||g_t||^2$ for the \acrshort{EMA} which makes it more sensitive to outliers. From this motivation, the \acrshort{RMSProp} update scheme is given
 \begin{align}
   \theta_t = \theta_{t-1} - \eta \frac{g_t}{\sqrt{\text{EMA}(||g_t||^2)}+ \epsilon},
   \label{eq:RMSProp}
@@ -180,7 +180,7 @@ as mentioned above, they both benefit from a properly initialized set of
 weights. That is, we want the gradients across a given layer to have a zero mean
 while the variance is similar between layers in the model. This balanced
 gradient flow is more likely to happen if we initialize the weight by the same
-criteria~\cite{salimans2016weight}. The specific actions to achieve this depend
+criteria~\cite{salimans2016weight}. The specific actions to achieve this depends
 on the model architecture, including the choice of activation functions. For
 instance, using the ReLU activation functions it was found that the node
 standard deviation will depend on the number of input nodes from the previous
@@ -323,8 +323,7 @@ performance as it improves. The problem arises immediately from the fact that a
 complex model can fit about any function. More precisely, it has been proven
 that a deep convolutional neural network is universal (it follows the universal
 approximation theorem), meaning that it can approximate any continuous function
-to an arbitrary accuracy when the depth of the network is large enough
-\cite{cybenko_approximation_1989}. Thus for a complex model, it is just a matter
+to an arbitrary accuracy when the depth of the network is large enough~\cite{cybenko_approximation_1989}. Thus for a complex model, it is just a matter
 of time (epochs) before the model eventually finds a good approximation for the
 training data. However, we want the model to learn general trends and not to
 ``memorize'' all the data points which are known as \textit{overfitting}. While
@@ -343,7 +342,7 @@ exist which aim to optimize the data used for sparse data situations, like
 cross-validation and bootstrap, but we will not consider such
 methods for this thesis. A third data set that is often forgotten is the
 \textit{test} set. While the validation set should be kept unseen from the model
-training, the test set should be kept unseen from the model developer when choosng the the model architecture and hyper-parameters. We define a hyper-parameter
+training, the test set should be kept unseen from the model developer when choosing the model architecture and hyper-parameters. We define a hyper-parameter
 as a variable to be set prior to the actual application of the learning
 algorithm, one that is not selected by the learning algorithm
 itself~\cite{Bengio2012}. This includes parameters such as learning rate,
@@ -473,7 +472,7 @@ since $m_t$ is a moving average of the gradient $g_t$ as well. Like the learning
 rate, we want to set the momentum value as high as possible without causing
 instabilities in the training. However, since the two are related to each other,
 they must also be considered together. N. Smith~\cite{smith2018disciplined}
-reports that a momentum range test is not a useful approach to determine the
+reports that a momentum range test is not a useful approach to determining the
 optimal momentum value. Instead, he suggests doing a few short runs with different values of momentum,
 such as 0.99, 0.97, 0.95, and 0.9, to determine a suitable choice. By including
 momentum in the learning range test we can balance the learning rate accordingly. Moreover, for a cyclic learning rate scheme he reports that a cycling momentum scheme, reversed with respect to the learning rate, is beneficial. When the
@@ -522,7 +521,7 @@ biologically inspired operators for which the main ones are selection, mutation
 and crossover. Selection is the process of selecting chromosomes based on their
 fitness score for further processing. In mutation, some of the loci within a
 chromosome are changed and in crossover, chromosomes are merged to create
-offspring. \acrshort{GA} has been implemented in many areas such as the traveling salesman problem~\cite{jiang2000distributed}, function optimization~\cite{szeto1998effects}, adaptive agents in stock markets~\cite{szeto2000adaptive} and airport scheduling~\cite{shiu2008self}. Wang et al.~\cite{Wang2010} note that a general drawback is a need for expertise when choosing parameters that match specific applications. They propose an accelerated genetic algorithm based on a Markov chain transition probability matrix to perform a guided search that reduces the number of parameter choices one has to make. The following introduction of this method will bebased on their work~\cite{Wang2010}.
+offspring. \acrshort{GA} has been implemented in many areas such as the traveling salesman problem~\cite{jiang2000distributed}, function optimization~\cite{szeto1998effects}, adaptive agents in stock markets~\cite{szeto2000adaptive} and airport scheduling~\cite{shiu2008self}. Wang et al.~\cite{Wang2010} note that a general drawback is a need for expertise when choosing parameters that match specific applications. They propose an accelerated genetic algorithm based on a Markov chain transition probability matrix to perform a guided search that reduces the number of parameter choices one has to make. The following introduction of this method will be based on their work~\cite{Wang2010}.
 
 We define the binary population matrix $A_{ij}(t)$ at generation $t$, consisting of
 $N$ rows denoting chromosomes $i \in \{0, 1, \ldots, N\}$ and $L$ columns denoting the loci $j \in \{0, 1, \ldots L\}$. For our application, we let the locus represent an atom in the Kirigami pattern matrix which is flattened to fit the format of the population matrix. We carry forward the binary values with 0 meaning a removed atom and 1 a present atom. By the use of a fitness function $f(t)$, we sort the population matrix row-wise in descending order by fitness score, i.e.\ $f_i(t) \le f_k(t)$ for $i \ge k$. In the spirit of Markov chains, we assume that some transitions probability exists for the transition between the current state

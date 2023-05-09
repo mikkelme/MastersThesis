@@ -173,7 +173,7 @@ negative friction coefficient. In this evaluation, we do not guarantee a
 monotonic decrease of friction in the range of the biggest drop, but when
 searching among multiple configurations this is considered a decent strategy to
 highlight configurations of interest worthy of further investigation. In
-addition to the biggest drop in for the friction-strain curve, we also consider the minimum, $\min
+addition to the biggest drop in the friction-strain curve, we also consider the minimum, $\min
 F_{\text{fric}}$, the maximum, $\max F_{\text{fric}}$ and the
 maximum difference, $\max \Delta f_{\text{fric}} = \max F_{\text{fric}} - \min
 F_{\text{fric}}$. The extrema of these four properties for each of the
@@ -399,7 +399,7 @@ complexity, we perform an initial learning rate range test and determine the sui
       % \label{fig:}
   \end{subfigure}
   \hfill
-  \caption{Learning rate range test for various model complexities. We increase the learning rate exponentially from \num{e-7} to 10 during one epoch corresponding to an exponent increment of roughly $1/30$ per batch iteration. (a) A few examples of the validation loss as a function of the learning rate. The exemplary architectures are S[2, 16]D8 with the corresponding number of model parameters shown in parentheses in the legend. The dot indicates the suggested learning rate at the steepest decline of the slope. (b) The full results showing the suggested learning rates depending on the number of model parameters with color coding differentiating the number of start channels and marker types differentiating different model depths. }
+  \caption{Learning rate range test for various model complexities. We increase the learning rate exponentially from \num{e-7} to 10 during one epoch corresponding to an exponent increment of roughly $1/30$ per batch iteration. (a) A few examples of the validation loss as a function of the learning rate. The exemplary architectures are S[2, 16]D8 with the corresponding number of model parameters shown in parentheses in the legend. The dot indicates the suggested learning rate at the steepest decline of the slope. (b) The full results show the suggested learning rates depending on the number of model parameters with color coding differentiating the number of start channels and marker types differentiating different model depths. }
   \label{fig:LR_range}
 \end{figure}
 
@@ -540,7 +540,7 @@ validation loss of 0.02124 and a mean friction $R^2$ score of 0.9816. By varying
 momentum and weight decay, we find that these scores can be improved slightly
 for the constant learning rate scheme (loss: 0.02038, $R^2$: 0.9823) and even
 more for the cyclic scheme (loss: 0.0176, $R^2$: 0.9831). Note that the loss and
-$R^2$ scores does not correspond to the same hyperparameter choices here. The
+$R^2$ scores do not correspond to the same hyperparameter choices here. The
 comparison among best scores is summarized in~\cref{tab:mom_weight_search}. In
 general, the constant scheme shows rather stable results for all momentum
 settings $m \in [0.85, 0.99]$ in combination with a low weight decay $\lambda
@@ -606,7 +606,7 @@ parameters is reasonable as well. The validation set reveals a final $R^2$ score
 for the mean friction of $\sim 98 \%$ and a rupture accuracy of $\sim 96 \%$.
 Since the data only contains roughly $12 \%$ ruptures this should be compared to
 a score of $88 \%$ corresponding to simply predicting no ruptures at all. We find a considerably large relative error for the rupture strain of
-$\sim 13 \%$. However, this error is lower for the Tetrahedron ($5.9\%$) and Honeycomb ($1.5\%$) sets. Hence, it is possible to infer that the high relative error in the validation set is due to some instances of very low rupture strains in the Random walk patterns that might shift up the average. \cref{fig:final_model_eval} shows the mean friction, max friction and relative contact in comparison to the Tetrahedron $(7, 5, 1)$ and Honeycomb $(2,2,1,5)$ patterns used in the pilot study. We note that these configurations are also partly contained in the training data, but this serves as a way of comparing the prediction quality estimated for the $R^2$ scores with an visual evaluation. Later on, we will evaluate a true test set based on the proposals from the accelerated search. 
+$\sim 13 \%$. However, this error is lower for the Tetrahedron ($5.9\%$) and Honeycomb ($1.5\%$) sets. Hence, it is possible to infer that the high relative error in the validation set is due to some instances of very low rupture strains in the Random walk patterns that might shift up the average. \cref{fig:final_model_eval} shows the mean friction, max friction and relative contact in comparison to the Tetrahedron $(7, 5, 1)$ and Honeycomb $(2,2,1,5)$ patterns used in the pilot study. We note that these configurations are also partly contained in the training data, but this serves as a way of comparing the prediction quality estimated for the $R^2$ scores with a visual evaluation. Later on, we will evaluate a true test set based on the proposals from the accelerated search. 
 
 
 \begin{table}[!htb]
@@ -759,7 +759,7 @@ property scores.
   \label{tab:ML_ranking_RW}
   \end{subtable}  
   \label{tab:ML_ranking}
-  \caption{Ranking of the dataset according to the four properties of interest using the final machine learning (\acrshort{ML}) model for the Tetrahedon (a), Honeycomb (b) and Random walk (c) patterns in the dataset respectively. The ranking is shown in descending order for each section of rows corresponding to the four properties of interest. The left of the vertical center line denotes the true data ranking showing the top 5 in descending order (the top row show rank 1 and the bottom row shows rank 5). The outermost left column (\acrshort{ML} rank) then denotes the corresponding ranks given by the \acrshort{ML} model. The right of the vertical center line shows the top 5 ranking given by the \acrshort{ML} model for which the outermost right column shows the corresponding true data ranks. If the model gets the top 5 ranking right both the outermost left and right column show $1,2,3,4,5$ in descending order.}
+  \caption{Ranking of the dataset according to the four properties of interest using the final machine learning (\acrshort{ML}) model for the Tetrahedon (a), Honeycomb (b) and Random walk (c) patterns in the dataset respectively. The ranking is shown in descending order for each section of rows corresponding to the four properties of interest. The left of the vertical center line denotes the true data ranking showing the top 5 in descending order (the top row show rank 1 and the bottom row shows rank 5). The outermost left column (\acrshort{ML} rank) then denotes the corresponding ranks given by the \acrshort{ML} model. The right of the vertical center line shows the top 5 ranking given by the \acrshort{ML} model for which the outermost right column shows the corresponding true data ranks. If the model gets the top 5 ranking right both the outermost left and right columns show $1,2,3,4,5$ in descending order.}
   \end{table}
 
 
@@ -895,14 +895,14 @@ gives in total \num{1.35e5} configurations for the Tetrahedron pattern and
 Monte Carlo sampling. That is, in each sample we draw the scalar values, either from a
 uniform (U) or logarithmic uniform (LU) distribution as follows.
 \begin{align*}
-  \text{Num. walks} &\sim \text{U}[1, 30] & \text{Max. steps} &\sim \text{U}[1,30]  & \text{Min. dis.} &\sim \text{U}[0,4] \\
-  \text{Bias direction} &\sim \text{U}[0, 2\pi] & \text{Bias. strength} &\sim \text{LU}[0,10]  & p_{\text{stay}} &\sim \text{U}[0,1]  
+  \text{Num.\ walks} &\sim \text{U}[1, 30] & \text{Max.\ steps} &\sim \text{U}[1,30]  & \text{Min.\ dis.} &\sim \text{U}[0,4] \\
+  \text{Bias direction} &\sim \text{U}[0, 2\pi] & \text{Bias.\ strength} &\sim \text{LU}[0,10]  & p_{\text{stay}} &\sim \text{U}[0,1]  
 \end{align*}
 Notice that we use a discrete distribution for the parameters requiring
 integers. For the binary parameters \textit{connection}, \textit{avoid invalid},
 \textit{RN6} and \textit{grid start} we simply set the values by a 50--50
 chance. The remaining parameters are kept constant at \textit{periodic} set to
-tuee and \textit{centering} set to false throughout the search. For the handling
+true and \textit{centering} set to false throughout the search. For the handling
 of clustering, we implement the extended repair algorithm such that the sheet is repaired by the least modifications approach rather than retrying the generation several times. Due to the extra
 computation time associated with the random walk and the repair algorithm, we
 only generate \num{e4} configurations within this class. For the \acrshort{ML}
@@ -1108,14 +1108,14 @@ categories respectively. We generate a population of 100 configurations and run
 the search for 100 generations as we did not see much improvement for longer
 runs. 
 
-We find immediately that the Tetrahedron and Honeycomb search did not give any useful results. In both cases, the highest-scoring individual in the population at generation 0 was still the best candidate at the end of the search, even though the average score was rising initially. For the Random walk, we perform 5 runs for different population initializations. We select the top 5 max drop candidates from the Random walk pattern generation (seen in the bottom row in~\cref{fig:RW_search_top5}) and use their corresponding parameters for the initializations of the 5 populations. In 4 out of 5 runs we find a similar result as seen for the Tetrahedon and Honeycomb patterns, meaning that only a single run provided a new pattern for the highest-scoring individual. The score of this individual was \SI{0.240}{nN} which is only a small improvement from the otherwise best Random walk max drop score of
+We find immediately that the Tetrahedron and Honeycomb search did not give any useful results. In both cases, the highest-scoring individual in the population at generation 0 was still the best candidate at the end of the search, even though the average score was rising initially. For the Random walk, we perform 5 runs for different population initializations. We select the top 5 max drop candidates from the Random walk pattern generation (seen in the bottom row in~\cref{fig:RW_search_top5}) and use their corresponding parameters for the initializations of the 5 populations. In 4 out of 5 runs, we find a similar result as seen for the Tetrahedon and Honeycomb patterns, meaning that only a single run provided a new pattern for the highest-scoring individual. The score of this individual was \SI{0.240}{nN} which is only a small improvement from the otherwise best Random walk max drop score of
 \SI{0.182}{nN}. However, from the other non-improving runs the initialization of the Random walk based population provided a top score of \SI{0.345}{nN} which shows that we have better hopes of optimizing this property by simply generating more configurations from these parameters than running the genetic algorithm. 
 
 The fact that starting from an existing design did not give any useful results, we attempt to start from a population of random noise as well. We initialize one population with mixed porosities, having 20 individuals each for porosity $\{0.01, 0.05, 0.1, 0.2, 0.3\}$, and two populations based on a constant porosity of 0.25 and 0.5 respectively. This time the algorithm improved the highest-scoring individual throughout, but
 the final top scores are still not impressive. The mixed porosity start gave the
 highest score, being \SI{0.299}{nN}. When inspecting the top five individuals in the population visually, they were all found rather similar to the starting configurations; they still looked like random noise. Thus, we do not find any significant signs that the genetic algorithm search can generate any higher-level pattern structures worth further investigating. We attribute this to the finding that the machine learning model is not reliable for predicting friction for newly generated configurations. However, we acknowledge that the quality of the genetic algorithm results could also be affected by an inadequate number of generations in the search. Nonetheless, given our concerns regarding the machine learning model, we decided not to pursue this any further.
 
-As an attempt to get further insight into the model predictions, we use the Grad-CAM method to examine the top-scoring individuals from the genetic algorithm search. The result for the mixed porosity search is shown in ~\cref{fig:GC_mixed_p}. For a
+As an attempt to get further insight into the model predictions, we use the Grad-CAM method to examine the top-scoring individuals from the genetic algorithm search. The result for the mixed porosity search is shown in~\cref{fig:GC_mixed_p}. For 
 comparison, we included a similar examination for the top candidates in the
 pattern generation search, with respect to the max drop category, for the
 Tetrahedron, Honeycomb and Random walk, as shown in
@@ -1171,7 +1171,7 @@ for certain strain values, the Grad-CAM reveals considerable ``attention'' towar
   indicated by the colors (blue: no rupture, red: rupture), and a visualization
   of the Kirigami graphene sheet on the hexagonal lattice (right). The remaining
   rows show the grad-CAM heatmaps with respect to the prediction of the friction
-  (Grad. $F_f$) and rupture (Grad. rup) respectively, for various strain values
+  (Grad.\ $F_f$) and rupture (Grad.\ rup) respectively, for various strain values
   corresponding to the x-axis ticks on the friction-strain curve. The four
   configurations displayed are: (a) The top-scoring individual from the genetic
   algorithm search using a mixed porosity start. (b) The Tetrahedron $(1,7,1)$
@@ -1179,7 +1179,7 @@ for certain strain values, the Grad-CAM reveals considerable ``attention'' towar
   investigation of pattern translation in~\cref{fig:tetra_171_trans}. (c) The
   Honeycomb $(3,3,5,3)$ with a reference point $(12,0)$ which gave the highest
   max drop score in the investigation of pattern translation
-  in~\cref{fig:hon_3353_trans}. (d) The highest scoring candidate for the max drop property in the Random walk pattern generation search shown in ~\cref{fig:RW_search_top5}. }
+  in~\cref{fig:hon_3353_trans}. (d) The highest scoring candidate for the max drop property in the Random walk pattern generation search shown in~\cref{fig:RW_search_top5}. }
   \label{fig:grad_cam}
 \end{figure}
 

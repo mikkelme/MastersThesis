@@ -3,7 +3,7 @@
 
 \section{Motivation}
 Friction is the force that prevents the relative motion of objects in contact.
-From our everyday life, we recognize it as the inherent resistance to sliding
+In our everyday life, we recognize it as the inherent resistance to sliding
 motion. Some surfaces appear slippery and some rough, and we know intuitively
 that sliding down a snow-covered hill is much more exciting than its grassy
 counterpart. Without friction, it would not be possible to walk across a flat
@@ -74,7 +74,7 @@ being folded. While these methods originate as an art form, aiming to produce
 various artistic objects, they have proven to be applicable in a wide range of
 fields such as optics, physics, biology, chemistry and
 engineering~\cite{chen_kirigamiorigami_2020}. Various forms of stimuli enable
-direct 2D to 3D transformations through folding, bending, and twisting of
+direct 2D to 3D transformations through the folding, bending, and twisting of
 microstructures. While original human designs have contributed to specific
 scientific applications in the past, the future of this field is highly driven
 by the question of how to generate new designs optimized for certain physical
@@ -113,7 +113,7 @@ PhysRevResearch.2.042006} both the \textit{accelerated search} and the
 \textit{inverse design} approach was proven successful to create novel
 metamaterial Kirigami designs with the graphene sheet. 
 
-Hanakata et al.\ attributes the variation in mechanical properties to the
+Hanakata et al.\ attribute the variation in mechanical properties to the
 non-linear effects arising from the out-of-plane buckling of the sheet. Since it
 is generally accepted that the surface roughness is of great importance for
 frictional properties it can be hypothesized that Kirigami-induced out-of-plane
@@ -130,7 +130,7 @@ potential coupling between the stretch and the normal load, through a
 nanomachine design, with the aim of altering the friction coefficient. This
 invites the idea of non-linear friction coefficients which might in theory also
 take on negative values. The latter would constitute a rare property only found
-a few cases. These are mainly for the unloading phase of adhesive
+in a few cases. These are mainly for the unloading phase of adhesive
 surfaces~\cite{deng_adhesion-dependent_2012} or the loading phase of particular
 heterojunction materials~\cite{Liu_2020, Mandelli_2019}.
 
@@ -308,11 +308,10 @@ Github~\cite{Github}. The tools are summarized in the following.
     measuring the frictional properties of a graphene sheet sliding on a
     substrate. The code is generally made flexible concerning the choice of
     sheet configuration, system size, simulation parameters and \acrshort{MD}
-    potentials, which makes it applicable for further studies within this topic.
+    potentials, which makes it applicable for further studies within this field.
     I have also built an automized procedure to carry out multiple simulations
     under varying parameters by submitting jobs to a computational cluster via
-    an ssh connection. This was done by adding minor additions to the python
-    package developed by E. M. Nordhagen~\cite{lammps_simulator}.
+    an ssh connection. This was done by adding minor additions to the python package developed by E. M. Nordhagen~\cite{lammps_simulator}.
     \item I have generated a Python-based tool for generating Kirigami patterns
     and exporting these in a compatible format with the simulation software. The
     generation of molecular structures is done with the use of
@@ -322,7 +321,7 @@ Github~\cite{Github}. The tools are summarized in the following.
     system size of choice, the first two pattern generators are capable of
     generating on the order of \num{e8} unique designs while the random walk
     generator allows for significantly more. 
-    \item I have built a machine learning tool based on
+    \item I have built a machine-learning tool based on
     Pytorch~\cite{NEURIPS2019_9015} which includes setting up the data loaders,
     a convolutional network architecture, a loss function, and general
     algorithms for training and validating the results. Additionally, I have
@@ -345,7 +344,7 @@ Machine Learning (\cref{chap:ML}). In~\cref{sec:research_questions} we fill
 formulate our research questions n the light of the friction theory.  
 
 In~\cref{part:simulations}, we begin by presenting our definition and setting up
-of the systemm in~\cref{chap:system}. This includes the \acrshort{MD}
+of the system in~\cref{chap:system}. This includes the \acrshort{MD}
 simulations and the generation of Kirigami designs. This is followed by a pilot
 study in~\cref{chap:pilot_study} where we evaluate the simulation results for
 various physical conditions and compare a non-cut sheet to two different

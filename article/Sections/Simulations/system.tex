@@ -23,7 +23,7 @@ ends fixated on the moving body instead as shown in
 \cref{fig:system_variation_a}. This switches the roles of the involved parts as
 we now view the moving body and the sheet as the manufactured object
 while contact with the substrate represents the outside world. This allows
-for the introduction of a nanomachine design that converts the load to a strain of the of the sheet. Thus, the possible applications allow for a dynamic effect
+for the introduction of a nanomachine design that converts the load to a strain of the sheet. Thus, the possible applications allow for a dynamic effect
 with changing strain through the loading of the sheet. While both methods serve
 as novel approaches with prospects of providing valuable insight into a sparsely
 covered field, we choose the latter option (\cref{fig:system_variation_a}) due to the increased application possibilities.
@@ -104,7 +104,7 @@ The full sheet is given a size $\sim 130 \times \SI{163}{\text{Å}}$ while the s
   \caption{Specification of the system size regarding the number of atoms for various system regions. These numbers correspond with the case of no cuts applied to the sheet and a substrate scaled for the expected stretch of 200\%.}
   \label{tab:system_count}
   \begin{tabular}{ |c?{0.3mm} c | c | c | c | c | c |} \hline
-    \textbf{Region} & \textbf{Total}  & Sub region & Sub total & \textbf{NVE} &
+    \textbf{Region} & \textbf{Total}  & Sub-region & Subtotal & \textbf{NVE} &
     \textbf{NVT} & \textbf{Rigid} \\ \hline   
     \multirow{2}{*}{Full sheet} & \multirow{2}{*}{8060} & Inner sheet & 6572 & 6572 &
     0 & 0 \\ %\hline
@@ -144,7 +144,7 @@ The full sheet is given a size $\sim 130 \times \SI{163}{\text{Å}}$ while the s
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.80\linewidth]{figures/system/hon_stretch.png}
-  \caption{Stretched Kirigami sheet against a substrate. The substrate is excluded from the image for better visibility. The atoms are coloredized to indicate NVE parts (red), thermostat parts (green) and rigid parts (blue). The pattern used is the Honeycomb $(2,2,1,5)$ (see~\cref{chap:system}) at a 100\% strain level.}
+  \caption{Stretched Kirigami sheet against a substrate. The substrate is excluded from the image for better visibility. The atoms are colorized to indicate NVE parts (red), thermostat parts (green) and rigid parts (blue). The pattern used is the Honeycomb $(2,2,1,5)$ (see~\cref{chap:system}) at a 100\% strain level.}
   \label{fig:kirigami_stretch}
 \end{figure}
 
@@ -215,7 +215,7 @@ single graphene layer and thus we do not have to consider the stacking structure
   \Big\{\Big(0,0\Big), \frac{a}{2}\Big(\frac{1}{\sqrt{3}}, 1 \Big) \Big\}.
   \label{eq:basis}
 \end{align}
-The crystal structure is visualized in~\cref{fig:graphene_crystal}. The hexagonal lattice structure makes for an equal spacing between all pairs of atoms with an interatomic distance
+The crystal structure is visualized in~\cref{fig:graphene_crystal}. The hexagonal lattice structure makes for equal spacing between all pairs of atoms with an interatomic distance
 \begin{align*}
   \left|\left|\frac{a}{2}\Big(\frac{1}{\sqrt{3}}, 1 \Big)\right|\right| \approx 1.42 \ \text{Å}.
 \end{align*}
@@ -325,7 +325,7 @@ We propose a series of Kirigami-inspired cut patterns for the altering of the gr
       \label{fig:kirigami_inspiration_b}
   \end{subfigure}
   \hfill
-     \caption{Macroscale kirigami cut patterns used as inspiration for the nanoscale implementation. (a) Tetrahedron: Alternating perpendicular cuts producing a tetrahedron shaped surface buckling when stretched. Reprinted from~\cite{new_pop_up}. (b) Honeycomb: Scotch\textsuperscript{TM} Cushion Lock\textsuperscript{TM}~\cite{cushion_wrap} producing a honeycomb-shaped surface buckling when stretched.}
+     \caption{Macroscale kirigami cut patterns used as inspiration for the nanoscale implementation. (a) Tetrahedron: Alternating perpendicular cuts producing a tetrahedron-shaped surface buckling when stretched. Reprinted from~\cite{new_pop_up}. (b) Honeycomb: Scotch\textsuperscript{TM} Cushion Lock\textsuperscript{TM}~\cite{cushion_wrap} producing a honeycomb-shaped surface buckling when stretched.}
      \label{fig:kirigami_inspiration}
 \end{figure}
 
@@ -385,7 +385,7 @@ specific parameter set. The derivation of the formula was also deemed not to be
 rigorous enough.} unique reference points. Some additional variation of the
 pattern is showcased in~\cref{fig:pop_up_flavors} each with a reference position
 at the center of the sheet. Note that a smaller sheet size is used in
-both~\cref{fig:pop_up} and ~\cref{fig:pop_up_flavors} for illustrative purposes.
+both~\cref{fig:pop_up} and~\cref{fig:pop_up_flavors} for illustrative purposes.
 
 \begin{figure}[H]
   \centering
@@ -407,7 +407,7 @@ these are put next to each other in the x-direction,
 \rotatebox[origin=c]{90}{\MakeUppercase{\romannumeral 1}}, to achieve a row
 where only a thin \textit{bridge} in between is left to connect the sheet
 vertically in the y-direction. By placing multiple rows along the y-direction
-with alternating x-offset we get the class of honeycomb patterns as visualized
+with alternating x-offset, we get the class of honeycomb patterns as visualized
 in~\cref{fig:honeycomb}. The pattern is described in terms of the parameters:
 (x-width, y-width, bridge thickness, bridge length) which is annotated
 in~\cref{fig:honeycomb_a} with the parameters (2, 2, 1, 5) used as an example.
@@ -447,7 +447,7 @@ in~\cref{fig:honeycomb_flavors}.
 
 
 \subsection{Random walk}
-The random walk serves as a method for generating Kirigami patterns with ranomized features. The motivation for doing this is to create an ensemble of patterns that populate the configuration space more broadly than the more systematic patterns described earlier. This is thought to be important for the quality of the dataset used for machine learning. By this argument, a straightforward way to create random configurations could be achieved simply by random noise, either uniform or Gaussian. However, this would often leave the sheet detached with lots of non-connected atom clusters. Intuitively, we do not find this promising for the generation of large-scale structures which we hypothesize to be of interest. The random walk pattern generation is characterized by the parameters summarized in ~\cref{tab:RW_params} which will be introduced throughout the following paragraphs. 
+The random walk serves as a method for generating Kirigami patterns with randomized features. The motivation for doing this is to create an ensemble of patterns that populate the configuration space more broadly than the more systematic patterns described earlier. This is thought to be important for the quality of the dataset used for machine learning. By this argument, a straightforward way to create random configurations could be achieved simply by random noise, either uniform or Gaussian. However, this would often leave the sheet detached with lots of non-connected atom clusters. Intuitively, we do not find this promising for the generation of large-scale structures which we hypothesize to be of interest. The random walk pattern generation is characterized by the parameters summarized in~\cref{tab:RW_params} which will be introduced throughout the following paragraphs. 
 
 \begin{table}[h]
   \begin{center}
@@ -508,7 +508,7 @@ the maximum limits of steps, all sites within walking distance of the minimum
 distance are marked as visited, although they are not removed from the sheet.
 This prevents any subsequent walkers to visit those sites in their walk
 according to the general behavior introduced in the previous paragraph. In
-practice, this is done through a recursive algorithm as described in ~\cref{algo:walk_dis}. For a given path the function \textit{walk\_distance()} is called with the input being a list of all sites in the given paths. The function gathers all the neighbors of each site, regardless of their state on the sheet. It then calls itself recursively using this neighbor list as input, while incrementing a distance counter that is also passed along as an argument. This results in an expansion along all possible outgoing paths from the initial path of interest. Once the distance limit is reached, the function returns the final neighbor lists, which are then accumulated into a final output. This output corresponds to a list of all sites within the minimum distance to the path.
+practice, this is done through a recursive algorithm as described in~\cref{algo:walk_dis}. For a given path the function \textit{walk\_distance()} is called with the input being a list of all sites in the given paths. The function gathers all the neighbors of each site, regardless of their state on the sheet. It then calls itself recursively using this neighbor list as input, while incrementing a distance counter that is also passed along as an argument. This results in an expansion along all possible outgoing paths from the initial path of interest. Once the distance limit is reached, the function returns the final neighbor lists, which are then accumulated into a final output. This output corresponds to a list of all sites within the minimum distance to the path.
 
 
 \begin{algorithm}[!htb]
