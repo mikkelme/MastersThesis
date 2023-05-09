@@ -271,7 +271,7 @@ pattern.
   \vspace{1cmm}
   \begin{subfigure}[t]{1\textwidth}
       \centering
-      \includegraphics[width=\linewidth]{figures/stretch_profiles/PP_max.pdf}
+      \includegraphics[width=\linewidth]{figures/stretch_profiles/PP_max.png}
       \caption{Maximum friction ($\max F_{\text{fric}}$)}
       \label{fig:PP_max}
   \end{subfigure}
@@ -283,7 +283,7 @@ pattern.
   \centering
   \begin{subfigure}[t]{1\textwidth}
       \centering
-      \includegraphics[width=\linewidth]{figures/stretch_profiles/PP_max_diff.pdf}
+      \includegraphics[width=\linewidth]{figures/stretch_profiles/PP_max_diff.png}
       \caption{Maximum friction difference ($\max \Delta F_{\text{fric}}$).}
       \label{fig:PP_max_diff}
   \end{subfigure}
@@ -291,7 +291,7 @@ pattern.
   \vspace{1cmm}
   \begin{subfigure}[t]{1\textwidth}
       \centering
-      \includegraphics[width=\linewidth]{figures/stretch_profiles/PP_max_drop.pdf}
+      \includegraphics[width=\linewidth]{figures/stretch_profiles/PP_max_drop.png}
       \caption{Maximum drop in friction (max drop).}
       \label{fig:PP_max_drop}
   \end{subfigure}
@@ -315,7 +315,7 @@ Due to the spatial dependencies in the Kirigami configurations, we use a convolu
 \begin{figure}[!htb]
   \centering
   \includegraphics[width=0.7\linewidth]{figures/ML/VGGNet16.jpg}
-  \caption{Illustration of the convolutional network architecture for the VGGNet-16 proposed by K.\ Simonyan and A.\ Zisserman \cite{simonyan2015deep}. Reproduced from \cite{VGGNet_16_image}.}
+  \caption{Illustration of the convolutional network architecture for the VGGNet-16 proposed by K.\ Simonyan and A.\ Zisserman~\cite{simonyan2015deep}. Reproduced from~\cite{VGGNet_16_image}.}
   \label{fig:VGGNet16}
 \end{figure}
 
@@ -634,7 +634,7 @@ rather well in the ranking of the maximum properties getting the right
 configurations into the top 3 three, while it is performing a lot worse for the
 minimum friction property. This latter observation can be
 attributed to the fact that the precision needed for an accurate ranking among
-the minimum friction cases is a lot higher than for the remaining properties. This lack of precision is especially highlighted by the fact that the model predicts the $12\text{th}$ Random walk pattern (see \cref{tab:ML_ranking_RW}) to have negative mean friction, which is clearly outside the bound of reasonable values. For the maximum categories, we find that the model gives a slightly
+the minimum friction cases is a lot higher than for the remaining properties. This lack of precision is especially highlighted by the fact that the model predicts the $12\text{th}$ Random walk pattern (see~\cref{tab:ML_ranking_RW}) to have negative mean friction, which is clearly outside the bound of reasonable values. For the maximum categories, we find that the model gives a slightly
 better ranking for the Tetrahedon and Honeycomb in comparison to the Random walk
 patterns. When considering the actual predicted property scores for the maximum
 properties we find that the model predictions are generally within a $\sim 0.2$
@@ -956,7 +956,7 @@ results point toward a non-cut sheet as the best minimum friction candidate.
 
 \begin{figure}[!htb]
   \centering
-  \includegraphics[width=\linewidth]{figures/search/RW_search_top5.pdf}
+  \includegraphics[width=\linewidth]{figures/search/RW_search_top5.png}
   \caption{Top 5 candidates for the accelerated search using the Random walk generator. The rows denote the four properties of interest and the columns the top 5 candidates found in the search descending from left to right. }
   \label{fig:RW_search_top5}
 \end{figure}  
@@ -983,7 +983,7 @@ then whether this is grounded in a physical phenomenon or simply a
 deficiency in the model. Even though the patterns are periodic in the
 x-y-plane, with a period according to the unique number of translations shown in~\cref{fig:ref_search_top_data}, the translation will determine the specific
 configuration of the edge. Previous studies of static friction and stick-slip
-behavior point to the importance of edge effects \cite{Varini_2015}, and thus for a sheet where the atoms on the $\pm x$ free
+behavior point to the importance of edge effects~\cite{Varini_2015}, and thus for a sheet where the atoms on the $\pm x$ free
 edge constitute about 2.5\% of the inner sheet atom count, it is not
 unreasonable that the translation might result in a significantly different
 outcome. In that case, the search through reference positions highlights that
@@ -1091,7 +1091,7 @@ considering the minimization of energy, the algorithm converges relatively fast 
 \begin{figure}[!htb]
   \centering
   \includegraphics[width=0.6\linewidth]{figures/search/ising_max_history.pdf}
-  \caption{Optimization for the maximum Ising energy given by \cref{eq:H_ising} for a $10 \times 10$ lattice using a population size of 10. The population was initialized with random noise having a probability of 0.5 being $-1$ and 0.5 being $+1$. The three curves indicate the minimum, mean, and maximum scores in the population. The best score indicated by the dotted line is reached at generation 257. }
+  \caption{Optimization for the maximum Ising energy given by~\cref{eq:H_ising} for a $10 \times 10$ lattice using a population size of 10. The population was initialized with random noise having a probability of 0.5 being $-1$ and 0.5 being $+1$. The three curves indicate the minimum, mean, and maximum scores in the population. The best score indicated by the dotted line is reached at generation 257. }
   \label{fig:ising_max_history}
 \end{figure}  
 
@@ -1108,7 +1108,7 @@ categories respectively. We generate a population of 100 configurations and run
 the search for 100 generations as we did not see much improvement for longer
 runs. 
 
-We find immediately that the Tetrahedron and Honeycomb search did not give any useful results. In both cases, the highest-scoring individual in the population at generation 0 was still the best candidate at the end of the search, even though the average score was rising initially. For the Random walk, we perform 5 runs for different population initializations. We select the top 5 max drop candidates from the Random walk pattern generation (seen in the bottom row in \cref{fig:RW_search_top5}) and use their corresponding parameters for the initializations of the 5 populations. In 4 out of 5 runs we find a similar result as seen for the Tetrahedon and Honeycomb patterns, meaning that only a single run provided a new pattern for the highest-scoring individual. The score of this individual was \SI{0.240}{nN} which is only a small improvement from the otherwise best Random walk max drop score of
+We find immediately that the Tetrahedron and Honeycomb search did not give any useful results. In both cases, the highest-scoring individual in the population at generation 0 was still the best candidate at the end of the search, even though the average score was rising initially. For the Random walk, we perform 5 runs for different population initializations. We select the top 5 max drop candidates from the Random walk pattern generation (seen in the bottom row in~\cref{fig:RW_search_top5}) and use their corresponding parameters for the initializations of the 5 populations. In 4 out of 5 runs we find a similar result as seen for the Tetrahedon and Honeycomb patterns, meaning that only a single run provided a new pattern for the highest-scoring individual. The score of this individual was \SI{0.240}{nN} which is only a small improvement from the otherwise best Random walk max drop score of
 \SI{0.182}{nN}. However, from the other non-improving runs the initialization of the Random walk based population provided a top score of \SI{0.345}{nN} which shows that we have better hopes of optimizing this property by simply generating more configurations from these parameters than running the genetic algorithm. 
 
 The fact that starting from an existing design did not give any useful results, we attempt to start from a population of random noise as well. We initialize one population with mixed porosities, having 20 individuals each for porosity $\{0.01, 0.05, 0.1, 0.2, 0.3\}$, and two populations based on a constant porosity of 0.25 and 0.5 respectively. This time the algorithm improved the highest-scoring individual throughout, but
@@ -1171,7 +1171,7 @@ for certain strain values, the Grad-CAM reveals considerable ``attention'' towar
   indicated by the colors (blue: no rupture, red: rupture), and a visualization
   of the Kirigami graphene sheet on the hexagonal lattice (right). The remaining
   rows show the grad-CAM heatmaps with respect to the prediction of the friction
-  (Grad. Ff) and rupture (Grad. rup) respectively, for various strain values
+  (Grad. $F_f$) and rupture (Grad. rup) respectively, for various strain values
   corresponding to the x-axis ticks on the friction-strain curve. The four
   configurations displayed are: (a) The top-scoring individual from the genetic
   algorithm search using a mixed porosity start. (b) The Tetrahedron $(1,7,1)$

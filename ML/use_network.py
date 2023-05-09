@@ -125,7 +125,7 @@ class Evaluater():
         ax.plot(stretch[~rupture], output[:,0][~rupture], 'o', markersize = 1.5, label = "No rupture")
         ax.plot(stretch[rupture], output[:,0][rupture], 'o', markersize = 1.5, label = "Rupture")
         
-        ax.set_xlabel('Stretch', fontsize=14)
+        ax.set_xlabel('Strain', fontsize=14)
         ax.set_ylabel(r'$\langle F_\parallel \rangle$ [nN]', fontsize=14)
         ax.legend(fontsize = 13)
         

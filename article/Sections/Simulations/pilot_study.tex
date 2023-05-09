@@ -25,7 +25,7 @@ parallel with the connecting line between the pull blocks. This choice is made
 primarily to minimize the complexity of the motion, as it is hypothesized that
 other scan directions might cause the center of the sheet to lag behind and
 produce a slight side flexion. The remaining
-parameters: Temperature $T$, sliding speed $v_{\text{slide}}$, spring constant
+parameters: Temperature $T$, sliding speed $v$, spring constant
 $K$, normal load $F_N$, timestep $dt$ and sliding distance have been chosen
 because the friction output remains relatively stable with moderate
 perturbations around these default values. We will explain this in more detail
@@ -40,7 +40,7 @@ will be used when nothing else is stated explicitly.
   \begin{tabular}{ | M{4cm} | M{3.5cm} | X{8cm}|} \hline
     \textbf{Parameter} & \textbf{Default value} &  \textbf{Description} \\ \hline
     $T$ & \SI{300}{K} &  Temperature of the system. \\ \hline
-    $v_{\text{slide}}$ &\SI{20}{m/s} & Sliding speed for the sheet. \\ \hline
+    $v$ &\SI{20}{m/s} & Sliding speed for the sheet. \\ \hline
     $K$ & $\infty$ & Spring constant for the coupling between the virtual atom and the sheet pull blocks. \\ \hline
     Scan direction & $(x,y) = (0,1)$ \mbox{(zigzag direction)}  & The direction of sliding. \\ \hline   
     \cellcolor{black!7} Sheet configuration & \cellcolor{black!7} Contiguous & \cellcolor{black!7} Binary mapping describing which atoms are removed (0) and which are still present (1) in the graphene sheet.  \\ \hline
@@ -224,7 +224,7 @@ uncertainty $\Delta y$ is calculated as $\Delta y = \left|\frac{\partial
 y}{\partial x} \Delta x \right|$ for uncertainty $\Delta x$ and $y(x)$.} which
 corresponds well with the magnitude of the lattice spacing as expected theoretically, and especially that of
 graphene with a lattice constant of \SI{2.46}{Å}. The longer period $T_b = 71 \pm
-\SI{15}{\text{Å}}$ is not obviously explained. We notice a similarly long period oscillation for all three cases \cref{fig:drag_Ff_100}, \cref{fig:drag_Ff_100_K10_v10} and \cref{fig:drag_Ff_100_K10_v1}, and thus we have no reason to believe that this is dependent on the stick-slip behavior. The initial build-up in friction force is reminiscent of friction strengthening, which is often reported~\cite{zhang_tuning_2019, li_evolving_2016}, but the periodicity goes against this idea. Instead, we might attribute it to a phonon
+\SI{15}{\text{Å}}$ is not obviously explained. We notice a similarly long period oscillation for all three cases~\cref{fig:drag_Ff_100}, \cref{fig:drag_Ff_100_K10_v10} and~\cref{fig:drag_Ff_100_K10_v1}, and thus we have no reason to believe that this is dependent on the stick-slip behavior. The initial build-up in friction force is reminiscent of friction strengthening, which is often reported~\cite{zhang_tuning_2019, li_evolving_2016}, but the periodicity goes against this idea. Instead, we might attribute it to a phonon
 resonance effect which might be further affected by the fact that we use periodic boundary conditions for a finite substrate.
 
 \begin{figure}[!htb]
@@ -239,10 +239,10 @@ resonance effect which might be further affected by the fact that we use periodi
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
       \includegraphics[width=\textwidth]{figures/baseline/ft_sine.pdf}
-      \caption{Two most dominant frequencies applied to the data from \cref{fig:drag_Ff_100}}
+      \caption{Two most dominant frequencies applied to the data from~\cref{fig:drag_Ff_100}}
       \label{fig:ft_b}
   \end{subfigure}
-  \caption{Fourier transform analysis of the force traces shown in~\cref{fig:drag_Ff_10} and \cref{fig:drag_Ff_100}, but with the use of all \SI{400}{Å} of sliding. (a) The two most dominant frequency peaks from the Fourier analysis. Note that we cut off higher frequencies from the plot since no significant peaks were found there. (b) A comparison between the raw data and the wavefunction corresponding to the two peaks in panel (a).}
+  \caption{Fourier transform analysis of the force traces shown in~\cref{fig:drag_Ff_10} and~\cref{fig:drag_Ff_100}, but with the use of all \SI{400}{Å} of sliding. (a) The two most dominant frequency peaks from the Fourier analysis. Note that we cut off higher frequencies from the plot since no significant peaks were found there. (b) A comparison between the raw data and the wavefunction corresponding to the two peaks in panel (a).}
   \label{fig:ft}
 \end{figure}
 
@@ -316,7 +316,7 @@ constitute an incommensurable contact for which traveling kink excitations make
 the atoms move in such a way that the sheet \acrshort{CM} is incremented in small ``bursts''. When looking at the $K = \SI{10}{\frac{N}{m}}$, $v =
 \SI{10}{\frac{m}{s}}$ case in~\cref{fig:CM_path_K10_v10} we see a completely
 different \acrshort{CM} path where the rapid movements align visually better with
-the force oscillations shown earlier in \cref{fig:drag_Ff_100_K10_v10}. The
+the force oscillations shown earlier in~\cref{fig:drag_Ff_100_K10_v10}. The
 \acrshort{CM} accelerates forward and then deaccelerates in combination with a
 side motion that leads to the \acrshort{CM} path making a loop as it slows down.
 Finally we have the $K = \SI{10}{\frac{N}{m}}$, $v = \SI{10}{\frac{m}{s}}$ in~\cref{fig:CM_path_K10_v10} which is confirmed to have stick-slip behavior in~\cref{fig:drag_Ff_100_K10_v1}. Here the \acrshort{CM} path shows a more chaotic
@@ -529,7 +529,7 @@ concern ourselves with kinetic friction in the remainder of this thesis.
 \section{Out-of-plane buckling}\label{sec:out-of-plane_buckling}
 The out-of-plane buckling is one of the motivations for investigating
 the application of Kirigami cuts in the context of friction properties. Therefore, we perform a stretch simulation, at low temperature ($T = \SI{5}{K}$) without any substrate, in order to verify that we can reproduce an out-of-plane buckling with the Tetrahedron and Honeycomb patterns. For this investigation, we consider the Tetrahedron $(7,5,1)$ and the Honeycomb $(2,2,1,5)$ pattern in comparison to the non-cut sheet. We quantify the out-of-plane buckling by assessing the distribution of atoms along the z-direction (perpendicular to the plane) during straining. We calculate the
-minimum and maximum z-value as well as the atom count quartiles 1\%, 10\%, 25\%, 50\% (median), 75\%, 90\% and 99\% as shown in~\cref{fig:buckling_quartiles}. The Tetrahedron and Honeycomb patterns show significant buckling in comparison to the non-cut sheet, which only exhibits minor buckling of $\sim \SI{2}{\text{Å}}$, which is of the same order as the lattice spacing. We notice that the Tetrahedron pattern buckles more in consideration to the min.\ and max.\ peaks while the remaining quantiles seem to be more closely spaced than for the Honeycomb. By addressing the simulation results visually, using the \textit{Open Visualization Tool OVITO}, we find that this can be attributed to fringes on the edge ``flapping around'' and thus increasing the min.\ and max.\ values. This is also evident from the simulation with the substrate seen in \cref{fig:tetrahedron_strain_j} in Appendix~\cref{sec:sheet_stretch}.
+minimum and maximum z-value as well as the atom count quartiles 1\%, 10\%, 25\%, 50\% (median), 75\%, 90\% and 99\% as shown in~\cref{fig:buckling_quartiles}. The Tetrahedron and Honeycomb patterns show significant buckling in comparison to the non-cut sheet, which only exhibits minor buckling of $\sim \SI{2}{\text{Å}}$, which is of the same order as the lattice spacing. We notice that the Tetrahedron pattern buckles more in consideration to the min.\ and max.\ peaks while the remaining quantiles seem to be more closely spaced than for the Honeycomb. By addressing the simulation results visually, using the \textit{Open Visualization Tool OVITO}, we find that this can be attributed to fringes on the edge ``flapping around'' and thus increasing the min.\ and max.\ values. This is also evident from the simulation with the substrate seen in~\cref{fig:tetrahedron_strain_j} in Appendix~\cref{sec:sheet_stretch}.
 
 
 Given the confirmation of out-of-plane buckling in a vacuum, as seen
@@ -609,7 +609,7 @@ rupture strain.
 
 
 \section{Investigating default parameters}\label{sec:main_params}
-We carry out a more extensive investigation of the friction dependence on temperature $T$, sliding speed $v_{\text{slide}}$, spring
+We carry out a more extensive investigation of the friction dependence on temperature $T$, sliding speed $v$, spring
 constant $K$, and timestep $dt$. This is done partly to
 understand how the dependencies relate to the theoretical, numerical and
 experimental results, and partly to understand how these parameters affect
@@ -748,7 +748,7 @@ yield more atoms within the force calculation cutoffs for each computation. This
 
 In general, we have selected our simulation parameters: temperature, sliding speed, spring constant, and timestep, based on numerical stability
 and computational cost. For the timestep, we found that a value of \SI{1}{fs},
-commonly used in similar studies \cite{liu_high-speed_2014, zhu_study_2018},
+commonly used in similar studies~\cite{liu_high-speed_2014, zhu_study_2018},
 produced stable results while higher values were prone to instabilities and
 lower values were computationally expensive. The sliding speed was chosen primarily based on computational cost, with a default value of \SI{20}{m/s} being a reasonable compromise between computational efficiency and relatability to the lower values more commonly used in other studies. Although a lower sliding speed could lead to an interesting regime governed by stick-slip motion, it represents a factor of 20 increase in computational time. Since stick-slip motion is out of reach based on the chosen sliding speed, we found that using an infinitely stiff spring $K = \infty$ was the most reasonable option to ensure stable results. Finally, the temperature investigation did not provide much guidance for a specific choice, so we settled for the standard choice of room temperature $T = \SI{300}{K}$.
 
@@ -910,7 +910,7 @@ behave more like an asperity system. When plotting friction against relative con
 get more insight into this relationship. Note that we have omitted the error bars in~\cref{fig:multi_load} for visual purposes, but the absolute errors for both the relative contact and friction are on the same order of magnitude as shown in both~\cref{fig:multi_stretch} and ~\cref{fig:load_dist}.
 
 From the friction measurements in~\cref{fig:multi_load_fric} we find that the
-non-cut sheet generally produces a friction force in the order of 0.005--\SI{0.0025}{nN} throughout the 0.1--\SI{100}{nN} load range. Using a ratio based friction coefficient definition \cref{eq:mu_def1}, $\mu_1 = F_{\text{fric}}/{F_N}$, this would lead to a coefficient roughly in the range
+non-cut sheet generally produces a friction force in the order of 0.005--\SI{0.0025}{nN} throughout the 0.1--\SI{100}{nN} load range. Using a ratio based friction coefficient definition~\cref{eq:mu_def1}, $\mu_1 = F_{\text{fric}}/{F_N}$, this would lead to a coefficient roughly in the range
 \begin{align*}
   &\mu_1,  \ \text{\cref{eq:mu_def1}:}& &\text{No cut}\sim [\num{e-4}, 0.13],&  &\text{Tetrahedron}\sim [\num{4e-4},8.7],& &\text{Honeycomb}\sim [\num{9e-4}, 15.2].&
 \end{align*}
@@ -924,7 +924,7 @@ order \num{e-4}--\num{e-5}. This relates to the finding
 by~\cite{DIENWIEBEL2005197} who reported a seemingly non-existing relationship
 between friction and normal load for a graphene sheet with changes in friction
 that corresponds to friction coefficients in the range \num{e-3}--\num{e-4} when
-using the slope definition \cref{eq:mu_def2}. This supports the idea that the
+using the slope definition~\cref{eq:mu_def2}. This supports the idea that the
 graphene sheet does exhibit superlubric behavior in these conditions and that the initial non-strained sheet is in an incommensurable
 configuration. Thus any strain-induced effects might introduce a more
 commensurable configuration. This aligns with the observed increase in friction
@@ -978,7 +978,7 @@ When considering the ratios $\Delta F_f / \Delta \epsilon$ for the reduction in 
   &\text{Tetrahedron:} \quad R\frac{-\SI{0.51}{nN}}{0.04} = -R\cdot\SI{12.75}{nN},& &\text{Honeycomb:} \quad R\frac{-\SI{0.98}{nN}}{0.36} = -R\cdot\SI{2.72}{nN}.&
   \label{eq:pilot_study_mu_estimate}
 \end{align}
-This showcases that we might be able to utilize the strain effect to achieve a negative friction coefficient for the system of coupled strain and load. This is investigated further in \cref{chap:negative_coef}.
+This showcases that we might be able to utilize the strain effect to achieve a negative friction coefficient for the system of coupled strain and load. This is investigated further in~\cref{chap:negative_coef}.
 
 
 

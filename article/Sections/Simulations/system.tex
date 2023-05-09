@@ -80,7 +80,7 @@ displayed with colors matching the three distinct roles:
   \item Green: Thermostats ($NVT$) surrounding the $NVE$ parts in order to modify the temperature without making disturbing changes to the interaction of the sheet and substrate.
   \item Blue: Parts that are initially or eventually turned into rigid objects. For the substrate, this refers to an additional fixation as well.
 \end{enumerate}
-The full sheet is given a size $\sim 130 \times \SI{163}{\text{Å}}$ while the substrate is scaled accordingly to the sheet which is further specified in~\cref{sec:substrate}. For an expected strain of 200\% the total system size is roughly \num{57e3} atoms. The specific distribution of atoms is shown in \cref{tab:system_count} along with the spatial x-y-measures in \cref{tab:sheet_dim}. An example of a strained sheet is shown in~\cref{fig:kirigami_stretch}
+The full sheet is given a size $\sim 130 \times \SI{163}{\text{Å}}$ while the substrate is scaled accordingly to the sheet which is further specified in~\cref{sec:substrate}. For an expected strain of 200\%, the total system size is roughly \num{57e3} atoms. The specific distribution of atoms is shown in~\cref{tab:system_count} along with the spatial x-y-measures in~\cref{tab:sheet_dim}. An example of a strained sheet is shown in~\cref{fig:kirigami_stretch}
 
 
 \begin{table}[H]
@@ -144,7 +144,7 @@ The full sheet is given a size $\sim 130 \times \SI{163}{\text{Å}}$ while the s
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.80\linewidth]{figures/system/hon_stretch.png}
-  \caption{Stretched Kirigami sheet against a substrate. The substrate is excluded from the image for better visibility. The atoms are coloredized to indicate NVE parts (red), thermostat parts (green) and rigid parts (blue). The pattern used is the Honeycomb $(2,2,1,5)$ (see \cref{chap:system}) at a 100\% strain level.}
+  \caption{Stretched Kirigami sheet against a substrate. The substrate is excluded from the image for better visibility. The atoms are coloredized to indicate NVE parts (red), thermostat parts (green) and rigid parts (blue). The pattern used is the Honeycomb $(2,2,1,5)$ (see~\cref{chap:system}) at a 100\% strain level.}
   \label{fig:kirigami_stretch}
 \end{figure}
 
@@ -160,7 +160,7 @@ Following the system setup as described previously, the next step involves letti
   \item \textbf{Pause} (\SI{5}{ps}): The sheet is relaxed for \SI{5}{ps} to ensure that the sheet is stable and equilibrated after the applied strain deformation. 
   \item \textbf{Normal load} (\SI{5}{ps}): The pull blocks are subjected to a uniformly applied load in the negative z-direction, thereby pushing the sheet perpendicularly into the substrate. Initially a viscous damping force, $F = -\gamma \vec{v}$ with damping factor $\gamma$ and velocity $v$, is added to resist rapid acceleration of the sheet and prevent a hard impact between the sheet and substrate. The damping coefficient is set to $\gamma = \SI{8e-4}{nN/(m/s)}$ and terminated after \SI{0.5}{ps} which was found to be suitable for the extreme load cases of our intended range. The remaining \SI{4.5}{ps} is devoted to further relaxation in order to reach a sheet-substrate distance equilibrium.
   \item \textbf{Sliding}: A virtual atom is introduced into the simulation which
-  exclusively interacts with the rigid parts of the pull blocks through a spring force with spring constant $K$ in the x-y-plane. The force in the z-direction is not influenced by the spring force and is instead governed by the equilibrium between the normal load and the normal response from the sheet-substrate interaction. The virtual atom is immediately given a constant velocity, given by the \textit{sliding speed} parameter. This results in an initial linear increase in sliding force proportional to sliding speed and spring constant $F_{\textit{slide}} \propto Kv_{\text{slide}}t$. An infinite spring constant can also be enforced for which the spring is omitted and the pull blocks are moved rigidly with a constant speed.
+  exclusively interacts with the rigid parts of the pull blocks through a spring force with spring constant $K$ in the x-y-plane. The force in the z-direction is not influenced by the spring force and is instead governed by the equilibrium between the normal load and the normal response from the sheet-substrate interaction. The virtual atom is immediately given a constant velocity, given by the \textit{sliding speed} parameter. This results in an initial linear increase in sliding force proportional to sliding speed and spring constant $F_{\textit{slide}} \propto Kvt$. An infinite spring constant can also be enforced for which the spring is omitted and the pull blocks are moved rigidly with a constant speed.
 \end{enumerate}
 To limit the complexity of the friction behavior we want to consider systems without wear. To make sure that no wear is taking place for the sheet, we monitor the nearest neighbors for each atom throughout the simulation. At the initial timestep the three nearest neighbors, sitting at a distance \SI{1.42}{\text{Å}}, of all graphene atoms are recorded. If any of these nearest neighbors exceeds a threshold distance of \SI{4}{\text{Å}}, indicating a bond breakage, this is marked as a rupture and we halt the simulation. By conducting several test simulations involving high loads and sliding speeds, we have visually confirmed that no wear occurs in the substrate, which demonstrates significantly greater wear resistance than the sheet. Therefore, we do not need to monitor the substrate for any signs of wear.
 
@@ -215,7 +215,7 @@ single graphene layer and thus we do not have to consider the stacking structure
   \Big\{\Big(0,0\Big), \frac{a}{2}\Big(\frac{1}{\sqrt{3}}, 1 \Big) \Big\}.
   \label{eq:basis}
 \end{align}
-The crystal structure is visualized in \cref{fig:graphene_crystal}. The hexagonal lattice structure makes for an equal spacing all pairs of atoms with an interatomic distance
+The crystal structure is visualized in~\cref{fig:graphene_crystal}. The hexagonal lattice structure makes for an equal spacing between all pairs of atoms with an interatomic distance
 \begin{align*}
   \left|\left|\frac{a}{2}\Big(\frac{1}{\sqrt{3}}, 1 \Big)\right|\right| \approx 1.42 \ \text{Å}.
 \end{align*}
@@ -307,7 +307,7 @@ For the second rule, it is even more obvious that different paths can result in 
  
 
 \section{Kirigami patterns}
-We propose a series of Kirigami-inspired cut patterns for the altering of the graphene sheet. We seek inspiration from macroscale patterns that showcases a considerable amount of out-of-plane buckling when stretched. We choose to imitate two different designs: 1) An alternating repeating series of perpendicular cuts as shown in~\cref{fig:kirigami_inspiration_a} popularly used in studies of morphable metematerials~\cite{new_pop_up}. This pattern produces surface buckling with a tetrahedron (three-sided pyramid) shape when stretched. 2) A more intricate pattern shown in~\cref{fig:kirigami_inspiration_b} which is used commercially by Scotch\textsuperscript{TM} Cushion Lock\textsuperscript{TM} \cite{cushion_wrap} as protective wrap for items during shipping. This pattern buckles into a hexagonal honeycomb structure when stretched. In addition to the modeling of the so-called \textit{Tetrahedron} and \textit{Honeycomb} patterns, we also create a series of random walk patterns.
+We propose a series of Kirigami-inspired cut patterns for the altering of the graphene sheet. We seek inspiration from macroscale patterns that showcases a considerable amount of out-of-plane buckling when stretched. We choose to imitate two different designs: 1) An alternating repeating series of perpendicular cuts as shown in~\cref{fig:kirigami_inspiration_a} popularly used in studies of morphable metematerials~\cite{new_pop_up}. This pattern produces surface buckling with a tetrahedron (three-sided pyramid) shape when stretched. 2) A more intricate pattern shown in~\cref{fig:kirigami_inspiration_b} which is used commercially by Scotch\textsuperscript{TM} Cushion Lock\textsuperscript{TM}~\cite{cushion_wrap} as protective wrap for items during shipping. This pattern buckles into a hexagonal honeycomb structure when stretched. In addition to the modeling of the so-called \textit{Tetrahedron} and \textit{Honeycomb} patterns, we also create a series of random walk patterns.
 
 \begin{figure}[!htb]
   \centering
@@ -325,7 +325,7 @@ We propose a series of Kirigami-inspired cut patterns for the altering of the gr
       \label{fig:kirigami_inspiration_b}
   \end{subfigure}
   \hfill
-     \caption{Macroscale kirigami cut patterns used as inspiration for the nanoscale implementation. (a) Tetrahedron: Alternating perpendicular cuts producing a tetrahedron shaped surface buckling when stretched. Reprinted from~\cite{new_pop_up}. (b) Honeycomb: Scotch\textsuperscript{TM} Cushion Lock\textsuperscript{TM} \cite{cushion_wrap} producing a honeycomb-shaped surface buckling when stretched.}
+     \caption{Macroscale kirigami cut patterns used as inspiration for the nanoscale implementation. (a) Tetrahedron: Alternating perpendicular cuts producing a tetrahedron shaped surface buckling when stretched. Reprinted from~\cite{new_pop_up}. (b) Honeycomb: Scotch\textsuperscript{TM} Cushion Lock\textsuperscript{TM}~\cite{cushion_wrap} producing a honeycomb-shaped surface buckling when stretched.}
      \label{fig:kirigami_inspiration}
 \end{figure}
 
@@ -389,7 +389,7 @@ both~\cref{fig:pop_up} and ~\cref{fig:pop_up_flavors} for illustrative purposes.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth]{figures/system/pop_up_flavors.pdf}
+  \includegraphics[width=\linewidth]{figures/system/pop_up_flavors.png}
   \caption{Example of different Tetrahedron cut pattern variations. The specific parameters are noted as titles and all of the patterns use the center of the sheet as a reference position. The circles in the figure represent atom sites, where grey-filled circles indicate the presence of atoms and transparent circles indicate removed atoms. The blue dots in the figure indicate the center elements The sheet matrix size is $40 \times 80$ corresponding to 3200 atom sites and an approximate sheet size of $84 \times \SI{123}{\text{Å}}$.}
   \label{fig:pop_up_flavors}
 \end{figure}
@@ -438,7 +438,7 @@ in~\cref{fig:honeycomb_flavors}.
 
 \begin{figure}[!htb]
   \centering
-  \includegraphics[width=\linewidth]{figures/system/honeycomb_flavors.pdf}
+  \includegraphics[width=\linewidth]{figures/system/honeycomb_flavors.png}
   \caption{Example of different Honeycomb cut pattern variations. The specific parameters are noted as titles and all of the patterns use the center of the sheet as a reference position. The circles in the figure represent atom sites, where grey-filled circles indicate the presence of atoms and transparent circles indicate removed atoms. The blue dots in the figure indicate the center elements. 
   The sheet matrix size is $40 \times 80$ corresponding to 3200 atom sites and an approximate sheet size of $84 \times \SI{123}{\text{Å}}$.}
   \label{fig:honeycomb_flavors}
@@ -673,11 +673,11 @@ In order to accommodate these requirements we count the number of clusters and s
   \item If there is only one cluster remaining on the sheet, the repair procedure is complete. If there are still multiple clusters, then repeat the steps from 1.
 \end{enumerate}  
 \subsubsection{Random walk examples}
-Some examples of the random walk patterns are illustrated in \cref{fig:RW_flavors} with corresponding parameters in~\cref{tab:RW_flavors}.
+Some examples of the random walk patterns are illustrated in~\cref{fig:RW_flavors} with corresponding parameters in~\cref{tab:RW_flavors}.
 
 \begin{figure}[!htb]
   \centering
-  \includegraphics[width=1\linewidth]{figures/system/RW_flavors.pdf}
+  \includegraphics[width=1\linewidth]{figures/system/RW_flavors.png}
   \caption{Example of different Random walk cut pattern variations. The specific parameters are given in‘\cref{tab:RW_flavors}. The circles in the figure represent atom sites, where grey-filled circles indicate the presence of atoms and transparent circles indicate removed atoms. The sheet matrix size is $62 \times 106$ corresponding to the full-size system used in the \acrshort{MD} simulations with 6572 atom sites and an approximate sheet size of $130 \times \SI{163}{\text{Å}}$.}
   \label{fig:RW_flavors}
 \end{figure}

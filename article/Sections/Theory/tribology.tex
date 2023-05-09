@@ -119,7 +119,7 @@ load, i.e.\ $F_{\text{fric}} = 0$ at $F_N = 0$, while the second definition~\cre
 coefficient is defined by the slope of the friction-load curve. The
 consequences of these definitions are illustrated in~\cref{fig:fric_coef_example}, for selected friction-load-curves in~\cref{fig:fric_coef_example_a} and corresponding friction coefficients in~\cref{fig:fric_coef_example_b} and~\cref{fig:fric_coef_example_c}. For adhesive
 contacts, the friction force will not be zero under zero load~\cite{gao_frictional_2004} (red curve: Linear
-+ shift) which can be mitigated by adding an extra constant to~\cref{eq:amonton}. Using \cref{eq:mu_def1} for adhesive contacts would make the friction coefficient diverge for decreasing load as illustrated in~\cref{fig:fric_coef_example_b}. Thus, we find the second
++ shift) which can be mitigated by adding an extra constant to~\cref{eq:amonton}. Using~\cref{eq:mu_def1} for adhesive contacts would make the friction coefficient diverge for decreasing load as illustrated in~\cref{fig:fric_coef_example_b}. Thus, we find the second
 definition~\cref{eq:mu_def2} more robust and versatile. This also allows for a better interpretation of the friction coefficient in the case where
 friction depends non-linearly on load as seen with the purple curve in~\cref{fig:fric_coef_example}. 
 
@@ -153,7 +153,7 @@ friction depends non-linearly on load as seen with the purple curve in~\cref{fig
       \label{fig:fric_coef_example_c}
   \end{subfigure}
   \hfill
-  \caption{Illustration of the consequences for the two definitions of the friction coefficient in~\cref{eq:mu_def}. (a) Three examples of friction-load curves consisting of a typical linear curve (blue), a linear curve with a shift representing an adhesive contact (red), and a non-linear curve (purple). The corresponding friction coefficients $\mu_1$ and $\mu_2$ are shown for the first definition \cref{eq:mu_def1} in (b) and the second definition \cref{eq:mu_def1} in (c).}
+  \caption{Illustration of the consequences for the two definitions of the friction coefficient in~\cref{eq:mu_def}. (a) Three examples of friction-load curves consisting of a typical linear curve (blue), a linear curve with a shift representing an adhesive contact (red), and a non-linear curve (purple). The corresponding friction coefficients $\mu_1$ and $\mu_2$ are shown for the first definition~\cref{eq:mu_def1} in (b) and the second definition~\cref{eq:mu_def1} in (c).}
   \label{fig:fric_coef_example}
 \end{figure}
 
@@ -163,7 +163,7 @@ Amontons’ law represents the behavior relatively accurately for many surfaces 
 
 In cases where Amontons' law breaks down, we might still use the conceptual
 definition of the friction coefficient as defined by~\cref{eq:mu_def2}.
-Especially, in the context of achieving negative friction coefficients (for certain load ranges), we would refer to this definition, since \cref{eq:mu_def1}
+Especially, in the context of achieving negative friction coefficients (for certain load ranges), we would refer to this definition, since~\cref{eq:mu_def1}
 would imply a truly unphysical situation of the frictional force acting in the
 same direction as the sliding motion. This would accelerate the object
 indefinitely\footnote{You would most likely have a good shot at the Nobel Prize
@@ -492,7 +492,7 @@ al.~\cite{Krylow_2007, PhysRevE.71.065101, Jinesh_2008}
   F \propto \frac{v}{T}e^{1/T}.
   \label{eq:PT_thermal_drift}
 \end{align}
-Notice that the friction dependence on sliding speed changes from~\cref{eq:F_thermal_ac} to \cref{eq:PT_thermal_drift} as it transitions from the thermal activation to the thermal drift regime. 
+Notice that the friction dependence on sliding speed changes from~\cref{eq:F_thermal_ac} to~\cref{eq:PT_thermal_drift} as it transitions from the thermal activation to the thermal drift regime. 
 
 
 \subsubsection{Sliding speed}
@@ -619,7 +619,7 @@ The standard Frenkel-Kontorova model consists of a 1D chain of $N$ classical par
 where the atoms are labelled sequently $i = 1, \hdots, N$. The first term $p_i^2/2m$ represents the kinetic energy with momentum $p_i$
 and mass $m$. Often the effects of inertia are neglected, referred to as the static Frenkel-Kontorova model, while the inclusion in‘\cref{eq:H_FK} is known as the dynamic Frenkel-Kontorova model~\cite{FK2D}. The next term describes the harmonic interaction with elastic
 constant $K$, nearest neighbor distance $\Delta x = x_{i+1} - x_i$ and 
-corresponding nearest neighbor equilibrium distance $a_c$. The final term represents the periodic corrugation potential, with amplitude $U_0$ and period $a_b$. By comparison to the potential used in the Prandtl–Tomlinson model \cref{eq:V_PT}, the difference is the introduction of a harmonic coupling between particles in the chain as opposed to the moving body. Different boundary choices can be made where both free ends and periodic conditions give similar results. The choice of fixed ends however makes the chain incapable of sliding.
+corresponding nearest neighbor equilibrium distance $a_c$. The final term represents the periodic corrugation potential, with amplitude $U_0$ and period $a_b$. By comparison to the potential used in the Prandtl–Tomlinson model~\cref{eq:V_PT}, the difference is the introduction of a harmonic coupling between particles in the chain as opposed to the moving body. Different boundary choices can be made where both free ends and periodic conditions give similar results. The choice of fixed ends however makes the chain incapable of sliding.
 
 \begin{figure}[!htb]
   \centering
@@ -655,12 +655,12 @@ diffusivity and conductivity within this model.
 \begin{figure}[!htb]
   \centering
   \includegraphics[width=0.55\linewidth]{figures/theory/incommensurable_example.png}
-  \caption{Qualitative example of an incommensurable case where the atoms sit slightly closer together than otherwise dictated by the substrate potential. This results in a single kink here seen as the presence of two atoms within the same potential corrugation well. Reproduced from \cite{BRAUN19981}.}
+  \caption{Qualitative example of an incommensurable case where the atoms sit slightly closer together than otherwise dictated by the substrate potential. This results in a single kink here seen as the presence of two atoms within the same potential corrugation well. Reproduced from~\cite{BRAUN19981}.}
   \label{fig:incommensurable_example}
 \end{figure}
 
 
-In the zero temperature commensurable case with an adiabatical increase in force, all atoms would be put into an accelerating motion as soon as the potential barrier energy is present. However, similar to our discussion on the Prandtl-Tomlinson model, thermal activations will excite the system at an earlier stage resulting in kink-antikink pairs traveling down the chain. For a chain of finite length, these often occur at the end of the chain running in opposite directions. This cascade of kink-antikink excitations is shown in \cref{fig:kink_antikink}. Notice, that for the 2D case, where an island (flake) is deposited on a surface, we generally also expect the sliding to be initiated by kink-antikink pairs at the boundaries. 
+In the zero temperature commensurable case with an adiabatical increase in force, all atoms would be put into an accelerating motion as soon as the potential barrier energy is present. However, similar to our discussion on the Prandtl-Tomlinson model, thermal activations will excite the system at an earlier stage resulting in kink-antikink pairs traveling down the chain. For a chain of finite length, these often occur at the end of the chain running in opposite directions. This cascade of kink-antikink excitations is shown in~\cref{fig:kink_antikink}. Notice, that for the 2D case, where an island (flake) is deposited on a surface, we generally also expect the sliding to be initiated by kink-antikink pairs at the boundaries. 
 
 
 \begin{figure}[!htb]
@@ -905,7 +905,7 @@ behavior depending on commensurability.
 
 
 \subsection{Shortcomings of reduced-models}
-It should be noted that the reduced-models presented in this work provide a simplified description of the friction behavior. One major limitation is that all models assume a rigid substrate with a sinusoidal potential shape, whereas in reality, the substrate reaction to sliding motion results in a constantly changing potential, making the dynamics more intricate. Moreover, the energy dissipation is simplified through a viscous term $-m\mu \dot{x}$ in the Langevin equations \cref{eq:Langevin_PT}, which neglects the complexity associated with electron and phonon dissipation. For example, considering phonon dissipation, there exist many vibration modes ($3N$), and thus many dissipation channels for the tip. Lastly, it should be mentioned that the moving body is simplified as a constantly moving rigid body, whereas in reality, it may exhibit a more complicated dynamic behavior.
+It should be noted that the reduced-models presented in this work provide a simplified description of the friction behavior. One major limitation is that all models assume a rigid substrate with a sinusoidal potential shape, whereas in reality, the substrate reaction to sliding motion results in a constantly changing potential, making the dynamics more intricate. Moreover, the energy dissipation is simplified through a viscous term $-m\mu \dot{x}$ in the Langevin equations~\cref{eq:Langevin_PT}, which neglects the complexity associated with electron and phonon dissipation. For example, considering phonon dissipation, there exist many vibration modes ($3N$), and thus many dissipation channels for the tip. Lastly, it should be mentioned that the moving body is simplified as a constantly moving rigid body, whereas in reality, it may exhibit a more complicated dynamic behavior.
 
 
 % On a final note, we point out that the reduced-models describe the friction behavior in a highly simplified manner. Some shortcomings include the fact that they assume a rigid substrate with a simple sinusoidal potential shape. In reality, the substrate reaction to sliding motion will make for a changing potential throughout the simulation which makes the dynamics more complex. Similarly, the energy dissipation is simplified through a viscous term $-m\mu \dot{x}$ from the Langevin equations \cref{eq:Langevin_PT}. This does not capture the full complexity associated with electron and phonon dissipation~\cite{Yalin_2011}. Taking phonon dissipation as an example there are $3N$ vibration modes, and thus many dissipation channels for the tip. Finally, we also point out that the moving body is simplified as a constantly moving rigid body, while in reality, this might also be subject to more complex dynamic behavior.
@@ -1038,7 +1038,7 @@ or for friction purposes \textit{friction force microscopes} (\acrshort{FFM}).
 One such method arose from the \textit{atomic force microscope} \acrshort{AFM}, which consists of a sharp micro-fabricated tip attached to a cantilever force sensor, usually with a sensitivity below \SI{1}{nN} all the way down to pN. The force is measured by recording the bending of
 the cantilever, either as a change in electrical conduction or more commonly, by
 a light beam reflected from the back of the cantilever into a photodetector
-\cite[p. 183]{gnecco_meyer_2015} as shown in \cref{fig:AFM}. By adjusting the tip-sample height to keep a constant normal force while scanning across the surface, the \acrshort{AFM} can be used to produce a
+\cite[p. 183]{gnecco_meyer_2015} as shown in~\cref{fig:AFM}. By adjusting the tip-sample height to keep a constant normal force while scanning across the surface, the \acrshort{AFM} can be used to produce a
 surface topography map.  However, when scanning perpendicularly to the cantilever axis, the frictional force can be measured as the torsion of the cantilever. By utilizing a photodetector with four quadrants (as depicted in Figure \ref{fig:AFM}), the normal force and friction force can be simultaneously measured as the probes scan across the surface. However, when scanning
 perpendicularly to the cantilever axis, one is also able to measure the
 frictional force as torsion of the cantilever. By having four quadrants in the
@@ -1076,7 +1076,7 @@ study of nanoscale surface contacts. However, the \acrshort{FFM} type is more
 closely related to asperity theory since it is expected to deform under
 increasing load, while the latter two are more aligned with the
 Prandtl–Tomlinson type models and our specific system of interest. Nonetheless,
-we will consider results across all three types of systems. The majority of the studies considers are summarized in \cref{tab:friction_ref} for convenience. 
+we will consider results across all three types of systems. The majority of the studies considers are summarized in~\cref{tab:friction_ref} for convenience. 
 
 
 \begin{table}[!htb]
@@ -1186,9 +1186,6 @@ al.~\cite{mo_friction_2009} found in an \acrshort{MD} simulation that friction
 is proportional to contact area for an indenting sphere on a nanoscale.
 
 
-% The typical decrease of friction force with increasing number of layers has been observed on graphene over Si/SiO2 in all environment including vacuum
-% \cite{Paolicelli_2015}
-
 % Evolution effects and graphene layers
 Evolution effects, or so-called friction strengthening, are also observed. That
 is, friction increases during the initial stick-slip cycles, which is observed
@@ -1196,7 +1193,7 @@ experimentally by Zhang et al.~\cite{zhang_tuning_2019} and numerically by Li
 et al.~\cite{li_evolving_2016}. However, this is only found when having the
 graphene sheet resting on a substrate~\cite{zhang_tuning_2019}, as opposed to a
 suspended sheet. It is also found to diminish with an increasing number of
-graphene layers stacked (graphite)~\cite{li_evolving_2016}. Multiple studies report a general decrease in friction with an increasing number of layers \cite{li_evolving_2016, Yoon2015MolecularDS, Paolicelli_2015, Filleter_2009, Lee_2010}, but a few do also point towards the opposite trend~\cite{Reguzzoni_2012}.
+graphene layers stacked (graphite)~\cite{li_evolving_2016}. Multiple studies report a general decrease in friction with an increasing number of layers~\cite{li_evolving_2016, Yoon2015MolecularDS, Paolicelli_2015, Filleter_2009, Lee_2010}, but a few do also point towards the opposite trend~\cite{Reguzzoni_2012}.
 
 
 % Accurate FFM measurements on few-layer graphene systems show that friction
@@ -1423,7 +1420,7 @@ expected to decrease as well. Based on the asperity theory, we can expect a decr
 
 % neg fric can be done, but can it be done with Kirigami
 \section{Research questions}\label{sec:research_questions}
-Based on the review of friction presented in \cref{chap:friction}, it is evident that the behavior of friction is influenced by various factors, such as the specific system under investigation, the numerical modeling approach, and the physical conditions related to the environment and the probing of friction. In our study, we aim to investigate the frictional behavior
+Based on the review of friction presented in~\cref{chap:friction}, it is evident that the behavior of friction is influenced by various factors, such as the specific system under investigation, the numerical modeling approach, and the physical conditions related to the environment and the probing of friction. In our study, we aim to investigate the frictional behavior
 of a Kirigami sheet under the effects of strain. Previous studies have
 demonstrated that strained Kirigami sheets are prone to out-of-plane buckling~\cite{PhysRevLett.121.255304, PhysRevResearch.2.042006} which is indicative of a possible transition between two distinct systems: An atomically flat interface and an asperity system. These systems are usually only studied
 separately, and therefore, our primary objective is to investigate the possible frictional effects linked to strain-induced system transformations. In particular, we want to investigate the significance of the contact area and evaluate the hypothesis that reducing the contact area will lead to a decrease in friction. Additionally, we seek to examine the relationship between the friction-load curve and this phenomenon. For the sake of contributing new insight to the field of nanoscale

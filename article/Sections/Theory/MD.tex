@@ -87,18 +87,18 @@ the potential is zero. The potential is illustrated in~\cref{fig:LJ_pot}. By sol
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.6\linewidth]{figures/theory/LJ_pot.pdf}
-  \caption{Illustration of the \acrshort{LJ} potential \cref{eq:LJ} showing the contributions from the repulsive and attractive part of the potential.}
+  \caption{Illustration of the \acrshort{LJ} potential~\cref{eq:LJ} showing the contributions from the repulsive and attractive part of the potential.}
   \label{fig:LJ_pot}
 \end{figure}
 
 
 \subsection{Stillinger-Weber}\label{sec:wb}
-The theoretical background of this section is based on \cite{docs_lammps_sw, PhysRevB.31.5262}. The Stillinger-Weber potential takes the form of a three-body potential
+The theoretical background of this section is based on~\cite{docs_lammps_sw, PhysRevB.31.5262}. The Stillinger-Weber potential takes the form of a three-body potential
 \begin{align*}
   U &=\sum_i \sum_{j>i} \phi_2(r_{i j})+\sum_i \sum_{j \neq i} \sum_{k>j} \phi_3(r_{ij}, r_{ik}, \theta_{ijk}),
 \end{align*}
 where $r_{ij}$ denotes the distance between atom $i$ and $j$, and $\theta_{ijk}$
-the angle between bond $ij$ and $jk$ (see \cref{fig:three_body_angle}). The summation is over all neighbors $j$
+the angle between bond $ij$ and $jk$ (see~\cref{fig:three_body_angle}). The summation is over all neighbors $j$
 and $k$ of atom $i$ within a cut-off distance $r = a\sigma$. 
 
 \begin{figure}[!htb]
@@ -285,7 +285,7 @@ where $i$ is the atom index, $m_i$ its mass, $\vec{r}_i = (x_i, y_i,
 z_i)$ the position, $t$ is time, $\nabla_i = (\frac{\partial}{\partial x_i},
 \frac{\partial}{\partial y_i}, \frac{\partial}{\partial z_i})$ and $U_i$ the
 potential energy. The potential energy is defined by the interatomic potentials and any external forces applied to the system. Since the forces defined by the potentials are conservative we expect the energy of the solution
-to be conserved. We can redefine \cref{eq:NE} in terms of two coupled first
+to be conserved. We can redefine~\cref{eq:NE} in terms of two coupled first
 order differential equations 
 \begin{align}
   \dot{\vec{v}}_i(t) = \frac{\vec{F}}{m_i}, \qquad \dot{\vec{r}}_i(t) = \vec{v}_i(t),
@@ -310,7 +310,7 @@ velocity vector $\vec{v}_i(t+\Delta t)$ at time $t$
   \label{eq:tay_v1}
 \end{align}
 Finally, by taking the expansion of $\dot{\vec{v}}_i(t+\Delta t)$ we can
-eliminate the $\ddot{\vec{v}}_i$-term in \cref{eq:tay_v1} and simplify it as
+eliminate the $\ddot{\vec{v}}_i$-term in~\cref{eq:tay_v1} and simplify it as
 shown in the following.
 \begin{align}
   \dot{\vec{v}}_i(t+\Delta t) &= \dot{\vec{v}}_i(t) + \ddot{\vec{v}}_i(t) \Delta t + \mathcal{O}(\Delta t^2) \nonumber \\
@@ -320,7 +320,7 @@ shown in the following.
   &=  \vec{v}_i(t) + \frac{\Delta t}{2}\Big( \dot{\vec{v}}_i(t) +  \dot{\vec{v}}_i(t+\Delta t)\Big) + \mathcal{O}(\Delta t^3).
   \label{eq:vv_comp2}
 \end{align}
-By combining \cref{eq:vv_comp1} and \cref{eq:vv_comp2} using $\dot{\vec{v}} = \vec{F}_i(t)/m_i$ and $\vec{v} = \dot{\vec{r}}$ we
+By combining~\cref{eq:vv_comp1} and~\cref{eq:vv_comp2} using $\dot{\vec{v}} = \vec{F}_i(t)/m_i$ and $\vec{v} = \dot{\vec{r}}$ we
 arrive at the final scheme
 \begin{align*}
   \vec{r}_i(t + \Delta t) &= \vec{r}_i(t) + \vec{v}_i(t) \Delta t + \frac{\vec{F}_i(t)}{2m_i}\Delta t^2 + \mathcal{O}(\Delta t^3), \\
@@ -372,7 +372,7 @@ equation of motion such that the solution lies in the canonical ensemble
 characterized by a constant number of particles $N$, constant volume $V$ and
 constant temperature $T$, hence denoted $NVT$~\cite{Manini_2016}. When going from the microcanonical ensemble $NVE$, described by Newton's equation of motion~\cref{eq:NE}, to the canonical ensemble $NVT$, we effectively perform a Legendre transformation which substitutes temperature for energy in the regard to which variables are held constant. The canonical ensemble is represented by a finite system being in contact with an infinite heat bath of temperature $T$. The $NVT$ ensemble is equivalent to sampling a system in thermodynamic equilibrium where the weight of each microscopic state is given by the Boltzmann factor $\exp[-E/(k_B T)]$ where $k_B$ is the Boltzmann constant. 
 
-The Langevin thermostat is governed by the Langevin equation which originated as the modified version of Newton's equations for a Brownian particle \cite{stat_phys}. A Brownian particle is a small particle suspended in liquid,
+The Langevin thermostat is governed by the Langevin equation which originated as the modified version of Newton's equations for a Brownian particle~\cite{stat_phys}. A Brownian particle is a small particle suspended in liquid,
 e.g.\ pollen or dust, named after Robert Brown (1773–1858) who was the first to
 observe its jittery motion. The Langevin equation describes this motion as the
 combination of a viscous drag force $ -\alpha \vec{v}$, where $\alpha$ is a
@@ -438,7 +438,7 @@ where the constant $a$ describes the magnitude of the fluctuations. We could in 
 where $\delta$ denotes the Dirac delta function. This is valid for all spatial
 coordinates which are all independent of each other. Since both the drag
 force and the fluctuation force originate from the molecular fluid, where the
-drag force $-\alpha \vec{v}$ carries a velocity dependency, it is reasonable to assume that fluctuation force is independent of velocity, i.e. $\langle R_i v_j \rangle = 0$ for all cartesian indices $i$ and $j$. In the following, we attempt to justify the physical motivation for the Langevin equation by determining the relationship between the drag coefficient $\alpha$ and the random force $R$ \cite{stat_phys}. From the Langevin equation~\cref{eq:Langevin} we can compute the velocity autocorrelation function. Note that we continue to use only one dimension for simplicity. We begin by multiplying by $(e^{\alpha t /m})/m$
+drag force $-\alpha \vec{v}$ carries a velocity dependency, it is reasonable to assume that fluctuation force is independent of velocity, i.e. $\langle R_i v_j \rangle = 0$ for all cartesian indices $i$ and $j$. In the following, we attempt to justify the physical motivation for the Langevin equation by determining the relationship between the drag coefficient $\alpha$ and the random force $R$~\cite{stat_phys}. From the Langevin equation~\cref{eq:Langevin} we can compute the velocity autocorrelation function. Note that we continue to use only one dimension for simplicity. We begin by multiplying by $(e^{\alpha t /m})/m$
 \begin{align*}
   \dot{ v}(t)e^{\alpha t /m} + \frac{\alpha}{m} v(t)e^{\frac{\alpha t}{m}}  = \frac{ F}{m}e^{\frac{\alpha t}{m}}.
 \end{align*}
@@ -456,7 +456,7 @@ then calculate the autocorrelation
   &= \int_{-\infty}^t dt_1 \ \int_{-\infty}^0 dt_2 \ e^{\frac{t - t_1 - t_2}{m}} \frac{a \delta(t_1 - t_2)}{m^2} \\
   &= \int_{-\infty}^0 dt_2 \ e^{\frac{t - 2t_2}{m}} \frac{a}{m^2} = \frac{a}{2m\alpha}e^{-\frac{\alpha t}{m}},
 \end{align*}
-where we used \cref{eq:F_corr} and the fact that the integration commutes with
+where we used~\cref{eq:F_corr} and the fact that the integration commutes with
 the average (we are allowed to flip the order). By comparing this with the
 equipartition theorem we get 
 \begin{align*}
@@ -467,7 +467,7 @@ equipartition theorem we get
 We notice the appearance of $\alpha$ meaning that the magnitude of the
 fluctuations increase both with viscous friction ($-\alpha \vec{v}$) and temperature $T$. Moreover, we can
 integrate the velocity over time to get displacement $x(t)$ and show that the
-variance is \cite{stat_phys}
+variance is~\cite{stat_phys}
 \begin{align*}
   \big\langle x^2(t) \big\rangle = \frac{2 k_B T}{\alpha} \left(t - \frac{m}{\alpha}\left(1 - e^{-\alpha t/m} \right) \right).
 \end{align*}
@@ -482,7 +482,7 @@ for $x\ll 1$ which gives
 \begin{align*}
   \big\langle x^2(t) \big\rangle = \frac{k_B T}{m} t^2.
 \end{align*}
-Using $\langle x^2 \rangle / t^2 = \langle v^2 \rangle$ we see that the result is in agreement with the equipartition theorem \cref{eq:equipartion}
+Using $\langle x^2 \rangle / t^2 = \langle v^2 \rangle$ we see that the result is in agreement with the equipartition theorem~\cref{eq:equipartion}
 \begin{align*}
   \big\langle v^2(t) \big\rangle = \frac{k_B T}{m} \ \Longleftrightarrow \ \frac{1}{2}m\langle v^2 \rangle_{\text{eq}} = \frac{k_B T}{2}.
 \end{align*}

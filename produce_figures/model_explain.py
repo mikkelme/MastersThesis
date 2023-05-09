@@ -44,7 +44,7 @@ def explain_predict(EV, save = False):
         ax.set_yticks([])
         ax.set_title(f'S = {stretch[idx]:0.4f}', pad = 11)
 
-    axes_cam_Ff[0].set_ylabel("Grad. Ff")
+    axes_cam_Ff[0].set_ylabel("Grad. $F_f$")
     axes_cam_rup[0].set_ylabel("Grad. Rup.")
     
     # Plot kirigami configuration
@@ -69,14 +69,14 @@ if __name__ == '__main__':
     model_weights = f'{model_name}/model_dict_state'
     model_info = f'{model_name}/best_scores.txt'
 
-    # config_path = '../ML/GA_RN_start/top0.npy'; save = '_'.join(EV.config_path.split('/')[-2:]).strip('.npy')
-    config_path = '../ML/RW_search/Ff_max_drop0_conf.npy'; save = 'RW_search_max_drop0'
-    EV = Evaluater(model_weights, model_info, config_path)
+    # config_path = '../ML/GA_RN_start/top0.npy'; save = '_'.join(config_path.split('/')[-2:]).strip('.npy')
+    # config_path = '../ML/RW_search/Ff_max_drop0_conf.npy'; save = 'RW_search_max_drop0'
+    # EV = Evaluater(model_weights, model_info, config_path)
     
     
     # mat = pop_up(shape = (62, 106), size = (1,7), sp = 1, ref = (1, 4)); save = 'pop_1_7_1_1_4'
     # mat = pop_up(shape = (62, 106), size = (5,3), sp = 1, ref = (2, 5)); save = 'pop_5_3_1_2_5'
-    # mat = honeycomb(shape = (62, 106), xwidth = 5, ywidth = 3,  bridge_thickness = 5, bridge_len = 3, ref = (12,0)); save = 'hon_3_3_5_3_12_0'
+    mat = honeycomb(shape = (62, 106), xwidth = 5, ywidth = 3,  bridge_thickness = 5, bridge_len = 3, ref = (12,0)); save = 'hon_3_3_5_3_12_0'
     # mat = honeycomb(shape = (62, 106), xwidth = 3, ywidth = 3,  bridge_thickness = 3, bridge_len = 3, ref = (6,6)); save = 'hon_2_2_3_3_6_6'
     
     # builder = config_builder(mat)
@@ -86,8 +86,8 @@ if __name__ == '__main__':
     
     
     
-    # EV = Evaluater(model_weights, model_info)
-    # EV.set_config(mat)
+    EV = Evaluater(model_weights, model_info)
+    EV.set_config(mat)
     # exit()
     
     

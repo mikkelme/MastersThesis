@@ -2,7 +2,7 @@
 For the final part of this thesis, we concern ourselves with a proof of concept approach for the designing of a negative friction coefficient. From the pilot study (\cref{chap:pilot_study}) we found the friction of the two investigated Kirigami patterns to have a non-linear relationship with strain. This is hypothesized to yield a negative friction coefficient for certain load ranges in a coupled system of load and strain. We will investigate this hypothesis further in this chapter.
 
 \section{Nanomachine coupling}
-We do not attempt to simulate the dynamics of any nanomachine designs, but we propose that coupling between load and strain could be achieved, for instance, by following a design as sketched in \cref{fig:nanomachine}. Such a design could perhaps be achieved by rigging carbon nanotubes in a similar configuration. 
+We do not attempt to simulate the dynamics of any nanomachine designs, but we propose that coupling between load and strain could be achieved, for instance, by following a design as sketched in~\cref{fig:nanomachine}. Such a design could perhaps be achieved by rigging carbon nanotubes in a similar configuration. 
 
 \begin{figure}[H]
   \centering
@@ -15,7 +15,7 @@ We mimic the nanomachine coupling by implementing a load-depending tension force
 $T=6$ will provide the necessary tension for achieving a full strain range (till rupture) within the loading range used so far in our study. Notice that this coupling scheme is slightly different than that proposed in~\cref{eq:mu_strain} where we assumed a direct coupling between load and strain $\varepsilon = R F_N$. This modification provides a more standardized description of the proposed nanomachine since the relation between tension and strain will depend on the specific Kirigami sheet. We use the Tetrahedron
 $(7,5,1)$ and Honeycomb $(2,2,1,5)$ from the pilot study and perform multiple
 simulations for different normal loads. We use 100 uniformly spaced normal force
-values in the range $[0, 15]$ nN which corresponds to a tension force of $[0, 90]$ nN. For the Tetrahedron pattern, we increase the load by a speed of \SI{0.015}{nN/ps}. Due to a rapid change in the strain-tension curve for the Honeycomb pattern, we reduced the loading speed to \SI{0.0015}{nN/ps} and added additional data points to the sparsely populated strain range. We compare the results to the pilot study results~\cref{fig:multi_stretch} by mapping the strain to load values corresponding to the strain-load curves found in the coupled system. The results are shown in \cref{fig:negfric}.
+values in the range $[0, 15]$ nN which corresponds to a tension force of $[0, 90]$ nN. For the Tetrahedron pattern, we increase the load by a speed of \SI{0.015}{nN/ps}. Due to a rapid change in the strain-tension curve for the Honeycomb pattern, we reduced the loading speed to \SI{0.0015}{nN/ps} and added additional data points to the sparsely populated strain range. We compare the results to the pilot study results~\cref{fig:multi_stretch} by mapping the strain to load values corresponding to the strain-load curves found in the coupled system. The results are shown in~\cref{fig:negfric}.
 
 
 \begin{figure}[!htb]

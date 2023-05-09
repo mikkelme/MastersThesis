@@ -60,7 +60,7 @@ Given a loss function, we can calculate the loss gradient $\nabla_\theta L$ with
 \end{align}
 Gradient descent is analog to taking a step in parameter space in the direction
 that yields the biggest decrease in the loss. If we imagine a simplified case
-with only two parameters $\theta_1$ and $\theta_2$ we can think of these as longitude and latitude coordinates on a map and the loss being the terrain height. The gradient descent steps in the direction perpendicular to the contour lines shaped by the loss function terrain as shown in~\cref{fig:gradient_descent}. Notice, however, that state-of-the-art models in general contain on the order of \num{e6}--\num{e9} parameters \cite{thompson2022computational} which poses some challenges for the visualization.  The length of each step is proportional to the gradient norm and the learning rate $\eta$. There are three main flavors to the gradient descent: Batch,
+with only two parameters $\theta_1$ and $\theta_2$ we can think of these as longitude and latitude coordinates on a map and the loss being the terrain height. The gradient descent steps in the direction perpendicular to the contour lines shaped by the loss function terrain as shown in~\cref{fig:gradient_descent}. Notice, however, that state-of-the-art models in general contain on the order of \num{e6}--\num{e9} parameters~\cite{thompson2022computational} which poses some challenges for the visualization.  The length of each step is proportional to the gradient norm and the learning rate $\eta$. There are three main flavors to the gradient descent: Batch,
 stochastic and mini-batch gradient descent. In \textit{batch gradient descent} we simply
 calculate the gradient based on the entire dataset by averaging the contribution
 from each data point before updating the parameters. This gives the most robust estimate of the gradient and thus the most direct path through parameter space in terms of minimizing the loss function as
@@ -155,7 +155,7 @@ We notice that choosing a large weight decay ($\lambda \to 1$) will downscale th
 
 \subsection{Parameter distributions}
 In order to get optimal training conditions it has been found that the initial
-state of the weight and biases are important \cite{salimans2016weight}. First of all, we must initialize the weight by sampling from some distribution. If the weights are set
+state of the weight and biases are important~\cite{salimans2016weight}. First of all, we must initialize the weight by sampling from some distribution. If the weights are set
 to equal values the gradient across a layer would be the same. This results in a
 complexity reduction as the model can only encode the same values across the
 layer. Further, we want to consider the gradient flow during training. Especially for deep networks, networks with many layers, we must pay attention to the problem of \textit{vanishing} or \textit{exploding} gradients. If we for instance consider the sigmoid activation function and its derivative 
@@ -180,16 +180,16 @@ as mentioned above, they both benefit from a properly initialized set of
 weights. That is, we want the gradients across a given layer to have a zero mean
 while the variance is similar between layers in the model. This balanced
 gradient flow is more likely to happen if we initialize the weight by the same
-criteria \cite{salimans2016weight}. The specific actions to achieve this depend
+criteria~\cite{salimans2016weight}. The specific actions to achieve this depend
 on the model architecture, including the choice of activation functions. For
 instance, using the ReLU activation functions it was found that the node
 standard deviation will depend on the number of input nodes from the previous
-layer $N^{[l-1]}$ as $\sqrt{N^{[l-1]}/2}$ \cite{he2015delving}. Thus we can
+layer $N^{[l-1]}$ as $\sqrt{N^{[l-1]}/2}$~\cite{he2015delving}. Thus we can
 simply generate the weights from a zero mean normal distribution $N \sim (0,
 2/N^{[l-1]})$ with the standard deviation $\sqrt{2/N^{[l-1]}}$ to ensure a balanced initialization of weights. This is part of the Kaiming initialization scheme which is standard in Pytorch.
 The bias is initialized from a similar consideration.
 
-\textit{Batch normalization} is another technique that can help reduce the issue of poor gradient flow. Furthermore, it can benefit by speeding up convergence and making the training process more stable \cite{ioffe2015batch}. In general, model parameters are modified throughout training meaning that the range of values coming from a previous layer will shift (internal covariate shift), even though the same training data is fed through the network repeatedly. By scaling the input for a given layer, for each mini-batch, we can mitigate this problem and make for a more standardized input range. This often results in a faster training convergence. For layer $l$ we calculate the mean $\mu^{[l]}$ and variance $(\sigma^{[l]})^{2}$ across the layer with nodes $x_1^{[l]}, x_2^{[l]}, \ldots, x_m^{[l]}$ for each mini-batch of size $m$ as
+\textit{Batch normalization} is another technique that can help reduce the issue of poor gradient flow. Furthermore, it can benefit by speeding up convergence and making the training process more stable~\cite{ioffe2015batch}. In general, model parameters are modified throughout training meaning that the range of values coming from a previous layer will shift (internal covariate shift), even though the same training data is fed through the network repeatedly. By scaling the input for a given layer, for each mini-batch, we can mitigate this problem and make for a more standardized input range. This often results in a faster training convergence. For layer $l$ we calculate the mean $\mu^{[l]}$ and variance $(\sigma^{[l]})^{2}$ across the layer with nodes $x_1^{[l]}, x_2^{[l]}, \ldots, x_m^{[l]}$ for each mini-batch of size $m$ as
 \begin{align*}
   \mu^{[l]} = \frac{1}{m} \sum_i^m x_i, \qquad (\sigma^{[l]})^{2} = \frac{1}{m} \sum_i^m (x^i-\mu)^2.
 \end{align*}
@@ -223,12 +223,12 @@ within the input, i.e.\ being translational invariant. This is achieved by
 having a so-called \textit{kernel} or \textit{filter} which slides over the
 images\footnote{Note, that we will be using the word ``image'' as a reference
 for a spatially dependent input, but in reality, it does not have to be an
-actual image in the classical sense.} as it processes the input. The overall flow of data for a typical convolutional network including a final fully connected neural network is illustrated in \cref{fig:CNN}. 
+actual image in the classical sense.} as it processes the input. The overall flow of data for a typical convolutional network including a final fully connected neural network is illustrated in~\cref{fig:CNN}. 
 
 \begin{figure}[!htb]
   \centering
   \includegraphics[width=0.8\linewidth]{figures/theory/CNN.png}
-  \caption{Representation of a Convolutional Neural Network (\acrshort{CNN}). The \acrshort{CNN} performs automatic spatial feature extraction from images by successively applying feature filters that create feature maps (Convolutional layer) and compressing these maps (Pooling layer). Based on the final feature maps, a fully-connected neural network does a prediction, which can be a classification or regression. Figure and caption reproduced from \cite{cunha2022review}.}  
+  \caption{Representation of a Convolutional Neural Network (\acrshort{CNN}). The \acrshort{CNN} performs automatic spatial feature extraction from images by successively applying feature filters that create feature maps (Convolutional layer) and compressing these maps (Pooling layer). Based on the final feature maps, a fully-connected neural network does a prediction, which can be a classification or regression. Figure and caption reproduced from~\cite{cunha2022review}.}  
   \label{fig:CNN}
 \end{figure}
 
@@ -265,7 +265,7 @@ architectures aim to down-sample the spatial input while increasing the number
 of channels throughout the model layers. This results in a smaller set of
 features extracted from the input which then can then be fed into a dense
 network, or \textit{fully connected} connected neural network, as also
-illustrated in \cref{fig:CNN}. The convolution part aims to
+illustrated in~\cref{fig:CNN}. The convolution part aims to
 handle the transition from a spatial input into some internal features. For a model which recognizes animals, we would perhaps think of features such as the number of legs, size, color and so on. In practice, the network will not give readily interpreted features for the processing in the fully connected layer, but the concept is still the same. 
 
 
@@ -479,9 +479,9 @@ such as 0.99, 0.97, 0.95, and 0.9, to determine a suitable choice. By including
 momentum in the learning range test we can balance the learning rate accordingly. Moreover, for a cyclic learning rate scheme he reports that a cycling momentum scheme, reversed with respect to the learning rate, is beneficial. When the
 learning rate increase toward the upper bound the learning rate should
 decrease toward the lower bound and vice versa. Choosing a lower momentum of
-0.80--0.85 is reported to give similar stable results \cite{smith2018disciplined}. 
+0.80--0.85 is reported to give similar stable results~\cite{smith2018disciplined}. 
 
-Finally, we address weight decay. N.\ Smith \cite{smith2018disciplined} reports that weight decay is different from learning rate and momentum by the fact that weight decay is better chosen as a constant value as opposed to a cyclic scheme. However, the weight decay is dependent on the model complexity, learning rate and momentum choice. Hence, this can often be chosen after setting those. We can estimate a suitable choice by doing a rough grid search for values such as 0, $\num{e-6}$, $\num{e-5}$ and $\num{e-4}$ for complex architectures and $\num{e-4}$, $\num{e-3}$ and $\num{e-2}$ for more shallow architectures. Choosing the weight decay on the scale of exponential exponents will often provide good enough precision in practice. 
+Finally, we address weight decay. N.\ Smith~\cite{smith2018disciplined} reports that weight decay is different from learning rate and momentum by the fact that weight decay is better chosen as a constant value as opposed to a cyclic scheme. However, the weight decay is dependent on the model complexity, learning rate and momentum choice. Hence, this can often be chosen after setting those. We can estimate a suitable choice by doing a rough grid search for values such as 0, $\num{e-6}$, $\num{e-5}$ and $\num{e-4}$ for complex architectures and $\num{e-4}$, $\num{e-3}$ and $\num{e-2}$ for more shallow architectures. Choosing the weight decay on the scale of exponential exponents will often provide good enough precision in practice. 
 
 
 \section{Prediction explanation}\label{sec:explanation}
