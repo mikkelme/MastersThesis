@@ -1,10 +1,11 @@
 \chapter{Dataset configurations}\label{sec:dataset_conf}
-Visualization of the dataset configurations corresponding to the Tetrahedron, Honeycomb and Random walk style respectively. Note that the three configurations used in the pilot study: Non-cut, Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$, are not explicitly shown here since the first is trivial and the latter two are also part of this dataset with a random reference. Thus we show the remaining 213 configurations organized as
+Visualization of the dataset configurations corresponding to the Tetrahedron, Honeycomb and Random walk classes respectively. Note that the three configurations used in the pilot study: Non-cut, Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$, are not explicitly shown here since the first is trivial (seen in~\cref{fig:system}) and the latter two are also part of the dataset shown here, but with a random reference. Thus we show the remaining 213 configurations organized as
 \begin{enumerate}
-    \item 68 Tetrahedron shown in~\crefrange{fig:T0}{fig:T2}
-    \item 45 Honeycomb shown in figure~\crefrange{fig:H0}{fig:H1}
-    \item 100 Random walk shown in figure~\crefrange{fig:R0}{fig:R3} and supplementary details are given in~\cref{tab:RW_details}.
+    \item 68 Tetrahedron configurations shown in~\crefrange{fig:T0}{fig:T2}.
+    \item 45 Honeycomb configurations shown in figure~\crefrange{fig:H0}{fig:H1}.
+    \item 100 Random walk configurations shown in figure~\crefrange{fig:R0}{fig:R3} and supplementary details are given in~\cref{tab:RW_details}.
 \end{enumerate}
+Notice that the pull blocks are not shown in these visualizations.
 \newpage
 
 % Tetrahedron
@@ -12,17 +13,17 @@ Visualization of the dataset configurations corresponding to the Tetrahedron, Ho
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{figures/dataset/popup_0.png}
-    \caption{Tetrahedron patterns.}\label{fig:T0}
+    \caption{Tetrahedron patterns (0--29). Grey circles depict atoms in the graphene sheet.}\label{fig:T0 Grey circles depict atoms in the graphene sheet.}
 \end{figure}
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{figures/dataset/popup_1.png}
-    \caption{Tetrahedron patterns.}\label{fig:T1}
+    \caption{Tetrahedron patterns (30--59). Grey circles depict atoms in the graphene sheet.}\label{fig:T1 Grey circles depict atoms in the graphene sheet.}
 \end{figure}
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{figures/dataset/popup_2.png}
-    \caption{Tetrahedron patterns.}\label{fig:T2}
+    \caption{Tetrahedron patterns (60--67). Grey circles depict atoms in the graphene sheet.}\label{fig:T2 Grey circles depict atoms in the graphene sheet.}
 \end{figure}
 
 
@@ -30,13 +31,13 @@ Visualization of the dataset configurations corresponding to the Tetrahedron, Ho
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{figures/dataset/honeycomb_0.png}
-    \caption{Honeycomb patterns.}
+    \caption{Honeycomb patterns (0--29). Grey circles depict atoms in the graphene sheet.}
     \label{fig:H0}
 \end{figure}
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{figures/dataset/honeycomb_1.png}
-    \caption{Honeycomb patterns.}
+    \caption{Honeycomb patterns (30--44). Grey circles depict atoms in the graphene sheet.}
     \label{fig:H1}
 \end{figure}
 
@@ -44,25 +45,25 @@ Visualization of the dataset configurations corresponding to the Tetrahedron, Ho
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{figures/dataset/RW_0.png}
-    \caption{Random walk patterns.}
+    \caption{Random walk patterns (0--29). Grey circles depict atoms in the graphene sheet.}
     \label{fig:R0}
 \end{figure}
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{figures/dataset/RW_1.png}
-    \caption{Random walk patterns.}
+    \caption{Random walk patterns (30--59). Grey circles depict atoms in the graphene sheet.}
     \label{fig:R1}
 \end{figure}
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{figures/dataset/RW_2.png}
-    \caption{Random walk patterns.}
+    \caption{Random walk patterns (60--89). Grey circles depict atoms in the graphene sheet.}
     \label{fig:R2}
 \end{figure}
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{figures/dataset/RW_3.png}
-    \caption{Random walk patterns.}
+    \caption{Random walk patterns (90--99). Grey circles depict atoms in the graphene sheet.}
     \label{fig:R3}
 \end{figure}
 
@@ -221,7 +222,7 @@ Visualization of the dataset configurations corresponding to the Tetrahedron, Ho
     98 &  32 &  30 &  3 & (down left, 1.2) & Center & True & False & False & False & 0 \\ \hline
 
     99 &  32 &  30 &  3 & (left, 1.2) & Center & True & False & False & False & 0 \\ \hline
-    \caption{Random walk parameters corresponidng to the configurations shown in figure \crefrange{fig:R0}{fig:R3}. All configurations have the default parameters: Periodic = True, Avoid clustering = 10}
+    \caption{Random walk parameters corresponidng to the configurations shown in figure \crefrange{fig:R0}{fig:R3}. All configurations have the default parameters: Periodic = True, Avoid clustering = 10.}
     \label{tab:RW_details}
     \end{longtable}
 
