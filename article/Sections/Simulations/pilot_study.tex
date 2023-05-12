@@ -610,7 +610,7 @@ constant $K$, and timestep $dt$. This is done partly to
 understand how the dependencies relate to the theoretical, numerical and
 experimental results, and partly to understand how these parameters affect
 the stability of our system. We use the default parameters presented in~\cref{tab:final_param} and investigate the results as we change parameters, one at a time. We keep the load at \SI{1}{nN}. We consider the mean
-friction force, sampled from the last half of the simulation as described in~\cref{sec:fric_metrics}, representing the kinetic friction. The results are shown in~\cref{fig:main_param}, where the shaded area (connected linearly) denotes the absolute error defined by the \acrshort{std} as described in~\cref{sec:fric_metrics} as well. 
+friction force parallel to the sliding direction for the full sheet, sampled from the last half of the simulation as described in~\cref{sec:fric_metrics}, representing the kinetic friction. The results are shown in~\cref{fig:main_param}, where the shaded area (connected linearly) denotes the absolute error defined by the \acrshort{std} as described in~\cref{sec:fric_metrics} as well. 
 
 \begin{figure}[!htb]
   \centering
@@ -642,54 +642,66 @@ friction force, sampled from the last half of the simulation as described in~\cr
         \label{fig:var_dt}
     \end{subfigure}
     \hfill
-    \caption{Investigation of the friction dependencies to the selected parameters: temperature (a) sliding speed (b), spring constant (c) and timestep (d), the non-cut sheet, non-cut sheet, the Tetrahedron $(7,5,1)$, and the Honeycomb $(2,2,1,5)$ patterns. The dotted line denotes the default parameter choice and the shaded area denotes the estimated ($\pm$) absolute error.}
+    \caption{Investigation of the friction dependencies to the selected parameters: Temperature $T$ (a) sliding speed (b), spring constant $K$ (c) and timestep $dt$ (d), for the non-cut sheet, the Tetrahedron $(7,5,1)$, and the Honeycomb $(2,2,1,5)$ patterns. The dotted line denotes the default parameter choice and the shaded area denotes the estimated absolute error.}
     \label{fig:main_param}
 \end{figure}
 
-From the temperature investigation in~\cref{fig:var_temp} we find an increasing
+From the temperature investigation in~\cref{fig:var_temp} we find an overall increasing
 kinetic friction with temperature for both the non-cut sheet and the Honeycomb
 pattern. The Tetrahedron pattern shows both decreasing and increasing trends.
 The general trend shows a convex curve in the range (30--480 K) with a minimum
 around our default choice of \SI{300}{K}, but with rapid fluctuations at the
 start (10--30 K) and end region (480--500 K). Similar fluctuations are also seen
-from the Honeycomb pattern, although it shows an underlying increasing trend
+for the Honeycomb pattern, although it shows an underlying increasing trend
 throughout. When comparing the non-cut sheet and the Honeycomb pattern we
 observe that the slope for the increasing trend is higher for the Honeycomb
-pattern. From the predictions of the Prandtl–Tomlinson model and experimental results we expect to find a decrease in friction with increasing temperature. However, in similar \acrshort{MD}-based studies by Guerra et al.~\cite{Guerra_2010} they report that the frictional temperature dependence reverses at high sliding speed. They attribute this to the crossover from the diffusive to the ballistic regime taking place at a sliding speed of 1 to \SI{10}{m/s}. This agrees with our observations since we are using a sliding speed of \SI{20}{m/s}. The increase in friction with temperature agrees with the predictions from the Frenkel-Kontorova models~\cite{FK2D}
-In the absence of any clear suggestions from the results regarding an appropriate temperature, we take the common choice of using the room temperature \SI{300}{K}. The non-cut and Tetrahedon friction shows to be rather
-stable around our temperature of choice, although we do see some significant fluctuations for the Honeycomb pattern in this range. However, we do not regard this as a critical feature.
+pattern. From the predictions of the Prandtl–Tomlinson model and experimental results we expect to find a decrease in friction with increasing temperature which disagrees with our results. However, in similar \acrshort{MD}-based studies by Guerra et al.~\cite{Guerra_2010} they report that the friction dependence on temperature reverses at high sliding speed. They attribute this to the crossover from the diffusive to the ballistic regime taking place at a sliding speed of 1 to \SI{10}{m/s}. This agrees with our observations since we are using a sliding speed of \SI{20}{m/s}. The increase in friction with temperature also agrees with the predictions from the 2D Frenkel-Kontorova model~\cite{FK2D}. In the absence of any clear suggestions from the results regarding an appropriate temperature, we take the common choice of using the room temperature \SI{300}{K}. The non-cut and Tetrahedon friction shows to be rather
+stable around this temperature choice, although we do see some significant fluctuations for the Honeycomb pattern in this range. However, we do not regard this as a critical feature.
 
 From the sliding speed investigation in~\cref{fig:var_vel} we generally find
-increasing friction with velocity. Due to the relatively high velocities used in
-these simulations, we expect a viscous friction $F_k \propto v_{\text{sliding}}$
+increasing friction with sliding speed. Due to the relatively high sliding speed used in
+these simulations, we expect a viscous friction $F_{\text{fric}} \propto v$
 as reported by Guerra et al.~\cite{Guerra_2010} and predicted by the
 Prandtl–Tomlinson model. In general, this aligns rather well with our results,
 especially for the non-cut sheet. However, the Tetrahedron and Honeycomb sheets
 seem to fall slightly into a sublinear relationship as it approaches higher
-velocities. This behavior could potentially be attributed to velocity
+sliding speeds. This behavior could potentially be attributed to velocity
 saturation, a phenomenon predicted by the Prandtl-Tomlinson model without
 considering the damping effect of the thermostat. On the other hand,
 experimental results generally show a logarithmic increase in friction with
-velocity, which may align better with the behavior observed for the Tetrahedron
+sliding speed, which may align better with the behavior observed for the Tetrahedron
 pattern. Furthermore, we find that the Tetrahedron and Honeycomb patterns both
 display indications of local fluctuations that could be attributed
 to phonon resonance effects, as discussed in relation to the Frenkel-Kontorova
-models. Our choice of a sliding speed at \SI{20}{m/s} mainly reflects a
-consideration of computational cost, but the fact that no immediate resonance
+models. Our choice of a sliding speed at \SI{20}{m/s} mainly reflects a consideration of computational cost, but the fact that no immediate resonance
 fluctuations appear in the proximity of this value supports the choice further.  
 
-From the investigation of the spring constant parameter in~\cref{fig:var_K} we observe a significant decrease in friction as the springs stiffen. This can be attributed to the transition from a stick-slip influenced regime to a smooth sliding regime as evidenced by the force traces in~\cref{fig:drag_Ff}. For soft springs the friction response is quite sensitive to the specific choice of spring constant which is especially seen for the non-cut sheet around $K = \SI{40}{N/m}$. Thus, in order to avoid this domain we settled for the infinitely stiff spring. This is also considered a more favorable option due to its ability to provide greater standardization of the simulations since it allows for a more controlled movement of the sheet.
+From the investigation of the spring constant parameter in~\cref{fig:var_K}, we observe a significant decrease in friction with increasing spring constant. This can be attributed to the transition from a stick-slip influenced regime to a smooth sliding regime as evidenced by the force traces in~\cref{fig:drag_Ff}. For soft springs (low $K$) the friction response is quite sensitive to the specific choice of spring constant which is especially seen for the non-cut sheet around $K = \SI{40}{N/m}$. Thus, in order to avoid this domain we settled for the infinitely stiff spring ($K = \infty$). This is also considered a more favorable option due to its ability to provide greater standardization of the simulations since it allows for a more controlled movement of the sheet.
 
 Finally, we consider the numerical stability of the simulation result as we vary
-the simulation timestep in~\cref{fig:var_dt}. The results indicate that the simulation is generally stable below a timestep of $\sim \SI{1.5}{fs}$, beyond which instability arises for the cut sheets (Tetrahedron and Honeycomb). This confirms that our choice of timestep is reasonable, but we do observe some fluctuations that are more pronounced for the cut sheets. These fluctuations imply that randomness plays a role in our simulations and that the cut sheets exhibit relatively higher instability compared to the non-cut sheet. Further investigation through varying the random seed for the initial velocity and thermostat could shed more light on this matter. In the meantime, we may consider these fluctuations as a sign that the uncertainty in our results is higher than our estimation from using the running mean and running \acrshort{std}. For the Honeycomb sheet, these fluctuations are on the order of $\pm \SI{0.017}{nN}$.
+the simulation timestep in~\cref{fig:var_dt}. The results indicate that the
+simulation is generally stable below a timestep of $\sim \SI{1.5}{fs}$, beyond
+which instability arises for the cut sheets (Tetrahedron and Honeycomb). This
+confirms that our choice of timestep is reasonable, but we do observe some
+fluctuations that are more pronounced for the cut sheets. These fluctuations
+imply that randomness plays a role in our simulations and that the cut sheets
+exhibit relatively higher instability compared to the non-cut sheet. Further
+investigation through varying the random seed for the initial velocity and
+thermostat could shed more light on this matter. In the meantime, we may
+consider these fluctuations as a sign that the uncertainty in our results is
+higher than our estimation from using the running mean and running
+\acrshort{std}. For the Honeycomb sheet, these fluctuations are on the order of
+$\pm \SI{0.017}{nN}$. This also aligns with the observation that the friction values
+obtained for the default parameters are not
+exactly equal across all simulation results in \cref{fig:main_param}. We find the estimated error by the fluctuations with timestep to match these deviations rather well.
 
 
 
 \subsection{Computational cost}
-Our simulations are carried out on a CPU cluster made available by the University of Oslo. This allows us to run multiple simulations at once and with each simulation running in parallel on multiple CPU cores as well. When selecting the simulation parameters, we also need to keep in mind the computational cost. Given that the chosen parameters will be applied to multiple simulations, any increase in computational time will be multiplied by the number of intended simulations, which is roughly 10,000. The computational cost is especially dependent on the timestep and the sliding speed as this will affect the number of computations. As an extension of the analysis in~\cref{sec:main_params} we
+Our simulations are carried out on a CPU cluster made available by the University of Oslo. This allows us to run multiple simulations at once and with each simulation running in parallel on multiple CPU cores as well. When selecting the simulation parameters, we also need to keep in mind the computational cost. Given that the chosen parameters will be applied to multiple simulations, any increase in computational time will be multiplied by the number of intended simulations, which is roughly 10,000. The computational cost is especially dependent on the timestep and the sliding speed as this will affect the number of computations needed for a full simulation. As an extension of the investigation from~\cref{fig:main_param} we
 report on the computational times associated with temperature, sliding speed,
 spring constant and timestep. By retrieving the computational time used for the
-parameter investigation in~\cref{fig:main_param} we get the timing shown in~\cref{fig:comp_cost}. Note that these timings are only based on a single simulation for each parameter as opposed to an average over multiple runs which is
+parameter investigation in~\cref{fig:main_param} we get the timings shown in~\cref{fig:comp_cost}. Note that these timings are only based on a single simulation for each parameter as opposed to an average over multiple runs which is
 necessary for more reliable data. 
 
 
@@ -723,23 +735,21 @@ necessary for more reliable data.
         \label{fig:comp_dt}
     \end{subfigure}
     \hfill
-    \caption{The computational cost related to the parameter choice of temperature, sliding speed, spring
-    constant and timestep, in terms of CPU hours running on 16 cores on the
-    CPU cluster. The timing of the sliding speed is found to be $t \propto
-    v^{-0.977 \pm 0.005}$ while the timing for the timestep follows $t \propto \text{dt}^{-0.87\pm 0.02}$.}
+    \caption{The computational timings for the simulations carried out for the parameter investigation in~\cref{fig:main_param} in terms of CPU hours running on 16 cores on the CPU cluster. The timing $t$ with respect to the sliding speed $v$ is found to follow $t \propto
+    v^{-0.977 \pm 0.005}$ while the timing for the timestep length $dt$ follows $t \propto \text{dt}^{-0.87\pm 0.02}$.}
     \label{fig:comp_cost}
 \end{figure}
 
 The computational time is governed by the number of timesteps in the simulation
-and the time used per timestep. For a fixed sliding distance, the number of timesteps in the simulation is inversely proportional
+and the time used per simulation timestep. For a fixed sliding distance, the number of timesteps in the simulation is inversely proportional
 to sliding speed and similar inversely proportional to timestep $dt$. From the
 results in~\cref{fig:comp_cost} we find that the sliding speed obeys this
-expectation rather well by $t \propto v^{-0.977 \pm 0.005}$. The timing did not increase as strongly as expected for the timestep, falling below the $1/dt$ relation with $t
+expectation rather well by $t \propto v^{-0.977 \pm 0.005}$. The timing did not increase as strongly as expected with timestep length, falling above the $1/dt$ relation with $t
 \propto \text{dt}^{-0.87\pm 0.02}$. Moreover, we find that increasing
 temperature also makes for an increased computation time. This can be attributed
 to an increase in the computation time associated with the force calculations. The
-rising temperature gives rise to more fluctuations in the system which might
-yield more atoms within the force calculation cutoffs for each computation. This kind of consideration can also be attributed to the reason for the deviating timing for $dt$. Finally, for the spring parameter, we did not see any noticeable effect on timing.
+rising temperature is associated with more fluctuations in the system which might
+yield more atoms within the force calculation cutoffs for each computation. This kind of consideration can also be attributed to the reason for the deviating timing relationship with $dt$. Finally, for the spring constant, we did not see any noticeable effect on timing.
 
 
 In general, we have selected our simulation parameters: temperature, sliding speed, spring constant, and timestep, based on numerical stability
@@ -751,10 +761,10 @@ lower values were computationally expensive. The sliding speed was chosen primar
 
 
 \section{Strain and load dependencies}\label{sec:load_and_stretch}
-So far, we have carried out a general analysis of the system behavior under the influence of various simulation parameters. This lays the foundation for the remaining study as we now shift our intention towards the friction dependence of strain and load.
+So far, we have carried out a general analysis of the system behavior under the influence of various simulation parameters. This lays the foundation for the remaining study as we now shift our intention towards friction dependence on strain and load.
 
 \subsection{Pressure reference for normal load}
-We consider a load range of 0.1--\SI{10}{nN} which coincides with the general investigated range in other \acrshort{MD} studies~\cite{li_evolving_2016, zhu_study_2018, zhu_study_2018}. In order to relate the magnitude of this load we provide a short calculation of the corresponding pressure. We will use the pressure underneath a stiletto-heeled shoe as a high-pressure reference from a macroscale perspective. The diameter of a stiletto-heeled
+We consider a load range of 0.1--\SI{10}{nN} which coincides with the general range investigated in other \acrshort{MD} studies~\cite{li_evolving_2016, zhu_study_2018, zhu_study_2018}. In order to relate the magnitude of this load we provide a short calculation of the corresponding pressure. We will use the pressure underneath a stiletto-heeled shoe as a high-pressure reference from a macroscale perspective. The diameter of a stiletto-heeled
 shoe can be less than \SI{1}{cm}~\cite{stiletto_1}, and hence an \SI{80}{kg} man\footnote{Yes, a man can certainly
 wear stiletto heels.} standing on one stiletto heel, with all the weight on the heel, will generate a pressure
 \begin{align*}
@@ -772,7 +782,7 @@ actions of ``stretching'' and ``straining'' to be synonyms we will describe the
 sheet deformation state with the technical term \textit{strain}. The strain
 describes the change in length relative to a reference length. We use the
 relaxed sheet as our reference length $L_0$ for which the straining towards a
-length $L$ corresponds to the strain $\epsilon = (L-L_0)/L_0$. Thus a strain of
+larger length $L$ corresponds to the strain $\epsilon = (L-L_0)/L_0$. Thus a strain of
 0 corresponds to the relaxed sheet and a strain of 1 corresponds to a doubling
 of sheet length. Notice that the measure of strain is dimension specific, but we will only consider the y-direction which corresponds to the direction of applied strain in the simulations. For each configuration, we run a rupture
 test where the given sheet is stretched under zero load, but still under the
@@ -825,7 +835,7 @@ discontinuous jump around a strain of 0.32.
      \caption{Investigation of the frictional behavior for the non-cut, Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$ sheet under varying strain, consisting of 30 strain values uniformly spaced between 0 and the rupture strain in combination with loads 0.1, 1 and
      \SI{10}{nN}. The shaded area, connecting the dots linearly, denotes the
      the absolute error. The red shade denotes the strain range where ruptures
-     occurred during sliding while the black-dotted line represents the rupture
+     occurred during loaded sliding while the black-dotted line represents the rupture
      point in the non-loaded rupture test. (a) The average relative contact
      defined as the relative number of atoms within a contact threshold of
      \SI{4}{\text{Å}} to the substrate. The absolute error is generally on the
@@ -839,13 +849,13 @@ Since the non-cut sheet exhibits a
 flat friction-strain profile we cannot attribute the behavior to an increased
 tension either. Zhang et al.~\cite{zhang_tuning_2019} reported that the friction
 for a graphene sheet decreases with tension which qualitatively contradicts our
-observation and supports that tension is not a governing mechanism. Instead, we
-might attribute the results to a commensurability effect which is predicted by the Frenkel-Kontorov models and observed in both numerical and experimental studies, or perhaps a change in the structural stiffness which is reported as an important feature by~\cite{Kim_2012}. 
+observation for the Tetrahedon and Honeycomb patterns and supports that tension is not a governing mechanism for these observations. Instead, we
+might attribute the results to a commensurability effect which is predicted by the Frenkel-Kontorova models and observed in both numerical and experimental studies. We might also point to a change in the structural stiffness which is reported as an important feature by H.\ J.\ Kim and D.\ E.\ Kim~\cite{Kim_2012}. 
 
-We notice that the initial friction value of the non-strained sheet varies among different configurations, with the non-cut sheet exhibiting the lowest initial friction value ($\sim \SI{7e-4}{nN}$), the Tetrahedron sheet having a slightly higher value ($\sim \SI{0.03}{nN}$), and the Honeycomb sheet exhibiting the highest ($\sim \SI{0.07}{nN}$). This is more clearly shown in the parameter investigation in~\cref{fig:main_param}. This supports the idea of a commensurability effect as the removal of atoms might affect the lattice structure of the sheet slightly. However, the magnitude of this effect is generally one order of magnitude lower than the strain-induced friction effect. We attribute this to the idea that the reorganization of the contacting atoms has significantly more impact on commensurability than removing some atoms from the lattice. We notice also that the two orders of magnitude increase in normal load did not
+We notice that the initial friction value of the non-strained sheet varies among different configurations, with the non-cut sheet exhibiting the lowest initial friction value ($\sim \SI{7e-4}{nN}$), the Tetrahedron sheet having a slightly higher value ($\sim \SI{0.03}{nN}$), and the Honeycomb sheet exhibiting the highest ($\sim \SI{0.07}{nN}$). This is more clearly shown in the parameter investigation in~\cref{fig:main_param}. This supports the idea of a commensurability effect as the removal of atoms might affect the lattice structure of the sheet slightly. However, the magnitude of this effect is generally one order of magnitude lower than the strain-induced friction effect observed for the Tetrahedron and Honeycomb patterns. We attribute this to the idea that the reorganization of the contacting atoms has significantly more impact on commensurability than removing some atoms from the lattice. We notice also that the two orders of magnitude increase in normal load did not
 make a significant difference in the results. The estimated absolute error
 marked by a shaded area in~\cref{fig:multi_stretch_mean_fric} were fairly low
-for both friction on the order \SI{e-3}{nN} and relative contact on the order of
+for both friction on the order of \SI{e-3}{nN} and relative contact on the order of
 \num{e-4}.
 
 
@@ -860,7 +870,7 @@ while for the Honeycomb pattern the friction drops $\sim\SI{0.98}{nN}$ during a 
 
 
 \subsection{Load dependency}\label{sec:load_dependency}
-From the investigation of the strain dependency we saw that increasing the normal load from 0.1 to \SI{10}{nN} did not make a considerable impact on the friction in comparison to the effect associated with strain. One special feature of our system is that we only apply load to the pull blocks, and thus we might suspect this to be of importance. Therefore, we investigate the friction under varying loads for a non-cut sheet comparing the case of loading only the pull blocks against a uniform loading of the entire sheet as shown in~\cref{fig:load_dist}. Both load distributions show a seemingly non-dependent relationship between friction and load considering the size of our estimated error. Thus, we do not find any indications that the uniform loading changes the qualitative behavior of our system.
+From the investigation of the strain dependency we saw that increasing the normal load from 0.1 to \SI{10}{nN} did not make a considerable impact on the friction in comparison to the effect associated with strain. One special feature of our system is that we only apply load to the pull blocks, and thus we might suspect this to be of importance. Therefore, we investigate the friction under varying loads for a non-cut sheet comparing the case of loading only the pull blocks against a uniform loading of the entire sheet as shown in~\cref{fig:load_dist}. Both load distributions show a seemingly non-dependent relationship between friction and load considering the size of the estimated errors. Thus, we do not find any indications that the uniform loading changes the qualitative behavior of our system.
 
 \begin{figure}[!htb]
   \centering
@@ -878,16 +888,16 @@ From the investigation of the strain dependency we saw that increasing the norma
       \label{fig:load_dist_b}
   \end{subfigure}
   \hfill
-     \caption{Multiple simulations of a non-cut sheet under various uniformly spaced normal load values $F_N \in [0.1, 10]$ nN for two different variations of loading distribution. The shading and the error bars denote the absolute error. (a) The normal loading is applied to the pull blocks only. (b) The normal loading is applied uniformly to the full sheet. }
+     \caption{Multiple simulations of a non-cut sheet under various normal load values uniformly spaced in the range $F_N \in [0.1, 10]$ nN for two different variations of loading distribution. The shading and the error bars denote the absolute error. (a) The normal loading is applied to the pull blocks only. (b) The normal loading is applied uniformly to the full sheet. }
      \label{fig:load_dist}
 \end{figure}
 
 To examine the relationship between friction and normal load as the Kirigami
-patterns undergo strain, we conduct additional simulations with logarithmically spaced normal loads in the range of 0.1 to \SI{100}{nN}. This
+patterns undergo strain, we conduct additional simulations with logarithmically spaced normal load values in the range of 0.1 to \SI{100}{nN}. This
 is done for a selected subset of strain stages
-from~\cref{fig:multi_stretch_mean_fric}, with 30 load data points for each
+from~\cref{fig:multi_stretch}, with 30 load values for each
 strain. We also monitor the relative contact during the increased load. The
-results are shown in~\cref{fig:multi_load}. From~\cref{fig:multi_load_fric} we observe that three orders of magnitude load increase yields a small increase in friction for all Kirigami patterns. This effect
+results are shown in~\cref{fig:multi_load}. From~\cref{fig:multi_load_fric} we observe that the three orders of magnitude load increase yields a small increase in friction for all Kirigami patterns. This effect
 is more pronounced in the figure for the non-cut sheet, but this is mainly because the friction axis shows a narrower range for this figure. It
 should be noted that due to the logarithmic scale of the load axis, any apparent
 linear trends in the figure are in fact sublinear. Nonetheless, as the normal load
@@ -902,15 +912,15 @@ sheet. This constitutes a rather small change and thus it is difficult to assess
 how this relates to a dependency between the contact area and the friction.
 However, we do see that the Tetrahedron and Honeycomb patterns exhibit a larger
 change in contact area which aligns with the idea that the out-of-plane buckling makes them
-behave more like an asperity system. When plotting friction against relative contact in~\cref{fig:multi_FN_fric_vs_contact} we do not find any significant evidence for a linear relationship between contact area and friction as otherwise proposed by asperity theory. Instead, from the Tetrahedron and Honeycomb pattern, we confirm that the strain-induced effects are dominant in comparison to any effects from the contact area. By studying an even larger load range we might
-get more insight into this relationship. Note that we have omitted the error bars in~\cref{fig:multi_load} for visual purposes, but the absolute errors for both the relative contact and friction are on the same order of magnitude as shown in both~\cref{fig:multi_stretch} and~\cref{fig:load_dist}.
+behave more like an asperity system. When plotting the friction against relative contact in~\cref{fig:multi_FN_fric_vs_contact} we do not find any significant evidence for a linear relationship between contact area and friction as otherwise proposed by asperity theory. Instead, from the Tetrahedron and Honeycomb pattern, we confirm that the strain-induced effects are dominant in comparison to any effects from the contact area. By studying an even larger load range we might
+get more insight into this relationship. Note that we have omitted the error bars in~\cref{fig:multi_load} for visual purposes, but the absolute errors for both the relative contact and friction force are on the same order of magnitude as shown in both~\cref{fig:multi_stretch} and~\cref{fig:load_dist}.
 
 From the friction measurements in~\cref{fig:multi_load_fric} we find that the
-non-cut sheet generally produces a friction force in the order of 0.005--\SI{0.0025}{nN} throughout the 0.1--\SI{100}{nN} load range. Using a ratio based friction coefficient definition~\cref{eq:mu_def1}, $\mu_1 = F_{\text{fric}}/{F_N}$, this would lead to a coefficient roughly in the range
+non-cut sheet generally produces a friction force in the range 0.005--\SI{0.0025}{nN} throughout the 0.1--\SI{100}{nN} load range. Using a ratio based friction coefficient definition~\cref{eq:mu_def1}, $\mu_1 = F_{\text{fric}}/{F_N}$, this would lead to a coefficient roughly in the range
 \begin{align*}
   &\mu_1,  \ \text{\cref{eq:mu_def1}:}& &\text{No cut}\sim [\num{e-4}, 0.13],&  &\text{Tetrahedron}\sim [\num{4e-4},8.7],& &\text{Honeycomb}\sim [\num{9e-4}, 15.2].&
 \end{align*}
-However, these values mainly reflect the poorness of this definition, as we find the values to diverge at low load and decrease towards high load due to the lacking linear relationship and an offset in the load curve corresponding to a finite friction at zero load. This offset is drastically enhanced for the Kirigami patterns under strain. Due to the small changes in friction compared to the noise in the data, it is not sensible to calculate the slope $dF_{\text{fric}}/dF_N$ as a function of load. Nonetheless, if we force a linear fit for the whole range and use the second definition~\cref{eq:mu_def2} as $\langle \mu_2 \rangle = \Delta F_{\text{fric}}/\Delta F_N$, we get average coefficients in the range
+However, these values mainly reflect the poorness of this definition, as we find the values to diverge at small loads and decrease toward high loads due to the lacking linear relationship and an offset in the load curve corresponding to a finite friction at zero load. This offset is drastically enhanced for the Kirigami patterns under strain. Due to the small changes in friction compared to the noise in the data, it is not sensible to calculate the slope $dF_{\text{fric}}/dF_N$ as a function of load. Nonetheless, if we force a linear fit for the whole range and use the second definition~\cref{eq:mu_def2} as $\langle \mu_2 \rangle = \Delta F_{\text{fric}}/\Delta F_N$, we get average coefficients in the range
 \begin{align*}
   &\mu_2,  \ \text{\cref{eq:mu_def2}:}& &\text{No cut} \sim [4, 9]\times \num{e-5},&  &\text{Tetrahedron} \sim 5\times[\num{e-5}, \num{e-4}],& &\text{Honeycomb} \sim [1,9]\times \num{e-4},&
 \end{align*}
@@ -919,19 +929,13 @@ but we can take it as a rough estimate of the friction coefficient being on the
 order \num{e-4}--\num{e-5}. This relates to the finding
 by~\cite{DIENWIEBEL2005197} who reported a seemingly non-existing relationship
 between friction and normal load for a graphene sheet with changes in friction
-that corresponds to friction coefficients in the range \num{e-3}--\num{e-4} when
+that corresponds to friction coefficients in the range of \num{e-3}--\num{e-4} when
 using the slope definition~\cref{eq:mu_def2}. This supports the idea that the
-graphene sheet does exhibit superlubric behavior in these conditions and that the initial non-strained sheet is in an incommensurable
-configuration. Thus any strain-induced effects might introduce a more
-commensurable configuration. This aligns with the observed increase in friction
+graphene sheet exhibits superlubric behavior in these conditions and that the initial non-strained sheet is in an incommensurable
+phase. Thus any strain-induced effects might introduce a more
+commensurable phase that aligns with the observed increase in friction
 and the fact that the friction never gets smaller than the initial friction
-value. The non-linear effects can then be attributed to transitions in and out
-of commensurable phases. The observation that the friction dependency on load is
-relatively unaffected by the straining suggests that the strain-induced effects
-are independent of any load-related effects on friction. That is, the
-introduction of strain mainly shifts the friction-load curve but does not
-significantly alter its slope. 
-\vspace{5cm}
+value. The non-monotonic increase in friction can then be attributed to transitions in and out of commensurable phases. We found that these strain-induced effects on friction are generally separate from the dependence to load. That is, the introduction of strain mainly shifts the friction-load curve but does not significantly alter its slope.  
 
 \begin{figure}[H]
   \centering
@@ -955,26 +959,39 @@ significantly alter its slope.
      \label{fig:multi_FN_fric_vs_contact}
   \end{subfigure}
   \hfill
-     \caption{Investigation of the frictional behavior for the non-cut, Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$ sheet under varying load, consisting of 30 logarithmically spaced load values in the range 0.1--\SI{100}{nN}, at different strain stages relative to their rupture strains. (a) The average relative contact. (b) The average mean friction. We omitted the indication of the absolute errors as they were similarly low as seen in~\cref{fig:multi_stretch}. (c)}
+     \caption{Investigation of the frictional behavior for the non-cut, Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$ sheet under varying load, consisting of 30 logarithmically spaced load values in the range 0.1--\SI{100}{nN}, at different strain stages relative to their rupture strains. We omitted the indication of the absolute errors as they were similarly low as seen in~\cref{fig:multi_stretch}. (a) The average relative contact vs.\ load. (b) The average mean friction vs.\ load. (c) The average mean friction vs.\ the average relative contact.}
      \label{fig:multi_load}
 \end{figure}
 
-\subsection{Prospects of a negative friction coefficient}\label{sec:neg_prospects}
-Considering the results from~\cref{sec:stretch_dependency} and~\cref{sec:load_dependency} we find that strain-induced friction effects, on the order of $/SI{1}{nN}$, are generally dominating in comparison to load-induced effects on the order of \SI{0.01}{nN} given a load range of \SI{e2}{nN}. This is promising for the idea of achieving a negative friction coefficient for a nanomachine system that couples load and strain. By applying load on the nanomachine we would increase both the load and the strain on the sheet simultaneously. However, since the friction dependency to strain dominates in comparison to load effects such a system can in practice be designed entirely by considering the strain dependency. The friction coefficient is by our definition (\cref{eq:mu_def2}) given as the slope of the friction $F_f$ vs.\ normal force $F_N$ curve. Hence, for two points $\{(F_{N,1}, F_{f,1}), (F_{N,2}, F_{f,2})\}$, $F_{N,1} < F_{N,2}$ we can evaluate the associated friction coefficient $\mu_{1,2}$ as 
+\subsection{Prospects for achieving a negative friction coefficient}\label{sec:neg_prospects}
+Considering the results from~\cref{sec:stretch_dependency}
+and~\cref{sec:load_dependency} we find that strain-induced friction effects, on
+the order of \SI{1}{nN}, are generally dominating in comparison to load-induced
+effects on the order of \SI{0.01}{nN} given a load range of 0.1--\SI{100}{nN}.
+This is promising for the idea of achieving a negative friction coefficient for
+a nanomachine system that couples load and strain. By applying load on the
+nanomachine we would increase both the load and the strain on the sheet
+simultaneously. However, since the friction dependency to strain dominates in
+comparison to load effects such a system can in practice be designed entirely by
+considering the strain dependency. The friction coefficient is by our definition
+(\cref{eq:mu_def2}) given as the slope of the friction $F_{\text{fric}}$ vs.\ normal force
+$F_N$ curve. Hence, for two points $\{(F_{N,1}, F_{\text{fric},1}), (F_{N,2}, F_{\text{fric},2})\}$,
+$F_{N,1} < F_{N,2}$ we can evaluate the associated friction coefficient
+$\mu_{1,2}$ as 
 \begin{align*}
-  \mu_{1,2} = \frac{F_{f,2} - F_{f,1}}{F_{N,2} - F_{N,1}} = \frac{\Delta F_f}{\Delta F_N}.
+  \mu_{1,2} = \frac{F_{\text{fric},2} - F_{\text{fric},1}}{F_{N,2} - F_{N,1}} = \frac{\Delta F_{\text{fric}}}{\Delta F_N}.
 \end{align*}
-If we neglect load effects, $F_f(F_N, \varepsilon) \sim F_f(\varepsilon)$, and consider a load-strain coupling $\varepsilon = R F_N$ with linear coupling ratio $R$ we get 
+If we neglect load effects, $F_{\text{fric}}(F_N, \varepsilon) \sim F_{\text{fric}}(\varepsilon)$, and consider a load-strain coupling $\varepsilon = R F_N$ with linear coupling ratio $R$ we get 
 \begin{align}
-  \mu_{1,2}(\varepsilon_1, \varepsilon_2) = \frac{\Delta F_{f}(\varepsilon_1, \varepsilon_2)}{\frac{1}{R}(\varepsilon_2 - \varepsilon_1)} = R\frac{\Delta F_{f}(\varepsilon_1, \varepsilon_2)}{\Delta \varepsilon}.
+  \mu_{1,2}(\varepsilon_1, \varepsilon_2) = \frac{\Delta F_{\text{fric}}(\varepsilon_1, \varepsilon_2)}{\frac{1}{R}(\varepsilon_2 - \varepsilon_1)} = R\frac{\Delta F_{\text{fric}}(\varepsilon_1, \varepsilon_2)}{\Delta \varepsilon}.
   \label{eq:mu_strain}
 \end{align}
-When considering the ratios $\Delta F_f / \Delta \epsilon$ for the reduction in friction with strain for the Tetrahedron and Honeycomb patterns in~\cref{sec:stretch_dependency} we find the corresponding coupled system friction coefficients to be 
+When considering the ratios $\Delta F_{\text{fric}} / \Delta \epsilon$ for the reduction in friction with strain for the Tetrahedron and Honeycomb patterns in~\cref{sec:stretch_dependency} we find the corresponding coupled system friction coefficients to be 
 \begin{align}
   &\text{Tetrahedron:} \quad R\frac{-\SI{0.51}{nN}}{0.04} = -R\cdot\SI{12.75}{nN},& &\text{Honeycomb:} \quad R\frac{-\SI{0.98}{nN}}{0.36} = -R\cdot\SI{2.72}{nN}.&
   \label{eq:pilot_study_mu_estimate}
 \end{align}
-This showcases that we might be able to utilize the strain effect to achieve a negative friction coefficient for the system of coupled strain and load. This is investigated further in~\cref{chap:negative_coef}.
+This showcases that we might be able to utilize the strain effect to achieve a negative friction coefficient for the system of coupled load and strain. This hypothesis is further investigated in~\cref{chap:negative_coef}.
 
 
 
