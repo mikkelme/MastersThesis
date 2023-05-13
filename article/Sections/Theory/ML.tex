@@ -50,7 +50,6 @@ For a binary classification problem, meaning that the output is either True or F
   \label{eq:BSE}
 \end{cases}
 \end{align}
-% The cross-entropy loss can be derived from a maximum likelihood estimation.
 Without going into details with the derivation we can convince ourselves that the error is minimized for the correct prediction and maximized for the worst prediction. When the ground truth is $y_i = 1$ we get the negative loss contribution $-\log(\hat{y_i})$ where a correct prediction $\hat{y}_i \to 1$ yields $L_i \to 0$. For a wrong prediction $\hat{y}_i \to 0$ the loss contribution will diverge $L_i \to \infty$. Similar applies to the case of $y_i = 0$ with opposite directions. 
 
 Given a loss function, we can calculate the loss gradient $\nabla_\theta L$ with respect to each of the model parameters $\theta$, being the weights and biases in the model. This is called \textit{backpropagation} since we follow the propagation of the errors as we go back through the model layers. We calculate the gradients using the derivative chain rule. These gradients express how each parameter is connected to the loss and the overall idea is then to ``nudge'' each parameter in the right direction to reduce the loss. We usually denote a full cycle of forward propagation, backpropagation and an update of all model parameters as one \textit{epoch}. We calculate the updated parameter $\theta_t$ for epoch $t$ using the \textit{gradient descent} method
@@ -313,10 +312,6 @@ will have a Gaussian distribution within the theoretical receptive field because
 \end{figure}
 
 
-% Other techniques
-% exist which aim to optimize the validation for sparse data situations, like
-% cross-validation and bootstrap, but we will not consider such
-% methods for this thesis.
 \subsection{Training, validation and test data}
 So far, we have simply considered the concept of \textit{training data} as a
 means to update the model parameters. Yet, we want to evaluate the model
@@ -353,8 +348,6 @@ reliable performance metric for the model. However, it is important that this se
 
 
 \section{Overfitting and underfitting}\label{sec:under_over_fit}
-% THE UNDERFITTING AND OVERFITTING TRADE-OFF~\cite{smith2018disciplined}. 
-
 The balance between underfitting and overfitting is essential in model training
 and it is closely related to the complexity of the model and the selected
 hyper-parameters. A typical textbook visualization of underfitting and

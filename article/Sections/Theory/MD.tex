@@ -11,50 +11,11 @@ In this chapter, we introduce the fundamental principles of \acrshort{MD} modeli
 
 
 
-% However selecting the appropriate force fields can be a difficult task, since different force fields consider different approximations for the chemical ...
-
-
-% Ab-initio MD, e.g. of the Car-Parrinello type (Car and Parrinello, 1985), has not really been of use so far in sliding friction, mainly because it can handle only rather small systems, typically hundreds of atoms, for relatively short times, typically ≪ 1 ns. Most MD frictional simulations are therefore based on reasonable empirical interatomic forces (“force fields”), ranging from relatively sophisticated energy surfaces account- ing for electrons at the density-functional level or at the tight-binding level (Xu et al., 1992), to angle-dependent many-particle potentials, to simple pairwise potentials (e.g. Lennard-Jones), to basic simple models of elastic springs, extensions of FK-type formulations.
-% https://arxiv.org/abs/1112.3234v4
-
-
-
-% A promising compromise could possibly be provided by the so-called reactive
-% potentials [120–122], capable of describing some chemical reactions, including
-% interface wear with satisfactory computational efficiency in large-scale
-% atomic simulations, compared to semi-empirical and first-principles
-% approaches. \cite{Manini_2016}
-
-
-
-% Despite recent progress in this respect, it is clear that there will always be
-% interesting problems beyond the reach of ab initio approaches
-% \cite{PhysRevB.37.6991}.
-
-
-% Physically relevant quantities like the average friction force can be
-% evaluated by carrying out averages over the model dynamics. The modeling most
-% first of all adress equlibrium and near-equlibrium behvaiour where the
-% fluctuation-dissipation theorem governs the conversion of mechanical energy
-% into heat. But it most also deal with nonlinear dissipative phenomena such as
-% instabilities and stick-slip.\cite{Manini_2016}
-
-% Quantitative data can be obtained by analyzing the numerical output directly.
-% [p. 303]{BHUSHAN20051507}
-
-
-
-
-
 \section{Potentials}\label{sec:potentials}
-% \cite{PhysRevB.37.6991}
-
 The interatomic force fields governing the \acrshort{MD} simulation are given from the choice of potentials and have a significant impact on the outcomes obtained. The potentials can vary from intricate energy surfaces that consider electrons at either the density-functional or tight-binding level to angle-dependent many-particle potentials, basic pairwise potentials, or simple models of elastic springs, and extensions of Frenkel-Kontorova-type formulations~\cite{Vanossi_2013}. For the choice of
 potentials, and materials, we take a basis in the numerical \acrshort{MD} study
 by Li et al.~\cite{li_evolving_2016} simulating a \acrshort{FFM} type setup
 where a silicon tip indents a graphene sheet supported by a silicon substrate. Our system obviously differs from this arrangement since we will be sliding the entire sheet upon the substrate. Nevertheless, we contend that this serves as an appropriate basis for selecting the potentials based on the materials involved. Thus, we adopt the potentials from~\cite{li_evolving_2016} describing the covalent bonds between carbon atoms (C--C) in the graphene sheet with the Tersoff potential~\cite{PhysRevB.37.6991} and the covalent bonds between silicon atoms (Si--Si) in the substrate with the Stillinger–Weber potential~\cite{PhysRevB.31.5262}. A typical 12--6 Lennard–Jones (\acrshort{LJ}) potential is used to describe the van der Waals adhesive interaction between the graphene sheet and the substrate. 
-
-
 
 \subsection{General formulation of potentials}
 The potentials determine the interatomic forces in the \acrshort{MD} simulation, with the force $F$ acting on an atom being derived from the potential energy $U$ as the derivative $\vec{F} = -\nabla U$, where $\nabla = (\frac{\partial}{\partial x}, \frac{\partial}{\partial y}, \frac{\partial}{\partial z})$. The energy of $N$ interacting particles can be described as an expansion in terms of participating particles as 
@@ -160,16 +121,6 @@ a_{ij}\sigma_{ij}$ and $r_{ik} = a_{ik}\sigma_{ik}$ respectively. We adopt the p
 
 
 \subsection{Tersoff}\label{sec:tersoff}
-% Add figure similar to:
-% https://en.wikipedia.org/wiki/Bond_order_potential#/media/File:Bond-order_interatomic_potential.png,
-% showing bond order curves.
-
-
-% https://interatomic-potentials.readthedocs.io/en/latest/doc/tersoff.html
-% https://chem.libretexts.org/Bookshelves/
-% Physical_and_Theoretical_Chemistry_Textbook_Maps/Supplemental_Modules_(Physical_and_Theoretical_Chemistry)/Chemical_Bonding/Fundamentals_of_Chemical_Bonding/Bond_Order_and_Lengths
-
-
 The theoretical basis in this section is based
 on~\cite{docs_lammps_tersoff,PhysRevB.37.6991}. The Tersoff potential abandons
 the idea of a general $m$-body form and attempts instead to build the model on a
@@ -271,8 +222,6 @@ are adopted from J.\ Tersoff~\cite{PhysRevB.39.5566} and summarized in
 
 
 
-
-
 \section{Integration}\label{sec:integration}
 Assuming that one has defined a system of atoms, defining the atom types, initial positions and velocities, and interatomic potentials, we need
 to move the system forward in time. By solving Newton's equations of motion we achieve this by effectively sampling the microcanonical ensemble characterized by a constant number of particles $N$, volume $V$ and energy $E$, hence denoted $NVE$~\cite{dfrenkel96:mc}. Newton's equations of motion read
@@ -294,9 +243,6 @@ where $\dot{x} = dx/dt$ is Newton's notation for the time derivative and $\vec{v
 
 
 \subsection{Velocity Verlet}
-% http://www.physics.drexel.edu/~valliere/PHYS305/Diff_Eq_Integrators/Verlet_Methods/Diffrntleqn3.pdf
-% https://www2.ph.ed.ac.uk/~dmarendu/MVP/MVP03.pdf
-
 A popular approach to the numerical integration of Newton's equations of motion, when written as two coupled first-order differential equations~\cref{eq:NE_2}, is the \textit{velocity verlet} algorithm. We can derive the algorithm by the use of Taylor expansions. We begin by expanding the next-step position vector $\vec{r}_i(t + \Delta t)$ at time $t$
 \begin{align}
   \vec{r}_i(t + \Delta t) &= \vec{r}_i(t) + \dot{\vec{r}}_i(t) \Delta t + \frac{\ddot{\vec{r}}_i(t)}{2} \Delta t^2 + \mathcal{O}(\Delta t^3) \label{eq:vv_comp1},
@@ -336,36 +282,12 @@ numerically is as stated in the following steps.
 \end{enumerate}
 
 
-
 \section{Thermostats}\label{sec:thermostat}
 In~\cref{chap:friction} we introduced friction as an ultimate result of the equipartition theorem stating that the kinetic energy supplied by the sliding motion will tend to transfer to other degrees of freedom and eventually dissipate to the environment as heat through phonon transport (and electrons for a metallic system)~\cite{Manini_2016}. However, when modeling the system exclusively through the solutions of Newton's equations of motion we have no dissipation channel in our system. Instead, the energy will reflect back and forth and eventually ``pile up'' in the system in an unphysical manner. In order to resolve this issue we have to model the heat dissipation to the environment. This can be approached in a variety of ways, but one of the more common choices, which we will use as well, is the Langevin thermostat.
 
 
-% Thus, we need to add an energy sink representing the bulk material sourronding the system of interest, which let the heat dissipate add a steady state. 
-
-
-% In order to model a realistic friction response we must ensure that excitations in the system is allowed to
-% propagate in the system and disperse in the bulk of both sheet and substrate.
-% Due to a relatively small simulation size theese are likely to relflect back and ``pile up'' unphysically.
-
-% Thus in order to avoid continuous heating and attain a steady state
-% the (Joule) heat must be removed at a steady state. This is very the viscous
-% damping of the langevin equations enter the picture. It can be difficulut to set
-% the value $\gamma$ for the magnitude of this damping. The unphysical
-% introduction of heat sink can be mittigated by some modifictions he mention,
-% which is kind of next level I guess. 
-
 
 \subsection{Langevin thermostat} \label{sec:langevin}
-
-% Check out \cite{Manini_2016} for a good theory section on this that I had
-% completely missed when writing this!
-
-% Based on
-% https://www.uio.no/studier/emner/matnat/fys/FYS4130/v19/pensumliste/stat-phys_2019.pdf
-
-% http://physics.gu.se/~frtbm/joomla/media/mydocs/LennartSjogren/kap6.pdf
-
 The Langevin thermostat is a stochastic thermostat that modifies Newton's
 equations of motion such that the solution lies in the canonical ensemble
 characterized by a constant number of particles $N$, constant volume $V$ and
@@ -429,10 +351,6 @@ where the constant $a$ describes the magnitude of the fluctuations. We could in 
   \langle R(t)R(0) \rangle = a \delta(t),
   \label{eq:F_corr}
 \end{align}
-% Note that the delta function is justified by the fact that the characteristic
-% frequencies of the phonon and electron excitations are much shorter than the
-% hopping rate of the tip between the minima of the interaction potential
-% \cite{gnecco_meyer_2015}
 where $\delta$ denotes the Dirac delta function. This is valid for all spatial
 coordinates which are all independent of each other. Since both the drag
 force and the fluctuation force originate from the molecular fluid, where the
@@ -488,30 +406,8 @@ Thus, we find the finite damping correlation time $\alpha/m$ to describe the cro
 \rangle} \propto t$ at $t \ll m/\alpha$ to the diffusive regime $\sqrt{\langle x^2(t)\rangle} \propto \sqrt{t}$ at $t \gg m/\alpha$. That is, at short time scales the thermal movement can be thought of as relatively free with a low collision rate, while at longer time scales the movement is characterized by a jittery random-walk-looking motion that is related to diffusion. 
 
 
-% What do we use for this in the simulation?
-
-
-% Introduce the fluctuation-dissipation theorem concept earlier since this is a
-% motivaiton for the Langeivn equation. 
-
-
-% Of course, this approach is not rigorous, since the relevant particles
-% colliding with each given simulated atom are already all included in the
-% conservative and deterministic forces explicitly accounted for by the “force
-% field”. The Langevin approach is quite accurate to describe small
-% perturbations away from equilibrium, but it may fail quite badly in the
-% strongly out-of-equilibrium nonlinear phenomena which are the target of the
-% present paper.  \cite{Manini_2016}
 
 \subsection{Applying the Langevin Thermostat}
-% https://docs.lammps.org/fix_langevin.html
-
-% https://www2.ph.ed.ac.uk/~dmarendu/MVP/MVP03.pdf
-
-% https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Non-Equilibrium_Statistical_Mechanics_(Cao)/01%3A_Stochastic_Processes_and_Brownian_Motion/1.04%3A_The_Langevin_Equation
-
-% \cite{Hunenberger2005}(pp. 115, 120-121) \cite{docs_lammps_langevin}
-
 The numerical implementation of the Langevin equation~\cref{eq:Langevin} is done through the simulation software LAMMPS (see~\cref{sec:LAMMPS}) following~\cite{PhysRevB.17.1302} by defining the force vector for each particle as 
 \begin{align}
   \vec{F} &= \vec{F_c} + \vec{F}_{f} + \vec{F}_{r} \nonumber \\
@@ -530,30 +426,6 @@ with new random vector $\vec{h}_i$ for each particle and each update. Notice
 however, we will only apply the thermostat to specific regions in our simulation, mainly on the outer edges, while the main part of interest is modeled exclusively by Newton's equations of motion as described in~\cref{eq:NE}. This is done in order to avoid affecting the governing parts of the friction simulation too much. We use a damping of $1/\gamma = m/\alpha = \SI{1}{ps}$ as a common default choice. 
 
 
-% In practice the implementation of the thermostat is implemented discretely by
-% updating the force on each particle by the addition of the described forces
-% $f_f$ and $f_r$ for each particle. In LAMMPS this is controlled by the user
-% defined damping factor ``damp'' = $\gamma^{-1}$ in units of time whih control
-% how fast we are going to reach the temperature equlibrium. Thus the
-% documentation (\cite{docs_lammps_langevin}) defines the added forces as
-
-
-% https://www2.ph.ed.ac.uk/~dmarendu/MVP/MVP03.pdf
-% https://www.uio.no/studier/emner/matnat/fys/FYS4130/v19/pensumliste/stat-phys_2019.pdf
-
-% ``The Langevin equation is Newtons second law for a Brownian particle, where
-% the forces include both the viscous drag due to the surrounding fluid and the
-% fluctuations caused by the individual collisions with the fluid molecules.''
-
-% % http://physics.gu.se/~frtbm/joomla/media/mydocs/LennartSjogren/kap6.pdf
-% % https://www2.ph.ed.ac.uk/~dmarendu/MVP/MVP03.pdf ``Another option to
-% simulate a system in the NVT ensemble is to use a stochastic thermostat, as
-% opposed to the deterministic thermostat defined through the Nose-Hoover
-% equations.''
-
-% see https://www2.ph.ed.ac.uk/~dmarendu/MVP/MVP03.pdf p. 4
-
-
 \section{Limitations}
 On a general note, \acrshort{MD} simulations are limited to relatively small
 time and size scales due to the available computation time. Modern CPUs perform
@@ -564,44 +436,6 @@ cores, providing roughly $10^{11}$ FLOPS. In a typical \acrshort{MD} calculation
   \frac{\text{FLOPS}}{N\cdot N_{\text{step}} \cdot dt^{-1}} \sim \frac{\num{e11}}{\num{e5}\cdot 10 \cdot \num{e15}} = \num{e-10}.
 \end{align*}
 Hence, the simulation can make progress at a rate of \SI{100}{ps} per second, or roughly $\SI{1}{\mu s}$ per day. This serves as a rough estimate for the capabilities of \acrshort{MD} simulations. Regarding the ``realism'' of the simulations, some general weaknesses include the lack of considering quantum effects and a reduction in the number of dissipation channels available.
-
-
-% \cite{Yalin_2011}. Thus, the weaknesses
-% include the lack of quantum effects.
-
-% Weak- nesses include a lack of quantum effects in classical atomistic
-% dynamics, and perhaps more importantly, the fact that meaningless results can
-% be obtained if the simulation conditions are incorrectly chosen. \cite[p.
-% 303]{BHUSHAN20051507}
-
-
-
-% Read Size- and time-scale issues
-% https://arxiv.org/abs/1112.3234v4
-
-
-% Speed
-% Dissipation
-
-% Adding viscous friction in the modelling of friction seems like an obvious issue for a true picture of this. The simplicity of the dissipation channel might be of importance for the final results. 
-
-% One of the limitations of concern is in regard to the simulation scale.
-% Despite relatively fast processor speed and efficient algorithm the number of
-% atoms that can be handled realistically is still insufficient for complex
-% system simulation \cite{kim_nano-scale_2009}.
-
-
-
-% The main problem when studying the velocity dependence of friction by MD
-% simulations is the fact that speeds below few m/s are not accessible. These
-% values are well above typical speeds at which atomic stick–slip is resolved by
-% AFM (nm/s to μm/s). The reason for that is the typical time scales in MD,
-% which are of the order of 1 fs. Furthermore, phenomena such as thermally
-% activated hopping are not effective at high speeds, which makes any attempts
-% to extrapolate the model predictions on the velocity dependence of friction
-% quite doubtful. A possible solu- tion consists of accelerating the simulations
-% during the long stick phases separating rapid slip events. \cite[p.
-% 207]{gnecco_meyer_2015}
 
 
 \section{LAMMPS}\label{sec:LAMMPS}

@@ -56,60 +56,6 @@ will be used when nothing else is stated explicitly.
   \end{center}
 \end{table}
 
-% 
-
-%
-
-% We aim to chose the parameters in order to accomodate a balance between generlizable and stable result which is simmutaneously a suting candidate as a proof of concept for the control of friction properties using kirigami inspired cuts. 
-
-
-
-% Due to the great number of parameters, and corresponding range of reasonable numerical values they can take, it is ... to parameter search including all of these. Thus, we will to a great extent rely on a reverse engineering in order to establish a set of parameters for the \textit{physical} and \textit{measurement} categories along with numerical ranges for the $\textit{ML input}$ category which gives stable and promising results. By doing so we effectively narrow down the parameter regime for which the investigated frictional properties belong. We aim to chose the parameters in order to accomodate a balance between generlizable and stable result which is simmutaneously a suting candidate as a proof of concept for the control of friction properties using kirigami inspired cuts. 
-
-% In the following we present the results of the friction simulations in parallel to the procedure of investigating the choice of different parameters. 
-
-% In the following subsections (X to Y) we are going to present the friction simulation results in parallel to the presentation of the reasoning behind the parameter choices. For this we will refer to the default parameter choice showcased in \cref{tab:final_param} which is representative of the final parameter choices. 
-
-
-
-
-% The sliding velocity is 20 m/s, which is comparable to the operating conditions in micromechanical systems (MEMS), but which is much larger than the typical velocity in scanning force microscopy (SFM) experiments. \cite{mo_friction_2009} Supplementary materials.
-
-
-% We should try to set the physcis and measurement parameters in such a way that we reduce computation speed where it is doesn't infer with the frictional properties study.
-
-
-
-% Parameters expected to have a physical effect on the friction properties, which is kept fixed and thus not included in the machine learning input set. 
-
-% Paramters influecing the simulation kinetics and being representative of the experimental procedure that we are mimicking. These parameters is chosen with the aim of getting stable parameters under small perturbations of the given parameter. 
-
-% The remaining paramters serves as input variables for optimization process and is thus given as input variables for the machine learning (ML).
-
-
-
-
-% Say someting about how these parameters is chosen. Reference to articles for which these was mirrored from. 
-
-
-
-
-
-% We need to define some ranges for the ML input paramters. $F_N$, stretch ranges where it is not prone to ruptures. The configuration it self does not have clear rules but is also being regulated by the no rupture requirement. 
-
-% Retardation effects due to the finiteness of the speed of sound are usually irrelevant in slow-speed experiments (v < 1 mm/s) \cite{Manini_2016}
-
-% In macroscopic tribology experiments, sliding speeds often range in the 0.1 − 10 m/s region \cite{Manini_2016}
-
-% By contrast, in nanoscale AFM experiments the tip usually advances at much lower speeds $\sim$ 1 $\mu$m/s: over a typical run it is possible to simulate a tiny ∼ 1 pm displacement, far too small to explore even a single atomic-scale event, let alone averaging over a steady state.\cite{Manini_2016}
-
-
-% However, MD simulations can provide so much physical insight that they make sense even if carried out at much higher speeds than in real-life AFM or surface force apparatus (SFA) experiments: in practice, currently the sliding speeds of most atomistic tribology simulations are in the $\sim$ 1 m/s region.\cite{Manini_2016}
-
-
-% Besides the limitations of system size and simulation times that are obvious and will be discussed later, there is another limitation concerning temperature, that is rarely mentioned. All classical frictional simulations, atomistic or otherwise, are only valid at sufficiently high temperature. They become in principle invalid at low temperatures where the mechanical degrees of freedom of solids progressively undergo ”quantum freezing”, and both mechanics and thermokinetics deviate from classical. \cite{Manini_2016}.
-
-
 
 
 \section{Force traces}\label{sec:single_analysis}
@@ -384,7 +330,6 @@ unphysical negative value which should be associated with high uncertainty.
   \begin{subfigure}[t]{0.49\textwidth}
     \centering
     \includegraphics[width=\textwidth]{figures/baseline/Ff_runmean.pdf}
-    % \caption{Running mean with window length $\SI{5}{\text{Å}}$ (50\% the data length).}
     \caption{}
     \label{fig:runmean}
   \end{subfigure}
@@ -442,9 +387,6 @@ ambiguity surrounding the determination of static friction, we will mainly
 concern ourselves with kinetic friction in the remainder of this thesis.
 
 
-% In most numerical studies \cite{bonelli_atomistic_2009, zhu_study_2018} they define static friction as the max peak or top 5\% quantile throughout the simulation and do not consern themselves with a requirement for an initial increasement toward this max. Thus, we interpret this as a measure of the force oscillation magnitude which is highly related to the stick-slip behaviour. 
-
-
 \begin{figure}[!htb]
   \centering
   \begin{subfigure}[t]{0.49\textwidth}
@@ -463,62 +405,6 @@ concern ourselves with kinetic friction in the remainder of this thesis.
     \caption{Investigation of the sliding displacement corresponding to the maximum friction force peaks. The dotted line, along with the gray-shaded area indicating the degree of uncertainty, represents the slowest significant oscillation period identified in the data from the Fourier analysis in~\cref{fig:ft_a}. This line serves as a threshold for determining whether a peak falls within the initial portion of the sliding simulation. (a) The top three maxima for simulations with varying loads; 30 logarithmically spaced loads in the range $[0.1, 100]$ nN. The marker shapes denote the top 1, 2 and 3 respectively and the color denotes the normal load. (b) The sliding displacement corresponding to the friction maxima for simulations with varying spring constant; 40 uniformly spaced values in the range $K \in [5, 200]$ N/m in addition to $K = \infty$.}
     \label{fig:max_peaks}
 \end{figure}
-
-
-% \begin{figure}[!htb]
-%   \centering
-%   \begin{minipage}{.47\textwidth}
-%     \centering
-%     \includegraphics[width=\linewidth]{figures/baseline/max_dist.pdf}
-%     \captionof{figure}{The distribution of the top three maximum friction force peaks resulting from multiple friction simulations with varying loads, for 30 logarithmically spaced load values in the range $[0.1, 100]$ nN. The dotted line, along with the gray-shaded area indicating the degree of uncertainty, represents the slowest significant oscillation period identified in the data. This line serves as a threshold for determining whether a peak falls within the initial portion of the sliding simulation.}
-%     \label{fig:max_dist}
-%   \end{minipage}%
-%   \hspace{0.2cm}
-%   \begin{minipage}{.48\textwidth}
-%     \centering
-%     \includegraphics[width=\linewidth]{figures/baseline/max_vs_K}
-%     \captionof{figure}{Sliding displacement corresponding to the maximum friction force as a function of spring constant.}
-%     \label{fig:max_vs_K}
-%   \end{minipage}
-%   \end{figure}
-
-
-
-
-
-% We investigate the placement of the max values, i.e. the sliding distance length for which we measure the max friction force. We show the placement of the top three max values for different simulatiosn with varying normal force in \cref{fig:max_dist}. We observe immediately that only a few top three max values is measured within a full slow period of $\sim$ 71 Å. In fact many max values is measured just before the end of the simulation. This indicates that the naive approach of using the overall max value to describe the static friction coefficient might be a to naive approach. Another approach is to use the max value within a single period, but we do not really know if this period will be similar for alle cut patterns and thus this might be limiting. 
-
-
-
-% Look into static friction when having a spring connected to the drag force with
-% rather low spring constant. Maybe compare to critical sitffness in FK model.
-% Some rough calculations follow here (make a note about this being a very naive
-% approach to determine a suitable stiffness for static friction scenarious. In
-% reality one should increase force slowly to observe this probably). When
-% dragging the sheet in the y-direction we effectively have a lattice spacing
-% \begin{align*}
-%   a_c = a_{2,x} + B_x = a_G\frac{\sqrt{3}}{2} + \frac{a_G}{2\sqrt{3}} = \frac{2a_G}{\sqrt{3}}
-% \end{align*}
-% for graphene lattice constant $a_G = 2.46$ Å. For the diamond silicon structure
-% this is essentially equal to the lattice constant $a_D = 5.4210$ Å. This gives 
-% \begin{align*}
-%   \theta = \frac{a_c}{a_b} = \frac{2}{\sqrt{3}}\frac{a_G}{a_D} \approx 0.5230.
-% \end{align*}
-% Since we have the factor $2/\sqrt{3}$ it is safe to assume that this is a
-% irrational number leadning to incommensurability. The worst case scnario of
-% incommensurability (where $\theta$ equals the golden-mean, Can we get the exact
-% number?) gives the minimal critical stiffness $K_c \sim 2U_0
-% (\frac{\pi}{a_b})^2$, where $U_0$ is the substrate potentiual magnitude and
-% $a_b$ the lattice spacing of the substrate. The potential barrier $U_0$ can be
-% approximated by the work done when resisting the normal force as $\sim F_N
-% a_D/2$ such that the critical stiffness can be approximated to 
-% \begin{align*}
-%   K_c \sim 2 F_N \frac{a_D}{2} \left(\frac{\pi}{a_D}\right)^2 = \frac{F_N}{a_D}\pi^2
-% \end{align*}
-% With a normal force of 1 nN we get $K_c \sim 18$ N/m. Hence, we should try a
-% spring constant lower than that as qualified way of determining if this is the
-% reason why we do not really see static friciton in the simulation. By plotting the max position (in terms of drag length) as a function of spring constant as seen in \cref{fig:max_vs_K} we can investigate if the concept of a critical spring constant is governing this simulation. However, as I'm writing this I'm realizing that the spring constant in the model applies to the interatomic forces and not the one dragging the system.....
-
 
 
 
@@ -578,29 +464,6 @@ rupture strain.
   \caption{The relative contact during straining of the non-cut (No cut), Tetrahedron $(7,5,1)$, and Honeycomb $(2,2,1,5)$ pattern respectively in contact with a substrate. The relative contact is given as the relative number of atoms in the sheet within chemical interaction range. The cut-off for the interaction range is \SI{4}{\text{Å}} corresponding to $\sim 120 \%$ the \acrshort{LJ} equilibrium distance. No normal force is applied and the temperature is kept at $T = \SI{300}{K}$.}
   \label{fig:contact_vs_stretch}
 \end{figure}
-
-
-
-
-% \begin{figure}[H]
-%   \centering
-%   \begin{minipage}{\textwidth}
-%     \centering
-%     \includegraphics[width=\linewidth]{figures/baseline/vacuum_normal_buckling.pdf}
-%     \captionof{figure}{The out-of-plane buckling during straining for three different sheet patterns, namely the No cut, Tetrahedron $(7,5,1)$, and Honeycomb $(2,2,1,5)$ pattern, in vacuum at low temperature $T = \SI{5}{K}$. The buckling is quantified by the distribution of the atom z-positions, which are perpendicular to the sheet plane, and the colors indicate selected quantiles. The rupture strain for each pattern, from left to right, is 0.38, 0.22, and 1.37, respectively. The results indicate that the Tetrahedron and Honeycomb patterns exhibit significant out-of-plane buckling in comparison to the non-cut sheet.}
-%     \label{fig:buckling_quartiles}
-%   \end{minipage}%
-%   \vspace{1cm}
-%   \newline
-%   \begin{minipage}{.5\textwidth}
-%     \centering
-%     \includegraphics[width=\linewidth]{figures/baseline/contact_vs_stretch.pdf}
-%     \captionof{figure}{The relative contact for a strained sheet in contact with a substrate. The relative contact is given as the relative number of atoms in the sheet within chemical interaction range. The cut-off for the interaction range is \SI{4}{\text{Å}} corresponding to $\sim 120 \%$ the \acrshort{LJ} equilibrium distance. No normal force is applied and the temperature is kept at $T = \SI{300}{K}$.}
-%     \label{fig:contact_vs_stretch}
-%   \end{minipage}
-%   \end{figure}
-
-
 
 
 

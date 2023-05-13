@@ -366,7 +366,6 @@ We choose the weights $W_o$ to be $1/2$ for the mean friction and $1/10$ for the
 remaining 5 output variables, thus sharing the loss evenly for the remaining 50\% of the weight. During the introductory phase of the model implementation, we tried different settings for these weights, but we found that the results varied little. Hence, we concluded that this was of minor importance and we settled on the values defined above.
 
 \subsection{Hypertuning}
-% Show overfitting curve for some of the training results?
 For the hypertuning we focus on architecture complexity, learning rate, momentum and weight decay. We use the ADAM optimizer with the initial default values of $\beta_1 = 0.9, \beta_2 = 0.999$ and zero weight decay, for which we will vary momentum $\beta_1$ and weight decay in the hypertuning. We use a batch size of 32 and train the model for a maximum of 1000 epochs while storing the best model based on the validation scores.
 Since the learning rate is considered to be one of the most important hyperparameters we will determine a suitable choice for the learning rate using the learning rate range test for each of the two grid searches:
 \begin{enumerate}
@@ -581,10 +580,6 @@ search in that range, but due to time constraints and the belief that the potent
   \end{center}
 \end{table}
 
-% ???
-% Look at training history plots an show the overfitting (after best epoch)
-% ???
-
 
 
 \subsection{Model performance}
@@ -754,115 +749,6 @@ property scores.
   \end{table}
 
 
-
-
-
-
-% \begin{table}[H]
-%   \begin{center}
-%   \caption{\hl{Tetrahedon}}
-%   \label{tab:ML_ranking_pop}
-%   \begin{tabular}{|c|c|c?{0.3mm}c|c|c|} \hline
-%     ML & \multicolumn{2}{c?{0.3mm}}{Data} &  \multicolumn{2}{c|}{\acrshort{ML}} & Data \\ \cline{2-5}
-%     Rank & Config & Value [nN] & Config & Value [nN] & Rank \\ \hline
-%     \multicolumn{6}{|c|}{$\min F_{\text{fric}}$} \\ \hline
-%     20 & (3, 9, 4) & 0.0067 & (3, 1, 2) & 0.0041 & 5  \\ \hline
-%     5 & (3, 1, 3) & 0.0075 & (1, 3, 4) & 0.0049 & 11 \\ \hline
-%     6 & (5, 3, 4) & 0.0084 & (1, 3, 3) & 0.0066 & 6  \\ \hline
-%     21 & (1, 7, 3) & 0.0084 & (3, 1, 4) & 0.0066 & 8  \\ \hline
-%     1 & (3, 1, 2) & 0.0097 & (3, 1, 3) & 0.0078 & 2  \\ \hline
-%     \multicolumn{6}{|c|}{$\max F_{\text{fric}}$} \\ \hline
-%     1 & (5, 3, 1) & 1.5875 & (5, 3, 1) & 1.5920 & 1 \\ \hline
-%     2 & (1, 3, 1) & 1.4310 & (1, 3, 1) & 1.2739 & 2 \\ \hline
-%     4 & (3, 1, 2) & 1.0988 & (9, 3, 1) & 1.1162 & 4 \\ \hline
-%     3 & (9, 3, 1) & 1.0936 & (3, 1, 2) & 0.7819 & 3 \\ \hline
-%     5 & (7, 5, 1) & 0.7916 & (7, 5, 1) & 0.7740 & 5 \\ \hline
-%     \multicolumn{6}{|c|}{$\max \Delta F_{\text{fric}}$} \\ \hline
-%     1 & (5, 3, 1) & 1.5529 & (5, 3, 1) & 1.5578 & 1 \\ \hline 
-%     2 & (1, 3, 1) & 1.3916 & (1, 3, 1) & 1.2331 & 2 \\ \hline 
-%     4 & (3, 1, 2) & 1.0891 & (9, 3, 1) & 1.0807 & 4 \\ \hline 
-%     3 & (9, 3, 1) & 1.0606 & (3, 1, 2) & 0.7778 & 3 \\ \hline 
-%     5 & (7, 5, 1) & 0.7536 & (7, 5, 1) & 0.7399 & 5 \\ \hline 
-%     \multicolumn{6}{|c|}{max drop} \\ \hline
-%     1 & (5, 3, 1) & 0.8841 & (5, 3, 1) & 0.8603 & 1 \\ \hline 
-%     2 & (3, 5, 1) & 0.4091 & (3, 5, 1) & 0.3722 & 2 \\ \hline 
-%     4 & (7, 5, 1) & 0.3775 & (1, 1, 1) & 0.2879 & 5 \\ \hline 
-%     5 & (9, 7, 1) & 0.2238 & (7, 5, 1) & 0.2478 & 3 \\ \hline 
-%     3 & (1, 1, 1) & 0.1347 & (9, 7, 1) & 0.1302 & 4 \\ \hline 
-%   \end{tabular}
-%   \end{center}
-% \end{table}
-
-% \begin{table}[H]
-%   \begin{center}
-%   \caption{\hl{Honeycomb}}
-%   \label{tab:ML_ranking_hon}
-%   \begin{tabular}{|c|c|c?{0.3mm}c|c|c|} \hline
-%     ML & \multicolumn{2}{c?{0.3mm}}{Data} &  \multicolumn{2}{c|}{\acrshort{ML}} & Data \\ \cline{2-5}
-%     Rank & Config & Value [nN] & Config & Value [nN] & Rank \\ \hline
-%     \multicolumn{6}{|c|}{$\min F_{\text{fric}}$} \\ \hline
-%     1 & (2, 5, 1, 1) & 0.0177 & (2, 5, 1, 1) & 0.0113 & 1 \\ \hline 
-%     9 & (2, 4, 5, 1) & 0.0187 & (2, 5, 5, 3) & 0.0149 & 7 \\ \hline 
-%     7 & (2, 4, 1, 1) & 0.0212 & (2, 5, 5, 1) & 0.0182 & 4 \\ \hline 
-%     3 & (2, 5, 5, 1) & 0.0212 & (2, 5, 3, 1) & 0.0186 & 5 \\ \hline 
-%     4 & (2, 5, 3, 1) & 0.0226 & (2, 4, 1, 3) & 0.0198  & 15 \\ \hline 
-%     \multicolumn{6}{|c|}{$\max F_{\text{fric}}$} \\ \hline
-%     1 & (2, 1, 1, 1) & 2.8903 & (2, 1, 1, 1) & 2.9171 & 1 \\ \hline 
-%     2 & (2, 1, 5, 3) & 2.2824 & (2, 1, 5, 3) & 2.4004 & 2 \\ \hline 
-%     6 & (2, 1, 3, 1) & 2.0818 & (2, 1, 5, 1) & 2.1060 & 5 \\ \hline 
-%     4 & (2, 1, 3, 3) & 2.0313 & (2, 1, 3, 3) & 1.9458 & 4 \\ \hline 
-%     3 & (2, 1, 5, 1) & 2.0164 & (2, 4, 1, 1) & 1.9381 & 6 \\ \hline 
-%     \multicolumn{6}{|c|}{$\max \Delta F_{\text{fric}}$} \\ \hline
-%     1 & (2, 1, 5, 3) & 2.0234 & (2, 1, 5, 3) & 2.1675 & 1 \\ \hline 
-%     2 & (2, 1, 1, 1) & 1.9528 & (2, 1, 1, 1) & 2.0809 & 2 \\ \hline 
-%     3 & (2, 4, 1, 1) & 1.8184 & (2, 4, 1, 1) & 1.9157 & 3 \\ \hline 
-%     4 & (2, 1, 3, 3) & 1.7645 & (2, 1, 3, 3) & 1.6968 & 4 \\ \hline 
-%     5 & (2, 4, 1, 3) & 1.4614 & (2, 4, 1, 3) & 1.5612 & 5 \\ \hline 
-%     \multicolumn{6}{|c|}{max drop} \\ \hline
-%     1 & (2, 3, 3, 3) & 1.2785 & (2, 3, 3, 3) & 1.3642 & 1 \\ \hline 
-%     2 & (2, 1, 3, 1) & 1.1046 & (2, 1, 3, 1) & 0.9837 & 2 \\ \hline 
-%     3 & (2, 3, 3, 5) & 0.8947 & (2, 3, 3, 5) & 0.9803 & 3 \\ \hline 
-%     4 & (2, 1, 5, 3) & 0.8638 & (2, 1, 5, 3) & 0.9556 & 4 \\ \hline 
-%     13 & (2, 5, 1, 1) & 0.8468 & (2, 4, 5, 3) & 0.8999 & 8 \\ \hline 
-%   \end{tabular}
-%   \end{center}
-% \end{table}
-
-
-% \begin{table}[H]
-%   \begin{center}
-%   \caption{\hl{RW}}
-%   \label{tab:ML_ranking_RW}
-%   \begin{tabular}{|c|c|c?{0.3mm}c|c|c|} \hline
-%     ML & \multicolumn{2}{c?{0.3mm}}{Data} &  \multicolumn{2}{c|}{\acrshort{ML}} & Data \\ \cline{2-5}
-%     Rank & Config & Value [nN] & Config & Value [nN] & Rank \\ \hline
-%     \multicolumn{6}{|c|}{$\min F_{\text{fric}}$} \\ \hline
-%     1 & 12 & 0.0024 & 12 & -0.0011 & 1 \\ \hline 
-%     24 & 76 & 0.0040 & 06 & 0.0036  & 27 \\ \hline 
-%     6 & 13 & 0.0055 & 14 & 0.0074  & 23 \\ \hline 
-%     31 & 08 & 0.0065 & 05 & 0.0082  & 19 \\ \hline 
-%     26 & 07 & 0.0069 & 63 & 0.0085  & 57 \\ \hline 
-%     \multicolumn{6}{|c|}{$\max F_{\text{fric}}$} \\ \hline
-%     3 & 96 & 0.5758 & 99 & 0.5155 & 2 \\ \hline 
-%     1 & 99 & 0.5316 & 98 & 0.4708 & 3 \\ \hline 
-%     2 & 98 & 0.4478 & 96 & 0.4356 & 1 \\ \hline 
-%     4 & 97 & 0.3624 & 97 & 0.3503 & 4 \\ \hline 
-%     11 & 58 & 0.3410 & 55 & 0.2817 & 7 \\ \hline 
-%     \multicolumn{6}{|c|}{$\max \Delta F_{\text{fric}}$} \\ \hline
-%     3 & 96 & 0.5448 & 99 & 0.4669 & 2 \\ \hline 
-%     1 & 99 & 0.4769 & 98 & 0.4314 & 3 \\ \hline 
-%     2 & 98 & 0.4085 & 96 & 0.4128 & 1 \\ \hline 
-%     4 & 97 & 0.3268 & 97 & 0.3080 & 4 \\ \hline 
-%     78 & 57 & 0.2978 & 55 & 0.2542 & 7 \\ \hline 
-%     \multicolumn{6}{|c|}{max drop} \\ \hline
-%     3 & 01 & 0.1818 & 00 & 0.1883 & 3 \\ \hline 
-%     2 & 96 & 0.1733 & 96 & 0.1654 & 2 \\ \hline 
-%     1 & 00 & 0.1590 & 01 & 0.1532 & 1 \\ \hline 
-%     11 & 37 & 0.1022 & 04 & 0.0591 & 8 \\ \hline 
-%     28 & 34 & 0.0879 & 56 & 0.0552 & 20 \\ \hline 
-%   \end{tabular}
-%   \end{center}
-% \end{table}
 
 
 \section{Accelerated Search}
@@ -1168,11 +1054,5 @@ for certain strain values, the Grad-CAM reveals considerable ``attention'' towar
   in~\cref{fig:hon_3353_trans}. (d) The highest scoring candidate for the max drop property in the Random walk pattern generation search shown in~\cref{fig:RW_search_top5}. }
   \label{fig:grad_cam}
 \end{figure}
-
-
-
-
-% The genetic algorithm approach could possible benefit for a consideration of 2D connections adn translation. It will force any positive patterns to be forced in their location and do not realize that making thoose repeatly will increase effect. It effectively sees every pixel like an unique gene and not really a positional property. 
-
 
 

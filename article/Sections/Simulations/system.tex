@@ -54,13 +54,6 @@ the attachment to a moving body, and a 3D silicon bulk substrate.
 \end{figure}
 
 
-% Note that the rigid parts on both sides of the
-% sheet is then considered as a single rigid object even though they are
-% physically seperated. This means that all force interactions concerning the
-% rigid parts will be applied as a common average making them move in total
-% synchronization. 
-
-
 \section{Region definitions}
 We subdivide the two main parts of the system, the sheet and the substrate, into
 specific regions according to their functionality in the \acrshort{MD}
@@ -115,9 +108,6 @@ The full sheet is given a size $\sim 130 \times \SI{163}{\text{Å}}$ while the s
 \end{tabular}
 \end{center}
 \end{table}
-
-
-
 
 
 
@@ -195,9 +185,6 @@ between encounters with the sheet.
 
 
 \section{Setting up sheet}
-% \subsection{Graphene}
-% (https://community.wvu.edu/~miholcomb/graphene.pdf)
-% https://www.physics-in-a-nutshell.com/article/4/lattice-basis-and-crystal
 The sheet consists of graphene, which is a single layer of carbon atoms arranged in a hexagonal lattice structure. The bulk version of graphene is graphite and is a stacked structure of multiple graphene layers. 
 
 \begin{multicols}{2}
@@ -229,8 +216,6 @@ The crystal structure is visualized in~\cref{fig:graphene_crystal}. The hexagona
 \end{figure}
   
 \end{multicols}
-
-
 
 
 
@@ -303,7 +288,6 @@ We notice that removing atoms using either of these rules will not guarantee an 
   \text{Path 2:} \quad (i, j) &\rightarrow \underbrace{(i+1,j+1)}_{\text{upper right}} \rightarrow \underbrace{(i+1, j+2)}_{\text{upper right + up}} \rightarrow \underbrace{(i, j+1)}_{\text{up}}
 \end{align*}
 For the second rule, it is even more obvious that different paths can result in the same final pattern. For instance, if we incircle a center element completely there will be no surrounding atoms left to remove when jumping to that center element. This highlights the motivation for defining the atom-based indexing system which yields an injective mapping between the binary matrix and the graphene lattice cut pattern. However, using the center elements as a reference makes it easier to design the cut patterns since we can always go in one of the six directions defined by the center element neighbors. In contrast, the atom indexing system has alternating directions for its neighbors, which makes it more involved to define cut patterns.
-
 
 
 \section{Kirigami patterns}
@@ -394,7 +378,6 @@ rigorous enough.}. Some additional variation of the
 pattern is showcased in~\cref{fig:pop_up_flavors} each with a reference position
 at the center of the sheet. Note that a smaller sheet size than used in the simulations is used in
 both~\cref{fig:pop_up} and~\cref{fig:pop_up_flavors} for illustrative purposes.
-
 
 
 
@@ -519,7 +502,6 @@ practice, this is done through a recursive algorithm as described in~\cref{algo:
   \begin{algorithmic}[1]
     \Require self.min\_dis $>$ 0 
     \Function{walk\_distance}{self, input, dis = 0, pre = [ ]}
-      % \State neigh $\gets$ NewList() 
       \State new\_neigh $\gets$ [ ] \Comment{Initialize list for new neighbors}
       \For{site in input}
         \State neigh $\gets$ get\_neighboring\_sites(site) \Comment{Get surrounding neighbors}
