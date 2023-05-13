@@ -1,5 +1,4 @@
-# Master's thesis
-## Predicting Frictional Properties of Graphene Kirigami Using Molecular Dynamics and Neural Networks
+# Master's thesis: Predicting Frictional Properties of Graphene Kirigami Using Molecular Dynamics and Neural Networks
 
 This repository contains all related work for my Master's thesis for the completion of the degree Master in Computational Science: Materials Science at the University of Oslo.
 
