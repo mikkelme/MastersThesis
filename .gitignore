@@ -11,6 +11,7 @@
 *.csv
 
 # Folders
+/Data
 /__pycache__
 /Questions
 /Books
@@ -50,7 +51,7 @@
 *.t1
 *.t2
 *.t3
-
+*.xml
 
 # Videos / Animations
 *.gif
