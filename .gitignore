@@ -20,7 +20,7 @@
 /RW_search
 /thesis/figures/flipbook/sideview_full
 /thesis/figures/flipbook/topview_full
-
+*/.vscode
 
 
 # C++
@@ -28,6 +28,7 @@
 
 # Python
 *.pyc
+
 
 # ML
 *model_dict_state
