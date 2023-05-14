@@ -1,0 +1,80 @@
+\chapter{Negative friction coefficient}\label{chap:negative_coef}
+For the final part of this thesis, we concern ourselves with a proof of concept approach for the design of a device with a negative friction coefficient. From the pilot study (\cref{chap:pilot_study}) we found the friction of the two investigated Kirigami patterns to have a non-linear relationship with strain. This is hypothesized to yield a negative friction coefficient for certain load ranges in a coupled system of load and strain. We will investigate this hypothesis further in this chapter.
+
+\section{Nanomachine design}
+We do not attempt to simulate the dynamics of any nanomachine designs. However, we propose that a coupling between load and strain could be achieved, for instance, by following a design as sketched in~\cref{fig:nanomachine}. Such a design could perhaps be built by rigging carbon nanotubes in a similar configuration. 
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.5\linewidth]{figures/negative_coefficient/nanomachine.pdf}
+  \caption{Working sketch for a nanomachine design that aims to translate applied load (from the top of the figure) to a straining of the graphene sheet (shown in red). The black boxes connected to the graphene sheet represent the pull blocks in our system.}
+  \label{fig:nanomachine}
+\end{figure}
+
+We mimic the nanomachine coupling by implementing a load-dependent tension force to our \acrshort{MD} simulations. So far, we have kept the pull blocks spaced by a fixed distance throughout the simulations, but now we let the pull blocks move relative to each other under the influence of tension. We let the tension force act in the $\pm y$ direction for each pull block respectively such that the force acts inwards toward the sheet. The magnitude of the tension force $F_t$ is modeled as a linear coupling to normal load $F_t = TF_N$ by a factor $T$ which represents the ratio for the load-to-strain coupling. We find that a ratio of
+$T=6$ will provide the necessary tension for achieving a full strain range (till rupture) approximately within a load of \SI{10}{nN} which was the maximum load in the pilot study. Notice that this coupling scheme is slightly different than that proposed in~\cref{eq:mu_strain} where we assumed a direct coupling between load and strain $\varepsilon = R F_N$. The load-tension coupling provides a more standardized description of the proposed nanomachine since the relation between tension and strain will depend on the specific Kirigami sheet in use. 
+
+
+\section{Simulating the load-tension-coupled system}
+For the simulation of the load-tension-coupled system, we consider the Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$ patterns from the pilot study. We perform multiple simulations for different normal loads, using 100 uniformly spaced load values in the range $[0, 15]$ nN corresponding to a tension force of $[0, 90]$ nN. For the Tetrahedron pattern, we increase the load by a rate of \SI{0.015}{nN/ps}. Due to a rapid change in the strain-tension curve for the Honeycomb pattern, we reduced the loading rate to \SI{0.0015}{nN/ps} and added additional data points to the sparsely populated strain range. We compare the results to the pilot study results in~\cref{fig:multi_stretch} by mapping the strain to load values via an interpolation of the strain-load curve found in the coupled system. The results are shown in~\cref{fig:negfric}. Generally, we observe that the data points of the
+coupled system align reasonably well with the mapped data points from the pilot
+study. This indicates that the simultaneous loading and straining of the system
+does not suppress the underlying mechanism governing the non-monotonous trends. For the Tetrahedron pattern, we find an almost linear strain-tension curve. This makes for a recognizable trend in the friction-load curve similar to that seen
+in the friction-strain curve in~\cref{fig:multi_stretch}. In both cases, we notice that the initial strain at the beginning of the simulation is similar to the average strain for the entire simulation. This
+suggests that the sliding does not contribute to a significantly increased
+tension in the sheet which would otherwise lead to an increased strain as well. The strain-tension curve for the Honeycomb pattern shows an interesting trend. At low tension, the strain is increasing seemingly linearly with tension. However, a drastic increase in strain from roughly 0.08 to 0.7 happens at a tension of \SI{4.5}{nN} ($F_N = \SI{0.75}{nN}$). Eventually, this settles off into a linear trend before reaching the rupture point. This
+reflects the reason for decreasing the loading rate and adding more data points
+to fill this gap in the strain-tension curve. The rapid increase in the strain-load curve makes for a similar rapid increase in the friction-load curve as well.
+Hence, we find that the Honeycomb coupled system essentially exhibits an initial discontinuous increase in friction with load, which is then followed by a longer region of decreasing friction with load. When considering the simulation frames in
+\cref{sec:sheet_stretch}, we notice that these distinct phases align rather well with the unfolding of the Honeycomb pattern. As we have previously noted, the Honeycomb pattern unfolds in segments, with one segment buckling at a time. We find that this unfolding process is initiated after passing the minimum tension limit of \SI{4.5}{nN}. The increase in friction then corresponds to the unfolding phase, while the decrease in friction corresponds to the following phase of further straining. This suggests that further investigations of this mechanical transition could be beneficial for gaining a deeper understanding of the underlying mechanisms involved. 
+
+From the results in~\cref{fig:negfric}, we have found that our proposed coupled system, based on a $T = 6$ load-to-tension coupling, demonstrates a significant negative friction coefficient in certain load ranges. By considering the
+maximum and minimum friction points along the friction decline, we find that this corresponds to the minimal friction coefficients
+\begin{align}
+  &\text{Tetrahedron:} \quad \mu_{\min} \sim \frac{\SI{0.31}{nN} - \SI{0.90}{nN}}{\SI{6.55}{nN} - \SI{4.65}{nN}} = -0.31& 
+  &\text{Honeycomb:} \quad \mu_{\min} \sim \frac{\SI{0.53}{nN} - \SI{1.88}{nN}}{\SI{4.31}{nN} - \SI{0.71}{nN}} = -0.38.&
+  \label{eq:coupled_mu_estimate}
+\end{align}
+These results support that the use of a Kirigami sheet in a coupled system can be used to achieve a negative friction coefficient. In the pilot study \cref{eq:pilot_study_mu_estimate} we estimated the Tetrahedron pattern to exhibit a coefficient following $-R \cdot \SI{12.75}{nN}$, smaller than the Honeycomb coefficient following $-R \cdot \SI{2.72}{nN}$. From the results in~\cref{eq:coupled_mu_estimate} we find that the resulting coefficients are more similar in value than expected from the pilot study. We attribute this to the difference in the strain-tension relationship for each pattern. However, we notice that both values can be scaled by changing the load-to-tension coupling $T$. If we assume that we can neglect any independent effects from load, the finding of a negative coefficient $\sim -0.3$ using $T=6$ suggests that we have the relation 
+\begin{align*}
+  \mu_{\min} \sim - \frac{0.3}{6} T = - 0.05 T.
+\end{align*}
+The load-to-tension coupling $T$ is purely governed by the assumptions for the nanomachine. Thus, we note that even more (or less) extreme values might be accessible through a realization of the nanomachine design.
+
+
+
+\begin{figure}[!htb]
+  \centering
+  \begin{subfigure}[t]{\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/negative_coefficient/manual_coupling_tension_pop7_5_1.pdf}
+      \caption{Tetrahedron $(7,5,1)$}
+      % \label{fig:}
+  \end{subfigure}
+  % \hfill
+  \begin{subfigure}[t]{\textwidth}
+    \centering
+    \raggedleft
+    \includegraphics[width=0.98\textwidth]{figures/negative_coefficient/manual_coupling_tension_hon2215.pdf}
+    \caption{Honeycomb $(2,2,1,5)$}
+    % \label{fig:}
+  \end{subfigure}
+  \hfill
+  \caption{Investigation of the friction response for a coupled system using (a)
+  the Tetrahedron $(7,5,1)$ and (b) the Honeycomb $(2,2,1,5)$ pattern from the
+  pilot study. The pull blocks are allowed to move relative to each other under
+  the influence of a tension force $F_t$ modeled as $F_t = TF_N$ for normal load
+  $F_N$ and a load-to-tension ratio $T=6$. The right panel shows the
+  friction-load curve for the coupled system (orange and red triangles) in
+  comparison to the results from the pilot study where the pull blocks are
+  locked at a fixed separation distance and with a constant normal load
+  (\cref{fig:multi_stretch}). The pilot study results have their strain values
+  mapped to the normal load axis through the observed strain-load curve (left panel) for the
+  coupled system. Their original normal loads are indicated via the colors in
+  the colorbar. The left panel shows the strain-tension curve. The circles
+  denote the initial strain, at the beginning of the simulation, while the
+  triangles denote the mean strain for the whole simulation. For the Honeycomb
+  pattern, we have added more data points in the region where the strain-tension
+  curve changed rapidly.}
+  \label{fig:negfric}
+\end{figure}

@@ -1,0 +1,235 @@
+\chapter{Introduction}
+
+\section{Motivation}
+Friction is the force that prevents the relative motion of objects in contact.
+In our everyday life, we recognize it as the inherent resistance to sliding
+motion. Some surfaces appear slippery and some appear rough, and we know intuitively
+that sliding down a snow-covered hill is much more exciting than its grassy
+counterpart. Without friction, it would not be possible to walk across a flat
+surface, lean against the wall without falling over or secure an object by the
+use of nails or screws~\cite[p. 5]{gnecco_meyer_2015}. It is probably safe to
+say that the concept of friction is integrated into our everyday life to such an
+extent that most people take it for granted. However, the efforts to control
+friction date back to the early civilization (3500 B.C.) with the use of the
+wheel and lubricants to reduce friction in translational
+motion~\cite{bhushan_2013}. Today, friction is considered a part of the wider
+field \textit{tribology} derived from the Greek word \textit{tribos} meaning
+``rubbing''. It includes the science of friction, wear and
+lubrication~\cite{bhushan_2013}. The most compelling motivation to study
+tribology is ultimately to gain full control of friction and wear for various
+technical applications. Especially, the reduction of friction is of great interest since this can be utilized to improve energy efficiency in mechanical systems with moving parts. Hence, it has been reported that
+tribological problems have a significant potential for both economic and
+environmental improvements~\cite{kim_nano-scale_2009}:
+\begin{quote}
+    ``On global scale, these savings would amount to 1.4\% of the GDP annually
+    and 8.7\% of the total energy consumption in the long
+    term.''~\cite{holmberg_influence_2017}. 
+\end{quote}
+On the other hand, the reduction of friction is not the only sensible
+application for tribological studies. Controlling frictional properties, besides
+minimization, might be of interest in the development of a grasping robot where
+finetuned object handling is required. While achieving a certain ``constant''
+friction response is readily obtained through appropriate material choices, we
+are yet to unlock the full capabilities to alter friction dynamically on the go.
+One example from nature inspiring us to think along these lines is the gecko
+feet. More precisely, the Tokay gecko has received a lot of attention in
+scientific studies aiming to unravel the underlying mechanism of its
+``togglable'' adhesion properties. Although the gecko can produce large adhesive
+forces, it retains the ability to remove its feet from an attachment surface
+at will~\cite{Gekko}. This makes the gecko able to achieve a high adhesion on
+the feet when climbing a vertical surface while lifting them for the next step
+remains relatively effortless. For a grasping robot, we might consider an analog
+frictional concept of a surface material that can change from slippery to rough
+on demand depending on specific tasks; slippery and smooth when interacting with
+people and rough and firmly gripping when moving heavy objects.
+
+
+In recent years an increasing amount of interest has gone into the studies of
+the microscopic origins of friction, due to the increased possibilities in
+surface preparation and the development of nanoscale experimental methods.
+Nano-friction is also of great concern for the field of nano-machining where the
+frictional properties between the tool and the workpiece dictate machining
+characteristics~\cite{kim_nano-scale_2009}. With concurrent progress in
+computational capacity and development of Molecular Dynamics (\acrshort{MD}),
+numerical investigations serve as an invaluable tool for getting insight into
+the nanoscale mechanics associated with friction. This simulation-based approach
+can be considered as a ``numerical experiment'' enabling us to create and probe
+a variety of high-complexity systems which are still out of reach for modern
+experimental methods.
+
+In materials science such \acrshort{MD}-based numerical studies have been used
+to explore the concept of so-called \textit{metamaterials} where the material
+compositions are designed meticulously to enhance certain physical
+properties~\mbox{\cite{PhysRevLett.121.255304, PhysRevResearch.2.042006,
+graphene/hBN, Mao, Yang, Forte}}. This is often achieved either by intertwining
+different material types or removing certain regions completely. In recent
+papers by Hanakata et al.~\cite{PhysRevLett.121.255304,
+PhysRevResearch.2.042006}, numerical studies have showcased that the mechanical
+properties of a graphene sheet, yield stress and yield strain, can be altered
+through the introduction of so-called \textit{Kirigami} inspired cuts into the
+sheet. Kirigami is a variation of origami where the paper is cut additionally to
+being folded. While these methods originate as an art form, aiming to produce
+various artistic objects, they have proven to be applicable in a wide range of
+fields such as optics, physics, biology, chemistry and
+engineering~\cite{chen_kirigamiorigami_2020}. Various forms of stimuli enable
+direct 2D to 3D transformations through the folding, bending, and twisting of
+microstructures. While original human designs have contributed to specific
+scientific applications in the past, the future of this field is highly driven
+by the question of how to generate new designs optimized for certain physical
+properties. However, the complexity of such systems and the associated design
+space makes for seemingly intractable\footnote{In computer science we define an
+\textit{intractable} problem as a problem with no \textit{efficient} algorithm
+to solve it nor any analytical solutions. The only way to solve such problems is
+the \textit{brute-force} approach, simply trying all possible combinations, which
+is often beyond the capabilities of computational resources.} problems ruling
+out analytic solutions.
+
+Earlier design approaches such as bioinspiration, looking at gecko
+feet for instance, and Edisonian, based on trial and error, generally rely on
+prior knowledge and an experienced designer~\cite{Mao}. While the Edisonian approach is certainly more feasible through numerical studies than real-world
+experiments, the number of combinations in the design space rather quickly
+becomes too large for a systematic search, even when considering the computation
+time on modern-day hardware. However, this computational time constraint can be
+relaxed by the use of machine learning (\acrshort{ML}) which has been proven 
+successful in the establishment of a mapping from the design space to physical
+properties of interest. This gives rise to two new styles of design approaches:
+One, by utilizing the prediction from a trained network we can skip the
+\acrshort{MD} simulations altogether resulting in an \textit{accelerated search}
+of designs. This can be further improved by guiding the search according to
+the most promising candidates. For instance, as done with the \textit{genetic
+algorithm} based on mutation and crossing. Another
+more sophisticated approach is through generative methods such as
+\textit{Generative Adversarial Networks} (\acrshort{GAN}) or diffusion models.
+The latter is being used in state-of-the-art AI systems such as OpenAI's
+DALL$\sq$E2~\cite{DALLE} or Midjourney~\cite{Midjourney}. By working with a
+so-called \textit{encoder-decoder} network structure, one can build a model that
+reverses the prediction process. This is often referred to as \textit{inverse
+design}, where the model predicts a design based on physical target
+properties. In the papers by Hanakata et al.~\cite{PhysRevLett.121.255304,
+PhysRevResearch.2.042006} both the accelerated search and the inverse design approach was proven successful to create novel
+metamaterial Kirigami designs with the graphene sheet. 
+
+Hanakata et al.\ attribute the variation in mechanical properties to the
+non-linear effects arising from the out-of-plane buckling of the sheet. Since it
+is generally accepted that the surface roughness is of great importance for
+frictional properties it can be hypothesized that Kirigami-induced out-of-plane
+buckling can also be exploited for the design of frictional metamaterials. For
+certain designs, we might hope to find a relationship between the stretching of
+the sheet and frictional properties. If significant, this could give rise to an
+adjustable friction beyond the point of manufacturing. For instance,
+the grasping robot might apply such a material as artificial skin for which
+stretching or relaxing of the surface could result in a changeable friction
+strength.
+
+In addition, the Kirigami graphene properties can be explored through a
+potential coupling between the strain and the normal load, through a
+nanomachine design, with the aim of altering the friction coefficient. This
+invites the idea of non-linear friction coefficients which might in principle also
+take on negative values. This would constitute a rarely found property which is mainly observed for the unloading phase of adhesive
+surfaces~\cite{deng_adhesion-dependent_2012} or in the loading phase of particular
+heterojunction materials~\cite{Liu_2020, Mandelli_2019}.
+
+To the best of our knowledge, Kirigami has not yet been implemented to alter the
+frictional properties of a nanoscale system. However, in a recent paper by
+Liefferink et al.~\cite{LIEFFERINK2021101475} it is reported that macroscale
+Kirigami can be used to dynamically control the macroscale roughness of a
+surface through stretching. They reported that the roughness change led to a
+changeable frictional coefficient by more than one order of magnitude. This
+supports the idea that Kirigami designs can be used to alter friction, but we
+believe that taking this concept to the nanoscale would involve a different set
+of governing mechanisms and thus contribute to new insight in this field.
+
+
+
+\section{Goals}\label{sec:goals} In this thesis, we investigate the prospects of
+altering the frictional properties of a graphene sheet through the application
+of Kirigami-inspired cuts and stretching of the sheet. With the use of molecular
+dynamics (\acrshort{MD}) simulations, we evaluate the frictional properties of
+various Kirigami designs under different physical conditions. Based on the
+\acrshort{MD} results, we investigate the possibility to use machine learning
+for the prediction of frictional properties and subsequently using the model for
+an accelerated search of new designs. The main goals of the thesis can be
+summarized as follows.
+\begin{enumerate} 
+    \item Design an \acrshort{MD} simulation procedure to evaluate the
+    frictional properties of a Kirigami graphene sheet under specified physical
+    conditions.
+    \item Develop a numerical tool to generate various Kirigami designs,
+    both by seeking inspiration from macroscale designs and by the use of a
+    random-walk-based algorithm.
+    \item Investigate the frictional behavior under varying strain and load for
+    different Kirigami designs.
+    \item Develop and train a machine learning model to predict the
+    \acrshort{MD} simulation results and perform an accelerated search of new
+    designs with the goal of optimizing certain frictional properties.
+\end{enumerate}
+
+
+
+\section{Contributions}
+By working towards the goals outlined above (\cref{sec:goals}), I have
+discovered a non-linear relationship between the kinetic friction and the strain
+for certain Kirigami patterns. This phenomenon was found to be associated with
+the out-of-plane buckling of the Kirigami sheet but with no clear relationship
+to the contact area or the tension in the sheet. I found that this method does
+not provide any mechanism for a reduction in friction, in comparison to a
+non-cut sheet. However, the straining of certain Kirigami sheets allows for a
+non-monotonic increase in friction. The relationship to normal load was proven
+negligible in this context and I have demonstrated that a coupled system of load
+and strain (through sheet tension) can exhibit a negative friction coefficient
+in certain load ranges. Moreover, I have created a dataset of roughly 10,000
+data points for assessing the employment of machine learning and accelerated
+search of Kirigami designs. I have found, that this approach might be useful,
+but that it requires an extended dataset in order to produce reliable results for a
+search of new designs.
+
+During my investigations, I have built three numerical tools, in addition to the usual scripts for data analysis, which are available on
+Github~\cite{Github}. The tools are summarized in the following. 
+\begin{itemize}
+    \item I have written a LAMMPS-based~\cite{LAMMPS} tool for simulating and
+    measuring the frictional properties of a graphene sheet sliding on a
+    substrate. The code is generally made flexible with regard to the choice of
+    sheet configuration, system size, simulation parameters and \acrshort{MD}
+    potentials, which makes it applicable for further studies on this topic.
+    I have also built an automized procedure to carry out multiple simulations
+    under varying parameters by submitting jobs to a computational cluster via
+    an ssh connection. This was done by adding minor additions to the Python package developed by E. M. Nordhagen~\cite{lammps_simulator}.
+    \item I have generated a Python-based tool for generating Kirigami patterns
+    and exporting these in a compatible format with the simulation software created. The
+    generation of molecular structures is done with the use of
+    ASE~\cite{ase-paper}. Our software includes two classes of patterns inspired
+    by macroscale designs and a random walk algorithm which allows for a variety
+    of different designs through user-defined biases and constraints. Given our
+    system size of choice, the first two pattern generators are capable of
+    generating on the order of \num{e8} unique designs while the random walk
+    generator allows for significantly more. 
+    \item I have built a machine-learning tool based on
+    Pytorch~\cite{NEURIPS2019_9015} which includes setting up the data loaders,
+    a convolutional network architecture, a loss function, and general
+    algorithms for training and validating the results. Additionally, I have
+    written several scripts for performing grid searches and analyzing the model
+    predictions in the context of the frictional properties of graphene. 
+\end{itemize}
+All numerical implementations have been originally
+developed for this thesis except for the libraries mentioned above along with common Python libraries such as Numpy and
+Matplotlib.
+
+\section{Thesis structure}
+The thesis is divided into two parts. In~\cref{part:theory} we introduce the
+relevant theoretical background, and in~\cref{part:simulations} we present the
+numerical implementations and the results of this thesis.
+
+\cref{part:theory} contains a description of the theoretical background related
+to Friction (\cref{chap:friction}), Molecular Dynamics (\cref{chap:MD}) and
+Machine Learning (\cref{chap:ML}). In~\cref{sec:research_questions} we
+formulate our research questions in the light of the friction theory.  
+
+In~\cref{part:simulations}, we begin by presenting the system in~\cref{chap:system} which includes a definition of the main parts of the system and the numerical procedures related to the \acrshort{MD} simulation. Here we also present the generation of Kirigami designs. In~\cref{chap:pilot_study} we carry out a pilot
+study where we evaluate the simulation results for
+various physical conditions and compare a non-cut sheet to two different
+Kirigami designs. In~\cref{chap:dataset_study}, we further explore the Kirigami patterns through the creation of a
+dataset and the employment of machine learning and an accelerated search for new designs. In~\cref{chap:negative_coef}, we use
+the results from the pilot study to demonstrate the possibility to achieve a
+negative friction coefficient for a system with coupled load and strain. Finally, in~\cref{chap:summary}, we summarize our results and provide an outlook for further studies. Additional figures are shown
+in~\cref{sec:sheet_stretch}, \cref{sec:dataset_conf} and~\cref{sec:data_stretch_profiles}. 
+
