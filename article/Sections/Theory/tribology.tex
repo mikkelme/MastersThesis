@@ -477,14 +477,7 @@ atoms will have to ``share'' the same potential corrugation as sketched in
 the chain results in an antikink excitation where one potential corrugation will
 be left ``atomless''. In order to reach a local minimum the kink (antikink) will
 expand in space over a finite length such that the chain undertakes a local
-compression (expansion). Notice that for low ratios of $\theta$, there are fewer atoms than minima, and the chain will not be able to fill each corrugation well. In this case, the kink excitations can instead be thought of as whether the atoms are forced to be in a different potential well than otherwise dictated by the spring forces in-between. When applying a tangential force to the chain it is much
-easier for an excitation to move along the chain than it is for the non-excited
-atoms since the activation energy for a kink/antikink
-displacement is systematically smaller (often much smaller) than the potential
-barrier $U_0$. Thus, the motion of kinks (antikinks), i.e.\ the displacement of
-extra atoms (atom vacancies), is representing the fundamental mechanism for
-mass transport. These displacements are responsible for the mobility,
-diffusivity and conductivity within this model. 
+compression (expansion). Notice that for low ratios of $\theta$, there are fewer atoms than minima, and the chain will not be able to fill each corrugation well. In this case, the kink excitations can instead be thought of as whether the atoms are forced to be in a different potential well than otherwise dictated by the spring forces in-between. 
 
 \begin{figure}[!htb]
   \centering
@@ -493,7 +486,14 @@ diffusivity and conductivity within this model.
   \label{fig:incommensurable_example}
 \end{figure}
 
-In the zero temperature commensurable case with an adiabatical increase in force, all atoms would be put into an accelerating motion as soon as the potential barrier energy is present. However, similar to our discussion on the Prandtl-Tomlinson model, thermal activations will excite the system at an earlier stage resulting in kink-antikink pairs traveling down the chain. For a non-periodic chain of finite length, these often occur at the end of the chain running in opposite directions. This cascade of kink-antikink excitations is shown in~\cref{fig:kink_antikink}. Notice, that for the 2D case, where an island (flake) is deposited on a surface, we generally also expect the sliding to be initiated by kink-antikink pairs at the boundaries. 
+When applying a tangential force to the chain it is much
+easier for an excitation to move along the chain than it is for the non-excited
+atoms since the activation energy for a kink/antikink
+displacement is systematically smaller (often much smaller) than the potential
+barrier $U_0$. Thus, the motion of kinks (antikinks), i.e.\ the displacement of
+extra atoms (atom vacancies), is representing the fundamental mechanism for
+mass transport. These displacements are responsible for the mobility,
+diffusivity and conductivity within this model. In the zero temperature commensurable case with an adiabatical increase in force, all atoms would be put into an accelerating motion as soon as the potential barrier energy is present. However, similar to our discussion on the Prandtl-Tomlinson model, thermal activations will excite the system at an earlier stage resulting in kink-antikink pairs traveling down the chain. For a non-periodic chain of finite length, these often occur at the end of the chain running in opposite directions. This cascade of kink-antikink excitations is shown in~\cref{fig:kink_antikink}. Notice, that for the 2D case, where an island (flake) is deposited on a surface, we generally also expect the sliding to be initiated by kink-antikink pairs at the boundaries. 
 
 
 \begin{figure}[!htb]
@@ -607,7 +607,12 @@ increasing flake size. Combined, the 1D and 2D results support the idea of
 increasing friction with contact size although it might showcase non-linear
 behavior depending on commensurability.
 
-\begin{figure}[!htb]
+
+\subsection{Shortcomings of the reduced-models}
+It should be noted that the reduced-models presented in the previous sections provide a simplified description of the friction behavior. One major limitation is that all models assume a rigid substrate with a constant sinusoidal potential shape. In reality, the potential shape might be more complex and also dynamically changing as the substrate reacts to the sliding motion, resulting in a more intricate system. Moreover, the energy dissipation is simplified through a viscous term $-m\mu \dot{x}$ in the Langevin equation~\cref{eq:Langevin_PT}, which neglects the complexity associated with electron and phonon dissipation. For example, considering phonon dissipation, there exist many vibration modes ($3N$), and thus many dissipation channels for the tip~\cite{Yalin_2011}. Lastly, it should be mentioned that the moving body is assumed to move rigidly with constant speed, whereas, in reality, it may exhibit a more complicated dynamic behavior.
+
+
+\begin{figure}[H]
   \centering
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
@@ -627,8 +632,6 @@ behavior depending on commensurability.
      \label{fig:FKT_size}
 \end{figure}
 
-\subsection{Shortcomings of the reduced-models}
-It should be noted that the reduced-models presented in the previous sections provide a simplified description of the friction behavior. One major limitation is that all models assume a rigid substrate with a constant sinusoidal potential shape. In reality, the potential shape might be more complex and also dynamically changing as the substrate reacts to the sliding motion, resulting in a more intricate system. Moreover, the energy dissipation is simplified through a viscous term $-m\mu \dot{x}$ in the Langevin equation~\cref{eq:Langevin_PT}, which neglects the complexity associated with electron and phonon dissipation. For example, considering phonon dissipation, there exist many vibration modes ($3N$), and thus many dissipation channels for the tip~\cite{Yalin_2011}. Lastly, it should be mentioned that the moving body is assumed to move rigidly with constant speed, whereas, in reality, it may exhibit a more complicated dynamic behavior.
 
 
 \subsection{Experimental procedures}

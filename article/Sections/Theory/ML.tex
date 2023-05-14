@@ -223,13 +223,6 @@ images\footnote{Note, that we will be using the word ``image'' as a reference
 for a spatially dependent input, but in reality, it does not have to be an
 actual image in the classical sense.} as it processes the input. The overall flow of data for a typical convolutional network including a final fully connected neural network is illustrated in~\cref{fig:CNN}. 
 
-\begin{figure}[!htb]
-  \centering
-  \includegraphics[width=0.8\linewidth]{figures/theory/CNN.png}
-  \caption{Representation of a Convolutional Neural Network (\acrshort{CNN}). The \acrshort{CNN} performs automatic spatial feature extraction from images by successively applying feature filters that create feature maps (Convolutional layer) and compressing these maps (Pooling layer). Based on the final feature maps, a fully-connected neural network does a prediction, which can be a classification or regression. Figure and caption reproduced from~\cite{cunha2022review}.}  
-  \label{fig:CNN}
-\end{figure}
-
 A convolutional layer contains multiple kernels, each consisting of a set of
 trainable weights and a bias. Each kernel will produce a separate output channel
 to the resulting \textit{feature map} layer. The kernel has a 2D spatial size,
@@ -239,7 +232,7 @@ channels, while the number of channels usually increases for each layer in the
 model. The kernel lines up with the image and calculates the feature map output
 as a dot product between the weights in the kernel and the aligning subset of
 the input. This is done for each input channel and summed up with the addition
-of a bias as illustrated in~\cref{fig:conv_calculation}. The kernel then slides over by a
+of a bias as illustrated in~\cref{fig:conv_example}. The kernel then slides over by a
 step size given by the \textit{stride} parameter and repeats the
 calculation. Choosing a stride of 2 or higher results in a reduction of the
 output spatial size. If we want to preserve the spatial size we must keep a
@@ -251,23 +244,18 @@ size of the feature map is given as
   \label{eq:down_scaling}
 \end{align}
 for padding $P$, stride $S$, spatial size of the kernel filter $F_d$, spatial
-size of the input $N_d^{[l-1]}$, for dimension $d = \{x, y\}$ and layer $l$. The
-\textit{down-sampling} is often done through a pooling layer. A pooling layer is
-reminiscent of a kernel, but instead of calculating the output as a dot product,
-it calculates the mean (mean pooling) or the max value (max pooling) of the
-values within its scope. For instance, by using a max pooling of size $2 \times
-2$ and stride 2 we essentially half the dimensions of the image as dictated
-by~\cref{eq:down_scaling}. \acrshort{CNN}s will often use repeating series of
-convolution (applying a kernel), pooling and then an activation function. Most
-architectures aim to down-sample the spatial input while increasing the number
-of channels throughout the model layers. This results in a smaller set of
-features extracted from the input which then can then be fed into a dense
-network, or \textit{fully connected} connected neural network, as also
-illustrated in~\cref{fig:CNN}. The convolution part aims to
-handle the transition from a spatial input to some internal features. For a model which recognizes animals, we would perhaps think of features such as the number of legs, size, color and so on. In practice, however, the network will not give readily interpreted features for the processing in the fully connected layer, but the concept is still the same. 
+size of the input $N_d^{[l-1]}$, for dimension $d = \{x, y\}$ and layer $l$. 
 
 
 \begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.7\linewidth]{figures/theory/CNN.png}
+  \caption{Representation of a Convolutional Neural Network (\acrshort{CNN}). The \acrshort{CNN} performs automatic spatial feature extraction from images by successively applying feature filters that create feature maps (Convolutional layer) and compressing these maps (Pooling layer). Based on the final feature maps, a fully-connected neural network does a prediction, which can be a classification or regression. Figure and caption reproduced from~\cite{cunha2022review}.}  
+  \label{fig:CNN}
+\end{figure}
+
+
+\begin{figure}[H]
   \centering
   \begin{subfigure}[t]{0.26\textwidth}
     \centering
@@ -283,10 +271,27 @@ handle the transition from a spatial input to some internal features. For a mode
     \label{fig:conv_calculation}
   \end{subfigure}
   \hfill
-
   \caption{Illustration of the convolution procedure for a $3 \times 3$ kernel with a depth of 3 matching an RGB input with 3 channels (a) The kernel goes through the various positions aligning with the input as sketched with the arrow. The precise number of positions along this path depends on the stride parameter and the choice of padding. (b) A specific example of the calculations involved in the convolution process. Here a rim of zero padding is included. For each kernel position, a dot product is calculated between the aligning input and the kernel weights for each corresponding channel. This results in an output value for each channel which is then summed up and added with a bias to constitute the final output in the feature map. Reproduced from~\cite{CNN_calc}.}
   \label{fig:conv_example}
 \end{figure}
+
+
+The
+\textit{down-sampling} is often done through a pooling layer. A pooling layer is
+reminiscent of a kernel, but instead of calculating the output as a dot product,
+it calculates the mean (mean pooling) or the max value (max pooling) of the
+values within its scope. For instance, by using a max pooling of size $2 \times
+2$ and stride 2 we essentially half the dimensions of the image as dictated
+by~\cref{eq:down_scaling}. \acrshort{CNN}s will often use repeating series of
+convolution (applying a kernel), pooling and then an activation function. Most
+architectures aim to down-sample the spatial input while increasing the number
+of channels throughout the model layers. This results in a smaller set of
+features extracted from the input which then can then be fed into a dense
+network, or \textit{fully connected} connected neural network, as also
+illustrated in~\cref{fig:CNN}. The convolution part aims to
+handle the transition from a spatial input to some internal features. For a model which recognizes animals, we would perhaps think of features such as the number of legs, size, color and so on. In practice, however, the network will not give readily interpreted features for the processing in the fully connected layer, but the concept is still the same. 
+
+
 
 For a \acrshort{CNN}, we often consider the \textit{receptive field}. The receptive field relates to the spatial size of the input that affects a given
 node in the feature map of a given layer in the model. This term is often used in reference to the output nodes. \cref{fig:receptive_field} illustrates the

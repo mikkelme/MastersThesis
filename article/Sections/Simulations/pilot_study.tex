@@ -31,30 +31,31 @@ because the friction output remains relatively stable with moderate
 perturbations around these default values. However, we will explain the parameter choices in more detail throughout this chapter. Note that the default values in~\cref{tab:final_param}
 will be used when nothing else is stated explicitly.
 
-
+\renewcommand{\arraystretch}{1.5} % Default value: 1
 \begin{table}[h]
   \begin{center}
-  \caption{Parameters involved in the numerical \acrshort{MD} simulation for measuring friction. The default values correspond to the final choice used for the \acrshort{ML} dataset for which the shaded cells denote the parameters varied.}
-  \label{tab:final_param}
-  \begin{tabular}{ | M{4cm} | M{3.5cm} | X{8cm}|} \hline
-    \textbf{Parameter} & \textbf{Default value} &  \textbf{Description} \\ \hline
-    $T$ & \SI{300}{K} &  Temperature of the system. \\ \hline
-    $v$ &\SI{20}{m/s} & Sliding speed for the sheet. \\ \hline
-    $K$ & $\infty$ & Spring constant for the coupling between the virtual atom and the sheet pull blocks. \\ \hline
-    Scan direction & $(x,y) = (0,1)$ \mbox{(zigzag direction)}  & The direction of sliding. \\ \hline   
-    \cellcolor{black!7} Sheet configuration & \cellcolor{black!7} Contiguous & \cellcolor{black!7} Binary mapping describing which atoms are removed (0) and which are still present (1) in the graphene sheet.  \\ \hline
-    \cellcolor{black!7} Strain amount & \cellcolor{black!7} [0, rupture] & \cellcolor{black!7} The ratio of change in length to the original length. \\ \hline
-    \cellcolor{black!7} $F_N$ & \cellcolor{black!7} [0.1, 10] nN & \cellcolor{black!7} Applied normal load to the pull blocks. \\ \hline
-    $dt$ & \SI{1}{fs} &  \acrshort{MD} integration timestep. \\ \hline
-    Initial relaxation time &  \SI{15}{ps} & Initial relaxation time before straining. \\ \hline
-    Pauses & \SI{5}{ps} & Relaxation pauses after strain, and during the normal load phase (before sliding). \\ \hline
-    Strain Speed & \SI{0.01}{ps^{-1}} & The rate of straining for the sheet. \\ \hline
-    Slide distance & \SI{400}{Å} & How far the sheet is slid. \\ \hline
-    Sheet size & $130.029 \times \SI{163.219}{\text{Å}}$ & Spatial 2D size of the sheet.  \\ \hline
-    Pull block size & $2 \times 130.029 \times \SI{15.183}{\text{Å}}$ & Spatial 2D size of the pull blocks. \\ \hline
-  \end{tabular}
+    \caption{Parameters involved in the numerical \acrshort{MD} simulation for measuring friction. The default values correspond to the final choice used for the \acrshort{ML} dataset for which the shaded cells denote the parameters varied.}
+    \label{tab:final_param}
+    \begin{tabular}{ | M{4cm} | M{3.5cm} | X{8cm}|} \hline
+      \textbf{Parameter} & \textbf{Default value} &  \textbf{Description} \\ \hline
+      $T$ & \SI{300}{K} &  Temperature of the system. \\ \hline
+      $v$ &\SI{20}{m/s} & Sliding speed for the sheet. \\ \hline
+      $K$ & $\infty$ & Spring constant for the coupling between the virtual atom and the sheet pull blocks. \\ \hline
+      Scan direction & $(x,y) = (0,1)$ \mbox{(zigzag direction)}  & The direction of sliding. \\ \hline   
+      \cellcolor{black!7} Sheet configuration & \cellcolor{black!7} Contiguous & \cellcolor{black!7} Binary mapping describing which atoms are removed (0) and which are still present (1) in the graphene sheet.  \\ \hline
+      \cellcolor{black!7} Strain amount & \cellcolor{black!7} [0, rupture] & \cellcolor{black!7} The ratio of change in length to the original length. \\ \hline
+      \cellcolor{black!7} $F_N$ & \cellcolor{black!7} [0.1, 10] nN & \cellcolor{black!7} Applied normal load to the pull blocks. \\ \hline
+      $dt$ & \SI{1}{fs} &  \acrshort{MD} integration timestep. \\ \hline
+      Initial relaxation time &  \SI{15}{ps} & Initial relaxation time before straining. \\ \hline
+      Pauses & \SI{5}{ps} & Relaxation pauses after strain, and during the normal load phase (before sliding). \\ \hline
+      Strain Speed & \SI{0.01}{ps^{-1}} & The rate of straining for the sheet. \\ \hline
+      Slide distance & \SI{400}{Å} & How far the sheet is slid. \\ \hline
+      Sheet size & $130.029 \times \SI{163.219}{\text{Å}}$ & Spatial 2D size of the sheet.  \\ \hline
+      Pull block size & $2 \times 130.029 \times \SI{15.183}{\text{Å}}$ & Spatial 2D size of the pull blocks. \\ \hline
+    \end{tabular}
   \end{center}
 \end{table}
+\renewcommand{\arraystretch}{1.0} % Default value: 1
 
 
 
@@ -445,7 +446,7 @@ which reveals a bit more information on how the buckling occurs. The Tetrahedron
 spikes, as the name suggests. In the Honeycomb pattern, on the other hand, the
 deformations initiate from one side first. As the sheet stretches, more rows of
 the pattern are activated, producing the honeycomb-looking shape when seen from
-above. Both patterns exhibit a small increase in relative contact when they
+above. This can also be seen from the flip book animation in the right corner of the pages. Both patterns exhibit a small increase in relative contact when they
 are approaching their rupture strain, which agrees with the results from~\cref{fig:buckling_quartiles} where the buckling reduces slightly towards the
 rupture strain.
 

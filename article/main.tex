@@ -1,4 +1,5 @@
-\documentclass[english]{book}  
+\documentclass[english,twoside]{book}  
+% \documentclass[english]{book}  
 \usepackage{Setup/style}
 \addbibresource{bibliography.bib}
 
@@ -8,10 +9,9 @@
 \author{Mikkel Metzsch Jensen}              
 \begin{document}
 \duoforside[dept={Department of Physics}, 
-            program={Computational Science: Materials Science},
-            image={figures/frontpage/frontpage3.png},
-            long]
-
+program={Computational Science: Materials Science},
+image={figures/frontpage/frontpage3.png},
+long]
 
 
 
@@ -26,14 +26,18 @@
 {
     \hypersetup{linkcolor=black}
     % \input{Setup/ListOfSymbols}
-    \printnoidxglossaries
+    % \printnoidxglossaries
+    \printnoidxglossary[type=acronym,nonumberlist]
     \tableofcontents
     }
 
 
     
+
 % ------ Main matter ------ %
 \mainmatter{}
+
+
 
 %%% INTRODUCTION %%%
 \input{Sections/Introduction} % Chapter 1
@@ -55,8 +59,12 @@
 % \input{Sections/Simulations/negative_coef} % Chapter 8
 
 
+
 %%% SUMMARY %%%
 \input{Sections/Summary}
+
+
+
 
 
 % ------ Appendices ------ %
@@ -75,3 +83,6 @@
 %%% Bibliography %%%
 \printbibliography
 \end{document}
+
+
+

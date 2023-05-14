@@ -401,19 +401,10 @@ With the use of the suggested learning rates from~\cref{fig:LR_range} we perform
 a grid search over the corresponding $S$ and $D$ parameters. We evaluate both
 the validation loss and the mean friction $R^2$ score for the validation data which is shown in~\cref{fig:A_search_perf} together with the best epoch and the number of model parameters. Additionally, we evaluate the mean friction $R^2$ score for a selected set of configurations. This set consists of the top 10 configurations with respect to the max drop property for the Tetrahedron and Honeycomb patterns respectively. This is done as a way of evaluating the performance on the non-linear friction-strain curves which we find to be the more difficult trend to capture. The selected evaluation is shown in~\cref{fig:A_search_compare}. Note that these configurations are already a part of the full dataset and thus the data points related to these configurations are most likely present in both the training and the validation data set. Hence, the performance must be considered in conjunction with the actual validation performance in~\cref{fig:A_search_perf}.
 
-\begin{figure}[!htb]
-  \centering
-  \includegraphics[width=\linewidth]{figures/ML/A_search_perf.pdf}
-  \caption{Architecture complexity grid search using a staircase-like VGGNet structure. The x-axis denotes the number of layers in the network (Depth) and the y-axis is the starting number of channels. See~\cref{eq:staircase_example} for an example of the staircase architecture. For each architecture complexity, we evaluate the friction mean $R^2$ validation score (top left), the validation loss (top right), the best epoch stored based on validation scores (bottom left) and the number of model parameters (bottom right).}
-  \label{fig:A_search_perf}
-\end{figure}  
 
-\begin{figure}[!htb]
-  \centering
-  \includegraphics[width=\linewidth]{figures/ML/A_search_compare_perf}
-  \caption{Architecture grid search similar to that of~\cref{fig:A_search_perf} on a selected set of configurations. The selected set consists of the top 10 candidates for the max drop property for the Tetrahedron and Honeycomb categories in the dataset respectively.}
-  \label{fig:A_search_compare}
-\end{figure}  
+%%
+
+%% 
 
 From the validation scores in~\cref{fig:A_search_perf}, looking at both the loss
 and the $R^2$ scores, we find that models S(8-32)D(8-12) generally give the best
@@ -437,11 +428,35 @@ with an $R^2$ score of $\sim 87 \%$. This model choice is more or less
 compatible with the overall performance since it is among the top candidates for
 the $R^2$ score and loss in~\cref{fig:A_search_perf} and the $R^2$ score for the
 selected Honeycomb set in~\cref{fig:A_search_compare} as well. Hence, we settle
-for this architecture. We note that the theoretical receptive field for the last
+for this architecture. 
+
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=\linewidth]{figures/ML/A_search_perf.pdf}
+  \caption{Architecture complexity grid search using a staircase-like VGGNet structure. The x-axis denotes the number of layers in the network (Depth) and the y-axis is the starting number of channels. See~\cref{eq:staircase_example} for an example of the staircase architecture. For each architecture complexity, we evaluate the friction mean $R^2$ validation score (top left), the validation loss (top right), the best epoch stored based on validation scores (bottom left) and the number of model parameters (bottom right).}
+  \label{fig:A_search_perf}
+\end{figure}  
+
+
+We note that the theoretical receptive field for the last
 convolutional layer (layer 6) is $13 \times 13$ according to~\cref{eq:receptive_field}, and thus each node in the first fully connected
 layer does not connect to the entirety of the $62\times106$ input image. Hence,
 some spatial dependence will have to be encoded in the fully connected part as
 well, and we note that an enlargement of the receptive field might serve as an interesting suggestion for an improvement of the model in further studies. One possible method is to increase the stride or use dilated convolutions.
+
+
+
+
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=\linewidth]{figures/ML/A_search_compare_perf}
+  \caption{Architecture grid search similar to that of~\cref{fig:A_search_perf} on a selected set of configurations. The selected set consists of the top 10 candidates for the max drop property for the Tetrahedron and Honeycomb categories in the dataset respectively.}
+  \label{fig:A_search_compare}
+\end{figure}  
+
+
 
 Next, we consider momentum $m$ and weight decay $\lambda$ in the range $m \in
 [0.85, 0.99]$ and $\lambda \in [0, \num{e-2}]$. For each choice of momentum, we
@@ -468,14 +483,14 @@ in~\cref{fig:mom_weight_search_cyclic}.
   \centering
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
-      \includegraphics[width=\textwidth]{figures/ML/LR_momentum_test_a.pdf}
+      \includegraphics[width=0.95\textwidth]{figures/ML/LR_momentum_test_a.pdf}
       \caption{}
       % \label{fig:}
   \end{subfigure}
   \hfill
   \begin{subfigure}[t]{0.49\textwidth}
       \centering
-      \includegraphics[width=\textwidth]{figures/ML/LR_momentum_test_b.pdf}
+      \includegraphics[width=0.95\textwidth]{figures/ML/LR_momentum_test_b.pdf}
       \caption{}
       % \label{fig:}
   \end{subfigure}
