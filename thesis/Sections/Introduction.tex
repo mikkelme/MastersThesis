@@ -66,7 +66,7 @@ different material types or removing certain regions completely. In recent
 papers by Hanakata et al.~\cite{PhysRevLett.121.255304,
 PhysRevResearch.2.042006}, numerical studies have showcased that the mechanical
 properties of a graphene sheet, yield stress and yield strain, can be altered
-through the introduction of so-called \textit{Kirigami} inspired cuts into the
+through the introduction of so-called \textit{Kirigami}-inspired cuts into the
 sheet. Kirigami is a variation of origami where the paper is cut additionally to
 being folded. While these methods originate as an art form, aiming to produce
 various artistic objects, they have proven to be applicable in a wide range of
@@ -144,8 +144,8 @@ of governing mechanisms and thus contribute to new insight in this field.
 \section{Goals}\label{sec:goals} 
 In this thesis, I investigate the prospects of
 altering the frictional properties of a graphene sheet through the application
-of Kirigami-inspired cuts and stretching of the sheet. With the use of molecular
-dynamics (\acrshort{MD}) simulations, I evaluate the frictional properties of
+of Kirigami-inspired cuts and stretching of the sheet. With the use of Molecular
+Dynamics (\acrshort{MD}) simulations, I evaluate the frictional properties of
 various Kirigami designs under different physical conditions. Based on the
 \acrshort{MD} results, I investigate the possibility to use machine learning
 for the prediction of frictional properties and subsequently using the model for
@@ -168,7 +168,7 @@ summarized as follows.
 
 
 \section{Contributions}
-By working towards the goals outlined above (\cref{sec:goals}), I have
+By working toward the goals outlined above (\cref{sec:goals}), I have
 discovered a non-linear relationship between the kinetic friction and the strain
 for certain Kirigami patterns. This phenomenon was found to be associated with
 the out-of-plane buckling of the Kirigami sheet but with no clear relationship
@@ -194,7 +194,7 @@ Github~\cite{Github}. The tools are summarized in the following.
     potentials, which makes it applicable for further studies on this topic.
     I have also built an automized procedure to carry out multiple simulations
     under varying parameters by submitting jobs to a computational cluster via
-    an ssh connection. This was done by adding minor additions to the Python package developed by E. M. Nordhagen~\cite{lammps_simulator}.
+    an ssh connection. This was done by writing minor additions to the Python package developed by E. M. Nordhagen~\cite{lammps_simulator}.
     \item I have generated a Python-based tool for generating Kirigami patterns
     and exporting these in a compatible format with the simulation software created. The
     generation of molecular structures is done with the use of
@@ -218,19 +218,15 @@ Matplotlib.
 \section{Thesis structure}
 The thesis is divided into two parts. In~\cref{part:theory} I introduce the
 relevant theoretical background, and in~\cref{part:simulations} I present the
-numerical implementations and the results of this thesis.
-
-\cref{part:theory} contains a description of the theoretical background related
+numerical implementations and the results of this thesis. \cref{part:theory} contains a description of the theoretical background related
 to Friction (\cref{chap:friction}), Molecular Dynamics (\cref{chap:MD}) and
 Machine Learning (\cref{chap:ML}). In~\cref{sec:research_questions} we
-formulate our research questions in the light of the friction theory.  
-
-In~\cref{part:simulations}, I begin by presenting the system in~\cref{chap:system} which includes a definition of the main parts of the system and the numerical procedures related to the \acrshort{MD} simulation. Here I also present the generation of Kirigami designs. In~\cref{chap:pilot_study} I carry out a pilot
+formulate our research questions in the light of the friction theory.  In~\cref{part:simulations}, I begin by presenting the system in~\cref{chap:system} which includes a definition of the main parts of the system and the numerical procedures related to the \acrshort{MD} simulation. Here I also present the generation of Kirigami designs. In~\cref{chap:pilot_study}, I carry out a pilot
 study where I evaluate the simulation results for
 various physical conditions and compare a non-cut sheet to two different
 Kirigami designs. In~\cref{chap:dataset_study}, I further explore the Kirigami patterns through the creation of a
 dataset and the employment of machine learning and an accelerated search for new designs. In~\cref{chap:negative_coef}, I use
 the results from the pilot study to demonstrate the possibility to achieve a
-negative friction coefficient for a system with coupled load and strain. Finally, in~\cref{chap:summary}, I summarize our results and provide an outlook for further studies. Additional figures are shown
+negative friction coefficient for a system with coupled load and strain. Finally, in~\cref{chap:summary}, I summarize the results and provide an outlook for further studies. Additional figures are shown
 in~\cref{sec:sheet_stretch}, \cref{sec:dataset_conf} and~\cref{sec:data_stretch_profiles}. 
 
