@@ -12,7 +12,7 @@
 
 # Folders
 /Data
-/__pycache__
+*/__pycache__
 /Questions
 /Books
 /hon_search
