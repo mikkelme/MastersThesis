@@ -1,3 +1,5 @@
+### Initial scripts for running simulations on the cluster
+
 import sys
 sys.path.append('../') # parent folder: MastersThesis
 from simulation_manager.simulation_runner import *
@@ -5,21 +7,7 @@ from simulation_manager.simulation_runner import *
 def one_config_multi_data(header, dir, variables, F_N):
     proc = Simulation_runner(variables)
    
-    
-    # print(f"Samples: {num_stretch_files} x {len(F_N)} = {num_stretch_files*len(F_N)}")
-    # if RN_stretch:
-    #     print("Stretch: Uniform random in intervals:")
-    #     Sstep = proc.variables['stretch_max_pct']/num_stretch_files
-    #     for i in range(num_stretch_files-1):
-    #         print(f"[{i*Sstep:g}, {(i+1)*Sstep:g}),", end = " ")
-    #     print(f"[{(i+1)*Sstep:g}, {(i+2)*Sstep:g})")
-    # else:
-    #     print(f"Stretch: {np.around(np.linspace(0,proc.variables['stretch_max_pct'], num_stretch_files), decimals = 3)}")
-    # print(f"F_N: {F_N*1e9} nN")
-    # exit("Safety break")
-    
-    
-    
+
     proc.variables["out_ext"] = sim_name
     proc.multi_run(header, dir, F_N, num_procs = 1, jobname = jobname)
     

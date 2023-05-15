@@ -1,29 +1,27 @@
+### Script for building the graphene sheet 
+### from the binary configuration mateix 
+
+
 import sys
 sys.path.append('../') # parent folder: MastersThesis
-
-import ase # go through imports to clean up
-
+import ase 
 from ase.build import graphene_nanoribbon
-# from ase.build import graphene
-
 from ase.io import  lammpsdata
 from ase.visualize import view
 from ase.io import write
 import numpy as np
-
 from graphene_sheet.manual_patterns import *
 from graphene_sheet.RN_walks import *
-
 import os
 
 def build_graphene_sheet(mat, Cdis = 1.461):
+    """ build graphene sheet based on binary configuration matrix """
     shape_error = f"SHAPE ERROR: Got matrix of shape {np.shape(mat)}, y-axis must be multiple of 2 and both nonzero integer."
     assert mat.shape[0]%1 == 0 and mat.shape[1]%1 == 0 and mat.shape[1]%2 == 0, shape_error
     assert mat.shape[0] > 0 and mat.shape[1] > 0, shape_error
 
     xlen = mat.shape[0]
     ylen = mat.shape[1]//2
-    
     
     # --- Create graphene lattice --- #
     atoms = graphene_nanoribbon(xlen, ylen, type='zigzag', saturated=False, C_C=Cdis, vacuum=2.0)
@@ -62,24 +60,6 @@ def build_graphene_sheet(mat, Cdis = 1.461):
 
    
     return atoms
-
-
-# def save_mat(mat, folder):
-#     file_id = 1
-    
-#     # Existing data without extension
-#     existing_data = [o.split(".")[0] for o in os.listdir(folder)] 
-
-#     # Generate unique filename    
-#     filename = f"tmp{file_id}"
-#     while filename in existing_data:
-#         file_id += 1
-#         filename = f"tmp{file_id}"
-    
-#     # Save matrix as array
-#     np.save(os.path.join(folder, filename), mat)
-   
-
    
 
 if __name__ == "__main__":
@@ -88,10 +68,6 @@ if __name__ == "__main__":
     unitsize = (5,7)
     mat = pop_up_pattern(multiples, unitsize, sp = 2)
 
-    # mat[:] = 1
-    # save_mat(mat, "test_data")
-    
-    # exit()
     
     # RN = RN_Generator( size = (50,50), 
     #                    num_walks = 9,
@@ -101,19 +77,11 @@ if __name__ == "__main__":
     #                    periodic = True,
     #                    avoid_unvalid = False,
     #                    grid_start = True,
-    #                    center_elem = True)
-    
+    #                    center_elem = True) 
     # mat = RN.generate()
     
-    
-    # mat = RN.valid
-    # mat[mat == 1] = 2
-    # mat[mat == 0] = 1
-    # mat[mat == 2] = 0
-    
-    
     # mat, pullblock = build_pull_blocks(mat, pullblock = 6, sideblock = 0)
-    build_graphene_sheet(mat, view_lattice = True)
+    # build_graphene_sheet(mat, view_lattice = True)
 
 
 

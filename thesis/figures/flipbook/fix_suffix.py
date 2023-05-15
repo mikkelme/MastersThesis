@@ -2,10 +2,10 @@ import os
 import numpy as np
 
 # Settings
-# type = 'topview'; start_num = 7
-type = 'sideview'; start_num = 8
+type = 'topview'; start_num = 7
+# type = 'sideview'; start_num = 8
 freq = 4
-unqiue_center = True
+unqiue_center = False
 fill_around_center = 3
 
 
@@ -36,20 +36,20 @@ for num in reversed(numbers):
         break
     
 target = np.sort(np.concatenate((target, np.array(fill))))
-# print(len(target))
-# exit()
 
 # Rename and duplicate for reverse 
-for file in os.listdir(from_folder):
+count = 0
+for file in np.sort(os.listdir(from_folder)):
     if file[:len(prefix)] != prefix:
         continue
     words = file.split(prefix)
     num = int(words[1].lstrip('0').rstrip(ext))
-    
     if num in target:
+        count += 1
         new_num = np.argmin(abs(num - target)) + start_num
         sec_num = 2*(len(target) + start_num) - new_num -1
-        
+        print(count, new_num, sec_num, num == target[-1])
+    
         os.system(f'cp {os.path.join(from_folder, file)} {os.path.join(to_folder, prefix + str(new_num) + ext)}')
         if num == target[-1]:
             if unqiue_center:

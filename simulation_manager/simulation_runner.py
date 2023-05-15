@@ -1,3 +1,7 @@
+### Class for handling the submission of 
+### simulation jobs for various simulation procedures
+
+
 import numpy as np
 from datetime import date
 import subprocess

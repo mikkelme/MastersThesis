@@ -1,9 +1,12 @@
+### Tools for generating Tetrahedron (pop up) 
+### and Honeycomb patterns 
+
+
 import sys
 sys.path.append('../') # parent folder: MastersThesis
 
 from graphene_sheet.build_utils import *
 import random
-
 def pop_up(shape = (62, 106), size = (5,3), sp = 1, ref = None):
     """ Generate pop-up cut patteren inspired by:
         https://seas.harvard.edu/news/2017/02/new-pop-strategy-inspired-cuts-not-folds
@@ -94,8 +97,6 @@ def pop_up(shape = (62, 106), size = (5,3), sp = 1, ref = None):
 
 
 def capacitor_line(ref, num_gaps = 3, xlen = 5, xsp = 3, ylen = 9):
-    """     
-    """
     assert num_gaps % 2 == 1, "num_gaps must be odd"
     assert xlen % 2 == 1, "xlen must be odd"
     assert ylen % 2 == 1, "ylen must be odd"
@@ -204,24 +205,6 @@ def honeycomb(shape = (62, 106), xwidth = 1, ywidth = 1,  bridge_thickness = 1, 
 
     return mat    
 
-
-
-
-# def unique_mat(shape, list):
-#     matrices = [] 
-#     for ref in list:
-#         mat = pop_up(shape, np.array(ref))
-#         if len(matrices) == 0:
-#             matrices.append(mat)      
-#             print(f'unique ref = {ref}')
-#         elif not np.any(np.all(np.all(mat == matrices, axis = 1), axis = 1)):
-#             matrices.append(mat)
-#             print(f'unique ref = {ref}')
-#         else:
-#             print(f'dubplicate ref = {ref}')
-            
-    
-#     print(f'unique = {len(matrices)}/{len(list)}')
     
     
 def all_unique_mat(shape):
@@ -248,42 +231,7 @@ def all_unique_mat(shape):
     
 
 if __name__ == "__main__":
-    
-    
-    # unique_mat([(24, 25), (25, 26), (26,26), (27,27), (28,27), (29,28), (30,28), (25,25)])
-    # unique_mat([(24, 25), (25,25), (25, 26), (26,26), (27,27), (28,27), (29,28), (30,28)])
-    # unique_mat([16, 32], [(0, 0), (0,1), (0, 2), (0, 6)])
-    
-    # matrices = []
-    # mat0 = pop_up([16, 32], np.array((0, 0)))
-    # mat1 = pop_up([16, 32], np.array((0, 1)))
-    # mat2 = pop_up([16, 32], np.array((0, 2)))
-    
-    # matrices.append(mat0)
-    # matrices.append(mat1)
-    # # matrices.append(mat2)
-    
-    # test = not np.any(np.all(np.all(mat2 == matrices, axis = 1), axis = 1))
-    # print(test)
-    # print(np.any(np.all(np.all(mat1 == matrices, axis = 1), axis = 1)))
-    
-    # test = np.all(mat0 == matrices, axis = 1)
-    # test1 = np.all(test, axis = 1)
-    # print(np.any(test1))
-    # print()
-    
-    
-    
-    
-    ref = np.array((0,0))
-    a = np.array((6, 3))
-    b = np.array((-6, 9))
-    c = np.array((6, -3))
-     
-    M = int(np.abs(np.cross(a, b))/2)
-    print(M)
-    # # all_unique_mat((16, 32))
-    
+    pass
     
    
                 

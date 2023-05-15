@@ -1,3 +1,5 @@
+### Scripts for searching dataset for target properties
+
 import sys
 sys.path.append('../') # parent folder: MastersThesis
 

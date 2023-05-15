@@ -1,7 +1,6 @@
 import sys
 sys.path.append('../') # parent folder: MastersThesis
 
-
 import torch
 import torch.nn as nn
 import torch.optim as optim

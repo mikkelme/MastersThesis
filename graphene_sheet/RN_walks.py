@@ -1,19 +1,16 @@
+### Script for making Random walk patterns
+
+
 import sys
 sys.path.append('../') # parent folder: MastersThesis
 sys.setrecursionlimit(10000)
-
 from graphene_sheet.build_utils import *
 from ML.accelerated_search import * 
-    
-    
-
-# try: 
-
-# from ML.accelerated_search import Genetic_algorithm
 import random
 
 
 class RW_Generator:
+    """ Class for generating Random walk Kirigami patterns """
     def __init__(self,  size = (62, 106),
                         num_walks = 9,
                         max_steps = 6,
@@ -35,10 +32,7 @@ class RW_Generator:
         assert size[0]%1 == 0 and size[1]%1 == 0 and size[1]%2 == 0, shape_error
         assert size[0] > 0 and size[1] > 0, shape_error
             
-    
-        # if stay_or_break > 0:
-        #     assert center_elem is not False, f"center_elem = {center_elem} is not valid in mode stay_or_break = {stay_or_break} > 0"
-    
+
         # Convert variables
         self.size = np.array(size)
         self.num_walks = num_walks
@@ -609,10 +603,8 @@ periodic = {self.periodic}, \
 seed = {self.seed}'
         return s
 
-if __name__ == "__main__":
-    
+if __name__ == "__main__":    
     RW = RW_Generator()
-    print(RW)
     mat = RW.generate()
 
     

@@ -1,13 +1,9 @@
+### Pytorch dataloaders
+
 import sys
 sys.path.append('../') # parent folder: MastersThesis
-
-# if 'MastersThesis' in sys.path[0]: # Local 
 from ML.ML_utils import *
-# else: # Cluster
-    # from ML_utils import *
-    
-seed_everything(2023) # TODO: Keep here? Or put elsewhere?
-
+seed_everything(2023) 
 
 
 class KirigamiDataset(Dataset):
@@ -167,49 +163,8 @@ def get_ML_setting(use_gpu = None):
 
    
 if __name__ == "__main__":
-    # data_root = '../data_pipeline/tmp_data'
-    # data_root = '../Data/ML_data/honeycomb'
-    # data_root = '../Data/ML_data/popup'
     data_root = ['../Data/ML_data/honeycomb', '../Data/ML_data/popup'] 
     ML_setting = get_ML_setting()
-    
-    
-    # KirigamiDataset(data_root, trvaltest = 'train')
-    
-    
-    # datasets, dataloaders = get_data(data_root, ML_setting, max_file_num = None)
-    # datasets, dataloaders = get_data(data_root, ML_setting, max_file_num = None)
-    
-    
-    
-    
     datasets, dataloaders = get_data('../Data/ML_data/RW', ML_setting, max_file_num = 200)
     trainloader = dataloaders['train']
-    
-    print("go")
-    loader_iter = iter(trainloader)
-    for i in range(10):
-        out = next(loader_iter)
-        print(out)
-        
-    exit()
-        
-        
-    # print("go")
-    # loader_iter = iter(trainloader)
-    # for i in range(10):
-    #     out = next(loader_iter)
-    #     print(out)
-    
-     
  
-        
-        
-        
-    # num_batches = len(trainloader)
-    # print(num_batches)
-    # for batch_idx, data in enumerate(trainloader):
-    #     print(batch_idx)
-    # print('next')
-    # for batch_idx, data in enumerate(trainloader):
-    #     print(batch_idx)

@@ -1,14 +1,11 @@
+### Evaluate model performance
+
+
 import sys
 sys.path.append('../') # parent folder: MastersThesis
 
-# if 'MastersThesis' in sys.path[0]: # Local 
 from ML.data_analysis import *
 from ML.use_network import *
-# else: # Cluster
-#     from data_analysis import *
-#     from use_netwrok import *
-    
-
 from plot_set import *
 import ast
 from matplotlib.colors import LogNorm
@@ -381,25 +378,15 @@ def staircase_complexity(path):
     
     plt.plot(P['num_params'], P['train_tot_loss'], label = 'train tot loss')
     plt.plot(P['num_params'], P['val_tot_loss'], label = 'val tot loss')
-    # ax.plot(P['num_params'], P['train_Ff_loss'], label = 'train Ff loss')
-    # ax.plot(P['num_params'], P['val_Ff_loss'], label = 'val Ff loss')
-    
-    # diff_tot_loss = P['val_tot_loss'] - P['train_tot_loss']
-    # diff_Ff_loss = P['val_Ff_loss'] - P['train_Ff_loss']
-    # plt.plot(P['num_params'], diff_tot_loss, label = 'diff tot loss')
-    # plt.plot(P['num_params'], diff_Ff_loss, label = 'diff Ff loss')
     ax.set_xscale('log')
     fig.legend()
     
     
     
 if __name__ == '__main__':
-    # path = '../ML/staircase_1'
-    # path = '../ML/staircase_4'
     path = '../ML/mom_weight_search'
     
     compare_folder = ['../Data/Baseline_fixmove/honeycomb/multi_stretch', '../Data/Baseline_fixmove/popup/multi_stretch']
-    # compare_folder = []
     staircase_heatmap(path, compare_folder, save = False)
     # staircase_complexity(path)
     

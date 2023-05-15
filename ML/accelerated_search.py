@@ -1,3 +1,6 @@
+### Accelerated search using genetic algorithm
+
+
 import sys
 sys.path.append('../') # parent folder: MastersThesis
 
@@ -5,10 +8,7 @@ from ML.use_network import *
 from config_builder.build_config import *
 from graphene_sheet.build_utils import *
 from ase.visualize.plot import plot_atoms
-
 from time import perf_counter
-
-# from graphene_sheet.RN_walks import *
 
 
 
@@ -205,8 +205,7 @@ class Genetic_algorithm: # Genetic algorithm
         self.W = 1 - a
        
        
-        # mutate_individual = np.random.rand(self.N) < a
-        
+
         self.update_gene_transistion_probabilities()
         
         # Clip bottom prob. increasingly towards end to avoid locking of prob.
@@ -862,70 +861,3 @@ if __name__ == '__main__':
     plt.imshow(GA.A[0])
     plt.show()
     
-    # GA = Genetic_algorithm(model_weights, model_info, N = 5, image_shape = (62,106), repair = False)
-    # GA.stretch = np.linspace(0, 2, 100)
-    # GA.F_N = 5
-    # GA.set_fitness_func(GA.max_drop)
-    # GA.init_population([0.01, 0.05, 0.1, 0.2, 0.3])
-    # GA.evolution(num_generations = 1)
-    
-    # GA.print_top(topN)
-    # GA.save_top('./GA_test', topN)
-    
-    # GA = Genetic_algorithm(model_weights, model_info, N = 50, image_shape = (10, 10), expand = (62,106), repair = True)
-    # GA = Genetic_algorithm(model_weights, model_info, N = 10, image_shape = (10, 10), expand = None)
-    
-    # exit()
-    # --- Define fitness --- #
-    # GA.set_fitness_func(ising_max)
-    # GA.init_population(['../config_builder/baseline/hon3215.npy', '../config_builder/baseline/pop1_7_5.npy', 0, 0.25, 0.5, 0.75, 1])
-    # GA.init_population([0.25, 0.5, 0.75, 1])
-    # GA.evolution(num_generations = 100)
-    # GA.show_sheet(GA.A[0])
-    # GA.show_sheet(GA.A_ex[0])
-    # GA.show_status()
-    # plt.show()
-    
-    
-    
-    
-    # Initialize populartion
-    # mat = np.zeros((5,10))
-    # mat[0, 0] = 1
-    # mat[0, 3] = 1
-    # mat[0, 6] = 1
-    # mat[0, 9] = 1
-    # mat[1, 1] = 1
-    # mat[1, 8] = 1
-    # mat[2, 5] = 1
-    # mat[2, 7] = 1
-    # mat[2, 9] = 1
-    # mat[3, 3] = 1
-    # mat[4, 0:2] = 1
-    # mat[4, 7] = 1
-    # mat[4, 9] = 1
-    # GA.init_population([mat])
-  
-  
-    # np.random.seed(1235)
-    # GA.init_population([0.35])
-    # GA.show_sheet()
-    # mat = GA.repair(GA.A[0])
-    # GA.init_population([mat])
-    # GA.show_sheet()
-    # exit()
-    # GA.get_clusters(mat)
-    
-    
-    # GA.show_status()
-    # plt.show()
-    
-    
-    
-    
-    
-    # plt.imshow(GA.A[0])
-    # plt.show()
-        
-
-

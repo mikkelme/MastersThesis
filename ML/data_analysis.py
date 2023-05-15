@@ -1,13 +1,10 @@
+### Scripts for dataset analysis
+
 import sys
 sys.path.append('../') # parent folder: MastersThesis
 
-# if 'MastersThesis' in sys.path[0]: # Local 
 from ML.dataloaders import *
 from analysis.analysis_utils import *
-# else: # Cluster
-#     from dataloaders import *
-#     from analysis_utils import *
-    
 from scipy.signal import argrelextrema
 from plot_set import *
 import ast
@@ -409,16 +406,11 @@ def get_config_data_property_score(folder):
     
         
 if __name__ == '__main__':
-    plot_corrcoef(save = True)
-    plot_corr_scatter(save = True)
-    # plt.show()
+    plot_corrcoef(save = False)
+    plot_corr_scatter(save = False)
+    plt.show()
     
-    # model_performance('training_1')
-    # model_performance('training_3')
 
-    # get_rupture_count()
-    
-    # plt.show()
     
     # data_root = ['../Data/ML_data/honeycomb', '../Data/ML_data/popup'] 
     # obj = Data_fetch(data_root)

@@ -1,18 +1,12 @@
+### Scripts for running machine learning training 
+
 import sys
 sys.path.append('../') # parent folder: MastersThesis
 
-# if 'MastersThesis' in sys.path[0]: # Local 
 from ML.dataloaders import *
 from ML.ML_utils import *
 from ML.networks import *
 from ML.hypertuning import *
-# else: # Cluster
-#     from dataloaders import *
-#     from ML_utils import *
-#     from networks import *
-#     from hypertuning import *
-    
-
 from collections import OrderedDict
 
 class Loss: # Maybe find better name: 'Criterion' or 'Loss_func'
@@ -593,16 +587,3 @@ if __name__=='__main__':
     coach.save_history('training/test_cyclic_S32D12')
     coach.plot_history(show = False, save = 'training/test_cyclic_S32D12/loss.pdf')
 
-    # coach.plot_history()
-    # coach.get_info()
-    
-    
-    
-
-
-    
-    
-    # coach = Trainer(model, data_root, loss, **ML_setting)
-    # coach = Trainer(model, data_root, loss, use_gpu = True)
-    
-    

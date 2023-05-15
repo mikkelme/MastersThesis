@@ -1,6 +1,4 @@
-# import torch
-# import torch.nn as nn
-# from RainforestDataset import get_classes_list
+### Defines the model architecture
 
 import torch
 import torch.nn as nn
@@ -261,8 +259,6 @@ class VGGNet(Module):
         
         
 if __name__ == '__main__':
-    # model = VGGNet(mode = 0, image_shape = (62, 106), input_num = 2)
-    
     model = VGGNet( mode = 0, 
                     input_num = 2, 
                     image_shape = (62, 106),

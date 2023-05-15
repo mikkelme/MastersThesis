@@ -1,22 +1,15 @@
+### Scripts for using the network model 
+### for various predictions
+
+
 import sys
 sys.path.append('../') # parent folder: MastersThesis
 
-# if 'MastersThesis' in sys.path[0]: # Local 
 from produce_figures.baseline_variables import *
 from ML.ML_utils import *
 from ML.networks import *
 from config_builder.build_config import *
-  
 import cv2
-
-
-# else: # Cluster
-#     from baseline_variables import *
-#     from ML_utils import *
-#     from networks import *
-#     from build_config import *
-    
-
 import ast
 from plot_set import *
 from scipy.signal import argrelextrema
@@ -299,15 +292,9 @@ class Evaluater():
             fig.supxlabel(r"$x$ (armchair direction)", fontsize = 14)
             fig.supylabel(r"$y$ (zigzag direction)", fontsize = 14)
             fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)        
-            
-        # TODO: Maybe plot on lines like shown here: 
-        # https://towardsdatascience.com/convolutional-neural-network-feature-map-and-filter-visualization-f75012a5a49c
-      
+                  
         plt.show()
       
-        # atom_radii = 0.6
-        # fig1 = plt.figure(num=unique_fignum(), dpi=80, facecolor='w', edgecolor='k'); ax1 = fig1.gca()
-        # plot_feature_map(test, ax1, atom_radii, cmap = 'gray', edgecolor = 'black') # Pattern   
 
      
     
@@ -486,35 +473,6 @@ def plot_feature_map(mat, ax, radius, cmap, **param):
 
 if __name__ == '__main__':
     
-    # name = 'graphene_h_BN/C16C32C64D64D32D16'
-    # name = 'training_1/C16C32D32D16'
-    
-    # folder = 'staircase_2'
-    
-    # name = f'{folder}/C8C16C32C64D32D16D8' 
-    # name = f'{folder}/C8C16D16D8' 
-    # name = f'{folder}/C16C16D16D16'
-    # name = f'{folder}/C16C32C32D32D32D16' 
-    # name = f'{folder}/C16C32C64C64D64D32D16'
-    # name = f'{folder}/C16C32C64C64D512D128' 
-    # name = f'{folder}/C16C32C64C128D64D32D16' 
-    # name = f'{folder}/C16C32C64D64D32D16' # BEST
-    # name = f'{folder}/C16C32C64D512D128' 
-    # name = f'{folder}/C16C32D32D16'
-    # name = f'{folder}/C32C64C128D128D64D32'
-    
-    
-    # name = f'{folder}/S32D8'
-    # name = f'{folder}/S4D14'
-    
-    # test_model_manual(name)
-    # test_model_compare(name)
-    # show_CNN_layers(name)
-    # show_CNN_layers(name)
-    
-    
-    # plt.show()
-    # pass
     model_name = 'mom_weight_search_cyclic/m0w0/'
     model_weights = f'{model_name}/model_dict_state'
     model_info = f'{model_name}/best_scores.txt'

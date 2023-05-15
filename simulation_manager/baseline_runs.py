@@ -1,3 +1,5 @@
+### Initial scripts for running simulations on the cluster
+
 from simulation_runner import *
 
 

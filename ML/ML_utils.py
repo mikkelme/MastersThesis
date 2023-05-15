@@ -1,12 +1,9 @@
+## Machine learning utilities
+
 import sys
 sys.path.append('../') # parent folder: MastersThesis
-
-# if 'MastersThesis' in sys.path[0]: # Local 
 from ML.module_import import *
-# else: # Cluster
-#     from module_import import *
     
-
 def seed_everything(seed: int):
     random.seed(seed)
     os.environ['PYTHONHASHSEED'] = str(seed)

@@ -1,3 +1,5 @@
+### Utilities for the creation of Kirigami sheets
+
 import numpy as np
 
 def delete_atoms(mat, delete_map):

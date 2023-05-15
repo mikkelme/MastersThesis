@@ -1,22 +1,15 @@
+### Scripts for hypertuning
+
+
 import sys
 sys.path.append('../') # parent folder: MastersThesis
 
-# if 'MastersThesis' in sys.path[0]: # Local 
 from ML.train_network import *
-# else: # Cluster
-#     from train_network import *
-    
-    
 from time import perf_counter
 from ignite.engine import create_supervised_trainer, create_supervised_evaluator
 from ignite.handlers import FastaiLRFinder
 from matplotlib.colors import LogNorm
 from scipy.signal import argrelextrema
-
-
-
-
-
 
 
 class Architectures:
@@ -261,9 +254,6 @@ def LR_range_test(A_instance, data_root, ML_setting, save_folder):
     start_lr = 1e-7
     end_lr = 10.0
 
-    # optimizer = optim.Adam(model.parameters(), lr = 1e-6)
-    # optimizer = torch.optim.RMSprop(model.parameters(), lr=1e-06)
-    # optimizer = optim.SGD(model.parameters(), lr = 1e-06, momentum = 0.9)    
     filename = os.path.join(save_folder, 'lr.txt')
     for i, (model, criterion) in enumerate(A_instance):        
         num_params = model.get_num_params()
