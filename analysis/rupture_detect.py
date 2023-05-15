@@ -1,3 +1,7 @@
+### Scripts used in the investigation of how to detect ruptures
+### I settled on a better solution in LAMMPS
+### which makes these scripts obsolete
+
 from analysis_utils import *
 
 

@@ -1,3 +1,5 @@
+### Plots the RDF 
+
 from analysis_utils import *
 from scipy.signal import argrelextrema
 

@@ -1,3 +1,6 @@
+### Main class for generating and running simulations 
+
+
 import numpy as np
 import os
 

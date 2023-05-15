@@ -1,3 +1,5 @@
+### Various utilities for analyzing data ###
+
 import numpy as np 
 import matplotlib.pyplot as plt 
 from scipy import signal
@@ -7,9 +9,9 @@ import pandas
 import sys
 sys.path.append('../') # parent folder: MastersThesis
 from plot_set import *
-
 from matplotlib.collections import LineCollection
 from matplotlib.colors import ListedColormap, BoundaryNorm
+
 
 
 def read_friction_file(filename):
@@ -31,6 +33,7 @@ def read_friction_file(filename):
 
 
 def read_info_file(filename):
+    """ Read file.info from simulations """
     dict = {}
     infile = open(filename, 'r')
     for line in infile:
@@ -51,7 +54,7 @@ def read_info_file(filename):
     
 
 def metal_to_SI(input, key):
-    # --- Convertion factors: SI -> metal --- #
+    """ Convertion factors: SI -> metal """
     eV_over_ang_to_N = 1/6.24150907e8   # force: eV/Å -> N 
     ang_to_m = 1e-10                     # distance: Å -> m
     ps_to_s = 1e-12                     # time: ps -> s
@@ -66,7 +69,8 @@ def metal_to_SI(input, key):
 
 
 def get_files_in_folder(path, ext = None, exclude = None): 
-    """ ext: extension to include
+    """ Retrieve all files of interest in a folder. 
+        ext: extension to include
         exclude: exclude files containing that string
     """ 
     filenames = []
@@ -89,22 +93,24 @@ def get_files_in_folder(path, ext = None, exclude = None):
     return filenames
 
 def get_dirs_in_path(d, sort = False):
+    """ Get all directories in a path  """
     d = str(d)
     dirs = [os.path.join(d, o) for o in os.listdir(d) if os.path.isdir(os.path.join(d,o))]
     if sort: return np.sort(dirs)
     return dirs       
 
 def find_single_file(path, ext):
+    """ Find single file of interest in a path. """
     path = str(path)
     file_list = [os.path.join(path, f) for f in os.listdir(path) if f[-len(ext):] == ext]
     if len(file_list) == 0:
         raise FileNotFoundError
     if len(file_list) > 1:
         exit(f'{len(file_list)} candidates for file with extenstion {ext} in {path} found:\n{file_list}')
-        # assert(len(file_list) == 1), f"{len(file_list)} candidates for file with extenstion {ext} in {path} found:\n{file_list}."
     return file_list[0]
 
 def avg_forward(interval, *args):
+    """ Perform running mean """
     output = []
     for i, arg in enumerate(args):
         tmp = []
@@ -116,16 +122,19 @@ def avg_forward(interval, *args):
 
 
 def savgol_filter(window_length, polyorder, *args):
+    """ Perform a Savgol filter """
     output = []
     for i, arg in enumerate(args):        
         output.append(signal.savgol_filter(arg, window_length, polyorder))
     return *output, 
 
-def decompose_wrt_drag_dir(x, y, drag_direction):
+def decompose_wrt_drag_dir(x, y, sliding_direction):
+    """ Decompose force vector into parallell and perpendicular 
+        with respect to sliding direction """
     xy_vec = np.vstack((x, y)).T
 
     # Directions
-    dir_para = drag_direction.astype('float64')
+    dir_para = sliding_direction.astype('float64')
     dir_perp = np.array((dir_para[1], -dir_para[0]))
 
     # Unit directions
@@ -189,7 +198,6 @@ def analyse_friction_file(filename, mean_window_pct = 0.5, std_window_pct = None
         ----------------------------------------------------------------------------------------------------------------------------
     """ 
 
-    
 
     # --- Retrieve data --- #
     # Get info
@@ -230,9 +238,6 @@ def analyse_friction_file(filename, mean_window_pct = 0.5, std_window_pct = None
     # Combine 
     Ff_full_sheet = Ff_sheet + Ff_PB
     
-    # Smoothen
-    # Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2], move_force[:,0], move_force[:,1] = savgol_filter(window_length, polyorder, Ff_sheet[:,0], Ff_sheet[:,1], Ff_sheet[:,2], Ff_PB[:,0], Ff_PB[:,1], Ff_PB[:,2], move_force[:,0], move_force[:,1])
-    
     # Normal force
     FN_full_sheet = np.mean(Ff_full_sheet[:,2])
     FN_sheet = np.mean(Ff_sheet[:,2])
@@ -244,9 +249,7 @@ def analyse_friction_file(filename, mean_window_pct = 0.5, std_window_pct = None
     
     
     # --- Analyse --- #
-    
     mean_window = int(mean_window_pct*len(time)) # mean window length
-
 
     # Max friction: parallel to drag direction
     max_full_sheet = Ff_full_sheet[:,0].max() # Full sheet
@@ -277,7 +280,6 @@ def analyse_friction_file(filename, mean_window_pct = 0.5, std_window_pct = None
         mean_sheet,      std_sheet      = mean_cut_and_std(Ff_sheet[:, 0],      mean_window, std_window) # Inner sheet
         mean_PB,         std_PB         = mean_cut_and_std(Ff_PB[:, 0],         mean_window, std_window) # Pull blocks
     
-      
         
         # Mean and std contact 
         contact_mean_full_sheet, contact_std_full_sheet = mean_cut_and_std(contact[:, 0], mean_window, std_window) # Full sheet
@@ -302,7 +304,6 @@ def analyse_friction_file(filename, mean_window_pct = 0.5, std_window_pct = None
     Ff_std /= np.abs(Ff[:,1])   
     contact_std /= np.abs(contact_mean)
 
-   
     
     # --- Output dictionary --- #
     # Variables to include in dictionary
@@ -342,7 +343,6 @@ def mean_cut_and_std(arr, mean_window, std_window):
     # Output
     mean = running_mean[0]
     std = np.std(running_mean[:std_window])
-    # std /= np.mean(running_mean[:std_window])
     return mean, std
         
     
@@ -374,16 +374,11 @@ def plot_xy_time(fig, ax, x, y, z, z_label = 'time $[ps]$', cmap = 'gist_rainbow
 
     
 def organize_data(data, stretch_lim, FN_lim): 
-    """ organize by column 0 and 1 """
-    
+    """ Organize into grid by column 0 and 1 in data """
     
     # Get sorted array of unique stretch_pct and F_N 
     stretch_pct = np.unique(data[:,0]) 
-    F_N = np.unique(data[:,1])
-    
- 
-    
-    
+    F_N = np.unique(data[:,1])   
     output = []    
     
     # Retrieve object and add corresponding shape to output list
@@ -391,8 +386,6 @@ def organize_data(data, stretch_lim, FN_lim):
         obj = data[0,col]
         shape = (len(stretch_pct), len(F_N)) + np.shape(obj)
         output.append(np.full(shape, np.nan, dtype = 'object'))
-
-
 
     # Match object values to stetch_pct and F_N 
     for i, s in enumerate(stretch_pct):
@@ -402,9 +395,7 @@ def organize_data(data, stretch_lim, FN_lim):
                 for col in range(2, data.shape[1]):
                     output[col-2][i,j] = data[index[0][0], col]
                   
-    
-    
-    
+        
     # --- Trim to limits --- #
     # Handle different version of limit definitions    
     loc_stretch_lim = stretch_lim.copy()
@@ -433,7 +424,7 @@ def organize_data(data, stretch_lim, FN_lim):
     
     
 def get_color_value(value, minValue, maxValue, scale = 'linear', cmap='viridis'):
-    """Get color from colormap. (From Henrik)
+    """Get color from colormap. (Altered from the original version by From Henrik Andersen Sveinsson)
     Parameters
     -----------------
     :param value: Value used tpo get color from colormap
@@ -457,20 +448,11 @@ def get_color_value(value, minValue, maxValue, scale = 'linear', cmap='viridis')
     diff = maxValue-minValue
     rgba = cmap((value-minValue)/diff)
     
-    # if scale == 'linear':
-    #     rgba = cmap((value-minValue)/diff)
-    # if scale == 'log':
-    #     minValue = np.log10(minValue)
-    #     maxValue = np.log10(maxValue)
-    #     value = np.log10(value)
-    #     print(minValue, value, maxValue, '->' )
-    #     rgba = cmap((value-minValue)/diff)
-         
-    
     return rgba
 
 
 def read_histogram(filename):
+    """ Read histogram """
     infile = open(filename, 'r')
     
     pointer = ""
@@ -496,11 +478,11 @@ def read_histogram(filename):
     timestep = np.array(timestep)
     hist = np.array(hist)
     infile.close()        
-
     return timestep, hist
 
 
 def read_ave_time(filename):
+    """ Read LAMMPS ave/time file """
     infile = open(filename, 'r')
     infile.readline() # Skip first comment
     var = infile.readline().strip("# \n").split(' ')
@@ -510,6 +492,7 @@ def read_ave_time(filename):
 
 
 def read_ave_time_vector(filename):
+    """ Read LAMMPS ave/time vector file """
     infile = open(filename, 'r')
     pointer = ""
     while True:
@@ -539,8 +522,8 @@ def read_ave_time_vector(filename):
  
 
 def get_normal_buckling(sheet_dump, quartiles = [0.01, 0.05, 0.1, 0.25, 0.50]):
+    """ Get normal buckling quartiles """
     # --- Get data --- #
-    
     sheet_infile = open(sheet_dump, "r")
     timestep = []
     zpos = []
@@ -579,12 +562,11 @@ def get_normal_buckling(sheet_dump, quartiles = [0.01, 0.05, 0.1, 0.25, 0.50]):
     timestep = np.array(timestep)
     zpos = np.array(zpos)
  
- 
+
     # --- Prepare data preocessing --- #
     z0 = np.mean(zpos[0])
     zpos -= z0
     
-
     # Ensure valid quartiles order and values
     quartiles = np.sort(quartiles) # Sort
     quartiles = quartiles[quartiles <= 0.5] # Remove values higher than 0.5
@@ -625,7 +607,10 @@ def get_normal_buckling(sheet_dump, quartiles = [0.01, 0.05, 0.1, 0.25, 0.50]):
 
     
 class interactive_plotter:
-    """ Gets glitchy with multiple big figures open """
+    """ Class for interactive plotting which allows you 
+        to expand subfigures to full screen mode. 
+        Useful for personal data analysis but gets
+        with multiple big figures open simoustaniously. """
     def __init__(self, fig):
         self.cid_pick = fig.canvas.mpl_connect('button_press_event', self.pick_figure)
         self.fig = fig
@@ -665,13 +650,14 @@ class interactive_plotter:
             ax.set_visible(visible)
             
 
-
 def cum_mean(arr):
+    """ Cumulative mean """
     cum_sum = np.cumsum(arr, axis = 0)
     divider = np.arange(len(cum_sum)) + 1
     return cum_sum / divider
     
 def cum_std(arr, points = 100):
+    """ Cumulative std """
     start = np.argmin(np.isnan(arr))
     step = (len(arr) - 1) // points
     
@@ -683,6 +669,7 @@ def cum_std(arr, points = 100):
 
 
 def running_mean(arr, window_len = 1000):
+    """ Calculate running mean """
     assert window_len <= len(arr), "window length cannot be longer than array length."
     assert window_len > 0, "window length must be > 0"
     mean_window = np.ones(window_len)/window_len
@@ -699,19 +686,15 @@ def running_mean(arr, window_len = 1000):
     
     return mean, std
 
-
-
-
-
     
 def cum_max(arr):
+    """ Cumulative maximum """
     return  np.maximum.accumulate(arr)
     
-# def cumTopQuantileMax(arr, quantile):
     
 
 def cumTopQuantileMax(arr, quantile, brute_force = False):
-    
+    """ Cumulative top maximum values """
     start = int(np.ceil(1/(1-quantile)))
     topN = int((1-quantile) * len(arr[:start]))
     list_max = int((1-quantile) * len(arr)) * 1
@@ -720,8 +703,6 @@ def cumTopQuantileMax(arr, quantile, brute_force = False):
     
     if brute_force:
         for i in range(start, len(arr)):
-            # if i%(len(arr)/10) == 0:
-            #     print(i/len(arr))
             topN, out[i] = TopQuantileMax(arr[:i], quantile)
             
         
@@ -732,19 +713,14 @@ def cumTopQuantileMax(arr, quantile, brute_force = False):
         listlen = len(toplist)
         out = np.full(len(arr), np.nan)
         for i in range(start+1, len(arr)):
-            # if i%(len(arr)/10) == 0:
-            #     print(i/len(arr))
-                
-
             idx = 0
-            
             try:
                 while arr[i-1] > toplist[idx] and idx < listlen:
                         idx += 1
             except IndexError:
                 pass
         
-            
+
             topN = int((1-quantile) * len(arr[:i]))
             toplist.insert(idx, arr[i-1])
             
@@ -760,6 +736,7 @@ def cumTopQuantileMax(arr, quantile, brute_force = False):
    
     
 def TopQuantileMax(arr, quantile, mean = True):
+    """ Max value quantile """
     topN = int((1-quantile) * len(arr))
     topmax = arr[np.argpartition(arr, -topN)[-topN:]]
     
@@ -771,6 +748,7 @@ def TopQuantileMax(arr, quantile, mean = True):
 
 
 def add_xaxis(ax1, x, xnew, xlabel, decimals = 1, fontsize = 14):
+    """ Add second x-axis to plots """
     xlim = ax1.get_xlim()
     
     tick_loc = ax1.get_xticks()
@@ -781,8 +759,7 @@ def add_xaxis(ax1, x, xnew, xlabel, decimals = 1, fontsize = 14):
     xticks = np.round(tick_loc/dx*dxnew, decimals)
     if decimals == 0:
         xticks = xticks.astype('int')
-    
-        
+       
     ax2 = ax1.twiny()
     ax2.set_xlim(ax1.get_xlim())
     ax2.set_xticks(tick_loc)
@@ -797,6 +774,7 @@ def add_xaxis(ax1, x, xnew, xlabel, decimals = 1, fontsize = 14):
    
     
 def add_yaxis(ax1, y, ynew, ylabel, decimals = 1, fontsize = 14):
+    """ Add second y-axis to plots """
     ylim = ax1.get_ylim()
     
     tick_loc = ax1.get_yticks()
@@ -807,8 +785,7 @@ def add_yaxis(ax1, y, ynew, ylabel, decimals = 1, fontsize = 14):
     yticks = np.round(tick_loc/dy*dynew, decimals)
     if decimals == 0:
         yticks = yticks.astype('int')
-    
-        
+     
     ax2 = ax1.twinx()
     ax2.set_ylim(ax1.get_ylim())
     ax2.set_yticks(tick_loc)
@@ -825,6 +802,7 @@ def add_yaxis(ax1, y, ynew, ylabel, decimals = 1, fontsize = 14):
     
 
 def plot_heatmap(heat, param1, param2, title = None):
+    """ Plot heatmap """
     # Heatmap
     param1_label, param1_vals = param1
     param2_label, param2_vals = param2
@@ -840,27 +818,16 @@ def plot_heatmap(heat, param1, param2, title = None):
     sns.heatmap(heat.T, ax=ax,  xticklabels=np.around(param1_vals, 2),
                                 yticklabels=np.around(param2_vals, 2),
                                 annot = False)
-    # sns.heatmap(heat, xticklabels=np.around(param1_vals, 2),
-    #             yticklabels=np.around(param2_vals, 2), annot=True, ax=ax)
-    
     
     ax.set_xlabel(param1_label)
     ax.set_ylabel(param2_label)
     plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
-    # plt.subplots_adjust(hspace=0.3)
     return ax
    
 
-# def unique_fignum():
-#     fignum = 0
-#     if fignum in plt.get_fignums():
-#         fignum = plt.get_fignums()[-1] + 1
-#     return fignum
-
-
-
 def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.35, stretch_lim = [None, None],  FN_lim = [None, None]):
-    """ Read multi folder
+    """ Read simulation output from folder containing multiple 
+        strain and load values.
     
     Expected data structure:
     
@@ -902,7 +869,6 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.35, stretch_lim = [Non
     else:
         rupture_stretch = None
     
-
 
     # Make list for data 
     data = [] # Measurements
@@ -988,7 +954,6 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.35, stretch_lim = [Non
         
     
     
-    
     output = {
         'stretch_pct': stretch_pct,
         'F_N': F_N,
@@ -1011,6 +976,7 @@ def read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.35, stretch_lim = [Non
 
 
 def get_friction_coef(Ff, F_N):
+    """ Caluclate friction coefficient """
     mu = np.zeros(Ff.shape[0])
     mu_err = np.zeros(Ff.shape[0])
     
@@ -1024,10 +990,6 @@ def get_friction_coef(Ff, F_N):
 
 
 
-
-
 if __name__ == "__main__":
    pass
    
-    # filename = '../Data/Baseline/drag_length_size/108x113/system_108x113_Ff.txt'  
-    # data = analyse_friction_file(filename)   

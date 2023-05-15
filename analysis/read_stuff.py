@@ -1,3 +1,10 @@
+### Analysis of various properties 
+### investigated for the definition of
+### a rupture detection mechanism.
+### Eventually I settled for a better solution
+### in LAMMPS. 
+
+
 import numpy as np
 import matplotlib.pyplot as plt
 

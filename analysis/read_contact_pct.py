@@ -1,3 +1,6 @@
+### Initially used scripts for
+### for looking at contact vs time
+
 from analysis_utils import *
 
 

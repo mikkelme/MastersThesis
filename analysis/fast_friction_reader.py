@@ -1,3 +1,8 @@
+### Scripts for the initial data analysis
+### see /produce_figures for the scripts used
+### to produce the figures in the article
+
+
 from analysis_utils import *
 
 from matplotlib.widgets import Button, TextBox, Slider

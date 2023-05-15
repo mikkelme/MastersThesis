@@ -1,10 +1,7 @@
+### Some scripts used in the initial data analysis
+### these are not used for the actual plotting
+### in the thesis. For that see /produce_figures
 from analysis_utils import *
-
-
-
-        
-
-
 
 
 def drag_length_dependency(filename):

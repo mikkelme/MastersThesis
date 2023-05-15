@@ -1,16 +1,18 @@
+### Tool for building the Kirigami configurations
+
+
 import sys
 sys.path.append('../') # parent folder: MastersThesis
 
 from graphene_sheet.build_graphene_sheet import *
 from config_builder.build_substrate import *
-# from graphene_sheet.build_utils import *
-
-
-
 from datetime import date
 
 
 class config_builder:
+    """ Class for setting up the system with the graphene Kirigami sheet
+        and optionally the substrate as well (this can be added directly in the 
+        LAMMPS script as well) """
     def __init__(self, mat):
         self.mat = mat
 
@@ -41,7 +43,6 @@ class config_builder:
                           'substrate' : 'substrate',
                           'all'       : 'sheet_substrate'}
         
-        
         self.build()
         self.is_build = True
         
@@ -50,7 +51,6 @@ class config_builder:
 
     def build(self):
         """ Build configuration """
-        # self.build_graphene_sheet()
         self.sheet = build_graphene_sheet(self.mat, self.Cdis)
         
         
@@ -303,6 +303,7 @@ class config_builder:
     
     
 def pop_up_dataset(shape = (62, 106), min_sp = 1, max_sp = 4, max_cut = (9,13)):
+    """ Create Tetrahedron dataset """
     # Parameters
     dir = './pop_up'
     overwrite = True
@@ -338,6 +339,7 @@ def pop_up_dataset(shape = (62, 106), min_sp = 1, max_sp = 4, max_cut = (9,13)):
         
     
 def honeycomb_dataset(shape = (62, 106), min_val = (2, 1, 1, 1), max_val = (3, 5, 5, 5)):
+    """ Create Honeycomb dataset """
     # max_val: {xwidth, ywidth, bridge_thickness, bridge_len}
     
     # Parameters
@@ -378,6 +380,7 @@ def honeycomb_dataset(shape = (62, 106), min_val = (2, 1, 1, 1), max_val = (3, 5
                         
 
 def baseline_dataset(shape = (62, 106)):
+    """ Create dataset for the pilot study """
     dir = './baseline'
     overwrite = True
     ref = None
@@ -408,7 +411,7 @@ def baseline_dataset(shape = (62, 106)):
     
 
 def RW_dataset(shape = (62,106)):
-    
+    """ Create Random walk dataset """
     # Parameters
     dir = './RW'
     overwrite = True
@@ -565,47 +568,24 @@ def RW_dataset(shape = (62,106)):
     
 
 if __name__ == "__main__":
-    pass
     # --- Generate datasets --- #
     # pop_up_dataset(shape = (62, 106), min_sp = 1, max_sp = 4, max_cut = (9,13))
     # honeycomb_dataset(shape = (62, 106), min_val = (2, 1, 1, 1), max_val = (3, 5, 5, 5))
     # baseline_dataset()
     # RW_dataset()
-    
 
   
     #######################################################
     
-    # 
-    
-    
     
     # mat = pop_up(shape = (62, 106), size = (5,3), sp = 1, ref = None)
-    # mat = honeycomb(shape = (62, 106), xwidth = 1, ywidth = 1,  bridge_thickness = 1, bridge_len = 5, ref = None)
-    
     # mat = honeycomb(shape = (62, 106), xwidth = 3, ywidth = 3,  bridge_thickness = 3, bridge_len = 3, ref = (12,0))
-    # mat = pop_up(shape = (62, 106), size = (3, 1), sp = 1, ref = (0, 53))
-    # mat = np.load('../ML/pop_search/Ff_min0_conf.npy')
-    # mat = np.load('../ML/hon_search/Ff_min0_conf.npy')
-    # mat = np.load('../ML/RW_search/Ff_min0_conf.npy')
-    # porosity = np.sum(mat < 0.5)/np.sum(mat)
-    # print(porosity)
-    
-    
-    
-    # mat = np.ones((62, 106))
     # builder = config_builder(mat)
-    # builder.build()
-    # builder.view()
-    
-    
     # builder.add_pullblocks()
-  
-    # mat[:] = 1
-    # mat[mat == 1] = 2
-    # mat[mat == 0] = 1
-    # mat[mat == 2] = 0
-  
+    # builder.build()
+    # builder.view()  
     
+    
+    pass
 
     

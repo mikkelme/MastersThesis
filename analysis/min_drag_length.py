@@ -1,3 +1,7 @@
+### Scripts for the analysis of the effect
+### from sliding length (drag length)
+
+
 from analysis_utils import *
 
 def min_drag_length(filenames, start = 50, rel_std_lim = 0.1, step = 10):

@@ -1,3 +1,5 @@
+### Scripts for running the simulations used
+### in the pilot study (baseline)
 from data_generator import *
 
 def baseline(files):
@@ -136,7 +138,6 @@ if __name__ == '__main__':
     # baseline_vel(names, files)
     # baseline_K(names, files)
     # baseline_dt(names, files)
-    
     # baseline_multi_stretch(names, files)
     # baseline_multi_FN(names, files)
     # baseline_multi_FN_lin()
@@ -170,7 +171,6 @@ if __name__ == '__main__':
     # gen.run_single(variables, num_procs = 16, copy = True)
     
     
-   
    
     
     pass

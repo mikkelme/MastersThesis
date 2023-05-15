@@ -1,3 +1,7 @@
+### Scripts for analysing the data 
+### see /produce_figures for the scripts 
+### used for the figures in the thesis
+
 from analysis_utils import *
 from rupture_detect import *
 import random

@@ -1,3 +1,7 @@
+### Scripts for running the simulation related to the
+### investigation of the friciton coefficient in the coupled system
+### of load and sheet tension
+
 from data_generator import *
 
 
@@ -37,15 +41,6 @@ def multi_coupling_honeycomb():
     # simname = f'multi_coupling_free_{name}'
     simname = f'multi_coupling_free_{name}_zoom'
     gen = Data_generator(file, header = f'egil:negative_coef', simname = simname, config_ext = name)
-    # variables = {'num_stretch_files': 100, 
-    #                 'RNSEED'           : -1,
-    #                 'run_rupture_test' : 1,    # 0
-    #                 "stretch_speed_pct": 0.0001,
-    #                 'F_N'              : 10e-9,  # 1.5e-9
-    #                 'R'                : 6,
-    #                 "stretch_max_pct"  : 1.5, # 1.0
-    #                 'root'             : '.',
-    #                 'dump_freq'        : 0}
     variables = {'num_stretch_files': 1000, 
                     'RNSEED'           : -1,
                     'run_rupture_test' : 0,

@@ -1,3 +1,6 @@
+### Scripts for building the silicon substrate 
+
+
 import sys
 sys.path.append('../') # parent folder: MastersThesis
 

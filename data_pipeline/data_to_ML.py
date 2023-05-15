@@ -1,11 +1,10 @@
+### Convert the simulation data into a format
+### compatible with machine learning 
+
 import os
 import numpy as np
-
 import csv
 import shutil
-
-
-
 import sys
 sys.path.append('../') # parent folder: MastersThesis
 from analysis.analysis_utils import *

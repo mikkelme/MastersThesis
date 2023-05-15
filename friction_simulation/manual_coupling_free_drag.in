@@ -4,8 +4,6 @@
 ####################################
 
 
-
-
 # Setup system
 variable restart_file index None
 variable readable equal is_file(${restart_file})
