@@ -15,41 +15,49 @@
 \headcommand {\beamer@framepages {4}{4}}
 \headcommand {\slideentry {1}{2}{2}{5/5}{Motivation}{0}}
 \headcommand {\beamer@framepages {5}{5}}
-\headcommand {\beamer@sectionpages {3}{5}}
-\headcommand {\beamer@subsectionpages {4}{5}}
-\headcommand {\sectionentry {2}{Creating a graphene Kirigami system}{6}{Creating a graphene Kirigami system}{0}}
-\headcommand {\beamer@subsectionpages {6}{5}}
-\headcommand {\beamer@subsectionentry {0}{2}{1}{6}{System setup}}
-\headcommand {\beamer@subsectionpages {6}{5}}
-\headcommand {\beamer@subsectionentry {0}{2}{2}{6}{Kirigami}}
-\headcommand {\beamer@sectionpages {6}{5}}
-\headcommand {\beamer@subsectionpages {6}{5}}
-\headcommand {\sectionentry {3}{Pilot study}{6}{Pilot study}{0}}
-\headcommand {\beamer@subsectionpages {6}{5}}
-\headcommand {\beamer@subsectionentry {0}{3}{1}{6}{Friction metrics}}
-\headcommand {\beamer@subsectionpages {6}{5}}
-\headcommand {\beamer@subsectionentry {0}{3}{2}{6}{Out-of-plane buckling}}
-\headcommand {\beamer@subsectionpages {6}{5}}
-\headcommand {\beamer@subsectionentry {0}{3}{3}{6}{Friction-strain profiles}}
-\headcommand {\beamer@subsectionpages {6}{5}}
-\headcommand {\beamer@subsectionentry {0}{3}{4}{6}{Negative friction coefficient}}
-\headcommand {\beamer@sectionpages {6}{5}}
-\headcommand {\beamer@subsectionpages {6}{5}}
-\headcommand {\sectionentry {4}{Kirigami configuration search}{6}{Kirigami configuration search}{0}}
-\headcommand {\beamer@subsectionpages {6}{5}}
-\headcommand {\beamer@subsectionentry {0}{4}{1}{6}{Machine learning}}
-\headcommand {\beamer@subsectionpages {6}{5}}
-\headcommand {\beamer@subsectionentry {0}{4}{2}{6}{Accelerated search}}
-\headcommand {\beamer@sectionpages {6}{5}}
-\headcommand {\beamer@subsectionpages {6}{5}}
-\headcommand {\sectionentry {5}{Summary and outlook}{6}{Summary and outlook}{0}}
-\headcommand {\beamer@sectionpages {6}{5}}
-\headcommand {\beamer@subsectionpages {6}{5}}
-\headcommand {\sectionentry {6}{References}{6}{References}{0}}
-\headcommand {\slideentry {6}{0}{0}{6/6}{}{0}}
+\headcommand {\slideentry {1}{2}{3}{6/6}{Motivation}{0}}
 \headcommand {\beamer@framepages {6}{6}}
-\headcommand {\beamer@partpages {1}{6}}
-\headcommand {\beamer@subsectionpages {6}{6}}
-\headcommand {\beamer@sectionpages {6}{6}}
-\headcommand {\beamer@documentpages {6}}
-\headcommand {\gdef \inserttotalframenumber {6}}
+\headcommand {\beamer@sectionpages {3}{6}}
+\headcommand {\beamer@subsectionpages {4}{6}}
+\headcommand {\sectionentry {2}{Creating a graphene Kirigami system}{7}{Creating a graphene Kirigami system}{0}}
+\headcommand {\slideentry {2}{0}{1}{7/7}{}{0}}
+\headcommand {\beamer@framepages {7}{7}}
+\headcommand {\slideentry {2}{0}{2}{8/8}{}{0}}
+\headcommand {\beamer@framepages {8}{8}}
+\headcommand {\slideentry {2}{0}{3}{9/9}{}{0}}
+\headcommand {\beamer@framepages {9}{9}}
+\headcommand {\beamer@subsectionpages {7}{9}}
+\headcommand {\beamer@subsectionentry {0}{2}{1}{10}{System setup}}
+\headcommand {\beamer@subsectionpages {10}{9}}
+\headcommand {\beamer@subsectionentry {0}{2}{2}{10}{Kirigami}}
+\headcommand {\beamer@sectionpages {7}{9}}
+\headcommand {\beamer@subsectionpages {10}{9}}
+\headcommand {\sectionentry {3}{Pilot study}{10}{Pilot study}{0}}
+\headcommand {\beamer@subsectionpages {10}{9}}
+\headcommand {\beamer@subsectionentry {0}{3}{1}{10}{Friction metrics}}
+\headcommand {\beamer@subsectionpages {10}{9}}
+\headcommand {\beamer@subsectionentry {0}{3}{2}{10}{Out-of-plane buckling}}
+\headcommand {\beamer@subsectionpages {10}{9}}
+\headcommand {\beamer@subsectionentry {0}{3}{3}{10}{Friction-strain profiles}}
+\headcommand {\beamer@subsectionpages {10}{9}}
+\headcommand {\beamer@subsectionentry {0}{3}{4}{10}{Negative friction coefficient}}
+\headcommand {\beamer@sectionpages {10}{9}}
+\headcommand {\beamer@subsectionpages {10}{9}}
+\headcommand {\sectionentry {4}{Kirigami configuration search}{10}{Kirigami configuration search}{0}}
+\headcommand {\beamer@subsectionpages {10}{9}}
+\headcommand {\beamer@subsectionentry {0}{4}{1}{10}{Machine learning}}
+\headcommand {\beamer@subsectionpages {10}{9}}
+\headcommand {\beamer@subsectionentry {0}{4}{2}{10}{Accelerated search}}
+\headcommand {\beamer@sectionpages {10}{9}}
+\headcommand {\beamer@subsectionpages {10}{9}}
+\headcommand {\sectionentry {5}{Summary and outlook}{10}{Summary and outlook}{0}}
+\headcommand {\beamer@sectionpages {10}{9}}
+\headcommand {\beamer@subsectionpages {10}{9}}
+\headcommand {\sectionentry {6}{References}{10}{References}{0}}
+\headcommand {\slideentry {6}{0}{0}{10/10}{}{0}}
+\headcommand {\beamer@framepages {10}{10}}
+\headcommand {\beamer@partpages {1}{10}}
+\headcommand {\beamer@subsectionpages {10}{10}}
+\headcommand {\beamer@sectionpages {10}{10}}
+\headcommand {\beamer@documentpages {10}}
+\headcommand {\gdef \inserttotalframenumber {10}}

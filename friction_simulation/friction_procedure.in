@@ -28,7 +28,7 @@ variable run_rupture_test index 0
 # include ${root}/manual_coupling_drag.in
 
 include ${root}/stretch.in
-include ${root}/drag.in 
+# include ${root}/drag.in 
 
 ################
 # A script can be directly executed with the command on the format 
