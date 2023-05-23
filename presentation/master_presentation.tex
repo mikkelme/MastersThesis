@@ -231,12 +231,16 @@
 %%% New frame %%%
 %
 \subsection{System setup}
+\begin{frame}{Outline}
+    \tableofcontents[currentsection]
+\end{frame}
+
 \section{Creating a graphene Kirigami system} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Creating a graphene Kirigami system}
 \framesubtitle{System setup}
 	\begin{figure}
 		\centering    
-		\movie[showcontrols=true,loop,repeat]{\includegraphics[height=0.5\textwidth, keepaspectratio]{figures/sim_parts.png}}{figures/sim_parts.mov}
+		\movie[open,loop,repeat]{\includegraphics[height=0.5\textwidth, keepaspectratio]{figures/sim_parts.png}}{figures/sim_parts.mov}
 		\caption{Graphene sheet on a silicon substrate. Blue: Substrate, Red: Inner sheet, Grey: Pull blocks. }
 	\end{figure} 
 \end{frame}
@@ -413,26 +417,180 @@
 %
 %%% New frame %%%
 %
-
-
-
-
+\begin{frame}{Creating a graphene Kirigami system}
+	\framesubtitle{MD simulation}
+	Introduction to MD simulation. Something about newtons equations and Langevin maybe?
+\end{frame}
 
 
 \section{Pilot study} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Outline}
+    \tableofcontents[currentsection]
+\end{frame}
+
 \subsection{Friction metrics}
+\begin{frame}{Pilot study}
+	\framesubtitle{Friction metrics}
+
+	\begin{itemize}
+		\item Friction metrics?
+		\item Stick slip?
+	\end{itemize}
+\end{frame}
+%
+%%% New frame %%%
+%
+
 \subsection{Out-of-plane buckling}
+\begin{frame}{Pilot study}
+	\framesubtitle{Out-of-plane buckling}
+	\begin{figure}
+		\centering    
+		\movie[open]{\includegraphics[height=0.7\textheight, keepaspectratio]{figures/vacuum_stretch.png}}{figures/vacuum_stretch.mov}
+		\caption{Kirigami sheet stretch in vacuum. Small tetrahedron pattern.}
+	\end{figure} 
+
+\end{frame}
+%
+%%% New frame %%%
+%
+\begin{frame}{Pilot study}
+	\framesubtitle{Out-of-plane buckling}
+	\begin{figure}
+		\centering    
+		\movie[open]{\includegraphics[height=0.7\textheight, keepaspectratio]{figures/contact_stretch.png}}{figures/contact_stretch.mov}
+		\caption{Kirigami stretch in contact with Si-substrate.}
+	\end{figure} 
+\end{frame}
+%
+%%% New frame %%%
+%
+\begin{frame}{Pilot study}
+	\framesubtitle{Out-of-plane buckling}
+	\begin{figure}
+		\includegraphics[height=0.7\textheight]{figures/contact_pct.pdf}
+		\caption{Contact area approximation: Number of C-Si bonds within a threshold distance of 110\% the LJ interaction equilibrium distance.}
+	\end{figure}	
+\end{frame}
+%
+%%% New frame %%%
+%
+\begin{frame}{Pilot study}
+	\framesubtitle{Out-of-plane buckling}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\linewidth]{../thesis/figures/baseline/vacuum_normal_buckling.pdf}
+		% \caption{The out-of-plane buckling during straining for the non-cut (No cut), Tetrahedron $(7,5,1)$, and Honeycomb $(2,2,1,5)$ pattern respectively in vacuum at low temperature $T = \SI{5}{K}$. The buckling is quantified by the distribution of the atom z-positions, which are perpendicular to the sheet plane, and the colors indicate selected quantiles. The rupture strain for each pattern, from left to right, is 0.38, 0.22, and 1.37, respectively. The results indicate that the Tetrahedron and Honeycomb patterns exhibit significant out-of-plane buckling in comparison to the non-cut sheet.}
+		% \label{fig:buckling_quartiles}
+	 \end{figure}
+\end{frame}
+%
+%%% New frame %%%
+%
+\begin{frame}{Pilot study}
+	\framesubtitle{Out-of-plane buckling}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.5\linewidth]{../thesis/figures/baseline/contact_vs_stretch.pdf}
+		% \caption{The relative contact during straining of the non-cut (No cut), Tetrahedron $(7,5,1)$, and Honeycomb $(2,2,1,5)$ pattern respectively in contact with a substrate. The relative contact is given as the relative number of atoms in the sheet within chemical interaction range. The cut-off for the interaction range is \SI{4}{\text{Å}} corresponding to $\sim 120 \%$ the \acrshort{LJ} equilibrium distance. No normal force is applied and the temperature is kept at $T = \SI{300}{K}$.}
+		% \label{fig:contact_vs_stretch}
+	\end{figure}
+\end{frame}
+%
+%%% New frame %%%
+%
+
+
+
 \subsection{Friction-strain profiles}
+\begin{frame}{Pilot study}
+	\framesubtitle{Friction-strain profiles}
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=1\linewidth]{../thesis/figures/baseline/multi_stretch_area_compare.pdf}
+	\end{figure}
+\end{frame}
+%
+%%% New frame %%%
+%
+\begin{frame}{Pilot study}
+	\framesubtitle{Friction-strain profiles}
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=1\linewidth]{../thesis/figures/baseline/multi_stretch_mean_compare.pdf}
+	\end{figure}
+\end{frame}
+%
+%%% New frame %%%
+%
 \subsection{Negative friction coefficient}
+\begin{frame}{Pilot study}
+	\framesubtitle{Negative friction coefficient}
+	Load to sheet tension coupling 
+	\begin{align*}
+		F_t = TF_N, \qquad T = 6
+	\end{align*}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.6\linewidth]{../thesis/figures/negative_coefficient/nanomachine.pdf}
+		% \caption{Working sketch for a nanomachine design that aims to translate applied load (from the top of the figure) to a straining of the graphene sheet (shown in red). The black boxes connected to the graphene sheet represent the pull blocks in our system.}
+		% \label{fig:nanomachine}
+	\end{figure}	  
+\end{frame}
+%
+%%% New frame %%%
+%
+\begin{frame}{Pilot study}
+	\framesubtitle{Negative friction coefficient}
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\linewidth]{../thesis/figures/negative_coefficient/manual_coupling_tension_pop7_5_1.pdf}	
+		\caption{Tetrahedron $(7,5,1)$}
+	\end{figure}	
+\end{frame}
+%
+%%% New frame %%%
+%
+
+\begin{frame}{Pilot study}
+	\framesubtitle{Negative friction coefficient}
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\linewidth]{../thesis/figures/negative_coefficient/manual_coupling_tension_hon2215.pdf}	
+	\caption{Honeycomb $(2,2,1,5)$}
+	\end{figure}	
+\end{frame}
+%
+%%% New frame %%%
+%
+\begin{frame}{Pilot study}
+	\framesubtitle{Negative friction coefficient}
+	Honeycomb stretch simulation topview
+\end{frame}
+%
+%%% New frame %%%
+%
 
 
 \section{Kirigami configuration search} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Outline}
+    \tableofcontents[currentsection]
+\end{frame}
+
 \subsection{Machine learning}
 \subsection{Accelerated search}
 
 
 
 \section{Summary and outlook} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Outline}
+    \tableofcontents[currentsection]
+\end{frame}
+
 
 
 
