@@ -45,9 +45,9 @@
 \usepackage{subcaption}
 \usepackage{cases}
 
+\renewcommand{\vec}[1]{\mathbf{#1}} % bold text instead of arrow
 
 
-% Extra 
 
 
 % \usepackage[backend=bibtex, 
@@ -133,14 +133,13 @@
 \begin{frame}{Outline}
     \tableofcontents
 \end{frame}
-
-
+%
+%%% New frame %%%
+%
 \section{Introduction} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Thesis overview}
-
 \begin{frame}{Overview}
 	\framesubtitle{Three main parts}
-	
 	\begin{enumerate}
 		\setlength\itemsep{1em}
 		\item \textbf{Sheet kirigami}: Alter a graphene sheet using atomic scale cuts and stretching
@@ -156,13 +155,11 @@
 	% \end{itemize}
 	
 \end{frame}
-
-
+%
+%%% New frame %%%
+%
 \subsection{Motivation}
-
-
 \begin{frame}{Motivation}
-
 	\begin{itemize}
 		\item Kirigami: Variation of origami with cuts permitted
 		\item Desgins: Macroscale $\to$ nanoscale
@@ -174,8 +171,9 @@
 		\caption{Example of macroscale Kirigami designs implemented on a nanoscale using a focused ion beam (FIB). Black scale bars: \SI{1}{\mu m}. Reproduced from~\cite{Li_2018}.}
 	\end{figure}	
 \end{frame}
-
-
+%
+%%% New frame %%%
+%
 \begin{frame}{Motivation}
 	\framesubtitle{Out-of-plane buckling}
 	\vspace{0.5cm}
@@ -194,22 +192,23 @@
 		\centering
 		\begin{subfigure}[b]{0.49\textwidth}
 			\centering
-			\includegraphics[width=\textwidth]{figures/asperities_top.png}
+			\includegraphics[width=\textwidth]{../thesis/figures/theory/asperities_top.png}
 			\caption{Small load.}
 			\label{fig:asp_left}
 		\end{subfigure}
 		\hfill
 		\begin{subfigure}[b]{0.49\textwidth}
 			\centering
-			\includegraphics[width=\textwidth]{figures/asperities_bottom.png}
+			\includegraphics[width=\textwidth]{../thesis/figures/theory/asperities_bottom.png}
 			\caption{High load.}
 			\label{fig:asp_right}
 		\end{subfigure}
 		\caption{Reproduced from~\cite{wiki:asperities}.}
 	\end{figure}
 \end{frame}
-	
-
+%
+%%% New frame %%%
+%
 \begin{frame}{Motivation}
 \framesubtitle{Contact area and commensurability}
 \begin{figure}[H]
@@ -222,91 +221,200 @@
 	\hfill
 	\begin{subfigure}[b]{0.49\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{figures/graphene_rot.png}
+		\includegraphics[width=\textwidth]{../thesis/figures/theory/graphene_rot.png}
 		\caption{Experimental results of a graphene sheet sliding on graphite. Adapted from~\cite{DIENWIEBEL2005197}, reproduced from~\cite{Vanossi_2013} with permission from the American Physical Society.}
 	\end{subfigure}
 	% \caption{}
 \end{figure}
 \end{frame}
-
-
+%
+%%% New frame %%%
+%
+\subsection{System setup}
 \section{Creating a graphene Kirigami system} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Creating a graphene Kirigami system}
 \framesubtitle{System setup}
-
-
-
-
-\begin{figure}
-	\centering    
-	\movie[showcontrols=true,loop,repeat]{\includegraphics[height=0.5\textwidth, keepaspectratio]{figures/sim_parts.png}}{figures/sim_parts.mov}
-	\caption{Graphene sheet on a silicon substrate. Blue: Substrate, Red: Inner sheet, Grey: Pull blocks. test 1}
-\end{figure} 
-	
+	\begin{figure}
+		\centering    
+		\movie[showcontrols=true,loop,repeat]{\includegraphics[height=0.5\textwidth, keepaspectratio]{figures/sim_parts.png}}{figures/sim_parts.mov}
+		\caption{Graphene sheet on a silicon substrate. Blue: Substrate, Red: Inner sheet, Grey: Pull blocks. }
+	\end{figure} 
 \end{frame}
-
-
-
-
+%
+%%% New frame %%%
+%
 \begin{frame}{Creating a graphene Kirigami system}
 \framesubtitle{System setup}
+	System size = ???
 
-\begin{figure}[H]
-	\centering
-	\begin{subfigure}[b]{0.5\textwidth}
+	\begin{figure}[H]
 		\centering
-		\includegraphics[width=\textwidth]{figures/system_sideview.png}
-		\caption{Side view.}
-		% \label{fig:sideview}
-	\end{subfigure}
-	% \hfill
-	\begin{subfigure}[b]{0.5\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{figures/system_topview_anno.png}
-		\caption{Top view.}
-		% \label{fig:topview}
-	\end{subfigure}
-	% \hfill
-	%    \caption{System configuration colorized to indicate NVE parts (red), thermostat parts (green) and rigid parts (blue). (a) Side view showing the sheet on top of the substrate. (b) Top view showing only the sheet.}
-	%    \label{fig:system}
-  \end{figure}
-  
-
-
-
+		\begin{subfigure}[b]{0.5\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{../thesis/figures/system/system_sideview.png}
+			\caption{Side view.}
+		\end{subfigure}
+		\begin{subfigure}[b]{0.5\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{../thesis/figures/system/system_topview_anno.png}
+			\caption{Top view.}
+		\end{subfigure}
+		%    \caption{System configuration colorized to indicate NVE parts (red), thermostat parts (green) and rigid parts (blue). (a) Side view showing the sheet on top of the substrate. (b) Top view showing only the sheet.}
+		%    \label{fig:system}
+	\end{figure}
 \end{frame}
-
-
-
+%
+%%% New frame %%%
+%
+\subsection{Kirigami}
 \begin{frame}{Creating a graphene Kirigami system}
 	\framesubtitle{Sheet Kirigami}
+
+	Primitive lattice vectors
+	\begin{align*}
+		&\vec{a_1} = a \left(\frac{\sqrt{3}}{2}, -\frac{1}{2}\right)&  &\vec{a_2} = a \left(\frac{\sqrt{3}}{2}, \frac{1}{2}\right),& &|\vec{a_1}| = |\vec{a_2}| = a = \SI{2.46}{\text{Å}}.& 
+	\end{align*}
+	
+	\begin{columns} 
+		\begin{column}{.4\textwidth}
+			Basis
+			\begin{align*}
+				\Big\{\Big(0,0\Big), \frac{a}{2}\Big(\frac{1}{\sqrt{3}}, 1 \Big) \Big\}.
+			  \end{align*}
+			Interatomic distance
+			\begin{align*}
+				\left|\left|\frac{a}{2}\Big(\frac{1}{\sqrt{3}}, 1 \Big)\right|\right| \approx \SI{1.42}{\text{Å}}.
+			\end{align*}
+		\end{column}
+		\begin{column}{.6\textwidth}
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.70\linewidth]{../thesis/figures/system/crystal.png}
+				\caption{Graphene crystal structure.}
+			\end{figure}
+		\end{column}%
+	\end{columns}
+\end{frame}
+%
+%%% New frame %%%
+%
+\begin{frame}{Creating a graphene Kirigami system}
+	\framesubtitle{Sheet Kirigami}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{../thesis/figures/system/atom_indexing.pdf}
+		\caption{Graphene atom site indexing.}
+	\end{figure}	
+\end{frame}
+%
+%%% New frame %%%
+%
+\begin{frame}{Creating a graphene Kirigami system}
+	\framesubtitle{Sheet Kirigami}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{../thesis/figures/system/center_indexing.pdf}
+		\caption{Graphene center element indexing.}
+	\end{figure}	
+\end{frame}
+%
+%%% New frame %%%
+%
+\begin{frame}{Creating a graphene Kirigami system}
+	\framesubtitle{Sheet Kirigami}
+	\begin{figure}[H]
+		\centering
+		\begin{subfigure}[t]{0.48\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{../thesis/figures/system/pop_up_inspiration.png}
+			\caption{Tetrahedron: Alternating perpendicular cuts producing a tetrahedron-shaped surface buckling when stretched. Reproduced from~\cite{new_pop_up}. }
+		\end{subfigure}
+		\hfill
+		\begin{subfigure}[t]{0.48\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{../thesis/figures/system/honeycomb_inspiration.jpg}
+			\caption{Honeycomb: Scotch\textsuperscript{TM} Cushion Lock\textsuperscript{TM}~\cite{cushion_wrap} producing a honeycomb-shaped surface buckling when stretched. Reproduced from~\cite{cushion_wrap}.}
+		\end{subfigure}
+		\hfill
+		\caption{Macroscale kirigami cut patterns used as inspiration for the nanoscale implementation.}
+	  \end{figure}
+\end{frame}
+%
+%%% New frame %%%
+%
+\begin{frame}{Creating a graphene Kirigami system}
+	\framesubtitle{Sheet Kirigami}
+	
+
+	\begin{figure}[H]
+		\centering
+		\begin{subfigure}[t]{0.49\textwidth}
+			\centering
+			\raggedleft
+			\includegraphics[width=0.7\textwidth]{../thesis/figures/system/pop_up_inverse.pdf}
+			% \caption{}
+		  \end{subfigure}
+		  \hfill
+		  \begin{subfigure}[t]{0.49\textwidth}
+			\centering
+			\raggedright
+			\includegraphics[width=0.7\textwidth]{../thesis/figures/system/pop_up_pattern.pdf}
+			% \caption{}
+		\end{subfigure}
+
+	  \end{figure}
+	  
+	  
+	  \begin{figure}[H]
+		\centering
+		\includegraphics[width=\linewidth]{../thesis/figures/system/pop_up_flavors.pdf}
+	  \end{figure}
+	  
+\end{frame}
+%
+%%% New frame %%%
+%
+\begin{frame}{Creating a graphene Kirigami system}
+	\framesubtitle{Sheet Kirigami}
+
 
 	\begin{figure}[H]
 		\centering
 		\begin{subfigure}[t]{0.48\textwidth}
 			\centering
-			\includegraphics[width=\textwidth]{figures/pop_up_inspiration.png}
-			\caption{}
-		\end{subfigure}
-		\hfill
-		\begin{subfigure}[t]{0.48\textwidth}
+			\raggedleft
+			\includegraphics[width=0.7\textwidth]{../thesis/figures/system/honeycomb_inverse.pdf}
+		  \end{subfigure}
+		  \hfill
+		  \begin{subfigure}[t]{0.48\textwidth}
 			\centering
-			\includegraphics[width=\textwidth]{figures/honeycomb_inspiration.jpg}
-			\caption{}
+			\raggedright
+			\includegraphics[width=0.7\textwidth]{../thesis/figures/system/honeycomb_pattern.pdf}
 		\end{subfigure}
-		\hfill
-		\caption{Macroscale kirigami cut patterns used as inspiration for the nanoscale implementation. (a) Tetrahedron: Alternating perpendicular cuts producing a tetrahedron-shaped surface buckling when stretched. Reproduced from~\cite{new_pop_up}. (b) Honeycomb: Scotch\textsuperscript{TM} Cushion Lock\textsuperscript{TM}~\cite{cushion_wrap} producing a honeycomb-shaped surface buckling when stretched. Reproduced from~\cite{cushion_wrap}.}
+	  \end{figure}
+	  
+	  
+	  \begin{figure}[H]
+		\centering
+		\includegraphics[width=\linewidth]{../thesis/figures/system/honeycomb_flavors.pdf}
 	  \end{figure}
 \end{frame}
-	
+%
+%%% New frame %%%
+%
+\begin{frame}{Creating a graphene Kirigami system}
+	\framesubtitle{Sheet Kirigami}
+	Random walk 
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.8\linewidth]{../thesis/figures/system/RW_flavors.png}
+	\end{figure}
+\end{frame}
+%
+%%% New frame %%%
+%
 
 
-
-
-
-
-\subsection{System setup}
-\subsection{Kirigami}
 
 
 
