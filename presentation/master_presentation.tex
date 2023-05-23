@@ -35,6 +35,8 @@
 
 \usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule for better rules in tables
 \usepackage{multimedia}
+
+
 \usepackage{siunitx}
 \usepackage{hyperref}
 \usepackage{outlines}
@@ -231,10 +233,14 @@
 \section{Creating a graphene Kirigami system} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Creating a graphene Kirigami system}
 \framesubtitle{System setup}
+
+
+
+
 \begin{figure}
 	\centering    
-	\movie[open, loop]{\includegraphics[height=0.5\textwidth, keepaspectratio]{figures/sim_parts.png}}{figures/sim_parts.mov}
-	\caption{Graphene sheet on a silicon substrate. Blue: Substrate, Red: Inner sheet, Grey: Pull blocks.}
+	\movie[showcontrols=true,loop,repeat]{\includegraphics[height=0.5\textwidth, keepaspectratio]{figures/sim_parts.png}}{figures/sim_parts.mov}
+	\caption{Graphene sheet on a silicon substrate. Blue: Substrate, Red: Inner sheet, Grey: Pull blocks. test 1}
 \end{figure} 
 	
 \end{frame}
@@ -275,30 +281,22 @@
 \begin{frame}{Creating a graphene Kirigami system}
 	\framesubtitle{Sheet Kirigami}
 
-	\begin{figure}[!htb]
+	\begin{figure}[H]
 		\centering
 		\begin{subfigure}[t]{0.48\textwidth}
 			\centering
 			\includegraphics[width=\textwidth]{figures/pop_up_inspiration.png}
 			\caption{}
-			% \label{fig:kirigami_inspiration_a}
 		\end{subfigure}
 		\hfill
 		\begin{subfigure}[t]{0.48\textwidth}
 			\centering
 			\includegraphics[width=\textwidth]{figures/honeycomb_inspiration.jpg}
 			\caption{}
-			% \label{fig:kirigami_inspiration_b}
 		\end{subfigure}
 		\hfill
-		% \caption{Macroscale kirigami cut patterns used as inspiration for the nanoscale implementation.}
-		   \caption{Macroscale kirigami cut patterns used as inspiration for the nanoscale implementation. (a) Tetrahedron: Alternating perpendicular cuts producing a tetrahedron-shaped surface buckling when stretched. Reproduced from~\cite{new_pop_up}. (b) Honeycomb: Scotch\textsuperscript{TM} Cushion Lock\textsuperscript{TM}~\cite{cushion_wrap} producing a honeycomb-shaped surface buckling when stretched. Reproduced from~\cite{cushion_wrap}.}
-		%    \label{fig:kirigami_inspiration}
+		\caption{Macroscale kirigami cut patterns used as inspiration for the nanoscale implementation. (a) Tetrahedron: Alternating perpendicular cuts producing a tetrahedron-shaped surface buckling when stretched. Reproduced from~\cite{new_pop_up}. (b) Honeycomb: Scotch\textsuperscript{TM} Cushion Lock\textsuperscript{TM}~\cite{cushion_wrap} producing a honeycomb-shaped surface buckling when stretched. Reproduced from~\cite{cushion_wrap}.}
 	  \end{figure}
-	  
-
-
-		
 \end{frame}
 	
 
