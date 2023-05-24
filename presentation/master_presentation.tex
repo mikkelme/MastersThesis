@@ -59,6 +59,7 @@
 
 
 
+
 %----------------------------------------------------------------------------------------
 %	THEME
 %----------------------------------------------------------------------------------------
@@ -92,11 +93,6 @@
 \setbeamertemplate{navigation symbols}{} % Uncomment this line to remove the navigation symbols from the bottom of all slides
 
 
-% \usepackage{textpos} 
-% \addtobeamertemplate{frametitle}{}{%
-%     \begin{textblock*}{100mm}(0.96\textwidth,-0.85cm)
-%         \includegraphics[height=0.8cm,width=0.8cm]{UiO_segl_pos-eps-converted-to.pdf}
-%     \end{textblock*}}
 
 
 %----------------------------------------------------------------------------------------
@@ -109,7 +105,10 @@
 \institute[UiO]{University of Oslo}
 \date[Juni 02, 2023]{Juni 02, 2023}
 
-\titlegraphic{\flushleft\includegraphics[width=0.5\textwidth]{figures/MN_FYSISK_A_ENG.pdf}}
+% \titlegraphic{\flushleft\includegraphics[width=0.5\textwidth]{figures/MN_FYSISK_A_ENG.pdf}}
+\titlegraphic{\flushright\includegraphics[width=\textwidth]{figures/frontpage.png}}
+
+
 
 % \titlegraphic{\vspace{4cm}\flushright\includegraphics[width=2cm,height=2cm]{example-image-a}} 
 
@@ -150,38 +149,35 @@
 	% \framesubtitle{Three main parts}
 	\begin{enumerate}
 		\setlength\itemsep{1em}
-		\item \textbf{Sheet kirigami}: Alter a graphene sheet using atomic scale cuts and stretching
+		\item \textbf{Sheet modification}: Alter a graphene sheet using atomic scale cuts and stretching
 		\item \textbf{Forward simulation}: Calculate the frictional properties of the sheet using MD simulations
 		\item \textbf{Accelerated search}: Use machine learning to replace the MD simulations and perform an accelerated search for new designs
 	\end{enumerate}
 	\vspace{2mm}
-	
-	Can we control the friction of a nanoscale Kirigami sheet through pattern design and straining of the sheet?
+	\begin{center}
+		\begin{minipage}{0.7\textwidth}
+			\begin{block}{Main research question}
+				Can we control the friction of a nanoscale Kirigami sheet with pattern design and straining of the sheet?
+			\end{block}	
+		\end{minipage}
+	\end{center}
 
-	\begin{alertblock}{}
-        Can we control the friction of a nanoscale Kirigami sheet through pattern design and straining of the sheet?
-    \end{alertblock}
-
-	% \begin{itemize}
-	% 	\item Can we utilize a coupling between load and stretch?
-	% 	\item Negative friction coefficients
-	% \end{itemize}
-	
 \end{frame}
 %
 %%% New frame %%%
 %
 \subsection{Motivation}
 \begin{frame}{Motivation}
+	\framesubtitle{Kirigami}
 	\begin{itemize}
 		\item Kirigami: Variation of origami with cuts permitted
 		\item Desgins: Macroscale $\to$ nanoscale
 	\end{itemize}
-	\vspace*{10px}
+	% \vspace*{10px}
 
 	\begin{figure}
 		\includegraphics[height=0.55\textheight]{figures/kirigami_example.jpg}
-		\caption{Example of macroscale Kirigami designs implemented on a nanoscale using a focused ion beam (FIB). Black scale bars: \SI{1}{\mu m}. Reproduced from~\cite{Li_2018}.}
+		\caption{Example of macroscale Kirigami designs implemented on a microscale using a focused ion beam. Black scale bars: \SI{1}{\mu m}. Reproduced from~\cite{Li_2018}.}
 	\end{figure}	
 \end{frame}
 %
@@ -216,7 +212,7 @@
 			\caption{High load.}
 			\label{fig:asp_right}
 		\end{subfigure}
-		\caption{Reproduced from~\cite{wiki:asperities}.}
+		\caption{Qualitatively illustration of the microscopic asperity deformation under increasing load. Reproduced from~\cite{wiki:asperities}.}
 	\end{figure}
 \end{frame}
 %
@@ -229,7 +225,7 @@
 	\begin{subfigure}[b]{0.46\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/nano_asperity_contact.png}
-		\caption{Numerical MD results using an amorphous carbon tip and a diamond sample. Reproduced from~\cite{mo_friction_2009} with permission from the Springer Nature.}
+		\caption{Numerical MD results using an amorphous carbon tip and a diamond sample. Reproduced from~\cite{mo_friction_2009} with permission from Springer Nature.}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.49\textwidth}
@@ -243,80 +239,104 @@
 %
 %%% New frame %%%
 %
-\subsection{System setup}
-\begin{frame}{Outline}
-    \tableofcontents[currentsection]
-\end{frame}
+
 
 \section{Creating a graphene Kirigami system} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Creating a graphene Kirigami system}
-\framesubtitle{System setup}
+    \tableofcontents[currentsection]
+\end{frame}
+
+
+\subsection{System setup}
+\begin{frame}{System setup}
+% \framesubtitle{System setup}
 	\begin{figure}
 		\centering    
 		\movie[open,showcontrols=true,repeat]{\includegraphics[height=0.5\textwidth, keepaspectratio]{figures/sim_parts.png}}{figures/sim_parts.mov}
-		\caption{Graphene sheet on a silicon substrate. Blue: Substrate, Red: Inner sheet, Grey: Pull blocks. }
+		\caption{System of interest: Graphene sheet on a silicon substrate. Blue: Substrate, Red: Inner sheet, Grey: Pull blocks. }
 	\end{figure} 
 \end{frame}
 %
 %%% New frame %%%
 %
-\begin{frame}{Creating a graphene Kirigami system}
-\framesubtitle{System setup}
-	System size = ???
+\begin{frame}{System setup}
+% \framesubtitle{System setup}
+	\begin{columns} 
+		\hspace{5mm}
+		\begin{column}{.4\textwidth}
+			System size
+			\begin{align*}
+				\text{Atoms} &\sim 60,000 \\
+				\text{Sheet} &\sim 130 \times \SI{165}{Å} 
+			\end{align*}
+			Regions
+			\begin{itemize}
+				\item Red: $NVE$
+				\item Green: Thermostat $NVT$
+				\item Blue: Rigid 
+			\end{itemize}
+		\end{column}
+		\begin{column}{.5\textwidth}
+			\begin{figure}[H]
+				\raggedright
+				% \centering
+				\begin{subfigure}[b]{0.9\textwidth}
+					\centering
+					\includegraphics[width=\textwidth]{../thesis/figures/system/system_sideview.png}
+					\caption{Side view.}
+				\end{subfigure}
+				\begin{subfigure}[b]{0.9\textwidth}
+					\centering
+					\includegraphics[width=\textwidth]{../thesis/figures/system/system_topview_anno.png}
+					\caption{Top view.}
+				\end{subfigure}
+				%    \caption{System configuration colorized to indicate NVE parts (red), thermostat parts (green) and rigid parts (blue). (a) Side view showing the sheet on top of the substrate. (b) Top view showing only the sheet.}
+				%    \label{fig:system}
+			\end{figure}
+		\end{column}%
+	\end{columns}
 
-	\begin{figure}[H]
-		\centering
-		\begin{subfigure}[b]{0.5\textwidth}
-			\centering
-			\includegraphics[width=\textwidth]{../thesis/figures/system/system_sideview.png}
-			\caption{Side view.}
-		\end{subfigure}
-		\begin{subfigure}[b]{0.5\textwidth}
-			\centering
-			\includegraphics[width=\textwidth]{../thesis/figures/system/system_topview_anno.png}
-			\caption{Top view.}
-		\end{subfigure}
-		%    \caption{System configuration colorized to indicate NVE parts (red), thermostat parts (green) and rigid parts (blue). (a) Side view showing the sheet on top of the substrate. (b) Top view showing only the sheet.}
-		%    \label{fig:system}
-	\end{figure}
+
+	
 \end{frame}
 %
 %%% New frame %%%
 %
 \subsection{Kirigami}
-\begin{frame}{Creating a graphene Kirigami system}
-	\framesubtitle{Sheet Kirigami}
+% \begin{frame}{Creating a graphene Kirigami system}
+% 	\framesubtitle{Sheet Kirigami}
 
-	Primitive lattice vectors
-	\begin{align*}
-		&\vec{a_1} = a \left(\frac{\sqrt{3}}{2}, -\frac{1}{2}\right)&  &\vec{a_2} = a \left(\frac{\sqrt{3}}{2}, \frac{1}{2}\right),& &|\vec{a_1}| = |\vec{a_2}| = a = \SI{2.46}{\text{Å}}.& 
-	\end{align*}
+% 	Primitive lattice vectors
+% 	\begin{align*}
+% 		&\vec{a_1} = a \left(\frac{\sqrt{3}}{2}, -\frac{1}{2}\right)&  &\vec{a_2} = a \left(\frac{\sqrt{3}}{2}, \frac{1}{2}\right),& &|\vec{a_1}| = |\vec{a_2}| = a = \SI{2.46}{\text{Å}}.& 
+% 	\end{align*}
 	
-	\begin{columns} 
-		\begin{column}{.4\textwidth}
-			Basis
-			\begin{align*}
-				\Big\{\Big(0,0\Big), \frac{a}{2}\Big(\frac{1}{\sqrt{3}}, 1 \Big) \Big\}.
-			  \end{align*}
-			Interatomic distance
-			\begin{align*}
-				\left|\left|\frac{a}{2}\Big(\frac{1}{\sqrt{3}}, 1 \Big)\right|\right| \approx \SI{1.42}{\text{Å}}.
-			\end{align*}
-		\end{column}
-		\begin{column}{.6\textwidth}
-			\begin{figure}[H]
-				\centering
-				\includegraphics[width=0.70\linewidth]{../thesis/figures/system/crystal.png}
-				\caption{Graphene crystal structure.}
-			\end{figure}
-		\end{column}%
-	\end{columns}
-\end{frame}
+% 	\begin{columns} 
+% 		\begin{column}{.4\textwidth}
+% 			Basis
+% 			\begin{align*}
+% 				\Big\{\Big(0,0\Big), \frac{a}{2}\Big(\frac{1}{\sqrt{3}}, 1 \Big) \Big\}.
+% 			  \end{align*}
+% 			Interatomic distance
+% 			\begin{align*}
+% 				\left|\left|\frac{a}{2}\Big(\frac{1}{\sqrt{3}}, 1 \Big)\right|\right| \approx \SI{1.42}{\text{Å}}.
+% 			\end{align*}
+% 		\end{column}
+% 		\begin{column}{.6\textwidth}
+% 			\begin{figure}[H]
+% 				\centering
+% 				\includegraphics[width=0.70\linewidth]{../thesis/figures/system/crystal.png}
+% 				\caption{Graphene crystal structure.}
+% 			\end{figure}
+% 		\end{column}%
+% 	\end{columns}
+% \end{frame}
 %
 %%% New frame %%%
 %
-\begin{frame}{Creating a graphene Kirigami system}
-	\framesubtitle{Sheet Kirigami}
+\begin{frame}{Sheet Kirigami}
+	\framesubtitle{Indexing}
+	\vspace*{5mm}
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.7\linewidth]{../thesis/figures/system/atom_indexing.pdf}
@@ -326,19 +346,21 @@
 %
 %%% New frame %%%
 %
-\begin{frame}{Creating a graphene Kirigami system}
-	\framesubtitle{Sheet Kirigami}
+\begin{frame}{Sheet Kirigami}
+	\framesubtitle{Indexing}
+	\vspace*{5mm}
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.7\linewidth]{../thesis/figures/system/center_indexing.pdf}
-		\caption{Graphene center element indexing.}
+		\caption{Graphene \textit{center element} indexing.}
 	\end{figure}	
 \end{frame}
 %
 %%% New frame %%%
 %
-\begin{frame}{Creating a graphene Kirigami system}
-	\framesubtitle{Sheet Kirigami}
+\begin{frame}{Sheet Kirigami}
+	\framesubtitle{Macroscale inspiration}
+	\vspace*{5mm}
 	\begin{figure}[H]
 		\centering
 		\begin{subfigure}[t]{0.48\textwidth}
@@ -359,9 +381,8 @@
 %
 %%% New frame %%%
 %
-\begin{frame}{Creating a graphene Kirigami system}
-	\framesubtitle{Sheet Kirigami}
-	
+\begin{frame}{Sheet Kirigami}
+	\framesubtitle{Tetrahedron patterns}
 
 	\begin{figure}[H]
 		\centering
@@ -378,7 +399,6 @@
 			\includegraphics[width=0.7\textwidth]{../thesis/figures/system/pop_up_pattern.pdf}
 			% \caption{}
 		\end{subfigure}
-
 	  \end{figure}
 	  
 	  
@@ -391,9 +411,8 @@
 %
 %%% New frame %%%
 %
-\begin{frame}{Creating a graphene Kirigami system}
-	\framesubtitle{Sheet Kirigami}
-
+\begin{frame}{Sheet Kirigami}
+	\framesubtitle{Honeycomb patterns}
 
 	\begin{figure}[H]
 		\centering
@@ -419,9 +438,8 @@
 %
 %%% New frame %%%
 %
-\begin{frame}{Creating a graphene Kirigami system}
-	\framesubtitle{Sheet Kirigami}
-	Random walk 
+\begin{frame}{Sheet Kirigami}
+	\framesubtitle{Random walk patterns}
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.8\linewidth]{../thesis/figures/system/RW_flavors.png}
@@ -430,22 +448,18 @@
 %
 %%% New frame %%%
 %
-\begin{frame}{Creating a graphene Kirigami system}
-	\framesubtitle{MD simulation}
-	Integration. Newtons equation (NVE)
+\subsection{Molecular Dynamics}
+\begin{frame}{Molecular Dynamics (MD)}
+	Newtons equations (NVE)
 	\begin{align*}
 		m_i \frac{d^2 \vec{r}_i}{dt^2} = \vec{F}_i = -\nabla U_i,
 	\end{align*}
-	Introducing the temperature (canonical ensemble: NVT) with the Langevin equation
+	Introducing temperature (NVT) with the Langevin equation
 	\begin{align*}
-		m_i \frac{d^2 \vec{r}_i}{dt^2} &= \underbrace{-\nabla U_i}_{F_i} \ \underbrace{-\alpha \vec{v}_i}_{\text{Drag}}  + \underbrace{\vec{R}_i}_{\text{Fluctuation}}, \\
+		m_i \frac{d^2 \vec{r}_i}{dt^2} &= \underbrace{-\nabla U_i}_{F_i} \; \underbrace{-\alpha \vec{v}_i}_{\text{Drag}}  + \underbrace{\vec{R}_i}_{\text{Fluctuation}}, \\
 		\\
 		\langle R \rangle &= 0, \qquad \langle R^2 \rangle = 2\alpha k_B T.
 	\end{align*}
-
-	% \begin{align*}
-	% 	&\langle R \rangle = 0& &\langle R(t)^2 \rangle = 2\alpha k_BT&
-	% \end{align*}
 \end{frame}
 
 
@@ -458,10 +472,34 @@
 \begin{frame}{Pilot study}
 	\framesubtitle{Friction metrics}
 
-	\begin{itemize}
-		\item Friction metrics?
-		\item Stick slip?
-	\end{itemize}
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[t]{0.49\textwidth}
+		\centering
+		\includegraphics[width=0.65\textwidth]{../thesis/figures/baseline/drag_Ff_10Å.pdf}
+		\caption{$K = \infty$, $v = \SI{20}{\frac{m}{s}}$ (10 Å sliding).}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{0.49\textwidth}
+		\centering
+		\includegraphics[width=0.65\textwidth]{../thesis/figures/baseline/drag_Ff_100Å.pdf}
+		\caption{$K = \infty$, $v = \SI{20}{\frac{m}{s}}$ (100 Å sliding).}
+	  \end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{0.49\textwidth}
+		\centering
+		\includegraphics[width=0.65\textwidth]{../thesis/figures/baseline/drag_Ff_10Å_K10_v1.pdf}
+		\caption{$K = \SI{10}{\frac{N}{m}}$, $v = \SI{1}{\frac{m}{s}}$ (10 Å sliding).}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{0.49\textwidth}
+		\centering
+		\includegraphics[width=0.65\textwidth]{../thesis/figures/baseline/drag_Ff_100Å_K10_v1.pdf}
+		\caption{$K = \SI{10}{\frac{N}{m}}$, $v = \SI{1}{\frac{m}{s}}$ (100 Å sliding).}
+	\end{subfigure}
+	   \caption{Force traces of the friction force component $F_\parallel$ parallel to the sliding direction acting from the substrate on the full sheet. The red line represents a Savgol filter.}
+  \end{figure}
 \end{frame}
 %
 %%% New frame %%%
