@@ -301,7 +301,7 @@ biblabel=brackets]{biblatex}
 			\caption{High load.}
 			\label{fig:asp_right}
 		\end{subfigure}
-		\caption{Qualitatively illustration of the microscopic asperity deformation under increasing load. Reproduced from~\cite{wiki:asperities}.}
+		\caption{Qualitative illustration of microscopic asperity deformation under increasing load. Reproduced from~\cite{wiki:asperities}.}
 	\end{figure}
 \end{frame}
 %
@@ -342,7 +342,7 @@ biblabel=brackets]{biblatex}
 	\begin{figure}
 		\centering    
 		\movie[open,showcontrols=true,repeat]{\includegraphics[height=0.5\textwidth, keepaspectratio]{figures/sim_parts.png}}{figures/sim_parts.mov}
-		\caption{System of interest: Graphene sheet on a silicon substrate. Blue: Substrate, Red: Inner sheet, Grey: Pull blocks. }
+		\caption{System of choice: Graphene sheet on a silicon substrate. Blue: Substrate, Red: Inner sheet, Grey: Pull blocks. }
 	\end{figure} 
 \end{frame}
 %
@@ -356,7 +356,7 @@ biblabel=brackets]{biblatex}
 			System size
 			\begin{align*}
 				\text{Atoms} &\sim 60,000 \\
-				\text{Sheet} &\sim 130 \times \SI{165}{Å} 
+				\text{Sheet} &\sim 130 \times \SI{165}{\text{Å}} \\
 			\end{align*}
 			Regions
 			\begin{itemize}
@@ -425,7 +425,10 @@ biblabel=brackets]{biblatex}
 %
 \begin{frame}{Sheet Kirigami}
 	\framesubtitle{Indexing}
-	\vspace*{5mm}
+	\begin{align*}
+		M \in \mathbb{Z}_2^{62 \times 106}, \qquad \text{Combinations} = 2^{6572} = 10^{1978}
+	\end{align*}
+	% \vspace*{5mm}
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.7\linewidth]{../thesis/figures/system/atom_indexing.pdf}
@@ -437,7 +440,10 @@ biblabel=brackets]{biblatex}
 %
 \begin{frame}{Sheet Kirigami}
 	\framesubtitle{Indexing}
-	\vspace*{5mm}
+	% \vspace*{5mm}
+	\begin{align*}
+		M \in \mathbb{Z}_2^{62 \times 106}, \qquad \text{Combinations} = 2^{6572} = 10^{1978}
+	\end{align*}
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.7\linewidth]{../thesis/figures/system/center_indexing.pdf}
@@ -546,7 +552,7 @@ biblabel=brackets]{biblatex}
 		\end{align*}
 		\item Introducing temperature (NVT) with the Langevin equation
 		\begin{align*}
-			m_i \frac{d^2 \vec{r}_i}{dt^2} &= \underbrace{-\nabla U_i}_{F_i} \; \underbrace{-\alpha \vec{v}_i}_{\text{Drag}}  + \underbrace{\vec{R}_i}_{\text{Fluctuation}}, \\
+			m_i \frac{d^2 \vec{r}_i}{dt^2} &= \underbrace{\strut -\nabla U_i}_{F_i} \quad \underbrace{\strut -\alpha \vec{v}_i}_{\text{Drag}} \quad  + \underbrace{\strut \vec{R}_i}_{\text{Fluctuation}}, \\
 			\\
 			\langle R \rangle &= 0, \qquad \langle R^2 \rangle = 2\alpha k_B T.
 		\end{align*}
@@ -569,7 +575,7 @@ biblabel=brackets]{biblatex}
 		\begin{columns}
 			\column{.3\linewidth}
 			% \hspace{5mm}
-			\caption{\scriptsize \\ $K = \infty$, \\ $v = \SI{20}{\frac{m}{s}}$ \\ (\SI{10}{Å} sliding).}
+			\caption{\scriptsize \\ \vspace*{1mm}  $K = \infty$, \\ $v = \SI{20}{m/s}$ \\ (\SI{10}{\text{Å}} sliding).}
 			\column{.7\linewidth}
 			\includegraphics[width=1\textwidth]{../thesis/figures/baseline/drag_Ff_10Å.pdf}
 		\end{columns}
@@ -581,7 +587,7 @@ biblabel=brackets]{biblatex}
 			\column{.7\linewidth}
 			\includegraphics[width=1\textwidth]{../thesis/figures/baseline/drag_Ff_100Å.pdf}
 			\column{.3\linewidth}
-			\caption{\scriptsize  \\ $K = \infty$, \\ $v = \SI{20}{\frac{m}{s}}$ \\ (\SI{100}{Å} sliding).}
+			\caption{\scriptsize \\ \vspace*{1mm} $K = \infty$, \\ $v = \SI{20}{m/s}$ \\ (\SI{100}{\text{Å}} sliding).}
 		\end{columns}
 	  \end{subfigure}
 	\hfill
@@ -589,7 +595,7 @@ biblabel=brackets]{biblatex}
 		\centering
 		\begin{columns}
 			\column{.3\linewidth}
-			\caption{\scriptsize \\$K = \SI{10}{\frac{N}{m}}$, \\ $v = \SI{1}{\frac{m}{s}}$ \\ (\SI{10}{Å} sliding).}
+			\caption{\scriptsize \\ \vspace*{1mm} $K = \SI{10}{N/m}$, \\ $v = \SI{1}{m/s}$ \\ (\SI{10}{\text{Å}} sliding).}
 			\column{.7\linewidth}
 			\includegraphics[width=1\textwidth]{../thesis/figures/baseline/drag_Ff_10Å_K10_v1.pdf}
 		\end{columns}
@@ -601,7 +607,7 @@ biblabel=brackets]{biblatex}
 			\column{.7\linewidth}
 			\includegraphics[width=1\textwidth]{../thesis/figures/baseline/drag_Ff_100Å_K10_v1.pdf}
 			\column{.3\linewidth}
-			\caption{\scriptsize \\ $K = \SI{10}{\frac{N}{m}}$, \\ $v = \SI{1}{\frac{m}{s}}$ \\ (\SI{100}{Å} sliding).}
+			\caption{\scriptsize \\ \vspace*{1mm}  $K = \SI{10}{N/m}$, \\ $v = \SI{1}{m/s}$ \\ (\SI{100}{\text{Å}} sliding).}
 		\end{columns}
 
 	\end{subfigure}
