@@ -694,6 +694,123 @@ def final_model_evaluation(model_path, save = False):
         fig.savefig("../article/figures/ML/final_model_evaluation.pdf", bbox_inches="tight")
         
 
+
+
+def final_model_evaluation_slide(model_path, save = False):
+    """ Evaluate the final model on pilot study tetrehedron and honeycomb 
+        for the presentation slide. """
+
+    model_weights = os.path.join(model_path, 'model_dict_state')
+    model_info = os.path.join(model_path, 'best_scores.txt')
+    EV = Evaluater(model_weights, model_info)
+
+
+    # Pilot study patterns
+    folders = ['../Data/Baseline_fixmove/popup/multi_stretch',
+               '../Data/Baseline_fixmove/honeycomb/multi_stretch']
+    patterns = ['Tetrahedron (7,5,1)', 'Honeycomb (2,2,1,5)']
+    
+    colorbar_scale = [(0.1, 10), 'log']
+    
+    cmap = matplotlib.cm.viridis
+    plot_data_points = {'s': None,
+                        'edgecolors': 'black'}
+    
+
+
+    # fig, axes = plt.subplots(3, 2, num = unique_fignum(), figsize = (10,8))
+    
+    nrow = 2; ncol = 2
+    fig = plt.figure(figsize = (10, 6), constrained_layout=True)
+    gs = GridSpec(nrow, ncol + 1, figure=fig, width_ratios=[1,1,0.05])
+    axes = []
+    for i in range(nrow):
+        axes.append([fig.add_subplot(gs[i, j]) for j in range(ncol)])
+
+    
+    
+
+    for f, folder in enumerate(folders):
+        # Data
+        data = read_multi_folder(folder, mean_pct = 0.5, std_pct = 0.35)
+        stretch = data['stretch_pct']
+        F_N = data['F_N']
+        Ff_mean = data['Ff'][:, :, 0, 1]
+        Ff_max = data['Ff'][:, :, 0, 0]
+        contact = data['contact_mean'][:, :, 0]
+        rup = data['rup']
+        rupture_stretch = (data['rupture_stretch'], data['practical_rupture_stretch'])
+        
+    
+        # Prepare ML 
+        # stretch_space = np.linspace(np.min(stretch), np.max(stretch), num_points)
+        stretch_space = np.linspace(0, 1.5, int(1e3))
+        config_path = find_single_file(folder, '.npy')
+        EV.load_config(config_path)
+    
+    
+        # Go through different outputs    
+        Z = [Ff_mean, contact]
+        ylabel = [r'$\langle F_\parallel \rangle$ [nN]', 
+                  r'Rel. contact']
+        
+        
+        axes[0][f].set_title(f'{patterns[f]}')
+        axes[-1][f].set_xlabel('Strain', fontsize = 14)     
+        for o in range(2): # Ff_mean, contact
+            ax = axes[o][f]
+            if f == 0:
+                ax.set_ylabel(ylabel[o], fontsize = 14)
+            
+                
+            # Go through load 
+            z = Z[o]
+            if o == 1:
+                o = 2
+            no_rupture_data = ~np.isnan(z[:, 0]) 
+            for k in range(len(F_N)):    
+                color = get_color_value(F_N[k], colorbar_scale[0][0], colorbar_scale[0][1], scale = colorbar_scale[-1], cmap = cmap)
+                
+                # --- Simulation --- #
+                ax.scatter(stretch, z[:,k], **plot_data_points, color = color)
+                
+                # Prepare R2
+                target = z[no_rupture_data, k]
+                target_mean = np.mean(target)
+                
+                
+                # --- ML --- #
+                _, _, output = EV.predict(stretch, F_N[k]) # ['Ff_mean', 'Ff_max', 'contact', 'porosity', 'rupture_stretch', 'is_ruptured']
+                pred = output[no_rupture_data, o]
+                SS_res = np.sum((pred - target)**2)
+                SS_tot = np.sum((target - target_mean)**2)
+                R2 = 1 - SS_res/SS_tot
+            
+            
+                # Produce more smooth stretch curve fore plotting
+                _, _, output = EV.predict(stretch_space, F_N[k])
+                # no_rupture = output[:,-1] < 0.5
+                rup_start = np.argmin(output[:,-1] < 0.5)
+                
+                color = get_color_value(F_N[k], colorbar_scale[0][0], colorbar_scale[0][1], scale = colorbar_scale[1], cmap = cmap)
+                ax.plot(stretch_space[:rup_start], output[:rup_start, o], color = color, label = rf'$R^2$ = {R2:0.4f}', zorder = -1)
+                ax.legend(fontsize = 13)
+    # Colorbar 
+    norm = matplotlib.colors.LogNorm(colorbar_scale[0][0], colorbar_scale[0][1])
+    axes.append(fig.add_subplot(gs[:, ncol]))
+    cb = fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax = axes[-1])
+    cb.set_label(label = r'$F_N$ [nN]', fontsize=14)
+    
+    
+    # Adjust 
+    # fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    
+    if save:
+        fig.savefig("../presentation/figures/final_model_evaluation_slide.pdf", bbox_inches="tight")
+        
+
+
+
 def final_model_compare_scores(model_path):
     # --- Model --- #
     model_weights = os.path.join(model_path, 'model_dict_state')
@@ -864,6 +981,7 @@ if __name__ == '__main__':
     
     
     # final_model_evaluation(model_path = '../ML/mom_weight_search_cyclic/m0w0', save = False)
+    final_model_evaluation_slide(model_path = '../ML/mom_weight_search_cyclic/m0w0', save = True)
     # final_model_compare_scores(model_path = '../ML/mom_weight_search_cyclic/m0w0')
     # final_model_compare_scores(model_path = '../ML/staircase_4/S16D8')
     plt.show()

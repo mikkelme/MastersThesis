@@ -37,17 +37,20 @@
 \usepackage{multimedia}
 
 
-\usepackage{siunitx}
 \usepackage{hyperref}
 \usepackage{outlines}
 \usepackage{float}
-% \usepackage{caption}
+\usepackage{caption}
 \usepackage{subcaption}
-\usepackage{cases}
+\usepackage{makecell} 
 
+
+% \usepackage{cases}
+\usepackage{siunitx}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{mathtools}  % also loads amsmath
 \renewcommand{\vec}[1]{\mathbf{#1}} % bold text instead of arrow
-
-
 
 
 % \usepackage[backend=bibtex, 
@@ -68,16 +71,21 @@
 \setbeamercolor{section in head/foot}{bg=myblue}
 
 
-%\usepackage{mathptmx} % Use the Times font for serif text
-\usepackage{palatino} % Use the Palatino font for serif text
+
+
+
+% \usepackage{mathptmx} % Use the Times font for serif text
+% \usepackage{palatino} % Use the Palatino font for serif text
 
 %\usepackage{helvet} % Use the Helvetica font for sans serif text
-\usepackage[default]{opensans} % Use the Open Sans font for sans serif text
+% \usepackage[default]{opensans} % Use the Open Sans font for sans serif text
 %\usepackage[default]{FiraSans} % Use the Fira Sans font for sans serif text
 %\usepackage[default]{lato} % Use the Lato font for sans serif text
 
 \useinnertheme{circles}
 \useoutertheme{default}
+
+
 
 % \setbeamertemplate{footline} % Uncomment this line to remove the footer line in all slides
 % \setbeamertemplate{footline}[page number] % Uncomment this line to replace the footer line in all slides with a simple slide count
@@ -138,8 +146,8 @@
 %
 \section{Introduction} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Thesis overview}
-\begin{frame}{Overview}
-	\framesubtitle{Three main parts}
+\begin{frame}{Thesis overview}
+	% \framesubtitle{Three main parts}
 	\begin{enumerate}
 		\setlength\itemsep{1em}
 		\item \textbf{Sheet kirigami}: Alter a graphene sheet using atomic scale cuts and stretching
@@ -148,7 +156,12 @@
 	\end{enumerate}
 	\vspace{2mm}
 	
-	Can we control the frictional properties of a graphene sheet using this technique?
+	Can we control the friction of a nanoscale Kirigami sheet through pattern design and straining of the sheet?
+
+	\begin{alertblock}{}
+        Can we control the friction of a nanoscale Kirigami sheet through pattern design and straining of the sheet?
+    \end{alertblock}
+
 	% \begin{itemize}
 	% 	\item Can we utilize a coupling between load and stretch?
 	% 	\item Negative friction coefficients
@@ -240,7 +253,7 @@
 \framesubtitle{System setup}
 	\begin{figure}
 		\centering    
-		\movie[open,loop,repeat]{\includegraphics[height=0.5\textwidth, keepaspectratio]{figures/sim_parts.png}}{figures/sim_parts.mov}
+		\movie[open,showcontrols=true,repeat]{\includegraphics[height=0.5\textwidth, keepaspectratio]{figures/sim_parts.png}}{figures/sim_parts.mov}
 		\caption{Graphene sheet on a silicon substrate. Blue: Substrate, Red: Inner sheet, Grey: Pull blocks. }
 	\end{figure} 
 \end{frame}
@@ -419,7 +432,20 @@
 %
 \begin{frame}{Creating a graphene Kirigami system}
 	\framesubtitle{MD simulation}
-	Introduction to MD simulation. Something about newtons equations and Langevin maybe?
+	Integration. Newtons equation (NVE)
+	\begin{align*}
+		m_i \frac{d^2 \vec{r}_i}{dt^2} = \vec{F}_i = -\nabla U_i,
+	\end{align*}
+	Introducing the temperature (canonical ensemble: NVT) with the Langevin equation
+	\begin{align*}
+		m_i \frac{d^2 \vec{r}_i}{dt^2} &= \underbrace{-\nabla U_i}_{F_i} \ \underbrace{-\alpha \vec{v}_i}_{\text{Drag}}  + \underbrace{\vec{R}_i}_{\text{Fluctuation}}, \\
+		\\
+		\langle R \rangle &= 0, \qquad \langle R^2 \rangle = 2\alpha k_B T.
+	\end{align*}
+
+	% \begin{align*}
+	% 	&\langle R \rangle = 0& &\langle R(t)^2 \rangle = 2\alpha k_BT&
+	% \end{align*}
 \end{frame}
 
 
@@ -446,7 +472,7 @@
 	\framesubtitle{Out-of-plane buckling}
 	\begin{figure}
 		\centering    
-		\movie[open]{\includegraphics[height=0.7\textheight, keepaspectratio]{figures/vacuum_stretch.png}}{figures/vacuum_stretch.mov}
+		\movie[open,showcontrols=true]{\includegraphics[height=0.7\textheight, keepaspectratio]{figures/vacuum_stretch.png}}{figures/vacuum_stretch.mov}
 		\caption{Kirigami sheet stretch in vacuum. Small tetrahedron pattern.}
 	\end{figure} 
 
@@ -458,7 +484,7 @@
 	\framesubtitle{Out-of-plane buckling}
 	\begin{figure}
 		\centering    
-		\movie[open]{\includegraphics[height=0.7\textheight, keepaspectratio]{figures/contact_stretch.png}}{figures/contact_stretch.mov}
+		\movie[open,showcontrols=true]{\includegraphics[height=0.7\textheight, keepaspectratio]{figures/contact_stretch.png}}{figures/contact_stretch.mov}
 		\caption{Kirigami stretch in contact with Si-substrate.}
 	\end{figure} 
 \end{frame}
@@ -472,34 +498,6 @@
 		\caption{Contact area approximation: Number of C-Si bonds within a threshold distance of 110\% the LJ interaction equilibrium distance.}
 	\end{figure}	
 \end{frame}
-%
-%%% New frame %%%
-%
-\begin{frame}{Pilot study}
-	\framesubtitle{Out-of-plane buckling}
-	\begin{figure}[H]
-		\centering
-		\includegraphics[width=\linewidth]{../thesis/figures/baseline/vacuum_normal_buckling.pdf}
-		% \caption{The out-of-plane buckling during straining for the non-cut (No cut), Tetrahedron $(7,5,1)$, and Honeycomb $(2,2,1,5)$ pattern respectively in vacuum at low temperature $T = \SI{5}{K}$. The buckling is quantified by the distribution of the atom z-positions, which are perpendicular to the sheet plane, and the colors indicate selected quantiles. The rupture strain for each pattern, from left to right, is 0.38, 0.22, and 1.37, respectively. The results indicate that the Tetrahedron and Honeycomb patterns exhibit significant out-of-plane buckling in comparison to the non-cut sheet.}
-		% \label{fig:buckling_quartiles}
-	 \end{figure}
-\end{frame}
-%
-%%% New frame %%%
-%
-\begin{frame}{Pilot study}
-	\framesubtitle{Out-of-plane buckling}
-	\begin{figure}[H]
-		\centering
-		\includegraphics[width=0.5\linewidth]{../thesis/figures/baseline/contact_vs_stretch.pdf}
-		% \caption{The relative contact during straining of the non-cut (No cut), Tetrahedron $(7,5,1)$, and Honeycomb $(2,2,1,5)$ pattern respectively in contact with a substrate. The relative contact is given as the relative number of atoms in the sheet within chemical interaction range. The cut-off for the interaction range is \SI{4}{\text{Å}} corresponding to $\sim 120 \%$ the \acrshort{LJ} equilibrium distance. No normal force is applied and the temperature is kept at $T = \SI{300}{K}$.}
-		% \label{fig:contact_vs_stretch}
-	\end{figure}
-\end{frame}
-%
-%%% New frame %%%
-%
-
 
 
 \subsection{Friction-strain profiles}
@@ -569,20 +567,205 @@
 %
 \begin{frame}{Pilot study}
 	\framesubtitle{Negative friction coefficient}
-	Honeycomb stretch simulation topview
+	\begin{figure}
+		\centering    
+		\movie[open,showcontrols=true]{\includegraphics[width=\textwidth, keepaspectratio]{figures/hon_stretch.png}}{figures/hon_stretch.mov}
+		\caption{Honeycomb $(2,2,1,5)$ stretch.}
+	\end{figure} 
+\end{frame}
+%
+%%% New frame %%%
+%
+\section{Kirigami configuration search} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Outline}
+    \tableofcontents[currentsection]
+\end{frame}
+%
+%%% New frame %%%
+%
+\begin{frame}{Kirigami configuration search}
+	\framesubtitle{Dataset}
+	% \footnotesize
+	\begin{table}[H]
+		\begin{center}
+		\caption{Summary of the generated data points in the dataset.}
+		\begin{tabular}{ | c | c | c | c | c |} \hline
+		\textbf{Type} & \textbf{Configurations} & \textbf{Submitted} & \textbf{Final} & \textbf{Ruptures} \\ \hline
+		Pilot study & 3 & 270 & 261 & \: 25 \: (9.58 \%)\\ \hline
+		Tetrahedron & 68 & 3060 & 3015 & 391 (12.97 \%)\\ \hline
+		Honeycomb & 45 & 2025 & 1983 & \: 80 \: (4.03 \%)\\ \hline
+		Random walk & 100 & 4500 & 4401 & 622 (14.13 \%) \\ \Xhline{2\arrayrulewidth}
+		Total & 214 (216) & 9855 & 9660 & 1118 (11.57 \%) \\ \hline
+		\end{tabular}
+		\end{center}
+	\end{table}
+\end{frame}
+%
+%%% New frame %%%
+%
+\begin{frame}{Kirigami configuration search}
+	\framesubtitle{Dataset}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.9\linewidth]{../thesis/figures/ML/corrcoef_matrix.pdf}
+		\caption{Pearson product-moment correlation coefficients. }
+	  \end{figure}
+\end{frame}
+%
+%%% New frame %%%
+%
+\begin{frame}{Kirigami configuration search}
+	\framesubtitle{Dataset}
+	Properties of interest
+	\begin{align*}
+		&\min F_{\text{fric}},& &\max F_{\text{fric}},& &\max \Delta F_{\text{fric}},& &\max \text{drop}.&
+	\end{align*}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{../thesis/figures/stretch_profiles/PP_max_drop.pdf}
+		\caption{Max drop property. Best candidates in the dataset.}
+	  \end{figure}
+\end{frame}
+%
+%%% New frame %%%
+%
+\subsection{Machine learning}
+\begin{frame}{Kirigami configuration search}
+	\framesubtitle{ML}
+
+	\begin{itemize}
+		\item Convolutional neural network
+		\item Input: Configuration, strain and load
+		\item Output: \underline{Mean friction}, maximum friction, contact area, porosity, \underline{rupture}, rupture strain
+	\end{itemize}
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.5\linewidth]{../thesis/figures/ML/VGGNet16.jpg}
+		\caption{Illustration of the convolutional network architecture for the VGGNet-16 network. Reproduced from~\cite{VGGNet_16_image}.}
+	  \end{figure}
+\end{frame}
+%
+%%% New frame %%%
+%
+\begin{frame}{Kirigami configuration search}
+	\framesubtitle{ML}
+
+	\begin{table}[H]
+		\begin{center}
+		\footnotesize
+		\caption{Evaluation of the final model performance.}
+		\label{tab:final_model_eval}
+		\begin{tabular}{ | c | c | c | c | c | c | c |} \hline
+		  & \multicolumn{3}{c|}{$R^2$ [\num{e2}]} & Abs. [\num{e2}] & Rel. [\num{e2}]  & Acc. [\num{e2}] \\ \hline
+		  & Mean $F_f$ & Max $F_f$ & Contact & Porosity & Rup.\ Strain & Rupture \\ \hline
+		Validation  & 98.067 & 93.558 & 94.598 & 2.325 & 12.958 & 96.102 \\ \hline
+		Tetrahedron & 88.662 & 85.836 & 64.683 & 1.207 & \phantom{0}5.880 & 99.762 \\ \hline
+		Honeycomb   & 96.627 & 89.696 & 97.171 & 1.040 & \phantom{0}1.483 & 99.111 \\ \hline
+		\end{tabular}
+		\end{center}
+	\end{table}
+\end{frame}
+%
+%%% New frame %%%
+%
+\begin{frame}{Kirigami configuration search}
+	\framesubtitle{ML}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.8\linewidth]{../figures/final_model_evaluation_slide.pdf}
+		\caption{Visual evaluation of the final model predictions on the Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$ used in the pilot study.}
+	\end{figure}  
+
+\end{frame}
+%
+%%% New frame %%%
+%
+\subsection{Accelerated search}
+\begin{frame}{Kirigami configuration search}
+	\framesubtitle{Accelerated search}
+	We generate an extended dataset. 
+	\begin{itemize}
+		\item Tetrahedron: \num{1.35e5} configurations 
+		\item Honeycomb: \num{2.025e6} configurations
+		\item Random walk: \num{e4} configurations
+	\end{itemize}
+\end{frame}
+%
+%%% New frame %%%
+%
+\begin{frame}{Kirigami configuration search}
+	\framesubtitle{Accelerated search}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.8\linewidth]{../thesis/figures/search/RW_search_top5.png}
+		\caption{Top 5 candidates for the accelerated search using the Random walk generator. }
+	\end{figure}  
+\end{frame}
+%
+%%% New frame %%%
+%
+\begin{frame}{Kirigami configuration search}
+	\framesubtitle{Accelerated search}
+	Translational variance
+	\begin{figure}[H]
+		\centering
+		\begin{subfigure}[t]{0.49\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{../thesis/figures/search/ref_search_drop_pop_1_7_1_ref_search.pdf}
+			\caption{Tetrahedron $(1,7,1)$ (60). Std = 0.08, Rel.\ Std = 1.13}
+			\label{fig:tetra_171_trans}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure}[t]{0.49\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{../thesis/figures/search/ref_search_drop_pop_5_3_1_ref_search.pdf}
+			\caption{Tetrahedron $(5,3,1)$ (60). Std = 0.13, Rel.\ Std = 1.61}
+		\end{subfigure}
+		\caption{Prediction of the max drop property for selected patterns using the machine learning model for all unique reference positions.}
+	\end{figure}
+\end{frame}
+%
+%%% New frame %%%
+%
+\begin{frame}{Kirigami configuration search}
+	\framesubtitle{Accelerated search}
+	Genetic algorithm based on Markov chain probability. 
+	\begin{enumerate}
+		\item Rank configurations by fitness score.
+		\item Assign a mutation probability based on the ranking.
+		\item Calculate target states from the best candidates.
+		\item Mutate and repeat.
+	\end{enumerate}
+	Poor convergence on the mac drop property optimization
+\end{frame}
+%
+%%% New frame %%%
+%
+\begin{frame}{Kirigami configuration search}
+	\framesubtitle{Accelerated search}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{../thesis/figures/search/grad_cam_GA_RN_start_top0.pdf}
+		\caption{Genetic algorithm suggestion from a mixed porosity start. Top: Friction-strain curve and configuration. Bottom: Grad-CAM analysis}
+	\end{figure}  
+\end{frame}
+%
+%%% New frame %%%
+%
+\begin{frame}{Kirigami configuration search}
+	\framesubtitle{Accelerated search}
+	Grad-CAM
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{../thesis/figures/search/grad_cam_hon_3_3_5_3_12_0.pdf}
+		\caption{Honeycomb $(3,3,5,3)$, ref = $(12,0)$.}
+	\end{figure}  
 \end{frame}
 %
 %%% New frame %%%
 %
 
-
-\section{Kirigami configuration search} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{Outline}
-    \tableofcontents[currentsection]
-\end{frame}
-
-\subsection{Machine learning}
-\subsection{Accelerated search}
 
 
 
@@ -592,9 +775,31 @@
 \end{frame}
 
 
+\begin{frame}{Summary and outlook}
+	Key findings
+	\begin{itemize}
+		\item Non-monotonous relationship between friction and strain
+		\item Coupled system can be exploited to achieve a negative friction coefficient
+		\item Machine learning is feasible but more data is needed
+	\end{itemize}
+	Further studies:
+	\begin{itemize}
+		\item Investigation of the underlying mechanism
+		\begin{itemize}
+			\item Commensurability hypothesis can be investigated by varying scan angle
+		\end{itemize}
+		\item Friction-strain relationship at different physical conditions: temperature, sliding speed, spring stiffness. 
+		\item Edge and thermostat effects.
+		\item Improve dataset with active learning 
+	\end{itemize}
+\end{frame}
 
 
-\begin{frame}%[allowframebreaks]
+
+
+
+
+\begin{frame}[allowframebreaks]
 	\frametitle{References}
 	\printbibliography
 	% \bibliographystyle{apalike}
