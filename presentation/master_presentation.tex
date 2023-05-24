@@ -42,8 +42,10 @@
 \usepackage{float}
 \usepackage{caption}
 \usepackage{subcaption}
-\usepackage{makecell} 
+\usepackage{makecell}
 
+% \usepackage{graphicx}
+% \usepackage{floatrow}
 
 % \usepackage{cases}
 \usepackage{siunitx}
@@ -51,12 +53,101 @@
 \usepackage{amsfonts}
 \usepackage{mathtools}  % also loads amsmath
 \renewcommand{\vec}[1]{\mathbf{#1}} % bold text instead of arrow
+\setbeamertemplate{caption}{\insertcaption}
 
 
-% \usepackage[backend=bibtex, 
-%             style=phys, 
-%             biblabel=brackets]{biblatex}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}} % left fixed width
+\usepackage{hhline}
 
+
+
+\RequirePackage{calc}
+\RequirePackage{eso-pic}
+\RequirePackage{etoolbox}
+\RequirePackage[LGR, T1]{fontenc}
+\RequirePackage{thmtools}
+\RequirePackage{tikz}
+
+\definecolor{uiored}{cmyk}{0, 0.8, 0.8, 0.0}
+\newlength{\radius}
+\setlength{\radius}{0.05\paperwidth}
+
+\newcommand{\FinalFrame}
+{
+	{
+		\setbeamercolor{background canvas}{bg = white}
+		
+        \begin{frame}[plain, noframenumbering]
+			
+            \AddToShipoutPictureFG*
+            {
+				
+				\AtPageUpperLeft
+                {
+					\hspace{0.8cm}
+                    \parbox[t][2cm][b]{\textwidth}
+                    {
+						\includegraphics[height = 1.1cm]
+                        {figures/MN_FYSISK_A_ENG.pdf}
+						}
+				}
+						
+						
+				
+				\AtPageLowerLeft
+				{
+					\hspace{2\radius}
+					\parbox[b][0.72\paperheight][t]{2\radius}
+					{
+						\begin{tikzpicture}
+							\fill[uiored] (0, 0) circle (\radius);
+							\fill[uiored] (0, 2.5\radius) circle (\radius);
+						\end{tikzpicture}
+					}
+				}
+						
+				\AtPageUpperLeft
+				{
+					\hspace{4.5\radius}
+					\parbox[t]
+					[\dimexpr0.28\paperheight+2\radius\relax]
+					[b]
+					{\dimexpr\textwidth-5\radius\relax}
+					{
+							\vbox to 2\radius
+							{
+									\vfill
+									\raggedright
+									\usebeamerfont{author in final frame}
+									\usebeamercolor[fg]{author in final frame}
+									\insertauthor
+									\vfill
+							}
+					}
+				}
+									
+				\AtPageLowerLeft
+				{						
+					\hspace{4.5\radius}
+					\parbox[b]
+					[\dimexpr0.72\paperheight-3.1\radius\relax]
+					[t]
+					{\dimexpr\textwidth-5\radius\relax}
+					{
+						\raggedright
+						\usebeamerfont{title in final frame}
+						\usebeamercolor[fg]{title in final frame}
+						\inserttitle
+						% \\
+						% \usebeamerfont{subtitle in final frame}
+						% \usebeamercolor{subtitle in final frame}
+						% \insertsubtitle
+					}
+				}
+			}
+		\end{frame}
+	}
+}
 
 
 
@@ -105,18 +196,16 @@
 \institute[UiO]{University of Oslo}
 \date[Juni 02, 2023]{Juni 02, 2023}
 
+
 % \titlegraphic{\flushleft\includegraphics[width=0.5\textwidth]{figures/MN_FYSISK_A_ENG.pdf}}
 \titlegraphic{\flushright\includegraphics[width=\textwidth]{figures/frontpage.png}}
 
 
 
-% \titlegraphic{\vspace{4cm}\flushright\includegraphics[width=2cm,height=2cm]{example-image-a}} 
-
-
 \setbeamertemplate{bibliography item}{\insertbiblabel}
 \usepackage[backend=bibtex, 
-            style=phys, 
-            biblabel=brackets]{biblatex}
+style=phys, 
+biblabel=brackets]{biblatex}
 \addbibresource{bibliography.bib}
 
 
@@ -450,137 +539,149 @@
 %
 \subsection{Molecular Dynamics}
 \begin{frame}{Molecular Dynamics (MD)}
-	Newtons equations (NVE)
-	\begin{align*}
-		m_i \frac{d^2 \vec{r}_i}{dt^2} = \vec{F}_i = -\nabla U_i,
-	\end{align*}
-	Introducing temperature (NVT) with the Langevin equation
-	\begin{align*}
-		m_i \frac{d^2 \vec{r}_i}{dt^2} &= \underbrace{-\nabla U_i}_{F_i} \; \underbrace{-\alpha \vec{v}_i}_{\text{Drag}}  + \underbrace{\vec{R}_i}_{\text{Fluctuation}}, \\
-		\\
-		\langle R \rangle &= 0, \qquad \langle R^2 \rangle = 2\alpha k_B T.
-	\end{align*}
+	\begin{itemize}
+		\item Newtons equations (NVE)
+		\begin{align*}
+			m_i \frac{d^2 \vec{r}_i}{dt^2} = \vec{F}_i = -\nabla U_i,
+		\end{align*}
+		\item Introducing temperature (NVT) with the Langevin equation
+		\begin{align*}
+			m_i \frac{d^2 \vec{r}_i}{dt^2} &= \underbrace{-\nabla U_i}_{F_i} \; \underbrace{-\alpha \vec{v}_i}_{\text{Drag}}  + \underbrace{\vec{R}_i}_{\text{Fluctuation}}, \\
+			\\
+			\langle R \rangle &= 0, \qquad \langle R^2 \rangle = 2\alpha k_B T.
+		\end{align*}
+	\end{itemize}
 \end{frame}
 
 
 \section{Pilot study} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{Outline}
+\begin{frame}{Pilot study}
     \tableofcontents[currentsection]
 \end{frame}
 
 \subsection{Friction metrics}
-\begin{frame}{Pilot study}
-	\framesubtitle{Friction metrics}
-
+\begin{frame}{Friction metrics}
 
 \begin{figure}[H]
 	\centering
 	\begin{subfigure}[t]{0.49\textwidth}
 		\centering
-		\includegraphics[width=0.65\textwidth]{../thesis/figures/baseline/drag_Ff_10Å.pdf}
-		\caption{$K = \infty$, $v = \SI{20}{\frac{m}{s}}$ (10 Å sliding).}
+		\begin{columns}
+			\column{.3\linewidth}
+			% \hspace{5mm}
+			\caption{\scriptsize \\ $K = \infty$, \\ $v = \SI{20}{\frac{m}{s}}$ \\ (\SI{10}{Å} sliding).}
+			\column{.7\linewidth}
+			\includegraphics[width=1\textwidth]{../thesis/figures/baseline/drag_Ff_10Å.pdf}
+		\end{columns}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[t]{0.49\textwidth}
 		\centering
-		\includegraphics[width=0.65\textwidth]{../thesis/figures/baseline/drag_Ff_100Å.pdf}
-		\caption{$K = \infty$, $v = \SI{20}{\frac{m}{s}}$ (100 Å sliding).}
+		\begin{columns}
+			\column{.7\linewidth}
+			\includegraphics[width=1\textwidth]{../thesis/figures/baseline/drag_Ff_100Å.pdf}
+			\column{.3\linewidth}
+			\caption{\scriptsize  \\ $K = \infty$, \\ $v = \SI{20}{\frac{m}{s}}$ \\ (\SI{100}{Å} sliding).}
+		\end{columns}
 	  \end{subfigure}
 	\hfill
 	\begin{subfigure}[t]{0.49\textwidth}
 		\centering
-		\includegraphics[width=0.65\textwidth]{../thesis/figures/baseline/drag_Ff_10Å_K10_v1.pdf}
-		\caption{$K = \SI{10}{\frac{N}{m}}$, $v = \SI{1}{\frac{m}{s}}$ (10 Å sliding).}
+		\begin{columns}
+			\column{.3\linewidth}
+			\caption{\scriptsize \\$K = \SI{10}{\frac{N}{m}}$, \\ $v = \SI{1}{\frac{m}{s}}$ \\ (\SI{10}{Å} sliding).}
+			\column{.7\linewidth}
+			\includegraphics[width=1\textwidth]{../thesis/figures/baseline/drag_Ff_10Å_K10_v1.pdf}
+		\end{columns}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[t]{0.49\textwidth}
 		\centering
-		\includegraphics[width=0.65\textwidth]{../thesis/figures/baseline/drag_Ff_100Å_K10_v1.pdf}
-		\caption{$K = \SI{10}{\frac{N}{m}}$, $v = \SI{1}{\frac{m}{s}}$ (100 Å sliding).}
+		\begin{columns}
+			\column{.7\linewidth}
+			\includegraphics[width=1\textwidth]{../thesis/figures/baseline/drag_Ff_100Å_K10_v1.pdf}
+			\column{.3\linewidth}
+			\caption{\scriptsize \\ $K = \SI{10}{\frac{N}{m}}$, \\ $v = \SI{1}{\frac{m}{s}}$ \\ (\SI{100}{Å} sliding).}
+		\end{columns}
+
 	\end{subfigure}
-	   \caption{Force traces of the friction force component $F_\parallel$ parallel to the sliding direction acting from the substrate on the full sheet. The red line represents a Savgol filter.}
+	   \caption{Friction force traces. The red line represents a Savgol filter.}
   \end{figure}
 \end{frame}
 %
 %%% New frame %%%
 %
-
 \subsection{Out-of-plane buckling}
-\begin{frame}{Pilot study}
-	\framesubtitle{Out-of-plane buckling}
+\begin{frame}{Out-of-plane buckling}
 	\begin{figure}
 		\centering    
 		\movie[open,showcontrols=true]{\includegraphics[height=0.7\textheight, keepaspectratio]{figures/vacuum_stretch.png}}{figures/vacuum_stretch.mov}
-		\caption{Kirigami sheet stretch in vacuum. Small tetrahedron pattern.}
+		\caption{Kirigami sheet stretch in a vacuum.}
 	\end{figure} 
 
 \end{frame}
 %
 %%% New frame %%%
 %
-\begin{frame}{Pilot study}
-	\framesubtitle{Out-of-plane buckling}
+\begin{frame}{Out-of-plane buckling}
 	\begin{figure}
 		\centering    
 		\movie[open,showcontrols=true]{\includegraphics[height=0.7\textheight, keepaspectratio]{figures/contact_stretch.png}}{figures/contact_stretch.mov}
-		\caption{Kirigami stretch in contact with Si-substrate.}
+		\caption{Kirigami stretch in contact with the substrate.}
 	\end{figure} 
 \end{frame}
 %
 %%% New frame %%%
 %
-\begin{frame}{Pilot study}
-	\framesubtitle{Out-of-plane buckling}
+\begin{frame}{Out-of-plane buckling}
 	\begin{figure}
 		\includegraphics[height=0.7\textheight]{figures/contact_pct.pdf}
-		\caption{Contact area approximation: Number of C-Si bonds within a threshold distance of 110\% the LJ interaction equilibrium distance.}
+		\caption{Contact area approximation: Number of C--Si bonds within a threshold distance of 110\% the LJ interaction equilibrium distance.}
 	\end{figure}	
 \end{frame}
 
 
 \subsection{Friction-strain profiles}
-\begin{frame}{Pilot study}
-	\framesubtitle{Friction-strain profiles}
+\begin{frame}{Contact-strain profile}
 
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=1\linewidth]{../thesis/figures/baseline/multi_stretch_area_compare.pdf}
+		\caption{Contact-strain profile for $F_N = \{0.1, 1, 10\} \text{nN}$.}
 	\end{figure}
 \end{frame}
 %
 %%% New frame %%%
 %
-\begin{frame}{Pilot study}
-	\framesubtitle{Friction-strain profiles}
-
+\begin{frame}{Friction-strain profile}
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=1\linewidth]{../thesis/figures/baseline/multi_stretch_mean_compare.pdf}
+		\caption{Friction-strain profile for $F_N = \{0.1, 1, 10\} \text{nN}$.}
 	\end{figure}
 \end{frame}
 %
 %%% New frame %%%
 %
 \subsection{Negative friction coefficient}
-\begin{frame}{Pilot study}
-	\framesubtitle{Negative friction coefficient}
-	Load to sheet tension coupling 
+\begin{frame}{Negative friction coefficient}
+	Coupling of load to sheet tension 
 	\begin{align*}
 		F_t = TF_N, \qquad T = 6
 	\end{align*}
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.6\linewidth]{../thesis/figures/negative_coefficient/nanomachine.pdf}
-		% \caption{Working sketch for a nanomachine design that aims to translate applied load (from the top of the figure) to a straining of the graphene sheet (shown in red). The black boxes connected to the graphene sheet represent the pull blocks in our system.}
-		% \label{fig:nanomachine}
+		\caption{Working sketch for a nanomachine design translating applied load (from the top of the figure) to a straining of the graphene sheet (shown in red).}
+		\label{fig:nanomachine}
 	\end{figure}	  
 \end{frame}
 %
 %%% New frame %%%
 %
-\begin{frame}{Pilot study}
-	\framesubtitle{Negative friction coefficient}
-
+\begin{frame}{Negative friction coefficient}
+	\framesubtitle{Tetrahedron results}
+	
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=\linewidth]{../thesis/figures/negative_coefficient/manual_coupling_tension_pop7_5_1.pdf}	
@@ -591,9 +692,8 @@
 %%% New frame %%%
 %
 
-\begin{frame}{Pilot study}
-	\framesubtitle{Negative friction coefficient}
-
+\begin{frame}{Negative friction coefficient}
+	\framesubtitle{Honeycomb results}
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=\linewidth]{../thesis/figures/negative_coefficient/manual_coupling_tension_hon2215.pdf}	
@@ -603,8 +703,8 @@
 %
 %%% New frame %%%
 %
-\begin{frame}{Pilot study}
-	\framesubtitle{Negative friction coefficient}
+\begin{frame}{Negative friction coefficient}
+	\framesubtitle{Honeycomb deformations}
 	\begin{figure}
 		\centering    
 		\movie[open,showcontrols=true]{\includegraphics[width=\textwidth, keepaspectratio]{figures/hon_stretch.png}}{figures/hon_stretch.mov}
@@ -615,25 +715,24 @@
 %%% New frame %%%
 %
 \section{Kirigami configuration search} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{Outline}
+\begin{frame}{Kirigami configuration search}
     \tableofcontents[currentsection]
 \end{frame}
 %
 %%% New frame %%%
 %
-\begin{frame}{Kirigami configuration search}
-	\framesubtitle{Dataset}
+\begin{frame}{Dataset}
 	% \footnotesize
 	\begin{table}[H]
 		\begin{center}
 		\caption{Summary of the generated data points in the dataset.}
-		\begin{tabular}{ | c | c | c | c | c |} \hline
-		\textbf{Type} & \textbf{Configurations} & \textbf{Submitted} & \textbf{Final} & \textbf{Ruptures} \\ \hline
-		Pilot study & 3 & 270 & 261 & \: 25 \: (9.58 \%)\\ \hline
-		Tetrahedron & 68 & 3060 & 3015 & 391 (12.97 \%)\\ \hline
-		Honeycomb & 45 & 2025 & 1983 & \: 80 \: (4.03 \%)\\ \hline
-		Random walk & 100 & 4500 & 4401 & 622 (14.13 \%) \\ \Xhline{2\arrayrulewidth}
-		Total & 214 (216) & 9855 & 9660 & 1118 (11.57 \%) \\ \hline
+		\begin{tabular}{ | c | c | c | c |} \hline
+		\textbf{Type} & \textbf{Configurations} & \textbf{Data points} & \textbf{Ruptures} \\ \hline
+		Pilot study & 3 & 261 & \: 25 \: (9.58 \%)\\ \hline
+		Tetrahedron & 68 &  3015 & 391 (12.97 \%)\\ \hline
+		Honeycomb & 45 &  1983 & \: 80 \: (4.03 \%)\\ \hline
+		Random walk & 100 &  4401 & 622 (14.13 \%) \\ \Xhline{2\arrayrulewidth}
+		Total & 214 (216) &  9660 & 1118 (11.57 \%) \\ \hline
 		\end{tabular}
 		\end{center}
 	\end{table}
@@ -641,8 +740,8 @@
 %
 %%% New frame %%%
 %
-\begin{frame}{Kirigami configuration search}
-	\framesubtitle{Dataset}
+\begin{frame}{Dataset}
+	\framesubtitle{Correlation}
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.9\linewidth]{../thesis/figures/ML/corrcoef_matrix.pdf}
@@ -652,11 +751,11 @@
 %
 %%% New frame %%%
 %
-\begin{frame}{Kirigami configuration search}
-	\framesubtitle{Dataset}
+\begin{frame}{Dataset}
+	\framesubtitle{Properties of interest}
 	Properties of interest
 	\begin{align*}
-		&\min F_{\text{fric}},& &\max F_{\text{fric}},& &\max \Delta F_{\text{fric}},& &\max \text{drop}.&
+		&\text{(1) } \min F_{\text{fric}},& &\text{(2) } \max F_{\text{fric}},& &\text{(3) } \max \Delta F_{\text{fric}},& &\text{(4) } \max \text{drop}.&
 	\end{align*}
 	\begin{figure}[H]
 		\centering
@@ -668,26 +767,24 @@
 %%% New frame %%%
 %
 \subsection{Machine learning}
-\begin{frame}{Kirigami configuration search}
-	\framesubtitle{ML}
-
+\begin{frame}{Machine learning}
 	\begin{itemize}
 		\item Convolutional neural network
-		\item Input: Configuration, strain and load
+		\item Input: Kirigami configuration, strain and load
 		\item Output: \underline{Mean friction}, maximum friction, contact area, porosity, \underline{rupture}, rupture strain
 	\end{itemize}
 
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.5\linewidth]{../thesis/figures/ML/VGGNet16.jpg}
-		\caption{Illustration of the convolutional network architecture for the VGGNet-16 network. Reproduced from~\cite{VGGNet_16_image}.}
+		\caption{VGGNet-16 network convolutional network architecture. Reproduced from~\cite{VGGNet_16_image}.}
 	  \end{figure}
 \end{frame}
 %
 %%% New frame %%%
 %
-\begin{frame}{Kirigami configuration search}
-	\framesubtitle{ML}
+\begin{frame}{Machine learning}
+	\framesubtitle{Model performance}
 
 	\begin{table}[H]
 		\begin{center}
@@ -707,8 +804,8 @@
 %
 %%% New frame %%%
 %
-\begin{frame}{Kirigami configuration search}
-	\framesubtitle{ML}
+\begin{frame}{Machine learning}
+	\framesubtitle{Model performance}
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.8\linewidth]{../figures/final_model_evaluation_slide.pdf}
@@ -720,68 +817,88 @@
 %%% New frame %%%
 %
 \subsection{Accelerated search}
-\begin{frame}{Kirigami configuration search}
-	\framesubtitle{Accelerated search}
-	We generate an extended dataset. 
+\begin{frame}{Accelerated search}
+	\framesubtitle{Extended dataset}
 	\begin{itemize}
 		\item Tetrahedron: \num{1.35e5} configurations 
 		\item Honeycomb: \num{2.025e6} configurations
 		\item Random walk: \num{e4} configurations
 	\end{itemize}
+
+
+	\begin{table}[H]
+		\begin{center}
+		% \caption{Results for the accelerated search using the pattern generators. The top search candidates for each of the four properties of interest are shown in the left section (Search) regarding the Tetrahedron, Honeycomb and Random walk patterns respectively. The upper rows show the scores and the lower rows the associated names (parameters). The right section (Data) shows the corresponding scores from the best candidates within the dataset (from~\cref{tab:data_properties}). All scores are given in units nN.}
+		\begin{tabular}{|L{1.75cm} |c|c|c| } \cline{2-4}
+		\multicolumn{1}{c|}{\textbf{Search Pred.}} & Tetrahedron & Honeycomb & Random walk \\ \hline
+		$\min F_{\text{fric}}$         & $-0.062 \ \ $  & $-0.109 \ \ $  & $-0.061 \ \ $ \\ \hline
+		$\max F_{\text{fric}}$         & $1.089$        & $2.917$        & $0.660$       \\ \hline
+		$\max \Delta F_{\text{fric}}$  & $1.062$        & $2.081$        & $0.629$       \\ \hline
+		max drop                       & $0.277$        & $1.250$        & $0.269$       \\ \hline
+		\multicolumn{4}{c|}{} \\ \cline{2-4}
+		\multicolumn{1}{c|}{\textbf{Original}} & Tetrahedron & Honeycomb & Random walk \\ \hline
+		$\min F_{\text{fric}}$         	& 0.0067 & 0.0177 & 0.0024 \\ \hline 
+		$\max F_{\text{fric}}$         	& 1.5875 & 2.8903 & 0.5758 \\ \hline 
+		$\max \Delta F_{\text{fric}}$ 	& 1.5529 & 2.0234 & 0.5448 \\ \hline 
+		max drop    					& 0.8841 & 1.2785 & 0.1818 \\ \hline 
+		\end{tabular}
+		\end{center}
+	\end{table}
+
 \end{frame}
 %
 %%% New frame %%%
 %
-\begin{frame}{Kirigami configuration search}
-	\framesubtitle{Accelerated search}
+\begin{frame}{Accelerated search}
+	\framesubtitle{Random walk candidates}
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=0.8\linewidth]{../thesis/figures/search/RW_search_top5.png}
+		\includegraphics[width=0.7\linewidth]{../thesis/figures/search/RW_search_top5.png}
 		\caption{Top 5 candidates for the accelerated search using the Random walk generator. }
 	\end{figure}  
 \end{frame}
 %
 %%% New frame %%%
 %
-\begin{frame}{Kirigami configuration search}
-	\framesubtitle{Accelerated search}
-	Translational variance
+\begin{frame}{Accelerated search}
+	\framesubtitle{Translational variance}
 	\begin{figure}[H]
 		\centering
 		\begin{subfigure}[t]{0.49\textwidth}
 			\centering
 			\includegraphics[width=\textwidth]{../thesis/figures/search/ref_search_drop_pop_1_7_1_ref_search.pdf}
-			\caption{Tetrahedron $(1,7,1)$ (60). Std = 0.08, Rel.\ Std = 1.13}
+			\caption{Tetrahedron $(1,7,1)$. Rel.\ Std = 1.13}
 			\label{fig:tetra_171_trans}
 		\end{subfigure}
 		\hfill
 		\begin{subfigure}[t]{0.49\textwidth}
 			\centering
 			\includegraphics[width=\textwidth]{../thesis/figures/search/ref_search_drop_pop_5_3_1_ref_search.pdf}
-			\caption{Tetrahedron $(5,3,1)$ (60). Std = 0.13, Rel.\ Std = 1.61}
+			\caption{Tetrahedron $(5,3,1)$. Rel.\ Std = 1.61}
 		\end{subfigure}
-		\caption{Prediction of the max drop property for selected patterns using the machine learning model for all unique reference positions.}
+		\caption{Machine learning prediction of the max drop property for all unique reference positions.}
 	\end{figure}
 \end{frame}
 %
 %%% New frame %%%
 %
-\begin{frame}{Kirigami configuration search}
-	\framesubtitle{Accelerated search}
+\begin{frame}{Accelerated search}
+	\framesubtitle{Genetic algorithm}
 	Genetic algorithm based on Markov chain probability. 
 	\begin{enumerate}
 		\item Rank configurations by fitness score.
-		\item Assign a mutation probability based on the ranking.
 		\item Calculate target states from the best candidates.
+		\item Assign a mutation probability based on ranking and target states the ranking.
 		\item Mutate and repeat.
 	\end{enumerate}
-	Poor convergence on the mac drop property optimization
+	\vspace*{5mm}
+	Max drop property optimization $\to$ poor convergence
 \end{frame}
 %
 %%% New frame %%%
 %
-\begin{frame}{Kirigami configuration search}
-	\framesubtitle{Accelerated search}
+\begin{frame}{Accelerated search}
+	\framesubtitle{Grad-CAM}
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.7\linewidth]{../thesis/figures/search/grad_cam_GA_RN_start_top0.pdf}
@@ -791,8 +908,8 @@
 %
 %%% New frame %%%
 %
-\begin{frame}{Kirigami configuration search}
-	\framesubtitle{Accelerated search}
+\begin{frame}{Accelerated search}
+	\framesubtitle{Grad-CAM}
 	Grad-CAM
 	\begin{figure}[H]
 		\centering
@@ -806,7 +923,6 @@
 
 
 
-
 \section{Summary and outlook} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Outline}
     \tableofcontents[currentsection]
@@ -817,9 +933,10 @@
 	Key findings
 	\begin{itemize}
 		\item Non-monotonous relationship between friction and strain
-		\item Coupled system can be exploited to achieve a negative friction coefficient
+		\item The coupled system can be exploited to achieve a negative friction coefficient
 		\item Machine learning is feasible but more data is needed
 	\end{itemize}
+	\vspace*{5mm}
 	Further studies:
 	\begin{itemize}
 		\item Investigation of the underlying mechanism
@@ -833,7 +950,7 @@
 \end{frame}
 
 
-
+\FinalFrame
 
 
 

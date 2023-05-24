@@ -282,13 +282,17 @@ def multi_plot_groups(folder):
      
 if __name__ == "__main__":
     
-    filename = '../Data/Multi/nocuts/ref1/stretch_15000_folder/job2/system_drag_Ff.txt'
+    # filename = '../Data/Multi/nocuts/ref1/stretch_15000_folder/job2/system_drag_Ff.txt'
     # filename = '../Data/Multi/nocuts/ref2/stretch_15000_folder/job5/system_drag_Ff.txt'
+    
+    
     # friction_plot(filename)
+    
+    
     # contact_plot(filename)
     
-    multi_plot_compare('../Data/Baseline/nocut/multi_stretch', 
-                       '../Data/Baseline/popup/multi_stretch')
+    # multi_plot_compare('../Data/Baseline/nocut/multi_stretch', 
+    #                    '../Data/Baseline/popup/multi_stretch')
     # multi_plot_compare('../Data/Baseline/nocut/multi_stretch', 
     #                    '../Data/Baseline/honeycomb/multi_stretch')
     # multi_plot_max_mean('../Data/Multi/cuts/ref2')

@@ -39,7 +39,7 @@ def read_contact_pct(filename):
     
     plt.plot(time,  full_sheet_bond_pct, label = "full_sheet bonds")
     plt.xlabel("Time [ps]")
-    plt.ylabel("Rel. bond count")
+    plt.ylabel("Rel. Contact")
     
     # xlim = ax.get_xlim()
     ylim = ax.get_ylim()
@@ -52,13 +52,13 @@ def read_contact_pct(filename):
     annotation_line(ax=ax, text='Stretch', xmin=stretch[0], xmax=stretch[1], y=ylim[0], ytext=ylim[0]- 0.01, linewidth=1, linecolor='black', fontsize=12 )
     annotation_line(ax=ax, text='Pause', xmin=pause1[0], xmax=pause1[1], y=ylim[0], ytext=ylim[0]- 0.01, linewidth=1, linecolor='black', fontsize=12 )
     annotation_line(ax=ax, text='$F_N$', xmin=pause2[0], xmax=pause2[1], y=ylim[0], ytext=ylim[0]- 0.01, linewidth=1, linecolor='black', fontsize=12 )
-    annotation_line(ax=ax, text='Drag', xmin=drag[0], xmax=drag[1], y=ylim[0], ytext=ylim[0]- 0.01, linewidth=1, linecolor='black', fontsize=12 )
+    annotation_line(ax=ax, text='Slide', xmin=drag[0], xmax=drag[1], y=ylim[0], ytext=ylim[0]- 0.01, linewidth=1, linecolor='black', fontsize=12 )
     
     ax.set_ylim([ylim[0]-0.02, ylim[1]])
 
 
     plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
-    plt.savefig("../Interview_presentation/figures/contact_pct.pdf", bbox_inches="tight")
+    plt.savefig("../presentation/figures/contact_pct.pdf", bbox_inches="tight")
 
 
 
