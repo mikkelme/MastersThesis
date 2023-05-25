@@ -72,6 +72,16 @@
 \newlength{\radius}
 \setlength{\radius}{0.05\paperwidth}
 
+
+
+%% Custom fonts:
+\setbeamerfont{author in final frame}  {size   = \large,
+                                        series = \bfseries}
+\setbeamerfont{title in final frame}   {size   = \large,
+                                        series = \bfseries}
+\setbeamerfont{subtitle in final frame}{  size = \normalsize,
+                                        series = \normalfont\rmfamily}
+
 \newcommand{\FinalFrame}
 {
 	{
@@ -138,10 +148,10 @@
 						\usebeamerfont{title in final frame}
 						\usebeamercolor[fg]{title in final frame}
 						\inserttitle
-						% \\
-						% \usebeamerfont{subtitle in final frame}
-						% \usebeamercolor{subtitle in final frame}
-						% \insertsubtitle
+						\\
+						\usebeamerfont{subtitle in final frame}
+						\usebeamercolor{subtitle in final frame}
+						\insertsubtitle
 					}
 				}
 			}
@@ -379,8 +389,6 @@ biblabel=brackets]{biblatex}
 					\includegraphics[width=\textwidth]{../thesis/figures/system/system_topview_anno.png}
 					\caption{Top view.}
 				\end{subfigure}
-				%    \caption{System configuration colorized to indicate NVE parts (red), thermostat parts (green) and rigid parts (blue). (a) Side view showing the sheet on top of the substrate. (b) Top view showing only the sheet.}
-				%    \label{fig:system}
 			\end{figure}
 		\end{column}%
 	\end{columns}
@@ -392,37 +400,6 @@ biblabel=brackets]{biblatex}
 %%% New frame %%%
 %
 \subsection{Kirigami}
-% \begin{frame}{Creating a graphene Kirigami system}
-% 	\framesubtitle{Sheet Kirigami}
-
-% 	Primitive lattice vectors
-% 	\begin{align*}
-% 		&\vec{a_1} = a \left(\frac{\sqrt{3}}{2}, -\frac{1}{2}\right)&  &\vec{a_2} = a \left(\frac{\sqrt{3}}{2}, \frac{1}{2}\right),& &|\vec{a_1}| = |\vec{a_2}| = a = \SI{2.46}{\text{Å}}.& 
-% 	\end{align*}
-	
-% 	\begin{columns} 
-% 		\begin{column}{.4\textwidth}
-% 			Basis
-% 			\begin{align*}
-% 				\Big\{\Big(0,0\Big), \frac{a}{2}\Big(\frac{1}{\sqrt{3}}, 1 \Big) \Big\}.
-% 			  \end{align*}
-% 			Interatomic distance
-% 			\begin{align*}
-% 				\left|\left|\frac{a}{2}\Big(\frac{1}{\sqrt{3}}, 1 \Big)\right|\right| \approx \SI{1.42}{\text{Å}}.
-% 			\end{align*}
-% 		\end{column}
-% 		\begin{column}{.6\textwidth}
-% 			\begin{figure}[H]
-% 				\centering
-% 				\includegraphics[width=0.70\linewidth]{../thesis/figures/system/crystal.png}
-% 				\caption{Graphene crystal structure.}
-% 			\end{figure}
-% 		\end{column}%
-% 	\end{columns}
-% \end{frame}
-%
-%%% New frame %%%
-%
 \begin{frame}{Sheet Kirigami}
 	\framesubtitle{Indexing}
 	\begin{align*}
@@ -543,21 +520,21 @@ biblabel=brackets]{biblatex}
 %
 %%% New frame %%%
 %
-\subsection{Molecular Dynamics}
-\begin{frame}{Molecular Dynamics (MD)}
-	\begin{itemize}
-		\item Newtons equations (NVE)
-		\begin{align*}
-			m_i \frac{d^2 \vec{r}_i}{dt^2} = \vec{F}_i = -\nabla U_i,
-		\end{align*}
-		\item Introducing temperature (NVT) with the Langevin equation
-		\begin{align*}
-			m_i \frac{d^2 \vec{r}_i}{dt^2} &= \underbrace{\strut -\nabla U_i}_{F_i} \quad \underbrace{\strut -\alpha \vec{v}_i}_{\text{Drag}} \quad  + \underbrace{\strut \vec{R}_i}_{\text{Fluctuation}}, \\
-			\\
-			\langle R \rangle &= 0, \qquad \langle R^2 \rangle = 2\alpha k_B T.
-		\end{align*}
-	\end{itemize}
-\end{frame}
+% \subsection{Molecular Dynamics}
+% \begin{frame}{Molecular Dynamics (MD)}
+% 	\begin{itemize}
+% 		\item Newtons equations (NVE)
+% 		\begin{align*}
+% 			m_i \frac{d^2 \vec{r}_i}{dt^2} = \vec{F}_i = -\nabla U_i,
+% 		\end{align*}
+% 		\item Introducing temperature (NVT) with the Langevin equation
+% 		\begin{align*}
+% 			m_i \frac{d^2 \vec{r}_i}{dt^2} &= \underbrace{\strut -\nabla U_i}_{F_i} \quad \underbrace{\strut -\alpha \vec{v}_i}_{\text{Drag}} \quad  + \underbrace{\strut \vec{R}_i}_{\text{Fluctuation}}, \\
+% 			\\
+% 			\langle R \rangle &= 0, \qquad \langle R^2 \rangle = 2\alpha k_B T.
+% 		\end{align*}
+% 	\end{itemize}
+% \end{frame}
 
 
 \section{Pilot study} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -647,7 +624,7 @@ biblabel=brackets]{biblatex}
 \end{frame}
 
 
-\subsection{Friction-strain profiles}
+\subsection{Strain profiles}
 \begin{frame}{Contact-strain profile}
 
 	\begin{figure}[H]
@@ -822,83 +799,57 @@ biblabel=brackets]{biblatex}
 %
 %%% New frame %%%
 %
+% \subsection{Accelerated search}
+% \begin{frame}{Accelerated search}
+% 	\framesubtitle{Extended dataset}
+% 	\begin{itemize}
+% 		\item Tetrahedron: \num{1.35e5} configurations 
+% 		\item Honeycomb: \num{2.025e6} configurations
+% 		\item Random walk: \num{e4} configurations
+% 	\end{itemize}
+
+
+% 	\begin{table}[H]
+% 		\begin{center}
+% 		% \caption{Results for the accelerated search using the pattern generators. The top search candidates for each of the four properties of interest are shown in the left section (Search) regarding the Tetrahedron, Honeycomb and Random walk patterns respectively. The upper rows show the scores and the lower rows the associated names (parameters). The right section (Data) shows the corresponding scores from the best candidates within the dataset (from~\cref{tab:data_properties}). All scores are given in units nN.}
+% 		\begin{tabular}{|L{1.75cm} |c|c|c| } \cline{2-4}
+% 		\multicolumn{1}{c|}{\textbf{Search Pred.}} & Tetrahedron & Honeycomb & Random walk \\ \hline
+% 		$\min F_{\text{fric}}$         & $-0.062 \ \ $  & $-0.109 \ \ $  & $-0.061 \ \ $ \\ \hline
+% 		$\max F_{\text{fric}}$         & $1.089$        & $2.917$        & $0.660$       \\ \hline
+% 		$\max \Delta F_{\text{fric}}$  & $1.062$        & $2.081$        & $0.629$       \\ \hline
+% 		max drop                       & $0.277$        & $1.250$        & $0.269$       \\ \hline
+% 		\multicolumn{4}{c|}{} \\ \cline{2-4}
+% 		\multicolumn{1}{c|}{\textbf{Original}} & Tetrahedron & Honeycomb & Random walk \\ \hline
+% 		$\min F_{\text{fric}}$         	& 0.0067 & 0.0177 & 0.0024 \\ \hline 
+% 		$\max F_{\text{fric}}$         	& 1.5875 & 2.8903 & 0.5758 \\ \hline 
+% 		$\max \Delta F_{\text{fric}}$ 	& 1.5529 & 2.0234 & 0.5448 \\ \hline 
+% 		max drop    					& 0.8841 & 1.2785 & 0.1818 \\ \hline 
+% 		\end{tabular}
+% 		\end{center}
+% 	\end{table}
+
+% \end{frame}
 \subsection{Accelerated search}
 \begin{frame}{Accelerated search}
-	\framesubtitle{Extended dataset}
-	\begin{itemize}
-		\item Tetrahedron: \num{1.35e5} configurations 
-		\item Honeycomb: \num{2.025e6} configurations
-		\item Random walk: \num{e4} configurations
-	\end{itemize}
-
-
-	\begin{table}[H]
-		\begin{center}
-		% \caption{Results for the accelerated search using the pattern generators. The top search candidates for each of the four properties of interest are shown in the left section (Search) regarding the Tetrahedron, Honeycomb and Random walk patterns respectively. The upper rows show the scores and the lower rows the associated names (parameters). The right section (Data) shows the corresponding scores from the best candidates within the dataset (from~\cref{tab:data_properties}). All scores are given in units nN.}
-		\begin{tabular}{|L{1.75cm} |c|c|c| } \cline{2-4}
-		\multicolumn{1}{c|}{\textbf{Search Pred.}} & Tetrahedron & Honeycomb & Random walk \\ \hline
-		$\min F_{\text{fric}}$         & $-0.062 \ \ $  & $-0.109 \ \ $  & $-0.061 \ \ $ \\ \hline
-		$\max F_{\text{fric}}$         & $1.089$        & $2.917$        & $0.660$       \\ \hline
-		$\max \Delta F_{\text{fric}}$  & $1.062$        & $2.081$        & $0.629$       \\ \hline
-		max drop                       & $0.277$        & $1.250$        & $0.269$       \\ \hline
-		\multicolumn{4}{c|}{} \\ \cline{2-4}
-		\multicolumn{1}{c|}{\textbf{Original}} & Tetrahedron & Honeycomb & Random walk \\ \hline
-		$\min F_{\text{fric}}$         	& 0.0067 & 0.0177 & 0.0024 \\ \hline 
-		$\max F_{\text{fric}}$         	& 1.5875 & 2.8903 & 0.5758 \\ \hline 
-		$\max \Delta F_{\text{fric}}$ 	& 1.5529 & 2.0234 & 0.5448 \\ \hline 
-		max drop    					& 0.8841 & 1.2785 & 0.1818 \\ \hline 
-		\end{tabular}
-		\end{center}
-	\end{table}
-
-\end{frame}
-%
-%%% New frame %%%
-%
-\begin{frame}{Accelerated search}
-	\framesubtitle{Random walk candidates}
-	\begin{figure}[H]
-		\centering
-		\includegraphics[width=0.7\linewidth]{../thesis/figures/search/RW_search_top5.png}
-		\caption{Top 5 candidates for the accelerated search using the Random walk generator. }
-	\end{figure}  
-\end{frame}
-%
-%%% New frame %%%
-%
-\begin{frame}{Accelerated search}
-	\framesubtitle{Translational variance}
-	\begin{figure}[H]
-		\centering
-		\begin{subfigure}[t]{0.49\textwidth}
-			\centering
-			\includegraphics[width=\textwidth]{../thesis/figures/search/ref_search_drop_pop_1_7_1_ref_search.pdf}
-			\caption{Tetrahedron $(1,7,1)$. Rel.\ Std = 1.13}
-			\label{fig:tetra_171_trans}
-		\end{subfigure}
-		\hfill
-		\begin{subfigure}[t]{0.49\textwidth}
-			\centering
-			\includegraphics[width=\textwidth]{../thesis/figures/search/ref_search_drop_pop_5_3_1_ref_search.pdf}
-			\caption{Tetrahedron $(5,3,1)$. Rel.\ Std = 1.61}
-		\end{subfigure}
-		\caption{Machine learning prediction of the max drop property for all unique reference positions.}
-	\end{figure}
-\end{frame}
-%
-%%% New frame %%%
-%
-\begin{frame}{Accelerated search}
-	\framesubtitle{Genetic algorithm}
-	Genetic algorithm based on Markov chain probability. 
+	% \framesubtitle{Extended dataset}
 	\begin{enumerate}
-		\item Rank configurations by fitness score.
-		\item Calculate target states from the best candidates.
-		\item Assign a mutation probability based on ranking and target states the ranking.
-		\item Mutate and repeat.
+		\item Extended dataset search
+		\begin{itemize}
+			\item Tetrahedron: \num{1.35e5} configurations 
+			\item Honeycomb: \num{2.025e6} configurations
+			\item Random walk: \num{e4} configurations
+		\end{itemize}
+		\item Genetic algorithm
+		\begin{itemize}
+			\item Max drop property optimization 
+		\end{itemize}
 	\end{enumerate}
-	\vspace*{5mm}
-	Max drop property optimization $\to$ poor convergence
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.5\linewidth]{../thesis/figures/search/RW_search_top5.png}
+		\caption{Top 5 candidates for random walk extended dataset accelerated search. }
+	\end{figure}  
 \end{frame}
 %
 %%% New frame %%%
@@ -908,7 +859,7 @@ biblabel=brackets]{biblatex}
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.7\linewidth]{../thesis/figures/search/grad_cam_GA_RN_start_top0.pdf}
-		\caption{Genetic algorithm suggestion from a mixed porosity start. Top: Friction-strain curve and configuration. Bottom: Grad-CAM analysis}
+		\caption{Genetic algorithm suggestion from a mixed porosity start. Top: Friction-strain curve and configuration. Bottom: Grad-CAM analysis.}
 	\end{figure}  
 \end{frame}
 %
@@ -916,11 +867,10 @@ biblabel=brackets]{biblatex}
 %
 \begin{frame}{Accelerated search}
 	\framesubtitle{Grad-CAM}
-	Grad-CAM
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.7\linewidth]{../thesis/figures/search/grad_cam_hon_3_3_5_3_12_0.pdf}
-		\caption{Honeycomb $(3,3,5,3)$, ref = $(12,0)$.}
+		\caption{Honeycomb $(3,3,5,3)$. Top: Friction-strain curve and configuration. Bottom: Grad-CAM analysis.}
 	\end{figure}  
 \end{frame}
 %
@@ -936,23 +886,49 @@ biblabel=brackets]{biblatex}
 
 
 \begin{frame}{Summary and outlook}
-	Key findings
-	\begin{itemize}
-		\item Non-monotonous relationship between friction and strain
-		\item The coupled system can be exploited to achieve a negative friction coefficient
-		\item Machine learning is feasible but more data is needed
-	\end{itemize}
-	\vspace*{5mm}
-	Further studies:
-	\begin{itemize}
-		\item Investigation of the underlying mechanism
-		\begin{itemize}
-			\item Commensurability hypothesis can be investigated by varying scan angle
-		\end{itemize}
-		\item Friction-strain relationship at different physical conditions: temperature, sliding speed, spring stiffness. 
-		\item Edge and thermostat effects.
-		\item Improve dataset with active learning 
-	\end{itemize}
+
+
+	\begin{columns} 
+		% \hspace{5mm}
+		\begin{column}{.5\textwidth}
+			Key findings		
+			\begin{itemize}
+				\item Non-monotonous friction-strain
+				\item Coupled system $\to$ negative friction coefficient
+				\item Machine learning needs more data
+			\end{itemize}
+			\vspace*{5mm}
+			Further studies
+			\begin{itemize}
+				\item Investigate the underlying mechanism
+				\begin{itemize}
+					\item Commensurability hypothesis
+				\end{itemize}
+				\item Friction-strain relationship at different physical conditions
+				\item Edge and thermostat effects.
+				\item Improve dataset with active learning 
+			\end{itemize}
+		\end{column}
+		\begin{column}{.5\textwidth}
+
+			\begin{figure}[H]
+				\centering
+				\begin{subfigure}[b]{\textwidth}
+					\centering
+					\includegraphics[width=\textwidth]{figures/friction_strain_summary.pdf}
+				\end{subfigure}
+				\begin{subfigure}[b]{\textwidth}
+					\centering
+					\includegraphics[trim={10.5cm 0 0 0.5cm},clip,width=0.8\linewidth]{../thesis/figures/negative_coefficient/manual_coupling_tension_hon2215.pdf}	
+				\end{subfigure}
+				% \caption{Qualitative illustration of microscopic asperity deformation under increasing load. Reproduced from~\cite{wiki:asperities}.}
+			\end{figure}
+		\end{column}%
+	\end{columns}
+
+
+
+
 \end{frame}
 
 

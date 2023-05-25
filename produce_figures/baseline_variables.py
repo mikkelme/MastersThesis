@@ -204,12 +204,22 @@ def multi_stretch(path, save = False):
                os.path.join(path, 'honeycomb', common_folder)]
     names = ['No cut', 'Tetrahedron (7,5,1)', 'Honeycomb (2,2,1,5)']
     
-    # Mean
-    vars = ['data[\'stretch_pct\']', 'data[\'Ff\'][:, :, 0, 1]', 'data[\'F_N\']']
-    axis_labels = [r'Strain', r'$\langle F_\parallel \rangle$ [nN]', r'$F_N$ [nN]']
-    yerr = 'data[\'Ff_std\'][:,:,0]*data[\'Ff\'][:,:,0, 1]'
-    # yerr = None
-    fig_mean, _ = multi_plot_compare(folders, names, vars, axis_labels, yerr = yerr, rupplot = True)
+    # # Mean
+    # vars = ['data[\'stretch_pct\']', 'data[\'Ff\'][:, :, 0, 1]', 'data[\'F_N\']']
+    # axis_labels = [r'Strain', r'$\langle F_\parallel \rangle$ [nN]', r'$F_N$ [nN]']
+    # yerr = 'data[\'Ff_std\'][:,:,0]*data[\'Ff\'][:,:,0, 1]'
+    # # yerr = None
+    # fig_mean, _ = multi_plot_compare(folders, names, vars, axis_labels, yerr = yerr, rupplot = True)
+    
+    # # Presentation 
+    # folders.pop(0)
+    # names.pop(0)
+    
+    # # Mean
+    # vars = ['data[\'stretch_pct\']', 'data[\'Ff\'][:, :, 0, 1]', 'data[\'F_N\']']
+    # axis_labels = [r'Strain', r'$\langle F_\parallel \rangle$ [nN]', r'$F_N$ [nN]']
+    # yerr = 'data[\'Ff_std\'][:,:,0]*data[\'Ff\'][:,:,0, 1]'
+    # fig_mean_pres, _ = multi_plot_compare(folders, names, vars, axis_labels, figsize = (8, 5), yerr = yerr, rupplot = True)
     
     # # Max
     # vars = ['data[\'stretch_pct\']', 'data[\'Ff\'][:, :, 0, 0]', 'data[\'F_N\']']
@@ -217,7 +227,8 @@ def multi_stretch(path, save = False):
     # fig_max, _ = multi_plot_compare(folders, names, vars, axis_labels, rupplot = True)
     
     if save:
-        fig_mean.savefig("../article/figures/baseline/multi_stretch_mean_compare.pdf", bbox_inches="tight")
+        # fig_mean.savefig("../article/figures/baseline/multi_stretch_mean_compare.pdf", bbox_inches="tight")
+        fig_mean_pres.savefig("../presentation/figures/friction_strain_summary.pdf", bbox_inches="tight")
         # fig_max.savefig("../article/figures/baseline/multi_stretch_max_compare.pdf", bbox_inches="tight")
         
         
@@ -776,8 +787,8 @@ if __name__ == "__main__":
     # spring(path, save = False)
     # dt(path, save = False)
     
-    # multi_stretch(path, save = False)
-    multi_FN(path, save = True)
+    multi_stretch(path, save = False)
+    # multi_FN(path, save = False)
     # multi_area(path, save = False)
     
     # multi_FN_force_dist(path, save = False)
