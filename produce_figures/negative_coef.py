@@ -541,7 +541,7 @@ def data_to_file(save = False):
     path = '../Data/negative_coef/multi_coupling_free_honeycomb'
     add_path = '../Data/negative_coef/multi_coupling_free_honeycomb_zoom'
     add_stretch_range = [0.1, 0.65]
-    # add_path = None
+    add_path = None
     
     
     
@@ -689,5 +689,5 @@ def manual_coupling_free(save = False):
 
 if __name__ == '__main__':
     # manual_coupling_free(save = False)
-    data_to_file(save = False)
+    data_to_file(save = True)
     plt.show()
