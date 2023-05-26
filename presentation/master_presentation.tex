@@ -794,7 +794,7 @@ biblabel=brackets]{biblatex}
 	\begin{enumerate}
 		\item Extended dataset search
 		\begin{align*}
-			&\text{Tetrahedron:} \ \num{1.35e5} & &\text{Honeycomb:} \ \num{2.025e6}& &\text{Random walk:} \ \num{e4}&
+			&\text{Tetrahedron:} \ \num{1.35e5},& &\text{Honeycomb:} \ \num{2.025e6},& &\text{Random walk:} \ \num{e4}&
 		\end{align*}
 		% \begin{itemize}
 		% 	\item Tetrahedron: \num{1.35e5} configurations 
@@ -804,7 +804,7 @@ biblabel=brackets]{biblatex}
 		\item Genetic algorithm
 		\begin{itemize}
 			\item Survival of the fittest 
-			\item Max drop property optimization 
+			% \item Max drop property optimization 
 		\end{itemize}
 	\end{enumerate}
 
@@ -871,36 +871,36 @@ biblabel=brackets]{biblatex}
 %
 %%% New frame %%%
 %
-\begin{frame}{Machine learning}
-	\framesubtitle{Model performance}
+% \begin{frame}{Machine learning}
+% 	\framesubtitle{Model performance}
 
-	\begin{table}[H]
-		\begin{center}
-		\footnotesize
-		\caption{Evaluation of the final model performance.}
-		\label{tab:final_model_eval}
-		\begin{tabular}{ | c | c | c | c | c | c | c |} \hline
-		  & \multicolumn{3}{c|}{$R^2$ [\num{e2}]} & Abs. [\num{e2}] & Rel. [\num{e2}]  & Acc. [\num{e2}] \\ \hline
-		  & Mean $F_f$ & Max $F_f$ & Contact & Porosity & Rup.\ Strain & Rupture \\ \hline
-		Validation  & 98.067 & 93.558 & 94.598 & 2.325 & 12.958 & 96.102 \\ \hline
-		Tetrahedron & 88.662 & 85.836 & 64.683 & 1.207 & \phantom{0}5.880 & 99.762 \\ \hline
-		Honeycomb   & 96.627 & 89.696 & 97.171 & 1.040 & \phantom{0}1.483 & 99.111 \\ \hline
-		\end{tabular}
-		\end{center}
-	\end{table}
-\end{frame}
-%
+% 	\begin{table}[H]
+% 		\begin{center}
+% 		\footnotesize
+% 		\caption{Evaluation of the final model performance.}
+% 		\label{tab:final_model_eval}
+% 		\begin{tabular}{ | c | c | c | c | c | c | c |} \hline
+% 		  & \multicolumn{3}{c|}{$R^2$ [\num{e2}]} & Abs. [\num{e2}] & Rel. [\num{e2}]  & Acc. [\num{e2}] \\ \hline
+% 		  & Mean $F_f$ & Max $F_f$ & Contact & Porosity & Rup.\ Strain & Rupture \\ \hline
+% 		Validation  & 98.067 & 93.558 & 94.598 & 2.325 & 12.958 & 96.102 \\ \hline
+% 		Tetrahedron & 88.662 & 85.836 & 64.683 & 1.207 & \phantom{0}5.880 & 99.762 \\ \hline
+% 		Honeycomb   & 96.627 & 89.696 & 97.171 & 1.040 & \phantom{0}1.483 & 99.111 \\ \hline
+% 		\end{tabular}
+% 		\end{center}
+% 	\end{table}
+% \end{frame}
+% %
 %%% New frame %%%
 %
-\begin{frame}{Machine learning}
-	\framesubtitle{Model performance}
-	\begin{figure}[H]
-		\centering
-		\includegraphics[width=0.8\linewidth]{../figures/final_model_evaluation_slide.pdf}
-		\caption{Visual evaluation of the final model predictions on the Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$ used in the pilot study.}
-	\end{figure}  
+% \begin{frame}{Machine learning}
+% 	\framesubtitle{Model performance}
+% 	\begin{figure}[H]
+% 		\centering
+% 		\includegraphics[width=0.8\linewidth]{../figures/final_model_evaluation_slide.pdf}
+% 		\caption{Visual evaluation of the final model predictions on the Tetrahedron $(7,5,1)$ and Honeycomb $(2,2,1,5)$ used in the pilot study.}
+% 	\end{figure}  
 
-\end{frame}
+% \end{frame}
 %
 %%% New frame %%%
 %
@@ -1005,12 +1005,12 @@ biblabel=brackets]{biblatex}
 			\vspace*{5mm}
 			Further studies
 			\begin{itemize}
-				\item Investigate the underlying mechanism
+				\item Underlying mechanism
 				\begin{itemize}
 					\item Commensurability hypothesis
 				\end{itemize}
 				\item Friction-strain relationship at different physical conditions
-				\item Edge and thermostat effects.
+				\item Edge and thermostat effects
 				\item Improve dataset with active learning 
 			\end{itemize}
 		\end{column}

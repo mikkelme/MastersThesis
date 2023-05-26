@@ -535,6 +535,114 @@ def manual_coupling(path, compare_path = None, save = False, add_path = None, ad
         # plt.savefig('../article/figures/negative_coefficient/manual_coupling.pdf', bbox_inches='tight')
     
 
+def data_to_file(save = False):
+    """ for presentation purposes """
+    
+    path = '../Data/negative_coef/multi_coupling_free_honeycomb'
+    add_path = '../Data/negative_coef/multi_coupling_free_honeycomb_zoom'
+    add_stretch_range = [0.1, 0.65]
+    # add_path = None
+    
+    
+    
+    # Settings
+    mean_window_pct = 0.5 # relative length of the mean window [% of total duration]
+    std_window_pct = 0.35  # relative length of the std windoe [% of mean window]
+    # stretch_tension_file = 'stretch_tension.txt' 
+    stretch_tension_file = 'stretch_tension_rupture_test.txt' 
+
+
+    
+    # --- Data --- #
+    # Get load (tension) vs stretch
+    stretch_tension = read_friction_file(os.path.join(path, stretch_tension_file))
+    rupture_dict = read_info_file(os.path.join(path, 'rupture_test.txt'))
+    stretch_test = stretch_tension['v_stretch_pct']
+    load_test = metal_to_SI(stretch_tension['v_load'], 'F')*1e9
+    tension_test = metal_to_SI(stretch_tension['v_tension'], 'F')*1e9
+    
+    # Coupling data
+    data = read_multi_coupling(path, mean_window_pct, std_window_pct)
+    info = read_info_file(os.path.join(path, 'info_file.txt'))
+    stretch = data['mean_stretch']
+    stretch_initial = data['stretch_pct']
+    std_stretch = data['std_stretch']
+    non_rup = data['rup'] < 1
+    
+    # Add data coupling
+    if add_path is not None:
+        add_data = read_multi_coupling(add_path, mean_window_pct, std_window_pct)
+        add_info = read_info_file(os.path.join(add_path, 'info_file.txt'))
+        add_stretch = add_data['mean_stretch']
+        add_stretch_initial = add_data['stretch_pct']
+        add_std_stretch = add_data['std_stretch']
+        add_non_rup = add_data['rup'] < 1
+        add_F_N = add_data['F_N'] # Full sheet
+        add_Ff = add_data['Ff'][:, 0, 1]
+        
+        if add_stretch_range is None:
+            add_stretch_map =  ~np.isnan(add_stretch[add_non_rup])
+        else: 
+            add_stretch_map = np.logical_and(add_stretch_range[0] <= add_stretch[add_non_rup], add_stretch[add_non_rup] <= add_stretch_range[1])
+    
+            
+    F_N = data['F_N'] # Full sheet
+    Ff = data['Ff'][:, 0, 1]
+    vmin = 0.1
+    vmax = 10
+    
+    F_N_concat = F_N[non_rup]
+    stretch_concat = stretch[non_rup]
+    
+    # Add data coupling
+    if add_path is not None:
+        A_idx = stretch_concat < add_stretch_range[0]
+        B_idx = stretch_concat > add_stretch_range[1]
+        F_N_concat = np.concatenate((F_N_concat[A_idx], add_F_N[add_non_rup][add_stretch_map] , F_N_concat[B_idx]))
+        stretch_concat = np.concatenate((stretch_concat[A_idx], add_stretch[add_non_rup][add_stretch_map] , stretch_concat[B_idx]))
+    
+    
+    # Interpolation for strain -> load mapping 
+    strain_to_load = interpolate.interp1d(stretch_concat, F_N_concat)
+    
+    
+    
+    
+    # Get min max for F_N    
+    FN_min = np.min(F_N)
+    FN_max = np.max(F_N)
+    
+    # Write data 
+    outfile = open('honeycomb_coupling.txt', 'w')
+    outfile.write('# strain, tension, load, Ff\n')
+    for i in range(len(F_N[non_rup])):
+        outfile.write(f'{stretch[non_rup][i]}, {stretch[non_rup][i]*rupture_dict["R"]}, {F_N[non_rup][i]}, {Ff[non_rup][i]}\n')
+    
+    if add_path:
+        for i in range(len(add_F_N[add_non_rup][add_stretch_map])):
+            outfile.write(f'{add_stretch[add_non_rup][add_stretch_map][i]}, {add_stretch[add_non_rup][add_stretch_map][i]*rupture_dict["R"]}, {add_F_N[add_non_rup][add_stretch_map][i]}, {add_Ff[add_non_rup][add_stretch_map][i]}\n')
+        
+    # exit()
+    # print(np.shape(F_N[non_rup]))
+    # print(np.shape(stretch[non_rup]))
+    # print(np.shape(strain_to_load(stretch[non_rup])))
+    # print(np.shape(Ff[non_rup]))
+    # exit()
+    
+    # # Left plot
+    # F_N[non_rup], stretch[non_rup]
+    # add_F_N[add_non_rup][add_stretch_map], add_stretch[add_non_rup][add_stretch_map]
+    
+    # # right plot
+    # strain_to_load(stretch[non_rup]), Ff[non_rup]
+
+    #     strain_to_load(add_stretch[add_non_rup][add_stretch_map]), add_Ff[add_non_rup][add_stretch_map]
+    
+       
+
+    
+
+
 def manual_coupling_free(save = False):        
     path = '../Data/negative_coef/multi_coupling_free_popup'
     compare_path = '../Data/Baseline_fixmove/popup/multi_stretch'
@@ -580,5 +688,6 @@ def manual_coupling_free(save = False):
 
 
 if __name__ == '__main__':
-    manual_coupling_free(save = True)
+    # manual_coupling_free(save = False)
+    data_to_file(save = False)
     plt.show()
