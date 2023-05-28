@@ -106,7 +106,6 @@ def animation():
         ax3.grid(False)
         ax3.set_xticks([]) 
         ax3.set_yticks([]) 
-        # ax3.axis('off')
         ax3.set_xlabel(f'Strain = {s:0.2f}', fontsize = 14)
         
         plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
