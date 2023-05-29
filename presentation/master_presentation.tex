@@ -427,18 +427,18 @@ biblabel=brackets]{biblatex}
 %
 %%% New frame %%%
 %
-\begin{frame}{Sheet Kirigami}
-	\framesubtitle{Indexing}
-	% \vspace*{5mm}
-	\begin{align*}
-		M \in \mathbb{Z}_2^{62 \times 106}, \qquad \text{Combinations} = 2^{6572} = 10^{1978}
-	\end{align*}
-	\begin{figure}[H]
-		\centering
-		\includegraphics[width=0.7\linewidth]{../thesis/figures/system/center_indexing.pdf}
-		\caption{Graphene \textit{center element} indexing.}
-	\end{figure}	
-\end{frame}
+% \begin{frame}{Sheet Kirigami}
+% 	\framesubtitle{Indexing}
+% 	% \vspace*{5mm}
+% 	\begin{align*}
+% 		M \in \mathbb{Z}_2^{62 \times 106}, \qquad \text{Combinations} = 2^{6572} = 10^{1978}
+% 	\end{align*}
+% 	\begin{figure}[H]
+% 		\centering
+% 		\includegraphics[width=0.7\linewidth]{../thesis/figures/system/center_indexing.pdf}
+% 		\caption{Graphene \textit{center element} indexing.}
+% 	\end{figure}	
+% \end{frame}
 %
 %%% New frame %%%
 %
@@ -569,7 +569,8 @@ biblabel=brackets]{biblatex}
 		\includegraphics[width=1\textwidth]{../thesis/figures/baseline/drag_Ff_100Å.pdf}
 		\caption{\SI{100}{\text{Å}} sliding.}
 	  \end{subfigure}
-	   \caption{Friction force traces. The red line represents a Savgol filter. \\ $T = \SI{300}{K}$, $v = \SI{20}{m/s}$, $K = \infty$.}
+	   \caption{Friction force traces. The red line represents a Savgol filter.}
+	%    \caption{Friction force traces. The red line represents a Savgol filter. \\ $T = \SI{300}{K}$, $v = \SI{20}{m/s}$, $K = \infty$.}
   \end{figure}
 \end{frame}
 % \begin{frame}{Friction metrics}
@@ -682,7 +683,8 @@ biblabel=brackets]{biblatex}
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.6\linewidth]{../thesis/figures/negative_coefficient/nanomachine.pdf}
-		\caption{Working sketch for a nanomachine design translating applied load (from the top of the figure) to a straining of the graphene sheet (shown in red).}
+		\caption{Working sketch for a nanomachine design translating applied load to a strain of the sheet (shown in red).}
+		% \caption{Working sketch for a nanomachine design translating applied load (from the top of the figure) to a straining of the graphene sheet (shown in red).}
 		\label{fig:nanomachine}
 	\end{figure}	  
 \end{frame}
@@ -722,8 +724,8 @@ biblabel=brackets]{biblatex}
 	% \end{figure} 
 	\begin{figure}
 		\centering    
-		\movie[open,showcontrols=true]{\includegraphics[width=\textwidth, keepaspectratio]{figures/hon_stretch.png}}{figures/hon_stretch_anim/anim.mov}
-		\caption{Honeycomb $(2,2,1,5)$ stretch.}
+		\movie[open,showcontrols=true]{\includegraphics[width=0.70\textwidth, keepaspectratio]{figures/hon_stretch2.png}}{figures/hon_stretch_anim/anim.mov}
+		% \caption{Honeycomb $(2,2,1,5)$ stretch.}
 	\end{figure} 
 \end{frame}
 
@@ -1053,7 +1055,7 @@ biblabel=brackets]{biblatex}
 
 
 
-\begin{frame}[allowframebreaks]
+\begin{frame}%[allowframebreaks]
 	\frametitle{References}
 	\printbibliography
 	% \bibliographystyle{apalike}

@@ -41,7 +41,7 @@ def read_coupling_file(filename):
 def idx_to_strain(idx):
     start = 15 + 2*5 # ps
     strain_rate = 0.001 # 1/ps
-    dump_freq = 10000
+    dump_freq = 1000
     dt = 1e-3 # ps
     
     t = np.max((idx * dump_freq * dt - start, 0))
@@ -56,7 +56,7 @@ def animation():
     strain_to_FN = interpolate.interp1d(strain, FN)
     strain_to_Ff = interpolate.interp1d(strain, Ff)
     
-    image_folder = '../presentation/figures/hon_stretch'
+    image_folder = '../presentation/figures/hon_stretch2'
     images = np.sort(os.listdir(image_folder))
     
 
@@ -115,5 +115,5 @@ def animation():
     
 
 if __name__ == '__main__':
-    animation()
-    
+    # animation()
+    pass
