@@ -550,17 +550,20 @@ def maxarg_vs_K(dirs, save = False):
     
 
 if __name__ == '__main__':
-    path = '../Data/Baseline'
+    # path = '../Data/Baseline'
     # filename = os.path.join(path,'nocut/temp/T300/system_2023-01-17_Ff.txt')
     # filename = os.path.join(path,'nocut/special/v1/system_v1_Ff.txt')
     # filename = os.path.join(path,'nocut/special/v10/system_v10_Ff.txt')
     
-    # path = '../Data/Baseline_fixmove' # XXX
-    # filename = os.path.join(path,'nocut/temp/T300/system_T300_Ff.txt') # XXX
+    path = '../Data/Baseline_fixmove' # XXX
+    filename = os.path.join(path,'nocut/temp/T300/system_T300_Ff.txt') # XXX
     # filename = os.path.join(path,'nocut/spring/K10/system_K10_Ff.txt')
     
     
-    # raw_data(filename, save = False)
+    
+    # filename = '../Data/Baseline_fixmove/popup/multi_stretch/stretch_22421_folder/job0/system_drag_Ff.txt'
+    filename = '../Data/Baseline_fixmove/popup/multi_stretch/stretch_15001_folder/job0/system_drag_Ff.txt'
+    raw_data(filename, save = False)
     # ft(filename, save = False)
     # decomp(filename, save = False)
     # COM(filename, save = False)
