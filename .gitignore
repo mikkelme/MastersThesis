@@ -53,6 +53,9 @@
 *.t2
 *.t3
 *.xml
+*.nav
+*.snm
+
 
 # Videos / Animations
 *.gif
