@@ -266,34 +266,40 @@ def multi_article(path, save = False):
     yerr = None
     
     
-    fig, axes = plt.subplots(2, len(folders), num = unique_fignum(), figsize = (10,6))
-    # fig, axes = plt.subplots(2, len(folders), num = unique_fignum(), figsize = (10,8), layout='constrained')
+    
+    grid = (2, len(folders)+1)
+    width_ratios = [1 for i in range(len(folders))] + [0.1] # Small width for colorbar
+    fig, axes = plt.subplots(grid[0], grid[1], num = unique_fignum(), figsize = (10,6), gridspec_kw ={'width_ratios': width_ratios})
+    gs = axes[0, 2].get_gridspec()
+    for ax in axes[:, -1]: ax.remove()
+    cax = fig.add_subplot(gs[0:, -1])
+
     fig.supxlabel('Strain', fontsize = 14)
     axes[0,0].set_ylabel(r'$\langle$ Rel. Contact $\rangle$', fontsize = 14)
     axes[1,0].set_ylabel(r'$\langle F_\parallel \rangle$ [nN]', fontsize = 14)
     
-   
-
 
     # Contact
     vars = ['data[\'stretch_pct\']', 'data[\'contact_mean\'][:, :, 0]', 'data[\'F_N\']']
-    multi_plot_compare(folders, names, vars, axis_labels, yerr = yerr, rupplot = True, axes = axes[0])
+    multi_plot_compare(folders, names, vars, axis_labels, yerr = yerr, rupplot = True, axes = axes[0,:3])
     handles, labels = axes[0][-2].get_legend_handles_labels()
-    leg = fig.legend(handles, labels, loc = 'lower right', bbox_to_anchor = (0.0, 0, 1, 1), bbox_transform = fig.transFigure, ncols = 2, fontsize = 13)
+    fig.legend(handles, labels, loc = 'lower right', bbox_to_anchor = (0.0, 0, 1, 1), bbox_transform = fig.transFigure, ncols = 2, fontsize = 13)
     
-
+  
 
     # Fric
     names = ['', '', '']
     vars = ['data[\'stretch_pct\']', 'data[\'Ff\'][:, :, 0, 1]', 'data[\'F_N\']']
-    multi_plot_compare(folders, names, vars, axis_labels, yerr = yerr, rupplot = True, axes = axes[1])
+    multi_plot_compare(folders, names, vars, axis_labels, yerr = yerr, rupplot = True, axes = axes[1, :3])
     
 
-    # fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
-    fig.tight_layout(pad=1.1, w_pad=2, h_pad=0.2)#, rect = (0,0,1,1))
     norm = matplotlib.colors.LogNorm(0.1, 10)
-    cb = fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=matplotlib.cm.viridis), ax=axes.ravel().tolist())
+    cb = fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=matplotlib.cm.viridis), cax=cax)
     cb.set_label(label = r'$F_N$ [nN]', fontsize=14)
+    fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+   
+   
+
     
     if save:
         fig.savefig("../article/figures/multi_strain.pdf", bbox_inches="tight")
