@@ -9,6 +9,8 @@ from brokenaxes import brokenaxes
 from matplotlib.colors import LinearSegmentedColormap
 import matplotlib.colors as colors
 
+from mpl_toolkits.axes_grid1 import ImageGrid
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 def temp(path, save = False):
     common_folder = 'temp3' 
@@ -250,7 +252,54 @@ def multi_area(path, save = False):
 
     if save:
         fig_mean.savefig("../article/figures/baseline/multi_stretch_area_compare.pdf", bbox_inches="tight")
+
+
+
+
+def multi_article(path, save = False):
+    common_folder = 'multi_stretch' 
+    folders = [os.path.join(path, 'nocut', common_folder), 
+               os.path.join(path, 'popup', common_folder),
+               os.path.join(path, 'honeycomb', common_folder)]
+    names = ['No cut', 'Tetrahedron', 'Honeycomb']
+    axis_labels = None
+    yerr = None
+    
+    
+    fig, axes = plt.subplots(2, len(folders), num = unique_fignum(), figsize = (10,6))
+    # fig, axes = plt.subplots(2, len(folders), num = unique_fignum(), figsize = (10,8), layout='constrained')
+    fig.supxlabel('Strain', fontsize = 14)
+    axes[0,0].set_ylabel(r'$\langle$ Rel. Contact $\rangle$', fontsize = 14)
+    axes[1,0].set_ylabel(r'$\langle F_\parallel \rangle$ [nN]', fontsize = 14)
+    
+   
+
+
+    # Contact
+    vars = ['data[\'stretch_pct\']', 'data[\'contact_mean\'][:, :, 0]', 'data[\'F_N\']']
+    multi_plot_compare(folders, names, vars, axis_labels, yerr = yerr, rupplot = True, axes = axes[0])
+    handles, labels = axes[0][-2].get_legend_handles_labels()
+    leg = fig.legend(handles, labels, loc = 'lower right', bbox_to_anchor = (0.0, 0, 1, 1), bbox_transform = fig.transFigure, ncols = 2, fontsize = 13)
+    
+
+
+    # Fric
+    names = ['', '', '']
+    vars = ['data[\'stretch_pct\']', 'data[\'Ff\'][:, :, 0, 1]', 'data[\'F_N\']']
+    multi_plot_compare(folders, names, vars, axis_labels, yerr = yerr, rupplot = True, axes = axes[1])
+    
+
+    # fig.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
+    fig.tight_layout(pad=1.1, w_pad=2, h_pad=0.2)#, rect = (0,0,1,1))
+    norm = matplotlib.colors.LogNorm(0.1, 10)
+    cb = fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=matplotlib.cm.viridis), ax=axes.ravel().tolist())
+    cb.set_label(label = r'$F_N$ [nN]', fontsize=14)
+    
+    if save:
+        fig.savefig("../article/figures/multi_strain.pdf", bbox_inches="tight")
         
+        
+
              
 def multi_FN(path, save = False):
     common_folder = 'multi_FN' 
@@ -456,9 +505,10 @@ def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yer
         norm = matplotlib.colors.LogNorm(vmin, vmax)
     else:
         exit(f'scale = \'{colorbar_scale[-1]}\' is not defined.')
-        
-    cb = plt.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax=axes[-1], aspect = 200)
-    cb.set_label(label = axis_labels[2], fontsize=14)
+    
+    if len(axes) > len(folders):
+        cb = plt.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax=axes[-1], aspect = 200)
+        cb.set_label(label = axis_labels[2], fontsize=14)
     # cb = plt.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax=axes[-1], pad = 0, use_gridspec = True)
     
         
@@ -534,7 +584,7 @@ def multi_plot_compare(folders, names, vars, axis_labels, figsize = (10, 5), yer
     
     # Rupture stretch 
     if rupplot: 
-        for a, ax in enumerate(axes[:-1]):    
+        for a, ax in enumerate(axes[:len(folders)]):    
             vline(ax, rupture_stretch[a, 0], linestyle = '--', color = 'black', linewidth = 1, zorder = 0, label = "Rupture test" )
             yfill(ax, [rupture_stretch[a, 1], 10], color = 'red', alpha = 0.1, zorder = 0, label = "Rupture sliding")
 
@@ -787,9 +837,10 @@ if __name__ == "__main__":
     # spring(path, save = False)
     # dt(path, save = False)
     
-    multi_stretch(path, save = False)
+    # multi_stretch(path, save = False)
     # multi_FN(path, save = False)
     # multi_area(path, save = False)
+    multi_article(path, save = True)
     
     # multi_FN_force_dist(path, save = False)
     

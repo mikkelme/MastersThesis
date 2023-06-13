@@ -38,11 +38,13 @@ def raw_data(filename, save = False):
     plt.legend(loc = 'lower left', fontsize = 13)
     
     add_xaxis(plt.gca(), x = VA_pos[map], xnew = time[map], xlabel = 'Time [ps]', decimals = 0, fontsize = 14)
+    # add_xaxis(plt.gca(), x = VA_pos[map], xnew = time[map], xlabel = '', decimals = 0, fontsize = 14)
     plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
     if save:
+        # plt.savefig('../article/figures/drag_Ff_10Å_no_legend.pdf', bbox_inches='tight')
         # plt.savefig('../article/figures/baseline/drag_Ff_10Å.pdf', bbox_inches='tight')
         # plt.savefig('../article/figures/baseline/drag_Ff_10Å_K10_v1.pdf', bbox_inches='tight')
-        plt.savefig('../article/figures/baseline/drag_Ff_10Å_K10_v10.pdf', bbox_inches='tight')
+        # plt.savefig('../article/figures/baseline/drag_Ff_10Å_K10_v10.pdf', bbox_inches='tight')
         pass
     
     
@@ -57,11 +59,13 @@ def raw_data(filename, save = False):
     plt.legend(loc = 'lower left', fontsize = 13)
     
     add_xaxis(plt.gca(), x = VA_pos[map], xnew = time[map], xlabel = 'Time [ps]', decimals = 0, fontsize = 14)
+    plt.ylim(top = 2.5)
     plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)
     if save:
+        plt.savefig('../article/figures/drag_Ff_100Å_hightop.pdf', bbox_inches='tight')
         # plt.savefig('../article/figures/baseline/drag_Ff_100Å.pdf', bbox_inches='tight')
         # plt.savefig('../article/figures/baseline/drag_Ff_100Å_K10_v1.pdf', bbox_inches='tight')
-        plt.savefig('../article/figures/baseline/drag_Ff_100Å_K10_v10.pdf', bbox_inches='tight')
+        # plt.savefig('../article/figures/baseline/drag_Ff_100Å_K10_v10.pdf', bbox_inches='tight')
         pass
     
 
@@ -562,8 +566,8 @@ if __name__ == '__main__':
     
     
     # filename = '../Data/Baseline_fixmove/popup/multi_stretch/stretch_22421_folder/job0/system_drag_Ff.txt'
-    filename = '../Data/Baseline_fixmove/popup/multi_stretch/stretch_15001_folder/job0/system_drag_Ff.txt'
-    raw_data(filename, save = False)
+    # filename = '../Data/Baseline_fixmove/popup/multi_stretch/stretch_15001_folder/job0/system_drag_Ff.txt'
+    raw_data(filename, save = True)
     # ft(filename, save = False)
     # decomp(filename, save = False)
     # COM(filename, save = False)
