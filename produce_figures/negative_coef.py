@@ -288,13 +288,13 @@ def new_coupling_plot(path, compare_path = None, save = False, add_path = None, 
         
         
     if markings: # Add markings add certain strains
-        # markings_settings = {'marker': 's', 's': 100, 'alpha': 1, 'edgecolors': "black", 'color': color_cycle(0), 'zorder': 20}
         markings_settings = {'marker': 's', 's': 100, 'alpha': 0.8, 'edgecolors': "black", 'color': 'tab:pink', 'zorder': 20}
         smin, smax = np.min(stretch_concat), np.max(stretch_concat)
         for i, mark in enumerate(markings):
             if smin < mark and mark < smax:
                 idx = np.argmin(np.abs(stretch_concat - mark))
-                print(f'mark {i}: strain = {stretch_concat[idx]}, F_N = {F_N_concat[idx]}')
+                frame = strain_to_frame(stretch_concat[idx])
+                print(f'mark {i}: strain = {stretch_concat[idx]}, F_N = {F_N_concat[idx]}, ovito frame = {frame}')
                 axes[0].scatter(F_N_concat[idx], stretch_concat[idx], **markings_settings) 
                 axes[1].scatter(F_N_concat[idx], Ff_concat[idx], **markings_settings)
                                                 
@@ -365,195 +365,7 @@ def new_coupling_plot(path, compare_path = None, save = False, add_path = None, 
 
 
 
-    
 
-# def manual_coupling(path, compare_path = None, save = False, add_path = None, add_stretch_range = None):
-#     """ Friction vs. normal force (F_N) for manual coupling between stretch and F_N """
-    
-#     # Settings
-#     mean_window_pct = 0.5 # relative length of the mean window [% of total duration]
-#     std_window_pct = 0.35  # relative length of the std windoe [% of mean window]
-#     # stretch_tension_file = 'stretch_tension.txt' 
-#     stretch_tension_file = 'stretch_tension_rupture_test.txt' 
-
-#     cmap = matplotlib.cm.viridis
-#     colorbar_scale = 'log'
-    
-   
-#     color_original = color_cycle(1)
-#     color_added = color_cycle(4)
-#     marker_initial_stretch = 'o'
-#     marker_mean_stretch = 'v'
-#     marker_const_FN = 'o'
-#     marker_coupled_FN = 'v'
-    
-#     size_and_edge = {'s': 40, 'edgecolors': "black"}
-    
-#     # plotset_coupling = {'marker': marker_coupled_FN,
-#     #                     's': 40,
-#     #                     'edgecolors': "black"}
-#     # plotset_compare =  {'marker': marker_const_FN,
-#     #                     's': 40,
-#     #                     'edgecolors': "black"}
-   
-    
-#     fig, axes = plt.subplots(1, 3, num = unique_fignum(), figsize = (10,5), gridspec_kw ={'width_ratios': [1, 1, 0.05]})
-    
-    
-    
-#     # --- Data --- #
-#     # Get load (tension) vs stretch
-#     stretch_tension = read_friction_file(os.path.join(path, stretch_tension_file))
-#     rupture_dict = read_info_file(os.path.join(path, 'rupture_test.txt'))
-#     stretch_test = stretch_tension['v_stretch_pct']
-#     load_test = metal_to_SI(stretch_tension['v_load'], 'F')*1e9
-#     tension_test = metal_to_SI(stretch_tension['v_tension'], 'F')*1e9
-    
-    
-#     # Coupling data
-#     data = read_multi_coupling(path, mean_window_pct, std_window_pct)
-#     info = read_info_file(os.path.join(path, 'info_file.txt'))
-#     stretch = data['mean_stretch']
-#     stretch_initial = data['stretch_pct']
-#     std_stretch = data['std_stretch']
-#     non_rup = data['rup'] < 1
-    
-#     # Add data coupling
-#     if add_path is not None:
-#         add_data = read_multi_coupling(add_path, mean_window_pct, std_window_pct)
-#         add_info = read_info_file(os.path.join(add_path, 'info_file.txt'))
-#         add_stretch = add_data['mean_stretch']
-#         add_stretch_initial = add_data['stretch_pct']
-#         add_std_stretch = add_data['std_stretch']
-#         add_non_rup = add_data['rup'] < 1
-#         add_F_N = add_data['F_N'] # Full sheet
-#         add_Ff = add_data['Ff'][:, 0, 1]
-        
-#         # add_stretch_tension = read_friction_file(os.path.join(add_path, stretch_tension_file))
-#         # add_stretch_test = add_stretch_tension['v_stretch_pct']
-#         # add_load_test = metal_to_SI(add_stretch_tension['v_load'], 'F')*1e9
-#         # add_tension_test = metal_to_SI(add_stretch_tension['v_tension'], 'F')*1e9
- 
-#         if add_stretch_range is None:
-#             add_stretch_map =  ~np.isnan(add_stretch[add_non_rup])
-#         else: 
-#             add_stretch_map = np.logical_and(add_stretch_range[0] <= add_stretch[add_non_rup], add_stretch[add_non_rup] <= add_stretch_range[1])
-        
-            
-#     F_N = data['F_N'] # Full sheet
-#     Ff = data['Ff'][:, 0, 1]
-#     vmin = 0.1
-#     vmax = 10
-    
-#     # Get min max for F_N    
-#     FN_min = np.min(F_N)
-#     FN_max = np.max(F_N)
-    
-#     # Compare data (without coupling)
-#     if compare_path is not None:
-#         data = read_multi_folder(compare_path, mean_window_pct, std_window_pct)    
-#         stretch_compare = data['stretch_pct']
-#         Ff_compare = data['Ff'][:, :, 0, 1]
-#         F_N_compare = data['F_N']
-        
-#         a = FN_min
-#         b = np.min(F_N_compare)
-        
-#         FN_min = min(FN_min, np.min(F_N_compare))
-#         FN_max = max(FN_max, np.max(F_N_compare))
-        
-        
-        
-#     # --- Plotting --- #
-#     ## Stretch vs. normal force (tension) (left plot) ##
-#     # Original coupling
-#     axes[0].scatter(F_N[non_rup], stretch[non_rup], marker = marker_mean_stretch, **size_and_edge,  color = color_original) # Mean stretch 
-#     axes[0].scatter(F_N[non_rup], stretch_initial[non_rup], marker = marker_initial_stretch, **size_and_edge, color = color_original, alpha = 0.5) # Initial stretch 
-#     # axes[0].fill_between(F_N, stretch - 3*std_stretch, stretch + 3*std_stretch, color = color_cycle(2), alpha = 0.5, label = "$\pm 3\sigma$ ", zorder = -1)
-    
-#     # Add data coupling
-#     if add_path is not None:
-#         axes[0].scatter(add_F_N[add_non_rup][add_stretch_map], add_stretch[add_non_rup][add_stretch_map], marker = marker_mean_stretch, **size_and_edge,  color = color_added) # Mean stretch
-#         axes[0].scatter(add_F_N[add_non_rup][add_stretch_map], add_stretch_initial[add_non_rup][add_stretch_map], marker = marker_initial_stretch, **size_and_edge, color = color_added, alpha = 0.5) # Initial stretch
-    
-    
-#     # plot load-stretch curve
-#     # axes[0].plot(load_test, stretch_test, color = color_original, linewidth = 1, alpha = 1) 
-#     # if add_path is not None:
-#     #     add_stretch_map_test = np.logical_and(add_stretch_range[0] <= add_stretch_test, add_stretch_test <= add_stretch_range[1])
-#     #     axes[0].plot(add_load_test[add_stretch_map_test], add_stretch_test[add_stretch_map_test], linewidth = 1, alpha = 1, label = 'TEST')
-        
-#     add_xaxis(axes[0], x = load_test, xnew = load_test*rupture_dict['R'], xlabel = 'Tension [nN]', decimals = 1, fontsize = 14)
-#     axes[0].set_xlabel(r'$F_N$ [nN]', fontsize = 14)
-#     axes[0].set_ylabel('Strain', fontsize = 14)
-
-   
-#     ## Friction vs. normal force (right plot) ##
-#     # Original coupling
-#     axes[1].scatter(stretch[non_rup], Ff[non_rup], marker = marker_coupled_FN, **size_and_edge, color = color_original)
-#     add_xaxis(axes[1], x = stretch[non_rup], xnew = F_N[non_rup], xlabel = r'$F_N$ [nN] (Coupled)', decimals = 1, fontsize = 14)
-    
-#     # Add data coupling
-#     if add_path is not None:
-#         axes[1].scatter(add_stretch[add_non_rup][add_stretch_map], add_Ff[add_non_rup][add_stretch_map], marker = marker_coupled_FN, **size_and_edge, color = color_added)
- 
-#     # Compare locked
-#     if compare_path is not None:     
-#         for k in range(len(F_N_compare)):
-#                 color = get_color_value(F_N_compare[k], vmin, vmax, scale = colorbar_scale, cmap = cmap)
-#                 axes[1].scatter(stretch_compare, Ff_compare[:,k], marker = marker_const_FN, **size_and_edge, color = color)
-                
-
-#     # Colorbar
-#     if colorbar_scale == 'linear':
-#         norm = matplotlib.colors.Normalize(vmin, vmax)
-#     elif colorbar_scale == 'log':
-#         norm = matplotlib.colors.LogNorm(vmin, vmax)
-#     else:
-#         exit(f'scale = \'{colorbar_scale}\' is not defined.')
-            
-#     axes[-1].grid(False)
-#     axes[-1].set_aspect(10)
-#     cb = fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), cax=axes[-1])
-#     cb.set_label(label = '$F_N$ [nN]', fontsize=14)
-
-#     axes[1].set_xlabel('Strain', fontsize = 14)
-#     axes[1].set_ylabel(r'$\langle F_\parallel \rangle$ [nN]', fontsize = 14)
-    
-
-
-#     # --- Add legends --- #
-#     axes[0].scatter([], [], color = 'grey', edgecolors = 'black', marker = marker_initial_stretch, label = 'Initial strain')
-#     axes[0].scatter([], [], color = 'grey', edgecolors = 'black', marker = marker_mean_stretch, label = 'Mean strain')
-#     # axes[0].plot([], [], color = 'grey', linestyle = '-', label = 'Rupture test')
-#     axes[0].scatter([], [], color = color_original, edgecolors = 'none', marker = 's', label = 'Original')
-#     axes[0].scatter([], [], color = color_added, edgecolors = 'none', marker = 's', label = 'Added')
-    
-#     h, l = axes[0].get_legend_handles_labels()
-#     legend1 = axes[0].legend(h[:2], l[:2], loc = 'lower right', fontsize = 13)
-#     if add_path is not None:
-#         legend2 = axes[0].legend(h[2:], l[2:], loc = 'upper left', fontsize = 13)
-#         axes[0].add_artist(legend1)
-    
-    
-#     axes[1].scatter([], [], color = 'grey', edgecolors = 'black', marker = marker_const_FN, label = r'Pilot study')
-#     axes[1].scatter([], [], color = 'grey', edgecolors = 'black', marker = marker_coupled_FN, label = f"Coupled (R = {rupture_dict['R']:g})")
-#     axes[1].scatter([], [], color = color_original, edgecolors = 'none', marker = 's', label = 'Original')
-#     axes[1].scatter([], [], color = color_added, edgecolors = 'none', marker = 's', label = 'Added')
-    
-    
-#     h, l = axes[1].get_legend_handles_labels()
-#     legend1 = axes[1].legend(h[:2], l[:2], loc = 'lower right', fontsize = 13)
-#     if add_path is not None:
-#         legend2 = axes[1].legend(h[2:], l[2:], loc = 'upper left', fontsize = 13)
-#         axes[1].add_artist(legend1)
-
-    
-#     # Wrap it up
-#     plt.tight_layout(pad=1.1, w_pad=0.7, h_pad=0.2)    
-#     if save is not False:
-#         # plt.savefig('../article/figures/negative_coefficient/manual_coupling.pdf', bbox_inches='tight')
-    
 
 def data_to_file(save = False):
     """ for presentation purposes """
@@ -663,11 +475,34 @@ def data_to_file(save = False):
     
 
 
+def strain_to_frame(strain, start = 15 + 2*5, strain_rate = 0.001, dump_freq = 10000, dt = 1e-3):
+    # [start] = ps
+    # [strain_rate] = 1/ps
+    # [dump_freq] = step/frame
+    # [dt] = step/ps
+    frame_per_ps = 1/(dt*dump_freq)
+    frame = (start + strain/strain_rate) * frame_per_ps
+    return frame
+
+    
+    
+    
+# def idx_to_strain(idx):
+#     start = 15 + 2*5 # ps
+#     strain_rate = 0.001 # 1/ps
+#     dump_freq = 1000
+#     dt = 1e-3 # ps
+    
+#     t = np.max((idx * dump_freq * dt - start, 0))
+#     strain = t * strain_rate
+#     return strain
+    
+
 def manual_coupling_free(save = False):        
     path = '../Data/negative_coef/multi_coupling_free_popup'
     compare_path = '../Data/Baseline_fixmove/popup/multi_stretch'
     if save is not False:
-        save = 'manual_coupling_tension_pop7_5_1'
+        save = 'manual_coupling_tension_tetra7_5_1'
         
     markings = [0.04, 0.08, 0.12, 0.165] # strain 
     new_coupling_plot(path, compare_path, save, markings = markings)
@@ -710,6 +545,7 @@ def manual_coupling_free(save = False):
 
 
 if __name__ == '__main__':
+    # print(strain_to_frame(np.array([0.03914414971748587, 0.08019271085054253, 0.11953201075053752,  0.1644824785739287])))
     manual_coupling_free(save = True)
     # data_to_file(save = True)
     plt.show()
