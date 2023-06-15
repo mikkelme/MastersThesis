@@ -352,7 +352,7 @@ def new_coupling_plot(path, compare_path = None, save = False, add_path = None, 
     h, l = axes[1].get_legend_handles_labels()
     legend1 = axes[1].legend(h[:2], l[:2], loc = 'lower right', fontsize = 13)
     if add_path is not None:
-        legend2 = axes[1].legend(h[2:], l[2:], loc = 'upper left', fontsize = 13)
+        legend2 = axes[1].legend(h[2:], l[2:], loc = 'upper right', fontsize = 13)
         axes[1].add_artist(legend1)
 
     
@@ -454,21 +454,6 @@ def data_to_file(save = False):
         for i in range(len(add_F_N[add_non_rup][add_stretch_map])):
             outfile.write(f'{add_stretch[add_non_rup][add_stretch_map][i]}, {add_stretch[add_non_rup][add_stretch_map][i]*rupture_dict["R"]}, {add_F_N[add_non_rup][add_stretch_map][i]}, {add_Ff[add_non_rup][add_stretch_map][i]}\n')
         
-    # exit()
-    # print(np.shape(F_N[non_rup]))
-    # print(np.shape(stretch[non_rup]))
-    # print(np.shape(strain_to_load(stretch[non_rup])))
-    # print(np.shape(Ff[non_rup]))
-    # exit()
-    
-    # # Left plot
-    # F_N[non_rup], stretch[non_rup]
-    # add_F_N[add_non_rup][add_stretch_map], add_stretch[add_non_rup][add_stretch_map]
-    
-    # # right plot
-    # strain_to_load(stretch[non_rup]), Ff[non_rup]
-
-    #     strain_to_load(add_stretch[add_non_rup][add_stretch_map]), add_Ff[add_non_rup][add_stretch_map]
     
        
 
@@ -486,35 +471,25 @@ def strain_to_frame(strain, start = 15 + 2*5, strain_rate = 0.001, dump_freq = 1
 
     
     
-    
-# def idx_to_strain(idx):
-#     start = 15 + 2*5 # ps
-#     strain_rate = 0.001 # 1/ps
-#     dump_freq = 1000
-#     dt = 1e-3 # ps
-    
-#     t = np.max((idx * dump_freq * dt - start, 0))
-#     strain = t * strain_rate
-#     return strain
-    
 
 def manual_coupling_free(save = False):        
-    path = '../Data/negative_coef/multi_coupling_free_popup'
-    compare_path = '../Data/Baseline_fixmove/popup/multi_stretch'
-    if save is not False:
-        save = 'manual_coupling_tension_tetra7_5_1'
-        
-    markings = [0.04, 0.08, 0.12, 0.165] # strain 
-    new_coupling_plot(path, compare_path, save, markings = markings)
+    # path = '../Data/negative_coef/multi_coupling_free_popup'
+    # compare_path = '../Data/Baseline_fixmove/popup/multi_stretch'
+    # if save is not False:
+    #     save = 'manual_coupling_tension_tetra7_5_1'
+    # markings = [0.04, 0.08, 0.12, 0.165] # strain 
+    # new_coupling_plot(path, compare_path, save, markings = markings)
         
     
-    # path = '../Data/negative_coef/multi_coupling_free_honeycomb'
-    # add_path = '../Data/negative_coef/multi_coupling_free_honeycomb_zoom'
-    # add_stretch_range = [0.1, 0.65]
-    # compare_path = '../Data/Baseline_fixmove/honeycomb/multi_stretch'
-    # if save is not False:
-    #     save = 'manual_coupling_tension_hon2215'
-    # new_coupling_plot(path, compare_path, save, add_path, add_stretch_range)
+    path = '../Data/negative_coef/multi_coupling_free_honeycomb'
+    add_path = '../Data/negative_coef/multi_coupling_free_honeycomb_zoom'
+    # add_path = None
+    add_stretch_range = [0.1, 0.65]
+    compare_path = '../Data/Baseline_fixmove/honeycomb/multi_stretch'
+    if save is not False:
+        save = 'manual_coupling_tension_hon2215'
+    markings = [0.065, 0.76, 1.04, 1.15] # strain  #0.6448
+    new_coupling_plot(path, compare_path, save, add_path, add_stretch_range, markings = markings)
     
     
     
