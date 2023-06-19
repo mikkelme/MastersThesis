@@ -771,7 +771,7 @@ def add_xaxis(ax1, x, xnew, xlabel, decimals = 1, fontsize = 14):
     # Position new axis behind for interactive to work
     ax1.set_zorder(ax2.get_zorder()+1)
     
-   
+    return ax2
     
 def add_yaxis(ax1, y, ynew, ylabel, decimals = 1, fontsize = 14):
     """ Add second y-axis to plots """

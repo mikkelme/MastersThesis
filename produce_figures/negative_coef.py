@@ -521,6 +521,6 @@ def manual_coupling_free(save = False):
 
 if __name__ == '__main__':
     # print(strain_to_frame(np.array([0.03914414971748587, 0.08019271085054253, 0.11953201075053752,  0.1644824785739287])))
-    manual_coupling_free(save = True)
+    # manual_coupling_free(save = True)
     # data_to_file(save = True)
     plt.show()
