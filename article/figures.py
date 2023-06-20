@@ -383,7 +383,7 @@ def plot_coupled_system(save = False):
 
 
 if __name__ == '__main__':
-    # force_traces(save = True)
+    force_traces(save = True)
     # multi_plot(save = True)
-    plot_coupled_system(save = True)
+    # plot_coupled_system(save = True)
     plt.show()
